@@ -1,8 +1,9 @@
 node_modules
 dist
 coverage
-packages/base-ui/storybook-static
+storybook-static
 .DS_Store
 .idea
 .vscode
 *.log
+*.tsbuildinfo

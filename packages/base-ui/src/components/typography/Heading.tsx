@@ -52,7 +52,7 @@ export const Heading = forwardRef(function Heading(
     className: cn(styles.Heading, className),
     'data-ov-level': String(level),
     style: truncationStyle(style, truncate),
-    role: semanticHeading ? role : 'heading',
+    role: semanticHeading ? role : (role ?? 'heading'),
     'aria-level': semanticHeading ? undefined : level,
     ...typographyData({ size, tone }),
     ...truncationData(truncate),

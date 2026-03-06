@@ -297,7 +297,8 @@
 }
 
 .Link:focus-visible {
-  outline: none;
+  outline: 1px solid transparent;
+  outline-offset: 2px;
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 

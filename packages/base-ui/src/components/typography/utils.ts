@@ -13,7 +13,10 @@ import type { TruncationProps, TypographyBaseProps, TypographyTruncate } from '.
 
 export type PolymorphicRef<C extends ElementType> = ComponentPropsWithRef<C>['ref'];
 
-export type PolymorphicComponentProps<C extends ElementType, Props = {}> = Props & {
+export type PolymorphicComponentProps<
+  C extends ElementType,
+  Props = Record<string, never>,
+> = Props & {
   as?: C;
 } & Omit<ComponentPropsWithoutRef<C>, keyof Props | 'as' | 'color'>;
 
@@ -96,6 +99,8 @@ export function createTypographyPrimitive<
   DefaultAs,
   AllowedAs
 > {
+  // Intentional: forwardRef cannot express this polymorphic signature directly;
+  // the cast below re-establishes the exported generic component type.
   const Primitive = forwardRef<any, any>(function TypographyPrimitive(rawProps, ref) {
     const {
       as,

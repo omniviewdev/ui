@@ -62,11 +62,15 @@ export interface TableCaptionProps extends Omit<HTMLAttributes<HTMLTableCaptionE
 }
 
 function resolveAlign(align: TableCellAlign | undefined, numeric: boolean): TableCellAlign {
+  if (align !== undefined) {
+    return align;
+  }
+
   if (numeric) {
     return 'right';
   }
 
-  return align ?? 'left';
+  return 'left';
 }
 
 function toMaxHeight(maxHeight?: number | string): string | undefined {
@@ -156,15 +160,7 @@ const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRo
 });
 
 const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(function TableCell(
-  {
-    className,
-    align = 'left',
-    numeric = false,
-    mono = false,
-    truncate = false,
-    tone = 'default',
-    ...props
-  },
+  { className, align, numeric = false, mono = false, truncate = false, tone = 'default', ...props },
   ref,
 ) {
   return (
@@ -184,7 +180,7 @@ const TableHeaderCell = forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
   function TableHeaderCell(
     {
       className,
-      align = 'left',
+      align,
       numeric = false,
       mono = false,
       truncate = false,

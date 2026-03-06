@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import type { MouseEvent } from 'react';
 import { LuCheck, LuX } from 'react-icons/lu';
 import { Chip } from '../chip';
 import { Code, Link } from '../typography';
@@ -58,6 +59,10 @@ const runtimeRows = Array.from({ length: 24 }, (_, index) => ({
   queueDepth: Math.max(0, 32 - index),
 }));
 
+function handleDemoLinkClick(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault();
+}
+
 function methodColor(method: HttpMethod): 'brand' | 'success' | 'warning' | 'danger' {
   switch (method) {
     case 'GET':
@@ -109,7 +114,7 @@ const meta = {
       <Table.Row>
         <Table.Cell mono><Code>/api/v1/chat</Code></Table.Cell>
         <Table.Cell><Chip size="sm" variant="outline" color="brand" mono>POST</Chip></Table.Cell>
-        <Table.Cell><Link href="#">Chat</Link></Table.Cell>
+        <Table.Cell><Link href="https://example.com/docs/chat" onClick={(event) => event.preventDefault()}>Chat</Link></Table.Cell>
       </Table.Row>
     </Table.Body>
   </Table.Root>
@@ -139,7 +144,12 @@ const meta = {
                 </Chip>
               </Table.Cell>
               <Table.Cell>
-                <Link href="#">{row.docs}</Link>
+                <Link
+                  href={`https://example.com/docs/${row.docs.toLowerCase().replace(/\s+/g, '-')}`}
+                  onClick={handleDemoLinkClick}
+                >
+                  {row.docs}
+                </Link>
               </Table.Cell>
             </Table.Row>
           ))}

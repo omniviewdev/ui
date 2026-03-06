@@ -533,6 +533,18 @@
   --ov-size-action-list-shortcut-min-width-sm: 24px;
   --ov-size-action-list-shortcut-min-width-md: 30px;
   --ov-size-action-list-shortcut-min-width-lg: 36px;
+  --ov-size-table-cell-padding-inline-sm: 8px;
+  --ov-size-table-cell-padding-inline-md: 10px;
+  --ov-size-table-cell-padding-inline-lg: 12px;
+  --ov-size-table-cell-padding-block-sm: 6px;
+  --ov-size-table-cell-padding-block-md: 8px;
+  --ov-size-table-cell-padding-block-lg: 10px;
+  --ov-size-separator-thickness-sm: 1px;
+  --ov-size-separator-thickness-md: 1px;
+  --ov-size-separator-thickness-lg: 2px;
+  --ov-size-separator-inset-sm: 6px;
+  --ov-size-separator-inset-md: 10px;
+  --ov-size-separator-inset-lg: 12px;
 }
 
 :root[data-ov-density='comfortable'] {
@@ -653,6 +665,18 @@
   --ov-size-action-list-shortcut-min-width-sm: 28px;
   --ov-size-action-list-shortcut-min-width-md: 34px;
   --ov-size-action-list-shortcut-min-width-lg: 40px;
+  --ov-size-table-cell-padding-inline-sm: 10px;
+  --ov-size-table-cell-padding-inline-md: 14px;
+  --ov-size-table-cell-padding-inline-lg: 16px;
+  --ov-size-table-cell-padding-block-sm: 7px;
+  --ov-size-table-cell-padding-block-md: 10px;
+  --ov-size-table-cell-padding-block-lg: 12px;
+  --ov-size-separator-thickness-sm: 1px;
+  --ov-size-separator-thickness-md: 2px;
+  --ov-size-separator-thickness-lg: 3px;
+  --ov-size-separator-inset-sm: 8px;
+  --ov-size-separator-inset-md: 12px;
+  --ov-size-separator-inset-lg: 16px;
 }
 
 :root[data-ov-motion='reduced'] {

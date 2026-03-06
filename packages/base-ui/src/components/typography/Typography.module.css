@@ -187,6 +187,7 @@
   --_ov-blockquote-style: normal;
   --_ov-blockquote-border: var(--ov-color-brand-400);
   --_ov-blockquote-bg: transparent;
+
   border-radius: 0;
 }
 
@@ -276,7 +277,7 @@
 .Link {
   color: var(--ov-color-brand-400);
   text-decoration-line: underline;
-  text-decoration-color: color-mix(in srgb, currentColor 72%, transparent 28%);
+  text-decoration-color: color-mix(in srgb, currentcolor 72%, transparent 28%);
   text-decoration-thickness: from-font;
   text-underline-offset: 2px;
   transition: color var(--ov-duration-interactive) var(--ov-ease-standard);

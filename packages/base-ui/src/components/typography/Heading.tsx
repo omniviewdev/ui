@@ -1,17 +1,36 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { createElement, forwardRef, type ReactElement } from 'react';
 import { cn } from '../../system/classnames';
 import { DEFAULT_SIZE } from '../../system/types';
 import styles from './Typography.module.css';
 import type { HeadingLevel, TruncationProps, TypographyBaseProps } from './types';
-import { truncationData, truncationStyle, typographyData } from './utils';
+import {
+  truncationData,
+  truncationStyle,
+  typographyData,
+  type PolymorphicComponentProps,
+  type PolymorphicRef,
+} from './utils';
 
-export interface HeadingProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'color'>, TypographyBaseProps, TruncationProps {
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div';
+type HeadingElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div';
+
+interface HeadingOwnProps extends TypographyBaseProps, TruncationProps {
   level?: HeadingLevel;
 }
 
-export const Heading = forwardRef<HTMLElement, HeadingProps>(function Heading(
+export type HeadingProps<C extends HeadingElement = HeadingElement> = PolymorphicComponentProps<
+  C,
+  HeadingOwnProps
+>;
+
+type HeadingComponent = <C extends HeadingElement = 'h2'>(
+  props: HeadingProps<C> & { ref?: PolymorphicRef<C> },
+) => ReactElement | null;
+
+function isSemanticHeadingTag(tag: string): tag is 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' {
+  return /^h[1-6]$/.test(tag);
+}
+
+export const Heading = forwardRef(function Heading(
   {
     as,
     className,
@@ -20,23 +39,25 @@ export const Heading = forwardRef<HTMLElement, HeadingProps>(function Heading(
     tone = 'default',
     truncate = false,
     style,
+    role,
     ...props
-  },
-  ref,
+  }: HeadingProps<HeadingElement>,
+  ref: PolymorphicRef<HeadingElement>,
 ) {
-  const Element = (as ?? (`h${level}` as const)) as NonNullable<HeadingProps['as']>;
+  const resolvedTag = as ?? (`h${level}` as const);
+  const semanticHeading = isSemanticHeadingTag(String(resolvedTag));
 
-  return (
-    <Element
-      ref={ref as never}
-      className={cn(styles.Heading, className)}
-      data-ov-level={String(level)}
-      style={truncationStyle(style, truncate)}
-      {...typographyData({ size, tone })}
-      {...truncationData(truncate)}
-      {...props}
-    />
-  );
-});
+  return createElement(resolvedTag, {
+    ref,
+    className: cn(styles.Heading, className),
+    'data-ov-level': String(level),
+    style: truncationStyle(style, truncate),
+    role: semanticHeading ? role : 'heading',
+    'aria-level': semanticHeading ? undefined : level,
+    ...typographyData({ size, tone }),
+    ...truncationData(truncate),
+    ...props,
+  });
+}) as unknown as HeadingComponent;
 
-Heading.displayName = 'Heading';
+(Heading as { displayName?: string }).displayName = 'Heading';

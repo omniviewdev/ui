@@ -1,19 +1,32 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { createElement, forwardRef, type ReactElement } from 'react';
 import { cn } from '../../system/classnames';
 import { DEFAULT_SIZE } from '../../system/types';
 import styles from './Typography.module.css';
 import type { BlockquoteVariant, TruncationProps, TypographyBaseProps } from './types';
-import { truncationData, truncationStyle, typographyData } from './utils';
+import {
+  truncationData,
+  truncationStyle,
+  typographyData,
+  type PolymorphicComponentProps,
+  type PolymorphicRef,
+} from './utils';
 
-export interface BlockquoteProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'color'>, TypographyBaseProps, TruncationProps {
-  as?: 'blockquote' | 'div';
+type BlockquoteElement = 'blockquote' | 'div';
+
+interface BlockquoteOwnProps extends TypographyBaseProps, TruncationProps {
   variant?: BlockquoteVariant;
 }
 
-export const Blockquote = forwardRef<HTMLElement, BlockquoteProps>(function Blockquote(
+export type BlockquoteProps<C extends BlockquoteElement = BlockquoteElement> =
+  PolymorphicComponentProps<C, BlockquoteOwnProps>;
+
+type BlockquoteComponent = <C extends BlockquoteElement = 'blockquote'>(
+  props: BlockquoteProps<C> & { ref?: PolymorphicRef<C> },
+) => ReactElement | null;
+
+export const Blockquote = forwardRef(function Blockquote(
   {
-    as: Element = 'blockquote',
+    as,
     className,
     size = DEFAULT_SIZE,
     tone = 'default',
@@ -21,20 +34,18 @@ export const Blockquote = forwardRef<HTMLElement, BlockquoteProps>(function Bloc
     truncate = false,
     style,
     ...props
-  },
-  ref,
+  }: BlockquoteProps<BlockquoteElement>,
+  ref: PolymorphicRef<BlockquoteElement>,
 ) {
-  return (
-    <Element
-      ref={ref as never}
-      className={cn(styles.Blockquote, className)}
-      data-ov-variant={variant}
-      style={truncationStyle(style, truncate)}
-      {...typographyData({ size, tone })}
-      {...truncationData(truncate)}
-      {...props}
-    />
-  );
-});
+  return createElement(as ?? 'blockquote', {
+    ref,
+    className: cn(styles.Blockquote, className),
+    'data-ov-variant': variant,
+    style: truncationStyle(style, truncate),
+    ...typographyData({ size, tone }),
+    ...truncationData(truncate),
+    ...props,
+  });
+}) as unknown as BlockquoteComponent;
 
-Blockquote.displayName = 'Blockquote';
+(Blockquote as { displayName?: string }).displayName = 'Blockquote';

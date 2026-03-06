@@ -1,37 +1,16 @@
-import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../system/classnames';
-import { DEFAULT_SIZE } from '../../system/types';
 import styles from './Typography.module.css';
 import type { TruncationProps, TypographyBaseProps } from './types';
-import { truncationData, truncationStyle, typographyData } from './utils';
+import { createTypographyPrimitive, type PolymorphicComponentProps } from './utils';
 
-export interface StrongProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'color'>, TypographyBaseProps, TruncationProps {
-  as?: 'strong' | 'span';
-}
+type StrongElement = 'strong' | 'span';
 
-export const Strong = forwardRef<HTMLElement, StrongProps>(function Strong(
-  {
-    as: Element = 'strong',
-    className,
-    size = DEFAULT_SIZE,
-    tone = 'default',
-    truncate = false,
-    style,
-    ...props
-  },
-  ref,
-) {
-  return (
-    <Element
-      ref={ref as never}
-      className={cn(styles.Strong, className)}
-      style={truncationStyle(style, truncate)}
-      {...typographyData({ size, tone })}
-      {...truncationData(truncate)}
-      {...props}
-    />
-  );
+export type StrongProps<E extends StrongElement = StrongElement> = PolymorphicComponentProps<
+  E,
+  TypographyBaseProps & TruncationProps
+>;
+
+export const Strong = createTypographyPrimitive<'strong', StrongElement>({
+  displayName: 'Strong',
+  className: styles.Strong,
+  defaultAs: 'strong',
 });
-
-Strong.displayName = 'Strong';

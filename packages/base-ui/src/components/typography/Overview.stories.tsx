@@ -38,8 +38,10 @@ export const Playground: Story = {
       </Blockquote>
       <Caption>Last updated 2m ago</Caption>
       <Text as="p">
-        <Link href="#">Open runtime documentation</Link> and{' '}
-        <Underline>review required fields</Underline>.
+        <Link href="https://example.com/docs/runtime" onClick={(event) => event.preventDefault()}>
+          Open runtime documentation
+        </Link>{' '}
+        and <Underline>review required fields</Underline>.
       </Text>
       <Text as="p" truncate style={{ maxWidth: 340 }}>
         Long namespace names or file paths can be truncated consistently across typography

@@ -29,6 +29,11 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {};
 
 export const AllLevels: Story = {
+  parameters: {
+    controls: {
+      exclude: ['children', 'level'],
+    },
+  },
   render: (args) => (
     <div style={{ display: 'grid', gap: 8 }}>
       {[1, 2, 3, 4, 5, 6].map((level) => (

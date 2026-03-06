@@ -1,0 +1,192 @@
+.Group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-size-chip-group-gap);
+}
+
+.Root {
+  --_ov-height: var(--ov-size-chip-height-md);
+  --_ov-padding-inline: var(--ov-size-chip-padding-inline-md);
+  --_ov-font-size: var(--ov-size-chip-font-size-md);
+  --_ov-gap: var(--ov-size-chip-gap-md);
+  --_ov-icon-size: var(--ov-size-chip-icon-size-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-height);
+  padding: 0 var(--_ov-padding-inline);
+  border-radius: var(--ov-size-chip-radius);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.Root:has([data-ov-slot='start-decorator']),
+.Root:has([data-ov-slot='end-decorator']) {
+  --_ov-gap: var(--_ov-padding-inline);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-height: var(--ov-size-chip-height-sm);
+  --_ov-padding-inline: var(--ov-size-chip-padding-inline-sm);
+  --_ov-font-size: var(--ov-size-chip-font-size-sm);
+  --_ov-gap: var(--ov-size-chip-gap-sm);
+  --_ov-icon-size: var(--ov-size-chip-icon-size-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-height: var(--ov-size-chip-height-lg);
+  --_ov-padding-inline: var(--ov-size-chip-padding-inline-lg);
+  --_ov-font-size: var(--ov-size-chip-font-size-lg);
+  --_ov-gap: var(--ov-size-chip-gap-lg);
+  --_ov-icon-size: var(--ov-size-chip-icon-size-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-accent-bg: var(--ov-color-bg-surface-raised);
+  --_ov-accent-fg: var(--ov-color-fg-default);
+  --_ov-accent-border: var(--ov-color-border-default);
+  --_ov-accent-soft-bg: var(--ov-color-state-hover);
+  --_ov-accent-soft-fg: var(--ov-color-fg-default);
+  --_ov-accent-ghost-fg: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-accent-bg: var(--ov-color-brand-500);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-brand-400);
+  --_ov-accent-soft-bg: var(--ov-color-accent-soft);
+  --_ov-accent-soft-fg: var(--ov-color-accent-strong);
+  --_ov-accent-ghost-fg: var(--ov-color-brand-400);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-accent-bg: var(--ov-color-success);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-success);
+  --_ov-accent-soft-bg: var(--ov-color-success-soft);
+  --_ov-accent-soft-fg: var(--ov-color-success);
+  --_ov-accent-ghost-fg: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-accent-bg: var(--ov-color-warning);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-warning);
+  --_ov-accent-soft-bg: var(--ov-color-warning-soft);
+  --_ov-accent-soft-fg: var(--ov-color-warning);
+  --_ov-accent-ghost-fg: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-accent-bg: var(--ov-color-danger);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-danger);
+  --_ov-accent-soft-bg: var(--ov-color-danger-soft);
+  --_ov-accent-soft-fg: var(--ov-color-danger);
+  --_ov-accent-ghost-fg: var(--ov-color-danger);
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-bg: var(--_ov-accent-bg);
+  --_ov-fg: var(--_ov-accent-fg);
+  --_ov-border: color-mix(in srgb, var(--_ov-accent-bg) 82%, black 18%);
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-bg) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-bg) 78%, black 22%);
+}
+
+.Root[data-ov-variant='soft'] {
+  --_ov-bg: var(--_ov-accent-soft-bg);
+  --_ov-fg: var(--_ov-accent-soft-fg);
+  --_ov-border: transparent;
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-soft-bg) 86%, white 14%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-soft-bg) 70%, black 30%);
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+  --_ov-fg: var(--_ov-accent-soft-fg);
+  --_ov-border: var(--_ov-accent-border);
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-soft-bg) 80%, transparent 20%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-soft-bg) 62%, black 38%);
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-fg: var(--_ov-accent-ghost-fg);
+  --_ov-border: transparent;
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+}
+
+.Root[data-ov-clickable='true'] {
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-clickable='true']:hover {
+  background: var(--_ov-bg-hover);
+}
+
+.Root[data-ov-clickable='true']:active {
+  background: var(--_ov-bg-pressed);
+}
+
+.Root[data-ov-clickable='true']:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Root[data-ov-clickable='false'] {
+  cursor: default;
+}
+
+.Root:is([disabled], [data-disabled]) {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.Root[data-ov-mono='true'] {
+  font-family: var(--ov-font-mono);
+  font-weight: var(--ov-font-weight-body);
+  letter-spacing: 0;
+}
+
+.Label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Decorator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_ov-gap);
+  min-inline-size: var(--_ov-icon-size);
+  min-block-size: var(--_ov-icon-size);
+  flex-shrink: 0;
+}
+
+.Decorator :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}

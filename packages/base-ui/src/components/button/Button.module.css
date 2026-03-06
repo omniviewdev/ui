@@ -1,0 +1,161 @@
+.Root {
+  --_ov-control-height: var(--ov-size-button-height-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-content-gap: var(--ov-space-stack-sm);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_ov-content-gap);
+  min-height: var(--_ov-control-height);
+  min-width: calc(var(--_ov-control-height) + var(--ov-space-stack-sm));
+  padding: 0 var(--_ov-padding-inline);
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Root:not([disabled]):not([data-disabled]):hover {
+  background: var(--_ov-bg-hover);
+}
+
+.Root:not([disabled]):not([data-disabled]):active {
+  background: var(--_ov-bg-pressed);
+}
+
+.Root:is([disabled], [data-disabled]) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-control-height: var(--ov-size-button-height-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-content-gap: var(--ov-space-stack-sm);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-control-height: var(--ov-size-button-height-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-content-gap: var(--ov-space-inline-control);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-accent-bg: var(--ov-color-bg-surface-raised);
+  --_ov-accent-fg: var(--ov-color-fg-default);
+  --_ov-accent-border: var(--ov-color-border-default);
+  --_ov-accent-soft-bg: var(--ov-color-state-hover);
+  --_ov-accent-soft-fg: var(--ov-color-fg-default);
+  --_ov-accent-ghost-fg: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-accent-bg: var(--ov-color-brand-500);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-brand-400);
+  --_ov-accent-soft-bg: var(--ov-color-accent-soft);
+  --_ov-accent-soft-fg: var(--ov-color-accent-strong);
+  --_ov-accent-ghost-fg: var(--ov-color-brand-400);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-accent-bg: var(--ov-color-success);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-success);
+  --_ov-accent-soft-bg: var(--ov-color-success-soft);
+  --_ov-accent-soft-fg: var(--ov-color-success);
+  --_ov-accent-ghost-fg: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-accent-bg: var(--ov-color-warning);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-warning);
+  --_ov-accent-soft-bg: var(--ov-color-warning-soft);
+  --_ov-accent-soft-fg: var(--ov-color-warning);
+  --_ov-accent-ghost-fg: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-accent-bg: var(--ov-color-danger);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-danger);
+  --_ov-accent-soft-bg: var(--ov-color-danger-soft);
+  --_ov-accent-soft-fg: var(--ov-color-danger);
+  --_ov-accent-ghost-fg: var(--ov-color-danger);
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-bg: var(--_ov-accent-bg);
+  --_ov-fg: var(--_ov-accent-fg);
+  --_ov-border: color-mix(in srgb, var(--_ov-accent-bg) 80%, black 20%);
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-bg) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-bg) 78%, black 22%);
+}
+
+.Root[data-ov-variant='soft'] {
+  --_ov-bg: var(--_ov-accent-soft-bg);
+  --_ov-fg: var(--_ov-accent-soft-fg);
+  --_ov-border: transparent;
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-soft-bg) 84%, white 16%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-soft-bg) 70%, black 30%);
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+  --_ov-fg: var(--_ov-accent-soft-fg);
+  --_ov-border: var(--_ov-accent-border);
+  --_ov-bg-hover: color-mix(in srgb, var(--_ov-accent-soft-bg) 80%, transparent 20%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--_ov-accent-soft-bg) 60%, black 40%);
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-fg: var(--_ov-accent-ghost-fg);
+  --_ov-border: transparent;
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+}
+
+.Decorator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+  flex-shrink: 0;
+}
+
+.Decorator :where(svg) {
+  inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+}

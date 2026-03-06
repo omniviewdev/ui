@@ -1,0 +1,144 @@
+.Root {
+  --_ov-tab-height: var(--ov-control-height-md);
+  --_ov-tab-font-size: var(--ov-font-size-body);
+  --_ov-list-bg: var(--ov-color-bg-surface-raised);
+  --_ov-list-border: var(--ov-color-border-default);
+  --_ov-tab-fg: var(--ov-color-fg-muted);
+  --_ov-tab-fg-active: var(--ov-color-fg-default);
+  --_ov-tab-bg-hover: var(--ov-color-state-hover);
+  --_ov-tab-bg-active: var(--ov-color-state-selected);
+  --_ov-indicator: var(--ov-color-brand-400);
+
+  display: grid;
+  gap: var(--ov-space-stack-md);
+  width: 100%;
+  font-family: var(--ov-font-sans);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-tab-height: var(--ov-control-height-sm);
+  --_ov-tab-font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-tab-height: var(--ov-control-height-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-indicator: var(--ov-color-border-strong);
+  --_ov-tab-bg-active: var(--ov-color-state-hover);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-indicator: var(--ov-color-brand-400);
+  --_ov-tab-bg-active: var(--ov-color-accent-soft);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-indicator: var(--ov-color-success);
+  --_ov-tab-bg-active: var(--ov-color-success-soft);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-indicator: var(--ov-color-warning);
+  --_ov-tab-bg-active: var(--ov-color-warning-soft);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-indicator: var(--ov-color-danger);
+  --_ov-tab-bg-active: var(--ov-color-danger-soft);
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-list-bg: transparent;
+  --_ov-list-border: var(--ov-color-border-default);
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-list-bg: transparent;
+  --_ov-list-border: transparent;
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-list-bg: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 84%,
+    var(--_ov-indicator) 16%
+  );
+  --_ov-list-border: color-mix(
+    in srgb,
+    var(--_ov-indicator) 70%,
+    var(--ov-color-border-default) 30%
+  );
+}
+
+.Root[data-ov-variant='soft'] {
+  --_ov-list-bg: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 92%,
+    var(--_ov-tab-bg-active) 8%
+  );
+}
+
+.List {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--_ov-list-border);
+  background: var(--_ov-list-bg);
+  border-radius: var(--ov-radius-control);
+  padding: 2px;
+  min-height: var(--_ov-tab-height);
+}
+
+.Tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--_ov-tab-height) - 4px);
+  padding: 0 calc(var(--ov-space-inline-control) + var(--ov-space-stack-sm));
+  border: 0;
+  border-radius: calc(var(--ov-radius-control) - 2px);
+  background: transparent;
+  color: var(--_ov-tab-fg);
+  font: inherit;
+  font-size: var(--_ov-tab-font-size);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Tab:hover {
+  background: var(--_ov-tab-bg-hover);
+}
+
+.Tab[data-selected] {
+  color: var(--_ov-tab-fg-active);
+  background: var(--_ov-tab-bg-active);
+}
+
+.Tab:focus-visible {
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--_ov-indicator);
+  border-radius: 999px;
+  transition: transform var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Panel {
+  border: 1px solid var(--ov-color-border-muted);
+  border-radius: var(--ov-radius-surface);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  padding: var(--ov-panel-padding);
+}

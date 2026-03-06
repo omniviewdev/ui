@@ -1,0 +1,182 @@
+.Backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: color-mix(in srgb, var(--ov-color-bg-base) 38%, transparent 62%);
+  backdrop-filter: blur(1px);
+}
+
+.Popup {
+  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-title: var(--ov-color-fg-default);
+  --_ov-description: var(--ov-color-fg-muted);
+  --_ov-accent-soft: var(--ov-color-state-selected);
+
+  display: grid;
+  position: relative;
+  z-index: 1001;
+  gap: var(--ov-space-stack-md);
+  min-inline-size: min(320px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
+  max-inline-size: min(92vw, 480px);
+  border-radius: var(--ov-radius-surface);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--ov-color-fg-default);
+  box-shadow: var(--ov-shadow-surface);
+  padding: var(--ov-panel-padding);
+}
+
+.Popup[data-ov-size='sm'] {
+  gap: var(--ov-space-stack-sm);
+  padding: var(--ov-space-stack-lg);
+}
+
+.Popup[data-ov-size='lg'] {
+  gap: var(--ov-space-stack-lg);
+  padding: calc(var(--ov-panel-padding) + var(--ov-space-stack-sm));
+}
+
+.Popup[data-ov-color='brand'] {
+  --_ov-accent-soft: var(--ov-color-accent-soft);
+}
+
+.Popup[data-ov-color='success'] {
+  --_ov-accent-soft: var(--ov-color-success-soft);
+}
+
+.Popup[data-ov-color='warning'] {
+  --_ov-accent-soft: var(--ov-color-warning-soft);
+}
+
+.Popup[data-ov-color='danger'] {
+  --_ov-accent-soft: var(--ov-color-danger-soft);
+}
+
+.Popup[data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 85%, var(--_ov-accent-soft) 15%);
+  --_ov-border: color-mix(
+    in srgb,
+    var(--ov-color-border-default) 70%,
+    var(--ov-color-border-strong) 30%
+  );
+}
+
+.Popup[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+}
+
+.Popup[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+  box-shadow: none;
+}
+
+.Title {
+  margin: 0;
+  color: var(--_ov-title);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-title);
+  font-weight: var(--ov-font-weight-title);
+}
+
+.Description {
+  margin: 0;
+  color: var(--_ov-description);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+}
+
+.Trigger,
+.Close {
+  --_ov-height: var(--ov-size-button-height-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-fg: var(--ov-color-fg-default);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--_ov-height);
+  padding: 0 var(--_ov-padding-inline);
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Trigger[data-ov-size='sm'],
+.Close[data-ov-size='sm'] {
+  --_ov-height: var(--ov-size-button-height-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Trigger[data-ov-size='lg'],
+.Close[data-ov-size='lg'] {
+  --_ov-height: var(--ov-size-button-height-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+}
+
+.Trigger[data-ov-color='brand'],
+.Close[data-ov-color='brand'] {
+  --_ov-bg: var(--ov-color-brand-500);
+  --_ov-border: var(--ov-color-brand-400);
+  --_ov-fg: var(--ov-color-fg-inverse);
+  --_ov-bg-hover: color-mix(in srgb, var(--ov-color-brand-500) 86%, white 14%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-brand-500) 78%, black 22%);
+}
+
+.Trigger[data-ov-color='danger'],
+.Close[data-ov-color='danger'] {
+  --_ov-bg: var(--ov-color-danger);
+  --_ov-border: var(--ov-color-danger);
+  --_ov-fg: var(--ov-color-fg-inverse);
+  --_ov-bg-hover: color-mix(in srgb, var(--ov-color-danger) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-danger) 78%, black 22%);
+}
+
+.Trigger[data-ov-variant='soft'],
+.Close[data-ov-variant='soft'] {
+  --_ov-bg: var(--ov-color-state-selected);
+  --_ov-border: transparent;
+}
+
+.Trigger[data-ov-variant='outline'],
+.Close[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+}
+
+.Trigger[data-ov-variant='ghost'],
+.Close[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Trigger:hover,
+.Close:hover {
+  background: var(--_ov-bg-hover);
+}
+
+.Trigger:active,
+.Close:active {
+  background: var(--_ov-bg-pressed);
+}
+
+.Trigger:focus-visible,
+.Close:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}

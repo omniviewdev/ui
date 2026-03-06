@@ -1,0 +1,274 @@
+.Backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--ov-color-bg-base) 24%, transparent 76%);
+  backdrop-filter: blur(1px);
+}
+
+.Positioner {
+  z-index: 120;
+}
+
+.Popup {
+  --_ov-bg: var(--ov-color-bg-surface-overlay);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-selected-bg: var(--ov-color-state-selected);
+  --_ov-highlight-bg: var(--ov-color-state-hover);
+  --_ov-item-fg: var(--ov-color-fg-default);
+  --_ov-popup-padding: var(--ov-size-list-item-gap);
+  --_ov-list-gap: var(--ov-size-list-item-gap);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-md);
+  --_ov-item-height: var(--ov-size-list-item-height-md);
+  --_ov-item-radius: var(--ov-size-list-item-radius);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-md);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-md);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-md);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-md);
+
+  min-inline-size: 220px;
+  max-inline-size: min(92vw, 420px);
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-surface);
+  background: var(--_ov-bg);
+  box-shadow: var(--ov-shadow-surface);
+  padding: var(--_ov-popup-padding);
+  display: grid;
+  gap: var(--_ov-list-gap);
+}
+
+.Popup[data-ov-size='sm'] {
+  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) - 1px);
+  --_ov-list-gap: calc(var(--ov-size-list-item-gap) - 1px);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-sm);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-sm);
+}
+
+.Popup[data-ov-size='lg'] {
+  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) + 1px);
+  --_ov-list-gap: calc(var(--ov-size-list-item-gap) + 1px);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-lg);
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-lg);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+}
+
+.Popup[data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 84%, var(--_ov-selected-bg) 16%);
+}
+
+.Popup[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+}
+
+.Popup[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Popup[data-ov-color='brand'] {
+  --_ov-selected-bg: var(--ov-color-accent-soft);
+}
+
+.Popup[data-ov-color='success'] {
+  --_ov-selected-bg: var(--ov-color-success-soft);
+}
+
+.Popup[data-ov-color='warning'] {
+  --_ov-selected-bg: var(--ov-color-warning-soft);
+}
+
+.Popup[data-ov-color='danger'] {
+  --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+.GroupLabel {
+  padding-inline: var(--_ov-item-padding-inline);
+  margin-block-start: var(--_ov-group-label-gap-top);
+  margin-block-end: var(--_ov-group-label-gap-after);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-group-label-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.2;
+}
+
+.Separator {
+  height: 1px;
+  margin: 0;
+  background: var(--ov-color-border-muted);
+}
+
+.Item,
+.CheckboxItem,
+.RadioItem,
+.SubmenuTrigger,
+.LinkItem {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-control);
+  min-height: var(--_ov-item-height);
+  padding-inline: var(--_ov-item-padding-inline);
+  border-radius: var(--_ov-item-radius);
+  color: var(--_ov-item-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.25;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.LinkItem {
+  text-decoration: none;
+}
+
+.Item[data-ov-size='sm'],
+.CheckboxItem[data-ov-size='sm'],
+.RadioItem[data-ov-size='sm'],
+.SubmenuTrigger[data-ov-size='sm'],
+.LinkItem[data-ov-size='sm'] {
+  font-size: var(--ov-font-size-caption);
+}
+
+:is(.Item, .CheckboxItem, .RadioItem, .SubmenuTrigger, .LinkItem):where(
+  :hover,
+  [data-highlighted]
+) {
+  background: var(--_ov-highlight-bg);
+}
+
+:is(.CheckboxItem, .RadioItem)[data-checked] {
+  background: var(--_ov-selected-bg);
+}
+
+:is(.Item, .CheckboxItem, .RadioItem, .SubmenuTrigger, .LinkItem)[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.StartDecorator,
+.EndDecorator,
+.CheckboxIndicator,
+.RadioIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.StartDecorator,
+.CheckboxIndicator,
+.RadioIndicator {
+  inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+  color: var(--ov-color-fg-muted);
+}
+
+.StartDecorator :where(svg),
+.EndDecorator :where(svg),
+.CheckboxIndicator :where(svg),
+.RadioIndicator :where(svg),
+.SubmenuCaret :where(svg) {
+  inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+}
+
+.EndDecorator {
+  margin-inline-start: auto;
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  letter-spacing: 0.01em;
+}
+
+.SubmenuCaret {
+  display: inline-flex;
+  margin-inline-start: auto;
+  color: var(--ov-color-fg-subtle);
+}
+
+.Trigger {
+  --_ov-height: var(--ov-size-button-height-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-fg: var(--ov-color-fg-default);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--_ov-height);
+  padding: 0 var(--_ov-padding-inline);
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Trigger[data-ov-size='sm'] {
+  --_ov-height: var(--ov-size-button-height-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Trigger[data-ov-size='lg'] {
+  --_ov-height: var(--ov-size-button-height-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+}
+
+.Trigger[data-ov-color='brand'] {
+  --_ov-bg: var(--ov-color-brand-500);
+  --_ov-border: var(--ov-color-brand-400);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-color='danger'] {
+  --_ov-bg: var(--ov-color-danger);
+  --_ov-border: var(--ov-color-danger);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-variant='soft'] {
+  --_ov-bg: var(--ov-color-state-selected);
+  --_ov-border: transparent;
+}
+
+.Trigger[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+}
+
+.Trigger[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Trigger:hover {
+  background: var(--_ov-bg-hover);
+}
+
+.Trigger:active {
+  background: var(--_ov-bg-pressed);
+}
+
+.Trigger:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}

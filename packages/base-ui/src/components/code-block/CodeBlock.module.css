@@ -1,0 +1,169 @@
+.Root {
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-line-height: 1.5;
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-padding-block: var(--ov-space-stack-md);
+  --_ov-line-number-width: 2.4em;
+  --_ov-bg: var(--ov-color-bg-surface-overlay);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-header-bg: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-overlay) 88%,
+    var(--ov-color-bg-inset) 12%
+  );
+  --_ov-header-border: var(--ov-color-border-muted);
+  --_ov-selected-bg: var(--ov-color-state-selected);
+
+  margin: 0;
+  display: grid;
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-surface);
+  background: var(--_ov-bg);
+  overflow: hidden;
+  color: var(--ov-color-fg-default);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 2px);
+  --_ov-padding-block: var(--ov-space-stack-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-font-size: var(--ov-primitive-font-size-16);
+  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 2px);
+  --_ov-padding-block: var(--ov-space-stack-lg);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-selected-bg: var(--ov-color-accent-soft);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-selected-bg: var(--ov-color-success-soft);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-selected-bg: var(--ov-color-warning-soft);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 84%, var(--_ov-selected-bg) 16%);
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: var(--ov-control-height-sm);
+  padding: 0 var(--_ov-padding-inline);
+  border-bottom: 1px solid var(--_ov-header-border);
+  background: var(--_ov-header-bg);
+}
+
+.Content {
+  position: relative;
+}
+
+.CopyButton {
+  position: absolute;
+  top: max(4px, calc(var(--_ov-padding-block) - 2px));
+  right: max(4px, calc(var(--_ov-padding-inline) - 2px));
+  border: 0;
+  background: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-overlay) 82%,
+    var(--ov-color-bg-inset) 18%
+  );
+  color: var(--ov-color-fg-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: calc(var(--ov-control-height-sm) - 4px);
+  block-size: calc(var(--ov-control-height-sm) - 4px);
+  border-radius: calc(var(--ov-radius-control) - 2px);
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    opacity var(--ov-duration-interactive) var(--ov-ease-standard),
+    transform var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root:hover .CopyButton,
+.Root:focus-within .CopyButton {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.CopyButton:hover {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-default);
+}
+
+.CopyButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.CopyButton :where(svg) {
+  inline-size: var(--ov-size-icon-button-icon-sm);
+  block-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Pre {
+  margin: 0;
+  padding: var(--_ov-padding-block) var(--_ov-padding-inline);
+  overflow: auto;
+}
+
+.Root[data-ov-copyable='true'] .Pre {
+  padding-inline-end: calc(var(--_ov-padding-inline) + var(--ov-control-height-sm));
+}
+
+.Code {
+  display: block;
+  margin: 0;
+  font-family: var(--ov-font-mono);
+  font-size: var(--_ov-font-size);
+  line-height: var(--_ov-line-height);
+  white-space: pre;
+}
+
+.Root[data-ov-wrap='true'] .Code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.Line {
+  display: grid;
+  grid-template-columns: var(--_ov-line-number-width) minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.LineNumber {
+  color: var(--ov-color-fg-subtle);
+  text-align: right;
+  padding-inline-end: 10px;
+  user-select: none;
+}
+
+.LineContent {
+  min-width: 0;
+}

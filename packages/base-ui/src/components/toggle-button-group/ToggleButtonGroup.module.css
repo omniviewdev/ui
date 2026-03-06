@@ -1,0 +1,53 @@
+.Root {
+  --_ov-group-gap: var(--ov-size-button-group-gap);
+
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--_ov-group-gap);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-group-gap: calc(var(--ov-size-button-group-gap) - 2px);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-group-gap: calc(var(--ov-size-button-group-gap) + 2px);
+}
+
+.Root[data-orientation='vertical'] {
+  flex-direction: column;
+}
+
+.Item {
+  flex: 0 0 auto;
+}
+
+.Root[data-ov-attached='true'][data-orientation='horizontal'] {
+  gap: 0;
+}
+
+.Root[data-ov-attached='true'][data-orientation='horizontal'] > .Item:not(:first-child) {
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.Root[data-ov-attached='true'][data-orientation='horizontal'] > .Item:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.Root[data-ov-attached='true'][data-orientation='vertical'] {
+  gap: 0;
+}
+
+.Root[data-ov-attached='true'][data-orientation='vertical'] > .Item:not(:first-child) {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.Root[data-ov-attached='true'][data-orientation='vertical'] > .Item:not(:last-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}

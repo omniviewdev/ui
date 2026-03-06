@@ -1,0 +1,23 @@
+.Root {
+  display: grid;
+  gap: var(--ov-space-stack-sm);
+  width: 100%;
+}
+
+.Root[data-ov-orientation='horizontal'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-md);
+}
+
+.Root[data-ov-size='sm'] {
+  gap: 6px;
+}
+
+.Root[data-ov-size='lg'] {
+  gap: var(--ov-space-stack-md);
+}
+
+.Item {
+  max-width: 100%;
+}

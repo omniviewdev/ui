@@ -1,0 +1,12 @@
+.SearchIcon {
+  color: inherit;
+}
+
+.ClearButton {
+  color: var(--ov-color-fg-muted);
+  flex-shrink: 0;
+}
+
+.ClearButton:hover {
+  color: var(--ov-color-fg-default);
+}

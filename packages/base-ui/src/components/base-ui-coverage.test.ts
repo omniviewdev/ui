@@ -1,0 +1,72 @@
+import { describe, expect, it } from 'vitest';
+import {
+  ActionList,
+  AlertDialog,
+  Autocomplete,
+  Avatar,
+  AvatarGroup,
+  Button,
+  ButtonGroup,
+  Card,
+  Checkbox,
+  CheckboxGroup,
+  Chip,
+  CodeBlock,
+  Combobox,
+  ContextMenu,
+  IconButton,
+  Input,
+  Menu,
+  MultiSelect,
+  NumberInput,
+  Popover,
+  Radio,
+  RadioGroup,
+  SearchInput,
+  Select,
+  Slider,
+  Switch,
+  Tabs,
+  TextField,
+  TextArea,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+} from './index';
+
+describe('Base UI export coverage', () => {
+  it('exports the approved core component set', () => {
+    expect(ActionList).toBeTruthy();
+    expect(AlertDialog).toBeTruthy();
+    expect(Autocomplete).toBeTruthy();
+    expect(Avatar).toBeTruthy();
+    expect(AvatarGroup).toBeTruthy();
+    expect(Button).toBeTruthy();
+    expect(ButtonGroup).toBeTruthy();
+    expect(Card).toBeTruthy();
+    expect(Checkbox).toBeTruthy();
+    expect(CheckboxGroup).toBeTruthy();
+    expect(Chip).toBeTruthy();
+    expect(CodeBlock).toBeTruthy();
+    expect(Combobox).toBeTruthy();
+    expect(ContextMenu).toBeTruthy();
+    expect(IconButton).toBeTruthy();
+    expect(Input).toBeTruthy();
+    expect(Menu).toBeTruthy();
+    expect(MultiSelect).toBeTruthy();
+    expect(NumberInput).toBeTruthy();
+    expect(Popover).toBeTruthy();
+    expect(Radio).toBeTruthy();
+    expect(RadioGroup).toBeTruthy();
+    expect(SearchInput).toBeTruthy();
+    expect(Select).toBeTruthy();
+    expect(Slider).toBeTruthy();
+    expect(Switch).toBeTruthy();
+    expect(Tabs).toBeTruthy();
+    expect(TextField).toBeTruthy();
+    expect(TextArea).toBeTruthy();
+    expect(Tooltip).toBeTruthy();
+    expect(ToggleButton).toBeTruthy();
+    expect(ToggleButtonGroup).toBeTruthy();
+  });
+});

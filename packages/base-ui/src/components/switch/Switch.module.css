@@ -1,0 +1,188 @@
+.Root {
+  --_ov-track-width: var(--ov-size-switch-track-width-md);
+  --_ov-track-height: var(--ov-size-switch-track-height-md);
+  --_ov-thumb-size: var(--ov-size-switch-thumb-size-md);
+  --_ov-track-padding: calc((var(--_ov-track-height) - var(--_ov-thumb-size)) / 2);
+  --_ov-track-bg-off: color-mix(in srgb, var(--ov-color-fg-muted) 74%, var(--ov-color-bg-surface-raised) 26%);
+  --_ov-track-border-off: color-mix(in srgb, var(--ov-color-fg-subtle) 60%, var(--ov-color-border-default) 40%);
+  --_ov-track-bg-off-hover: color-mix(in srgb, var(--_ov-track-bg-off) 85%, white 15%);
+  --_ov-track-bg-on: var(--ov-color-brand-500);
+  --_ov-track-border-on: color-mix(in srgb, var(--ov-color-brand-500) 82%, black 18%);
+  --_ov-track-bg-on-hover: color-mix(in srgb, var(--ov-color-brand-500) 84%, white 16%);
+  --_ov-thumb-bg: #ffffff;
+  --_ov-focus-border: var(--ov-color-border-focus);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  inline-size: var(--_ov-track-width);
+  block-size: var(--_ov-track-height);
+  border-radius: 999px;
+  border: 1px solid var(--_ov-track-border-off);
+  background: var(--_ov-track-bg-off);
+  padding: var(--_ov-track-padding);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-track-width: var(--ov-size-switch-track-width-sm);
+  --_ov-track-height: var(--ov-size-switch-track-height-sm);
+  --_ov-thumb-size: var(--ov-size-switch-thumb-size-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-track-width: var(--ov-size-switch-track-width-lg);
+  --_ov-track-height: var(--ov-size-switch-track-height-lg);
+  --_ov-thumb-size: var(--ov-size-switch-thumb-size-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-accent-bg: var(--ov-color-brand-500);
+  --_ov-accent-border: var(--ov-color-brand-400);
+  --_ov-accent-soft-bg: var(--ov-color-state-selected);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-accent-bg: var(--ov-color-brand-500);
+  --_ov-accent-border: var(--ov-color-brand-400);
+  --_ov-accent-soft-bg: var(--ov-color-accent-soft);
+  --_ov-focus-border: var(--ov-color-brand-400);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-accent-bg: var(--ov-color-success);
+  --_ov-accent-border: var(--ov-color-success);
+  --_ov-accent-soft-bg: var(--ov-color-success-soft);
+  --_ov-focus-border: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-accent-bg: var(--ov-color-warning);
+  --_ov-accent-border: var(--ov-color-warning);
+  --_ov-accent-soft-bg: var(--ov-color-warning-soft);
+  --_ov-focus-border: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-accent-bg: var(--ov-color-danger);
+  --_ov-accent-border: var(--ov-color-danger);
+  --_ov-accent-soft-bg: var(--ov-color-danger-soft);
+  --_ov-focus-border: var(--ov-color-danger);
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-track-bg-on: var(--_ov-accent-bg);
+  --_ov-track-border-on: color-mix(in srgb, var(--_ov-accent-bg) 82%, black 18%);
+  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-accent-bg) 84%, white 16%);
+}
+
+.Root[data-ov-variant='soft'] {
+  --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-bg) 88%, white 12%);
+  --_ov-track-border-on: transparent;
+  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 88%, white 12%);
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-track-bg-off: transparent;
+  --_ov-track-border-off: var(--ov-color-border-default);
+  --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-soft-bg) 72%, transparent 28%);
+  --_ov-track-border-on: var(--_ov-accent-border);
+  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 82%, white 18%);
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-track-bg-off: transparent;
+  --_ov-track-border-off: var(--ov-color-border-muted);
+  --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-soft-bg) 60%, transparent 40%);
+  --_ov-track-border-on: transparent;
+  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 84%, white 16%);
+}
+
+.Root:not([data-disabled], [disabled]):hover {
+  background: var(--_ov-track-bg-off-hover);
+}
+
+.Root[data-checked] {
+  background: var(--_ov-track-bg-on);
+  border-color: var(--_ov-track-border-on);
+}
+
+.Root[data-checked]:not([data-disabled], [disabled]):hover {
+  background: var(--_ov-track-bg-on-hover);
+}
+
+.Root:focus-visible {
+  border-color: var(--_ov-focus-border);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Root:is([data-disabled], [disabled]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.Thumb {
+  inline-size: var(--_ov-thumb-size);
+  block-size: var(--_ov-thumb-size);
+  border-radius: 999px;
+  background: var(--_ov-thumb-bg);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 1px 2px rgb(0 0 0 / 0.28);
+  transform: translateX(0);
+  transition:
+    transform var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard),
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-checked] .Thumb {
+  transform: translateX(calc(var(--_ov-track-width) - var(--_ov-thumb-size) - (var(--_ov-track-padding) * 2)));
+}
+
+.Field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-size-switch-gap-md);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  user-select: none;
+}
+
+.Field[data-ov-size='sm'] {
+  gap: var(--ov-size-switch-gap-sm);
+}
+
+.Field[data-ov-size='lg'] {
+  gap: var(--ov-size-switch-gap-lg);
+}
+
+.Field[data-ov-layout='spread'] {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.Content {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.Label {
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.3;
+}
+
+.Description {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.4;
+}

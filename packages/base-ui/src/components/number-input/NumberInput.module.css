@@ -1,0 +1,201 @@
+.Root {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-stepper-width: var(--ov-control-height-md);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+  --_ov-focus-ring: var(--ov-color-state-focus-ring);
+
+  display: grid;
+  gap: var(--ov-space-stack-sm);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-control-height: var(--ov-control-height-sm);
+  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 2px);
+  --_ov-stepper-width: var(--ov-control-height-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-control-height: var(--ov-control-height-lg);
+  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 2px);
+  --_ov-stepper-width: var(--ov-control-height-lg);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-accent: var(--ov-color-border-default);
+  --_ov-accent-soft: var(--ov-color-state-selected);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-accent: var(--ov-color-brand-400);
+  --_ov-accent-soft: var(--ov-color-accent-soft);
+  --_ov-focus: var(--ov-color-brand-400);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-accent: var(--ov-color-success);
+  --_ov-accent-soft: var(--ov-color-success-soft);
+  --_ov-focus: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-accent: var(--ov-color-warning);
+  --_ov-accent-soft: var(--ov-color-warning-soft);
+  --_ov-focus: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-accent: var(--ov-color-danger);
+  --_ov-accent-soft: var(--ov-color-danger-soft);
+  --_ov-focus: var(--ov-color-danger);
+}
+
+.Root[data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--_ov-accent) 14%);
+  --_ov-border: color-mix(in srgb, var(--_ov-accent) 68%, var(--ov-color-border-default) 32%);
+}
+
+.Root[data-ov-variant='soft'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-raised) 88%, var(--_ov-accent-soft) 12%);
+  --_ov-border: transparent;
+}
+
+.Root[data-ov-variant='outline'] {
+  --_ov-bg: transparent;
+  --_ov-border: var(--_ov-accent);
+}
+
+.Root[data-ov-variant='ghost'] {
+  --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Label {
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+  font-weight: var(--ov-font-weight-label);
+}
+
+.Group {
+  min-height: var(--_ov-control-height);
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--_ov-border);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  display: grid;
+  grid-template-columns: var(--_ov-stepper-width) minmax(0, 1fr) var(--_ov-stepper-width);
+  align-items: stretch;
+  outline: none;
+  overflow: hidden;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Group:hover {
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
+}
+
+.Group:focus-within {
+  border-color: var(--_ov-focus);
+  box-shadow: 0 0 0 1px var(--_ov-focus-ring);
+}
+
+.Root[data-invalid] .Group {
+  border-color: var(--ov-color-danger);
+}
+
+.Group[data-disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.Input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--_ov-font-size);
+  line-height: 1.35;
+  padding: 0 var(--_ov-padding-inline);
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.Input::-webkit-outer-spin-button,
+.Input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.Input[type='number'] {
+  appearance: textfield;
+}
+
+.Increment,
+.Decrement {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Increment {
+  border-inline-start: 1px solid var(--ov-color-border-muted);
+}
+
+.Decrement {
+  border-inline-end: 1px solid var(--ov-color-border-muted);
+}
+
+.Increment:hover,
+.Decrement:hover {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-default);
+}
+
+.Increment:active,
+.Decrement:active {
+  background: var(--ov-color-state-pressed);
+}
+
+.Increment:is([disabled], [data-disabled]),
+.Decrement:is([disabled], [data-disabled]) {
+  cursor: not-allowed;
+  color: var(--ov-color-fg-disabled);
+}
+
+.Increment :where(svg),
+.Decrement :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+.Description {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Error {
+  color: var(--ov-color-danger);
+  font-size: var(--ov-font-size-caption);
+}

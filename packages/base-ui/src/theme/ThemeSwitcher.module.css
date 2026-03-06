@@ -1,0 +1,31 @@
+.Root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-md);
+  font-family: var(--ov-font-sans);
+  color: var(--ov-color-fg-default);
+}
+
+.Field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+}
+
+.Field select {
+  min-height: var(--ov-control-height-sm);
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  padding: 0 var(--ov-space-inline-control);
+  font-size: var(--ov-font-size-caption);
+  outline: none;
+}
+
+.Field select:focus-visible {
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}

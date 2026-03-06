@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "description": "Planning and standards repository for Omniview's Base UI migration.",
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@10.6.2",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

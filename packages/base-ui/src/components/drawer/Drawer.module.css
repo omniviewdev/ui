@@ -1,0 +1,288 @@
+.Root {
+  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-handle-color: var(--ov-color-drawer-handle);
+  --_ov-handle-hover: var(--ov-color-drawer-handle-hover);
+  --_ov-handle-thickness: var(--ov-size-drawer-handle-thickness);
+  --_ov-handle-length: var(--ov-size-drawer-handle-length);
+
+  display: flex;
+  background: var(--_ov-bg);
+  color: var(--ov-color-fg-default);
+  transition: transform var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-animate='false'] {
+  transition: none;
+}
+
+/* Overlay mode: fixed positioning */
+.Root[data-ov-overlay='true'] {
+  position: fixed;
+  z-index: var(--ov-z-modal, 1000);
+}
+
+/* Inline mode: flex child */
+.Root[data-ov-overlay='false'] {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Anchor: bottom */
+.Root[data-ov-anchor='bottom'] {
+  flex-direction: column;
+  border-top: 1px solid var(--_ov-border);
+  height: var(--_ov-size);
+}
+
+.Root[data-ov-anchor='bottom'][data-ov-overlay='true'] {
+  inset: auto 0 0 0;
+}
+
+.Root[data-ov-anchor='bottom'][data-ov-state='closed'] {
+  transform: translateY(100%);
+}
+
+.Root[data-ov-anchor='bottom'][data-ov-state='closed'][data-ov-overlay='false'] {
+  transform: none;
+  height: 0;
+  overflow: hidden;
+  border: none;
+}
+
+/* Anchor: top */
+.Root[data-ov-anchor='top'] {
+  flex-direction: column;
+  border-bottom: 1px solid var(--_ov-border);
+  height: var(--_ov-size);
+}
+
+.Root[data-ov-anchor='top'][data-ov-overlay='true'] {
+  inset: 0 0 auto 0;
+}
+
+.Root[data-ov-anchor='top'][data-ov-state='closed'] {
+  transform: translateY(-100%);
+}
+
+.Root[data-ov-anchor='top'][data-ov-state='closed'][data-ov-overlay='false'] {
+  transform: none;
+  height: 0;
+  overflow: hidden;
+  border: none;
+}
+
+/* Anchor: left */
+.Root[data-ov-anchor='left'] {
+  flex-direction: row;
+  border-right: 1px solid var(--_ov-border);
+  width: var(--_ov-size);
+}
+
+.Root[data-ov-anchor='left'][data-ov-overlay='true'] {
+  inset: 0 auto 0 0;
+}
+
+.Root[data-ov-anchor='left'][data-ov-state='closed'] {
+  transform: translateX(-100%);
+}
+
+.Root[data-ov-anchor='left'][data-ov-state='closed'][data-ov-overlay='false'] {
+  transform: none;
+  width: 0;
+  overflow: hidden;
+  border: none;
+}
+
+/* Anchor: right */
+.Root[data-ov-anchor='right'] {
+  flex-direction: row;
+  border-left: 1px solid var(--_ov-border);
+  width: var(--_ov-size);
+}
+
+.Root[data-ov-anchor='right'][data-ov-overlay='true'] {
+  inset: 0 0 0 auto;
+}
+
+.Root[data-ov-anchor='right'][data-ov-state='closed'] {
+  transform: translateX(100%);
+}
+
+.Root[data-ov-anchor='right'][data-ov-state='closed'][data-ov-overlay='false'] {
+  transform: none;
+  width: 0;
+  overflow: hidden;
+  border: none;
+}
+
+/* ── Handle: shared ── */
+.Handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+}
+
+/* ── Handle variant: bar (pill indicator) ── */
+.Root[data-ov-anchor='top'] .Handle:not(.HandleEdge),
+.Root[data-ov-anchor='bottom'] .Handle:not(.HandleEdge) {
+  padding: 6px 0;
+  cursor: row-resize;
+}
+
+.Root[data-ov-anchor='left'] .Handle:not(.HandleEdge),
+.Root[data-ov-anchor='right'] .Handle:not(.HandleEdge) {
+  padding: 0 6px;
+  cursor: col-resize;
+}
+
+.HandleBar {
+  border-radius: var(--_ov-handle-thickness);
+  background: var(--_ov-handle-color);
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-anchor='top'] .HandleBar,
+.Root[data-ov-anchor='bottom'] .HandleBar {
+  width: var(--_ov-handle-length);
+  height: var(--_ov-handle-thickness);
+}
+
+.Root[data-ov-anchor='left'] .HandleBar,
+.Root[data-ov-anchor='right'] .HandleBar {
+  width: var(--_ov-handle-thickness);
+  height: var(--_ov-handle-length);
+}
+
+.Handle:hover .HandleBar {
+  background: var(--_ov-handle-hover);
+}
+
+.Root[data-ov-resizing='true'] .HandleBar {
+  background: var(--_ov-handle-hover);
+}
+
+/* ── Handle variant: edge (border is the drag target) ── */
+.HandleEdge {
+  position: relative;
+  padding: 0;
+  transition:
+    background var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+/* Edge handle — horizontal (top/bottom anchors): thin strip spanning full width */
+.Root[data-ov-anchor='top'] .HandleEdge,
+.Root[data-ov-anchor='bottom'] .HandleEdge {
+  height: 1px;
+  cursor: row-resize;
+}
+
+/* Edge handle — vertical (left/right anchors): thin strip spanning full height */
+.Root[data-ov-anchor='left'] .HandleEdge,
+.Root[data-ov-anchor='right'] .HandleEdge {
+  width: 1px;
+  cursor: col-resize;
+}
+
+/* Edge: invisible hit area for easier grabbing */
+.HandleEdge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.Root[data-ov-anchor='top'] .HandleEdge::before,
+.Root[data-ov-anchor='bottom'] .HandleEdge::before {
+  top: -4px;
+  bottom: -4px;
+}
+
+.Root[data-ov-anchor='left'] .HandleEdge::before,
+.Root[data-ov-anchor='right'] .HandleEdge::before {
+  left: -4px;
+  right: -4px;
+}
+
+/* Edge: thin accent line on hover/active */
+.HandleEdge::after {
+  content: '';
+  position: absolute;
+  background: transparent;
+  transition:
+    background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-anchor='top'] .HandleEdge::after,
+.Root[data-ov-anchor='bottom'] .HandleEdge::after {
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.Root[data-ov-anchor='left'] .HandleEdge::after,
+.Root[data-ov-anchor='right'] .HandleEdge::after {
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.HandleEdge:hover::after {
+  background: var(--ov-color-brand-500);
+}
+
+.Root[data-ov-resizing='true'] .HandleEdge::after {
+  background: var(--ov-color-brand-400);
+}
+
+/* When edge handle, remove the drawer's own border on the handle side since the edge IS the border */
+.Root[data-ov-handle='edge'][data-ov-anchor='bottom'] {
+  border-top: none;
+}
+
+.Root[data-ov-handle='edge'][data-ov-anchor='top'] {
+  border-bottom: none;
+}
+
+.Root[data-ov-handle='edge'][data-ov-anchor='left'] {
+  border-right: none;
+}
+
+.Root[data-ov-handle='edge'][data-ov-anchor='right'] {
+  border-left: none;
+}
+
+/* Content */
+.Content {
+  flex: 1;
+  overflow: auto;
+  padding: var(--ov-panel-padding);
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Backdrop */
+.Backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--ov-color-bg-base) 38%, transparent 62%);
+  z-index: calc(var(--ov-z-modal, 1000) - 1);
+  opacity: 1;
+  transition: opacity var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Backdrop[data-ov-animate='false'] {
+  transition: none;
+}
+
+.Backdrop[data-ov-state='closed'] {
+  opacity: 0;
+  pointer-events: none;
+}

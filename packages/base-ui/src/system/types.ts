@@ -1,5 +1,5 @@
 export type ComponentVariant = 'solid' | 'soft' | 'outline' | 'ghost';
-export type ComponentColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger';
+export type ComponentColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info';
 export type ComponentSize = 'sm' | 'md' | 'lg';
 
 export interface StyledComponentProps {

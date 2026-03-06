@@ -1,0 +1,58 @@
+.Root {
+  --_ov-scrollbar-size: var(--ov-size-scrollarea-scrollbar-md);
+  --_ov-thumb: var(--ov-color-scrollarea-thumb);
+  --_ov-thumb-hover: var(--ov-color-scrollarea-thumb-hover);
+  --_ov-track: var(--ov-color-scrollarea-track);
+
+  position: relative;
+  overflow: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--_ov-thumb) var(--_ov-track);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-scrollbar-size: var(--ov-size-scrollarea-scrollbar-sm);
+  scrollbar-width: thin;
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-scrollbar-size: var(--ov-size-scrollarea-scrollbar-lg);
+  scrollbar-width: auto;
+}
+
+.Root[data-ov-orientation='vertical'] {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.Root[data-ov-orientation='horizontal'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.Root[data-ov-orientation='both'] {
+  overflow: auto;
+}
+
+.Root::-webkit-scrollbar {
+  width: var(--_ov-scrollbar-size);
+  height: var(--_ov-scrollbar-size);
+}
+
+.Root::-webkit-scrollbar-track {
+  background: var(--_ov-track);
+}
+
+.Root::-webkit-scrollbar-thumb {
+  background: var(--_ov-thumb);
+  border-radius: var(--_ov-scrollbar-size);
+}
+
+.Root::-webkit-scrollbar-thumb:hover {
+  background: var(--_ov-thumb-hover);
+}
+
+.Root::-webkit-scrollbar-corner {
+  background: var(--_ov-track);
+}

@@ -38,6 +38,14 @@ These are the only components currently in scope and exported:
 - `Tooltip`
 - `ToggleButton`
 - `ToggleButtonGroup`
+- `Sheet`
+- `Paper`
+- `AspectRatio`
+- `Banner`
+- `Drawer`
+- `Progress`
+- `ScrollArea`
+- `Spinner`
 
 Each approved component must include:
 

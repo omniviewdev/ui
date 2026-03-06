@@ -8,6 +8,7 @@ import {
   Button,
   ButtonGroup,
   Card,
+  Caption,
   Checkbox,
   CheckboxGroup,
   Chip,
@@ -16,22 +17,28 @@ import {
   ContextMenu,
   IconButton,
   Input,
+  Link,
   Menu,
   MultiSelect,
   NumberInput,
+  Overline,
   Popover,
   Radio,
   RadioGroup,
   SearchInput,
   Select,
+  Separator,
   Slider,
   Switch,
+  Table,
   Tabs,
   TextField,
   TextArea,
   Tooltip,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
+  Underline,
 } from './index';
 
 describe('Base UI export coverage', () => {
@@ -44,6 +51,7 @@ describe('Base UI export coverage', () => {
     expect(Button).toBeTruthy();
     expect(ButtonGroup).toBeTruthy();
     expect(Card).toBeTruthy();
+    expect(Caption).toBeTruthy();
     expect(Checkbox).toBeTruthy();
     expect(CheckboxGroup).toBeTruthy();
     expect(Chip).toBeTruthy();
@@ -52,21 +60,27 @@ describe('Base UI export coverage', () => {
     expect(ContextMenu).toBeTruthy();
     expect(IconButton).toBeTruthy();
     expect(Input).toBeTruthy();
+    expect(Link).toBeTruthy();
     expect(Menu).toBeTruthy();
     expect(MultiSelect).toBeTruthy();
     expect(NumberInput).toBeTruthy();
+    expect(Overline).toBeTruthy();
     expect(Popover).toBeTruthy();
     expect(Radio).toBeTruthy();
     expect(RadioGroup).toBeTruthy();
     expect(SearchInput).toBeTruthy();
     expect(Select).toBeTruthy();
+    expect(Separator).toBeTruthy();
     expect(Slider).toBeTruthy();
     expect(Switch).toBeTruthy();
+    expect(Table).toBeTruthy();
     expect(Tabs).toBeTruthy();
     expect(TextField).toBeTruthy();
     expect(TextArea).toBeTruthy();
     expect(Tooltip).toBeTruthy();
     expect(ToggleButton).toBeTruthy();
     expect(ToggleButtonGroup).toBeTruthy();
+    expect(Typography).toBeTruthy();
+    expect(Underline).toBeTruthy();
   });
 });

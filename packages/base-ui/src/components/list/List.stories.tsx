@@ -441,17 +441,17 @@ export const WithItemActions: Story = {
 
 // ---------------------------------------------------------------------------
 
-const largeItems = Array.from({ length: 10000 }, (_, i) => ({
+const largeItems = Array.from({ length: 500 }, (_, i) => ({
   id: `item-${i}`,
   label: `Item ${i + 1}`,
 }));
 
-function VirtualizedStory() {
+function LargeListStory() {
   const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
   return (
     <div>
       <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
-        10,000 items. Selected: {selected.size}
+        {largeItems.length} items. Selected: {selected.size}
       </p>
       <List
         selectionMode="multiple"
@@ -471,11 +471,15 @@ function VirtualizedStory() {
   );
 }
 
-export const Virtualized: Story = {
+export const LargeList: Story = {
   parameters: {
     docs: {
       source: {
-        code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
+        code: `const items = Array.from({ length: 500 }, (_, i) => ({
+  id: \`item-\${i}\`,
+  label: \`Item \${i + 1}\`,
+}));
+const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
 
 <List
   selectionMode="multiple"
@@ -494,5 +498,5 @@ export const Virtualized: Story = {
       },
     },
   },
-  render: () => <VirtualizedStory />,
+  render: () => <LargeListStory />,
 };

@@ -51,8 +51,9 @@ export function useListState(props: ListRootProps): ListStateReturn {
 
   const store = useListStore(disabledKeys);
 
-  // Controlled/uncontrolled selection
-  // Internal state uses mutable Set<Key>; public API accepts/emits ReadonlySet<Key>
+  // Controlled/uncontrolled selection.
+  // Casts are safe: useControllableState never mutates controlledValue directly;
+  // all mutations produce new Set instances via the functional updater pattern.
   const [selectedKeys, setSelectedKeys] = useControllableState<Set<Key>>(
     selectedKeysProp as Set<Key> | undefined,
     new Set(defaultSelectedKeys ?? []),

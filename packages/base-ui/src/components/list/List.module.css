@@ -47,7 +47,7 @@
 /* --- Density variants ----------------------------------------------------- */
 
 .Root[data-ov-density='compact'] {
-  --_ov-list-gap: 0px;
+  --_ov-list-gap: 0;
   --_ov-item-height: var(--ov-size-list-item-height-sm);
   --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);

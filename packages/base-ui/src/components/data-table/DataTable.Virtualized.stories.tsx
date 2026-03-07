@@ -120,7 +120,7 @@ const virtualizedFeatures = {
 
 const tenKData = generateLogData(10_000);
 
-const tenKColumns: ColumnDef<LogEntry, unknown>[] = [
+const logColumns: ColumnDef<LogEntry, unknown>[] = [
   selectColumn,
   ...baseLogColumns,
   actionsColumn,
@@ -129,7 +129,7 @@ const tenKColumns: ColumnDef<LogEntry, unknown>[] = [
 function TenThousandRowsStory() {
   const table = useDataTable({
     data: tenKData,
-    columns: tenKColumns,
+    columns: logColumns,
     features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {
@@ -159,16 +159,10 @@ function TenThousandRowsStory() {
 
 const fiftyKData = generateLogData(50_000);
 
-const fiftyKColumns: ColumnDef<LogEntry, unknown>[] = [
-  selectColumn,
-  ...baseLogColumns,
-  actionsColumn,
-];
-
 function FiftyThousandRowsStory() {
   const table = useDataTable({
     data: fiftyKData,
-    columns: fiftyKColumns,
+    columns: logColumns,
     features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {

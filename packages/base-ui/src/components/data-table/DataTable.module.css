@@ -482,7 +482,7 @@
 .SkeletonBar {
   width: 70%;
   height: 10px;
-  border-radius: 4px;
+  border-radius: var(--ov-primitive-radius-sm);
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 60%, transparent 40%);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }

@@ -1,0 +1,257 @@
+/* ---------------------------------------------------------------------------
+ * List foundation styles
+ * Uses semantic tokens from theme/styles.css (--ov-size-list-*)
+ * Follows the Menu / ActionList token-driven sizing pattern.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  --_ov-list-gap: var(--ov-size-list-item-gap);
+  --_ov-item-height: var(--ov-size-list-item-height-md);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-md);
+  --_ov-item-radius: var(--ov-size-list-item-radius);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-md);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-md);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-md);
+  --_ov-selected-bg: var(--ov-color-state-selected);
+  --_ov-highlight-bg: var(--ov-color-state-hover);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-list-gap);
+  min-inline-size: 0;
+  font-family: var(--ov-font-sans);
+  outline: none;
+}
+
+/* --- Size variants -------------------------------------------------------- */
+
+.Root[data-ov-size='sm'] {
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-lg);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+}
+
+/* --- Density variants ----------------------------------------------------- */
+
+.Root[data-ov-density='compact'] {
+  --_ov-list-gap: 0;
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-density='comfortable'] {
+  --_ov-list-gap: var(--ov-space-stack-sm);
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-lg);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+/* --- Color variants ------------------------------------------------------- */
+
+.Root[data-ov-color='brand'] {
+  --_ov-selected-bg: var(--ov-color-accent-soft);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-selected-bg: var(--ov-color-success-soft);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-selected-bg: var(--ov-color-warning-soft);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+/* ---------------------------------------------------------------------------
+ * Viewport
+ * --------------------------------------------------------------------------- */
+
+.Viewport {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-list-gap);
+  overflow-y: auto;
+  flex: 1 1 auto;
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Item
+ * --------------------------------------------------------------------------- */
+
+.Item {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-control);
+  min-height: var(--_ov-item-height);
+  padding-inline: var(--_ov-item-padding-inline);
+  border-radius: var(--_ov-item-radius);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.25;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-size='sm'] .Item {
+  font-size: var(--ov-font-size-caption);
+}
+
+.Item:hover {
+  background: var(--_ov-highlight-bg);
+}
+
+.Item[data-ov-active='true'] {
+  background: var(--_ov-highlight-bg);
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.Item[data-ov-selected='true'] {
+  background: var(--_ov-selected-bg);
+}
+
+.Item[data-ov-selected='true']:hover {
+  background: var(--_ov-selected-bg);
+}
+
+.Item[data-ov-selected='true'][data-ov-active='true'] {
+  background: var(--_ov-selected-bg);
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.Item[data-ov-disabled='true'] {
+  opacity: var(--ov-opacity-disabled);
+  pointer-events: none;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------------------
+ * Item slots
+ * --------------------------------------------------------------------------- */
+
+.ItemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--_ov-icon-size);
+  min-inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+  color: var(--ov-color-fg-muted);
+}
+
+.ItemIcon :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+.ItemLabel {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemDescription {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemMeta {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  letter-spacing: 0.01em;
+}
+
+.ItemActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  opacity: 0;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item:hover .ItemActions,
+.Item:focus-within .ItemActions,
+.Item[data-ov-active='true'] .ItemActions {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Group
+ * --------------------------------------------------------------------------- */
+
+.Group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-list-gap);
+}
+
+.GroupHeader {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-group-label-font-size);
+  font-weight: var(--ov-font-weight-label);
+  padding-inline: var(--_ov-item-padding-inline);
+  line-height: 1.2;
+  margin-block-start: var(--_ov-group-label-gap-top);
+  margin-block-end: var(--_ov-group-label-gap-after);
+}
+
+/* ---------------------------------------------------------------------------
+ * Structural
+ * --------------------------------------------------------------------------- */
+
+.Separator {
+  height: 1px;
+  background: var(--ov-color-border-muted);
+  margin-block: 2px;
+}
+
+.Empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-body);
+}
+
+.Loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-body);
+}

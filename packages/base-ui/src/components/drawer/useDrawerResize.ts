@@ -33,11 +33,24 @@ export function useDrawerResize(
     let rafId = 0;
     let activePointerId = -1;
     let savedTransition = '';
+    let lastPointerPos = 0;
+
+    const applyResize = (pointerPos: number) => {
+      const { anchor, minSize, maxSize } = optsRef.current;
+      const diff = pointerPos - startPos;
+      const sign = anchor === 'bottom' || anchor === 'right' ? -1 : 1;
+      const newSize = Math.min(maxSize, Math.max(minSize, startSize + diff * sign));
+      root.style.setProperty('--_ov-size', `${newSize}px`);
+    };
 
     const finishDrag = () => {
       if (!dragging) return;
       dragging = false;
+
+      // Flush any pending rAF so the last resize position is applied
       cancelAnimationFrame(rafId);
+      applyResize(lastPointerPos);
+      rafId = 0;
 
       // Restore transition
       root.style.transition = savedTransition;
@@ -66,6 +79,7 @@ export function useDrawerResize(
       const rect = root.getBoundingClientRect();
       startPos = isVertical(anchor) ? e.clientY : e.clientX;
       startSize = isVertical(anchor) ? rect.height : rect.width;
+      lastPointerPos = startPos;
 
       // Save and kill transitions during drag for zero-latency feedback
       savedTransition = root.style.transition;
@@ -76,18 +90,11 @@ export function useDrawerResize(
 
     const onPointerMove = (e: PointerEvent) => {
       if (!dragging) return;
+      const { anchor } = optsRef.current;
+      lastPointerPos = isVertical(anchor) ? e.clientY : e.clientX;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const { anchor, minSize, maxSize } = optsRef.current;
-        const currentPos = isVertical(anchor) ? e.clientY : e.clientX;
-        const diff = currentPos - startPos;
-
-        // For bottom/right anchors, dragging toward the edge shrinks;
-        // for top/left, dragging away from the edge shrinks.
-        const sign = anchor === 'bottom' || anchor === 'right' ? -1 : 1;
-        const newSize = Math.min(maxSize, Math.max(minSize, startSize + diff * sign));
-
-        root.style.setProperty('--_ov-size', `${newSize}px`);
+        applyResize(lastPointerPos);
       });
     };
 

@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
   type HTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
@@ -88,11 +89,28 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   // Clamp initial size to min/max bounds
   const clampedDefaultSize = Math.min(Math.max(defaultSize, minSize), resolvedMaxSize);
 
+  // Track current size for aria-valuenow (updated by both drag and keyboard resize)
+  const [currentSize, setCurrentSize] = useState(clampedDefaultSize);
+
+  // Sync currentSize when clampedDefaultSize changes (e.g. prop change)
+  useEffect(() => {
+    setCurrentSize(clampedDefaultSize);
+  }, [clampedDefaultSize]);
+
+  // Wrap onSizeChange to also update local state
+  const handleSizeChange = useCallback(
+    (size: number) => {
+      setCurrentSize(size);
+      onSizeChange?.(size);
+    },
+    [onSizeChange],
+  );
+
   useDrawerResize(internalRef, handleRef, {
     anchor,
     minSize,
     maxSize: resolvedMaxSize,
-    onSizeChange,
+    onSizeChange: handleSizeChange,
     enabled: resizable && open,
   });
 
@@ -119,7 +137,13 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       if (e.key !== 'Tab') return;
 
       const focusable = root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusable.length === 0) return;
+
+      // No focusable children: prevent Tab from escaping, refocus root
+      if (focusable.length === 0) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
 
       const first = focusable[0] as HTMLElement | undefined;
       const last = focusable[focusable.length - 1] as HTMLElement | undefined;
@@ -146,62 +170,61 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   }, [modal, open, onOpenChange]);
 
   // Keyboard resize on handle
-  const handleKeyDown = useCallback(
+  const handleKeyDownOnHandle = useCallback(
     (e: ReactKeyboardEvent<HTMLDivElement>) => {
       const root = internalRef.current;
       if (!root || !resizable) return;
 
       const vert = anchor === 'top' || anchor === 'bottom';
-      let delta = 0;
+      const rect = root.getBoundingClientRect();
+      const size = vert ? rect.height : rect.width;
+      let newSize: number;
 
       switch (e.key) {
         case 'ArrowUp':
-          delta = vert ? -KEYBOARD_STEP : 0;
+          if (!vert) return;
+          newSize = size - KEYBOARD_STEP;
           break;
         case 'ArrowDown':
-          delta = vert ? KEYBOARD_STEP : 0;
+          if (!vert) return;
+          newSize = size + KEYBOARD_STEP;
           break;
         case 'ArrowLeft':
-          delta = vert ? 0 : -KEYBOARD_STEP;
+          if (vert) return;
+          newSize = size - KEYBOARD_STEP;
           break;
         case 'ArrowRight':
-          delta = vert ? 0 : KEYBOARD_STEP;
+          if (vert) return;
+          newSize = size + KEYBOARD_STEP;
           break;
         case 'PageUp':
-          delta = -KEYBOARD_LARGE_STEP;
+          newSize = size - KEYBOARD_LARGE_STEP;
           break;
         case 'PageDown':
-          delta = KEYBOARD_LARGE_STEP;
+          newSize = size + KEYBOARD_LARGE_STEP;
           break;
         case 'Home':
-          delta = -(resolvedMaxSize);
+          newSize = minSize;
           break;
         case 'End':
-          delta = resolvedMaxSize;
+          newSize = resolvedMaxSize;
           break;
         default:
           return;
       }
 
-      if (delta === 0) return;
       e.preventDefault();
-
-      // For bottom/right, growing means negative direction visually
-      const sign = anchor === 'bottom' || anchor === 'right' ? -1 : 1;
-      const rect = root.getBoundingClientRect();
-      const currentSize = vert ? rect.height : rect.width;
-      const newSize = Math.min(resolvedMaxSize, Math.max(minSize, currentSize + delta * sign));
+      newSize = Math.min(resolvedMaxSize, Math.max(minSize, newSize));
 
       root.style.setProperty('--_ov-size', `${newSize}px`);
-      onSizeChange?.(newSize);
+      handleSizeChange(newSize);
     },
-    [anchor, minSize, resolvedMaxSize, resizable, onSizeChange],
+    [anchor, minSize, resolvedMaxSize, resizable, handleSizeChange],
   );
 
   const isVertical = anchor === 'top' || anchor === 'bottom';
   const handlePosition = anchor === 'bottom' || anchor === 'right' ? 'before' : 'after';
 
-  // Current size for aria-valuenow (read from style or use default)
   const handle = resizable ? (
     <div
       ref={handleRef}
@@ -210,9 +233,9 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       aria-orientation={isVertical ? 'horizontal' : 'vertical'}
       aria-valuemin={minSize}
       aria-valuemax={resolvedMaxSize}
-      aria-valuenow={clampedDefaultSize}
+      aria-valuenow={currentSize}
       tabIndex={0}
-      onKeyDown={handleKeyDown}
+      onKeyDown={handleKeyDownOnHandle}
       style={{ cursor: isVertical ? 'row-resize' : 'col-resize' }}
     >
       {handleVariant === 'bar' && <div className={styles.HandleBar} />}

@@ -130,6 +130,7 @@ function SingleSelectStory() {
 
 export const SingleSelect: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set(['cherry']));
@@ -188,6 +189,7 @@ function MultiSelectStory() {
 
 export const MultiSelect: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
@@ -215,6 +217,7 @@ export const MultiSelect: Story = {
 
 export const WithGroups: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List selectionMode="single" style={{ width: 320 }}>
@@ -274,6 +277,7 @@ export const WithGroups: Story = {
 
 export const DisabledItems: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List selectionMode="single" disabledKeys={['banana', 'fig']} style={{ width: 320 }}>
@@ -306,6 +310,7 @@ export const DisabledItems: Story = {
 
 export const EmptyState: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List style={{ width: 320 }}>
@@ -329,6 +334,7 @@ export const EmptyState: Story = {
 
 export const LoadingState: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List loading style={{ width: 320 }}>
@@ -352,6 +358,7 @@ export const LoadingState: Story = {
 
 export const DensityVariants: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List selectionMode="single" density="compact" style={{ width: 220 }}>
@@ -390,6 +397,7 @@ export const DensityVariants: Story = {
 
 export const WithItemActions: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `<List selectionMode="single" style={{ width: 360 }}>
@@ -398,7 +406,13 @@ export const WithItemActions: Story = {
       <List.ItemIcon><LuApple /></List.ItemIcon>
       <List.ItemLabel>Apple</List.ItemLabel>
       <List.ItemActions>
-        <button type="button" onClick={(e) => { e.stopPropagation(); }}>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') e.stopPropagation();
+          }}
+        >
           Edit
         </button>
       </List.ItemActions>
@@ -420,6 +434,11 @@ export const WithItemActions: Story = {
                 onClick={(e) => {
                   e.stopPropagation();
                   alert(`Editing ${fruit.label}`);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.stopPropagation();
+                  }
                 }}
                 style={{
                   background: 'none',
@@ -473,6 +492,7 @@ function LargeListStory() {
 
 export const LargeList: Story = {
   parameters: {
+    controls: { disable: true },
     docs: {
       source: {
         code: `const items = Array.from({ length: 500 }, (_, i) => ({

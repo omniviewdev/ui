@@ -78,7 +78,8 @@ describe('Card', () => {
     );
 
     const media = screen.getByTestId('media');
-    expect(media.style.aspectRatio).toBe(String(16 / 9));
+    const ratio = parseFloat(media.style.aspectRatio);
+    expect(ratio).toBeCloseTo(16 / 9, 3);
   });
 
   it('renders Cover slot', () => {

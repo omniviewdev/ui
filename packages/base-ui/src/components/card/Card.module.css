@@ -303,10 +303,10 @@
 .Indicator[data-ov-status='info'] { --_ov-indicator-color: var(--ov-color-info); }
 
 .Indicator[data-ov-pulse='true']::before {
-  animation: indicatorPulse 2s ease-in-out infinite;
+  animation: indicator-pulse 2s ease-in-out infinite;
 }
 
-@keyframes indicatorPulse {
+@keyframes indicator-pulse {
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--_ov-indicator-color) 40%, transparent 60%); }
   50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--_ov-indicator-color) 0%, transparent 100%); }
 }
@@ -398,6 +398,7 @@
 /* ─── KeyValue ─── */
 
 .KeyValue {
+  margin: 0;
   display: flex;
   justify-content: space-between;
   align-items: baseline;

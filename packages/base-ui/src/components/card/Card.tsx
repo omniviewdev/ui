@@ -20,7 +20,10 @@ export type CardBodyProps = HTMLAttributes<HTMLDivElement>;
 export type CardFooterProps = HTMLAttributes<HTMLDivElement>;
 export type CardActionProps = HTMLAttributes<HTMLDivElement>;
 export type CardSeparatorProps = HTMLAttributes<HTMLDivElement>;
-export type CardToolbarProps = HTMLAttributes<HTMLDivElement>;
+export interface CardToolbarProps extends HTMLAttributes<HTMLDivElement> {
+  /** Accessible name for the toolbar; provide via aria-label or aria-labelledby */
+  'aria-label'?: string;
+}
 export type CardCoverProps = HTMLAttributes<HTMLDivElement>;
 
 export interface CardEyebrowProps extends HTMLAttributes<HTMLSpanElement> {
@@ -36,7 +39,7 @@ export interface CardRowProps extends HTMLAttributes<HTMLDivElement> {
   gap?: 'sm' | 'md' | 'lg';
 }
 
-export interface CardKeyValueProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardKeyValueProps extends HTMLAttributes<HTMLDListElement> {
   label: ReactNode;
   mono?: boolean;
 }
@@ -175,12 +178,12 @@ const CardSeparator = forwardRef<HTMLDivElement, CardSeparatorProps>(function Ca
   return <div ref={ref} role="separator" className={cn(styles.Separator, className)} {...props} />;
 });
 
-const CardKeyValue = forwardRef<HTMLDivElement, CardKeyValueProps>(function CardKeyValue(
+const CardKeyValue = forwardRef<HTMLDListElement, CardKeyValueProps>(function CardKeyValue(
   { className, label, mono, children, ...props },
   ref,
 ) {
   return (
-    <div
+    <dl
       ref={ref}
       className={cn(styles.KeyValue, className)}
       {...(mono != null && { 'data-ov-mono': String(mono) })}
@@ -188,7 +191,7 @@ const CardKeyValue = forwardRef<HTMLDivElement, CardKeyValueProps>(function Card
     >
       <dt className={styles.KeyValueLabel}>{label}</dt>
       <dd className={styles.KeyValueValue}>{children}</dd>
-    </div>
+    </dl>
   );
 });
 

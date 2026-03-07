@@ -27,8 +27,8 @@ const podData: KubePod[] = Array.from({ length: 40 }, (_, i) => ({
   restarts: i % 5 === 4 ? i : 0,
   node: `node-${(i % 3) + 1}`,
   age: `${Math.floor(i / 2) + 1}h`,
-  cpu: `${(Math.random() * 500).toFixed(0)}m`,
-  memory: `${(Math.random() * 256).toFixed(0)}Mi`,
+  cpu: `${((i * 73 + 17) % 500)}m`,
+  memory: `${((i * 41 + 23) % 256)}Mi`,
 }));
 
 const podColumns: ColumnDef<KubePod, unknown>[] = [
@@ -131,86 +131,100 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const KubernetesPods: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: podData,
-      columns: podColumns,
-      features: { sorting: true, globalFilter: true, columnResizing: true, columnVisibility: true },
-      getRowId: (row) => row.uid,
-    });
+// ---------------------------------------------------------------------------
+// Story components
+// ---------------------------------------------------------------------------
 
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ sorting: true, globalFilter: true, columnResizing: true, columnVisibility: true }}
-        variant="soft"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Search pods...">
-          <DataTable.ColumnVisibility />
-        </DataTable.Toolbar>
-        <DataTable.Container height={500}>
-          <DataTable.Header />
-          <DataTable.VirtualBody estimateRowSize={30} />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+function KubernetesPodsStory() {
+  const table = useDataTable({
+    data: podData,
+    columns: podColumns,
+    features: { sorting: true, globalFilter: true, columnResizing: true, columnVisibility: true },
+    getRowId: (row) => row.uid,
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ sorting: true, globalFilter: true, columnResizing: true, columnVisibility: true }}
+      variant="soft"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Search pods...">
+        <DataTable.ColumnVisibility />
+      </DataTable.Toolbar>
+      <DataTable.Container height={500}>
+        <DataTable.Header />
+        <DataTable.VirtualBody estimateRowSize={30} />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+function EC2InstancesStory() {
+  const table = useDataTable({
+    data: ec2Data,
+    columns: ec2Columns,
+    features: { sorting: true, globalFilter: true, columnResizing: true },
+    getRowId: (row) => row.id,
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ sorting: true, globalFilter: true, columnResizing: true }}
+      variant="soft"
+      color="brand"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Search instances..." />
+      <DataTable.Container height={500}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+function DockerContainersStory() {
+  const table = useDataTable({
+    data: dockerData,
+    columns: dockerColumns,
+    features: { sorting: true, globalFilter: true },
+    getRowId: (row) => row.id,
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ sorting: true, globalFilter: true }}
+      variant="outline"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Search containers..." />
+      <DataTable.Container height={500}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Stories
+// ---------------------------------------------------------------------------
+
+export const KubernetesPods: Story = {
+  render: () => <KubernetesPodsStory />,
 };
 
 export const EC2Instances: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: ec2Data,
-      columns: ec2Columns,
-      features: { sorting: true, globalFilter: true, columnResizing: true },
-      getRowId: (row) => row.id,
-    });
-
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ sorting: true, globalFilter: true, columnResizing: true }}
-        variant="soft"
-        color="brand"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Search instances..." />
-        <DataTable.Container height={500}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  render: () => <EC2InstancesStory />,
 };
 
 export const DockerContainers: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: dockerData,
-      columns: dockerColumns,
-      features: { sorting: true, globalFilter: true },
-      getRowId: (row) => row.id,
-    });
-
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ sorting: true, globalFilter: true }}
-        variant="outline"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Search containers..." />
-        <DataTable.Container height={500}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  render: () => <DockerContainersStory />,
 };

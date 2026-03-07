@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useEffect, type HTMLAttributes } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '../../system/classnames';
@@ -11,7 +11,6 @@ import styles from './DataTable.module.css';
 export interface DataTableVirtualBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
   estimateRowSize?: number;
   overscan?: number;
-  renderExpandedRow?: (row: unknown) => ReactNode;
 }
 
 export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTableVirtualBodyProps>(
@@ -20,7 +19,6 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
       className,
       estimateRowSize = DEFAULT_ESTIMATE_ROW_SIZE,
       overscan = DEFAULT_OVERSCAN,
-      renderExpandedRow,
       ...props
     },
     ref,
@@ -46,7 +44,7 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
     // Re-measure when data changes
     useEffect(() => {
       rowVirtualizer.measure();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // rowVirtualizer.measure is identity-stable across renders; only re-measure when row count changes
     }, [rows.length]);
 
     if (rows.length === 0) return null;
@@ -73,7 +71,7 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
             <tr
               key={row.id}
               data-index={virtualRow.index}
-              ref={(node) => rowVirtualizer.measureElement(node)}
+              ref={(node) => { if (node) rowVirtualizer.measureElement(node); }}
               className={styles.Row}
               data-ov-selected={isSelected ? 'true' : 'false'}
               data-ov-expanded={isExpanded ? 'true' : 'false'}

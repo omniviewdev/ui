@@ -39,30 +39,32 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const GlobalFilter: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: serviceData,
-      columns: serviceColumns,
-      features: { sorting: true, globalFilter: true, filtering: true, columnVisibility: true },
-      getRowId: (row) => row.id,
-    });
+function GlobalFilterStory() {
+  const table = useDataTable({
+    data: serviceData,
+    columns: serviceColumns,
+    features: { sorting: true, globalFilter: true, filtering: true, columnVisibility: true },
+    getRowId: (row) => row.id,
+  });
 
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ sorting: true, globalFilter: true, filtering: true, columnVisibility: true }}
-        variant="soft"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Filter services...">
-          <DataTable.ColumnVisibility />
-        </DataTable.Toolbar>
-        <DataTable.Container height={400}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ sorting: true, globalFilter: true, filtering: true, columnVisibility: true }}
+      variant="soft"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Filter services...">
+        <DataTable.ColumnVisibility />
+      </DataTable.Toolbar>
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+export const GlobalFilter: Story = {
+  render: () => <GlobalFilterStory />,
 };

@@ -232,7 +232,11 @@
   );
 }
 
-.Arrow[data-ov-variant='outline'],
+.Arrow[data-ov-variant='outline'] {
+  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-border: var(--ov-color-border-strong);
+}
+
 .Arrow[data-ov-variant='ghost'] {
   --_ov-bg: var(--ov-color-bg-base);
 }

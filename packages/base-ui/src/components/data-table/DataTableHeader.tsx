@@ -54,6 +54,9 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
 
                   {canResize && (
                     <div
+                      role="separator"
+                      aria-orientation="vertical"
+                      tabIndex={0}
                       className={styles.ResizeHandle}
                       data-ov-resizing={
                         isResizing === header.column.id ? 'true' : 'false'
@@ -61,6 +64,9 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       onMouseDown={header.getResizeHandler()}
                       onTouchStart={header.getResizeHandler()}
                       onDoubleClick={() => header.column.resetSize()}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') header.column.resetSize();
+                      }}
                     />
                   )}
                 </th>

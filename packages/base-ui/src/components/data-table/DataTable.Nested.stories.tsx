@@ -331,54 +331,66 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const HomogeneousTree: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: fileTree,
-      columns: fileColumns,
-      features: { rowExpansion: true },
-      getRowId: (row) => row.id,
-      getSubRows: (row) => row.children,
-    });
+// ---------------------------------------------------------------------------
+// Story components
+// ---------------------------------------------------------------------------
 
-    return (
-      <DataTable.Root table={table} features={{ rowExpansion: true }} variant="soft" hoverable>
-        <DataTable.Container height={400}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+function HomogeneousTreeStory() {
+  const table = useDataTable({
+    data: fileTree,
+    columns: fileColumns,
+    features: { rowExpansion: true },
+    getRowId: (row) => row.id,
+    getSubRows: (row) => row.children,
+  });
+
+  return (
+    <DataTable.Root table={table} features={{ rowExpansion: true }} variant="soft" hoverable>
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+function IngressServicePodStory() {
+  const table = useDataTable({
+    data: ingressData,
+    columns: ingressColumns,
+    features: { rowExpansion: true, sorting: true },
+    getRowId: (row) => row.uid,
+    getRowCanExpand: () => true,
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ rowExpansion: true, sorting: true }}
+      variant="soft"
+      hoverable
+    >
+      <DataTable.Container height={500}>
+        <DataTable.Header />
+        <DataTable.Body
+          renderExpandedRow={(parentRow) => {
+            const ingress = parentRow as Ingress;
+            return <NestedServiceTable ingressUid={ingress.uid} />;
+          }}
+        />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Stories
+// ---------------------------------------------------------------------------
+
+export const HomogeneousTree: Story = {
+  render: () => <HomogeneousTreeStory />,
 };
 
 export const IngressServicePod: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: ingressData,
-      columns: ingressColumns,
-      features: { rowExpansion: true, sorting: true },
-      getRowId: (row) => row.uid,
-      getRowCanExpand: () => true,
-    });
-
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ rowExpansion: true, sorting: true }}
-        variant="soft"
-        hoverable
-      >
-        <DataTable.Container height={500}>
-          <DataTable.Header />
-          <DataTable.Body
-            renderExpandedRow={(parentRow) => {
-              const ingress = parentRow as Ingress;
-              return <NestedServiceTable ingressUid={ingress.uid} />;
-            }}
-          />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  render: () => <IngressServicePodStory />,
 };

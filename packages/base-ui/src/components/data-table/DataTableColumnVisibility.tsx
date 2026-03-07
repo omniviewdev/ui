@@ -40,7 +40,7 @@ export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableCol
                     <Checkbox.Item
                       key={column.id}
                       checked={column.getIsVisible()}
-                      onCheckedChange={() => column.toggleVisibility()}
+                      onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
                       size="sm"
                       variant="soft"
                     >

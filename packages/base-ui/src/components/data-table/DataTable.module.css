@@ -485,10 +485,10 @@
   height: 10px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 60%, transparent 40%);
-  animation: skeletonPulse 1.5s ease-in-out infinite;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes skeletonPulse {
+@keyframes skeleton-pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
 }

@@ -38,28 +38,30 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const ColumnResizing: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: containerData,
-      columns: containerColumns,
-      features: { columnResizing: true, sorting: true },
-      getRowId: (row) => row.id,
-    });
+function ColumnResizingStory() {
+  const table = useDataTable({
+    data: containerData,
+    columns: containerColumns,
+    features: { columnResizing: true, sorting: true },
+    getRowId: (row) => row.id,
+  });
 
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ columnResizing: true, sorting: true }}
-        variant="soft"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Container height={400}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ columnResizing: true, sorting: true }}
+      variant="soft"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+export const ColumnResizing: Story = {
+  render: () => <ColumnResizingStory />,
 };

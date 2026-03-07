@@ -107,104 +107,108 @@ type Story = StoryObj;
 
 const tenKData = generateLogData(10_000);
 
-export const TenThousandRows: Story = {
-  render: () => {
-    const columns: ColumnDef<LogEntry, unknown>[] = [
-      selectColumn,
-      ...baseLogColumns,
-      actionsColumn,
-    ];
+const tenKColumns: ColumnDef<LogEntry, unknown>[] = [
+  selectColumn,
+  ...baseLogColumns,
+  actionsColumn,
+];
 
-    const table = useDataTable({
-      data: tenKData,
-      columns,
-      features: {
+function TenThousandRowsStory() {
+  const table = useDataTable({
+    data: tenKData,
+    columns: tenKColumns,
+    features: {
+      sorting: true,
+      globalFilter: true,
+      columnResizing: true,
+      rowSelection: 'multi',
+      columnPinning: true,
+    },
+    getRowId: (row) => row.id,
+    initialState: {
+      columnPinning: {
+        left: ['select'],
+        right: ['actions'],
+      },
+    },
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{
         sorting: true,
         globalFilter: true,
         columnResizing: true,
         rowSelection: 'multi',
         columnPinning: true,
-      },
-      getRowId: (row) => row.id,
-      initialState: {
-        columnPinning: {
-          left: ['select'],
-          right: ['actions'],
-        },
-      },
-    });
-
-    return (
-      <DataTable.Root
-        table={table}
-        features={{
-          sorting: true,
-          globalFilter: true,
-          columnResizing: true,
-          rowSelection: 'multi',
-          columnPinning: true,
-        }}
-        variant="soft"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Search 10,000 log entries..." />
-        <DataTable.Container height={600}>
-          <DataTable.Header />
-          <DataTable.VirtualBody estimateRowSize={30} overscan={15} />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
-};
+      }}
+      variant="soft"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Search 10,000 log entries..." />
+      <DataTable.Container height={600}>
+        <DataTable.Header />
+        <DataTable.VirtualBody estimateRowSize={30} overscan={15} />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
 
 const fiftyKData = generateLogData(50_000);
 
-export const FiftyThousandRows: Story = {
-  render: () => {
-    const columns: ColumnDef<LogEntry, unknown>[] = [
-      selectColumn,
-      ...baseLogColumns,
-      actionsColumn,
-    ];
+const fiftyKColumns: ColumnDef<LogEntry, unknown>[] = [
+  selectColumn,
+  ...baseLogColumns,
+  actionsColumn,
+];
 
-    const table = useDataTable({
-      data: fiftyKData,
-      columns,
-      features: {
+function FiftyThousandRowsStory() {
+  const table = useDataTable({
+    data: fiftyKData,
+    columns: fiftyKColumns,
+    features: {
+      sorting: true,
+      globalFilter: true,
+      rowSelection: 'multi',
+      columnPinning: true,
+    },
+    getRowId: (row) => row.id,
+    initialState: {
+      columnPinning: {
+        left: ['select'],
+        right: ['actions'],
+      },
+    },
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{
         sorting: true,
         globalFilter: true,
         rowSelection: 'multi',
         columnPinning: true,
-      },
-      getRowId: (row) => row.id,
-      initialState: {
-        columnPinning: {
-          left: ['select'],
-          right: ['actions'],
-        },
-      },
-    });
+      }}
+      variant="soft"
+      size="sm"
+      hoverable
+    >
+      <DataTable.Toolbar searchPlaceholder="Search 50,000 log entries..." />
+      <DataTable.Container height={600}>
+        <DataTable.Header />
+        <DataTable.VirtualBody estimateRowSize={30} overscan={20} />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
 
-    return (
-      <DataTable.Root
-        table={table}
-        features={{
-          sorting: true,
-          globalFilter: true,
-          rowSelection: 'multi',
-          columnPinning: true,
-        }}
-        variant="soft"
-        size="sm"
-        hoverable
-      >
-        <DataTable.Toolbar searchPlaceholder="Search 50,000 log entries..." />
-        <DataTable.Container height={600}>
-          <DataTable.Header />
-          <DataTable.VirtualBody estimateRowSize={30} overscan={20} />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+export const TenThousandRows: Story = {
+  render: () => <TenThousandRowsStory />,
+};
+
+export const FiftyThousandRows: Story = {
+  render: () => <FiftyThousandRowsStory />,
 };

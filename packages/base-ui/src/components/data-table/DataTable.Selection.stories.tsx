@@ -62,52 +62,56 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const MultiSelect: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: podData,
-      columns: podColumns,
-      features: { rowSelection: 'multi', sorting: true },
-      getRowId: (row) => row.uid,
-    });
+function MultiSelectStory() {
+  const table = useDataTable({
+    data: podData,
+    columns: podColumns,
+    features: { rowSelection: 'multi', sorting: true },
+    getRowId: (row) => row.uid,
+  });
 
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ rowSelection: 'multi', sorting: true }}
-        variant="soft"
-        hoverable
-      >
-        <DataTable.Container height={400}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ rowSelection: 'multi', sorting: true }}
+      variant="soft"
+      hoverable
+    >
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+function SingleSelectStory() {
+  const table = useDataTable({
+    data: podData,
+    columns: podColumns.filter((c) => c.id !== 'select'),
+    features: { rowSelection: 'single', sorting: true },
+    getRowId: (row) => row.uid,
+  });
+
+  return (
+    <DataTable.Root
+      table={table}
+      features={{ rowSelection: 'single', sorting: true }}
+      variant="soft"
+      hoverable
+    >
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+export const MultiSelect: Story = {
+  render: () => <MultiSelectStory />,
 };
 
 export const SingleSelect: Story = {
-  render: () => {
-    const table = useDataTable({
-      data: podData,
-      columns: podColumns.filter((c) => c.id !== 'select'),
-      features: { rowSelection: 'single', sorting: true },
-      getRowId: (row) => row.uid,
-    });
-
-    return (
-      <DataTable.Root
-        table={table}
-        features={{ rowSelection: 'single', sorting: true }}
-        variant="soft"
-        hoverable
-      >
-        <DataTable.Container height={400}>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  },
+  render: () => <SingleSelectStory />,
 };

@@ -32,6 +32,8 @@ export const MemoizedRow = memo(MemoizedRowInner, (prev, next) => {
     prev.isSelected === next.isSelected &&
     prev.isExpanded === next.isExpanded &&
     prev.translateY === next.translateY &&
+    prev.className === next.className &&
+    prev['data-index'] === next['data-index'] &&
     prev.children === next.children
   );
 });

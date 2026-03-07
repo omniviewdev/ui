@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
@@ -134,5 +135,41 @@ describe('DataTable features', () => {
     renderWithTheme(<EmptyTable />);
     expect(screen.getByText('No data')).toBeInTheDocument();
     expect(screen.getByText('Nothing to show')).toBeInTheDocument();
+  });
+
+  function FilterableTable() {
+    const table = useDataTable({
+      data: sampleData,
+      columns,
+      features: { globalFilter: true, filtering: true },
+      getRowId: (row) => row.id,
+    });
+
+    return (
+      <DataTable.Root table={table} features={{ globalFilter: true, filtering: true }} data-testid="dt-root">
+        <DataTable.Toolbar />
+        <DataTable.Container>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Container>
+      </DataTable.Root>
+    );
+  }
+
+  it('filters rows when global filter is applied', async () => {
+    renderWithTheme(<FilterableTable />);
+    // All rows visible initially
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('Charlie')).toBeInTheDocument();
+
+    // Type in the search input
+    const searchInput = screen.getByPlaceholderText('Search...');
+    await userEvent.type(searchInput, 'Alice');
+
+    // Only Alice should remain
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.queryByText('Bob')).not.toBeInTheDocument();
+    expect(screen.queryByText('Charlie')).not.toBeInTheDocument();
   });
 });

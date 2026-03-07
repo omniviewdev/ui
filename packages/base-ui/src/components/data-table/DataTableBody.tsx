@@ -1,4 +1,4 @@
-import { forwardRef, memo, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, Fragment, memo, type HTMLAttributes, type ReactNode } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -23,7 +23,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
       const isExpanded = row.getIsExpanded();
 
       return (
-        <RowGroup key={row.id}>
+        <Fragment key={row.id}>
           <tr
             className={styles.Row}
             data-ov-selected={isSelected ? 'true' : 'false'}
@@ -63,7 +63,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
               </td>
             </tr>
           )}
-        </RowGroup>
+        </Fragment>
       );
     });
 
@@ -84,10 +84,6 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
 );
 
 DataTableBody.displayName = 'DataTable.Body';
-
-function RowGroup({ children }: { children: ReactNode }) {
-  return <>{children}</>;
-}
 
 const MemoizedTbody = memo(
   forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(

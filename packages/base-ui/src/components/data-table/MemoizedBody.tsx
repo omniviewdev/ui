@@ -17,7 +17,7 @@ function MemoizedBodyInner({ children, className }: MemoizedBodyProps) {
 
 export const MemoizedBody = memo(MemoizedBodyInner, (prev, next) => {
   // Only re-render if children identity changes (data updates)
-  return prev.children === next.children;
+  return prev.children === next.children && prev.className === next.className;
 });
 
 MemoizedBody.displayName = 'DataTable.MemoizedBody';

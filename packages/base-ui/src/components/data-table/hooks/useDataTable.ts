@@ -105,9 +105,11 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
     enableMultiSort,
     manualSorting,
     onSortingChange: (updater) => {
-      setSorting(updater);
-      const next = typeof updater === 'function' ? updater(sorting) : updater;
-      onSortingChangeProp?.(next);
+      setSorting((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onSortingChangeProp?.(next);
+        return next;
+      });
     },
 
     // Filtering
@@ -120,55 +122,69 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
     // Column sizing
     columnResizeMode: features.columnResizing ? 'onChange' : undefined,
     onColumnSizingChange: (updater) => {
-      setColumnSizing(updater);
-      const next = typeof updater === 'function' ? updater(columnSizing) : updater;
-      onColumnSizingChangeProp?.(next);
+      setColumnSizing((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onColumnSizingChangeProp?.(next);
+        return next;
+      });
     },
 
     // Column visibility
     onColumnVisibilityChange: (updater) => {
-      setColumnVisibility(updater);
-      const next = typeof updater === 'function' ? updater(columnVisibility) : updater;
-      onColumnVisibilityChangeProp?.(next);
+      setColumnVisibility((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onColumnVisibilityChangeProp?.(next);
+        return next;
+      });
     },
 
     // Column ordering
     onColumnOrderChange: (updater) => {
-      setColumnOrder(updater);
-      const next = typeof updater === 'function' ? updater(columnOrder) : updater;
-      onColumnOrderChangeProp?.(next);
+      setColumnOrder((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onColumnOrderChangeProp?.(next);
+        return next;
+      });
     },
 
     // Column pinning
     onColumnPinningChange: (updater) => {
-      setColumnPinning(updater);
-      const next = typeof updater === 'function' ? updater(columnPinning) : updater;
-      onColumnPinningChangeProp?.(next);
+      setColumnPinning((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onColumnPinningChangeProp?.(next);
+        return next;
+      });
     },
 
     // Row selection
     enableRowSelection: features.rowSelection === 'multi' || features.rowSelection === 'single',
     enableMultiRowSelection: features.rowSelection === 'multi',
     onRowSelectionChange: (updater) => {
-      setRowSelection(updater);
-      const next = typeof updater === 'function' ? updater(rowSelection) : updater;
-      onRowSelectionChangeProp?.(next);
+      setRowSelection((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onRowSelectionChangeProp?.(next);
+        return next;
+      });
     },
 
     // Expansion
     onExpandedChange: (updater) => {
-      setExpanded(updater);
-      const next = typeof updater === 'function' ? updater(expanded) : updater;
-      onExpandedChangeProp?.(next);
+      setExpanded((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onExpandedChangeProp?.(next);
+        return next;
+      });
     },
 
     // Pagination
     manualPagination,
     pageCount,
     onPaginationChange: (updater) => {
-      setPagination(updater);
-      const next = typeof updater === 'function' ? updater(pagination) : updater;
-      onPaginationChangeProp?.(next);
+      setPagination((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        onPaginationChangeProp?.(next);
+        return next;
+      });
     },
 
     // Row models - conditionally enabled

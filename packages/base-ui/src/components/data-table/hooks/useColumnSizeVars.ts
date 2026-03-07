@@ -12,6 +12,9 @@ import type { Table } from '@tanstack/react-table';
 export function useColumnSizeVars(table: Table<any>): Record<string, number> {
   const columnSizingInfo = table.getState().columnSizingInfo;
   const columnSizing = table.getState().columnSizing;
+  const columnVisibility = table.getState().columnVisibility;
+  const columnOrder = table.getState().columnOrder;
+  const columnPinning = table.getState().columnPinning;
 
   return useMemo(() => {
     const headers = table.getFlatHeaders();
@@ -22,5 +25,5 @@ export function useColumnSizeVars(table: Table<any>): Record<string, number> {
     }
     return vars;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnSizing, columnSizingInfo]);
+  }, [columnSizing, columnSizingInfo, columnVisibility, columnOrder, columnPinning]);
 }

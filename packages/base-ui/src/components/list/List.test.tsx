@@ -127,8 +127,8 @@ describe('List', () => {
     const user = userEvent.setup();
 
     renderWithTheme(<TestList selectionMode="single" />);
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     // ArrowDown should activate first item, then second
     await user.keyboard('{ArrowDown}');
@@ -147,8 +147,8 @@ describe('List', () => {
     renderWithTheme(
       <TestList selectionMode="single" onSelectedKeysChange={onChange} />,
     );
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('{ArrowDown}');
     await user.keyboard('{Enter}');
@@ -161,8 +161,8 @@ describe('List', () => {
     renderWithTheme(
       <TestList selectionMode="single" defaultActiveKey="c" />,
     );
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('{Home}');
     const firstItem = screen.getByText('Alpha').closest('[role="option"]');
@@ -175,8 +175,8 @@ describe('List', () => {
     renderWithTheme(
       <TestList selectionMode="single" defaultActiveKey="a" />,
     );
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('{End}');
     const lastItem = screen.getByText('Delta').closest('[role="option"]');
@@ -191,8 +191,8 @@ describe('List', () => {
       <TestList selectionMode="multiple" onSelectedKeysChange={onChange} />,
     );
 
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('{Control>}a{/Control}');
     expect(onChange).toHaveBeenCalledWith(new Set(['a', 'b', 'c', 'd']));
@@ -203,8 +203,8 @@ describe('List', () => {
 
     renderWithTheme(<TestList selectionMode="single" />);
 
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('c');
     const charlie = screen.getByText('Charlie').closest('[role="option"]');
@@ -221,8 +221,8 @@ describe('List', () => {
     renderWithTheme(
       <TestList selectionMode="single" disabledKeys={['b']} />,
     );
-    const viewport = screen.getByTestId('list-viewport');
-    viewport.focus();
+    const listbox = screen.getByRole('listbox');
+    listbox.focus();
 
     await user.keyboard('{ArrowDown}'); // Alpha
     await user.keyboard('{ArrowDown}'); // skips Bravo -> Charlie

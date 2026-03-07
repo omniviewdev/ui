@@ -241,7 +241,7 @@ const [servicesExpanded, setServicesExpanded] = useState(false);
 // ---------------------------------------------------------------------------
 
 function OpenFilesStory() {
-  const [selected, setSelected] = useState<Set<Key>>(new Set(['main.go']));
+  const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set(['main.go']));
   const files = [
     { id: 'main.go', label: 'main.go', dirty: true, icon: LuFileCode },
     { id: 'handler.go', label: 'handler.go', dirty: false, icon: LuFileCode },
@@ -272,7 +272,7 @@ export const OpenFiles: Story = {
   parameters: {
     docs: {
       source: {
-        code: `const [selected, setSelected] = useState<Set<Key>>(new Set(['main.go']));
+        code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set(['main.go']));
 
 <NavList
   selectionMode="single"

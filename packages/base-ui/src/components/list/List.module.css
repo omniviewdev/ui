@@ -21,6 +21,7 @@
   gap: var(--_ov-list-gap);
   min-inline-size: 0;
   font-family: var(--ov-font-sans);
+  outline: none;
 }
 
 /* --- Size variants -------------------------------------------------------- */

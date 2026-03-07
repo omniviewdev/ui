@@ -51,6 +51,7 @@ export interface ListStore {
 // ---------------------------------------------------------------------------
 
 export interface ListConfigContextValue {
+  listId: string;
   selectionMode: SelectionMode;
   selectionBehavior: SelectionBehavior;
   density: ListDensity;
@@ -80,9 +81,9 @@ export interface ListRootProps
     StyledComponentProps {
   selectionMode?: SelectionMode;
   selectionBehavior?: SelectionBehavior;
-  selectedKeys?: Set<Key>;
+  selectedKeys?: ReadonlySet<Key>;
   defaultSelectedKeys?: Iterable<Key>;
-  onSelectedKeysChange?: (keys: Set<Key>) => void;
+  onSelectedKeysChange?: (keys: ReadonlySet<Key>) => void;
 
   activeKey?: Key | null;
   defaultActiveKey?: Key | null;
@@ -125,7 +126,7 @@ export interface ListGroupProps extends HTMLAttributes<HTMLDivElement> {
 export interface ListHandle {
   focus: () => void;
   scrollToKey: (key: Key, align?: ScrollLogicalPosition) => void;
-  getSelectedKeys: () => Set<Key>;
+  getSelectedKeys: () => ReadonlySet<Key>;
   clearSelection: () => void;
   selectAll: () => void;
 }

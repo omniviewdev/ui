@@ -109,7 +109,7 @@ const fruits = [
 ];
 
 function SingleSelectStory() {
-  const [selected, setSelected] = useState<Set<Key>>(new Set(['cherry']));
+  const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set(['cherry']));
   return (
     <List
       selectionMode="single"
@@ -132,7 +132,7 @@ export const SingleSelect: Story = {
   parameters: {
     docs: {
       source: {
-        code: `const [selected, setSelected] = useState<Set<Key>>(new Set(['cherry']));
+        code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set(['cherry']));
 
 <List
   selectionMode="single"
@@ -158,7 +158,7 @@ export const SingleSelect: Story = {
 // ---------------------------------------------------------------------------
 
 function MultiSelectStory() {
-  const [selected, setSelected] = useState<Set<Key>>(new Set());
+  const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
   return (
     <div>
       <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
@@ -190,7 +190,7 @@ export const MultiSelect: Story = {
   parameters: {
     docs: {
       source: {
-        code: `const [selected, setSelected] = useState<Set<Key>>(new Set());
+        code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
 
 <List
   selectionMode="multiple"
@@ -447,7 +447,7 @@ const largeItems = Array.from({ length: 10000 }, (_, i) => ({
 }));
 
 function VirtualizedStory() {
-  const [selected, setSelected] = useState<Set<Key>>(new Set());
+  const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
   return (
     <div>
       <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
@@ -475,7 +475,7 @@ export const Virtualized: Story = {
   parameters: {
     docs: {
       source: {
-        code: `const [selected, setSelected] = useState<Set<Key>>(new Set());
+        code: `const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
 
 <List
   selectionMode="multiple"

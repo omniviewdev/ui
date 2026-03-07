@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import { forwardRef, useCallback, useId, useMemo, useRef, useSyncExternalStore, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ListRootProps, ListViewportProps, ListItemProps, ListGroupProps } from './types';
@@ -30,6 +30,7 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
       children,
       loading,
       error,
+      onKeyDown,
       // Strip list-specific props from DOM spread
       selectionMode: _selectionMode,
       selectionBehavior: _selectionBehavior,
@@ -72,16 +73,51 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
       children,
     });
 
+    const listId = useId();
+    const fullConfig = useMemo(
+      () => ({ ...config, listId }),
+      [config, listId],
+    );
+    const { handleKeyDown } = useListFocus({ config: fullConfig, actions, store });
+    const { handleTypeahead } = useTypeahead({
+      enabled: config.typeahead,
+      actions,
+      store,
+    });
+
+    // Derive the active descendant ID for aria-activedescendant
+    const activeDescendantId = useSyncExternalStore(
+      store.subscribe,
+      () => {
+        const snapshot = store.getSnapshot();
+        return snapshot.activeKey != null ? `${listId}-item-${snapshot.activeKey}` : undefined;
+      },
+      () => undefined,
+    );
+
+    const combinedKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLDivElement>) => {
+        handleKeyDown(event);
+        handleTypeahead(event);
+        onKeyDown?.(event);
+      },
+      [handleKeyDown, handleTypeahead, onKeyDown],
+    );
+
     return (
-      <ListConfigContext.Provider value={config}>
+      <ListConfigContext.Provider value={fullConfig}>
         <ListStoreContext.Provider value={store}>
           <ListActionsContext.Provider value={actions}>
             <div
               ref={ref}
               role="listbox"
-              aria-multiselectable={config.selectionMode === 'multiple' ? true : undefined}
+              tabIndex={0}
+              aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
+              aria-activedescendant={activeDescendantId}
               className={cn(styles.Root, className)}
-              data-ov-density={config.density}
+              data-ov-density={fullConfig.density}
+              data-ov-list-id={listId}
+              onKeyDown={combinedKeyDown}
               {...styleDataAttributes({ variant, color, size })}
               {...props}
             >
@@ -103,17 +139,8 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
 // ---------------------------------------------------------------------------
 
 const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
-  function ListViewport({ className, onReachEnd, onKeyDown, children, ...props }, ref) {
+  function ListViewport({ className, onReachEnd, children, ...props }, ref) {
     const config = useListConfig();
-    const store = useListStoreContext();
-    const actions = useListActions();
-    const { handleKeyDown } = useListFocus({ config, actions, store });
-    const { handleTypeahead } = useTypeahead({
-      enabled: config.typeahead,
-      actions,
-      store,
-    });
-
     const scrollRef = useRef<HTMLDivElement>(null);
     const hasReachedEndRef = useRef(false);
 
@@ -121,7 +148,9 @@ const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
       const el = scrollRef.current;
       if (!el) return;
 
-      const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+      const atEnd = config.orientation === 'horizontal'
+        ? el.scrollLeft + el.clientWidth >= el.scrollWidth - 1
+        : el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
 
       if (atEnd && !hasReachedEndRef.current) {
         hasReachedEndRef.current = true;
@@ -129,30 +158,18 @@ const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
       } else if (!atEnd) {
         hasReachedEndRef.current = false;
       }
-    }, [onReachEnd]);
-
-    const combinedKeyDown = useCallback(
-      (event: KeyboardEvent<HTMLDivElement>) => {
-        handleKeyDown(event);
-        handleTypeahead(event);
-        onKeyDown?.(event);
-      },
-      [handleKeyDown, handleTypeahead, onKeyDown],
-    );
+    }, [onReachEnd, config.orientation]);
 
     return (
       <div
         ref={(node) => {
-          // Merge refs
           scrollRef.current = node;
           if (typeof ref === 'function') ref(node);
           else if (ref) ref.current = node;
         }}
         role="presentation"
-        tabIndex={0}
         className={cn(styles.Viewport, className)}
         onScroll={handleScroll}
-        onKeyDown={combinedKeyDown}
         {...props}
       >
         {children}
@@ -179,21 +196,23 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
     const handleClick = useCallback(
       (event: MouseEvent<HTMLDivElement>) => {
-        if (isDisabled || config.selectionMode === 'none') {
+        if (isDisabled) {
           onClick?.(event);
           return;
         }
 
         actions.setActiveKey(itemKey);
 
-        if (event.shiftKey && config.selectionMode === 'multiple') {
-          actions.selectRange(itemKey);
-        } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
-          actions.toggle(itemKey);
-        } else if (config.selectionBehavior === 'toggle') {
-          actions.toggle(itemKey);
-        } else {
-          actions.select(itemKey);
+        if (config.selectionMode !== 'none') {
+          if (event.shiftKey && config.selectionMode === 'multiple') {
+            actions.selectRange(itemKey);
+          } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
+            actions.toggle(itemKey);
+          } else if (config.selectionBehavior === 'toggle') {
+            actions.toggle(itemKey);
+          } else {
+            actions.select(itemKey);
+          }
         }
 
         onClick?.(event);
@@ -204,10 +223,10 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
     return (
       <div
         ref={ref}
+        id={`${config.listId}-item-${itemKey}`}
         role="option"
         aria-selected={itemState.isSelected || undefined}
         aria-disabled={isDisabled || undefined}
-        tabIndex={itemState.isActive ? 0 : -1}
         className={cn(styles.Item, className)}
         data-ov-selected={itemState.isSelected}
         data-ov-active={itemState.isActive}

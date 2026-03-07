@@ -16,7 +16,7 @@ import { useControllableState } from './useControllableState';
 import { useListStore } from './useListStore';
 
 interface ListStateReturn {
-  config: ListConfigContextValue;
+  config: Omit<ListConfigContextValue, 'listId'>;
   store: ListStore;
   actions: ListActionsContextValue;
 }
@@ -52,10 +52,11 @@ export function useListState(props: ListRootProps): ListStateReturn {
   const store = useListStore(disabledKeys);
 
   // Controlled/uncontrolled selection
+  // Internal state uses mutable Set<Key>; public API accepts/emits ReadonlySet<Key>
   const [selectedKeys, setSelectedKeys] = useControllableState<Set<Key>>(
-    selectedKeysProp,
+    selectedKeysProp as Set<Key> | undefined,
     new Set(defaultSelectedKeys ?? []),
-    onSelectedKeysChange,
+    onSelectedKeysChange as ((keys: Set<Key>) => void) | undefined,
   );
 
   // Controlled/uncontrolled active key
@@ -181,7 +182,7 @@ export function useListState(props: ListRootProps): ListStateReturn {
   // Return
   // -----------------------------------------------------------------------
 
-  const config = useMemo<ListConfigContextValue>(
+  const config = useMemo(
     () => ({
       selectionMode,
       selectionBehavior,

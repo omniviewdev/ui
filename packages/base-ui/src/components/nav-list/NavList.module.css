@@ -43,23 +43,19 @@
 }
 
 .GroupHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  user-select: none;
   color: var(--ov-color-fg-muted);
   font-size: var(--ov-font-size-caption);
   font-weight: var(--ov-font-weight-label);
-  padding-inline: var(--_ov-item-padding-inline, var(--ov-size-list-item-padding-inline-sm));
-  min-height: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
   line-height: 1.25;
-  border-radius: var(--_ov-item-radius, var(--ov-size-list-item-radius));
-  transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.GroupHeader:hover {
-  background: var(--ov-color-state-hover);
+/* Non-collapsible header: self-styled */
+.GroupHeader:not(:has(.GroupHeaderButton)) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-size-list-item-padding-inline-sm));
+  min-height: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
 }
 
 /* Toggle chevron — uses a clean SVG-style caret via border trick */
@@ -94,18 +90,27 @@
   display: none;
 }
 
+/* Button owns the full hit target in collapsible headers */
 .GroupHeaderButton {
   display: flex;
   align-items: center;
   gap: 6px;
   width: 100%;
-  padding: 0;
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-size-list-item-padding-inline-sm));
+  min-height: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
   border: none;
   background: none;
   color: inherit;
   font: inherit;
   cursor: pointer;
+  user-select: none;
   text-align: start;
+  border-radius: var(--_ov-item-radius, var(--ov-size-list-item-radius));
+  transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.GroupHeaderButton:hover {
+  background: var(--ov-color-state-hover);
 }
 
 .GroupHeaderLabel {

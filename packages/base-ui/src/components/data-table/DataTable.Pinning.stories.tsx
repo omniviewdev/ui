@@ -38,68 +38,82 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-function PinnedLeftRightStory() {
-  const columns: ColumnDef<Pod, unknown>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllRowsSelected()}
-          indeterminate={table.getIsSomeRowsSelected()}
-          onCheckedChange={() => table.toggleAllRowsSelected()}
-          size="sm"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
-          size="sm"
-        />
-      ),
-      size: 40,
-      enableSorting: false,
-      enableResizing: false,
-      meta: { align: 'center' },
-    },
-    { accessorKey: 'name', header: 'Name', size: 180 },
-    { accessorKey: 'namespace', header: 'Namespace', size: 120 },
-    { accessorKey: 'node', header: 'Node', size: 120 },
-    { accessorKey: 'status', header: 'Status', size: 140 },
-    { accessorKey: 'restarts', header: 'Restarts', size: 80 },
-    { accessorKey: 'cpu', header: 'CPU', size: 80 },
-    { accessorKey: 'memory', header: 'Memory', size: 100 },
-    { accessorKey: 'age', header: 'Age', size: 60 },
-    {
-      id: 'actions',
-      header: '',
-      cell: () => (
-        <IconButton
-          dense
-          variant="ghost"
-          color="neutral"
-          size="sm"
-          aria-label="Row actions"
-        >
-          <LuEllipsisVertical />
-        </IconButton>
-      ),
-      size: 36,
-      enableSorting: false,
-      enableResizing: false,
-      meta: { align: 'center' },
-    },
-  ];
+const selectColumn: ColumnDef<Pod, unknown> = {
+  id: 'select',
+  header: ({ table }) => (
+    <Checkbox
+      checked={table.getIsAllRowsSelected()}
+      indeterminate={table.getIsSomeRowsSelected()}
+      onCheckedChange={() => table.toggleAllRowsSelected()}
+      size="sm"
+      aria-label="Select all rows"
+    />
+  ),
+  cell: ({ row }) => (
+    <Checkbox
+      checked={row.getIsSelected()}
+      onCheckedChange={() => row.toggleSelected()}
+      size="sm"
+      aria-label={`Select row ${row.index + 1}`}
+    />
+  ),
+  size: 40,
+  enableSorting: false,
+  enableResizing: false,
+  meta: { align: 'center' },
+};
 
+const actionsColumn: ColumnDef<Pod, unknown> = {
+  id: 'actions',
+  header: '',
+  cell: () => (
+    <IconButton
+      dense
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      aria-label="Row actions"
+    >
+      <LuEllipsisVertical />
+    </IconButton>
+  ),
+  size: 36,
+  enableSorting: false,
+  enableResizing: false,
+  meta: { align: 'center' },
+};
+
+const dataColumns: ColumnDef<Pod, unknown>[] = [
+  { accessorKey: 'name', header: 'Name', size: 180 },
+  { accessorKey: 'namespace', header: 'Namespace', size: 120 },
+  { accessorKey: 'node', header: 'Node', size: 120 },
+  { accessorKey: 'status', header: 'Status', size: 140 },
+  { accessorKey: 'restarts', header: 'Restarts', size: 80 },
+  { accessorKey: 'cpu', header: 'CPU', size: 80 },
+  { accessorKey: 'memory', header: 'Memory', size: 100 },
+  { accessorKey: 'age', header: 'Age', size: 60 },
+];
+
+const pinnedColumns: ColumnDef<Pod, unknown>[] = [selectColumn, ...dataColumns, actionsColumn];
+
+const pinningFeatures = {
+  rowSelection: 'multi' as const,
+  sorting: true,
+  columnResizing: true,
+  columnPinning: true,
+};
+
+const pinningToolbarFeatures = {
+  ...pinningFeatures,
+  globalFilter: true,
+  columnVisibility: true,
+};
+
+function PinnedLeftRightStory() {
   const table = useDataTable({
     data: podData,
-    columns,
-    features: {
-      rowSelection: 'multi',
-      sorting: true,
-      columnResizing: true,
-      columnPinning: true,
-    },
+    columns: pinnedColumns,
+    features: pinningFeatures,
     getRowId: (row) => row.uid,
     initialState: {
       columnPinning: {
@@ -112,12 +126,7 @@ function PinnedLeftRightStory() {
   return (
     <DataTable.Root
       table={table}
-      features={{
-        rowSelection: 'multi',
-        sorting: true,
-        columnResizing: true,
-        columnPinning: true,
-      }}
+      features={pinningFeatures}
       variant="soft"
       hoverable
     >
@@ -130,69 +139,16 @@ function PinnedLeftRightStory() {
 }
 
 function PinnedWithToolbarStory() {
-  const columns: ColumnDef<Pod, unknown>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllRowsSelected()}
-          indeterminate={table.getIsSomeRowsSelected()}
-          onCheckedChange={() => table.toggleAllRowsSelected()}
-          size="sm"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
-          size="sm"
-        />
-      ),
-      size: 40,
-      enableSorting: false,
-      enableResizing: false,
-      enableHiding: false,
-    },
-    { accessorKey: 'name', header: 'Name', size: 180 },
-    { accessorKey: 'namespace', header: 'Namespace', size: 120 },
-    { accessorKey: 'node', header: 'Node', size: 120 },
-    { accessorKey: 'status', header: 'Status', size: 140 },
-    { accessorKey: 'restarts', header: 'Restarts', size: 80 },
-    { accessorKey: 'cpu', header: 'CPU', size: 80 },
-    { accessorKey: 'memory', header: 'Memory', size: 100 },
-    { accessorKey: 'age', header: 'Age', size: 60 },
-    {
-      id: 'actions',
-      header: '',
-      cell: () => (
-        <IconButton
-          dense
-          variant="ghost"
-          color="neutral"
-          size="sm"
-          aria-label="Row actions"
-        >
-          <LuEllipsisVertical />
-        </IconButton>
-      ),
-      size: 40,
-      enableSorting: false,
-      enableResizing: false,
-      enableHiding: false,
-    },
+  const toolbarColumns: ColumnDef<Pod, unknown>[] = [
+    { ...selectColumn, enableHiding: false },
+    ...dataColumns,
+    { ...actionsColumn, size: 40, enableHiding: false },
   ];
 
   const table = useDataTable({
     data: podData,
-    columns,
-    features: {
-      rowSelection: 'multi',
-      sorting: true,
-      columnResizing: true,
-      columnPinning: true,
-      globalFilter: true,
-      columnVisibility: true,
-    },
+    columns: toolbarColumns,
+    features: pinningToolbarFeatures,
     getRowId: (row) => row.uid,
     initialState: {
       columnPinning: {
@@ -205,14 +161,7 @@ function PinnedWithToolbarStory() {
   return (
     <DataTable.Root
       table={table}
-      features={{
-        rowSelection: 'multi',
-        sorting: true,
-        columnResizing: true,
-        columnPinning: true,
-        globalFilter: true,
-        columnVisibility: true,
-      }}
+      features={pinningToolbarFeatures}
       variant="soft"
       hoverable
     >

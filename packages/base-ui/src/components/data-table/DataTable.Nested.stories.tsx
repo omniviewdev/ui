@@ -226,6 +226,7 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
         indeterminate={table.getIsSomeRowsSelected()}
         onCheckedChange={() => table.toggleAllRowsSelected()}
         size="sm"
+        aria-label="Select all rows"
       />
     ),
     cell: ({ row }) => (
@@ -233,6 +234,7 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={() => row.toggleSelected()}
         size="sm"
+        aria-label={`Select row ${row.index + 1}`}
       />
     ),
     size: 40,

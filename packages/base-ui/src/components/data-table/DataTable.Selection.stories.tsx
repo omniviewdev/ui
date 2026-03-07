@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableRootProps } from './DataTable';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
 import { Checkbox } from '../checkbox';
@@ -11,6 +12,12 @@ interface Pod {
   status: string;
   restarts: number;
   age: string;
+}
+
+interface SelectionStoryArgs {
+  variant: DataTableRootProps['variant'];
+  color: DataTableRootProps['color'];
+  size: DataTableRootProps['size'];
 }
 
 const podData: Pod[] = Array.from({ length: 8 }, (_, i) => ({
@@ -55,12 +62,12 @@ const baseColumns: ColumnDef<Pod, unknown>[] = [
   { accessorKey: 'age', header: 'Age', size: 60 },
 ];
 
-const multiColumns: ColumnDef<Pod, unknown>[] = [selectColumn, ...baseColumns];
+const allColumns: ColumnDef<Pod, unknown>[] = [selectColumn, ...baseColumns];
 
 const multiFeatures = { rowSelection: 'multi' as const, sorting: true };
 const singleFeatures = { rowSelection: 'single' as const, sorting: true };
 
-const meta: Meta = {
+const meta: Meta<SelectionStoryArgs> = {
   title: 'Components/DataTable/Selection',
   tags: ['autodocs'],
   argTypes: {
@@ -71,12 +78,12 @@ const meta: Meta = {
 };
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<SelectionStoryArgs>;
 
-function MultiSelectStory(args: Record<string, unknown>) {
+function MultiSelectStory({ variant, color, size }: SelectionStoryArgs) {
   const table = useDataTable({
     data: podData,
-    columns: multiColumns,
+    columns: allColumns,
     features: multiFeatures,
     getRowId: (row) => row.uid,
   });
@@ -85,8 +92,10 @@ function MultiSelectStory(args: Record<string, unknown>) {
     <DataTable.Root
       table={table}
       features={multiFeatures}
+      variant={variant}
+      color={color}
+      size={size}
       hoverable
-      {...args}
     >
       <DataTable.Container height={400}>
         <DataTable.Header />
@@ -96,10 +105,10 @@ function MultiSelectStory(args: Record<string, unknown>) {
   );
 }
 
-function SingleSelectStory(args: Record<string, unknown>) {
+function SingleSelectStory({ variant, color, size }: SelectionStoryArgs) {
   const table = useDataTable({
     data: podData,
-    columns: baseColumns,
+    columns: allColumns,
     features: singleFeatures,
     getRowId: (row) => row.uid,
   });
@@ -108,8 +117,10 @@ function SingleSelectStory(args: Record<string, unknown>) {
     <DataTable.Root
       table={table}
       features={singleFeatures}
+      variant={variant}
+      color={color}
+      size={size}
       hoverable
-      {...args}
     >
       <DataTable.Container height={400}>
         <DataTable.Header />

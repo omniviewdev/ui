@@ -63,7 +63,6 @@ const selectColumn: ColumnDef<LogEntry, unknown> = {
       indeterminate={table.getIsSomeRowsSelected()}
       onCheckedChange={() => table.toggleAllRowsSelected()}
       size="sm"
-      variant="soft"
       aria-label="Select all rows"
     />
   ),
@@ -72,11 +71,10 @@ const selectColumn: ColumnDef<LogEntry, unknown> = {
       checked={row.getIsSelected()}
       onCheckedChange={() => row.toggleSelected()}
       size="sm"
-      variant="soft"
       aria-label={`Select row ${row.index + 1}`}
     />
   ),
-  size: 36,
+  size: 40,
   enableSorting: false,
   enableResizing: false,
   meta: { align: 'center' },

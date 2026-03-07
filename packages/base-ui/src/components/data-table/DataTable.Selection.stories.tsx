@@ -22,31 +22,32 @@ const podData: Pod[] = Array.from({ length: 8 }, (_, i) => ({
   age: `${i + 1}d`,
 }));
 
-const podColumns: ColumnDef<Pod, unknown>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllRowsSelected()}
-        indeterminate={table.getIsSomeRowsSelected()}
-        onCheckedChange={() => table.toggleAllRowsSelected()}
-        size="sm"
-        variant="soft"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={() => row.toggleSelected()}
-        size="sm"
-        variant="soft"
-      />
-    ),
-    size: 36,
-    enableSorting: false,
-    enableResizing: false,
-    meta: { align: 'center' },
-  },
+const selectColumn: ColumnDef<Pod, unknown> = {
+  id: 'select',
+  header: ({ table }) => (
+    <Checkbox
+      checked={table.getIsAllRowsSelected()}
+      indeterminate={table.getIsSomeRowsSelected()}
+      onCheckedChange={() => table.toggleAllRowsSelected()}
+      size="sm"
+      aria-label="Select all rows"
+    />
+  ),
+  cell: ({ row }) => (
+    <Checkbox
+      checked={row.getIsSelected()}
+      onCheckedChange={() => row.toggleSelected()}
+      size="sm"
+      aria-label={`Select row ${row.index + 1}`}
+    />
+  ),
+  size: 40,
+  enableSorting: false,
+  enableResizing: false,
+  meta: { align: 'center' },
+};
+
+const baseColumns: ColumnDef<Pod, unknown>[] = [
   { accessorKey: 'name', header: 'Name', size: 180 },
   { accessorKey: 'namespace', header: 'Namespace', size: 120 },
   { accessorKey: 'status', header: 'Status', size: 140 },
@@ -54,28 +55,38 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
   { accessorKey: 'age', header: 'Age', size: 60 },
 ];
 
+const multiColumns: ColumnDef<Pod, unknown>[] = [selectColumn, ...baseColumns];
+
+const multiFeatures = { rowSelection: 'multi' as const, sorting: true };
+const singleFeatures = { rowSelection: 'single' as const, sorting: true };
+
 const meta: Meta = {
   title: 'Components/DataTable/Selection',
   tags: ['autodocs'],
+  argTypes: {
+    variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
+    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+  },
 };
 
 export default meta;
 type Story = StoryObj;
 
-function MultiSelectStory() {
+function MultiSelectStory(args: Record<string, unknown>) {
   const table = useDataTable({
     data: podData,
-    columns: podColumns,
-    features: { rowSelection: 'multi', sorting: true },
+    columns: multiColumns,
+    features: multiFeatures,
     getRowId: (row) => row.uid,
   });
 
   return (
     <DataTable.Root
       table={table}
-      features={{ rowSelection: 'multi', sorting: true }}
-      variant="soft"
+      features={multiFeatures}
       hoverable
+      {...args}
     >
       <DataTable.Container height={400}>
         <DataTable.Header />
@@ -85,20 +96,20 @@ function MultiSelectStory() {
   );
 }
 
-function SingleSelectStory() {
+function SingleSelectStory(args: Record<string, unknown>) {
   const table = useDataTable({
     data: podData,
-    columns: podColumns.filter((c) => c.id !== 'select'),
-    features: { rowSelection: 'single', sorting: true },
+    columns: baseColumns,
+    features: singleFeatures,
     getRowId: (row) => row.uid,
   });
 
   return (
     <DataTable.Root
       table={table}
-      features={{ rowSelection: 'single', sorting: true }}
-      variant="soft"
+      features={singleFeatures}
       hoverable
+      {...args}
     >
       <DataTable.Container height={400}>
         <DataTable.Header />
@@ -109,9 +120,19 @@ function SingleSelectStory() {
 }
 
 export const MultiSelect: Story = {
-  render: () => <MultiSelectStory />,
+  args: {
+    variant: 'soft',
+    color: 'neutral',
+    size: 'md',
+  },
+  render: (args) => <MultiSelectStory {...args} />,
 };
 
 export const SingleSelect: Story = {
-  render: () => <SingleSelectStory />,
+  args: {
+    variant: 'soft',
+    color: 'neutral',
+    size: 'md',
+  },
+  render: (args) => <SingleSelectStory {...args} />,
 };

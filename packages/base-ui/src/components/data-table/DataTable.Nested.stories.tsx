@@ -226,7 +226,6 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
         indeterminate={table.getIsSomeRowsSelected()}
         onCheckedChange={() => table.toggleAllRowsSelected()}
         size="sm"
-        variant="soft"
       />
     ),
     cell: ({ row }) => (
@@ -234,10 +233,9 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={() => row.toggleSelected()}
         size="sm"
-        variant="soft"
       />
     ),
-    size: 36,
+    size: 40,
     enableSorting: false,
     enableResizing: false,
     meta: { align: 'center' },

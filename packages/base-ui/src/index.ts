@@ -7,4 +7,6 @@ export type {
   ComponentSize,
   ComponentVariant,
   StyledComponentProps,
+  SurfaceElevation,
+  SurfaceType,
 } from './system/types';

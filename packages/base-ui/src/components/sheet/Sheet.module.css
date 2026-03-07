@@ -3,7 +3,7 @@
   --_ov-surface-bg: var(--ov-color-bg-surface);
   --_ov-bg: var(--_ov-surface-bg);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%);
   --_ov-radius: var(--ov-radius-surface);
   --_ov-shadow: none;
 
@@ -99,12 +99,12 @@
 /* Variants: tint the surface background, don't replace it */
 .Root[data-ov-variant='solid'] {
   --_ov-bg: color-mix(in srgb, var(--_ov-surface-bg) 86%, var(--_ov-accent) 14%);
-  --_ov-border: color-mix(in srgb, var(--_ov-accent) 64%, var(--ov-color-border-default) 36%);
+  --_ov-border: color-mix(in srgb, var(--_ov-accent) 64%, color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 36%);
 }
 
 .Root[data-ov-variant='soft'] {
   --_ov-bg: color-mix(in srgb, var(--_ov-surface-bg) 82%, var(--_ov-accent-soft) 18%);
-  --_ov-border: color-mix(in srgb, var(--ov-color-border-default) 62%, var(--_ov-accent) 38%);
+  --_ov-border: color-mix(in srgb, color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 62%, var(--_ov-accent) 38%);
 }
 
 .Root[data-ov-variant='outline'] {

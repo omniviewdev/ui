@@ -10,12 +10,17 @@
   --_ov-title-font-size: var(--ov-size-card-title-font-size-md);
   --_ov-body-font-size: var(--ov-size-card-body-font-size-md);
   --_ov-description-font-size: var(--ov-size-card-description-font-size-md);
-  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-stat-font-size: var(--ov-size-card-stat-font-size-md);
+  --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-md);
+  --_ov-indicator-dot: var(--ov-size-card-indicator-dot-md);
+  --_ov-surface-bg: var(--ov-color-bg-surface);
+  --_ov-bg: var(--_ov-surface-bg);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-title-color: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%);
   --_ov-muted: var(--ov-color-fg-muted);
 
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 280px;
@@ -25,6 +30,11 @@
   color: var(--_ov-fg);
   box-shadow: none;
   overflow: clip;
+}
+
+/* Interactive cards need visible overflow so the card shadow renders outside its bounds */
+.Root:has(.ActionArea) {
+  overflow: visible;
 }
 
 .Root[data-ov-size='sm'] {
@@ -39,6 +49,9 @@
   --_ov-title-font-size: var(--ov-size-card-title-font-size-sm);
   --_ov-body-font-size: var(--ov-size-card-body-font-size-sm);
   --_ov-description-font-size: var(--ov-size-card-description-font-size-sm);
+  --_ov-stat-font-size: var(--ov-size-card-stat-font-size-sm);
+  --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-sm);
+  --_ov-indicator-dot: var(--ov-size-card-indicator-dot-sm);
 }
 
 .Root[data-ov-size='lg'] {
@@ -53,7 +66,27 @@
   --_ov-title-font-size: var(--ov-size-card-title-font-size-lg);
   --_ov-body-font-size: var(--ov-size-card-body-font-size-lg);
   --_ov-description-font-size: var(--ov-size-card-description-font-size-lg);
+  --_ov-stat-font-size: var(--ov-size-card-stat-font-size-lg);
+  --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-lg);
+  --_ov-indicator-dot: var(--ov-size-card-indicator-dot-lg);
 }
+
+/* ─── Surface levels ─── */
+
+.Root[data-ov-surface='base'] { --_ov-surface-bg: var(--ov-color-bg-base); }
+.Root[data-ov-surface='default'] { --_ov-surface-bg: var(--ov-color-bg-surface); }
+.Root[data-ov-surface='raised'] { --_ov-surface-bg: var(--ov-color-bg-surface-raised); }
+.Root[data-ov-surface='overlay'] { --_ov-surface-bg: var(--ov-color-bg-surface-overlay); }
+.Root[data-ov-surface='inset'] { --_ov-surface-bg: var(--ov-color-bg-inset); }
+.Root[data-ov-surface='elevated'] { --_ov-surface-bg: var(--ov-color-bg-elevated); }
+
+/* ─── Elevation (shadow depth) ─── */
+
+.Root[data-ov-elevation='1'] { box-shadow: var(--ov-primitive-shadow-sm); }
+.Root[data-ov-elevation='2'] { box-shadow: var(--ov-primitive-shadow-md); }
+.Root[data-ov-elevation='3'] { box-shadow: var(--ov-primitive-shadow-lg); }
+
+/* ─── Color accents ─── */
 
 .Root[data-ov-color='neutral'] {
   --_ov-accent: var(--ov-color-border-default);
@@ -86,28 +119,72 @@
 }
 
 .Root[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--_ov-accent) 14%);
-  --_ov-border: color-mix(in srgb, var(--_ov-accent) 64%, var(--ov-color-border-default) 36%);
+  --_ov-bg: color-mix(in srgb, var(--_ov-surface-bg) 86%, var(--_ov-accent) 14%);
+  --_ov-border: color-mix(in srgb, var(--_ov-accent) 64%, color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 36%);
   --_ov-title-color: color-mix(in srgb, var(--_ov-fg) 78%, var(--_ov-accent-fg) 22%);
 }
 
 .Root[data-ov-variant='soft'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 82%, var(--_ov-accent-soft) 18%);
-  --_ov-border: color-mix(in srgb, var(--ov-color-border-default) 62%, var(--_ov-accent) 38%);
+  --_ov-bg: color-mix(in srgb, var(--_ov-surface-bg) 82%, var(--_ov-accent-soft) 18%);
+  --_ov-border: color-mix(in srgb, color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 62%, var(--_ov-accent) 38%);
   --_ov-title-color: color-mix(in srgb, var(--_ov-fg) 72%, var(--_ov-accent-fg) 28%);
 }
 
 .Root[data-ov-variant='outline'] {
-  --_ov-bg: transparent;
+  --_ov-bg: var(--_ov-surface-bg);
   --_ov-border: var(--_ov-accent);
   --_ov-title-color: color-mix(in srgb, var(--_ov-fg) 64%, var(--_ov-accent-fg) 36%);
 }
 
 .Root[data-ov-variant='ghost'] {
-  --_ov-bg: transparent;
+  --_ov-bg: var(--_ov-surface-bg);
   --_ov-border: transparent;
   --_ov-title-color: var(--_ov-fg);
 }
+
+/* ─── Interactive card (ActionArea) ─── */
+
+.Root:has(.ActionArea) {
+  transition:
+    border-color var(--ov-duration-panel) var(--ov-ease-standard),
+    background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root:has(.ActionArea:hover) {
+  border-color: color-mix(in srgb, var(--_ov-border) 50%, var(--_ov-accent, var(--ov-color-fg-subtle)) 50%);
+}
+
+.Root:has(.ActionArea:focus-visible) {
+  box-shadow: 0 0 0 2px var(--ov-color-state-focus-ring);
+}
+
+.Root:has(.ActionArea:active) {
+  background: color-mix(in srgb, var(--_ov-bg) 96%, var(--ov-color-state-pressed) 4%);
+}
+
+.Root:has(.ActionArea[data-ov-disabled='true']) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root:has(.ActionArea) {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Root:has(.ActionArea) {
+  transition: none;
+}
+
+/* ─── Cover layer ─── */
+
+.Root > :not(.Cover) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Shared padding slots ─── */
 
 .Header,
 .Body,
@@ -115,12 +192,57 @@
   padding-inline: var(--_ov-padding-inline);
 }
 
+/* ─── Header ─── */
+
 .Header {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--_ov-gap);
-  padding-top: var(--_ov-padding-block);
+  padding-block: var(--_ov-padding-block);
 }
+
+/* Collapse Header bottom padding when followed by Body or Separator (they provide their own spacing) */
+.Header:has(+ .Body),
+.Header:has(+ .Separator) {
+  padding-bottom: 0;
+}
+
+/* ─── Action (header action slot) ─── */
+
+.Action {
+  position: absolute;
+  top: var(--_ov-padding-block);
+  right: var(--_ov-padding-inline);
+  display: flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+
+  --ov-size-button-height-md: var(--_ov-action-height);
+  --ov-size-button-padding-inline-md: var(--_ov-action-padding-inline);
+  --ov-size-button-font-size-md: var(--_ov-action-font-size);
+}
+
+/* ─── Eyebrow ─── */
+
+.Eyebrow {
+  display: block;
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-eyebrow-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--_ov-accent-fg, var(--_ov-muted));
+}
+
+.Eyebrow[data-ov-mono='true'] {
+  font-family: var(--ov-font-mono);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ─── Title ─── */
 
 .Title {
   margin: 0;
@@ -131,6 +253,8 @@
   color: var(--_ov-title-color);
 }
 
+/* ─── Description ─── */
+
 .Description {
   margin: 0;
   color: var(--_ov-muted);
@@ -138,11 +262,204 @@
   font-size: var(--_ov-description-font-size);
 }
 
+/* ─── Stat ─── */
+
+.Stat {
+  font-size: var(--_ov-stat-font-size);
+  font-weight: var(--ov-font-weight-title);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--_ov-title-color);
+}
+
+.Stat[data-ov-mono='true'] {
+  font-family: var(--ov-font-mono);
+  font-feature-settings: 'tnum';
+}
+
+/* ─── Indicator ─── */
+
+.Indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--_ov-description-font-size);
+  color: var(--_ov-muted);
+}
+
+.Indicator::before {
+  content: '';
+  flex-shrink: 0;
+  width: var(--_ov-indicator-dot);
+  height: var(--_ov-indicator-dot);
+  border-radius: 50%;
+  background: var(--_ov-indicator-color, var(--ov-color-fg-subtle));
+}
+
+.Indicator[data-ov-status='success'] { --_ov-indicator-color: var(--ov-color-success); }
+.Indicator[data-ov-status='warning'] { --_ov-indicator-color: var(--ov-color-warning); }
+.Indicator[data-ov-status='danger'] { --_ov-indicator-color: var(--ov-color-danger); }
+.Indicator[data-ov-status='neutral'] { --_ov-indicator-color: var(--ov-color-fg-subtle); }
+.Indicator[data-ov-status='info'] { --_ov-indicator-color: var(--ov-color-info); }
+
+.Indicator[data-ov-pulse='true']::before {
+  animation: indicator-pulse 2s ease-in-out infinite;
+}
+
+@keyframes indicator-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--_ov-indicator-color) 40%, transparent 60%); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--_ov-indicator-color) 0%, transparent 100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Indicator[data-ov-pulse='true']::before {
+    animation: none;
+  }
+}
+
+/* ─── Body ─── */
+
 .Body {
   padding-top: var(--_ov-padding-block);
   padding-bottom: var(--_ov-padding-block);
   font-size: var(--_ov-body-font-size);
 }
+
+/* Collapse Body top padding when preceded by Separator (Separator already provides the gap) */
+.Separator + .Body {
+  padding-top: 0;
+}
+
+/* ─── Media ─── */
+
+.Media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Media > :where(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Cover ─── */
+
+.Cover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.Cover > :where(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Row ─── */
+
+.Row {
+  display: flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+  padding-inline: var(--_ov-padding-inline);
+  padding-block: var(--_ov-padding-block);
+}
+
+/* Collapse Row bottom padding when followed by Body (Body has its own top padding) */
+.Row:has(+ .Body),
+.Row:has(+ .Separator) {
+  padding-bottom: 0;
+}
+
+.Row[data-ov-align='start'] { align-items: flex-start; }
+.Row[data-ov-align='center'] { align-items: center; }
+.Row[data-ov-align='end'] { align-items: flex-end; }
+.Row[data-ov-align='stretch'] { align-items: stretch; }
+
+.Row[data-ov-gap='sm'] { gap: var(--ov-space-stack-sm, 4px); }
+.Row[data-ov-gap='lg'] { gap: var(--ov-space-stack-lg, 16px); }
+
+/* ─── Separator ─── */
+
+.Separator {
+  height: 0;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
+  margin-block: var(--_ov-gap);
+}
+
+/* ─── KeyValue ─── */
+
+.KeyValue {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--_ov-gap);
+  padding-block: 2px;
+}
+
+.KeyValueLabel {
+  flex-shrink: 0;
+  margin: 0;
+  color: var(--_ov-muted);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-description-font-size);
+  font-weight: var(--ov-font-weight-label);
+}
+
+.KeyValueValue {
+  margin: 0;
+  min-width: 0;
+  text-align: end;
+  font-size: var(--_ov-body-font-size);
+  color: var(--_ov-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.KeyValue[data-ov-mono='true'] .KeyValueValue {
+  font-family: var(--ov-font-mono);
+  font-feature-settings: 'tnum';
+}
+
+/* ─── ActionArea ─── */
+
+.ActionArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  cursor: pointer;
+  outline: none;
+}
+
+.ActionArea[data-ov-disabled='true'] {
+  cursor: default;
+}
+
+/* ─── Toolbar ─── */
+
+.Toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-inline: var(--_ov-padding-inline);
+  padding-block: var(--_ov-footer-padding-block);
+
+  --ov-size-button-height-md: var(--_ov-action-height);
+  --ov-size-button-padding-inline-md: var(--_ov-action-padding-inline);
+  --ov-size-button-font-size-md: var(--_ov-action-font-size);
+}
+
+/* ─── Footer ─── */
 
 .Footer {
   display: flex;
@@ -152,8 +469,26 @@
   padding-bottom: var(--_ov-footer-padding-block);
   border-top: 1px solid color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
 
-  /* Card actions track card size by remapping button medium tokens in footer scope. */
   --ov-size-button-height-md: var(--_ov-action-height);
   --ov-size-button-padding-inline-md: var(--_ov-action-padding-inline);
   --ov-size-button-font-size-md: var(--_ov-action-font-size);
+}
+
+/* ─── Group ─── */
+
+.Group {
+  display: grid;
+  gap: var(--ov-size-card-group-gap-md);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.Group[data-ov-gap='sm'] { gap: var(--ov-size-card-group-gap-sm); }
+.Group[data-ov-gap='lg'] { gap: var(--ov-size-card-group-gap-lg); }
+
+.Group[data-ov-columns] {
+  grid-template-columns: repeat(var(--_ov-columns), 1fr);
+}
+
+.Group[data-ov-columns='auto'] {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }

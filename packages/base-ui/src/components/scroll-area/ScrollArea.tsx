@@ -12,13 +12,17 @@ export interface ScrollAreaProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
   function ScrollArea(
-    { orientation = 'vertical', size = 'md', className, tabIndex = 0, role = 'region', ...props },
+    { orientation = 'vertical', size = 'md', className, tabIndex = 0, role, ...props },
     ref,
   ) {
+    // Only apply role="region" when an accessible name is provided to avoid unnamed landmarks
+    const hasAccessibleName = !!(props['aria-label'] || props['aria-labelledby']);
+    const resolvedRole = role ?? (hasAccessibleName ? 'region' : undefined);
+
     return (
       <div
         ref={ref}
-        role={role}
+        role={resolvedRole}
         tabIndex={tabIndex}
         className={cn(styles.Root, className)}
         data-ov-orientation={orientation}

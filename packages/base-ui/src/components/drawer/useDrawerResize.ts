@@ -31,9 +31,35 @@ export function useDrawerResize(
     let startPos = 0;
     let startSize = 0;
     let rafId = 0;
+    let activePointerId = -1;
+    let savedTransition = '';
+
+    const finishDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      cancelAnimationFrame(rafId);
+
+      // Restore transition
+      root.style.transition = savedTransition;
+      root.removeAttribute('data-ov-resizing');
+
+      // Release pointer capture if still held
+      if (activePointerId !== -1) {
+        try { handle.releasePointerCapture(activePointerId); } catch { /* already released */ }
+        activePointerId = -1;
+      }
+
+      // Notify React of the final size
+      const computed = root.style.getPropertyValue('--_ov-size');
+      const parsed = parseFloat(computed);
+      if (Number.isFinite(parsed)) {
+        optsRef.current.onSizeChange?.(parsed);
+      }
+    };
 
     const onPointerDown = (e: PointerEvent) => {
       dragging = true;
+      activePointerId = e.pointerId;
       handle.setPointerCapture(e.pointerId);
 
       const { anchor } = optsRef.current;
@@ -41,7 +67,8 @@ export function useDrawerResize(
       startPos = isVertical(anchor) ? e.clientY : e.clientX;
       startSize = isVertical(anchor) ? rect.height : rect.width;
 
-      // Kill transitions during drag for zero-latency feedback
+      // Save and kill transitions during drag for zero-latency feedback
+      savedTransition = root.style.transition;
       root.style.transition = 'none';
       root.setAttribute('data-ov-resizing', 'true');
       e.preventDefault();
@@ -64,33 +91,37 @@ export function useDrawerResize(
       });
     };
 
-    const onPointerUp = (e: PointerEvent) => {
-      if (!dragging) return;
-      dragging = false;
-      handle.releasePointerCapture(e.pointerId);
-      cancelAnimationFrame(rafId);
+    const onPointerUp = () => {
+      finishDrag();
+    };
 
-      // Restore transitions
-      root.style.transition = '';
-      root.removeAttribute('data-ov-resizing');
+    const onPointerCancel = () => {
+      finishDrag();
+    };
 
-      // Notify React of the final size
-      const computed = root.style.getPropertyValue('--_ov-size');
-      const parsed = parseFloat(computed);
-      if (Number.isFinite(parsed)) {
-        optsRef.current.onSizeChange?.(parsed);
-      }
+    const onLostPointerCapture = () => {
+      finishDrag();
     };
 
     handle.addEventListener('pointerdown', onPointerDown);
+    handle.addEventListener('lostpointercapture', onLostPointerCapture);
     document.addEventListener('pointermove', onPointerMove);
     document.addEventListener('pointerup', onPointerUp);
+    document.addEventListener('pointercancel', onPointerCancel);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      // Clean up any in-flight drag
+      if (dragging) {
+        dragging = false;
+        cancelAnimationFrame(rafId);
+        root.style.transition = savedTransition;
+        root.removeAttribute('data-ov-resizing');
+      }
       handle.removeEventListener('pointerdown', onPointerDown);
+      handle.removeEventListener('lostpointercapture', onLostPointerCapture);
       document.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('pointerup', onPointerUp);
+      document.removeEventListener('pointercancel', onPointerCancel);
     };
-  }, [rootRef, handleRef, options.enabled]);
+  }, [rootRef, handleRef, options.enabled, options.anchor]);
 }

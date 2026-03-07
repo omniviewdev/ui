@@ -15,7 +15,6 @@ export function useListStore(
   const registeredKeysRef = useRef<Key[]>([]);
   const textValuesRef = useRef(new Map<Key, string>());
   const disabledKeysRef = useRef(disabledKeys);
-  disabledKeysRef.current = disabledKeys;
 
   // Snapshot version counter for useSyncExternalStore identity checks
   const versionRef = useRef(0);
@@ -25,6 +24,16 @@ export function useListStore(
     disabledKeys: new Set(),
     registeredKeys: [],
   });
+
+  // Sync disabledKeys into refs and snapshot when they change
+  if (disabledKeysRef.current !== disabledKeys) {
+    disabledKeysRef.current = disabledKeys;
+    snapshotRef.current = {
+      ...snapshotRef.current,
+      disabledKeys: new Set(disabledKeys),
+    };
+    versionRef.current += 1;
+  }
 
   const emit = useCallback(() => {
     versionRef.current += 1;

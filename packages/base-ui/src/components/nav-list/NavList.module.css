@@ -81,7 +81,7 @@
   height: 0;
   border-style: solid;
   border-width: 4px 0 4px 5px;
-  border-color: transparent transparent transparent currentColor;
+  border-color: transparent transparent transparent currentcolor;
 }
 
 /* Expanded state: rotate the caret */
@@ -92,6 +92,20 @@
 /* Collapsed: hide group items */
 .collapsible[data-ov-expanded='false'] .GroupItems {
   display: none;
+}
+
+.GroupHeaderButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
 }
 
 .GroupHeaderLabel {

@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useRef, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ListRootProps, ListViewportProps, ListItemProps, ListGroupProps } from './types';
@@ -11,7 +11,7 @@ import {
   ListStoreContext,
   ListActionsContext,
   useListConfig,
-  useListStore,
+  useListStoreContext,
   useListActions,
 } from './context/ListContext';
 import styles from './List.module.css';
@@ -29,7 +29,7 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
       size,
       children,
       loading,
-      error: _error, // eslint-disable-line @typescript-eslint/no-unused-vars
+      error,
       // Strip list-specific props from DOM spread
       selectionMode: _selectionMode,
       selectionBehavior: _selectionBehavior,
@@ -85,7 +85,11 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
               {...styleDataAttributes({ variant, color, size })}
               {...props}
             >
-              {children}
+              {error ? (
+                <div className={styles.Empty}>{error}</div>
+              ) : (
+                children
+              )}
             </div>
           </ListActionsContext.Provider>
         </ListStoreContext.Provider>
@@ -101,7 +105,7 @@ const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
 const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
   function ListViewport({ className, onReachEnd, onKeyDown, children, ...props }, ref) {
     const config = useListConfig();
-    const store = useListStore();
+    const store = useListStoreContext();
     const actions = useListActions();
     const { handleKeyDown } = useListFocus({ config, actions, store });
     const { handleTypeahead } = useTypeahead({
@@ -111,18 +115,24 @@ const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
     });
 
     const scrollRef = useRef<HTMLDivElement>(null);
+    const hasReachedEndRef = useRef(false);
 
     const handleScroll = useCallback(() => {
-      if (!onReachEnd) return;
       const el = scrollRef.current;
       if (!el) return;
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 1) {
-        onReachEnd();
+
+      const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+
+      if (atEnd && !hasReachedEndRef.current) {
+        hasReachedEndRef.current = true;
+        onReachEnd?.();
+      } else if (!atEnd) {
+        hasReachedEndRef.current = false;
       }
     }, [onReachEnd]);
 
     const combinedKeyDown = useCallback(
-      (event: React.KeyboardEvent<HTMLDivElement>) => {
+      (event: KeyboardEvent<HTMLDivElement>) => {
         handleKeyDown(event);
         handleTypeahead(event);
         onKeyDown?.(event);
@@ -160,7 +170,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
     { className, itemKey, disabled = false, textValue, children, onClick, ...props },
     ref,
   ) {
-    const store = useListStore();
+    const store = useListStoreContext();
     const actions = useListActions();
     const config = useListConfig();
     const itemState = useListItemHook(store, itemKey, textValue);
@@ -168,7 +178,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
     const isDisabled = disabled || itemState.isDisabled;
 
     const handleClick = useCallback(
-      (event: React.MouseEvent<HTMLDivElement>) => {
+      (event: MouseEvent<HTMLDivElement>) => {
         if (isDisabled || config.selectionMode === 'none') {
           onClick?.(event);
           return;
@@ -274,7 +284,7 @@ const ListSeparator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
 );
 
 export interface ListEmptyProps extends HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const ListEmpty = forwardRef<HTMLDivElement, ListEmptyProps>(
@@ -284,7 +294,7 @@ const ListEmpty = forwardRef<HTMLDivElement, ListEmptyProps>(
 );
 
 export interface ListLoadingProps extends HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const ListLoading = forwardRef<HTMLDivElement, ListLoadingProps>(

@@ -27,9 +27,9 @@ export interface ItemState {
 // ---------------------------------------------------------------------------
 
 export interface ListStoreSnapshot {
-  selectedKeys: Set<Key>;
+  selectedKeys: ReadonlySet<Key>;
   activeKey: Key | null;
-  disabledKeys: Set<Key>;
+  disabledKeys: ReadonlySet<Key>;
   registeredKeys: Key[];
 }
 

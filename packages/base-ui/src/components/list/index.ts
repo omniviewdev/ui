@@ -17,6 +17,6 @@ export { useListVirtualizer } from './hooks/useListVirtualizer';
 export type { UseListVirtualizerOptions, UseListVirtualizerReturn } from './hooks/useListVirtualizer';
 export {
   useListConfig,
-  useListStore,
+  useListStoreContext,
   useListActions,
 } from './context/ListContext';

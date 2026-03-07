@@ -5,8 +5,12 @@ import type { ListRootProps, ListItemProps, ListGroupProps } from '../list';
 import { useCollapsibleGroup } from './hooks/useCollapsibleGroup';
 import styles from './NavList.module.css';
 
-// Internal context for passing toggle from collapsible group to its header
-const NavListGroupToggleContext = createContext<(() => void) | null>(null);
+// Internal context for passing toggle state from collapsible group to its header
+interface NavListGroupToggleState {
+  expanded: boolean;
+  toggle: () => void;
+}
+const NavListGroupToggleContext = createContext<NavListGroupToggleState | null>(null);
 
 // ---------------------------------------------------------------------------
 // Root
@@ -92,7 +96,7 @@ const NavListGroup = forwardRef<HTMLDivElement, NavListGroupProps>(
     }
 
     return (
-      <NavListGroupToggleContext.Provider value={toggle}>
+      <NavListGroupToggleContext.Provider value={{ expanded, toggle }}>
         <div
           ref={ref}
           role="group"
@@ -117,22 +121,37 @@ export interface NavListGroupHeaderProps extends HTMLAttributes<HTMLDivElement> 
 
 const NavListGroupHeader = forwardRef<HTMLDivElement, NavListGroupHeaderProps>(
   function NavListGroupHeader({ className, onClick, children, ...props }, ref) {
-    const toggle = useContext(NavListGroupToggleContext);
+    const toggleState = useContext(NavListGroupToggleContext);
 
-    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      toggle?.();
-      onClick?.(event);
-    };
+    if (toggleState) {
+      // Collapsible group — render as a button for accessibility
+      return (
+        <div ref={ref} className={cn(styles.GroupHeader, className)} {...props}>
+          <button
+            type="button"
+            className={styles.GroupHeaderButton}
+            aria-expanded={toggleState.expanded}
+            onClick={(event) => {
+              toggleState.toggle();
+              onClick?.(event as unknown as React.MouseEvent<HTMLDivElement>);
+            }}
+          >
+            <span className={styles.GroupToggle} aria-hidden="true" />
+            <span className={styles.GroupHeaderLabel}>{children}</span>
+          </button>
+        </div>
+      );
+    }
 
+    // Non-collapsible group — simple presentation
     return (
       <div
         ref={ref}
         role="presentation"
         className={cn(styles.GroupHeader, className)}
-        onClick={handleClick}
+        onClick={onClick}
         {...props}
       >
-        {toggle && <span className={styles.GroupToggle} aria-hidden="true" />}
         <span className={styles.GroupHeaderLabel}>{children}</span>
       </div>
     );

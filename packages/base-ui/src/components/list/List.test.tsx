@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
@@ -183,6 +183,34 @@ describe('List', () => {
     expect(lastItem).toHaveAttribute('data-ov-active', 'true');
   });
 
+  it('selects all with Ctrl+A in multiple mode', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    renderWithTheme(
+      <TestList selectionMode="multiple" onSelectedKeysChange={onChange} />,
+    );
+
+    const viewport = screen.getByTestId('list-viewport');
+    viewport.focus();
+
+    await user.keyboard('{Control>}a{/Control}');
+    expect(onChange).toHaveBeenCalledWith(new Set(['a', 'b', 'c', 'd']));
+  });
+
+  it('focuses matching item via typeahead', async () => {
+    const user = userEvent.setup();
+
+    renderWithTheme(<TestList selectionMode="single" />);
+
+    const viewport = screen.getByTestId('list-viewport');
+    viewport.focus();
+
+    await user.keyboard('c');
+    const charlie = screen.getByText('Charlie').closest('[role="option"]');
+    expect(charlie).toHaveAttribute('data-ov-active', 'true');
+  });
+
   // -------------------------------------------------------------------------
   // Disabled items
   // -------------------------------------------------------------------------
@@ -219,10 +247,13 @@ describe('List', () => {
       />,
     );
 
-    // Disabled items have pointer-events: none via CSS and aria-disabled
-    const bravo = screen.getByText('Bravo').closest('[role="option"]');
+    const bravo = screen.getByText('Bravo').closest('[role="option"]')!;
     expect(bravo).toHaveAttribute('aria-disabled', 'true');
     expect(bravo).toHaveAttribute('data-ov-disabled', 'true');
+
+    // Use fireEvent to bypass pointer-events: none CSS
+    fireEvent.click(bravo);
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------------

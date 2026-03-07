@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Key,
   ListConfigContextValue,
@@ -65,9 +65,14 @@ export function useListState(props: ListRootProps): ListStateReturn {
     onActiveKeyChange,
   );
 
-  // Sync controlled values into the store
-  store.setSelectedKeys(selectedKeys);
-  store.setActiveKey(activeKey);
+  // Sync controlled values into the store after render but before paint
+  useLayoutEffect(() => {
+    store.setSelectedKeys(selectedKeys);
+  }, [store, selectedKeys]);
+
+  useLayoutEffect(() => {
+    store.setActiveKey(activeKey);
+  }, [store, activeKey]);
 
   // Anchor for range selection
   const anchorKeyRef = useRef<Key | null>(null);

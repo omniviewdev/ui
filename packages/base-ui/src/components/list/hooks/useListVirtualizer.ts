@@ -1,6 +1,7 @@
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import type { RefObject } from 'react';
-import { DEFAULT_OVERSCAN, DEFAULT_ESTIMATED_ITEM_SIZE } from '../constants';
+import type { ListOrientation } from '../types';
+import { DEFAULT_OVERSCAN, DEFAULT_ESTIMATED_ITEM_SIZE, DEFAULT_ORIENTATION } from '../constants';
 
 export interface UseListVirtualizerOptions {
   count: number;
@@ -8,6 +9,7 @@ export interface UseListVirtualizerOptions {
   overscan?: number;
   estimatedItemSize?: number;
   enabled?: boolean;
+  orientation?: ListOrientation;
 }
 
 export interface UseListVirtualizerReturn {
@@ -25,12 +27,14 @@ export function useListVirtualizer({
   overscan = DEFAULT_OVERSCAN,
   estimatedItemSize = DEFAULT_ESTIMATED_ITEM_SIZE,
   enabled = true,
+  orientation = DEFAULT_ORIENTATION,
 }: UseListVirtualizerOptions): UseListVirtualizerReturn {
   const virtualizer = useVirtualizer({
     count: enabled ? count : 0,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => estimatedItemSize,
     overscan,
+    horizontal: orientation === 'horizontal',
   });
 
   return {

@@ -62,7 +62,7 @@ export type BasicListItemChevronProps = HTMLAttributes<HTMLSpanElement>;
 const BasicListItemChevron = forwardRef<HTMLSpanElement, BasicListItemChevronProps>(
   function BasicListItemChevron({ className, children, ...props }, ref) {
     return (
-      <span ref={ref} className={cn(styles.ItemChevron, className)} aria-hidden="true" {...props}>
+      <span ref={ref} className={cn(styles.ItemChevron, className)} {...props} aria-hidden="true">
         {children ?? '\u203A'}
       </span>
     );

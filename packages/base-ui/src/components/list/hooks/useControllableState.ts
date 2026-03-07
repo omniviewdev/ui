@@ -13,28 +13,29 @@ export function useControllableState<T>(
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internalValue;
 
-  // Keep a ref so the setter callback identity is stable
+  // Keep refs so the setter callback identity is stable
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+
+  // Always reflects the latest value for resolving functional updates
+  const currentValueRef = useRef(value);
+  currentValueRef.current = value;
 
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {
       const resolve = (prev: T): T =>
         typeof next === 'function' ? (next as (prev: T) => T)(prev) : next;
 
-      if (isControlled) {
-        // In controlled mode, just notify — parent owns the state
-        const resolved = resolve(controlledValue);
-        onChangeRef.current?.(resolved);
-      } else {
-        setInternalValue((prev) => {
-          const resolved = resolve(prev);
-          onChangeRef.current?.(resolved);
-          return resolved;
-        });
+      const nextValue = resolve(currentValueRef.current);
+
+      if (!isControlled) {
+        setInternalValue(nextValue);
       }
+
+      currentValueRef.current = nextValue;
+      onChangeRef.current?.(nextValue);
     },
-    [isControlled, controlledValue],
+    [isControlled],
   );
 
   return [value, setValue];

@@ -27,7 +27,7 @@ export function useListConfig(): ListConfigContextValue {
 
 export const ListStoreContext = createContext<ListStore | null>(null);
 
-export function useListStore(): ListStore {
+export function useListStoreContext(): ListStore {
   const ctx = useContext(ListStoreContext);
   if (!ctx) {
     throw new Error(

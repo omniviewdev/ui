@@ -135,6 +135,21 @@ describe('Card', () => {
     expect(screen.getByText('production')).toBeVisible();
   });
 
+  it('renders KeyValue as a dl with dt/dd structure', () => {
+    renderWithTheme(
+      <Card>
+        <Card.Body>
+          <Card.KeyValue label="Region" data-testid="kv">us-east-1</Card.KeyValue>
+        </Card.Body>
+      </Card>,
+    );
+
+    const kv = screen.getByTestId('kv');
+    expect(kv.tagName).toBe('DL');
+    expect(kv.querySelector('dt')).toHaveTextContent('Region');
+    expect(kv.querySelector('dd')).toHaveTextContent('us-east-1');
+  });
+
   it('renders Stat with mono attribute', () => {
     renderWithTheme(
       <Card>
@@ -227,6 +242,10 @@ describe('Card', () => {
     expect(area).toHaveAttribute('tabindex', '-1');
 
     fireEvent.click(area);
+    expect(handleClick).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(area, { key: 'Enter' });
+    fireEvent.keyDown(area, { key: ' ' });
     expect(handleClick).not.toHaveBeenCalled();
   });
 

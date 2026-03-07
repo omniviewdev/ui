@@ -32,7 +32,7 @@
   overflow: clip;
 }
 
-/* Interactive cards need visible overflow for shadow + translate lift */
+/* Interactive cards need visible overflow so the card shadow renders outside its bounds */
 .Root:has(.ActionArea) {
   overflow: visible;
 }

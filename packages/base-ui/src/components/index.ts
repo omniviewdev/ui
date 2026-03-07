@@ -12,6 +12,7 @@ export * from './card';
 export * from './chip';
 export * from './code-block';
 export * from './context-menu';
+export * from './data-table';
 export * from './icon-button';
 export * from './input';
 export * from './menu';

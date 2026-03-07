@@ -44,6 +44,11 @@
   align-self: center;
 }
 
+.Root:not(:has(.Content)) {
+  grid-template-columns: var(--_ov-control-size);
+  column-gap: 0;
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-control-size: var(--ov-size-choice-control-sm);
   --_ov-indicator-size: var(--ov-size-choice-indicator-sm);

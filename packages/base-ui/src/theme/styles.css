@@ -49,6 +49,7 @@
   --ov-primitive-space-3: 12px;
   --ov-primitive-space-4: 16px;
 
+  --ov-primitive-radius-sm: 4px;
   --ov-primitive-radius-md: 6px;
   --ov-primitive-radius-lg: 10px;
   --ov-primitive-shadow-sm: 0 2px 6px rgb(0 0 0 / 0.18);
@@ -263,6 +264,12 @@
   --ov-size-table-caption-font-size-sm: var(--ov-primitive-font-size-11);
   --ov-size-table-caption-font-size-md: var(--ov-font-size-caption);
   --ov-size-table-caption-font-size-lg: var(--ov-primitive-font-size-13);
+  --ov-size-table-row-height-sm: 30px;
+  --ov-size-table-row-height-md: 36px;
+  --ov-size-table-row-height-lg: 44px;
+  --ov-size-table-resize-handle-width: 4px;
+  --ov-size-table-expand-indent: 24px;
+  --ov-size-table-nested-inset: 24px;
 
   --ov-size-sheet-padding-sm: 8px;
   --ov-size-sheet-padding-md: 16px;

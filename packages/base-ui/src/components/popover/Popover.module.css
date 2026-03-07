@@ -175,7 +175,8 @@
 }
 
 .Popup[data-ov-variant='outline'] {
-  --_ov-bg: transparent;
+  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-border: var(--ov-color-border-strong);
 }
 
 .Popup[data-ov-variant='ghost'] {
@@ -231,7 +232,11 @@
   );
 }
 
-.Arrow[data-ov-variant='outline'],
+.Arrow[data-ov-variant='outline'] {
+  --_ov-bg: var(--ov-color-bg-surface);
+  --_ov-border: var(--ov-color-border-strong);
+}
+
 .Arrow[data-ov-variant='ghost'] {
   --_ov-bg: var(--ov-color-bg-base);
 }

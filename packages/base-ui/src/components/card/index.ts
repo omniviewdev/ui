@@ -1,9 +1,21 @@
 export { Card } from './Card';
 export type {
+  CardActionAreaProps,
+  CardActionProps,
   CardBodyProps,
+  CardCoverProps,
   CardDescriptionProps,
+  CardEyebrowProps,
   CardFooterProps,
+  CardGroupProps,
   CardHeaderProps,
+  CardIndicatorProps,
+  CardKeyValueProps,
+  CardMediaProps,
   CardProps,
+  CardRowProps,
+  CardSeparatorProps,
+  CardStatProps,
   CardTitleProps,
+  CardToolbarProps,
 } from './Card';

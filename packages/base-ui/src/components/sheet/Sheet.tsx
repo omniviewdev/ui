@@ -1,17 +1,19 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
-import type { StyledComponentProps } from '../../system/types';
+import type { StyledComponentProps, SurfaceElevation, SurfaceType } from '../../system/types';
 import styles from './Sheet.module.css';
 
-export type SheetElevation = 0 | 1 | 2 | 3;
-export type SheetSurface = 'base' | 'default' | 'raised' | 'overlay' | 'inset' | 'elevated';
+/** @deprecated Use `SurfaceElevation` from `system/types` instead. */
+export type SheetElevation = SurfaceElevation;
+/** @deprecated Use `SurfaceType` from `system/types` instead. */
+export type SheetSurface = SurfaceType;
 
 export interface SheetProps
   extends Omit<HTMLAttributes<HTMLElement>, 'color'>, StyledComponentProps {
   as?: 'div' | 'section' | 'article' | 'aside' | 'main' | 'nav' | 'header' | 'footer';
-  elevation?: SheetElevation;
-  surface?: SheetSurface;
+  elevation?: SurfaceElevation;
+  surface?: SurfaceType;
 }
 
 const SheetRoot = forwardRef<HTMLElement, SheetProps>(function Sheet(

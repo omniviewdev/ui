@@ -86,8 +86,11 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       )
     : 800);
 
+  // Normalize min so the range never inverts when viewport shrinks
+  const resolvedMinSize = Math.min(minSize, resolvedMaxSize);
+
   // Clamp initial size to min/max bounds
-  const clampedDefaultSize = Math.min(Math.max(defaultSize, minSize), resolvedMaxSize);
+  const clampedDefaultSize = Math.min(Math.max(defaultSize, resolvedMinSize), resolvedMaxSize);
 
   // Track current size for aria-valuenow (updated by both drag and keyboard resize)
   const [currentSize, setCurrentSize] = useState(clampedDefaultSize);
@@ -112,7 +115,7 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
 
   useDrawerResize(internalRef, handleRef, {
     anchor,
-    minSize,
+    minSize: resolvedMinSize,
     maxSize: resolvedMaxSize,
     onSizeChange: handleSizeChange,
     enabled: resizable && open,
@@ -180,6 +183,8 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       if (!root || !resizable) return;
 
       const vert = anchor === 'top' || anchor === 'bottom';
+      // For bottom/right anchors, "up/left" visually grows the drawer
+      const sign = (anchor === 'bottom' || anchor === 'right') ? -1 : 1;
       const rect = root.getBoundingClientRect();
       const size = vert ? rect.height : rect.width;
       let newSize: number;
@@ -187,28 +192,28 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       switch (e.key) {
         case 'ArrowUp':
           if (!vert) return;
-          newSize = size - KEYBOARD_STEP;
+          newSize = size - KEYBOARD_STEP * sign;
           break;
         case 'ArrowDown':
           if (!vert) return;
-          newSize = size + KEYBOARD_STEP;
+          newSize = size + KEYBOARD_STEP * sign;
           break;
         case 'ArrowLeft':
           if (vert) return;
-          newSize = size - KEYBOARD_STEP;
+          newSize = size - KEYBOARD_STEP * sign;
           break;
         case 'ArrowRight':
           if (vert) return;
-          newSize = size + KEYBOARD_STEP;
+          newSize = size + KEYBOARD_STEP * sign;
           break;
         case 'PageUp':
-          newSize = size - KEYBOARD_LARGE_STEP;
+          newSize = size - KEYBOARD_LARGE_STEP * sign;
           break;
         case 'PageDown':
-          newSize = size + KEYBOARD_LARGE_STEP;
+          newSize = size + KEYBOARD_LARGE_STEP * sign;
           break;
         case 'Home':
-          newSize = minSize;
+          newSize = resolvedMinSize;
           break;
         case 'End':
           newSize = resolvedMaxSize;
@@ -218,12 +223,12 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       }
 
       e.preventDefault();
-      newSize = Math.min(resolvedMaxSize, Math.max(minSize, newSize));
+      newSize = Math.min(resolvedMaxSize, Math.max(resolvedMinSize, newSize));
 
       root.style.setProperty('--_ov-size', `${newSize}px`);
       handleSizeChange(newSize);
     },
-    [anchor, minSize, resolvedMaxSize, resizable, handleSizeChange],
+    [anchor, resolvedMinSize, resolvedMaxSize, resizable, handleSizeChange],
   );
 
   const isVertical = anchor === 'top' || anchor === 'bottom';
@@ -235,7 +240,7 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       className={cn(styles.Handle, handleVariant === 'edge' && styles.HandleEdge)}
       role="separator"
       aria-orientation={isVertical ? 'horizontal' : 'vertical'}
-      aria-valuemin={minSize}
+      aria-valuemin={resolvedMinSize}
       aria-valuemax={resolvedMaxSize}
       aria-valuenow={currentSize}
       tabIndex={0}

@@ -99,7 +99,7 @@
 .Separator {
   height: 1px;
   margin: 0;
-  background: var(--ov-color-border-muted);
+  background: color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
 }
 
 .Item,

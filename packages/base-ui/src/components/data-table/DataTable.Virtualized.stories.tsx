@@ -190,6 +190,7 @@ function FiftyThousandRowsStory() {
       features={{
         sorting: true,
         globalFilter: true,
+        columnResizing: true,
         rowSelection: 'multi',
         columnPinning: true,
       }}

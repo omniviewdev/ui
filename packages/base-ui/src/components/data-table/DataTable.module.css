@@ -140,8 +140,6 @@
 .Table {
   display: grid;
   inline-size: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
 }
 
 /* --- Header --- */
@@ -316,7 +314,7 @@
   padding: 0;
   cursor: pointer;
   color: var(--ov-color-fg-muted);
-  border-radius: 4px;
+  border-radius: var(--ov-primitive-radius-sm);
   flex-shrink: 0;
   transition: color 0.1s ease, background 0.1s ease;
 }

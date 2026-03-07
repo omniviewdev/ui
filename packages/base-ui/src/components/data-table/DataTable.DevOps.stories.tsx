@@ -34,15 +34,7 @@ const podData: KubePod[] = Array.from({ length: 40 }, (_, i) => ({
 const podColumns: ColumnDef<KubePod, unknown>[] = [
   { accessorKey: 'name', header: 'Name', size: 200 },
   { accessorKey: 'namespace', header: 'Namespace', size: 120 },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    size: 140,
-    cell: (info) => {
-      const status = info.getValue() as string;
-      return status;
-    },
-  },
+  { accessorKey: 'status', header: 'Status', size: 140 },
   { accessorKey: 'restarts', header: 'Restarts', size: 80 },
   { accessorKey: 'node', header: 'Node', size: 100 },
   { accessorKey: 'cpu', header: 'CPU', size: 80 },

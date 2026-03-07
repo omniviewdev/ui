@@ -55,8 +55,20 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   const internalRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
 
-  // Merge refs
-  const rootRef = (externalRef as React.RefObject<HTMLDivElement | null>) ?? internalRef;
+  // Merge refs: support both callback and object refs
+  const mergedRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ref.current assignment
+      (internalRef as any).current = node;
+      if (typeof externalRef === 'function') {
+        externalRef(node);
+      } else if (externalRef) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ref.current assignment
+        (externalRef as any).current = node;
+      }
+    },
+    [externalRef],
+  );
 
   // Compute maxSize default based on viewport
   const resolvedMaxSize = maxSize ?? (typeof window !== 'undefined'
@@ -65,7 +77,7 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       )
     : 800);
 
-  useDrawerResize(rootRef, handleRef, {
+  useDrawerResize(internalRef, handleRef, {
     anchor,
     minSize,
     maxSize: resolvedMaxSize,
@@ -116,7 +128,7 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
         />
       )}
       <div
-        ref={rootRef}
+        ref={mergedRef}
         className={cn(styles.Root, className)}
         data-ov-anchor={anchor}
         data-ov-state={open ? 'open' : 'closed'}

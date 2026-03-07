@@ -12,12 +12,13 @@ export interface ScrollAreaProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
   function ScrollArea(
-    { orientation = 'vertical', size = 'md', className, tabIndex = 0, ...props },
+    { orientation = 'vertical', size = 'md', className, tabIndex = 0, role = 'region', ...props },
     ref,
   ) {
     return (
       <div
         ref={ref}
+        role={role}
         tabIndex={tabIndex}
         className={cn(styles.Root, className)}
         data-ov-orientation={orientation}

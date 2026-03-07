@@ -3,10 +3,8 @@
   --_ov-thumb: var(--ov-color-scrollarea-thumb);
   --_ov-thumb-hover: var(--ov-color-scrollarea-thumb-hover);
   --_ov-track: var(--ov-color-scrollarea-track);
-
   position: relative;
   overflow: hidden;
-
   scrollbar-width: thin;
   scrollbar-color: var(--_ov-thumb) var(--_ov-track);
 }

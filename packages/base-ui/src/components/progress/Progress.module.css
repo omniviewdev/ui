@@ -90,3 +90,12 @@
     transform: translateX(350%);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-indeterminate='true'] .Bar {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+    transform: none;
+  }
+}

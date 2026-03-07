@@ -22,9 +22,9 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       <div
         ref={ref}
         role="progressbar"
-        aria-valuenow={clamped}
-        aria-valuemin={0}
-        aria-valuemax={100}
+        aria-valuenow={indeterminate ? undefined : clamped}
+        aria-valuemin={indeterminate ? undefined : 0}
+        aria-valuemax={indeterminate ? undefined : 100}
         className={cn(styles.Root, className)}
         data-ov-variant={variant}
         data-ov-color={color}

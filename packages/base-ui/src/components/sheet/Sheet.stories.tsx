@@ -19,7 +19,7 @@ const meta = {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     elevation: { control: 'inline-radio', options: [0, 1, 2, 3] },
     surface: { control: 'select', options: ['base', 'default', 'raised', 'overlay', 'inset', 'elevated'] },
-    as: { control: 'select', options: ['div', 'section', 'article', 'aside'] },
+    as: { control: 'select', options: ['div', 'section', 'article', 'aside', 'main', 'nav', 'header', 'footer'] },
   },
   render: (args) => <Sheet {...args} style={{ width: 360 }} />,
 } satisfies Meta<typeof Sheet>;

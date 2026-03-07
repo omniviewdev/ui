@@ -76,8 +76,9 @@ export function useDrawerResize(
 
       // Notify React of the final size
       const computed = root.style.getPropertyValue('--_ov-size');
-      if (computed) {
-        optsRef.current.onSizeChange?.(parseFloat(computed));
+      const parsed = parseFloat(computed);
+      if (Number.isFinite(parsed)) {
+        optsRef.current.onSizeChange?.(parsed);
       }
     };
 

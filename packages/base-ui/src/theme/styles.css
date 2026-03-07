@@ -392,6 +392,7 @@
   --ov-color-bg-surface-raised: #161616;
   --ov-color-bg-surface-overlay: #202020;
   --ov-color-bg-inset: #000000;
+  --ov-color-bg-elevated: #2a2a2a;
 
   --ov-color-fg-default: #ffffff;
   --ov-color-fg-muted: #d7d7d7;
@@ -431,6 +432,7 @@
   --ov-color-bg-surface-raised: #ffffff;
   --ov-color-bg-surface-overlay: #ffffff;
   --ov-color-bg-inset: #f4f4f4;
+  --ov-color-bg-elevated: #ffffff;
 
   --ov-color-fg-default: #000000;
   --ov-color-fg-muted: #111111;

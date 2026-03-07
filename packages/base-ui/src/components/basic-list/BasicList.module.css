@@ -1,0 +1,47 @@
+/* ---------------------------------------------------------------------------
+ * BasicList styles
+ * Extends List foundation with opinionated defaults for general-purpose lists.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  min-inline-size: 200px;
+}
+
+.Item {
+  /* Inherits all List.Item styles via composition */
+}
+
+/* ---------------------------------------------------------------------------
+ * ItemBadge — compact pill for counts / status indicators
+ * --------------------------------------------------------------------------- */
+
+.ItemBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 6px;
+  border-radius: 10px;
+  font-size: var(--ov-primitive-font-size-11);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  color: var(--ov-color-fg-muted);
+  background: var(--ov-color-state-hover);
+  margin-inline-start: auto;
+}
+
+/* ---------------------------------------------------------------------------
+ * ItemChevron — trailing drilldown indicator
+ * --------------------------------------------------------------------------- */
+
+.ItemChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--ov-color-fg-subtle);
+  font-size: 1.15em;
+  margin-inline-start: auto;
+}

@@ -4,7 +4,7 @@ import { LuBox, LuNetwork, LuRocket, LuCalendar, LuGrape, LuCherry, LuApple, LuC
 import { List } from './List';
 import type { Key } from './types';
 
-const meta: Meta = {
+const meta: Meta<typeof List> = {
   title: 'Lists/List',
   tags: ['autodocs'],
   args: {
@@ -60,7 +60,7 @@ const meta: Meta = {
 
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<typeof List>;
 
 // ---------------------------------------------------------------------------
 // Stories

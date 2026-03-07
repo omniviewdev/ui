@@ -14,6 +14,9 @@ interface LogEntry {
   message: string;
 }
 
+// Fixed base timestamp for deterministic story output (2025-01-01T00:00:00Z)
+const BASE_TIMESTAMP = 1735689600000;
+
 function generateLogData(count: number): LogEntry[] {
   const services = ['api-gateway', 'auth-svc', 'user-svc', 'billing-svc', 'notification-svc'];
   const levels: LogEntry['level'][] = ['info', 'warn', 'error', 'debug'];
@@ -30,7 +33,7 @@ function generateLogData(count: number): LogEntry[] {
 
   return Array.from({ length: count }, (_, i) => ({
     id: `log-${i}`,
-    timestamp: new Date(Date.now() - i * 1000).toISOString(),
+    timestamp: new Date(BASE_TIMESTAMP - i * 1000).toISOString(),
     level: levels[i % levels.length]!,
     service: services[i % services.length]!,
     message: messages[i % messages.length]!,
@@ -61,6 +64,7 @@ const selectColumn: ColumnDef<LogEntry, unknown> = {
       onCheckedChange={() => table.toggleAllRowsSelected()}
       size="sm"
       variant="soft"
+      aria-label="Select all rows"
     />
   ),
   cell: ({ row }) => (
@@ -69,6 +73,7 @@ const selectColumn: ColumnDef<LogEntry, unknown> = {
       onCheckedChange={() => row.toggleSelected()}
       size="sm"
       variant="soft"
+      aria-label={`Select row ${row.index + 1}`}
     />
   ),
   size: 36,
@@ -105,6 +110,14 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+const virtualizedFeatures = {
+  sorting: true,
+  globalFilter: true,
+  columnResizing: true,
+  rowSelection: 'multi' as const,
+  columnPinning: true,
+};
+
 const tenKData = generateLogData(10_000);
 
 const tenKColumns: ColumnDef<LogEntry, unknown>[] = [
@@ -117,13 +130,7 @@ function TenThousandRowsStory() {
   const table = useDataTable({
     data: tenKData,
     columns: tenKColumns,
-    features: {
-      sorting: true,
-      globalFilter: true,
-      columnResizing: true,
-      rowSelection: 'multi',
-      columnPinning: true,
-    },
+    features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {
       columnPinning: {
@@ -136,13 +143,7 @@ function TenThousandRowsStory() {
   return (
     <DataTable.Root
       table={table}
-      features={{
-        sorting: true,
-        globalFilter: true,
-        columnResizing: true,
-        rowSelection: 'multi',
-        columnPinning: true,
-      }}
+      features={virtualizedFeatures}
       variant="soft"
       size="sm"
       hoverable
@@ -168,13 +169,7 @@ function FiftyThousandRowsStory() {
   const table = useDataTable({
     data: fiftyKData,
     columns: fiftyKColumns,
-    features: {
-      sorting: true,
-      globalFilter: true,
-      columnResizing: true,
-      rowSelection: 'multi',
-      columnPinning: true,
-    },
+    features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {
       columnPinning: {
@@ -187,13 +182,7 @@ function FiftyThousandRowsStory() {
   return (
     <DataTable.Root
       table={table}
-      features={{
-        sorting: true,
-        globalFilter: true,
-        columnResizing: true,
-        rowSelection: 'multi',
-        columnPinning: true,
-      }}
+      features={virtualizedFeatures}
       variant="soft"
       size="sm"
       hoverable

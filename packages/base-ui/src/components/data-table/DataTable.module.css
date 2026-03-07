@@ -524,7 +524,7 @@
   background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 60%, transparent 40%);
 }
 
-.Root[data-ov-depth='1'] .Row,
-.Root[data-ov-depth='2'] .Row {
+.Root[data-ov-depth='1'] .Cell,
+.Root[data-ov-depth='2'] .Cell {
   border-bottom-color: color-mix(in srgb, var(--ov-color-border-default) 50%, transparent 50%);
 }

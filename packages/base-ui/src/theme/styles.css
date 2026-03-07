@@ -51,7 +51,9 @@
 
   --ov-primitive-radius-md: 6px;
   --ov-primitive-radius-lg: 10px;
+  --ov-primitive-shadow-sm: 0 2px 6px rgb(0 0 0 / 0.18);
   --ov-primitive-shadow-md: 0 6px 18px rgb(0 0 0 / 0.28);
+  --ov-primitive-shadow-lg: 0 12px 36px rgb(0 0 0 / 0.36);
 
   --ov-primitive-duration-fast: 90ms;
   --ov-primitive-duration-normal: 160ms;
@@ -262,12 +264,53 @@
   --ov-size-table-caption-font-size-md: var(--ov-font-size-caption);
   --ov-size-table-caption-font-size-lg: var(--ov-primitive-font-size-13);
 
-  --ov-color-bg-base: #141518;
-  --ov-color-bg-surface: #1a1c20;
-  --ov-color-bg-surface-raised: #202329;
-  --ov-color-bg-surface-overlay: #252a31;
-  --ov-color-bg-inset: #111316;
-  --ov-color-bg-elevated: #2b3038;
+  --ov-size-sheet-padding-sm: 8px;
+  --ov-size-sheet-padding-md: 16px;
+  --ov-size-sheet-padding-lg: 24px;
+  --ov-size-banner-padding-inline-sm: 10px;
+  --ov-size-banner-padding-inline-md: 14px;
+  --ov-size-banner-padding-inline-lg: 18px;
+  --ov-size-banner-padding-block-sm: 8px;
+  --ov-size-banner-padding-block-md: 12px;
+  --ov-size-banner-padding-block-lg: 16px;
+  --ov-size-banner-gap-sm: 8px;
+  --ov-size-banner-gap-md: 10px;
+  --ov-size-banner-gap-lg: 12px;
+  --ov-size-banner-icon-size-sm: 16px;
+  --ov-size-banner-icon-size-md: 18px;
+  --ov-size-banner-icon-size-lg: 20px;
+  --ov-size-banner-title-font-size-sm: var(--ov-primitive-font-size-13);
+  --ov-size-banner-title-font-size-md: var(--ov-font-size-body);
+  --ov-size-banner-title-font-size-lg: var(--ov-primitive-font-size-16);
+  --ov-size-banner-body-font-size-sm: var(--ov-font-size-caption);
+  --ov-size-banner-body-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-banner-body-font-size-lg: var(--ov-font-size-body);
+  --ov-size-progress-height-sm: 4px;
+  --ov-size-progress-height-md: 6px;
+  --ov-size-progress-height-lg: 8px;
+  --ov-size-progress-radius: 999px;
+  --ov-color-progress-track: var(--ov-color-bg-inset);
+  --ov-color-progress-fill: var(--ov-color-brand-500);
+  --ov-size-scrollarea-scrollbar-sm: 6px;
+  --ov-size-scrollarea-scrollbar-md: 8px;
+  --ov-size-scrollarea-scrollbar-lg: 10px;
+  --ov-color-scrollarea-thumb: var(--ov-primitive-gray-500);
+  --ov-color-scrollarea-thumb-hover: var(--ov-primitive-gray-600);
+  --ov-color-scrollarea-track: transparent;
+  --ov-size-spinner-sm: 16px;
+  --ov-size-spinner-md: 20px;
+  --ov-size-spinner-lg: 28px;
+  --ov-size-drawer-handle-thickness: 4px;
+  --ov-size-drawer-handle-length: 32px;
+  --ov-color-drawer-handle: var(--ov-color-border-strong);
+  --ov-color-drawer-handle-hover: var(--ov-color-fg-muted);
+
+  --ov-color-bg-base: #131416;
+  --ov-color-bg-surface: #1b1d21;
+  --ov-color-bg-surface-raised: #242730;
+  --ov-color-bg-surface-overlay: #2d313c;
+  --ov-color-bg-inset: #0d0e10;
+  --ov-color-bg-elevated: #363b48;
 
   --ov-color-fg-default: #e2e7ee;
   --ov-color-fg-muted: #a1a9b6;
@@ -303,11 +346,11 @@
 }
 
 :root[data-ov-theme='light'] {
-  --ov-color-bg-base: #f5f5f6;
-  --ov-color-bg-surface: #ffffff;
-  --ov-color-bg-surface-raised: #fbfbfc;
-  --ov-color-bg-surface-overlay: #f7f8f9;
-  --ov-color-bg-inset: #eceef1;
+  --ov-color-bg-base: #eef0f3;
+  --ov-color-bg-surface: #f7f8fa;
+  --ov-color-bg-surface-raised: #ffffff;
+  --ov-color-bg-surface-overlay: #ffffff;
+  --ov-color-bg-inset: #e4e7ec;
   --ov-color-bg-elevated: #ffffff;
 
   --ov-color-fg-default: #1b1d22;
@@ -334,6 +377,8 @@
   --ov-color-warning-soft: rgb(148 98 33 / 0.12);
   --ov-color-danger: #ad4f4f;
   --ov-color-danger-soft: rgb(173 79 79 / 0.12);
+  --ov-color-info: #5a7fe2;
+  --ov-color-info-soft: rgb(90 127 226 / 0.12);
 
   --ov-color-state-hover: rgb(75 85 100 / 0.08);
   --ov-color-state-pressed: rgb(75 85 100 / 0.14);
@@ -343,10 +388,11 @@
 
 :root[data-ov-theme='high-contrast-dark'] {
   --ov-color-bg-base: #000000;
-  --ov-color-bg-surface: #0b0b0b;
-  --ov-color-bg-surface-raised: #111111;
-  --ov-color-bg-surface-overlay: #181818;
+  --ov-color-bg-surface: #0a0a0a;
+  --ov-color-bg-surface-raised: #161616;
+  --ov-color-bg-surface-overlay: #202020;
   --ov-color-bg-inset: #000000;
+  --ov-color-bg-elevated: #2a2a2a;
 
   --ov-color-fg-default: #ffffff;
   --ov-color-fg-muted: #d7d7d7;
@@ -371,6 +417,8 @@
   --ov-color-warning-soft: rgb(255 210 125 / 0.24);
   --ov-color-danger: #ff9f9f;
   --ov-color-danger-soft: rgb(255 159 159 / 0.24);
+  --ov-color-info: #a6c8ff;
+  --ov-color-info-soft: rgb(166 200 255 / 0.25);
 
   --ov-color-state-hover: rgb(255 255 255 / 0.16);
   --ov-color-state-pressed: rgb(255 255 255 / 0.24);
@@ -384,6 +432,7 @@
   --ov-color-bg-surface-raised: #ffffff;
   --ov-color-bg-surface-overlay: #ffffff;
   --ov-color-bg-inset: #f4f4f4;
+  --ov-color-bg-elevated: #ffffff;
 
   --ov-color-fg-default: #000000;
   --ov-color-fg-muted: #111111;
@@ -408,6 +457,8 @@
   --ov-color-warning-soft: rgb(138 63 0 / 0.16);
   --ov-color-danger: #8f0000;
   --ov-color-danger-soft: rgb(143 0 0 / 0.16);
+  --ov-color-info: #004ad7;
+  --ov-color-info-soft: rgb(0 74 215 / 0.16);
 
   --ov-color-state-hover: rgb(0 0 0 / 0.08);
   --ov-color-state-pressed: rgb(0 0 0 / 0.14);
@@ -545,6 +596,27 @@
   --ov-size-separator-inset-sm: 6px;
   --ov-size-separator-inset-md: 10px;
   --ov-size-separator-inset-lg: 12px;
+  --ov-size-sheet-padding-sm: 6px;
+  --ov-size-sheet-padding-md: 12px;
+  --ov-size-sheet-padding-lg: 18px;
+  --ov-size-banner-padding-inline-sm: 8px;
+  --ov-size-banner-padding-inline-md: 10px;
+  --ov-size-banner-padding-inline-lg: 14px;
+  --ov-size-banner-padding-block-sm: 6px;
+  --ov-size-banner-padding-block-md: 8px;
+  --ov-size-banner-padding-block-lg: 12px;
+  --ov-size-banner-gap-sm: 6px;
+  --ov-size-banner-gap-md: 8px;
+  --ov-size-banner-gap-lg: 10px;
+  --ov-size-banner-icon-size-sm: 14px;
+  --ov-size-banner-icon-size-md: 16px;
+  --ov-size-banner-icon-size-lg: 18px;
+  --ov-size-progress-height-sm: 3px;
+  --ov-size-progress-height-md: 4px;
+  --ov-size-progress-height-lg: 6px;
+  --ov-size-spinner-sm: 14px;
+  --ov-size-spinner-md: 18px;
+  --ov-size-spinner-lg: 24px;
 }
 
 :root[data-ov-density='comfortable'] {
@@ -677,6 +749,27 @@
   --ov-size-separator-inset-sm: 8px;
   --ov-size-separator-inset-md: 12px;
   --ov-size-separator-inset-lg: 16px;
+  --ov-size-sheet-padding-sm: 8px;
+  --ov-size-sheet-padding-md: 16px;
+  --ov-size-sheet-padding-lg: 24px;
+  --ov-size-banner-padding-inline-sm: 10px;
+  --ov-size-banner-padding-inline-md: 14px;
+  --ov-size-banner-padding-inline-lg: 18px;
+  --ov-size-banner-padding-block-sm: 8px;
+  --ov-size-banner-padding-block-md: 12px;
+  --ov-size-banner-padding-block-lg: 16px;
+  --ov-size-banner-gap-sm: 8px;
+  --ov-size-banner-gap-md: 10px;
+  --ov-size-banner-gap-lg: 12px;
+  --ov-size-banner-icon-size-sm: 16px;
+  --ov-size-banner-icon-size-md: 18px;
+  --ov-size-banner-icon-size-lg: 20px;
+  --ov-size-progress-height-sm: 4px;
+  --ov-size-progress-height-md: 6px;
+  --ov-size-progress-height-lg: 8px;
+  --ov-size-spinner-sm: 16px;
+  --ov-size-spinner-md: 20px;
+  --ov-size-spinner-lg: 28px;
 }
 
 :root[data-ov-motion='reduced'] {

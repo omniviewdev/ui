@@ -8,9 +8,11 @@ These are the only components currently in scope and exported:
 
 - `ActionList`
 - `AlertDialog`
+- `AspectRatio`
 - `Autocomplete`
 - `Avatar`
 - `AvatarGroup`
+- `Banner`
 - `Button`
 - `ButtonGroup`
 - `Card`
@@ -20,17 +22,23 @@ These are the only components currently in scope and exported:
 - `CodeBlock`
 - `Combobox`
 - `ContextMenu`
+- `Drawer`
 - `IconButton`
 - `Input`
 - `Menu`
 - `MultiSelect`
 - `NumberInput`
+- `Paper`
 - `Popover`
+- `Progress`
 - `Radio`
 - `RadioGroup`
+- `ScrollArea`
 - `SearchInput`
 - `Select`
+- `Sheet`
 - `Slider`
+- `Spinner`
 - `Switch`
 - `Tabs`
 - `TextField`

@@ -1,0 +1,101 @@
+.Root {
+  --_ov-height: var(--ov-size-progress-height-md);
+  --_ov-radius: var(--ov-size-progress-radius);
+  --_ov-track: var(--ov-color-progress-track);
+  --_ov-fill: var(--ov-color-progress-fill);
+
+  position: relative;
+  width: 100%;
+  height: var(--_ov-height);
+  border-radius: var(--_ov-radius);
+  background: var(--_ov-track);
+  overflow: hidden;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-height: var(--ov-size-progress-height-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-height: var(--ov-size-progress-height-lg);
+}
+
+/* Color: set the accent fill */
+.Root[data-ov-color='neutral'] {
+  --_ov-accent: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-accent: var(--ov-color-brand-500);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-accent: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-accent: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-accent: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-accent: var(--ov-color-info);
+}
+
+/* Variant: solid — full-color bar on inset track */
+.Root[data-ov-variant='solid'] {
+  --_ov-fill: var(--_ov-accent);
+  --_ov-track: var(--ov-color-bg-inset);
+}
+
+/* Variant: soft — tinted/translucent bar on subtle track */
+.Root[data-ov-variant='soft'] {
+  --_ov-fill: color-mix(in srgb, var(--_ov-accent) 45%, transparent 55%);
+  --_ov-track: color-mix(in srgb, var(--_ov-accent) 10%, var(--ov-color-bg-inset) 90%);
+}
+
+/* Variant: outline — bordered track, translucent bar */
+.Root[data-ov-variant='outline'] {
+  --_ov-fill: color-mix(in srgb, var(--_ov-accent) 35%, transparent 65%);
+  --_ov-track: transparent;
+  border: 1px solid color-mix(in srgb, var(--_ov-accent) 40%, var(--ov-color-border-default) 60%);
+}
+
+/* Variant: ghost — minimal, no track background */
+.Root[data-ov-variant='ghost'] {
+  --_ov-fill: color-mix(in srgb, var(--_ov-accent) 50%, transparent 50%);
+  --_ov-track: transparent;
+}
+
+.Bar {
+  height: 100%;
+  border-radius: var(--_ov-radius);
+  background: var(--_ov-fill);
+  transition: width var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-indeterminate='true'] .Bar {
+  width: 40%;
+  animation: ov-progress-indeterminate 1.4s var(--ov-ease-standard) infinite;
+}
+
+@keyframes ov-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-indeterminate='true'] .Bar {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+    transform: none;
+  }
+}

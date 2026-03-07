@@ -1,0 +1,78 @@
+.Root {
+  --_ov-size: var(--ov-size-spinner-md);
+  --_ov-color: var(--ov-color-fg-default);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_ov-size);
+  height: var(--_ov-size);
+  flex-shrink: 0;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-size: var(--ov-size-spinner-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-size: var(--ov-size-spinner-lg);
+}
+
+.Root[data-ov-color='neutral'] {
+  --_ov-color: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-color='brand'] {
+  --_ov-color: var(--ov-color-brand-400);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-color: var(--ov-color-success);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-color: var(--ov-color-warning);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-color: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-color: var(--ov-color-info);
+}
+
+.Bar {
+  position: absolute;
+  width: 9%;
+  height: 28%;
+  top: 0;
+  left: 50%;
+  transform-origin: 50% calc(var(--_ov-size) / 2);
+  border-radius: 999px;
+  background: var(--_ov-color);
+  opacity: 0.15;
+  animation: ov-spinner-fade 0.8s linear infinite;
+}
+
+.Bar:nth-child(1) { transform: translateX(-50%) rotate(0deg);   animation-delay: -0.8s; }
+.Bar:nth-child(2) { transform: translateX(-50%) rotate(45deg);  animation-delay: -0.7s; }
+.Bar:nth-child(3) { transform: translateX(-50%) rotate(90deg);  animation-delay: -0.6s; }
+.Bar:nth-child(4) { transform: translateX(-50%) rotate(135deg); animation-delay: -0.5s; }
+.Bar:nth-child(5) { transform: translateX(-50%) rotate(180deg); animation-delay: -0.4s; }
+.Bar:nth-child(6) { transform: translateX(-50%) rotate(225deg); animation-delay: -0.3s; }
+.Bar:nth-child(7) { transform: translateX(-50%) rotate(270deg); animation-delay: -0.2s; }
+.Bar:nth-child(8) { transform: translateX(-50%) rotate(315deg); animation-delay: -0.1s; }
+
+@keyframes ov-spinner-fade {
+  0% { opacity: 1; }
+  100% { opacity: 0.15; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Bar {
+    animation: none;
+    opacity: 0.4;
+  }
+}

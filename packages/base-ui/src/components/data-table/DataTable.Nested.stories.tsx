@@ -74,6 +74,7 @@ const fileColumns: ColumnDef<FileEntry, unknown>[] = [
             className={styles.ExpandToggle}
             data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
             onClick={row.getToggleExpandedHandler()}
+            aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
           >
             <LuChevronRight size={14} />
           </button>
@@ -173,6 +174,7 @@ const ingressColumns: ColumnDef<Ingress, unknown>[] = [
         className={styles.ExpandToggle}
         data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
         onClick={row.getToggleExpandedHandler()}
+        aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
       >
         <LuChevronRight size={14} />
       </button>
@@ -200,6 +202,7 @@ const serviceColumns: ColumnDef<Service, unknown>[] = [
         className={styles.ExpandToggle}
         data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
         onClick={row.getToggleExpandedHandler()}
+        aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
       >
         <LuChevronRight size={14} />
       </button>

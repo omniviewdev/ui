@@ -42,9 +42,9 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
     });
 
     // Re-measure when data changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- rowVirtualizer.measure is identity-stable; only re-measure when row count changes
     useEffect(() => {
       rowVirtualizer.measure();
-      // rowVirtualizer.measure is identity-stable across renders; only re-measure when row count changes
     }, [rows.length]);
 
     if (rows.length === 0) return null;

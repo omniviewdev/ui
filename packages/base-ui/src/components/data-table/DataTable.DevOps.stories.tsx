@@ -67,7 +67,7 @@ interface EC2Instance {
 
 const ec2Data: EC2Instance[] = Array.from({ length: 20 }, (_, i) => ({
   id: `i-${String(i).padStart(8, '0')}`,
-  instanceId: `i-${Math.random().toString(36).slice(2, 10)}`,
+  instanceId: `i-${(i * 2654435761 >>> 0).toString(16).padStart(8, '0')}`,
   type: ['t3.micro', 't3.small', 'm5.large', 'c5.xlarge', 'r5.2xlarge'][i % 5]!,
   state: (['running', 'stopped', 'terminated', 'pending'] as const)[i % 4]!,
   az: `us-east-1${String.fromCharCode(97 + (i % 3))}`,
@@ -102,7 +102,7 @@ interface DockerContainer {
 
 const dockerData: DockerContainer[] = Array.from({ length: 15 }, (_, i) => ({
   id: `docker-${i}`,
-  containerId: Math.random().toString(36).slice(2, 14),
+  containerId: ((i * 2654435761 >>> 0).toString(16) + (i * 340573321 >>> 0).toString(16)).padStart(12, '0').slice(0, 12),
   image: ['nginx:latest', 'postgres:16', 'redis:7-alpine', 'node:20', 'traefik:v3'][i % 5]!,
   command: ['"nginx -g…"', '"docker-entrypoint…"', '"redis-server"', '"node server.js"', '"traefik --api…"'][i % 5]!,
   status: `Up ${i + 1} hours`,

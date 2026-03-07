@@ -92,9 +92,13 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   // Track current size for aria-valuenow (updated by both drag and keyboard resize)
   const [currentSize, setCurrentSize] = useState(clampedDefaultSize);
 
-  // Sync currentSize when clampedDefaultSize changes (e.g. prop change)
+  // Sync currentSize and CSS variable when props change the default size
   useEffect(() => {
     setCurrentSize(clampedDefaultSize);
+    const root = internalRef.current;
+    if (root) {
+      root.style.setProperty('--_ov-size', `${clampedDefaultSize}px`);
+    }
   }, [clampedDefaultSize]);
 
   // Wrap onSizeChange to also update local state

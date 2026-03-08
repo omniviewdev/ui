@@ -63,6 +63,11 @@ describe('SelectableList', () => {
     );
     const items = screen.getAllByRole('option');
     expect(items).toHaveLength(2);
+    for (const item of items) {
+      const indicator = item.querySelector('[aria-hidden="true"]');
+      expect(indicator).toBeInTheDocument();
+      expect(indicator?.className).toContain('RadioIndicator');
+    }
   });
 
   it('click on item toggles checkbox — data-checked appears on indicator', async () => {

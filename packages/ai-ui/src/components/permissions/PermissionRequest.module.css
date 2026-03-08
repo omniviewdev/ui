@@ -1,0 +1,103 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-warning-default);
+  border-radius: var(--ov-radius-md, 6px);
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Icon {
+  font-size: 14px;
+}
+
+.Tool {
+  font-family: var(--ov-font-family-mono, monospace);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-default);
+}
+
+.Description {
+  margin: 0;
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  line-height: var(--ov-line-height-normal, 1.5);
+  color: var(--ov-color-fg-muted);
+}
+
+.Scope {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+}
+
+.ScopeLabel {
+  color: var(--ov-color-fg-subtle);
+}
+
+.ScopeValue {
+  font-family: var(--ov-font-family-mono, monospace);
+  color: var(--ov-color-fg-muted);
+  background: var(--ov-color-bg-inset);
+  padding: 1px var(--ov-space-1, 4px);
+  border-radius: var(--ov-radius-sm, 3px);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  justify-content: flex-end;
+}
+
+.Button {
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  cursor: pointer;
+  transition: background var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Button:hover {
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.Button:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.Button[data-ov-action='deny'] {
+  color: var(--ov-color-danger-default);
+}
+
+.Button[data-ov-action='allow'] {
+  background: var(--ov-color-success-default);
+  color: var(--ov-color-fg-on-solid, #fff);
+  border-color: var(--ov-color-success-default);
+}
+
+.Button[data-ov-action='allow']:hover {
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Button {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Button {
+  transition: none;
+}

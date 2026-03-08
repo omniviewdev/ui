@@ -1,0 +1,49 @@
+.Root {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-1, 4px) 0;
+}
+
+.Icon {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.Icon[data-ov-status='idle'] {
+  color: var(--ov-color-fg-muted);
+}
+
+.Icon[data-ov-status='running'] {
+  color: var(--ov-color-fg-brand, var(--ov-color-info-default));
+}
+
+.Icon[data-ov-status='paused'] {
+  color: var(--ov-color-warning-default);
+}
+
+.Icon[data-ov-status='complete'] {
+  color: var(--ov-color-success-default);
+}
+
+.Icon[data-ov-status='error'] {
+  color: var(--ov-color-danger-default);
+}
+
+.Label {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  color: var(--ov-color-fg-default);
+}
+
+.Root[data-ov-status='idle'] .Label {
+  color: var(--ov-color-fg-muted);
+}
+
+.Detail {
+  margin-left: auto;
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+}

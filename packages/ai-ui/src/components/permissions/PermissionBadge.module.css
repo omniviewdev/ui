@@ -1,0 +1,24 @@
+.Root {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--ov-space-2, 8px);
+  border-radius: var(--ov-radius-full, 9999px);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-medium, 500);
+  line-height: 1.5;
+}
+
+.Root[data-ov-level='granted'] {
+  background: var(--ov-color-success-soft-bg, rgba(0, 200, 0, 0.1));
+  color: var(--ov-color-success-default);
+}
+
+.Root[data-ov-level='denied'] {
+  background: var(--ov-color-danger-soft-bg, rgba(200, 0, 0, 0.1));
+  color: var(--ov-color-danger-default);
+}
+
+.Root[data-ov-level='ask'] {
+  background: var(--ov-color-warning-soft-bg, rgba(200, 150, 0, 0.1));
+  color: var(--ov-color-warning-default);
+}

@@ -1,0 +1,83 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+}
+
+.Step {
+  display: flex;
+  gap: var(--ov-space-2, 8px);
+  min-height: 0;
+}
+
+.StepIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+.StepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.StepIcon[data-ov-status='pending'] {
+  color: var(--ov-color-fg-subtle);
+}
+
+.StepIcon[data-ov-status='active'] {
+  color: var(--ov-color-fg-brand, var(--ov-color-info-default));
+}
+
+.StepIcon[data-ov-status='complete'] {
+  color: var(--ov-color-success-default);
+}
+
+.StepIcon[data-ov-status='error'] {
+  color: var(--ov-color-danger-default);
+}
+
+.StepLine {
+  flex: 1;
+  width: 1px;
+  min-height: 8px;
+  background: var(--ov-color-border-default);
+}
+
+.Step:last-child .StepLine {
+  display: none;
+}
+
+.StepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  padding-bottom: var(--ov-space-2, 8px);
+  min-width: 0;
+}
+
+.StepLabel {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-weight: var(--ov-font-weight-medium, 500);
+  color: var(--ov-color-fg-default);
+  line-height: 16px;
+}
+
+.Step[data-ov-status='pending'] .StepLabel {
+  color: var(--ov-color-fg-muted);
+}
+
+.StepContent {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  color: var(--ov-color-fg-muted);
+  line-height: var(--ov-line-height-normal, 1.5);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

@@ -10,14 +10,30 @@ import {
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { TabDescriptor, TabGroupDescriptor, TabId, ReorderMeta } from '../types';
 
-function getTabLane(tab: TabDescriptor): string {
+export function getTabLane(tab: TabDescriptor): string {
   if (tab.pinned) return 'pinned';
   if (tab.groupId) return tab.groupId;
   return 'ungrouped';
 }
 
+export function canReorder(
+  activeTab: TabDescriptor,
+  overTab: TabDescriptor,
+  options: { allowReorderAcrossPinnedBoundary: boolean; allowReorderAcrossGroups: boolean },
+): boolean {
+  const activeLane = getTabLane(activeTab);
+  const overLane = getTabLane(overTab);
+
+  if (activeLane === overLane) return true;
+
+  const crossesPinned = activeLane === 'pinned' || overLane === 'pinned';
+  if (crossesPinned) return options.allowReorderAcrossPinnedBoundary;
+  return options.allowReorderAcrossGroups;
+}
+
 export interface UseTabReorderOptions {
   tabs: TabDescriptor[];
+  /** Reserved for future group-aware validation (e.g. reject orphaned groupIds). */
   groups?: TabGroupDescriptor[];
   onReorder?: (nextTabs: TabDescriptor[], meta: ReorderMeta) => void;
   allowReorderAcrossPinnedBoundary?: boolean;
@@ -55,15 +71,7 @@ export function useTabReorder({
       const overTab = tabs.find((t) => t.id === overId);
       if (!activeTab || !overTab) return;
 
-      const activeLane = getTabLane(activeTab);
-      const overLane = getTabLane(overTab);
-
-      // Constraint: pinned boundary
-      if (activeLane !== overLane) {
-        const crossesPinned = activeLane === 'pinned' || overLane === 'pinned';
-        if (crossesPinned && !allowReorderAcrossPinnedBoundary) return;
-        if (!crossesPinned && !allowReorderAcrossGroups) return;
-      }
+      if (!canReorder(activeTab, overTab, { allowReorderAcrossPinnedBoundary, allowReorderAcrossGroups })) return;
 
       const fromIndex = tabs.findIndex((t) => t.id === activeId);
       const toIndex = tabs.findIndex((t) => t.id === overId);

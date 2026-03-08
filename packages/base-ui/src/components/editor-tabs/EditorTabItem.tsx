@@ -41,9 +41,12 @@ export const EditorTabItem = memo(
       [ref, setNodeRef],
     );
 
+    const prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const sortableStyle = {
       transform: CSS.Translate.toString(transform),
-      transition: transition ?? undefined,
+      transition: prefersReducedMotion ? 'none' : (transition ?? undefined),
     };
 
     const handleClick = useCallback(() => {

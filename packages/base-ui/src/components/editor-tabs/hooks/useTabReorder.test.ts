@@ -1,30 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { TabDescriptor } from '../types';
-
-/**
- * Extract the lane logic from useTabReorder so we can unit-test constraints
- * without rendering hooks. This mirrors the getTabLane function in the hook.
- */
-function getTabLane(tab: TabDescriptor): string {
-  if (tab.pinned) return 'pinned';
-  if (tab.groupId) return tab.groupId;
-  return 'ungrouped';
-}
-
-function canReorder(
-  activeTab: TabDescriptor,
-  overTab: TabDescriptor,
-  options: { allowReorderAcrossPinnedBoundary: boolean; allowReorderAcrossGroups: boolean },
-): boolean {
-  const activeLane = getTabLane(activeTab);
-  const overLane = getTabLane(overTab);
-
-  if (activeLane === overLane) return true;
-
-  const crossesPinned = activeLane === 'pinned' || overLane === 'pinned';
-  if (crossesPinned) return options.allowReorderAcrossPinnedBoundary;
-  return options.allowReorderAcrossGroups;
-}
+import { getTabLane, canReorder } from './useTabReorder';
 
 const pinnedTab: TabDescriptor = { id: 'p1', title: 'pinned.ts', pinned: true };
 const ungroupedTab: TabDescriptor = { id: 'u1', title: 'ungrouped.ts' };

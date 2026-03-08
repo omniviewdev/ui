@@ -111,7 +111,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       if (typeof ref === 'function') ref(node);
       else if (ref) (ref as { current: HTMLDivElement | null }).current = node;
     },
-    [ref, rootElRef],
+    [ref],
   );
 
   const reorder = useTabReorder({
@@ -140,16 +140,16 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       // Snapshot CSS vars from the root element for the DragOverlay
       if (rootElRef.current) {
         const computed = getComputedStyle(rootElRef.current);
-        const snapshot: Record<string, string> = {};
+        const snapshot: Partial<Record<string, string>> & React.CSSProperties = {};
         for (const key of CSS_VAR_SNAPSHOT_KEYS) {
           snapshot[key] = computed.getPropertyValue(key);
         }
-        cssVarSnapshotRef.current = snapshot as unknown as React.CSSProperties;
+        cssVarSnapshotRef.current = snapshot;
       }
       reorder.handleDragStart(event);
       detach.handleDetachDragStart(event);
     },
-    [reorder, detach, rootElRef, cssVarSnapshotRef],
+    [reorder, detach],
   );
 
   const handleDragEnd = useCallback(

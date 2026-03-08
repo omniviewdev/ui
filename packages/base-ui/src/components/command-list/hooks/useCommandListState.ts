@@ -160,12 +160,13 @@ export function useCommandListState<TItem>(
   }
 
   // Stable ref for items lookup in actions
-  const itemsMapRef = useRef<Map<Key, TItem>>(new Map());
-  const map = new Map<Key, TItem>();
-  for (const item of items) {
-    map.set(itemKey(item), item);
-  }
-  itemsMapRef.current = map;
+  const itemsMap = useMemo(() => {
+    const m = new Map<Key, TItem>();
+    for (const item of items) m.set(itemKey(item), item);
+    return m;
+  }, [items, itemKey]);
+  const itemsMapRef = useRef(itemsMap);
+  itemsMapRef.current = itemsMap;
 
   // -----------------------------------------------------------------------
   // Actions
@@ -189,11 +190,15 @@ export function useCommandListState<TItem>(
       if (len === 0) return;
 
       let nextIndex = snapshot.activeIndex + delta;
-      if (nextIndex < 0) nextIndex = 0;
-      if (nextIndex >= len) nextIndex = len - 1;
+      if (loopFocus) {
+        nextIndex = ((nextIndex % len) + len) % len;
+      } else {
+        if (nextIndex < 0) nextIndex = 0;
+        if (nextIndex >= len) nextIndex = len - 1;
+      }
       store.setActiveIndex(nextIndex);
     },
-    [store],
+    [store, loopFocus],
   );
 
   const setActiveKeyAction = useCallback(

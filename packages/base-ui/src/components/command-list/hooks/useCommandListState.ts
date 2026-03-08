@@ -8,7 +8,7 @@ import type {
   ProcessedItem,
   CommandGroup,
 } from '../types';
-import { DEFAULT_DENSITY, DEFAULT_PLACEHOLDER } from '../constants';
+import { DEFAULT_DENSITY, DEFAULT_PLACEHOLDER, DEFAULT_OVERSCAN, DEFAULT_ESTIMATED_ITEM_SIZE } from '../constants';
 import { useControllableState } from '../../list/hooks/useControllableState';
 import { useCommandListStore } from './useCommandListStore';
 
@@ -47,6 +47,8 @@ export function useCommandListState<TItem>(
     density = DEFAULT_DENSITY,
     virtualized = false,
     placeholder = DEFAULT_PLACEHOLDER,
+    overscan = DEFAULT_OVERSCAN,
+    estimatedItemSize = DEFAULT_ESTIMATED_ITEM_SIZE,
   } = props;
 
   const disabledKeys = useMemo(
@@ -114,7 +116,9 @@ export function useCommandListState<TItem>(
       if (!groupMap.has(gKey)) groupMap.set(gKey, []);
       groupMap.get(gKey)!.push(item);
     }
-    const order = groupOrder ?? [...groupMap.keys()];
+    const order = groupOrder
+      ? [...groupOrder, ...[...groupMap.keys()].filter((k) => !groupOrder.includes(k))]
+      : [...groupMap.keys()];
     return order
       .filter((k) => groupMap.has(k))
       .map((k) => ({
@@ -220,8 +224,10 @@ export function useCommandListState<TItem>(
       density,
       loopFocus,
       placeholder,
+      estimatedItemSize,
+      overscan,
     }),
-    [virtualized, density, loopFocus, placeholder],
+    [virtualized, density, loopFocus, placeholder, estimatedItemSize, overscan],
   );
 
   const actions = useMemo<CommandListActionsContextValue>(

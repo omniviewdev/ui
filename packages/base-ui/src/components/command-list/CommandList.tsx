@@ -302,7 +302,8 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
       count: allItems.length,
       scrollRef,
       enabled: config.virtualized,
-      estimatedItemSize: 36,
+      estimatedItemSize: config.estimatedItemSize,
+      overscan: config.overscan,
     });
 
     const mergedRef = mergeRefs(scrollRef, ref);
@@ -489,8 +490,17 @@ interface CommandListItemLabelProps extends HTMLAttributes<HTMLSpanElement> {
 function splitByRanges(text: string, ranges: HighlightRange[]): { text: string; highlighted: boolean }[] {
   if (!ranges.length) return [{ text, highlighted: false }];
 
+  // Clamp ranges to text bounds and discard invalid ones
+  const clamped: HighlightRange[] = [];
+  for (const r of ranges) {
+    const start = Math.max(0, Math.min(r.start, text.length));
+    const end = Math.max(0, Math.min(r.end, text.length));
+    if (start < end) clamped.push({ start, end });
+  }
+  if (!clamped.length) return [{ text, highlighted: false }];
+
   // Sort and merge overlapping ranges
-  const sorted = [...ranges].sort((a, b) => a.start - b.start);
+  const sorted = clamped.sort((a, b) => a.start - b.start);
   const merged: HighlightRange[] = [];
   for (const range of sorted) {
     const last = merged[merged.length - 1];

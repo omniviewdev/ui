@@ -102,6 +102,8 @@ export interface CommandListConfigContextValue {
   density: ListDensity;
   loopFocus: boolean;
   placeholder: string;
+  estimatedItemSize: number;
+  overscan: number;
 }
 
 export interface CommandListActionsContextValue {

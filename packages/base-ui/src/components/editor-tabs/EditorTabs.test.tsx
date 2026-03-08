@@ -191,4 +191,62 @@ describe('EditorTabs', () => {
     expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
     expect(onDetachCommit).not.toHaveBeenCalled();
   });
+
+  it('detachable={false} does not attach pointermove listener on pointerdown', () => {
+    const addSpy = vi.spyOn(document, 'addEventListener');
+    const onDetachCommit = vi.fn();
+    const tabs: TabDescriptor[] = [
+      { id: 'file1', title: 'index.ts', payload: { path: '/src/index.ts' } },
+      { id: 'file2', title: 'App.tsx' },
+    ];
+    renderWithTheme(
+      <EditorTabs
+        tabs={tabs}
+        activeId="file1"
+        detachable={false}
+        onDetachCommit={onDetachCommit}
+      />,
+    );
+
+    const tab = screen.getByRole('tab', { name: 'index.ts' });
+    fireEvent.pointerDown(tab, { clientX: 100, clientY: 120, pointerId: 1 });
+
+    const pointermoveCalls = addSpy.mock.calls.filter(
+      (call) => call[0] === 'pointermove',
+    );
+    // No pointermove listener should be added for detach tracking
+    expect(pointermoveCalls).toHaveLength(0);
+
+    expect(onDetachCommit).not.toHaveBeenCalled();
+    expect(document.querySelector('[data-detach-source]')).not.toBeInTheDocument();
+
+    addSpy.mockRestore();
+  });
+
+  it('detachable tab wires onDetachCommit through without crashing', () => {
+    // Full pointer drag simulation is not feasible in jsdom (dnd-kit requires
+    // setPointerCapture, getBoundingClientRect, etc.). The useTabDetach hook
+    // tests cover the threshold/commit logic directly. This test verifies
+    // the component accepts and wires the props correctly.
+    const onDetachCommit = vi.fn();
+    const tabs: TabDescriptor[] = [
+      { id: 'file1', title: 'index.ts', payload: { path: '/src/index.ts' } },
+      { id: 'file2', title: 'App.tsx' },
+    ];
+    renderWithTheme(
+      <EditorTabs
+        tabs={tabs}
+        activeId="file1"
+        detachable
+        detachThresholdPx={18}
+        onDetachCommit={onDetachCommit}
+      />,
+    );
+
+    // Verify component renders with detach props
+    expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
+    // No detach artifacts without an active drag
+    expect(document.querySelector('[data-detach-source]')).not.toBeInTheDocument();
+    expect(onDetachCommit).not.toHaveBeenCalled();
+  });
 });

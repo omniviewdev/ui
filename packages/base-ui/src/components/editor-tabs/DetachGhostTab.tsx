@@ -9,7 +9,7 @@ export interface DetachGhostTabProps {
 
 export function DetachGhostTab({ tab, style }: DetachGhostTabProps) {
   return (
-    <div className={cn(styles.Tab, styles.DetachGhost)} style={style} data-active="">
+    <div className={cn(styles.Tab, styles.DetachGhost)} style={style} data-active="" aria-hidden="true">
       {tab.icon && <span className={styles.TabIcon}>{tab.icon}</span>}
       {!tab.pinned && <span className={styles.TabTitle}>{tab.title}</span>}
     </div>

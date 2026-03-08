@@ -609,6 +609,7 @@ function FakeWindow({
         {/* Traffic lights */}
         <div style={{ display: 'flex', gap: 6 }}>
           <button
+            type="button"
             onClick={onClose}
             style={{
               width: 12, height: 12, borderRadius: '50%',

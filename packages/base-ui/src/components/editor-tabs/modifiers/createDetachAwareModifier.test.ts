@@ -60,6 +60,24 @@ describe('createDetachAwareModifier', () => {
     expect(result.x).toBe(0); // Clamped: 800 - 800 = 0
   });
 
+  it('clamps X to ancestor left edge in reorder mode', () => {
+    const modeRef = { current: 'reorder' as DragMode };
+    const modifier = createDetachAwareModifier(modeRef);
+
+    // Dragging node at left:50, right:150, ancestor left: 0
+    // transform.x = -100 would push left edge to -50, should clamp to -50
+    const result = modifier(
+      makeModifierArgs(
+        { x: -100, y: 10, scaleX: 1, scaleY: 1 },
+        { left: 50, right: 150 },
+        { left: 0, right: 800 },
+      ),
+    );
+
+    expect(result.y).toBe(0);
+    expect(result.x).toBe(-50); // Clamped: 0 - 50 = -50
+  });
+
   it('passes through full transform in detach-armed mode', () => {
     const modeRef = { current: 'detach-armed' as DragMode };
     const modifier = createDetachAwareModifier(modeRef);

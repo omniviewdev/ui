@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
@@ -102,8 +102,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
 
   const { scrollState, scrollTo, viewportRef } = useTabScroll();
 
-  const rootElRef = useMemo(() => ({ current: null as HTMLDivElement | null }), []);
-  const cssVarSnapshotRef = useMemo(() => ({ current: null as React.CSSProperties | null }), []);
+  const rootElRef = useRef<HTMLDivElement | null>(null);
+  const cssVarSnapshotRef = useRef<React.CSSProperties | null>(null);
 
   const rootRefCb = useCallback(
     (node: HTMLDivElement | null) => {

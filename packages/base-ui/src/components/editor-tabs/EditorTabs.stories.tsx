@@ -198,7 +198,7 @@ export const Closable: Story = {
   },
   render: function ClosableRender(args) {
     const [tabs, setTabs] = useState(args.tabs);
-    const [activeId, setActiveId] = useState(args.defaultActiveId ?? 'f1');
+    const [activeId, setActiveId] = useState<string | undefined>(args.defaultActiveId ?? 'f1');
 
     return (
       <EditorTabs
@@ -209,7 +209,11 @@ export const Closable: Story = {
         onCloseTab={(id) => {
           const remaining = tabs.filter((t) => t.id !== id);
           setTabs(remaining);
-          if (activeId === id && remaining.length > 0) setActiveId(remaining[0]!.id);
+          if (remaining.length === 0) {
+            setActiveId(undefined);
+          } else if (activeId === id) {
+            setActiveId(remaining[0]!.id);
+          }
         }}
       />
     );
@@ -234,7 +238,7 @@ export const WithContextMenu: Story = {
   },
   render: function WithContextMenuRender(args) {
     const [tabs, setTabs] = useState(args.tabs);
-    const [activeId, setActiveId] = useState(args.defaultActiveId ?? 'index');
+    const [activeId, setActiveId] = useState<string | undefined>(args.defaultActiveId ?? 'index');
     const contextTabRef = useRef<TabId | null>(null);
 
     const findTab = (id: TabId) => tabs.find((t) => t.id === id);
@@ -242,7 +246,9 @@ export const WithContextMenu: Story = {
     const closeTab = useCallback((id: TabId) => {
       setTabs((prev) => {
         const next = prev.filter((t) => t.id !== id);
-        if (next.length > 0) {
+        if (next.length === 0) {
+          setActiveId(undefined);
+        } else {
           setActiveId((current) => (current === id ? next[0]!.id : current));
         }
         return next;
@@ -282,6 +288,7 @@ export const WithContextMenu: Story = {
 
     const closeAll = useCallback(() => {
       setTabs([]);
+      setActiveId(undefined);
     }, []);
 
     const togglePin = useCallback((id: TabId) => {

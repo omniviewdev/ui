@@ -25,9 +25,10 @@ function contrastRatio(l1: number, l2: number): number {
 
 /**
  * Return '#000' or '#fff' — whichever has higher WCAG contrast against `hex`.
- * Accepts 3- or 6-digit hex. Falls back to '#fff' for unparseable values.
+ * Accepts 3- or 6-digit hex. Returns `null` for non-hex values (e.g. rgb(),
+ * hsl(), var()) so the caller can fall back to the default CSS text color.
  */
-function contrastFg(hex: string): string {
+function contrastFg(hex: string): string | null {
   // 3-digit shorthand
   let m = /^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(hex);
   if (m) {
@@ -37,7 +38,7 @@ function contrastFg(hex: string): string {
   }
   // 6-digit
   m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
-  if (!m) return '#fff';
+  if (!m) return null;
   const [r, g, b] = [parseInt(m[1]!, 16), parseInt(m[2]!, 16), parseInt(m[3]!, 16)];
   const l = luminance(r, g, b);
   return contrastRatio(l, 1) >= contrastRatio(l, 0) ? '#fff' : '#000';
@@ -78,12 +79,14 @@ export const EditorTabGroupChip = forwardRef<HTMLElement, EditorTabGroupChipProp
       };
       if (group.color) {
         const fg = group.fg ?? contrastFg(group.color);
-        return {
-          ...base,
+        const style: Record<string, string> = {
           '--_ov-accent-bg': group.color,
-          '--_ov-accent-fg': fg,
           '--_ov-accent-border': group.color,
-        } as CSSProperties;
+        };
+        if (fg) {
+          style['--_ov-accent-fg'] = fg;
+        }
+        return { ...base, ...style } as CSSProperties;
       }
       return base;
     }, [group.color, group.fg]);

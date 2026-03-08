@@ -64,7 +64,7 @@ function removeTabFromTree(root: DockNode, leafId: string, tabId: string): DockN
     if (root.id !== leafId) return root;
     const tabs = root.tabs.filter((t) => t.id !== tabId);
     if (tabs.length === 0) return null;
-    const activeTab = root.activeTab === tabId ? tabs[0].id : root.activeTab;
+    const activeTab = root.activeTab === tabId ? (tabs[0]?.id ?? '') : root.activeTab;
     return { ...root, tabs, activeTab };
   }
 
@@ -73,7 +73,7 @@ function removeTabFromTree(root: DockNode, leafId: string, tabId: string): DockN
     .filter((child): child is DockNode => child != null);
 
   if (children.length === 0) return null;
-  if (children.length === 1) return children[0];
+  if (children.length === 1) return children[0] ?? null;
   return { ...root, children };
 }
 
@@ -82,8 +82,10 @@ function findSplitByIndex(root: DockNode, path: number[]): DockSplit | null {
   if (root.type === 'leaf') return null;
   if (path.length === 0) return root;
   const childIndex = path[0];
-  if (childIndex >= root.children.length) return null;
-  return findSplitByIndex(root.children[childIndex], path.slice(1));
+  if (childIndex == null || childIndex >= root.children.length) return null;
+  const child = root.children[childIndex];
+  if (!child) return null;
+  return findSplitByIndex(child, path.slice(1));
 }
 
 /** Build a path from root to the split that contains the given leaf IDs at divider position. */
@@ -91,7 +93,9 @@ function findSplitPath(root: DockNode, splitId: string): number[] | null {
   if (root.type === 'leaf') return null;
   if (getSplitId(root) === splitId) return [];
   for (let i = 0; i < root.children.length; i++) {
-    const childPath = findSplitPath(root.children[i], splitId);
+    const child = root.children[i];
+    if (!child) continue;
+    const childPath = findSplitPath(child, splitId);
     if (childPath != null) return [i, ...childPath];
   }
   return null;
@@ -120,6 +124,8 @@ function updateSizesByPath(root: DockNode, path: number[], newSizes: number[]): 
 }
 
 // ─── Internal Components ────────────────────────
+
+const DIVIDER_KEYBOARD_STEP = 20;
 
 interface DockDividerProps {
   direction: DockDirection;
@@ -158,15 +164,37 @@ function DockDivider({ direction, onDrag }: DockDividerProps) {
     dragging.current = false;
   }, []);
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      const isHorizontal = direction === 'horizontal';
+      let delta = 0;
+      if ((isHorizontal && e.key === 'ArrowRight') || (!isHorizontal && e.key === 'ArrowDown')) {
+        delta = DIVIDER_KEYBOARD_STEP;
+      } else if ((isHorizontal && e.key === 'ArrowLeft') || (!isHorizontal && e.key === 'ArrowUp')) {
+        delta = -DIVIDER_KEYBOARD_STEP;
+      }
+      if (delta !== 0) {
+        e.preventDefault();
+        onDrag(delta);
+      }
+    },
+    [direction, onDrag],
+  );
+
   return (
     <div
       className={styles.Divider}
       data-ov-direction={direction}
       role="separator"
+      tabIndex={0}
       aria-orientation={direction === 'horizontal' ? 'vertical' : 'horizontal'}
+      aria-valuenow={50}
+      aria-valuemin={0}
+      aria-valuemax={100}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onKeyDown={handleKeyDown}
     />
   );
 }
@@ -180,6 +208,8 @@ interface DockTabBarProps {
 }
 
 function DockTabBar({ tabs, activeTab, leafId, onTabClick, onTabClose }: DockTabBarProps) {
+  const tabListRef = useRef<HTMLDivElement>(null);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent, currentIndex: number) => {
       let nextIndex = currentIndex;
@@ -196,15 +226,21 @@ function DockTabBar({ tabs, activeTab, leafId, onTabClick, onTabClose }: DockTab
         e.preventDefault();
         nextIndex = tabs.length - 1;
       }
-      if (nextIndex !== currentIndex) {
-        onTabClick(tabs[nextIndex].id);
+      const nextTab = tabs[nextIndex];
+      if (nextIndex !== currentIndex && nextTab) {
+        onTabClick(nextTab.id);
+        // Move DOM focus to the newly activated tab
+        const nextTabEl = tabListRef.current?.querySelector<HTMLElement>(
+          `#dock-tab-${leafId}-${nextTab.id}`,
+        );
+        nextTabEl?.focus();
       }
     },
-    [tabs, onTabClick],
+    [tabs, leafId, onTabClick],
   );
 
   return (
-    <div className={styles.TabBar} role="tablist">
+    <div ref={tabListRef} className={styles.TabBar} role="tablist">
       {tabs.map((tab, index) => {
         const isActive = tab.id === activeTab;
         const panelId = `dock-panel-${leafId}`;
@@ -309,11 +345,12 @@ function DockSplitContainer({ node, onTabClick, onTabClose, onDividerDrag }: Doc
     <div
       className={styles.Split}
       data-ov-direction={node.direction}
+      data-ov-split-id={splitId}
       style={gridStyle}
     >
       {node.children.map((child, i) => (
         <DockNodeRenderer
-          key={i}
+          key={child.type === 'leaf' ? child.id : `split-${i}-${getSplitId(child)}`}
           node={child}
           onTabClick={onTabClick}
           onTabClose={onTabClose}
@@ -397,13 +434,15 @@ const DockLayoutRoot = forwardRef<HTMLDivElement, DockLayoutProps>(
 
     const handleDividerDrag = useCallback(
       (splitId: string, direction: DockDirection, dividerIndex: number, delta: number) => {
-        const container = containerRef.current;
-        if (!container) return;
+        const root = containerRef.current;
+        if (!root) return;
 
-        // Use direction-aware container dimension
+        // Find the actual split element by its structural ID to get accurate dimensions
+        // Fall back to root container if not found
+        const splitEl = root.querySelector<HTMLElement>(`[data-ov-split-id="${splitId}"]`) ?? root;
         const containerSize = direction === 'horizontal'
-          ? container.offsetWidth
-          : container.offsetHeight;
+          ? splitEl.offsetWidth
+          : splitEl.offsetHeight;
 
         if (containerSize === 0) return;
 
@@ -434,11 +473,11 @@ const DockLayoutRoot = forwardRef<HTMLDivElement, DockLayoutProps>(
     // Merge refs
     const setRefs = useCallback(
       (node: HTMLDivElement | null) => {
-        (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        containerRef.current = node;
         if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
-          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          ref.current = node;
         }
       },
       [ref],

@@ -70,6 +70,7 @@ function CollapsibleSidebarDemo() {
         <AppShell.Header>
           <div style={{ padding: '0 12px' }}>
             <button
+              type="button"
               onClick={() => setCollapsed((c) => !c)}
               style={{
                 padding: '4px 8px',

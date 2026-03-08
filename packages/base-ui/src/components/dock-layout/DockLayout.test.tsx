@@ -100,7 +100,7 @@ describe('DockLayout', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'File 2' }));
 
     expect(onChange).toHaveBeenCalledTimes(1);
-    const newLayout = onChange.mock.calls[0][0] as DockLeaf;
+    const newLayout = onChange.mock.calls[0]![0] as DockLeaf;
     expect(newLayout.activeTab).toBe('tab-2');
   });
 
@@ -109,13 +109,13 @@ describe('DockLayout', () => {
     renderWithTheme(<DockLayout layout={singleLeaf} onLayoutChange={onChange} />);
 
     const closeButtons = screen.getAllByRole('button', { name: /Close/ });
-    fireEvent.click(closeButtons[0]);
+    fireEvent.click(closeButtons[0]!);
 
     expect(onChange).toHaveBeenCalledTimes(1);
-    const newLayout = onChange.mock.calls[0][0] as DockLeaf;
+    const newLayout = onChange.mock.calls[0]![0] as DockLeaf;
     expect(newLayout.type).toBe('leaf');
     expect(newLayout.tabs).toHaveLength(2);
-    expect(newLayout.tabs[0].id).toBe('tab-2');
+    expect(newLayout.tabs[0]!.id).toBe('tab-2');
   });
 
   it('fires onLayoutChange on tab click', () => {
@@ -254,11 +254,11 @@ describe('DockLayout', () => {
 
     fireEvent.keyDown(tab2, { key: 'Home' });
     expect(onChange).toHaveBeenCalled();
-    const homeLayout = onChange.mock.calls[0][0] as DockLeaf;
+    const homeLayout = onChange.mock.calls[0]![0] as DockLeaf;
     expect(homeLayout.activeTab).toBe('tab-1');
 
     fireEvent.keyDown(tab2, { key: 'End' });
-    const endLayout = onChange.mock.calls[1][0] as DockLeaf;
+    const endLayout = onChange.mock.calls[1]![0] as DockLeaf;
     expect(endLayout.activeTab).toBe('tab-3');
   });
 
@@ -284,12 +284,12 @@ describe('DockLayout', () => {
     renderWithTheme(<DockLayout layout={twoLeafSplit} onLayoutChange={onChange} />);
 
     // Close the only tab in the left leaf
-    const closeButton = screen.getAllByRole('button', { name: /Close/ })[0];
+    const closeButton = screen.getAllByRole('button', { name: /Close/ })[0]!;
     fireEvent.click(closeButton);
 
     expect(onChange).toHaveBeenCalledTimes(1);
     // When left leaf becomes empty, the split collapses to just the right leaf
-    const newLayout = onChange.mock.calls[0][0] as DockLeaf;
+    const newLayout = onChange.mock.calls[0]![0] as DockLeaf;
     expect(newLayout.type).toBe('leaf');
     expect(newLayout.id).toBe('right');
   });

@@ -84,10 +84,14 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
     },
     ref,
   ) {
+    // Clamp defaultSize before initializing state
+    const initialSize = Math.max(defaultSize, minSize);
+    const clampedInitial = maxSize != null ? Math.min(initialSize, maxSize) : initialSize;
+
     // React state only for keyboard/reset interactions — drag uses direct DOM
-    const [size, setSize] = useState(defaultSize);
+    const [size, setSize] = useState(clampedInitial);
     const rootRef = useRef<HTMLDivElement>(null);
-    const sizeRef = useRef(defaultSize);
+    const sizeRef = useRef(clampedInitial);
     const dragging = useRef(false);
     const startPos = useRef(0);
     const startSize = useRef(0);
@@ -193,11 +197,11 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
     // Merge external ref with internal ref
     const setRefs = useCallback(
       (node: HTMLDivElement | null) => {
-        (rootRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        rootRef.current = node;
         if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
-          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          ref.current = node;
         }
       },
       [ref],

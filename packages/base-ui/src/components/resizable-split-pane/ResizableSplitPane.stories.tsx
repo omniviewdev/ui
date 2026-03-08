@@ -1,26 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ResizableSplitPane, type ResizableSplitPaneProps } from './ResizableSplitPane';
 
-const meta = {
-  title: 'Layout/ResizableSplitPane',
-  component: ResizableSplitPane,
-  tags: ['autodocs'],
-  args: {
-    direction: 'horizontal',
-    defaultSize: 300,
-    minSize: 100,
-  },
-  argTypes: {
-    direction: { control: 'radio', options: ['horizontal', 'vertical'] },
-    defaultSize: { control: { type: 'number', min: 50, max: 800 } },
-    minSize: { control: { type: 'number', min: 0, max: 400 } },
-    maxSize: { control: { type: 'number', min: 100, max: 1000 } },
-  },
-} satisfies Meta<ResizableSplitPaneProps>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
 const PaneContent = ({ label, color }: { label: string; color: string }) => (
   <div
     style={{
@@ -37,6 +17,27 @@ const PaneContent = ({ label, color }: { label: string; color: string }) => (
     {label}
   </div>
 );
+
+const meta = {
+  title: 'Layout/ResizableSplitPane',
+  component: ResizableSplitPane,
+  tags: ['autodocs'],
+  args: {
+    direction: 'horizontal',
+    defaultSize: 300,
+    minSize: 100,
+    children: [<PaneContent key="left" label="First Pane" color="var(--ov-color-bg-surface)" />, <PaneContent key="right" label="Second Pane" color="var(--ov-color-bg-base)" />],
+  },
+  argTypes: {
+    direction: { control: 'radio', options: ['horizontal', 'vertical'] },
+    defaultSize: { control: { type: 'number', min: 50, max: 800 } },
+    minSize: { control: { type: 'number', min: 0, max: 400 } },
+    maxSize: { control: { type: 'number', min: 100, max: 1000 } },
+  },
+} satisfies Meta<ResizableSplitPaneProps>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   render: (args) => (

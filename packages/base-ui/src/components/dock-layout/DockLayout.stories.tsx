@@ -135,6 +135,7 @@ function SplitViewDemo() {
 }
 
 export const SplitView: Story = {
+  args: { layout: splitLayout },
   render: () => <SplitViewDemo />,
 };
 
@@ -149,10 +150,12 @@ function IDELayoutDemo() {
 
 export const IDELayout: Story = {
   name: 'IDE-Style Layout',
+  args: { layout: ideLayout },
   render: () => <IDELayoutDemo />,
 };
 
 export const SinglePanel: Story = {
+  args: { layout: simpleLayout },
   render: () => {
     const layout: DockNode = {
       type: 'leaf',

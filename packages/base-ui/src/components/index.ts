@@ -55,3 +55,4 @@ export * from './container';
 export * from './grid';
 export * from './image';
 export * from './image-list';
+export * from './editable-list';

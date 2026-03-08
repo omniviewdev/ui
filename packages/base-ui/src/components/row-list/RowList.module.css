@@ -56,11 +56,18 @@
 }
 
 /* Item row — grid layout overrides List.Item flex.
-   Reset inherited padding-inline so cells align with header cells. */
+   Reset inherited padding-inline and gap so cells align with header cells. */
 .Item {
   display: grid;
   grid-template-columns: var(--_ov-row-grid-columns);
   padding-inline: 0;
+  gap: 0;
+}
+
+/* Disabled row — reinforce the base opacity with muted text color
+   so disabled rows are clearly distinguishable in a dense tabular layout. */
+.Item[data-ov-disabled='true'] {
+  color: var(--ov-color-fg-muted);
 }
 
 /* Cell */

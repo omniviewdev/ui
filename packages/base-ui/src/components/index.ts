@@ -49,6 +49,7 @@ export * from './tree-list';
 export * from './command-list';
 export * from './selectable-list';
 export * from './row-list';
+export * from './editable-list';
 export * from './box';
 export * from './stack';
 export * from './container';

@@ -1,0 +1,83 @@
+/* ---------------------------------------------------------------------------
+ * EditableList styles
+ * Inherits all List tokens from the wrapped List.Root
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  /* Wrapper div — transparent; tokens come from List.Root inside */
+}
+
+/* Item in editing state — shrink inline padding so controls fill the row */
+.Item[data-ov-editing='true'] {
+  padding-inline: 4px;
+  background: var(--ov-color-bg-surface-raised, var(--_ov-highlight-bg));
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.Item[data-ov-editing='true']:hover {
+  background: var(--ov-color-bg-surface-raised, var(--_ov-highlight-bg));
+}
+
+/* ItemView — transparent wrapper */
+.ItemView {
+  display: contents;
+}
+
+/* ItemEditor — inline flex layout for fields and buttons */
+.ItemEditor {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ItemField — inline input */
+.ItemField {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: calc(var(--_ov-item-height) - 8px);
+  padding-inline: var(--ov-space-inline-xs, 4px);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.ItemField:focus {
+  border-color: var(--ov-color-state-focus-ring);
+}
+
+.ItemField[data-ov-invalid] {
+  border-color: var(--ov-color-danger, red);
+}
+
+/* Action buttons (Save/Cancel) — square icon buttons */
+.ActionButton {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--_ov-item-height) - 8px);
+  height: calc(var(--_ov-item-height) - 8px);
+  padding: 0;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm, 4px);
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-caption);
+  cursor: pointer;
+}
+
+.ActionButton:hover {
+  background: var(--ov-color-state-hover, var(--_ov-highlight-bg));
+}
+
+.ActionButton:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}

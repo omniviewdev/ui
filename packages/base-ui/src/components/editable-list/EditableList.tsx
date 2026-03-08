@@ -89,12 +89,15 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
     const rootWrapperRef = useRef<HTMLDivElement>(null);
     const commitInFlightRef = useRef(false);
+    const editingKeyRef = useRef(editingKey);
+    editingKeyRef.current = editingKey;
 
     const registerField = useCallback(
       (name: string, el: FieldElement) => {
         fieldRefsMap.current.set(name, el);
         return () => {
           fieldRefsMap.current.delete(name);
+          fieldValuesMap.current.delete(name);
         };
       },
       [],
@@ -145,6 +148,8 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
 
         if (validateItem) {
           const errors = await validateItem(key, values);
+          // After async: bail if the edit session changed (e.g. cancelled/switched)
+          if (editingKeyRef.current !== key) return;
           const hasErrors = Object.values(errors).some(Boolean);
           if (hasErrors) {
             setFieldErrors(errors);
@@ -152,6 +157,8 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
           }
         }
 
+        // Final check before committing
+        if (editingKeyRef.current !== key) return;
         onCommit?.(key, values);
         setEditingKey(null);
         setFieldErrors({});
@@ -193,12 +200,13 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
         if (editingKey != null) {
           // --- Editing mode ---
 
-          // Detect if focus is on a text-editable control that needs
+          // Detect if focus is on a control that needs
           // Space, Home, End, and arrow keys to work normally.
           const active = document.activeElement as HTMLElement | null;
-          const isTextEditable = (() => {
+          const isNativeControl = (() => {
             if (!active) return false;
             if (active instanceof HTMLTextAreaElement) return true;
+            if (active instanceof HTMLSelectElement) return true;
             if (active instanceof HTMLInputElement) {
               const nonText = new Set([
                 'button', 'checkbox', 'radio', 'submit', 'reset', 'image',
@@ -207,7 +215,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
             }
             if (active.isContentEditable) return true;
             const role = active.getAttribute('role');
-            if (role === 'textbox' || role === 'searchbox') return true;
+            if (role === 'textbox' || role === 'searchbox' || role === 'combobox' || role === 'listbox') return true;
             return false;
           })();
 
@@ -232,16 +240,13 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
                 event.stopPropagation();
                 return;
               }
-              // FieldElement may be the focused node itself, or a wrapper containing it
+              // Match the focused element against registered field refs.
+              // Compare directly, then check if the field element contains focus
+              // (for wrapper-style FieldElements).
               const idx = fields.findIndex((f) => {
-                if ((f as unknown) === active) return true;
-                if (
-                  active &&
-                  typeof (f as unknown as Node).contains === 'function' &&
-                  (f as unknown as Node).contains(active as Node)
-                ) {
-                  return true;
-                }
+                const node = f as unknown as Node;
+                if (node === active) return true;
+                if (active && typeof node.contains === 'function' && node.contains(active)) return true;
                 return false;
               });
               if (idx === -1) {
@@ -262,7 +267,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
             case 'Home':
             case 'End':
             case ' ':
-              if (isTextEditable) {
+              if (isNativeControl) {
                 // Let the text control handle the key, but stop propagation
                 // so the list's own keydown handler doesn't interfere
                 // (e.g. Space toggling selection, arrows navigating items)
@@ -277,6 +282,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
         } else {
           // --- Not editing ---
           if (event.key === 'F2' || event.key === 'Enter') {
+            if (!editable) return;
             // Find the active item key from the list's active descendant
             const listbox = rootWrapperRef.current?.querySelector(
               '[role="listbox"]',
@@ -300,7 +306,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
           }
         }
       },
-      [editingKey, commitEditing, cancelEditing, startEditing],
+      [editingKey, editable, commitEditing, cancelEditing, startEditing],
     );
 
     // Return focus to list root when exiting edit mode
@@ -572,6 +578,7 @@ const EditableListItemField = forwardRef<HTMLInputElement, EditableListItemField
         placeholder={placeholder}
         defaultValue={defaultValue}
         data-ov-invalid={error ? '' : undefined}
+        aria-invalid={error ? 'true' : undefined}
         onChange={handleChange}
       />
     );

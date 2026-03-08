@@ -141,7 +141,6 @@
 .Item[data-ov-disabled='true'] {
   opacity: var(--ov-opacity-disabled);
   pointer-events: none;
-  cursor: default;
 }
 
 /* ---------------------------------------------------------------------------

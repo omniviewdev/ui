@@ -15,6 +15,7 @@ import type {
 export function useCommandListStore(): CommandListStore {
   const listenersRef = useRef(new Set<() => void>());
   const itemsRef = useRef<ProcessedItem[]>([]);
+  const keyToItemMapRef = useRef<Map<Key, ProcessedItem>>(new Map());
   const activeIndexRef = useRef(0);
   const activeKeyRef = useRef<Key | null>(null);
   const queryRef = useRef('');
@@ -55,7 +56,7 @@ export function useCommandListStore(): CommandListStore {
   const getItemState = useCallback((key: Key): CommandListItemState => {
     return {
       isActive: activeKeyRef.current === key,
-      isDisabled: itemsRef.current.find((i) => i.key === key)?.disabled ?? false,
+      isDisabled: keyToItemMapRef.current.get(key)?.disabled ?? false,
     };
   }, []);
 
@@ -75,6 +76,8 @@ export function useCommandListStore(): CommandListStore {
       if (key != null) {
         const idx = itemsRef.current.findIndex((i) => i.key === key);
         activeIndexRef.current = idx >= 0 ? idx : 0;
+      } else {
+        activeIndexRef.current = -1;
       }
       emit();
     },
@@ -92,6 +95,10 @@ export function useCommandListStore(): CommandListStore {
   const setItems = useCallback(
     (items: ProcessedItem[]) => {
       itemsRef.current = items;
+      // Rebuild key→item map for O(1) lookups in getItemState
+      const map = new Map<Key, ProcessedItem>();
+      for (const item of items) map.set(item.key, item);
+      keyToItemMapRef.current = map;
       // Reset active to first non-disabled item when items change
       const firstEnabled = items.findIndex((i) => !i.disabled);
       activeIndexRef.current = firstEnabled >= 0 ? firstEnabled : 0;
@@ -118,6 +125,9 @@ export function useCommandListStore(): CommandListStore {
   }, []);
 
   // Stable ref so the store identity never changes across renders.
+  // All callbacks below are created with useCallback and have stable deps
+  // (only referencing other stable refs/callbacks). Any future changes to
+  // these callbacks must preserve stability to avoid stale closures.
   const storeRef = useRef<CommandListStore>({
     subscribe,
     getSnapshot,

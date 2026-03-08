@@ -328,12 +328,13 @@ describe('CommandList', () => {
         />,
       );
 
-      const headers = screen.getAllByRole('presentation').filter((el) =>
-        ['File', 'Search', 'View'].includes(el.textContent ?? ''),
-      );
-      expect(headers[0]).toHaveTextContent('View');
-      expect(headers[1]).toHaveTextContent('File');
-      expect(headers[2]).toHaveTextContent('Search');
+      const viewHeader = screen.getByText('View');
+      const fileHeader = screen.getByText('File');
+      const searchHeader = screen.getByText('Search');
+
+      // Verify DOM order: View before File before Search
+      expect(viewHeader.compareDocumentPosition(fileHeader) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(fileHeader.compareDocumentPosition(searchHeader) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
   });
 
@@ -371,17 +372,17 @@ describe('CommandList', () => {
   // -------------------------------------------------------------------------
 
   describe('Disabled items', () => {
-    it('skips disabled items in keyboard navigation', async () => {
+    it('skips items disabled via disabledKeys in keyboard navigation', async () => {
       const user = userEvent.setup();
-      const itemsWithDisabled: TestCommand[] = [
+      const itemsForTest: TestCommand[] = [
         { id: 'a', label: 'A' },
-        { id: 'b', label: 'B', disabled: true },
+        { id: 'b', label: 'B' },
         { id: 'c', label: 'C' },
       ];
 
       renderWithTheme(
         <TestCommandList
-          items={itemsWithDisabled}
+          items={itemsForTest}
           disabledKeys={['b']}
         />,
       );
@@ -389,8 +390,24 @@ describe('CommandList', () => {
       await user.keyboard('{ArrowDown}');
 
       const options = screen.getAllByRole('option');
-      // Should skip 'B' (disabled) and land on 'C'
+      // Should skip 'B' (disabled via disabledKeys) and land on 'C'
       expect(options[2]).toHaveAttribute('data-ov-active', 'true');
+    });
+
+    it('renders item-level disabled prop as aria-disabled and data-ov-disabled', () => {
+      const itemsWithDisabled: TestCommand[] = [
+        { id: 'a', label: 'A' },
+        { id: 'b', label: 'B', disabled: true },
+        { id: 'c', label: 'C' },
+      ];
+
+      renderWithTheme(
+        <TestCommandList items={itemsWithDisabled} />,
+      );
+
+      const options = screen.getAllByRole('option');
+      expect(options[1]).toHaveAttribute('aria-disabled', 'true');
+      expect(options[1]).toHaveAttribute('data-ov-disabled', 'true');
     });
 
     it('renders disabled items with aria-disabled', () => {

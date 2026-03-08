@@ -48,14 +48,14 @@ export function useCommandListFocus({
         case 'ArrowDown': {
           event.preventDefault();
           const next = findNextEnabled(snapshot.activeIndex, 1);
-          if (next >= 0) actions.moveActive(next - snapshot.activeIndex);
+          if (next >= 0) store.setActiveIndex(next);
           break;
         }
 
         case 'ArrowUp': {
           event.preventDefault();
           const prev = findNextEnabled(snapshot.activeIndex, -1);
-          if (prev >= 0) actions.moveActive(prev - snapshot.activeIndex);
+          if (prev >= 0) store.setActiveIndex(prev);
           break;
         }
 

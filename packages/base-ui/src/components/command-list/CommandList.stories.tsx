@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   LuFile,
@@ -144,6 +144,14 @@ function useDebouncedSearch(allItems: Command[], delay = 200) {
   const [loading, setLoading] = useState(false);
   const [highlights, setHighlights] = useState<Map<string | number, HighlightRange[]>>(new Map());
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Clean up pending timeout on unmount
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    };
+  }, []);
 
   const search = useCallback(
     (query: string) => {
@@ -350,9 +358,9 @@ export const EmptyAndLoading: StoryObj = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => { setLoading(true); setItems([]); }}>Show Loading</button>
-          <button onClick={() => { setLoading(false); setItems([]); }}>Show Empty</button>
-          <button onClick={() => { setLoading(false); setItems(allCommands.slice(0, 3)); }}>Show Results</button>
+          <button type="button" onClick={() => { setLoading(true); setItems([]); }}>Show Loading</button>
+          <button type="button" onClick={() => { setLoading(false); setItems([]); }}>Show Empty</button>
+          <button type="button" onClick={() => { setLoading(false); setItems(allCommands.slice(0, 3)); }}>Show Results</button>
         </div>
         <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
           <CommandList.Root
@@ -516,9 +524,9 @@ export const ControlledQuery: StoryObj = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setQuery('')}>Clear</button>
-          <button onClick={() => setQuery('git')}>Set &quot;git&quot;</button>
-          <button onClick={() => setQuery('save')}>Set &quot;save&quot;</button>
+          <button type="button" onClick={() => setQuery('')}>Clear</button>
+          <button type="button" onClick={() => setQuery('git')}>Set &quot;git&quot;</button>
+          <button type="button" onClick={() => setQuery('save')}>Set &quot;save&quot;</button>
           <span style={{ color: 'var(--ov-color-fg-muted)', fontSize: 'var(--ov-font-size-caption)' }}>
             Query: &quot;{query}&quot;
           </span>

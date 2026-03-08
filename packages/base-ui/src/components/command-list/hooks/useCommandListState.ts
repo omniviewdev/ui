@@ -65,14 +65,17 @@ export function useCommandListState<TItem>(
 
   // Process items: filter → score → sort → wrap into ProcessedItem[]
   const processedItems = useMemo(() => {
-    let result: ProcessedItem<TItem>[] = items.map((item) => ({
-      key: itemKey(item),
-      item,
-      groupKey: groupBy?.(item),
-      score: undefined as number | undefined,
-      highlights: highlightsProp?.get(itemKey(item)),
-      disabled: disabledKeys.has(itemKey(item)),
-    }));
+    let result: ProcessedItem<TItem>[] = items.map((item) => {
+      const key = itemKey(item);
+      return {
+        key,
+        item,
+        groupKey: groupBy?.(item),
+        score: undefined as number | undefined,
+        highlights: highlightsProp?.get(key),
+        disabled: disabledKeys.has(key),
+      };
+    });
 
     // Client-side filtering
     if (filterFn && query) {
@@ -177,8 +180,8 @@ export function useCommandListState<TItem>(
   const moveActive = useCallback(
     (delta: number) => {
       const snapshot = store.getSnapshot();
-      const items = store.getItems();
-      const len = items.length;
+      const storeItems = store.getItems();
+      const len = storeItems.length;
       if (len === 0) return;
 
       let nextIndex = snapshot.activeIndex + delta;

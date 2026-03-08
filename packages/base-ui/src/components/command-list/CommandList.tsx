@@ -150,10 +150,14 @@ function CommandListRootImpl<TItem>(
   );
 
   // Build renderItem closure that captures TItem
-  const itemsMapRef = useRef<Map<Key, TItem>>(new Map());
-  const map = new Map<Key, TItem>();
-  for (const item of items) map.set(itemKey(item), item);
-  itemsMapRef.current = map;
+  const itemsMap = useMemo(() => {
+    const m = new Map<Key, TItem>();
+    for (const item of items) m.set(itemKey(item), item);
+    return m;
+  }, [items, itemKey]);
+
+  const itemsMapRef = useRef(itemsMap);
+  itemsMapRef.current = itemsMap;
 
   const renderItemFn: RenderItemFn = useCallback(
     (key: Key, meta: CommandItemMeta) => {
@@ -287,7 +291,9 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
     const renderItem = useRenderItem();
     const groups = useGroups();
 
-    // Subscribe to full snapshot for re-renders on active/loading changes
+    // useSyncExternalStore triggers re-renders on store changes (active item,
+    // loading, etc.). The snapshot itself is unused — actual data is read via
+    // store.getItems() / store.getItemState() for grouped rendering below.
     const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
     const allItems = store.getItems();
     void snapshot;

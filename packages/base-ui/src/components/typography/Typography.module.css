@@ -255,6 +255,7 @@
 
 .Hotkey[data-ov-size='lg'] {
   min-height: calc(var(--ov-size-typography-hotkey-min-height) + 2px);
+  min-width: calc(var(--ov-size-typography-hotkey-min-height) + 2px);
   padding: calc(var(--ov-size-typography-hotkey-padding-block) + 1px)
     calc(var(--ov-size-typography-hotkey-padding-inline) + 1px);
 }

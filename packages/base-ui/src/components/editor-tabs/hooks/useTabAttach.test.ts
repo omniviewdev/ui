@@ -88,6 +88,13 @@ describe('useTabAttach', () => {
       { wrapper },
     );
 
+    // Stub rAF so the broker's batched hover updates flush synchronously
+    const origRAF = globalThis.requestAnimationFrame;
+    const origCAF = globalThis.cancelAnimationFrame;
+    let rafId = 100;
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => { cb(0); return ++rafId; };
+    globalThis.cancelAnimationFrame = () => {};
+
     // Start a broker session from a different instance
     act(() => {
       result.current.broker!.beginSession(
@@ -97,10 +104,21 @@ describe('useTabAttach', () => {
       );
     });
 
-    // Grab the pointerup handler the broker registered
+    // Grab handlers the broker registered
+    const moveCall = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
     const upCall = addSpy.mock.calls.find((c) => c[0] === 'pointerup');
+    expect(moveCall).toBeDefined();
     expect(upCall).toBeDefined();
+    const moveHandler = moveCall![1] as (e: PointerEvent) => void;
     const upHandler = upCall![1] as (e: PointerEvent) => void;
+
+    // Simulate hover at x=30 — verify live hover state before drop
+    act(() => {
+      moveHandler(new PointerEvent('pointermove', { clientX: 30, clientY: 15 }));
+    });
+    expect(result.current.broker!.hoverInstanceId).toBe('target');
+    expect(result.current.attach.isDropTarget).toBe(true);
+    expect(result.current.attach.insertIndex).toBe(0);
 
     // Drop at x=30 which is left of tab A midpoint (50) → insertIndex 0
     act(() => {
@@ -116,6 +134,8 @@ describe('useTabAttach', () => {
     );
     expect(result.current.attach.isDropTarget).toBe(false); // Session cleared after commit
 
+    globalThis.requestAnimationFrame = origRAF;
+    globalThis.cancelAnimationFrame = origCAF;
     addSpy.mockRestore();
   });
 
@@ -156,7 +176,14 @@ describe('useTabAttach', () => {
       { wrapper },
     );
 
-    // Drop at x=60 — past tab A midpoint (50) but before tab B midpoint (150) → insertIndex 1
+    // Stub rAF for hover assertions
+    const origRAF = globalThis.requestAnimationFrame;
+    const origCAF = globalThis.cancelAnimationFrame;
+    let rafId = 100;
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => { cb(0); return ++rafId; };
+    globalThis.cancelAnimationFrame = () => {};
+
+    // Session 1: drop at x=60
     act(() => {
       result.current.broker!.beginSession(
         { tab: fakeTab, sourceInstanceId: 'other' },
@@ -164,8 +191,17 @@ describe('useTabAttach', () => {
       );
     });
 
+    const moveCall1 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
     const upCall1 = addSpy.mock.calls.find((c) => c[0] === 'pointerup');
+    const moveHandler1 = moveCall1![1] as (e: PointerEvent) => void;
     const upHandler1 = upCall1![1] as (e: PointerEvent) => void;
+
+    // Verify hover: x=60 past tab A midpoint (50) → insertIndex 1
+    act(() => {
+      moveHandler1(new PointerEvent('pointermove', { clientX: 60, clientY: 15 }));
+    });
+    expect(result.current.attach.isDropTarget).toBe(true);
+    expect(result.current.attach.insertIndex).toBe(1);
 
     act(() => {
       upHandler1(new PointerEvent('pointerup', { clientX: 60, clientY: 15 }));
@@ -175,7 +211,7 @@ describe('useTabAttach', () => {
       expect.objectContaining({ insertIndex: 1 }),
     );
 
-    // Drop at x=160 — past tab B midpoint (150) → insertIndex 2
+    // Session 2: drop at x=160
     addSpy.mockClear();
     act(() => {
       result.current.broker!.beginSession(
@@ -184,8 +220,17 @@ describe('useTabAttach', () => {
       );
     });
 
+    const moveCall2 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
     const upCall2 = addSpy.mock.calls.find((c) => c[0] === 'pointerup');
+    const moveHandler2 = moveCall2![1] as (e: PointerEvent) => void;
     const upHandler2 = upCall2![1] as (e: PointerEvent) => void;
+
+    // Verify hover: x=160 past tab B midpoint (150) → insertIndex 2
+    act(() => {
+      moveHandler2(new PointerEvent('pointermove', { clientX: 160, clientY: 15 }));
+    });
+    expect(result.current.attach.isDropTarget).toBe(true);
+    expect(result.current.attach.insertIndex).toBe(2);
 
     act(() => {
       upHandler2(new PointerEvent('pointerup', { clientX: 160, clientY: 15 }));
@@ -195,6 +240,8 @@ describe('useTabAttach', () => {
       expect.objectContaining({ insertIndex: 2 }),
     );
 
+    globalThis.requestAnimationFrame = origRAF;
+    globalThis.cancelAnimationFrame = origCAF;
     addSpy.mockRestore();
   });
 });

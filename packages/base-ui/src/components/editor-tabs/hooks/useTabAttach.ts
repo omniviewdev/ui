@@ -19,12 +19,14 @@ export function useTabAttach({
   onAttachTab,
 }: UseTabAttachOptions): UseTabAttachReturn {
   const broker = useTabDragBroker();
+  const registerDropZone = broker?.registerDropZone;
+  const unregisterDropZone = broker?.unregisterDropZone;
 
   // Register this instance as a drop zone
   useEffect(() => {
-    if (!broker || !onAttachTab) return;
+    if (!registerDropZone || !unregisterDropZone || !onAttachTab) return;
 
-    broker.registerDropZone({
+    registerDropZone({
       instanceId,
       getRect: () => viewportRef.current?.getBoundingClientRect() ?? null,
       getElement: () => viewportRef.current,
@@ -32,9 +34,9 @@ export function useTabAttach({
     });
 
     return () => {
-      broker.unregisterDropZone(instanceId);
+      unregisterDropZone(instanceId);
     };
-  }, [broker, instanceId, viewportRef, onAttachTab]);
+  }, [registerDropZone, unregisterDropZone, instanceId, viewportRef, onAttachTab]);
 
   const isDropTarget = broker?.hoverInstanceId === instanceId;
 

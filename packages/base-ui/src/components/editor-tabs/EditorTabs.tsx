@@ -168,6 +168,14 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           );
         }
       : undefined,
+    onDetachReverted: broker && detachToBroker
+      ? () => {
+          if (brokerSessionStarted.current) {
+            broker.clearSession();
+            brokerSessionStarted.current = false;
+          }
+        }
+      : undefined,
   });
 
   const attach = useTabAttach({ instanceId, viewportRef, onAttachTab });

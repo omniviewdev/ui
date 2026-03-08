@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import type { TabDescriptor, DetachCommit, DragMode, TabId } from '../types';
 
@@ -10,6 +10,8 @@ export interface UseTabDetachOptions {
   onDetachCommit?: (commit: DetachCommit) => void;
   /** Called when transitioning to detach-armed (pointer still down). Uses client coords for positioning. */
   onDetachArmed?: (tabId: TabId, clientX: number, clientY: number) => void;
+  /** Called when reverting from detach-armed back to reorder (hysteresis). */
+  onDetachReverted?: () => void;
 }
 
 export interface UseTabDetachReturn {
@@ -27,6 +29,7 @@ export function useTabDetach({
   tabs,
   onDetachCommit,
   onDetachArmed,
+  onDetachReverted,
 }: UseTabDetachOptions): UseTabDetachReturn {
   const [dragMode, setDragMode] = useState<DragMode>('idle');
   const dragModeRef = useRef<DragMode>('idle');
@@ -89,7 +92,7 @@ export function useTabDetach({
         if (currentMode === 'reorder' && (above || below || pastLeft || pastRight)) {
           updateMode('detach-armed');
           onDetachArmed?.(activeIdRef.current!, e.clientX, e.clientY);
-        } else if (currentMode === 'detach-armed' && !onDetachArmed) {
+        } else if (currentMode === 'detach-armed') {
           // Hysteresis: must come back within half-threshold on BOTH axes to revert.
           const withinY =
             e.clientY >= rect.top - hysteresis && e.clientY <= rect.bottom + hysteresis;
@@ -97,6 +100,7 @@ export function useTabDetach({
             e.clientX >= rect.left - hysteresis && e.clientX <= rect.right + hysteresis;
           if (withinX && withinY) {
             updateMode('reorder');
+            onDetachReverted?.();
           }
         }
       };
@@ -104,8 +108,11 @@ export function useTabDetach({
       listenerRef.current = onPointerMove;
       document.addEventListener('pointermove', onPointerMove);
     },
-    [detachable, detachThresholdPx, viewportRef, updateMode, onDetachArmed],
+    [detachable, detachThresholdPx, viewportRef, updateMode, onDetachArmed, onDetachReverted],
   );
+
+  // Tear down listener and pending rAF if the component unmounts mid-drag.
+  useEffect(() => cleanup, [cleanup]);
 
   const handleDetachDragEnd = useCallback(
     (_event: DragEndEvent) => {

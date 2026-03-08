@@ -90,8 +90,18 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
   let visibleItems: ReactNode[];
 
   if (shouldCollapse) {
-    const before = childArray.slice(0, itemsBeforeCollapse);
-    const after = childArray.slice(totalItems - itemsAfterCollapse);
+    // Clamp before/after so slices never overlap and total (including ellipsis) <= maxItems
+    const effectiveBefore = Math.min(
+      Math.max(0, itemsBeforeCollapse),
+      Math.max(0, maxItems - 1 - itemsAfterCollapse),
+    );
+    const effectiveAfter = Math.min(
+      Math.max(0, itemsAfterCollapse),
+      Math.max(0, maxItems - 1 - effectiveBefore),
+    );
+
+    const before = childArray.slice(0, effectiveBefore);
+    const after = childArray.slice(totalItems - effectiveAfter);
 
     const ellipsis = (
       <span key="__ov-breadcrumbs-ellipsis" className={styles.Item}>

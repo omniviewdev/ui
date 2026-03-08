@@ -8,7 +8,7 @@ describe('Toolbar', () => {
   it('renders children', () => {
     renderWithTheme(
       <Toolbar aria-label="Actions">
-        <button>Save</button>
+        <button type="button">Save</button>
       </Toolbar>,
     );
 
@@ -63,8 +63,8 @@ describe('Toolbar', () => {
       renderWithTheme(
         <Toolbar aria-label="Actions">
           <Toolbar.Group>
-            <button>Cut</button>
-            <button>Copy</button>
+            <button type="button">Cut</button>
+            <button type="button">Copy</button>
           </Toolbar.Group>
         </Toolbar>,
       );
@@ -77,10 +77,10 @@ describe('Toolbar', () => {
       renderWithTheme(
         <Toolbar aria-label="Actions">
           <Toolbar.Group>
-            <button>Cut</button>
+            <button type="button">Cut</button>
           </Toolbar.Group>
           <Toolbar.Group separator data-testid="sep-group">
-            <button>Paste</button>
+            <button type="button">Paste</button>
           </Toolbar.Group>
         </Toolbar>,
       );
@@ -93,7 +93,7 @@ describe('Toolbar', () => {
       renderWithTheme(
         <Toolbar aria-label="Actions">
           <Toolbar.Group data-testid="no-sep">
-            <button>Cut</button>
+            <button type="button">Cut</button>
           </Toolbar.Group>
         </Toolbar>,
       );
@@ -107,7 +107,7 @@ describe('Toolbar', () => {
       renderWithTheme(
         <Toolbar aria-label="Actions">
           <Toolbar.Group ref={ref}>
-            <button>Cut</button>
+            <button type="button">Cut</button>
           </Toolbar.Group>
         </Toolbar>,
       );
@@ -119,7 +119,7 @@ describe('Toolbar', () => {
       renderWithTheme(
         <Toolbar aria-label="Actions">
           <Toolbar.Group className="group-custom" data-testid="g">
-            <button>Cut</button>
+            <button type="button">Cut</button>
           </Toolbar.Group>
         </Toolbar>,
       );

@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type FieldsetHTMLAttributes, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
 import styles from './FormField.module.css';
@@ -34,17 +34,33 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(function For
       data-ov-error={error ? 'true' : undefined}
       {...props}
     >
-      <label className={styles.Label} htmlFor={htmlFor}>
-        {label}
-        {required ? (
-          <span className={styles.Required} aria-hidden="true">
-            {' '}
-            *
-          </span>
-        ) : null}
-      </label>
-      {description ? <p className={styles.Description}>{description}</p> : null}
-      <div className={styles.Control}>{children}</div>
+      {htmlFor ? (
+        <>
+          <label className={styles.Label} htmlFor={htmlFor}>
+            {label}
+            {required ? (
+              <span className={styles.Required} aria-hidden="true">
+                {' '}
+                *
+              </span>
+            ) : null}
+          </label>
+          {description ? <p className={styles.Description}>{description}</p> : null}
+          <div className={styles.Control}>{children}</div>
+        </>
+      ) : (
+        <label className={styles.Label}>
+          {label}
+          {required ? (
+            <span className={styles.Required} aria-hidden="true">
+              {' '}
+              *
+            </span>
+          ) : null}
+          {description ? <p className={styles.Description}>{description}</p> : null}
+          <div className={styles.Control}>{children}</div>
+        </label>
+      )}
       {error ? (
         <p className={styles.Error} role="alert">
           {error}
@@ -60,7 +76,7 @@ FormField.displayName = 'FormField';
 // FormSection
 // ---------------------------------------------------------------------------
 
-export interface FormSectionProps extends HTMLAttributes<HTMLFieldSetElement> {
+export interface FormSectionProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
   /** Section heading rendered as a `<legend>`. */
   title: string;
   /** Optional description below the legend. */

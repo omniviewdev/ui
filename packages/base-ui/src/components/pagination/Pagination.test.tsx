@@ -63,7 +63,8 @@ describe('Pagination', () => {
   it('renders ellipsis with many pages', () => {
     const { container } = renderWithTheme(<Pagination count={20} page={10} onChange={() => {}} />);
 
-    const ellipses = container.querySelectorAll('[aria-hidden="true"]');
+    // Target the actual ellipsis wrappers (the span.Ellipsis elements), not nav icon aria-hidden
+    const ellipses = container.querySelectorAll('span[aria-hidden="true"]');
     expect(ellipses.length).toBeGreaterThanOrEqual(2);
   });
 

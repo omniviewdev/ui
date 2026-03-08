@@ -15,13 +15,13 @@ const meta = {
   render: (args) => (
     <Toolbar {...args}>
       <Toolbar.Group>
-        <button>Cut</button>
-        <button>Copy</button>
-        <button>Paste</button>
+        <button type="button">Cut</button>
+        <button type="button">Copy</button>
+        <button type="button">Paste</button>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button>Undo</button>
-        <button>Redo</button>
+        <button type="button">Undo</button>
+        <button type="button">Redo</button>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -37,14 +37,14 @@ export const BasicToolbar: Story = {
   render: () => (
     <Toolbar aria-label="Text formatting">
       <Toolbar.Group>
-        <button>Bold</button>
-        <button>Italic</button>
-        <button>Underline</button>
+        <button type="button">Bold</button>
+        <button type="button">Italic</button>
+        <button type="button">Underline</button>
       </Toolbar.Group>
       <Toolbar.Group>
-        <button>Align left</button>
-        <button>Center</button>
-        <button>Align right</button>
+        <button type="button">Align left</button>
+        <button type="button">Center</button>
+        <button type="button">Align right</button>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -55,18 +55,18 @@ export const WithSeparators: Story = {
   render: () => (
     <Toolbar aria-label="Editor actions">
       <Toolbar.Group>
-        <button>New</button>
-        <button>Open</button>
-        <button>Save</button>
+        <button type="button">New</button>
+        <button type="button">Open</button>
+        <button type="button">Save</button>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button>Cut</button>
-        <button>Copy</button>
-        <button>Paste</button>
+        <button type="button">Cut</button>
+        <button type="button">Copy</button>
+        <button type="button">Paste</button>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button>Undo</button>
-        <button>Redo</button>
+        <button type="button">Undo</button>
+        <button type="button">Redo</button>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -77,12 +77,12 @@ export const RightAlignedGroup: Story = {
   render: () => (
     <Toolbar aria-label="Document actions" style={{ width: '100%' }}>
       <Toolbar.Group>
-        <button>Save</button>
-        <button>Save As</button>
+        <button type="button">Save</button>
+        <button type="button">Save As</button>
       </Toolbar.Group>
       <Toolbar.Group separator style={{ marginInlineStart: 'auto' }}>
-        <button>Settings</button>
-        <button>Help</button>
+        <button type="button">Settings</button>
+        <button type="button">Help</button>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -99,13 +99,13 @@ export const AllSizes: Story = {
           </div>
           <Toolbar aria-label={`Toolbar ${size}`} size={size}>
             <Toolbar.Group>
-              <button>Cut</button>
-              <button>Copy</button>
-              <button>Paste</button>
+              <button type="button">Cut</button>
+              <button type="button">Copy</button>
+              <button type="button">Paste</button>
             </Toolbar.Group>
             <Toolbar.Group separator>
-              <button>Undo</button>
-              <button>Redo</button>
+              <button type="button">Undo</button>
+              <button type="button">Redo</button>
             </Toolbar.Group>
           </Toolbar>
         </div>

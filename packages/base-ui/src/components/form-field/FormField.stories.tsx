@@ -1,6 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { FormField, FormSection, type FormFieldProps } from './FormField';
 
+const inputStyle: React.CSSProperties = {
+  padding: '6px 10px',
+  border: '1px solid var(--ov-color-border-default)',
+  borderRadius: 'var(--ov-radius-control)',
+  background: 'var(--ov-color-bg-surface-raised)',
+  color: 'var(--ov-color-fg-default)',
+  font: 'inherit',
+  fontSize: 'var(--ov-font-size-body)',
+  width: '100%',
+  boxSizing: 'border-box' as const,
+};
+
 const meta = {
   title: 'Inputs/FormField',
   component: FormField,
@@ -33,19 +45,7 @@ export const Playground: Story = {
   },
   render: (args) => (
     <FormField {...args}>
-      <input
-        id="cluster-name"
-        placeholder="my-cluster"
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--ov-color-border-default)',
-          borderRadius: 'var(--ov-radius-control)',
-          background: 'var(--ov-color-bg-surface-raised)',
-          color: 'var(--ov-color-fg-default)',
-          font: 'inherit',
-          fontSize: 'var(--ov-font-size-body)',
-        }}
-      />
+      <input id="cluster-name" placeholder="my-cluster" style={inputStyle} />
     </FormField>
   ),
 };
@@ -58,19 +58,7 @@ export const WithDescription: Story = {
   },
   render: (args) => (
     <FormField {...args}>
-      <input
-        id="namespace"
-        placeholder="default"
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--ov-color-border-default)',
-          borderRadius: 'var(--ov-radius-control)',
-          background: 'var(--ov-color-bg-surface-raised)',
-          color: 'var(--ov-color-fg-default)',
-          font: 'inherit',
-          fontSize: 'var(--ov-font-size-body)',
-        }}
-      />
+      <input id="namespace" placeholder="default" style={inputStyle} />
     </FormField>
   ),
 };
@@ -86,15 +74,7 @@ export const WithError: Story = {
       <input
         id="port"
         defaultValue="99999"
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--ov-color-fg-danger)',
-          borderRadius: 'var(--ov-radius-control)',
-          background: 'var(--ov-color-bg-surface-raised)',
-          color: 'var(--ov-color-fg-default)',
-          font: 'inherit',
-          fontSize: 'var(--ov-font-size-body)',
-        }}
+        style={{ ...inputStyle, border: '1px solid var(--ov-color-fg-danger)' }}
       />
     </FormField>
   ),
@@ -108,34 +88,9 @@ export const RequiredField: Story = {
   },
   render: (args) => (
     <FormField {...args}>
-      <input
-        id="api-key"
-        type="password"
-        placeholder="sk-..."
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--ov-color-border-default)',
-          borderRadius: 'var(--ov-radius-control)',
-          background: 'var(--ov-color-bg-surface-raised)',
-          color: 'var(--ov-color-fg-default)',
-          font: 'inherit',
-          fontSize: 'var(--ov-font-size-body)',
-        }}
-      />
+      <input id="api-key" type="password" placeholder="sk-..." style={inputStyle} />
     </FormField>
   ),
-};
-
-const inputStyle: React.CSSProperties = {
-  padding: '6px 10px',
-  border: '1px solid var(--ov-color-border-default)',
-  borderRadius: 'var(--ov-radius-control)',
-  background: 'var(--ov-color-bg-surface-raised)',
-  color: 'var(--ov-color-fg-default)',
-  font: 'inherit',
-  fontSize: 'var(--ov-font-size-body)',
-  width: '100%',
-  boxSizing: 'border-box' as const,
 };
 
 export const FormSectionGrouping: Story = {

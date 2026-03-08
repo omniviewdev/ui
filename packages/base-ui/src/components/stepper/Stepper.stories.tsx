@@ -12,7 +12,7 @@ const meta = {
   },
   argTypes: {
     activeStep: {
-      control: { type: 'number', min: 0, max: 4 },
+      control: { type: 'number', min: 0, max: 3 },
       description: '0-indexed current step.',
     },
     orientation: {
@@ -157,8 +157,8 @@ function InteractiveDemo() {
         </button>
         <button
           type="button"
-          onClick={() => setActive((s) => Math.min(steps.length, s + 1))}
-          disabled={active > steps.length - 1}
+          onClick={() => setActive((s) => Math.min(steps.length - 1, s + 1))}
+          disabled={active >= steps.length - 1}
         >
           {active === steps.length - 1 ? 'Finish' : 'Next'}
         </button>

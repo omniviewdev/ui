@@ -54,11 +54,11 @@
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 
-.Item:not([disabled]):not([data-ov-active='true']):hover {
+.Item:not(:disabled, [data-ov-active='true']):hover {
   background: var(--ov-color-state-hover);
 }
 
-.Item:not([disabled]):not([data-ov-active='true']):active {
+.Item:not(:disabled, [data-ov-active='true']):active {
   background: var(--ov-color-state-pressed);
 }
 

@@ -38,9 +38,9 @@ export const Playground: Story = {
     <SplitButton {...args}>
       <SplitButton.Action onClick={() => alert('Save clicked')}>Save</SplitButton.Action>
       <SplitButton.Menu>
-        <button style={menuItemStyle}>Save as Draft</button>
-        <button style={menuItemStyle}>Save and Publish</button>
-        <button style={menuItemStyle}>Save as Template</button>
+        <button type="button" style={menuItemStyle}>Save as Draft</button>
+        <button type="button" style={menuItemStyle}>Save and Publish</button>
+        <button type="button" style={menuItemStyle}>Save as Template</button>
       </SplitButton.Menu>
     </SplitButton>
   ),
@@ -55,8 +55,8 @@ export const Variants: Story = {
             {variant.charAt(0).toUpperCase() + variant.slice(1)}
           </SplitButton.Action>
           <SplitButton.Menu>
-            <button style={menuItemStyle}>Option A</button>
-            <button style={menuItemStyle}>Option B</button>
+            <button type="button" style={menuItemStyle}>Option A</button>
+            <button type="button" style={menuItemStyle}>Option B</button>
           </SplitButton.Menu>
         </SplitButton>
       ))}
@@ -71,8 +71,8 @@ export const Colors: Story = {
         <SplitButton key={color} {...args} variant="solid" color={color}>
           <SplitButton.Action>{color.charAt(0).toUpperCase() + color.slice(1)}</SplitButton.Action>
           <SplitButton.Menu>
-            <button style={menuItemStyle}>Action 1</button>
-            <button style={menuItemStyle}>Action 2</button>
+            <button type="button" style={menuItemStyle}>Action 1</button>
+            <button type="button" style={menuItemStyle}>Action 2</button>
           </SplitButton.Menu>
         </SplitButton>
       ))}
@@ -85,9 +85,9 @@ export const WithMenuItems: Story = {
     <SplitButton {...args} variant="outline" color="neutral">
       <SplitButton.Action onClick={() => alert('Deploy to Production')}>Deploy</SplitButton.Action>
       <SplitButton.Menu>
-        <button style={menuItemStyle}>Deploy to Staging</button>
-        <button style={menuItemStyle}>Deploy to Preview</button>
-        <button style={menuItemStyle}>Rollback</button>
+        <button type="button" style={menuItemStyle}>Deploy to Staging</button>
+        <button type="button" style={menuItemStyle}>Deploy to Preview</button>
+        <button type="button" style={menuItemStyle}>Rollback</button>
       </SplitButton.Menu>
     </SplitButton>
   ),
@@ -99,13 +99,13 @@ export const Disabled: Story = {
       <SplitButton {...args} disabled variant="solid" color="brand">
         <SplitButton.Action>Disabled Solid</SplitButton.Action>
         <SplitButton.Menu>
-          <button style={menuItemStyle}>Option</button>
+          <button type="button" style={menuItemStyle}>Option</button>
         </SplitButton.Menu>
       </SplitButton>
       <SplitButton {...args} disabled variant="outline" color="danger">
         <SplitButton.Action>Disabled Outline</SplitButton.Action>
         <SplitButton.Menu>
-          <button style={menuItemStyle}>Option</button>
+          <button type="button" style={menuItemStyle}>Option</button>
         </SplitButton.Menu>
       </SplitButton>
     </div>

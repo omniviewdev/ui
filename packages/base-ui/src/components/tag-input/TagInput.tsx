@@ -73,12 +73,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
   );
 
   const splitByDelimiter = useCallback(
-    (text: string): string[] => {
-      if (delimiter instanceof RegExp) {
-        return text.split(delimiter);
-      }
-      return text.split(delimiter);
-    },
+    (text: string): string[] => text.split(delimiter),
     [delimiter],
   );
 
@@ -145,10 +140,12 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
   return (
     <div
       ref={ref}
+      role="group"
       className={cn(styles.Root, className)}
       data-ov-size={size}
       data-ov-focused={focused ? 'true' : undefined}
       data-ov-disabled={disabled ? 'true' : undefined}
+      aria-disabled={disabled || undefined}
       onClick={handleContainerClick}
       {...props}
     >

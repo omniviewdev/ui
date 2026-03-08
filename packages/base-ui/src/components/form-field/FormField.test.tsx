@@ -84,14 +84,14 @@ describe('FormField', () => {
     const error = screen.getByRole('alert');
 
     // Verify DOM order: description before input, input before error
-    const root = description.parentElement!;
-    const children = Array.from(root.children);
-    const descIdx = children.indexOf(description);
-    const controlIdx = children.indexOf(childInput.parentElement!);
-    const errorIdx = children.indexOf(error);
-
-    expect(descIdx).toBeLessThan(controlIdx);
-    expect(controlIdx).toBeLessThan(errorIdx);
+    // Use compareDocumentPosition since elements may be at different nesting levels
+    const DOCUMENT_POSITION_FOLLOWING = 4;
+    expect(description.compareDocumentPosition(childInput) & DOCUMENT_POSITION_FOLLOWING).toBe(
+      DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(childInput.compareDocumentPosition(error) & DOCUMENT_POSITION_FOLLOWING).toBe(
+      DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 
   it('sets data-ov-size attribute', () => {

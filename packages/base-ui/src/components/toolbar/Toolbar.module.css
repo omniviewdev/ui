@@ -9,6 +9,7 @@
 
 .Root[data-ov-size='sm'] {
   --_ov-toolbar-height: 1.75rem;
+
   font-size: var(--ov-font-size-caption);
 }
 

@@ -27,6 +27,7 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-min-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-font-size-subheading);
 }
 
 .Root[data-ov-focused='true'] {

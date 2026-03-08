@@ -3,7 +3,7 @@ import {
   useCallback,
   useEffect,
   useState,
-  type HTMLAttributes,
+  type ButtonHTMLAttributes,
   type ReactNode,
 } from 'react';
 import { cn } from '../../system/classnames';
@@ -12,7 +12,7 @@ import type { StyledComponentProps, ComponentColor } from '../../system/types';
 import styles from './ConfirmButton.module.css';
 
 export interface ConfirmButtonProps
-  extends Omit<HTMLAttributes<HTMLButtonElement>, 'color'>, StyledComponentProps {
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick'>, StyledComponentProps {
   /** Text shown in the confirm state. */
   confirmLabel?: string;
   /** Color applied in the confirm state. */
@@ -71,8 +71,8 @@ export const ConfirmButton = forwardRef<HTMLButtonElement, ConfirmButtonProps>(
         disabled={disabled}
         {...styleDataAttributes({ variant, color: activeColor, size })}
         {...(confirming ? { 'data-ov-confirming': 'true' } : undefined)}
-        onClick={handleClick}
         {...props}
+        onClick={handleClick}
       >
         {confirming ? confirmLabel : children}
       </button>

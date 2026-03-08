@@ -46,11 +46,11 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
 
   const handleClick = useCallback(
     (target: number) => () => {
-      if (target >= 1 && target <= count) {
+      if (target >= 1 && target <= count && target !== page) {
         onChange(target);
       }
     },
-    [count, onChange],
+    [count, page, onChange],
   );
 
   const isFirstPage = page <= 1;

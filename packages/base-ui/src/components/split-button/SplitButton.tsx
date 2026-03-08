@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useRef,
   useState,
   type HTMLAttributes,
@@ -91,6 +92,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
   const isDisabled = ctx?.disabled ?? false;
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownId = useId();
 
   const toggle = useCallback(() => {
     if (!isDisabled) {
@@ -113,14 +115,23 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
   }, [open]);
 
   return (
-    <div ref={containerRef} className={cn(styles.MenuContainer, className)} {...props}>
+    <div
+      ref={(node) => {
+        // Merge forwarded ref and internal containerRef
+        containerRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      }}
+      className={cn(styles.MenuContainer, className)}
+      {...props}
+    >
       <button
-        ref={ref as React.Ref<HTMLButtonElement>}
         type="button"
         className={styles.MenuTrigger}
         disabled={isDisabled}
         aria-haspopup="true"
         aria-expanded={open}
+        aria-controls={dropdownId}
         onClick={toggle}
         {...styleDataAttributes({
           variant: ctx?.variant,
@@ -132,7 +143,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
       </button>
 
       {open && (
-        <div className={styles.Dropdown} role="menu">
+        <div id={dropdownId} className={styles.Dropdown} role="menu">
           {children}
         </div>
       )}

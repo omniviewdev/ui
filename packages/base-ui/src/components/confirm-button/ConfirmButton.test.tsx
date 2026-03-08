@@ -99,6 +99,7 @@ describe('ConfirmButton', () => {
 
     fireEvent.click(button);
 
+    expect(button).toBeDisabled();
     expect(button).toHaveTextContent('Delete');
     expect(button).not.toHaveAttribute('data-ov-confirming');
     expect(onConfirm).not.toHaveBeenCalled();
@@ -128,8 +129,9 @@ describe('ConfirmButton', () => {
   });
 
   it('cleans up timeout on unmount', () => {
+    const onConfirm = vi.fn();
     const { unmount } = renderWithTheme(
-      <ConfirmButton onConfirm={vi.fn()} confirmTimeout={3000}>
+      <ConfirmButton onConfirm={onConfirm} confirmTimeout={3000}>
         Delete
       </ConfirmButton>,
     );
@@ -140,7 +142,9 @@ describe('ConfirmButton', () => {
 
     unmount();
 
-    // Should not throw after unmount when timer fires
-    expect(() => vi.advanceTimersByTime(3000)).not.toThrow();
+    // Timer should have been cleared
+    expect(vi.getTimerCount()).toBe(0);
+    vi.advanceTimersByTime(3000);
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 });

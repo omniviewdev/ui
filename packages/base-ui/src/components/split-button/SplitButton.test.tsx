@@ -10,7 +10,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Save as Draft</button>
+          <button type="button">Save as Draft</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -30,7 +30,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action onClick={onClick}>Deploy</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Deploy to staging</button>
+          <button type="button">Deploy to staging</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -44,7 +44,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Save as Draft</button>
+          <button type="button">Save as Draft</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -68,7 +68,7 @@ describe('SplitButton', () => {
       <SplitButton variant="outline" color="danger" size="lg">
         <SplitButton.Action>Delete</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Delete permanently</button>
+          <button type="button">Delete permanently</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -84,7 +84,7 @@ describe('SplitButton', () => {
       <SplitButton disabled>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Save as Draft</button>
+          <button type="button">Save as Draft</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -103,7 +103,7 @@ describe('SplitButton', () => {
       <SplitButton className="my-custom-class">
         <SplitButton.Action>Run</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Option</button>
+          <button type="button">Option</button>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -118,7 +118,7 @@ describe('SplitButton', () => {
       <SplitButton ref={ref}>
         <SplitButton.Action>Run</SplitButton.Action>
         <SplitButton.Menu>
-          <button>Option</button>
+          <button type="button">Option</button>
         </SplitButton.Menu>
       </SplitButton>,
     );

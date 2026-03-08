@@ -37,7 +37,9 @@ export type PopoverRootProps<Payload = unknown> = Omit<BasePopover.Root.Props<Pa
   StyledComponentProps;
 
 export interface PopoverTriggerProps
-  extends Omit<ComponentPropsWithoutRef<typeof BasePopover.Trigger>, 'color'>, StyledComponentProps {}
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BasePopover.Trigger>, 'color'>,
+    StyledComponentProps {}
 
 export interface PopoverPopupProps
   extends Omit<ComponentPropsWithoutRef<typeof BasePopover.Popup>, 'color'>, StyledComponentProps {}
@@ -57,19 +59,20 @@ function PopoverRoot<Payload>({ variant, color, size, ...props }: PopoverRootPro
   );
 }
 
-const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>(
-  function PopoverTrigger({ className, variant, color, size, ...props }, ref) {
-    const resolved = useResolvedStyleProps({ variant, color, size });
-    return (
-      <BasePopover.Trigger
-        ref={ref}
-        className={withBaseClassName(styles.Trigger, className)}
-        {...styleDataAttributes(resolved)}
-        {...props}
-      />
-    );
-  },
-);
+const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>(function PopoverTrigger(
+  { className, variant, color, size, ...props },
+  ref,
+) {
+  const resolved = useResolvedStyleProps({ variant, color, size });
+  return (
+    <BasePopover.Trigger
+      ref={ref}
+      className={withBaseClassName(styles.Trigger, className)}
+      {...styleDataAttributes(resolved)}
+      {...props}
+    />
+  );
+});
 
 const PopoverPortal = forwardRef<
   ElementRef<typeof BasePopover.Portal>,

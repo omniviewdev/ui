@@ -1,0 +1,389 @@
+/* ------------------------------------------------------------------ */
+/* Container – fixed positioning at screen edge                       */
+/* ------------------------------------------------------------------ */
+
+.Container {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Position mapping via data-ov-position */
+.Container[data-ov-position='top-right'] {
+  top: 0;
+  right: 0;
+}
+
+.Container[data-ov-position='top-left'] {
+  top: 0;
+  left: 0;
+}
+
+.Container[data-ov-position='bottom-right'] {
+  bottom: 0;
+  right: 0;
+}
+
+.Container[data-ov-position='bottom-left'] {
+  bottom: 0;
+  left: 0;
+}
+
+.Container[data-ov-position='top-center'] {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.Container[data-ov-position='bottom-center'] {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Individual Toast                                                    */
+/* ------------------------------------------------------------------ */
+
+.Toast {
+  --_ov-border-accent: var(--ov-color-info);
+  --_ov-surface-bg: var(--ov-color-bg-surface-raised);
+  --_ov-surface-shadow: var(--ov-primitive-shadow-md);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: min(300px, 100vw - 32px);
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: var(--ov-radius-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-left: 3px solid var(--_ov-border-accent);
+  background: var(--_ov-surface-bg);
+  box-shadow: var(--_ov-surface-shadow);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  pointer-events: auto;
+  animation: ov-toast-slide-in var(--ov-duration-enter, 200ms) var(--ov-ease-decelerate, ease-out);
+}
+
+/* Severity accent colours */
+.Toast[data-ov-severity='success'] {
+  --_ov-border-accent: var(--ov-color-success);
+}
+
+.Toast[data-ov-severity='warning'] {
+  --_ov-border-accent: var(--ov-color-warning);
+}
+
+.Toast[data-ov-severity='danger'] {
+  --_ov-border-accent: var(--ov-color-danger);
+}
+
+.Toast[data-ov-severity='info'] {
+  --_ov-border-accent: var(--ov-color-info);
+}
+
+/* ------------------------------------------------------------------ */
+/* Surface variants                                                    */
+/* ------------------------------------------------------------------ */
+
+.Container[data-ov-surface='base'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-base);
+}
+
+.Container[data-ov-surface='default'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-surface);
+}
+
+.Container[data-ov-surface='raised'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-surface-raised);
+}
+
+.Container[data-ov-surface='overlay'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-surface-overlay);
+}
+
+.Container[data-ov-surface='inset'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-inset);
+}
+
+.Container[data-ov-surface='elevated'] .Toast {
+  --_ov-surface-bg: var(--ov-color-bg-elevated);
+}
+
+/* ------------------------------------------------------------------ */
+/* Elevation variants                                                  */
+/* ------------------------------------------------------------------ */
+
+.Container[data-ov-elevation='0'] .Toast {
+  --_ov-surface-shadow: none;
+}
+
+.Container[data-ov-elevation='1'] .Toast {
+  --_ov-surface-shadow: var(--ov-primitive-shadow-sm);
+}
+
+.Container[data-ov-elevation='2'] .Toast {
+  --_ov-surface-shadow: var(--ov-primitive-shadow-md);
+}
+
+.Container[data-ov-elevation='3'] .Toast {
+  --_ov-surface-shadow: var(--ov-primitive-shadow-lg);
+}
+
+/* ------------------------------------------------------------------ */
+/* Message group (title + description)                                 */
+/* ------------------------------------------------------------------ */
+
+.MessageGroup {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.Title {
+  font-weight: var(--ov-font-weight-label, 600);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.4;
+}
+
+.Message {
+  line-height: 1.4;
+}
+
+/* When title is present, message acts as description */
+.Title + .Message {
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  color: var(--ov-color-fg-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Loading state                                                       */
+/* ------------------------------------------------------------------ */
+
+.ToastLoading {
+  --_ov-border-accent: var(--ov-color-fg-muted);
+}
+
+@keyframes ov-toast-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.ToastLoading .MessageGroup {
+  animation: ov-toast-pulse 2s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/* Action button                                                       */
+/* ------------------------------------------------------------------ */
+
+.Action {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--_ov-border-accent);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Action:hover {
+  opacity: 0.8;
+}
+
+.Action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+  border-radius: var(--ov-radius-control);
+}
+
+/* ------------------------------------------------------------------ */
+/* Close button                                                        */
+/* ------------------------------------------------------------------ */
+
+.Close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: var(--ov-radius-control);
+  background: transparent;
+  color: currentcolor;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Close:hover {
+  opacity: 1;
+}
+
+.Close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+/* ------------------------------------------------------------------ */
+/* Enter / Exit animations                                             */
+/* ------------------------------------------------------------------ */
+
+@keyframes ov-toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ToastExiting {
+  animation: ov-toast-slide-out var(--ov-duration-exit, 200ms) var(--ov-ease-accelerate, ease-in)
+    forwards;
+}
+
+@keyframes ov-toast-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+/* Left-side positions: slide from left */
+.Container[data-ov-position='top-left'] .Toast,
+.Container[data-ov-position='bottom-left'] .Toast {
+  animation-name: ov-toast-slide-inLeft;
+}
+
+.Container[data-ov-position='top-left'] .ToastExiting,
+.Container[data-ov-position='bottom-left'] .ToastExiting {
+  animation-name: ov-toast-slide-outLeft;
+}
+
+@keyframes ov-toast-slide-inLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ov-toast-slide-outLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+/* Center positions: slide from top/bottom */
+.Container[data-ov-position='top-center'] .Toast {
+  animation-name: ov-toast-slide-inTop;
+}
+
+.Container[data-ov-position='top-center'] .ToastExiting {
+  animation-name: ov-toast-slide-outTop;
+}
+
+.Container[data-ov-position='bottom-center'] .Toast {
+  animation-name: ov-toast-slide-inBottom;
+}
+
+.Container[data-ov-position='bottom-center'] .ToastExiting {
+  animation-name: ov-toast-slide-outBottom;
+}
+
+@keyframes ov-toast-slide-inTop {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ov-toast-slide-outTop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes ov-toast-slide-inBottom {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ov-toast-slide-outBottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                      */
+/* ------------------------------------------------------------------ */
+
+:root[data-ov-motion='reduced'] .Toast,
+:root[data-ov-motion='reduced'] .ToastExiting {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Toast,
+  .ToastExiting {
+    animation: none;
+  }
+}

@@ -18,15 +18,15 @@ export const EditorTabsSegment = forwardRef<HTMLDivElement, EditorTabsSegmentPro
   function EditorTabsSegment({ type, group, tabCount = 0, items, children, className }, ref) {
     const isCollapsed = type === 'group' && group?.collapsed;
 
-    const content = !isCollapsed
-      ? items
-        ? (
-            <SortableContext items={items} strategy={horizontalListSortingStrategy}>
-              {children}
-            </SortableContext>
-          )
-        : children
-      : null;
+    const content = !isCollapsed ? (
+      items ? (
+        <SortableContext items={items} strategy={horizontalListSortingStrategy}>
+          {children}
+        </SortableContext>
+      ) : (
+        children
+      )
+    ) : null;
 
     return (
       <div
@@ -37,9 +37,7 @@ export const EditorTabsSegment = forwardRef<HTMLDivElement, EditorTabsSegmentPro
         {...(isCollapsed ? { 'data-collapsed': '' } : {})}
         {...(group?.color ? { style: { '--_ov-group-color': group.color } as CSSProperties } : {})}
       >
-        {type === 'group' && group && (
-          <EditorTabGroupChip group={group} tabCount={tabCount} />
-        )}
+        {type === 'group' && group && <EditorTabGroupChip group={group} tabCount={tabCount} />}
         {content}
       </div>
     );

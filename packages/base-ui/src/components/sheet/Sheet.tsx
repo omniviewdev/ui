@@ -17,7 +17,16 @@ export interface SheetProps
 }
 
 const SheetRoot = forwardRef<HTMLElement, SheetProps>(function Sheet(
-  { as: Element = 'div', className, variant, color, size, elevation = 0, surface = 'default', ...props },
+  {
+    as: Element = 'div',
+    className,
+    variant,
+    color,
+    size,
+    elevation = 0,
+    surface = 'default',
+    ...props
+  },
   ref,
 ) {
   return (

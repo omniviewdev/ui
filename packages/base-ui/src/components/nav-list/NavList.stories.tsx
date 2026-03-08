@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuBox, LuNetwork, LuCog, LuServer, LuContainer, LuFileCode, LuFileText, LuFile } from 'react-icons/lu';
+import {
+  LuBox,
+  LuNetwork,
+  LuCog,
+  LuServer,
+  LuContainer,
+  LuFileCode,
+  LuFileText,
+  LuFile,
+} from 'react-icons/lu';
 import { NavList } from './NavList';
 import type { Key } from '../list';
 
@@ -55,17 +64,23 @@ export const ExplorerSidebar: Story = {
           <NavList.GroupHeader>Workloads</NavList.GroupHeader>
           <NavList.GroupItems>
             <NavList.Item itemKey="deployment-api" textValue="api-server">
-              <NavList.ItemIcon><LuContainer /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuContainer />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>api-server</NavList.ItemLabel>
               <NavList.ItemMeta>3/3</NavList.ItemMeta>
             </NavList.Item>
             <NavList.Item itemKey="deployment-web" textValue="web-frontend">
-              <NavList.ItemIcon><LuContainer /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuContainer />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>web-frontend</NavList.ItemLabel>
               <NavList.ItemMeta>2/2</NavList.ItemMeta>
             </NavList.Item>
             <NavList.Item itemKey="deployment-worker" textValue="bg-worker">
-              <NavList.ItemIcon><LuContainer /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuContainer />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>bg-worker</NavList.ItemLabel>
               <NavList.ItemMeta>1/1</NavList.ItemMeta>
             </NavList.Item>
@@ -75,11 +90,15 @@ export const ExplorerSidebar: Story = {
           <NavList.GroupHeader>Services</NavList.GroupHeader>
           <NavList.GroupItems>
             <NavList.Item itemKey="svc-api" textValue="api-service">
-              <NavList.ItemIcon><LuNetwork /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuNetwork />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>api-service</NavList.ItemLabel>
             </NavList.Item>
             <NavList.Item itemKey="svc-web" textValue="web-service">
-              <NavList.ItemIcon><LuNetwork /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuNetwork />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>web-service</NavList.ItemLabel>
             </NavList.Item>
           </NavList.GroupItems>
@@ -88,11 +107,15 @@ export const ExplorerSidebar: Story = {
           <NavList.GroupHeader>Config</NavList.GroupHeader>
           <NavList.GroupItems>
             <NavList.Item itemKey="cm-env" textValue="env-config">
-              <NavList.ItemIcon><LuCog /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuCog />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>env-config</NavList.ItemLabel>
             </NavList.Item>
             <NavList.Item itemKey="secret-db" textValue="db-credentials">
-              <NavList.ItemIcon><LuCog /></NavList.ItemIcon>
+              <NavList.ItemIcon>
+                <LuCog />
+              </NavList.ItemIcon>
               <NavList.ItemLabel>db-credentials</NavList.ItemLabel>
             </NavList.Item>
           </NavList.GroupItems>
@@ -131,23 +154,33 @@ export const WithIndicators: Story = {
     <NavList selectionMode="single" style={{ width: 260 }}>
       <NavList.Viewport>
         <NavList.Item itemKey="file1" textValue="index.ts" unread>
-          <NavList.ItemIcon><LuFileCode /></NavList.ItemIcon>
+          <NavList.ItemIcon>
+            <LuFileCode />
+          </NavList.ItemIcon>
           <NavList.ItemLabel>index.ts</NavList.ItemLabel>
         </NavList.Item>
         <NavList.Item itemKey="file2" textValue="utils.ts" dirty>
-          <NavList.ItemIcon><LuFileCode /></NavList.ItemIcon>
+          <NavList.ItemIcon>
+            <LuFileCode />
+          </NavList.ItemIcon>
           <NavList.ItemLabel>utils.ts</NavList.ItemLabel>
         </NavList.Item>
         <NavList.Item itemKey="file3" textValue="types.ts">
-          <NavList.ItemIcon><LuFileCode /></NavList.ItemIcon>
+          <NavList.ItemIcon>
+            <LuFileCode />
+          </NavList.ItemIcon>
           <NavList.ItemLabel>types.ts</NavList.ItemLabel>
         </NavList.Item>
         <NavList.Item itemKey="file4" textValue="App.tsx" unread dirty>
-          <NavList.ItemIcon><LuFileCode /></NavList.ItemIcon>
+          <NavList.ItemIcon>
+            <LuFileCode />
+          </NavList.ItemIcon>
           <NavList.ItemLabel>App.tsx</NavList.ItemLabel>
         </NavList.Item>
         <NavList.Item itemKey="file5" textValue="README.md">
-          <NavList.ItemIcon><LuFileText /></NavList.ItemIcon>
+          <NavList.ItemIcon>
+            <LuFileText />
+          </NavList.ItemIcon>
           <NavList.ItemLabel>README.md</NavList.ItemLabel>
         </NavList.Item>
       </NavList.Viewport>
@@ -180,11 +213,15 @@ function CollapsibleControlledStory() {
             <NavList.GroupHeader>Workloads</NavList.GroupHeader>
             <NavList.GroupItems>
               <NavList.Item itemKey="pod1" textValue="nginx-pod">
-                <NavList.ItemIcon><LuBox /></NavList.ItemIcon>
+                <NavList.ItemIcon>
+                  <LuBox />
+                </NavList.ItemIcon>
                 <NavList.ItemLabel>nginx-pod</NavList.ItemLabel>
               </NavList.Item>
               <NavList.Item itemKey="pod2" textValue="redis-pod">
-                <NavList.ItemIcon><LuBox /></NavList.ItemIcon>
+                <NavList.ItemIcon>
+                  <LuBox />
+                </NavList.ItemIcon>
                 <NavList.ItemLabel>redis-pod</NavList.ItemLabel>
               </NavList.Item>
             </NavList.GroupItems>
@@ -197,7 +234,9 @@ function CollapsibleControlledStory() {
             <NavList.GroupHeader>Services</NavList.GroupHeader>
             <NavList.GroupItems>
               <NavList.Item itemKey="svc1" textValue="api-svc">
-                <NavList.ItemIcon><LuServer /></NavList.ItemIcon>
+                <NavList.ItemIcon>
+                  <LuServer />
+                </NavList.ItemIcon>
                 <NavList.ItemLabel>api-svc</NavList.ItemLabel>
               </NavList.Item>
             </NavList.GroupItems>
@@ -259,7 +298,9 @@ function OpenFilesStory() {
       <NavList.Viewport>
         {files.map((f) => (
           <NavList.Item key={f.id} itemKey={f.id} textValue={f.label} dirty={f.dirty}>
-            <NavList.ItemIcon><f.icon /></NavList.ItemIcon>
+            <NavList.ItemIcon>
+              <f.icon />
+            </NavList.ItemIcon>
             <NavList.ItemLabel>{f.label}</NavList.ItemLabel>
           </NavList.Item>
         ))}

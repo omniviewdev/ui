@@ -9,11 +9,7 @@ import type { Key, TreeItemState, TreeStore } from '../types';
  * Unlike useListItem, this does NOT self-register — keys come from
  * the flattener, not from DOM mount.
  */
-export function useTreeItem(
-  store: TreeStore,
-  key: Key,
-  textValue?: string,
-): TreeItemState {
+export function useTreeItem(store: TreeStore, key: Key, textValue?: string): TreeItemState {
   // Register text value for typeahead (but not the key itself)
   useEffect(() => {
     if (textValue !== undefined) {

@@ -23,7 +23,10 @@ export function useTabScroll() {
     if (el) {
       const next = computeScrollState(el);
       setScrollState((prev) => {
-        if (prev.canScrollLeft === next.canScrollLeft && prev.canScrollRight === next.canScrollRight) {
+        if (
+          prev.canScrollLeft === next.canScrollLeft &&
+          prev.canScrollRight === next.canScrollRight
+        ) {
           return prev;
         }
         return next;

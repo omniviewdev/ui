@@ -1,0 +1,87 @@
+.Root {
+  --_ov-font-size-label: var(--ov-font-size-xs);
+  --_ov-font-size-value: var(--ov-font-size-sm);
+  --_ov-gap: 10px;
+  --_ov-item-gap: 4px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-gap);
+  margin: 0;
+  padding: 0;
+}
+
+/* Size variants */
+.Root[data-ov-size='sm'] {
+  --_ov-font-size-label: var(--ov-font-size-xxs, 0.625rem);
+  --_ov-font-size-value: var(--ov-font-size-xs);
+  --_ov-gap: 8px;
+  --_ov-item-gap: 2px;
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-font-size-label: var(--ov-font-size-sm);
+  --_ov-font-size-value: var(--ov-font-size-md);
+  --_ov-gap: 12px;
+  --_ov-item-gap: 6px;
+}
+
+/* Grid layout */
+.Root[data-ov-layout='grid'] {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.Root[data-ov-layout='grid'][data-ov-columns='2'] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.Root[data-ov-layout='grid'][data-ov-columns='3'] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Item */
+.Item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-item-gap);
+}
+
+/* Horizontal layout: label left, value right */
+.Root[data-ov-layout='horizontal'] > .Item {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* Vertical layout: label above, value below */
+.Root[data-ov-layout='vertical'] > .Item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-item-gap);
+}
+
+/* Grid layout items are stacked */
+.Root[data-ov-layout='grid'] > .Item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-item-gap);
+}
+
+/* Label (dt) */
+.Label {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-font-size-label);
+  font-weight: var(--ov-font-weight-label, 500);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Value (dd) */
+.Value {
+  color: var(--ov-color-fg-default);
+  font-size: var(--_ov-font-size-value);
+  line-height: 1.4;
+  margin: 0;
+}

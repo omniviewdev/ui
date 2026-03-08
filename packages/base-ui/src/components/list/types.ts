@@ -77,8 +77,7 @@ export interface ListActionsContextValue {
 // ---------------------------------------------------------------------------
 
 export interface ListRootProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   selectionMode?: SelectionMode;
   selectionBehavior?: SelectionBehavior;
   selectedKeys?: ReadonlySet<Key>;
@@ -111,8 +110,7 @@ export interface ListViewportProps extends HTMLAttributes<HTMLDivElement> {
   onReachEnd?: () => void;
 }
 
-export interface ListItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   itemKey: Key;
   disabled?: boolean;
   textValue?: string;

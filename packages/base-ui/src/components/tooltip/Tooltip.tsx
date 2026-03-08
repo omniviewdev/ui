@@ -37,7 +37,9 @@ export type TooltipRootProps<Payload = unknown> = Omit<BaseTooltip.Root.Props<Pa
   StyledComponentProps;
 
 export interface TooltipTriggerProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseTooltip.Trigger>, 'color'>, StyledComponentProps {}
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseTooltip.Trigger>, 'color'>,
+    StyledComponentProps {}
 
 export interface TooltipPopupProps
   extends Omit<ComponentPropsWithoutRef<typeof BaseTooltip.Popup>, 'color'>, StyledComponentProps {}
@@ -55,19 +57,20 @@ function TooltipRoot<Payload>({ variant, color, size, ...props }: TooltipRootPro
   );
 }
 
-const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(
-  function TooltipTrigger({ className, variant, color, size, ...props }, ref) {
-    const resolved = useResolvedStyleProps({ variant, color, size });
-    return (
-      <BaseTooltip.Trigger
-        ref={ref}
-        className={withBaseClassName(styles.Trigger, className)}
-        {...styleDataAttributes(resolved)}
-        {...props}
-      />
-    );
-  },
-);
+const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(function TooltipTrigger(
+  { className, variant, color, size, ...props },
+  ref,
+) {
+  const resolved = useResolvedStyleProps({ variant, color, size });
+  return (
+    <BaseTooltip.Trigger
+      ref={ref}
+      className={withBaseClassName(styles.Trigger, className)}
+      {...styleDataAttributes(resolved)}
+      {...props}
+    />
+  );
+});
 
 const TooltipPortal = forwardRef<
   ElementRef<typeof BaseTooltip.Portal>,

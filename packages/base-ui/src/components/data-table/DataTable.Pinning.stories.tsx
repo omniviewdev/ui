@@ -25,8 +25,8 @@ const podData: Pod[] = Array.from({ length: 20 }, (_, i) => ({
   node: `node-${(i % 4) + 1}`,
   status: ['Running', 'Pending', 'Running', 'CrashLoopBackOff', 'Running'][i % 5]!,
   restarts: i % 5 === 3 ? i * 2 : 0,
-  cpu: `${((i * 73 + 17) % 500)}m`,
-  memory: `${((i * 41 + 23) % 512)}Mi`,
+  cpu: `${(i * 73 + 17) % 500}m`,
+  memory: `${(i * 41 + 23) % 512}Mi`,
   age: `${i + 1}d`,
 }));
 
@@ -67,13 +67,7 @@ const actionsColumn: ColumnDef<Pod, unknown> = {
   id: 'actions',
   header: '',
   cell: () => (
-    <IconButton
-      dense
-      variant="ghost"
-      color="neutral"
-      size="sm"
-      aria-label="Row actions"
-    >
+    <IconButton dense variant="ghost" color="neutral" size="sm" aria-label="Row actions">
       <LuEllipsisVertical />
     </IconButton>
   ),
@@ -124,12 +118,7 @@ function PinnedLeftRightStory() {
   });
 
   return (
-    <DataTable.Root
-      table={table}
-      features={pinningFeatures}
-      variant="soft"
-      hoverable
-    >
+    <DataTable.Root table={table} features={pinningFeatures} variant="soft" hoverable>
       <DataTable.Container height={400}>
         <DataTable.Header />
         <DataTable.Body />
@@ -159,12 +148,7 @@ function PinnedWithToolbarStory() {
   });
 
   return (
-    <DataTable.Root
-      table={table}
-      features={pinningToolbarFeatures}
-      variant="soft"
-      hoverable
-    >
+    <DataTable.Root table={table} features={pinningToolbarFeatures} variant="soft" hoverable>
       <DataTable.Toolbar searchPlaceholder="Search pods...">
         <DataTable.ColumnVisibility />
       </DataTable.Toolbar>

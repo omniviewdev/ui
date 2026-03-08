@@ -1,12 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  LuCheck,
-  LuChevronRight,
-  LuCircleAlert,
-  LuCode,
-  LuDatabase,
-  LuTag,
-} from 'react-icons/lu';
+import { LuCheck, LuChevronRight, LuCircleAlert, LuCode, LuDatabase, LuTag } from 'react-icons/lu';
 import type { ChipProps } from './Chip';
 import { Chip } from './Chip';
 
@@ -133,7 +126,11 @@ export const DecoratedClickable: Story = {
       <Chip.Item color="success" startDecorator={<LuCheck />} endDecorator={<LuChevronRight />}>
         ready
       </Chip.Item>
-      <Chip.Item color="danger" startDecorator={<LuCircleAlert />} endDecorator={<LuChevronRight />}>
+      <Chip.Item
+        color="danger"
+        startDecorator={<LuCircleAlert />}
+        endDecorator={<LuChevronRight />}
+      >
         failures
       </Chip.Item>
     </Chip.Group>

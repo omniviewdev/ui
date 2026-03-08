@@ -17,7 +17,12 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import type { UseDataTableOptions } from '../types';
-import { DEFAULT_COLUMN_MAX_SIZE, DEFAULT_COLUMN_MIN_SIZE, DEFAULT_FEATURES, DEFAULT_PAGE_SIZE } from '../constants';
+import {
+  DEFAULT_COLUMN_MAX_SIZE,
+  DEFAULT_COLUMN_MIN_SIZE,
+  DEFAULT_FEATURES,
+  DEFAULT_PAGE_SIZE,
+} from '../constants';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): Table<TData> {
@@ -57,9 +62,7 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     initialState?.columnVisibility ?? {},
   );
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
-    initialState?.columnOrder ?? [],
-  );
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(initialState?.columnOrder ?? []);
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(
     initialState?.columnSizing ?? {},
   );
@@ -69,9 +72,7 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     initialState?.rowSelection ?? {},
   );
-  const [expanded, setExpanded] = useState<ExpandedState>(
-    initialState?.expanded ?? {},
-  );
+  const [expanded, setExpanded] = useState<ExpandedState>(initialState?.expanded ?? {});
   const [pagination, setPagination] = useState<PaginationState>(
     initialState?.pagination ?? { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE },
   );
@@ -190,7 +191,8 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
     // Row models - conditionally enabled
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: features.sorting ? getSortedRowModel() : undefined,
-    getFilteredRowModel: features.filtering || features.globalFilter ? getFilteredRowModel() : undefined,
+    getFilteredRowModel:
+      features.filtering || features.globalFilter ? getFilteredRowModel() : undefined,
     getPaginationRowModel: features.pagination ? getPaginationRowModel() : undefined,
     getExpandedRowModel: features.rowExpansion ? getExpandedRowModel() : undefined,
   });

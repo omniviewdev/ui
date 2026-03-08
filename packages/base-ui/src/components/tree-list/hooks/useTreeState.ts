@@ -60,10 +60,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     onLoadError,
   } = props;
 
-  const disabledKeys = useMemo(
-    () => new Set(disabledKeysProp ?? []),
-    [disabledKeysProp],
-  );
+  const disabledKeys = useMemo(() => new Set(disabledKeysProp ?? []), [disabledKeysProp]);
 
   // Fallback isBranch: check if getChildren returns non-empty
   const isBranch = useCallback(
@@ -117,8 +114,13 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
   // Flatten tree (with optional filtering)
   const flatNodes = useTreeFlattener(
-    items, itemKey, getChildren, isBranch, expandedKeys,
-    filterText, resolvedFilterFn,
+    items,
+    itemKey,
+    getChildren,
+    isBranch,
+    expandedKeys,
+    filterText,
+    resolvedFilterFn,
   );
 
   // Sync state to store synchronously during render so that
@@ -224,9 +226,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
       const start = Math.min(fromIndex, toIndex);
       const end = Math.max(fromIndex, toIndex);
-      const rangeKeys = keys
-        .slice(start, end + 1)
-        .filter((k) => !disabledKeys.has(k));
+      const rangeKeys = keys.slice(start, end + 1).filter((k) => !disabledKeys.has(k));
 
       setSelectedKeys(new Set(rangeKeys));
     },
@@ -383,7 +383,16 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
       indentation,
       showBranchConnectors,
     }),
-    [selectionMode, selectionBehavior, density, typeaheadEnabled, loopFocus, virtualized, indentation, showBranchConnectors],
+    [
+      selectionMode,
+      selectionBehavior,
+      density,
+      typeaheadEnabled,
+      loopFocus,
+      virtualized,
+      indentation,
+      showBranchConnectors,
+    ],
   );
 
   const actions = useMemo<TreeActionsContextValue>(
@@ -402,7 +411,21 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
       expandAllAsync,
       collapseAll,
     }),
-    [select, deselect, toggle, selectRange, selectAll, clearSelection, setActiveKeyAction, expand, collapse, toggleExpanded, expandAll, expandAllAsync, collapseAll],
+    [
+      select,
+      deselect,
+      toggle,
+      selectRange,
+      selectAll,
+      clearSelection,
+      setActiveKeyAction,
+      expand,
+      collapse,
+      toggleExpanded,
+      expandAll,
+      expandAllAsync,
+      collapseAll,
+    ],
   );
 
   return { config, store, actions };

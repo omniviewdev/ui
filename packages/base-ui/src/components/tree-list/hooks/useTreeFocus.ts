@@ -24,9 +24,7 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
       const keys = snapshot.flattenedKeys as Key[];
       if (keys.length === 0) return;
 
-      const currentIndex = snapshot.activeKey != null
-        ? keys.indexOf(snapshot.activeKey)
-        : -1;
+      const currentIndex = snapshot.activeKey != null ? keys.indexOf(snapshot.activeKey) : -1;
 
       const findNextEnabled = (startIndex: number, direction: 1 | -1): Key | null => {
         let idx = startIndex;

@@ -40,12 +40,12 @@ const meta = {
           rows={5}
           placeholder="Paste logs, notes, or command snippets..."
           defaultValue={
-            mono
-              ? 'kubectl get pods -A\nhelm ls --all-namespaces\n./omniview runtime status'
-              : ''
+            mono ? 'kubectl get pods -A\nhelm ls --all-namespaces\n./omniview runtime status' : ''
           }
         />
-        <TextArea.Description>Supports markdown-like notes and multiline command drafts.</TextArea.Description>
+        <TextArea.Description>
+          Supports markdown-like notes and multiline command drafts.
+        </TextArea.Description>
       </TextArea.Root>
     </div>
   ),

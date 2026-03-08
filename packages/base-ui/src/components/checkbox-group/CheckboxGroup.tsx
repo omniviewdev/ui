@@ -16,14 +16,12 @@ interface CheckboxGroupContextValue extends StyledComponentProps {}
 const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
 
 export interface CheckboxGroupProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseCheckboxGroup>, 'color'>,
-    StyledComponentProps {
+  extends Omit<ComponentPropsWithoutRef<typeof BaseCheckboxGroup>, 'color'>, StyledComponentProps {
   orientation?: 'vertical' | 'horizontal';
 }
 
 export interface CheckboxGroupItemProps
-  extends Omit<CheckboxItemProps, 'variant' | 'color' | 'size' | 'value'>,
-    StyledComponentProps {
+  extends Omit<CheckboxItemProps, 'variant' | 'color' | 'size' | 'value'>, StyledComponentProps {
   value: string;
 }
 
@@ -51,23 +49,22 @@ const CheckboxGroupRoot = forwardRef<HTMLDivElement, CheckboxGroupProps>(functio
   );
 });
 
-const CheckboxGroupItem = forwardRef<HTMLElement, CheckboxGroupItemProps>(function CheckboxGroupItem(
-  { className, variant, color, size, ...props },
-  ref,
-) {
-  const group = useContext(CheckboxGroupContext);
+const CheckboxGroupItem = forwardRef<HTMLElement, CheckboxGroupItemProps>(
+  function CheckboxGroupItem({ className, variant, color, size, ...props }, ref) {
+    const group = useContext(CheckboxGroupContext);
 
-  return (
-    <Checkbox.Item
-      ref={ref}
-      className={withBaseClassName(styles.Item, className)}
-      variant={variant ?? group?.variant ?? DEFAULT_VARIANT}
-      color={color ?? group?.color ?? DEFAULT_COLOR}
-      size={size ?? group?.size ?? DEFAULT_SIZE}
-      {...props}
-    />
-  );
-});
+    return (
+      <Checkbox.Item
+        ref={ref}
+        className={withBaseClassName(styles.Item, className)}
+        variant={variant ?? group?.variant ?? DEFAULT_VARIANT}
+        color={color ?? group?.color ?? DEFAULT_COLOR}
+        size={size ?? group?.size ?? DEFAULT_SIZE}
+        {...props}
+      />
+    );
+  },
+);
 
 CheckboxGroupRoot.displayName = 'CheckboxGroup';
 CheckboxGroupItem.displayName = 'CheckboxGroup.Item';

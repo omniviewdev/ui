@@ -79,11 +79,7 @@ function BasicEditingStory(args: Record<string, unknown>) {
     <EditableList
       {...args}
       onCommit={(key, values) => {
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === key ? { ...item, ...values } : item,
-          ),
-        );
+        setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
       }}
       style={{ width: 480 }}
     >
@@ -143,11 +139,7 @@ function WithValidationStory(args: Record<string, unknown>) {
     <EditableList
       {...args}
       onCommit={(key, values) => {
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === key ? { ...item, ...values } : item,
-          ),
-        );
+        setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
       }}
       validateItem={validateItem}
       style={{ width: 480 }}
@@ -166,11 +158,7 @@ function WithValidationStory(args: Record<string, unknown>) {
                 placeholder="Variable name"
                 autoFocus
               />
-              <EditableList.ItemField
-                name="value"
-                defaultValue={item.value}
-                placeholder="Value"
-              />
+              <EditableList.ItemField name="value" defaultValue={item.value} placeholder="Value" />
               <EditableList.ItemSave />
               <EditableList.ItemCancel />
             </EditableList.ItemEditor>
@@ -213,11 +201,7 @@ function ControlledEditingStory(args: Record<string, unknown>) {
         editingKey={editingKey}
         onEditingKeyChange={setEditingKey}
         onCommit={(key, values) => {
-          setItems((prev) =>
-            prev.map((item) =>
-              item.id === key ? { ...item, ...values } : item,
-            ),
-          );
+          setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
         }}
         onCancel={() => setEditingKey(null)}
         style={{ width: 480 }}
@@ -329,11 +313,7 @@ export const DisabledItems: Story = {
 
 export const ReadOnlyMode: Story = {
   render: (args) => (
-    <EditableList
-      {...args}
-      editable={false}
-      style={{ width: 480 }}
-    >
+    <EditableList {...args} editable={false} style={{ width: 480 }}>
       <EditableList.Viewport>
         {initialEnvVars.map((item) => (
           <EditableList.Item key={item.id} itemKey={item.id} textValue={item.name}>
@@ -374,17 +354,20 @@ function DensityDemo({ density }: { density: 'compact' | 'default' | 'comfortabl
 
   return (
     <div>
-      <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 4, color: 'var(--ov-color-fg-muted)' }}>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 600,
+          marginBottom: 4,
+          color: 'var(--ov-color-fg-muted)',
+        }}
+      >
         {density}
       </div>
       <EditableList
         density={density}
         onCommit={(key, values) => {
-          setItems((prev) =>
-            prev.map((item) =>
-              item.id === key ? { ...item, ...values } : item,
-            ),
-          );
+          setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
         }}
         style={{ width: 360 }}
       >
@@ -441,11 +424,7 @@ function WithSelectionStory(args: Record<string, unknown>) {
       {...args}
       selectionMode="single"
       onCommit={(key, values) => {
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === key ? { ...item, ...values } : item,
-          ),
-        );
+        setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
       }}
       style={{ width: 480 }}
     >
@@ -495,17 +474,13 @@ function KeyboardWorkflowStory(args: Record<string, unknown>) {
   return (
     <div>
       <div style={{ fontSize: 12, color: 'var(--ov-color-fg-subtle)', marginBottom: 8 }}>
-        <strong>Keyboard shortcuts:</strong> Arrow keys to navigate, F2 or Enter to edit,
-        Tab to cycle fields, Enter to save, Escape to cancel.
+        <strong>Keyboard shortcuts:</strong> Arrow keys to navigate, F2 or Enter to edit, Tab to
+        cycle fields, Enter to save, Escape to cancel.
       </div>
       <EditableList
         {...args}
         onCommit={(key, values) => {
-          setItems((prev) =>
-            prev.map((item) =>
-              item.id === key ? { ...item, ...values } : item,
-            ),
-          );
+          setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
           setLastAction(`Committed: ${values.name}=${values.value}`);
         }}
         onCancel={(key) => {
@@ -623,7 +598,9 @@ function MethodSelect({ name, defaultValue }: { name: string; defaultValue: stri
       }}
     >
       {HTTP_METHODS.map((m) => (
-        <option key={m} value={m}>{m}</option>
+        <option key={m} value={m}>
+          {m}
+        </option>
       ))}
     </select>
   );
@@ -636,11 +613,7 @@ function CustomControlsStory(args: Record<string, unknown>) {
     <EditableList
       {...args}
       onCommit={(key, values) => {
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === key ? { ...item, ...values } : item,
-          ),
-        );
+        setItems((prev) => prev.map((item) => (item.id === key ? { ...item, ...values } : item)));
       }}
       style={{ width: 560 }}
     >

@@ -1,8 +1,5 @@
 export function getAvatarInitials(name: string): string {
-  const words = name
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
+  const words = name.trim().split(/\s+/).filter(Boolean);
 
   if (words.length === 0) {
     return '?';

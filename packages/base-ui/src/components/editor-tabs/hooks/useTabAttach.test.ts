@@ -61,13 +61,37 @@ describe('useTabAttach', () => {
     // Tab A: left=0, width=100  → midpoint=50
     // Tab B: left=100, width=100 → midpoint=150
     tab1.getBoundingClientRect = () => ({
-      left: 0, right: 100, top: 0, bottom: 30, width: 100, height: 30, x: 0, y: 0, toJSON: () => {},
+      left: 0,
+      right: 100,
+      top: 0,
+      bottom: 30,
+      width: 100,
+      height: 30,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
     });
     tab2.getBoundingClientRect = () => ({
-      left: 100, right: 200, top: 0, bottom: 30, width: 100, height: 30, x: 100, y: 0, toJSON: () => {},
+      left: 100,
+      right: 200,
+      top: 0,
+      bottom: 30,
+      width: 100,
+      height: 30,
+      x: 100,
+      y: 0,
+      toJSON: () => {},
     });
     viewport.getBoundingClientRect = () => ({
-      left: 0, right: 200, top: 0, bottom: 30, width: 200, height: 30, x: 0, y: 0, toJSON: () => {},
+      left: 0,
+      right: 200,
+      top: 0,
+      bottom: 30,
+      width: 200,
+      height: 30,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
     });
 
     const viewportRef = { current: viewport };
@@ -92,16 +116,15 @@ describe('useTabAttach', () => {
     const origRAF = globalThis.requestAnimationFrame;
     const origCAF = globalThis.cancelAnimationFrame;
     let rafId = 100;
-    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => { cb(0); return ++rafId; };
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => {
+      cb(0);
+      return ++rafId;
+    };
     globalThis.cancelAnimationFrame = () => {};
 
     // Start a broker session from a different instance
     act(() => {
-      result.current.broker!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'other' },
-        30,
-        15,
-      );
+      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 30, 15);
     });
 
     // Grab handlers the broker registered
@@ -149,13 +172,37 @@ describe('useTabAttach', () => {
     viewport.appendChild(tab2);
 
     tab1.getBoundingClientRect = () => ({
-      left: 0, right: 100, top: 0, bottom: 30, width: 100, height: 30, x: 0, y: 0, toJSON: () => {},
+      left: 0,
+      right: 100,
+      top: 0,
+      bottom: 30,
+      width: 100,
+      height: 30,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
     });
     tab2.getBoundingClientRect = () => ({
-      left: 100, right: 200, top: 0, bottom: 30, width: 100, height: 30, x: 100, y: 0, toJSON: () => {},
+      left: 100,
+      right: 200,
+      top: 0,
+      bottom: 30,
+      width: 100,
+      height: 30,
+      x: 100,
+      y: 0,
+      toJSON: () => {},
     });
     viewport.getBoundingClientRect = () => ({
-      left: 0, right: 200, top: 0, bottom: 30, width: 200, height: 30, x: 0, y: 0, toJSON: () => {},
+      left: 0,
+      right: 200,
+      top: 0,
+      bottom: 30,
+      width: 200,
+      height: 30,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
     });
 
     const viewportRef = { current: viewport };
@@ -180,15 +227,15 @@ describe('useTabAttach', () => {
     const origRAF = globalThis.requestAnimationFrame;
     const origCAF = globalThis.cancelAnimationFrame;
     let rafId = 100;
-    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => { cb(0); return ++rafId; };
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => {
+      cb(0);
+      return ++rafId;
+    };
     globalThis.cancelAnimationFrame = () => {};
 
     // Session 1: drop at x=60
     act(() => {
-      result.current.broker!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'other' },
-        60, 15,
-      );
+      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 60, 15);
     });
 
     const moveCall1 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
@@ -207,17 +254,12 @@ describe('useTabAttach', () => {
       upHandler1(new PointerEvent('pointerup', { clientX: 60, clientY: 15 }));
     });
 
-    expect(onAttachTab).toHaveBeenLastCalledWith(
-      expect.objectContaining({ insertIndex: 1 }),
-    );
+    expect(onAttachTab).toHaveBeenLastCalledWith(expect.objectContaining({ insertIndex: 1 }));
 
     // Session 2: drop at x=160
     addSpy.mockClear();
     act(() => {
-      result.current.broker!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'other' },
-        160, 15,
-      );
+      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 160, 15);
     });
 
     const moveCall2 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
@@ -236,9 +278,7 @@ describe('useTabAttach', () => {
       upHandler2(new PointerEvent('pointerup', { clientX: 160, clientY: 15 }));
     });
 
-    expect(onAttachTab).toHaveBeenLastCalledWith(
-      expect.objectContaining({ insertIndex: 2 }),
-    );
+    expect(onAttachTab).toHaveBeenLastCalledWith(expect.objectContaining({ insertIndex: 2 }));
 
     globalThis.requestAnimationFrame = origRAF;
     globalThis.cancelAnimationFrame = origCAF;

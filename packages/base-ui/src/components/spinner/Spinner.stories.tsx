@@ -11,7 +11,10 @@ const meta = {
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'] },
+    color: {
+      control: 'select',
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
+    },
   },
 } satisfies Meta<typeof Spinner>;
 

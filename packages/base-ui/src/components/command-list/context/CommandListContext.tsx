@@ -14,9 +14,7 @@ export const CommandListConfigContext = createContext<CommandListConfigContextVa
 export function useCommandListConfig(): CommandListConfigContextValue {
   const ctx = useContext(CommandListConfigContext);
   if (!ctx) {
-    throw new Error(
-      'CommandList compound components must be used within <CommandList.Root>',
-    );
+    throw new Error('CommandList compound components must be used within <CommandList.Root>');
   }
   return ctx;
 }
@@ -30,9 +28,7 @@ export const CommandListStoreContext = createContext<CommandListStore | null>(nu
 export function useCommandListStoreContext(): CommandListStore {
   const ctx = useContext(CommandListStoreContext);
   if (!ctx) {
-    throw new Error(
-      'CommandList compound components must be used within <CommandList.Root>',
-    );
+    throw new Error('CommandList compound components must be used within <CommandList.Root>');
   }
   return ctx;
 }
@@ -46,9 +42,7 @@ export const CommandListActionsContext = createContext<CommandListActionsContext
 export function useCommandListActions(): CommandListActionsContextValue {
   const ctx = useContext(CommandListActionsContext);
   if (!ctx) {
-    throw new Error(
-      'CommandList compound components must be used within <CommandList.Root>',
-    );
+    throw new Error('CommandList compound components must be used within <CommandList.Root>');
   }
   return ctx;
 }

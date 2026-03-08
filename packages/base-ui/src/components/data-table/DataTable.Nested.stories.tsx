@@ -36,7 +36,13 @@ const fileTree: FileEntry[] = [
         modified: '2h ago',
         children: [
           { id: '1-1-1', name: 'DataTable.tsx', type: 'file', size: '8.2 KB', modified: '1h ago' },
-          { id: '1-1-2', name: 'DataTable.module.css', type: 'file', size: '4.1 KB', modified: '2h ago' },
+          {
+            id: '1-1-2',
+            name: 'DataTable.module.css',
+            type: 'file',
+            size: '4.1 KB',
+            modified: '2h ago',
+          },
         ],
       },
       { id: '1-2', name: 'index.ts', type: 'file', size: '0.3 KB', modified: '3h ago' },
@@ -55,9 +61,7 @@ const fileTree: FileEntry[] = [
     type: 'directory',
     size: '-',
     modified: '5d ago',
-    children: [
-      { id: '3-1', name: 'README.md', type: 'file', size: '3.4 KB', modified: '5d ago' },
-    ],
+    children: [{ id: '3-1', name: 'README.md', type: 'file', size: '3.4 KB', modified: '5d ago' }],
   },
 ];
 
@@ -67,7 +71,14 @@ const fileColumns: ColumnDef<FileEntry, unknown>[] = [
     header: 'Name',
     size: 280,
     cell: ({ row, getValue }) => (
-      <div style={{ paddingLeft: `${row.depth * 24}px`, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div
+        style={{
+          paddingLeft: `${row.depth * 24}px`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
         {row.getCanExpand() ? (
           <button
             type="button"
@@ -132,29 +143,113 @@ const ingressData: Ingress[] = [
 
 const serviceData: Record<string, Service[]> = {
   'ing-1': [
-    { uid: 'svc-1', name: 'api-server', port: 8080, protocol: 'TCP', clusterIP: '10.96.0.12', age: '7d' },
-    { uid: 'svc-2', name: 'auth-server', port: 8081, protocol: 'TCP', clusterIP: '10.96.0.34', age: '5d' },
+    {
+      uid: 'svc-1',
+      name: 'api-server',
+      port: 8080,
+      protocol: 'TCP',
+      clusterIP: '10.96.0.12',
+      age: '7d',
+    },
+    {
+      uid: 'svc-2',
+      name: 'auth-server',
+      port: 8081,
+      protocol: 'TCP',
+      clusterIP: '10.96.0.34',
+      age: '5d',
+    },
   ],
   'ing-2': [
-    { uid: 'svc-3', name: 'web-frontend', port: 3000, protocol: 'TCP', clusterIP: '10.96.0.56', age: '14d' },
+    {
+      uid: 'svc-3',
+      name: 'web-frontend',
+      port: 3000,
+      protocol: 'TCP',
+      clusterIP: '10.96.0.56',
+      age: '14d',
+    },
   ],
 };
 
 const podData: Record<string, Pod[]> = {
   'svc-1': [
-    { uid: 'pod-1', name: 'api-server-abc12', status: 'Running', restarts: 0, node: 'node-1', age: '2d' },
-    { uid: 'pod-2', name: 'api-server-def34', status: 'Running', restarts: 0, node: 'node-2', age: '2d' },
-    { uid: 'pod-3', name: 'api-server-ghi56', status: 'Running', restarts: 1, node: 'node-1', age: '1d' },
+    {
+      uid: 'pod-1',
+      name: 'api-server-abc12',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-1',
+      age: '2d',
+    },
+    {
+      uid: 'pod-2',
+      name: 'api-server-def34',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-2',
+      age: '2d',
+    },
+    {
+      uid: 'pod-3',
+      name: 'api-server-ghi56',
+      status: 'Running',
+      restarts: 1,
+      node: 'node-1',
+      age: '1d',
+    },
   ],
   'svc-2': [
-    { uid: 'pod-4', name: 'auth-server-jkl78', status: 'Running', restarts: 0, node: 'node-3', age: '5d' },
-    { uid: 'pod-5', name: 'auth-server-mno90', status: 'CrashLoopBackOff', restarts: 12, node: 'node-2', age: '3d' },
+    {
+      uid: 'pod-4',
+      name: 'auth-server-jkl78',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-3',
+      age: '5d',
+    },
+    {
+      uid: 'pod-5',
+      name: 'auth-server-mno90',
+      status: 'CrashLoopBackOff',
+      restarts: 12,
+      node: 'node-2',
+      age: '3d',
+    },
   ],
   'svc-3': [
-    { uid: 'pod-6', name: 'web-frontend-pqr12', status: 'Running', restarts: 0, node: 'node-1', age: '14d' },
-    { uid: 'pod-7', name: 'web-frontend-stu34', status: 'Running', restarts: 0, node: 'node-3', age: '14d' },
-    { uid: 'pod-8', name: 'web-frontend-vwx56', status: 'Pending', restarts: 0, node: 'node-2', age: '1h' },
-    { uid: 'pod-9', name: 'web-frontend-yza78', status: 'Running', restarts: 0, node: 'node-1', age: '14d' },
+    {
+      uid: 'pod-6',
+      name: 'web-frontend-pqr12',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-1',
+      age: '14d',
+    },
+    {
+      uid: 'pod-7',
+      name: 'web-frontend-stu34',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-3',
+      age: '14d',
+    },
+    {
+      uid: 'pod-8',
+      name: 'web-frontend-vwx56',
+      status: 'Pending',
+      restarts: 0,
+      node: 'node-2',
+      age: '1h',
+    },
+    {
+      uid: 'pod-9',
+      name: 'web-frontend-yza78',
+      status: 'Running',
+      restarts: 0,
+      node: 'node-1',
+      age: '14d',
+    },
   ],
 };
 

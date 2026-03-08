@@ -7,8 +7,4 @@ export type {
   TreeListItemProps,
 } from './types';
 export { useTreeItem } from './hooks/useTreeItem';
-export {
-  useTreeConfig,
-  useTreeStoreContext,
-  useTreeActions,
-} from './context/TreeContext';
+export { useTreeConfig, useTreeStoreContext, useTreeActions } from './context/TreeContext';

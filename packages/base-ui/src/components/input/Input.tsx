@@ -45,8 +45,7 @@ export type InputDescriptionProps = BaseField.Description.Props;
 export type InputErrorProps = BaseField.Error.Props;
 
 export interface InputControlProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseInput>, 'size' | 'color'>,
-    StyledComponentProps {
+  extends Omit<ComponentPropsWithoutRef<typeof BaseInput>, 'size' | 'color'>, StyledComponentProps {
   startDecorator?: ReactNode;
   endDecorator?: ReactNode;
   mono?: boolean;
@@ -83,49 +82,51 @@ const InputLabel = forwardRef<HTMLElement, InputLabelProps>(function InputLabel(
   );
 });
 
-const InputControl = forwardRef<ElementRef<typeof BaseInput>, InputControlProps>(function InputControl(
-  {
-    className,
-    variant,
-    color,
-    size,
-    startDecorator,
-    endDecorator,
-    mono = false,
-    disabled,
-    ...props
-  },
-  ref,
-) {
-  const resolved = useResolvedStyleProps({ variant, color, size });
+const InputControl = forwardRef<ElementRef<typeof BaseInput>, InputControlProps>(
+  function InputControl(
+    {
+      className,
+      variant,
+      color,
+      size,
+      startDecorator,
+      endDecorator,
+      mono = false,
+      disabled,
+      ...props
+    },
+    ref,
+  ) {
+    const resolved = useResolvedStyleProps({ variant, color, size });
 
-  return (
-    <div
-      className={styles.ControlShell}
-      data-ov-mono={mono ? 'true' : undefined}
-      data-disabled={disabled ? '' : undefined}
-      {...styleDataAttributes(resolved)}
-    >
-      {startDecorator ? (
-        <span className={styles.Decorator} data-ov-side="start">
-          {startDecorator}
-        </span>
-      ) : null}
-      <BaseInput
-        ref={ref}
-        className={withBaseClassName<BaseInput.State>(styles.Control, className)}
+    return (
+      <div
+        className={styles.ControlShell}
         data-ov-mono={mono ? 'true' : undefined}
-        disabled={disabled}
-        {...props}
-      />
-      {endDecorator ? (
-        <span className={styles.Decorator} data-ov-side="end">
-          {endDecorator}
-        </span>
-      ) : null}
-    </div>
-  );
-});
+        data-disabled={disabled ? '' : undefined}
+        {...styleDataAttributes(resolved)}
+      >
+        {startDecorator ? (
+          <span className={styles.Decorator} data-ov-side="start">
+            {startDecorator}
+          </span>
+        ) : null}
+        <BaseInput
+          ref={ref}
+          className={withBaseClassName<BaseInput.State>(styles.Control, className)}
+          data-ov-mono={mono ? 'true' : undefined}
+          disabled={disabled}
+          {...props}
+        />
+        {endDecorator ? (
+          <span className={styles.Decorator} data-ov-side="end">
+            {endDecorator}
+          </span>
+        ) : null}
+      </div>
+    );
+  },
+);
 
 const InputDescription = forwardRef<HTMLParagraphElement, InputDescriptionProps>(
   function InputDescription({ className, ...props }, ref) {

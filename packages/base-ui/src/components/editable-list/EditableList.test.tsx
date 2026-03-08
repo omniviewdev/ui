@@ -52,10 +52,7 @@ function ControlledTestList() {
       <button type="button" onClick={() => setEditingKey('2')} data-testid="edit-port">
         Edit PORT
       </button>
-      <TestList
-        editingKey={editingKey}
-        onEditingKeyChange={setEditingKey}
-      />
+      <TestList editingKey={editingKey} onEditingKeyChange={setEditingKey} />
     </div>
   );
 }
@@ -208,7 +205,7 @@ describe('EditableList', () => {
     expect(document.activeElement).toBe(inputs[0]!);
   });
 
-  it('arrow keys suppressed during editing (don\'t navigate list)', async () => {
+  it("arrow keys suppressed during editing (don't navigate list)", async () => {
     const user = userEvent.setup();
     renderWithTheme(<TestList />);
 
@@ -225,9 +222,7 @@ describe('EditableList', () => {
     const onCommit = vi.fn();
     const validateItem = vi.fn().mockReturnValue({ name: 'Required' });
 
-    renderWithTheme(
-      <TestList onCommit={onCommit} validateItem={validateItem} />,
-    );
+    renderWithTheme(<TestList onCommit={onCommit} validateItem={validateItem} />);
 
     const item = screen.getByText('HOST').closest('[role="option"]')!;
     await user.dblClick(item);
@@ -356,9 +351,7 @@ describe('EditableList', () => {
         }),
     );
 
-    renderWithTheme(
-      <TestList onCommit={onCommit} validateItem={validateItem} />,
-    );
+    renderWithTheme(<TestList onCommit={onCommit} validateItem={validateItem} />);
 
     const item = screen.getByText('HOST').closest('[role="option"]')!;
     await user.dblClick(item);

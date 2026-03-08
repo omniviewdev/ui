@@ -20,19 +20,20 @@ export interface NavListRootProps extends Omit<ListRootProps, 'density'> {
   density?: ListRootProps['density'];
 }
 
-const NavListRoot = forwardRef<HTMLDivElement, NavListRootProps>(
-  function NavListRoot({ className, variant = 'ghost', density = 'compact', ...props }, ref) {
-    return (
-      <List.Root
-        ref={ref}
-        className={cn(styles.Root, className)}
-        variant={variant}
-        density={density}
-        {...props}
-      />
-    );
-  },
-);
+const NavListRoot = forwardRef<HTMLDivElement, NavListRootProps>(function NavListRoot(
+  { className, variant = 'ghost', density = 'compact', ...props },
+  ref,
+) {
+  return (
+    <List.Root
+      ref={ref}
+      className={cn(styles.Root, className)}
+      variant={variant}
+      density={density}
+      {...props}
+    />
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Item (with unread/dirty indicators)
@@ -43,19 +44,20 @@ export interface NavListItemProps extends ListItemProps {
   dirty?: boolean;
 }
 
-const NavListItem = forwardRef<HTMLDivElement, NavListItemProps>(
-  function NavListItem({ className, unread = false, dirty = false, ...props }, ref) {
-    return (
-      <List.Item
-        ref={ref}
-        className={cn(styles.Item, className)}
-        data-ov-unread={unread}
-        data-ov-dirty={dirty}
-        {...props}
-      />
-    );
-  },
-);
+const NavListItem = forwardRef<HTMLDivElement, NavListItemProps>(function NavListItem(
+  { className, unread = false, dirty = false, ...props },
+  ref,
+) {
+  return (
+    <List.Item
+      ref={ref}
+      className={cn(styles.Item, className)}
+      data-ov-unread={unread}
+      data-ov-dirty={dirty}
+      {...props}
+    />
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Collapsible Group
@@ -68,48 +70,46 @@ export interface NavListGroupProps extends ListGroupProps {
   onExpandedChange?: (expanded: boolean) => void;
 }
 
-const NavListGroup = forwardRef<HTMLDivElement, NavListGroupProps>(
-  function NavListGroup(
-    {
-      className,
-      collapsible = false,
-      defaultExpanded = true,
-      expanded: expandedProp,
-      onExpandedChange,
-      children,
-      ...props
-    },
-    ref,
-  ) {
-    const { expanded, toggle } = useCollapsibleGroup({
-      expanded: expandedProp,
-      defaultExpanded,
-      onExpandedChange,
-    });
-
-    if (!collapsible) {
-      return (
-        <List.Group ref={ref} className={cn(styles.Group, className)} {...props}>
-          {children}
-        </List.Group>
-      );
-    }
-
-    return (
-      <NavListGroupToggleContext.Provider value={{ expanded, toggle }}>
-        <div
-          ref={ref}
-          role="group"
-          className={cn(styles.Group, styles.collapsible, className)}
-          data-ov-expanded={expanded}
-          {...props}
-        >
-          {children}
-        </div>
-      </NavListGroupToggleContext.Provider>
-    );
+const NavListGroup = forwardRef<HTMLDivElement, NavListGroupProps>(function NavListGroup(
+  {
+    className,
+    collapsible = false,
+    defaultExpanded = true,
+    expanded: expandedProp,
+    onExpandedChange,
+    children,
+    ...props
   },
-);
+  ref,
+) {
+  const { expanded, toggle } = useCollapsibleGroup({
+    expanded: expandedProp,
+    defaultExpanded,
+    onExpandedChange,
+  });
+
+  if (!collapsible) {
+    return (
+      <List.Group ref={ref} className={cn(styles.Group, className)} {...props}>
+        {children}
+      </List.Group>
+    );
+  }
+
+  return (
+    <NavListGroupToggleContext.Provider value={{ expanded, toggle }}>
+      <div
+        ref={ref}
+        role="group"
+        className={cn(styles.Group, styles.collapsible, className)}
+        data-ov-expanded={expanded}
+        {...props}
+      >
+        {children}
+      </div>
+    </NavListGroupToggleContext.Provider>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Collapsible Group Header
@@ -168,9 +168,7 @@ export interface NavListGroupItemsProps extends HTMLAttributes<HTMLDivElement> {
 
 const NavListGroupItems = forwardRef<HTMLDivElement, NavListGroupItemsProps>(
   function NavListGroupItems({ className, ...props }, ref) {
-    return (
-      <div ref={ref} className={cn(styles.GroupItems, className)} {...props} />
-    );
+    return <div ref={ref} className={cn(styles.GroupItems, className)} {...props} />;
   },
 );
 

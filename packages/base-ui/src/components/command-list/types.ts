@@ -119,8 +119,7 @@ export interface CommandListActionsContextValue {
 // ---------------------------------------------------------------------------
 
 export interface CommandListRootProps<TItem = unknown>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   /** Items to display. For external search, update this when results arrive. */
   items: readonly TItem[];
   itemKey: (item: TItem) => Key;
@@ -171,8 +170,7 @@ export interface CommandListRootProps<TItem = unknown>
   children?: ReactNode;
 }
 
-export interface CommandListItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+export interface CommandListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   itemKey: Key;
   disabled?: boolean;
   children: ReactNode;

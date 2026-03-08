@@ -13,11 +13,16 @@ import { LuCheck, LuMinus } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { List } from '../list';
 import type { Key } from '../list';
-import {
-  useListStoreContext,
-  useListActions,
-} from '../list/context/ListContext';
-import type { CheckBehavior, SelectableListRootProps, SelectableListItemProps, SelectableListItemIndicatorProps, SelectableListSelectAllProps, SelectableListSelectionSummaryProps, SelectableListGroupSelectAllProps } from './types';
+import { useListStoreContext, useListActions } from '../list/context/ListContext';
+import type {
+  CheckBehavior,
+  SelectableListRootProps,
+  SelectableListItemProps,
+  SelectableListItemIndicatorProps,
+  SelectableListSelectAllProps,
+  SelectableListSelectionSummaryProps,
+  SelectableListGroupSelectAllProps,
+} from './types';
 import styles from './SelectableList.module.css';
 
 // ---------------------------------------------------------------------------
@@ -64,12 +69,7 @@ const SelectableListItem = forwardRef<HTMLDivElement, SelectableListItemProps>(
   function SelectableListItem({ className, itemKey, ...props }, ref) {
     return (
       <ItemKeyContext.Provider value={itemKey}>
-        <List.Item
-          ref={ref}
-          className={cn(styles.Item, className)}
-          itemKey={itemKey}
-          {...props}
-        />
+        <List.Item ref={ref} className={cn(styles.Item, className)} itemKey={itemKey} {...props} />
       </ItemKeyContext.Provider>
     );
   },
@@ -79,57 +79,54 @@ const SelectableListItem = forwardRef<HTMLDivElement, SelectableListItemProps>(
 // ItemIndicator
 // ---------------------------------------------------------------------------
 
-const SelectableListItemIndicator = forwardRef<
-  HTMLSpanElement,
-  SelectableListItemIndicatorProps
->(function SelectableListItemIndicator({ className, ...props }, ref) {
-  const store = useListStoreContext();
-  const { checkBehavior } = useContext(SelectableListContext);
-  const itemKey = useContext(ItemKeyContext);
+const SelectableListItemIndicator = forwardRef<HTMLSpanElement, SelectableListItemIndicatorProps>(
+  function SelectableListItemIndicator({ className, ...props }, ref) {
+    const store = useListStoreContext();
+    const { checkBehavior } = useContext(SelectableListContext);
+    const itemKey = useContext(ItemKeyContext);
 
-  if (itemKey == null) {
-    throw new Error(
-      'SelectableList.ItemIndicator must be used within <SelectableList.Item>',
+    if (itemKey == null) {
+      throw new Error('SelectableList.ItemIndicator must be used within <SelectableList.Item>');
+    }
+
+    const prevRef = useRef<{ isSelected: boolean }>({ isSelected: false });
+
+    const isSelected = useSyncExternalStore(
+      store.subscribe,
+      () => {
+        const next = store.getItemState(itemKey).isSelected;
+        if (prevRef.current.isSelected === next) return prevRef.current.isSelected;
+        prevRef.current = { isSelected: next };
+        return next;
+      },
+      () => false,
     );
-  }
 
-  const prevRef = useRef<{ isSelected: boolean }>({ isSelected: false });
+    const isCheckbox = checkBehavior === 'checkbox';
 
-  const isSelected = useSyncExternalStore(
-    store.subscribe,
-    () => {
-      const next = store.getItemState(itemKey).isSelected;
-      if (prevRef.current.isSelected === next) return prevRef.current.isSelected;
-      prevRef.current = { isSelected: next };
-      return next;
-    },
-    () => false,
-  );
-
-  const isCheckbox = checkBehavior === 'checkbox';
-
-  return (
-    <span
-      ref={ref}
-      aria-hidden="true"
-      className={cn(
-        styles.IndicatorWrapper,
-        isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
-        className,
-      )}
-      data-checked={isSelected ? '' : undefined}
-      {...props}
-    >
-      <span className={styles.IndicatorControl}>
-        {isCheckbox ? (
-          <LuCheck className={styles.IndicatorIcon} />
-        ) : (
-          isSelected && <span className={styles.RadioDot} />
+    return (
+      <span
+        ref={ref}
+        aria-hidden="true"
+        className={cn(
+          styles.IndicatorWrapper,
+          isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
+          className,
         )}
+        data-checked={isSelected ? '' : undefined}
+        {...props}
+      >
+        <span className={styles.IndicatorControl}>
+          {isCheckbox ? (
+            <LuCheck className={styles.IndicatorIcon} />
+          ) : (
+            isSelected && <span className={styles.RadioDot} />
+          )}
+        </span>
       </span>
-    </span>
-  );
-});
+    );
+  },
+);
 
 // ---------------------------------------------------------------------------
 // SelectAll
@@ -141,126 +138,124 @@ interface SelectAllSnapshot {
   totalEnabled: number;
 }
 
-const SelectableListSelectAll = forwardRef<
-  HTMLDivElement,
-  SelectableListSelectAllProps
->(function SelectableListSelectAll(
-  { className, children, onClick, onKeyDown: onKeyDownProp, ...props },
-  ref,
-) {
-  const store = useListStoreContext();
-  const actions = useListActions();
-  const { checkBehavior } = useContext(SelectableListContext);
+const SelectableListSelectAll = forwardRef<HTMLDivElement, SelectableListSelectAllProps>(
+  function SelectableListSelectAll(
+    { className, children, onClick, onKeyDown: onKeyDownProp, ...props },
+    ref,
+  ) {
+    const store = useListStoreContext();
+    const actions = useListActions();
+    const { checkBehavior } = useContext(SelectableListContext);
 
-  const prevRef = useRef<SelectAllSnapshot>({
-    allSelected: false,
-    someSelected: false,
-    totalEnabled: 0,
-  });
+    const prevRef = useRef<SelectAllSnapshot>({
+      allSelected: false,
+      someSelected: false,
+      totalEnabled: 0,
+    });
 
-  const snapshot = useSyncExternalStore(
-    store.subscribe,
-    () => {
-      const s = store.getSnapshot();
-      const registered = s.registeredKeys;
-      const enabled = registered.filter((k) => !s.disabledKeys.has(k));
-      const totalEnabled = enabled.length;
-      const selectedCount = totalEnabled > 0
-        ? enabled.filter((k) => s.selectedKeys.has(k)).length
-        : 0;
-      const allSelected = totalEnabled > 0 && selectedCount === totalEnabled;
-      const someSelected = selectedCount > 0 && !allSelected;
+    const snapshot = useSyncExternalStore(
+      store.subscribe,
+      () => {
+        const s = store.getSnapshot();
+        const registered = s.registeredKeys;
+        const enabled = registered.filter((k) => !s.disabledKeys.has(k));
+        const totalEnabled = enabled.length;
+        const selectedCount =
+          totalEnabled > 0 ? enabled.filter((k) => s.selectedKeys.has(k)).length : 0;
+        const allSelected = totalEnabled > 0 && selectedCount === totalEnabled;
+        const someSelected = selectedCount > 0 && !allSelected;
 
-      const prev = prevRef.current;
-      if (
-        prev.allSelected === allSelected &&
-        prev.someSelected === someSelected &&
-        prev.totalEnabled === totalEnabled
-      ) {
-        return prev;
+        const prev = prevRef.current;
+        if (
+          prev.allSelected === allSelected &&
+          prev.someSelected === someSelected &&
+          prev.totalEnabled === totalEnabled
+        ) {
+          return prev;
+        }
+        const next = { allSelected, someSelected, totalEnabled };
+        prevRef.current = next;
+        return next;
+      },
+      () => prevRef.current,
+    );
+
+    const handleToggle = useCallback(() => {
+      if (snapshot.allSelected) {
+        // Only deselect enabled keys so disabled-but-selected items stay selected
+        const s = store.getSnapshot();
+        const enabled = s.registeredKeys.filter((k) => !s.disabledKeys.has(k));
+        for (const k of enabled) {
+          actions.deselect(k);
+        }
+      } else {
+        actions.selectAll();
       }
-      const next = { allSelected, someSelected, totalEnabled };
-      prevRef.current = next;
-      return next;
-    },
-    () => prevRef.current,
-  );
+    }, [snapshot.allSelected, actions, store]);
 
-  const handleToggle = useCallback(() => {
-    if (snapshot.allSelected) {
-      // Only deselect enabled keys so disabled-but-selected items stay selected
-      const s = store.getSnapshot();
-      const enabled = s.registeredKeys.filter((k) => !s.disabledKeys.has(k));
-      for (const k of enabled) {
-        actions.deselect(k);
-      }
-    } else {
-      actions.selectAll();
-    }
-  }, [snapshot.allSelected, actions, store]);
-
-  const handleClick = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      handleToggle();
-      onClick?.(event);
-    },
-    [handleToggle, onClick],
-  );
-
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
+    const handleClick = useCallback(
+      (event: MouseEvent<HTMLDivElement>) => {
         handleToggle();
-      }
-      onKeyDownProp?.(event);
-    },
-    [handleToggle, onKeyDownProp],
-  );
+        onClick?.(event);
+      },
+      [handleToggle, onClick],
+    );
 
-  const isCheckbox = checkBehavior === 'checkbox';
-  const ariaChecked = snapshot.allSelected
-    ? true
-    : snapshot.someSelected
-      ? ('mixed' as const)
-      : false;
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleToggle();
+        }
+        onKeyDownProp?.(event);
+      },
+      [handleToggle, onKeyDownProp],
+    );
 
-  return (
-    <div
-      {...props}
-      ref={ref}
-      role="checkbox"
-      aria-checked={ariaChecked}
-      tabIndex={0}
-      className={cn(styles.SelectAll, className)}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    >
-      <span
-        aria-hidden="true"
-        className={cn(
-          styles.IndicatorWrapper,
-          isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
-        )}
-        data-checked={snapshot.allSelected ? '' : undefined}
-        data-indeterminate={snapshot.someSelected ? '' : undefined}
+    const isCheckbox = checkBehavior === 'checkbox';
+    const ariaChecked = snapshot.allSelected
+      ? true
+      : snapshot.someSelected
+        ? ('mixed' as const)
+        : false;
+
+    return (
+      <div
+        {...props}
+        ref={ref}
+        role="checkbox"
+        aria-checked={ariaChecked}
+        tabIndex={0}
+        className={cn(styles.SelectAll, className)}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
       >
-        <span className={styles.IndicatorControl}>
-          {isCheckbox ? (
-            snapshot.someSelected ? (
-              <LuMinus className={styles.IndicatorIcon} />
-            ) : (
-              <LuCheck className={styles.IndicatorIcon} />
-            )
-          ) : (
-            snapshot.allSelected && <span className={styles.RadioDot} />
+        <span
+          aria-hidden="true"
+          className={cn(
+            styles.IndicatorWrapper,
+            isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
           )}
+          data-checked={snapshot.allSelected ? '' : undefined}
+          data-indeterminate={snapshot.someSelected ? '' : undefined}
+        >
+          <span className={styles.IndicatorControl}>
+            {isCheckbox ? (
+              snapshot.someSelected ? (
+                <LuMinus className={styles.IndicatorIcon} />
+              ) : (
+                <LuCheck className={styles.IndicatorIcon} />
+              )
+            ) : (
+              snapshot.allSelected && <span className={styles.RadioDot} />
+            )}
+          </span>
         </span>
-      </span>
-      {children && <span className={styles.SelectAllLabel}>{children}</span>}
-    </div>
-  );
-});
+        {children && <span className={styles.SelectAllLabel}>{children}</span>}
+      </div>
+    );
+  },
+);
 
 // ---------------------------------------------------------------------------
 // SelectionSummary
@@ -269,10 +264,7 @@ const SelectableListSelectAll = forwardRef<
 const SelectableListSelectionSummary = forwardRef<
   HTMLDivElement,
   SelectableListSelectionSummaryProps
->(function SelectableListSelectionSummary(
-  { className, children, ...props },
-  ref,
-) {
+>(function SelectableListSelectionSummary({ className, children, ...props }, ref) {
   const store = useListStoreContext();
 
   const prevRef = useRef<{ selected: number; total: number }>({
@@ -305,11 +297,7 @@ const SelectableListSelectionSummary = forwardRef<
   }
 
   return (
-    <div
-      ref={ref}
-      className={cn(styles.SelectionSummary, className)}
-      {...props}
-    >
+    <div ref={ref} className={cn(styles.SelectionSummary, className)} {...props}>
       {content}
     </div>
   );
@@ -319,124 +307,118 @@ const SelectableListSelectionSummary = forwardRef<
 // GroupSelectAll
 // ---------------------------------------------------------------------------
 
-const SelectableListGroupSelectAll = forwardRef<
-  HTMLDivElement,
-  SelectableListGroupSelectAllProps
->(function SelectableListGroupSelectAll(
-  { className, groupKeys, children, onClick, onKeyDown: onKeyDownProp, ...props },
-  ref,
-) {
-  const store = useListStoreContext();
-  const actions = useListActions();
-  const { checkBehavior } = useContext(SelectableListContext);
+const SelectableListGroupSelectAll = forwardRef<HTMLDivElement, SelectableListGroupSelectAllProps>(
+  function SelectableListGroupSelectAll(
+    { className, groupKeys, children, onClick, onKeyDown: onKeyDownProp, ...props },
+    ref,
+  ) {
+    const store = useListStoreContext();
+    const actions = useListActions();
+    const { checkBehavior } = useContext(SelectableListContext);
 
-  const prevRef = useRef<{ allSelected: boolean; someSelected: boolean }>({
-    allSelected: false,
-    someSelected: false,
-  });
+    const prevRef = useRef<{ allSelected: boolean; someSelected: boolean }>({
+      allSelected: false,
+      someSelected: false,
+    });
 
-  const snapshot = useSyncExternalStore(
-    store.subscribe,
-    () => {
+    const snapshot = useSyncExternalStore(
+      store.subscribe,
+      () => {
+        const s = store.getSnapshot();
+        const enabled = groupKeys.filter((k) => !s.disabledKeys.has(k));
+        const selectedCount = enabled.filter((k) => s.selectedKeys.has(k)).length;
+        const allSelected = enabled.length > 0 && selectedCount === enabled.length;
+        const someSelected = selectedCount > 0 && !allSelected;
+
+        const prev = prevRef.current;
+        if (prev.allSelected === allSelected && prev.someSelected === someSelected) {
+          return prev;
+        }
+        const next = { allSelected, someSelected };
+        prevRef.current = next;
+        return next;
+      },
+      () => prevRef.current,
+    );
+
+    const handleToggle = useCallback(() => {
       const s = store.getSnapshot();
       const enabled = groupKeys.filter((k) => !s.disabledKeys.has(k));
-      const selectedCount = enabled.filter((k) =>
-        s.selectedKeys.has(k),
-      ).length;
-      const allSelected = enabled.length > 0 && selectedCount === enabled.length;
-      const someSelected = selectedCount > 0 && !allSelected;
 
-      const prev = prevRef.current;
-      if (
-        prev.allSelected === allSelected &&
-        prev.someSelected === someSelected
-      ) {
-        return prev;
+      if (snapshot.allSelected) {
+        for (const k of enabled) {
+          actions.deselect(k);
+        }
+      } else {
+        for (const k of enabled) {
+          actions.select(k);
+        }
       }
-      const next = { allSelected, someSelected };
-      prevRef.current = next;
-      return next;
-    },
-    () => prevRef.current,
-  );
+    }, [snapshot.allSelected, store, groupKeys, actions]);
 
-  const handleToggle = useCallback(() => {
-    const s = store.getSnapshot();
-    const enabled = groupKeys.filter((k) => !s.disabledKeys.has(k));
-
-    if (snapshot.allSelected) {
-      for (const k of enabled) {
-        actions.deselect(k);
-      }
-    } else {
-      for (const k of enabled) {
-        actions.select(k);
-      }
-    }
-  }, [snapshot.allSelected, store, groupKeys, actions]);
-
-  const handleClick = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      handleToggle();
-      onClick?.(event);
-    },
-    [handleToggle, onClick],
-  );
-
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
+    const handleClick = useCallback(
+      (event: MouseEvent<HTMLDivElement>) => {
         handleToggle();
-      }
-      onKeyDownProp?.(event);
-    },
-    [handleToggle, onKeyDownProp],
-  );
+        onClick?.(event);
+      },
+      [handleToggle, onClick],
+    );
 
-  const isCheckbox = checkBehavior === 'checkbox';
-  const ariaChecked = snapshot.allSelected
-    ? true
-    : snapshot.someSelected
-      ? ('mixed' as const)
-      : false;
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleToggle();
+        }
+        onKeyDownProp?.(event);
+      },
+      [handleToggle, onKeyDownProp],
+    );
 
-  return (
-    <div
-      {...props}
-      ref={ref}
-      role="checkbox"
-      aria-checked={ariaChecked}
-      tabIndex={0}
-      className={cn(styles.GroupSelectAll, className)}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    >
-      <span
-        aria-hidden="true"
-        className={cn(
-          styles.IndicatorWrapper,
-          isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
-        )}
-        data-checked={snapshot.allSelected ? '' : undefined}
-        data-indeterminate={snapshot.someSelected ? '' : undefined}
+    const isCheckbox = checkBehavior === 'checkbox';
+    const ariaChecked = snapshot.allSelected
+      ? true
+      : snapshot.someSelected
+        ? ('mixed' as const)
+        : false;
+
+    return (
+      <div
+        {...props}
+        ref={ref}
+        role="checkbox"
+        aria-checked={ariaChecked}
+        tabIndex={0}
+        className={cn(styles.GroupSelectAll, className)}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
       >
-        <span className={styles.IndicatorControl}>
-          {isCheckbox ? (
-            snapshot.someSelected ? (
-              <LuMinus className={styles.IndicatorIcon} />
-            ) : (
-              <LuCheck className={styles.IndicatorIcon} />
-            )
-          ) : (
-            snapshot.allSelected && <span className={styles.RadioDot} />
+        <span
+          aria-hidden="true"
+          className={cn(
+            styles.IndicatorWrapper,
+            isCheckbox ? styles.CheckboxIndicator : styles.RadioIndicator,
           )}
+          data-checked={snapshot.allSelected ? '' : undefined}
+          data-indeterminate={snapshot.someSelected ? '' : undefined}
+        >
+          <span className={styles.IndicatorControl}>
+            {isCheckbox ? (
+              snapshot.someSelected ? (
+                <LuMinus className={styles.IndicatorIcon} />
+              ) : (
+                <LuCheck className={styles.IndicatorIcon} />
+              )
+            ) : (
+              snapshot.allSelected && <span className={styles.RadioDot} />
+            )}
+          </span>
         </span>
-      </span>
-      {children && <span className={styles.SelectAllLabel}>{children}</span>}
-    </div>
-  );
-});
+        {children && <span className={styles.SelectAllLabel}>{children}</span>}
+      </div>
+    );
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Display names

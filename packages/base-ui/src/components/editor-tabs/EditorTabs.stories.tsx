@@ -163,9 +163,7 @@ export const WithGroups: Story = {
     defaultActiveId: 'comp1',
   },
   render: function WithGroupsRender(args) {
-    const [groups, setGroups] = useState<TabGroupDescriptor[]>(
-      args.groups ?? [],
-    );
+    const [groups, setGroups] = useState<TabGroupDescriptor[]>(args.groups ?? []);
 
     const handleToggle = useCallback((groupId: TabGroupId) => {
       setGroups((prev) =>
@@ -173,13 +171,7 @@ export const WithGroups: Story = {
       );
     }, []);
 
-    return (
-      <EditorTabs
-        {...args}
-        groups={groups}
-        onToggleGroupCollapsed={handleToggle}
-      />
-    );
+    return <EditorTabs {...args} groups={groups} onToggleGroupCollapsed={handleToggle} />;
   },
 };
 
@@ -267,7 +259,8 @@ export const WithContextMenu: Story = {
         if (idx === -1) return prev;
         const next = prev.slice(0, idx + 1);
         setActiveId((current) => {
-          if (!next.some((t) => t.id === current) && next.length > 0) return next[next.length - 1]!.id;
+          if (!next.some((t) => t.id === current) && next.length > 0)
+            return next[next.length - 1]!.id;
           return current;
         });
         return next;
@@ -293,9 +286,7 @@ export const WithContextMenu: Story = {
     }, []);
 
     const togglePin = useCallback((id: TabId) => {
-      setTabs((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, pinned: !t.pinned } : t)),
-      );
+      setTabs((prev) => prev.map((t) => (t.id === id ? { ...t, pinned: !t.pinned } : t)));
     }, []);
 
     const getContextTab = () => contextTabRef.current;
@@ -320,32 +311,41 @@ export const WithContextMenu: Story = {
               {/* ── Close actions ── */}
               <ContextMenu.Item
                 startDecorator={<LuX size={14} />}
-                onClick={() => { const id = getContextTab(); if (id) closeTab(id); }}
+                onClick={() => {
+                  const id = getContextTab();
+                  if (id) closeTab(id);
+                }}
               >
                 Close
               </ContextMenu.Item>
               <ContextMenu.Item
                 startDecorator={<LuCircleX size={14} />}
-                onClick={() => { const id = getContextTab(); if (id) closeOthers(id); }}
+                onClick={() => {
+                  const id = getContextTab();
+                  if (id) closeOthers(id);
+                }}
               >
                 Close Others
               </ContextMenu.Item>
               <ContextMenu.Item
                 startDecorator={<LuArrowRightToLine size={14} />}
-                onClick={() => { const id = getContextTab(); if (id) closeToRight(id); }}
+                onClick={() => {
+                  const id = getContextTab();
+                  if (id) closeToRight(id);
+                }}
               >
                 Close to the Right
               </ContextMenu.Item>
               <ContextMenu.Item
                 startDecorator={<LuArrowLeftToLine size={14} />}
-                onClick={() => { const id = getContextTab(); if (id) closeToLeft(id); }}
+                onClick={() => {
+                  const id = getContextTab();
+                  if (id) closeToLeft(id);
+                }}
               >
                 Close to the Left
               </ContextMenu.Item>
-              <ContextMenu.Item
-                startDecorator={<LuCircleX size={14} />}
-                onClick={closeAll}
-              >
+              <ContextMenu.Item startDecorator={<LuCircleX size={14} />} onClick={closeAll}>
                 Close All
               </ContextMenu.Item>
 
@@ -354,7 +354,10 @@ export const WithContextMenu: Story = {
               {/* ── Tab organization ── */}
               <ContextMenu.Item
                 startDecorator={<LuPin size={14} />}
-                onClick={() => { const id = getContextTab(); if (id) togglePin(id); }}
+                onClick={() => {
+                  const id = getContextTab();
+                  if (id) togglePin(id);
+                }}
               >
                 Pin Tab
               </ContextMenu.Item>
@@ -441,13 +444,7 @@ export const Reorderable: Story = {
       setTabs(nextTabs);
     }, []);
 
-    return (
-      <EditorTabs
-        {...args}
-        tabs={tabs}
-        onReorder={handleReorder}
-      />
-    );
+    return <EditorTabs {...args} tabs={tabs} onReorder={handleReorder} />;
   },
 };
 
@@ -470,13 +467,7 @@ export const ReorderableWithPinned: Story = {
   render: function ReorderableWithPinnedRender(args) {
     const [tabs, setTabs] = useState(args.tabs);
 
-    return (
-      <EditorTabs
-        {...args}
-        tabs={tabs}
-        onReorder={(nextTabs) => setTabs(nextTabs)}
-      />
-    );
+    return <EditorTabs {...args} tabs={tabs} onReorder={(nextTabs) => setTabs(nextTabs)} />;
   },
 };
 
@@ -552,12 +543,20 @@ function FakeWindow({
   onClose: () => void;
 }) {
   const [pos, setPos] = useState({ x, y });
-  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
 
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, [pos]);
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    },
+    [pos],
+  );
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragRef.current) return;
@@ -613,13 +612,25 @@ function FakeWindow({
             type="button"
             onClick={onClose}
             style={{
-              width: 12, height: 12, borderRadius: '50%',
-              background: '#ff5f57', border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 0, fontSize: 8, color: 'transparent',
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              background: '#ff5f57',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              fontSize: 8,
+              color: 'transparent',
             }}
-            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = '#4a0002'; }}
-            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = 'transparent'; }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.color = '#4a0002';
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.color = 'transparent';
+            }}
           >
             <LuX />
           </button>
@@ -631,11 +642,13 @@ function FakeWindow({
         </span>
       </div>
       {/* Tab bar (single tab) */}
-      <div style={{
-        background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
-        borderBottom: '1px solid var(--ov-color-border-default, #333)',
-        padding: '0',
-      }}>
+      <div
+        style={{
+          background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
+          borderBottom: '1px solid var(--ov-color-border-default, #333)',
+          padding: '0',
+        }}
+      >
         <EditorTabs
           tabs={[{ ...tab, closable: false }]}
           defaultActiveId={tab.id}
@@ -643,16 +656,18 @@ function FakeWindow({
         />
       </div>
       {/* Editor content */}
-      <div style={{
-        flex: 1,
-        padding: '12px 16px',
-        fontSize: 12,
-        fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
-        lineHeight: 1.6,
-        color: 'var(--ov-color-fg-default, #d4d4d4)',
-        whiteSpace: 'pre',
-        overflow: 'auto',
-      }}>
+      <div
+        style={{
+          flex: 1,
+          padding: '12px 16px',
+          fontSize: 12,
+          fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
+          lineHeight: 1.6,
+          color: 'var(--ov-color-fg-default, #d4d4d4)',
+          whiteSpace: 'pre',
+          overflow: 'auto',
+        }}
+      >
         {fileContents[tab.title] ?? `// ${tab.title}\n// No preview available`}
       </div>
     </div>
@@ -662,10 +677,34 @@ function FakeWindow({
 export const Detachable: StoryObj<typeof EditorTabs> = {
   args: {
     tabs: [
-      { id: 'file1', title: 'index.ts', icon: <LuFileCode />, closable: true, payload: { path: '/src/index.ts' } },
-      { id: 'file2', title: 'App.tsx', icon: <LuFileCode />, closable: true, payload: { path: '/src/App.tsx' } },
-      { id: 'file3', title: 'styles.css', icon: <LuFile />, closable: true, payload: { path: '/src/styles.css' } },
-      { id: 'file4', title: 'vite.config.ts', icon: <LuSettings />, closable: true, payload: { path: '/vite.config.ts' } },
+      {
+        id: 'file1',
+        title: 'index.ts',
+        icon: <LuFileCode />,
+        closable: true,
+        payload: { path: '/src/index.ts' },
+      },
+      {
+        id: 'file2',
+        title: 'App.tsx',
+        icon: <LuFileCode />,
+        closable: true,
+        payload: { path: '/src/App.tsx' },
+      },
+      {
+        id: 'file3',
+        title: 'styles.css',
+        icon: <LuFile />,
+        closable: true,
+        payload: { path: '/src/styles.css' },
+      },
+      {
+        id: 'file4',
+        title: 'vite.config.ts',
+        icon: <LuSettings />,
+        closable: true,
+        payload: { path: '/vite.config.ts' },
+      },
     ],
     defaultActiveId: 'file1',
     detachable: true,
@@ -735,13 +774,7 @@ export const DetachDisabled: StoryObj<typeof EditorTabs> = {
   render: function DetachDisabledRender(args) {
     const [tabs, setTabs] = useState(args.tabs);
 
-    return (
-      <EditorTabs
-        {...args}
-        tabs={tabs}
-        onReorder={(nextTabs) => setTabs(nextTabs)}
-      />
-    );
+    return <EditorTabs {...args} tabs={tabs} onReorder={(nextTabs) => setTabs(nextTabs)} />;
   },
 };
 
@@ -765,11 +798,19 @@ function BrokerFakeWindow({
   onRemoveTab: (tabId: string) => void;
 }) {
   const [pos, setPos] = useState({ x, y });
-  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, [pos]);
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    },
+    [pos],
+  );
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragRef.current) return;
@@ -823,13 +864,25 @@ function BrokerFakeWindow({
             type="button"
             onClick={onClose}
             style={{
-              width: 12, height: 12, borderRadius: '50%',
-              background: '#ff5f57', border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 0, fontSize: 8, color: 'transparent',
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              background: '#ff5f57',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              fontSize: 8,
+              color: 'transparent',
             }}
-            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = '#4a0002'; }}
-            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = 'transparent'; }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.color = '#4a0002';
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.color = 'transparent';
+            }}
           >
             <LuX />
           </button>
@@ -840,10 +893,12 @@ function BrokerFakeWindow({
           {tab.title}
         </span>
       </div>
-      <div style={{
-        background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
-        borderBottom: '1px solid var(--ov-color-border-default, #333)',
-      }}>
+      <div
+        style={{
+          background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
+          borderBottom: '1px solid var(--ov-color-border-default, #333)',
+        }}
+      >
         <EditorTabs
           tabs={[{ ...tab, closable: false }]}
           defaultActiveId={tab.id}
@@ -855,16 +910,18 @@ function BrokerFakeWindow({
           }}
         />
       </div>
-      <div style={{
-        flex: 1,
-        padding: '12px 16px',
-        fontSize: 12,
-        fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
-        lineHeight: 1.6,
-        color: 'var(--ov-color-fg-default, #d4d4d4)',
-        whiteSpace: 'pre',
-        overflow: 'auto',
-      }}>
+      <div
+        style={{
+          flex: 1,
+          padding: '12px 16px',
+          fontSize: 12,
+          fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
+          lineHeight: 1.6,
+          color: 'var(--ov-color-fg-default, #d4d4d4)',
+          whiteSpace: 'pre',
+          overflow: 'auto',
+        }}
+      >
         {fileContents[tab.title] ?? `// ${tab.title}\n// No preview available`}
       </div>
     </div>
@@ -885,10 +942,34 @@ function BrokerFakeWindow({
 export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
   args: {
     tabs: [
-      { id: 'file1', title: 'index.ts', icon: <LuFileCode />, closable: true, payload: { path: '/src/index.ts' } },
-      { id: 'file2', title: 'App.tsx', icon: <LuFileCode />, closable: true, payload: { path: '/src/App.tsx' } },
-      { id: 'file3', title: 'styles.css', icon: <LuFile />, closable: true, payload: { path: '/src/styles.css' } },
-      { id: 'file4', title: 'vite.config.ts', icon: <LuSettings />, closable: true, payload: { path: '/vite.config.ts' } },
+      {
+        id: 'file1',
+        title: 'index.ts',
+        icon: <LuFileCode />,
+        closable: true,
+        payload: { path: '/src/index.ts' },
+      },
+      {
+        id: 'file2',
+        title: 'App.tsx',
+        icon: <LuFileCode />,
+        closable: true,
+        payload: { path: '/src/App.tsx' },
+      },
+      {
+        id: 'file3',
+        title: 'styles.css',
+        icon: <LuFile />,
+        closable: true,
+        payload: { path: '/src/styles.css' },
+      },
+      {
+        id: 'file4',
+        title: 'vite.config.ts',
+        icon: <LuSettings />,
+        closable: true,
+        payload: { path: '/vite.config.ts' },
+      },
     ],
     defaultActiveId: 'file1',
     detachable: true,
@@ -916,14 +997,17 @@ export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
       });
     }, []);
 
-    const handleCancel = useCallback((session: { tab: TabDescriptor; sourceInstanceId: string }) => {
-      // Only re-create FakeWindow if the source was a window (not the main strip)
-      if (!session.sourceInstanceId.startsWith('window-')) return;
-      setWindows((prev) => {
-        if (prev.some((w) => w.tab.id === session.tab.id)) return prev;
-        return [...prev, { id: session.tab.id, tab: session.tab, x: 200, y: 200 }];
-      });
-    }, []);
+    const handleCancel = useCallback(
+      (session: { tab: TabDescriptor; sourceInstanceId: string }) => {
+        // Only re-create FakeWindow if the source was a window (not the main strip)
+        if (!session.sourceInstanceId.startsWith('window-')) return;
+        setWindows((prev) => {
+          if (prev.some((w) => w.tab.id === session.tab.id)) return prev;
+          return [...prev, { id: session.tab.id, tab: session.tab, x: 200, y: 200 }];
+        });
+      },
+      [],
+    );
 
     return (
       <TabDragBrokerProvider onCancel={handleCancel}>
@@ -1044,17 +1128,20 @@ export const SplitPaneAttach: StoryObj<typeof EditorTabs> = {
       });
     }, []);
 
-    const handleCancel = useCallback((session: { tab: TabDescriptor; sourceInstanceId: string }) => {
-      if (session.sourceInstanceId === 'left') {
-        setLeftTabs((prev) =>
-          prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
-        );
-      } else if (session.sourceInstanceId === 'right') {
-        setRightTabs((prev) =>
-          prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
-        );
-      }
-    }, []);
+    const handleCancel = useCallback(
+      (session: { tab: TabDescriptor; sourceInstanceId: string }) => {
+        if (session.sourceInstanceId === 'left') {
+          setLeftTabs((prev) =>
+            prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
+          );
+        } else if (session.sourceInstanceId === 'right') {
+          setRightTabs((prev) =>
+            prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
+          );
+        }
+      },
+      [],
+    );
 
     return (
       <TabDragBrokerProvider onCancel={handleCancel}>
@@ -1109,8 +1196,22 @@ function SplitPaneInner({
 
   return (
     <div style={{ display: 'flex', gap: 2 }}>
-      <div style={{ flex: 1, border: '1px solid var(--ov-color-border-default, #333)', borderRadius: 4, overflow: 'hidden' }}>
-        <div style={{ padding: '4px 8px', fontSize: 11, opacity: 0.6, background: 'var(--ov-color-bg-surface-raised, #252526)' }}>
+      <div
+        style={{
+          flex: 1,
+          border: '1px solid var(--ov-color-border-default, #333)',
+          borderRadius: 4,
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            padding: '4px 8px',
+            fontSize: 11,
+            opacity: 0.6,
+            background: 'var(--ov-color-bg-surface-raised, #252526)',
+          }}
+        >
           Left Pane
         </div>
         <EditorTabs
@@ -1124,21 +1225,37 @@ function SplitPaneInner({
           onAttachTab={onLeftAttach}
           onDetachCommit={onLeftDetach}
         />
-        <div style={{
-          padding: '12px 16px',
-          fontSize: 12,
-          fontFamily: 'var(--ov-font-mono, monospace)',
-          color: 'var(--ov-color-fg-default, #d4d4d4)',
-          minHeight: 120,
-          whiteSpace: 'pre',
-        }}>
+        <div
+          style={{
+            padding: '12px 16px',
+            fontSize: 12,
+            fontFamily: 'var(--ov-font-mono, monospace)',
+            color: 'var(--ov-color-fg-default, #d4d4d4)',
+            minHeight: 120,
+            whiteSpace: 'pre',
+          }}
+        >
           {leftActiveTab
-            ? fileContents[leftActiveTab.title] ?? `// ${leftActiveTab.title}`
+            ? (fileContents[leftActiveTab.title] ?? `// ${leftActiveTab.title}`)
             : '// No files open'}
         </div>
       </div>
-      <div style={{ flex: 1, border: '1px solid var(--ov-color-border-default, #333)', borderRadius: 4, overflow: 'hidden' }}>
-        <div style={{ padding: '4px 8px', fontSize: 11, opacity: 0.6, background: 'var(--ov-color-bg-surface-raised, #252526)' }}>
+      <div
+        style={{
+          flex: 1,
+          border: '1px solid var(--ov-color-border-default, #333)',
+          borderRadius: 4,
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            padding: '4px 8px',
+            fontSize: 11,
+            opacity: 0.6,
+            background: 'var(--ov-color-bg-surface-raised, #252526)',
+          }}
+        >
           Right Pane
         </div>
         <EditorTabs
@@ -1152,16 +1269,18 @@ function SplitPaneInner({
           onAttachTab={onRightAttach}
           onDetachCommit={onRightDetach}
         />
-        <div style={{
-          padding: '12px 16px',
-          fontSize: 12,
-          fontFamily: 'var(--ov-font-mono, monospace)',
-          color: 'var(--ov-color-fg-default, #d4d4d4)',
-          minHeight: 120,
-          whiteSpace: 'pre',
-        }}>
+        <div
+          style={{
+            padding: '12px 16px',
+            fontSize: 12,
+            fontFamily: 'var(--ov-font-mono, monospace)',
+            color: 'var(--ov-color-fg-default, #d4d4d4)',
+            minHeight: 120,
+            whiteSpace: 'pre',
+          }}
+        >
           {rightActiveTab
-            ? fileContents[rightActiveTab.title] ?? `// ${rightActiveTab.title}`
+            ? (fileContents[rightActiveTab.title] ?? `// ${rightActiveTab.title}`)
             : '// No files open'}
         </div>
       </div>

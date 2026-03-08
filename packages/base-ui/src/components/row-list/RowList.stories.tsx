@@ -132,12 +132,7 @@ export const WithSorting: Story = {
 
 export const SingleSelect: Story = {
   render: (args) => (
-    <RowList
-      columns={basicColumns}
-      selectionMode="single"
-      {...args}
-      style={{ width: 480 }}
-    >
+    <RowList columns={basicColumns} selectionMode="single" {...args} style={{ width: 480 }}>
       <RowList.Header />
       <RowList.Viewport>
         <RowList.Item itemKey="1" textValue="api-server">
@@ -166,12 +161,7 @@ export const SingleSelect: Story = {
 
 export const MultiSelect: Story = {
   render: (args) => (
-    <RowList
-      columns={basicColumns}
-      selectionMode="multiple"
-      {...args}
-      style={{ width: 480 }}
-    >
+    <RowList columns={basicColumns} selectionMode="multiple" {...args} style={{ width: 480 }}>
       <RowList.Header />
       <RowList.Viewport>
         <RowList.Item itemKey="1" textValue="api-server">
@@ -203,15 +193,8 @@ export const DensityVariants: Story = {
     <div style={{ display: 'flex', gap: 32 }}>
       {(['compact', 'default', 'comfortable'] as const).map((density) => (
         <div key={density}>
-          <div style={{ marginBottom: 8, fontWeight: 600, fontSize: 13 }}>
-            {density}
-          </div>
-          <RowList
-            columns={basicColumns}
-            {...args}
-            density={density}
-            style={{ width: 360 }}
-          >
+          <div style={{ marginBottom: 8, fontWeight: 600, fontSize: 13 }}>{density}</div>
+          <RowList columns={basicColumns} {...args} density={density} style={{ width: 360 }}>
             <RowList.Header />
             <RowList.Viewport>
               <RowList.Item itemKey="1" textValue="api-server">
@@ -244,11 +227,41 @@ const problemsColumns: ColumnDef[] = [
 ];
 
 const problems = [
-  { key: '1', icon: <LuCircleAlert style={{ color: 'var(--ov-color-danger)' }} />, msg: "Cannot find name 'foo'", file: 'parser.ts', line: 42 },
-  { key: '2', icon: <LuTriangleAlert style={{ color: 'var(--ov-color-warning)' }} />, msg: 'Unused variable x', file: 'index.ts', line: 15 },
-  { key: '3', icon: <LuInfo style={{ color: 'var(--ov-color-info)' }} />, msg: 'Consider using const', file: 'utils.ts', line: 88 },
-  { key: '4', icon: <LuCircleAlert style={{ color: 'var(--ov-color-danger)' }} />, msg: "Property 'bar' does not exist", file: 'api.ts', line: 7 },
-  { key: '5', icon: <LuCircleCheck style={{ color: 'var(--ov-color-success)' }} />, msg: 'Build succeeded', file: 'build.ts', line: 1 },
+  {
+    key: '1',
+    icon: <LuCircleAlert style={{ color: 'var(--ov-color-danger)' }} />,
+    msg: "Cannot find name 'foo'",
+    file: 'parser.ts',
+    line: 42,
+  },
+  {
+    key: '2',
+    icon: <LuTriangleAlert style={{ color: 'var(--ov-color-warning)' }} />,
+    msg: 'Unused variable x',
+    file: 'index.ts',
+    line: 15,
+  },
+  {
+    key: '3',
+    icon: <LuInfo style={{ color: 'var(--ov-color-info)' }} />,
+    msg: 'Consider using const',
+    file: 'utils.ts',
+    line: 88,
+  },
+  {
+    key: '4',
+    icon: <LuCircleAlert style={{ color: 'var(--ov-color-danger)' }} />,
+    msg: "Property 'bar' does not exist",
+    file: 'api.ts',
+    line: 7,
+  },
+  {
+    key: '5',
+    icon: <LuCircleCheck style={{ color: 'var(--ov-color-success)' }} />,
+    msg: 'Build succeeded',
+    file: 'build.ts',
+    line: 1,
+  },
 ];
 
 export const ProblemsPanel: Story = {
@@ -335,11 +348,7 @@ export const LargeList: Story = {
       <RowList.Header />
       <RowList.Viewport style={{ maxHeight: 400 }}>
         {largeData.map((row) => (
-          <RowList.Item
-            key={row.key}
-            itemKey={row.key}
-            textValue={row.task}
-          >
+          <RowList.Item key={row.key} itemKey={row.key} textValue={row.task}>
             <RowList.Cell column="id">{row.id}</RowList.Cell>
             <RowList.Cell column="task">{row.task}</RowList.Cell>
             <RowList.Cell column="status">{row.status}</RowList.Cell>

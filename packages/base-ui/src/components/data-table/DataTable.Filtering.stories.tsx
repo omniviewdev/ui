@@ -13,14 +13,70 @@ interface Service {
 }
 
 const serviceData: Service[] = [
-  { id: '1', name: 'kubernetes', type: 'ClusterIP', clusterIP: '10.96.0.1', ports: '443/TCP', age: '30d' },
-  { id: '2', name: 'kube-dns', type: 'ClusterIP', clusterIP: '10.96.0.10', ports: '53/UDP,53/TCP', age: '30d' },
-  { id: '3', name: 'api-gateway', type: 'LoadBalancer', clusterIP: '10.96.1.20', ports: '80/TCP,443/TCP', age: '7d' },
-  { id: '4', name: 'frontend', type: 'NodePort', clusterIP: '10.96.2.15', ports: '3000:31234/TCP', age: '5d' },
-  { id: '5', name: 'redis-master', type: 'ClusterIP', clusterIP: '10.96.3.44', ports: '6379/TCP', age: '12d' },
-  { id: '6', name: 'postgres', type: 'ClusterIP', clusterIP: '10.96.4.55', ports: '5432/TCP', age: '12d' },
-  { id: '7', name: 'metrics-server', type: 'ClusterIP', clusterIP: '10.96.5.66', ports: '443/TCP', age: '20d' },
-  { id: '8', name: 'ingress-nginx', type: 'LoadBalancer', clusterIP: '10.96.6.77', ports: '80/TCP,443/TCP', age: '15d' },
+  {
+    id: '1',
+    name: 'kubernetes',
+    type: 'ClusterIP',
+    clusterIP: '10.96.0.1',
+    ports: '443/TCP',
+    age: '30d',
+  },
+  {
+    id: '2',
+    name: 'kube-dns',
+    type: 'ClusterIP',
+    clusterIP: '10.96.0.10',
+    ports: '53/UDP,53/TCP',
+    age: '30d',
+  },
+  {
+    id: '3',
+    name: 'api-gateway',
+    type: 'LoadBalancer',
+    clusterIP: '10.96.1.20',
+    ports: '80/TCP,443/TCP',
+    age: '7d',
+  },
+  {
+    id: '4',
+    name: 'frontend',
+    type: 'NodePort',
+    clusterIP: '10.96.2.15',
+    ports: '3000:31234/TCP',
+    age: '5d',
+  },
+  {
+    id: '5',
+    name: 'redis-master',
+    type: 'ClusterIP',
+    clusterIP: '10.96.3.44',
+    ports: '6379/TCP',
+    age: '12d',
+  },
+  {
+    id: '6',
+    name: 'postgres',
+    type: 'ClusterIP',
+    clusterIP: '10.96.4.55',
+    ports: '5432/TCP',
+    age: '12d',
+  },
+  {
+    id: '7',
+    name: 'metrics-server',
+    type: 'ClusterIP',
+    clusterIP: '10.96.5.66',
+    ports: '443/TCP',
+    age: '20d',
+  },
+  {
+    id: '8',
+    name: 'ingress-nginx',
+    type: 'LoadBalancer',
+    clusterIP: '10.96.6.77',
+    ports: '80/TCP,443/TCP',
+    age: '15d',
+  },
 ];
 
 const serviceColumns: ColumnDef<Service, unknown>[] = [

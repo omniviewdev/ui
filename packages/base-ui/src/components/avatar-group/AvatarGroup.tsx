@@ -27,8 +27,7 @@ interface AvatarGroupContextValue extends StyledComponentProps {
 const AvatarGroupContext = createContext<AvatarGroupContextValue | null>(null);
 
 export interface AvatarGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   shape?: AvatarShape;
   deterministic?: boolean;
   overlap?: AvatarGroupOverlap;
@@ -37,7 +36,8 @@ export interface AvatarGroupProps
 }
 
 export interface AvatarGroupItemProps
-  extends Omit<AvatarProps, 'shape' | 'deterministic' | 'variant' | 'color' | 'size'>,
+  extends
+    Omit<AvatarProps, 'shape' | 'deterministic' | 'variant' | 'color' | 'size'>,
     StyledComponentProps {
   shape?: AvatarShape;
   deterministic?: boolean;
@@ -64,8 +64,11 @@ const AvatarGroupRoot = forwardRef<HTMLDivElement, AvatarGroupProps>(function Av
   const allChildren = Children.toArray(children);
   const visibleChildren = clampedMax === undefined ? allChildren : allChildren.slice(0, clampedMax);
   const resolvedTotal =
-    typeof total === 'number' ? Math.max(Math.floor(total), allChildren.length) : allChildren.length;
-  const overflowCount = clampedMax === undefined ? 0 : Math.max(resolvedTotal - visibleChildren.length, 0);
+    typeof total === 'number'
+      ? Math.max(Math.floor(total), allChildren.length)
+      : allChildren.length;
+  const overflowCount =
+    clampedMax === undefined ? 0 : Math.max(resolvedTotal - visibleChildren.length, 0);
 
   return (
     <AvatarGroupContext.Provider value={{ variant, color, size, shape, deterministic }}>

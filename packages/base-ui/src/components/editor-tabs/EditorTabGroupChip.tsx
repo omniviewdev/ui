@@ -32,7 +32,11 @@ function contrastFg(hex: string): string | null {
   // 3-digit shorthand
   let m = /^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(hex);
   if (m) {
-    const [r, g, b] = [parseInt(m[1]! + m[1]!, 16), parseInt(m[2]! + m[2]!, 16), parseInt(m[3]! + m[3]!, 16)];
+    const [r, g, b] = [
+      parseInt(m[1]! + m[1]!, 16),
+      parseInt(m[2]! + m[2]!, 16),
+      parseInt(m[3]! + m[3]!, 16),
+    ];
     const l = luminance(r, g, b);
     return contrastRatio(l, 1) >= contrastRatio(l, 0) ? '#fff' : '#000';
   }

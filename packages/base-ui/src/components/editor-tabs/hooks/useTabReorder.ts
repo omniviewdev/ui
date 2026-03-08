@@ -71,7 +71,13 @@ export function useTabReorder({
       const overTab = tabs.find((t) => t.id === overId);
       if (!activeTab || !overTab) return;
 
-      if (!canReorder(activeTab, overTab, { allowReorderAcrossPinnedBoundary, allowReorderAcrossGroups })) return;
+      if (
+        !canReorder(activeTab, overTab, {
+          allowReorderAcrossPinnedBoundary,
+          allowReorderAcrossGroups,
+        })
+      )
+        return;
 
       const fromIndex = tabs.findIndex((t) => t.id === activeId);
       const toIndex = tabs.findIndex((t) => t.id === overId);

@@ -71,7 +71,9 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
             <tr
               key={row.id}
               data-index={virtualRow.index}
-              ref={(node) => { if (node) rowVirtualizer.measureElement(node); }}
+              ref={(node) => {
+                if (node) rowVirtualizer.measureElement(node);
+              }}
               className={styles.Row}
               data-ov-selected={isSelected ? 'true' : 'false'}
               data-ov-expanded={isExpanded ? 'true' : 'false'}

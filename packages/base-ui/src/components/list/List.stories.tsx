@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuBox, LuNetwork, LuRocket, LuCalendar, LuGrape, LuCherry, LuApple, LuCitrus } from 'react-icons/lu';
+import {
+  LuBox,
+  LuNetwork,
+  LuRocket,
+  LuCalendar,
+  LuGrape,
+  LuCherry,
+  LuApple,
+  LuCitrus,
+} from 'react-icons/lu';
 import { List } from './List';
 import type { Key } from './types';
 
@@ -71,22 +80,30 @@ export const Playground: Story = {
     <List {...args} style={{ width: 320, maxHeight: 400 }}>
       <List.Viewport>
         <List.Item itemKey="apple" textValue="Apple">
-          <List.ItemIcon><LuApple /></List.ItemIcon>
+          <List.ItemIcon>
+            <LuApple />
+          </List.ItemIcon>
           <List.ItemLabel>Apple</List.ItemLabel>
           <List.ItemDescription>A crisp red fruit</List.ItemDescription>
         </List.Item>
         <List.Item itemKey="cherry" textValue="Cherry">
-          <List.ItemIcon><LuCherry /></List.ItemIcon>
+          <List.ItemIcon>
+            <LuCherry />
+          </List.ItemIcon>
           <List.ItemLabel>Cherry</List.ItemLabel>
           <List.ItemDescription>A small red stone fruit</List.ItemDescription>
         </List.Item>
         <List.Item itemKey="citrus" textValue="Citrus">
-          <List.ItemIcon><LuCitrus /></List.ItemIcon>
+          <List.ItemIcon>
+            <LuCitrus />
+          </List.ItemIcon>
           <List.ItemLabel>Citrus</List.ItemLabel>
           <List.ItemDescription>A bright tangy fruit</List.ItemDescription>
         </List.Item>
         <List.Item itemKey="grape" textValue="Grape">
-          <List.ItemIcon><LuGrape /></List.ItemIcon>
+          <List.ItemIcon>
+            <LuGrape />
+          </List.ItemIcon>
           <List.ItemLabel>Grape</List.ItemLabel>
           <List.ItemDescription>A small round fruit for wine</List.ItemDescription>
         </List.Item>
@@ -162,7 +179,13 @@ function MultiSelectStory() {
   const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
   return (
     <div>
-      <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginBottom: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Click to select. Ctrl+click to toggle. Shift+click for range. Ctrl+A to select all.
       </p>
       <List
@@ -180,7 +203,13 @@ function MultiSelectStory() {
           ))}
         </List.Viewport>
       </List>
-      <p style={{ marginTop: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginTop: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Selected: {selected.size === 0 ? 'none' : [...selected].join(', ')}
       </p>
     </div>
@@ -248,11 +277,15 @@ export const WithGroups: Story = {
         <List.Group>
           <List.GroupHeader>Workloads</List.GroupHeader>
           <List.Item itemKey="pods" textValue="Pods">
-            <List.ItemIcon><LuBox /></List.ItemIcon>
+            <List.ItemIcon>
+              <LuBox />
+            </List.ItemIcon>
             <List.ItemLabel>Pods</List.ItemLabel>
           </List.Item>
           <List.Item itemKey="deployments" textValue="Deployments">
-            <List.ItemIcon><LuRocket /></List.ItemIcon>
+            <List.ItemIcon>
+              <LuRocket />
+            </List.ItemIcon>
             <List.ItemLabel>Deployments</List.ItemLabel>
           </List.Item>
         </List.Group>
@@ -260,11 +293,15 @@ export const WithGroups: Story = {
         <List.Group>
           <List.GroupHeader>Networking</List.GroupHeader>
           <List.Item itemKey="services" textValue="Services">
-            <List.ItemIcon><LuNetwork /></List.ItemIcon>
+            <List.ItemIcon>
+              <LuNetwork />
+            </List.ItemIcon>
             <List.ItemLabel>Services</List.ItemLabel>
           </List.Item>
           <List.Item itemKey="events" textValue="Events">
-            <List.ItemIcon><LuCalendar /></List.ItemIcon>
+            <List.ItemIcon>
+              <LuCalendar />
+            </List.ItemIcon>
             <List.ItemLabel>Events</List.ItemLabel>
           </List.Item>
         </List.Group>
@@ -375,7 +412,13 @@ export const DensityVariants: Story = {
     <div style={{ display: 'flex', gap: 24 }}>
       {(['compact', 'default', 'comfortable'] as const).map((density) => (
         <div key={density}>
-          <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+          <p
+            style={{
+              marginBottom: 8,
+              color: 'var(--ov-color-fg-subtle)',
+              fontSize: 'var(--ov-font-size-caption)',
+            }}
+          >
             {density}
           </p>
           <List selectionMode="single" density={density} style={{ width: 220 }}>
@@ -469,7 +512,13 @@ function LargeListStory() {
   const [selected, setSelected] = useState<ReadonlySet<Key>>(new Set());
   return (
     <div>
-      <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginBottom: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         {largeItems.length} items. Selected: {selected.size}
       </p>
       <List

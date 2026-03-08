@@ -1,5 +1,11 @@
 import { forwardRef, useCallback, useId, useMemo, useRef, useState } from 'react';
-import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  type DragStartEvent,
+  type DragEndEvent,
+} from '@dnd-kit/core';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
@@ -19,7 +25,15 @@ import { EditorTabScrollShadow } from './EditorTabScrollShadow';
 import { EditorTabCloseButton } from './EditorTabCloseButton';
 import { EditorTabGroupChip } from './EditorTabGroupChip';
 import { DetachGhostTab } from './DetachGhostTab';
-import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, ReorderMeta, DetachCommit, AttachCommit } from './types';
+import type {
+  TabDescriptor,
+  TabGroupDescriptor,
+  TabGroupId,
+  TabId,
+  ReorderMeta,
+  DetachCommit,
+  AttachCommit,
+} from './types';
 import styles from './EditorTabs.module.css';
 
 export interface EditorTabsProps extends StyledComponentProps {
@@ -155,27 +169,33 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     viewportRef,
     tabs,
     onDetachCommit,
-    onDetachArmed: broker && detachToBroker
-      ? (tabId, clientX, clientY) => {
-          const tab = tabs.find((t) => t.id === tabId);
-          if (!tab) return;
-          snapshotCssVars();
-          brokerSessionStarted.current = true;
-          broker.beginSession(
-            { tab, sourceInstanceId: instanceId, ghostStyle: cssVarSnapshotRef.current ?? undefined },
-            clientX,
-            clientY,
-          );
-        }
-      : undefined,
-    onDetachReverted: broker && detachToBroker
-      ? () => {
-          if (brokerSessionStarted.current) {
-            broker.clearSession();
-            brokerSessionStarted.current = false;
+    onDetachArmed:
+      broker && detachToBroker
+        ? (tabId, clientX, clientY) => {
+            const tab = tabs.find((t) => t.id === tabId);
+            if (!tab) return;
+            snapshotCssVars();
+            brokerSessionStarted.current = true;
+            broker.beginSession(
+              {
+                tab,
+                sourceInstanceId: instanceId,
+                ghostStyle: cssVarSnapshotRef.current ?? undefined,
+              },
+              clientX,
+              clientY,
+            );
           }
-        }
-      : undefined,
+        : undefined,
+    onDetachReverted:
+      broker && detachToBroker
+        ? () => {
+            if (brokerSessionStarted.current) {
+              broker.clearSession();
+              brokerSessionStarted.current = false;
+            }
+          }
+        : undefined,
   });
 
   const attach = useTabAttach({ instanceId, viewportRef, onAttachTab });
@@ -250,15 +270,28 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       isAttachDropTarget: attach.isDropTarget,
       attachInsertIndex: attach.insertIndex,
     }),
-    [activeId, onActiveChange, onCloseTab, onContextMenuTab, onToggleGroupCollapsed, onGroupContextMenu, scrollState, scrollTo, viewportRef, tabIds, reorder.dragActiveId, detach.dragMode, attach.isDropTarget, attach.insertIndex],
+    [
+      activeId,
+      onActiveChange,
+      onCloseTab,
+      onContextMenuTab,
+      onToggleGroupCollapsed,
+      onGroupContextMenu,
+      scrollState,
+      scrollTo,
+      viewportRef,
+      tabIds,
+      reorder.dragActiveId,
+      detach.dragMode,
+      attach.isDropTarget,
+      attach.insertIndex,
+    ],
   );
 
   // Show dnd-kit's DragOverlay only when detach-armed AND the broker hasn't
   // taken over the ghost rendering (brokerSessionStarted).
   const showDndOverlay =
-    detach.dragMode === 'detach-armed' &&
-    activeTabDescriptor &&
-    !brokerSessionStarted.current;
+    detach.dragMode === 'detach-armed' && activeTabDescriptor && !brokerSessionStarted.current;
 
   return (
     <EditorTabsContext.Provider value={contextValue}>
@@ -290,7 +323,13 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
             {segments.groups.map(({ group, tabs: groupTabs }) => {
               const groupItemIds = groupTabs.map((t) => t.id);
               return (
-                <EditorTabsSegment key={group.id} type="group" group={group} tabCount={groupTabs.length} items={groupItemIds}>
+                <EditorTabsSegment
+                  key={group.id}
+                  type="group"
+                  group={group}
+                  tabCount={groupTabs.length}
+                  items={groupItemIds}
+                >
                   {groupTabs.map((tab) => (
                     <EditorTabItem key={tab.id} tab={tab} />
                   ))}

@@ -8,7 +8,12 @@ import type {
   ProcessedItem,
   CommandGroup,
 } from '../types';
-import { DEFAULT_DENSITY, DEFAULT_PLACEHOLDER, DEFAULT_OVERSCAN, DEFAULT_ESTIMATED_ITEM_SIZE } from '../constants';
+import {
+  DEFAULT_DENSITY,
+  DEFAULT_PLACEHOLDER,
+  DEFAULT_OVERSCAN,
+  DEFAULT_ESTIMATED_ITEM_SIZE,
+} from '../constants';
 import { useControllableState } from '../../list/hooks/useControllableState';
 import { useCommandListStore } from './useCommandListStore';
 
@@ -51,10 +56,7 @@ export function useCommandListState<TItem>(
     estimatedItemSize = DEFAULT_ESTIMATED_ITEM_SIZE,
   } = props;
 
-  const disabledKeys = useMemo(
-    () => new Set(disabledKeysProp ?? []),
-    [disabledKeysProp],
-  );
+  const disabledKeys = useMemo(() => new Set(disabledKeysProp ?? []), [disabledKeysProp]);
 
   const store = useCommandListStore();
 

@@ -140,7 +140,12 @@ export const IconFallbackAndImage: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
       <Avatar size="lg" fallbackIcon={<LuBot aria-hidden />} aria-label="Bot avatar" />
-      <Avatar size="lg" fallbackIcon={<LuCode aria-hidden />} shape="rounded" aria-label="Code avatar" />
+      <Avatar
+        size="lg"
+        fallbackIcon={<LuCode aria-hidden />}
+        shape="rounded"
+        aria-label="Code avatar"
+      />
       <Avatar size="lg" name="Mia Torres" src={DEMO_IMAGE} aria-label="Image avatar" />
     </div>
   ),

@@ -40,11 +40,7 @@ describe('TabDragBroker', () => {
     const { result } = renderHook(() => useTabDragBroker(), { wrapper });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        200,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 200);
     });
 
     expect(result.current!.activeSession).not.toBeNull();
@@ -66,11 +62,7 @@ describe('TabDragBroker', () => {
     const { result } = renderHook(() => useTabDragBroker(), { wrapper });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        200,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 200);
     });
 
     act(() => {
@@ -98,11 +90,7 @@ describe('TabDragBroker', () => {
     const { result } = renderHook(() => useTabDragBroker(), { wrapper: cancelWrapper });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        200,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 200);
     });
 
     expect(result.current!.activeSession).not.toBeNull();
@@ -126,11 +114,7 @@ describe('TabDragBroker', () => {
     const { result } = renderHook(() => useTabDragBroker(), { wrapper: cancelWrapper });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        200,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 200);
     });
 
     act(() => {
@@ -151,11 +135,7 @@ describe('TabDragBroker', () => {
     const { result } = renderHook(() => useTabDragBroker(), { wrapper: cancelWrapper });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        200,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 200);
     });
 
     const upCall = addSpy.mock.calls.find((c) => c[0] === 'pointerup');
@@ -180,18 +160,14 @@ describe('TabDragBroker', () => {
     act(() => {
       result.current!.registerDropZone({
         instanceId: 'target',
-        getRect: () => ({ left: 50, right: 250, top: 50, bottom: 100 } as DOMRect),
+        getRect: () => ({ left: 50, right: 250, top: 50, bottom: 100 }) as DOMRect,
         getElement: () => document.createElement('div'),
         onAttach,
       });
     });
 
     act(() => {
-      result.current!.beginSession(
-        { tab: fakeTab, sourceInstanceId: 'src' },
-        100,
-        75,
-      );
+      result.current!.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, 100, 75);
     });
 
     const upCall = addSpy.mock.calls.find((c) => c[0] === 'pointerup');
@@ -219,7 +195,7 @@ describe('TabDragBroker', () => {
     act(() => {
       result.current!.registerDropZone({
         instanceId: 'zone1',
-        getRect: () => ({ left: 0, right: 100, top: 0, bottom: 50 } as DOMRect),
+        getRect: () => ({ left: 0, right: 100, top: 0, bottom: 50 }) as DOMRect,
         getElement: () => document.createElement('div'),
         onAttach: vi.fn(),
       });

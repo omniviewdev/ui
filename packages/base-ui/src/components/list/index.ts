@@ -14,9 +14,8 @@ export type {
 } from './types';
 export { useListItem } from './hooks/useListItem';
 export { useListVirtualizer } from './hooks/useListVirtualizer';
-export type { UseListVirtualizerOptions, UseListVirtualizerReturn } from './hooks/useListVirtualizer';
-export {
-  useListConfig,
-  useListStoreContext,
-  useListActions,
-} from './context/ListContext';
+export type {
+  UseListVirtualizerOptions,
+  UseListVirtualizerReturn,
+} from './hooks/useListVirtualizer';
+export { useListConfig, useListStoreContext, useListActions } from './context/ListContext';

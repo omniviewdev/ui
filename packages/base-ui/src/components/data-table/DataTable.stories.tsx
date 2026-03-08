@@ -19,8 +19,8 @@ interface Process {
 const processData: Process[] = Array.from({ length: 12 }, (_, i) => ({
   pid: `${1000 + i}`,
   name: ['nginx', 'node', 'postgres', 'redis', 'envoy', 'kubelet'][i % 6]!,
-  cpu: Math.round(((i * 7 + 3) % 100)) / 10,
-  memory: `${((i * 37 + 11) % 512)}Mi`,
+  cpu: Math.round((i * 7 + 3) % 100) / 10,
+  memory: `${(i * 37 + 11) % 512}Mi`,
   status: (['running', 'sleeping', 'stopped'] satisfies Process['status'][])[i % 3]!,
   uptime: `${(i * 5 + 2) % 72}h ${(i * 13 + 7) % 60}m`,
 }));
@@ -77,7 +77,11 @@ function PlaygroundStory(args: Record<string, unknown>) {
   });
 
   return (
-    <DataTable.Root table={table} features={{ sorting: true, globalFilter: true, columnVisibility: true }} {...args}>
+    <DataTable.Root
+      table={table}
+      features={{ sorting: true, globalFilter: true, columnVisibility: true }}
+      {...args}
+    >
       <DataTable.Toolbar searchPlaceholder="Search processes...">
         <DataTable.ColumnVisibility />
       </DataTable.Toolbar>
@@ -131,7 +135,11 @@ function VariantExample({ variant }: { variant: 'solid' | 'soft' | 'outline' | '
   );
 }
 
-function ColorExample({ color }: { color: 'neutral' | 'brand' | 'success' | 'warning' | 'danger' }) {
+function ColorExample({
+  color,
+}: {
+  color: 'neutral' | 'brand' | 'success' | 'warning' | 'danger';
+}) {
   const table = useDataTable({
     data: processData.slice(0, 3),
     columns: processColumns,
@@ -164,7 +172,10 @@ function EmptyStateStory() {
         <DataTable.Header />
         <DataTable.Body />
       </DataTable.Container>
-      <DataTable.Empty title="No processes found" description="There are no matching processes to display." />
+      <DataTable.Empty
+        title="No processes found"
+        description="There are no matching processes to display."
+      />
     </DataTable.Root>
   );
 }

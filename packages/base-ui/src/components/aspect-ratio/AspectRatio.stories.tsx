@@ -31,10 +31,26 @@ export const CommonRatios: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 16, alignItems: 'start' }}>
       {[
-        { label: '16:9', ratio: 16 / 9, src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=480&h=270&fit=crop' },
-        { label: '4:3', ratio: 4 / 3, src: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=480&h=360&fit=crop' },
-        { label: '1:1', ratio: 1, src: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=480&h=480&fit=crop' },
-        { label: '21:9', ratio: 21 / 9, src: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=630&h=270&fit=crop' },
+        {
+          label: '16:9',
+          ratio: 16 / 9,
+          src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=480&h=270&fit=crop',
+        },
+        {
+          label: '4:3',
+          ratio: 4 / 3,
+          src: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=480&h=360&fit=crop',
+        },
+        {
+          label: '1:1',
+          ratio: 1,
+          src: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=480&h=480&fit=crop',
+        },
+        {
+          label: '21:9',
+          ratio: 21 / 9,
+          src: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=630&h=270&fit=crop',
+        },
       ].map(({ label, ratio, src }) => (
         <div key={label} style={{ width: 180 }}>
           <AspectRatio ratio={ratio}>
@@ -44,7 +60,14 @@ export const CommonRatios: Story = {
               style={{ borderRadius: 'var(--ov-radius-control)' }}
             />
           </AspectRatio>
-          <p style={{ margin: '6px 0 0', textAlign: 'center', fontSize: 'var(--ov-font-size-caption)', color: 'var(--ov-color-fg-muted)' }}>
+          <p
+            style={{
+              margin: '6px 0 0',
+              textAlign: 'center',
+              fontSize: 'var(--ov-font-size-caption)',
+              color: 'var(--ov-color-fg-muted)',
+            }}
+          >
             {label}
           </p>
         </div>

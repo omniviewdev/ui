@@ -1,5 +1,12 @@
 import { useCallback, useRef } from 'react';
-import type { Key, TreeStore, TreeStoreSnapshot, TreeItemState, TreeNodeMeta, FlatNode } from '../types';
+import type {
+  Key,
+  TreeStore,
+  TreeStoreSnapshot,
+  TreeItemState,
+  TreeNodeMeta,
+  FlatNode,
+} from '../types';
 
 /**
  * Creates a lightweight external store for tree state.

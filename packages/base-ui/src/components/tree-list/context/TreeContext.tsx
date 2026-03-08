@@ -1,9 +1,5 @@
 import { createContext, useContext } from 'react';
-import type {
-  TreeConfigContextValue,
-  TreeActionsContextValue,
-  TreeStore,
-} from '../types';
+import type { TreeConfigContextValue, TreeActionsContextValue, TreeStore } from '../types';
 
 // ---------------------------------------------------------------------------
 // Context 1: Config (rarely changes)
@@ -14,9 +10,7 @@ export const TreeConfigContext = createContext<TreeConfigContextValue | null>(nu
 export function useTreeConfig(): TreeConfigContextValue {
   const ctx = useContext(TreeConfigContext);
   if (!ctx) {
-    throw new Error(
-      'TreeList compound components must be used within <TreeList.Root>',
-    );
+    throw new Error('TreeList compound components must be used within <TreeList.Root>');
   }
   return ctx;
 }
@@ -30,9 +24,7 @@ export const TreeStoreContext = createContext<TreeStore | null>(null);
 export function useTreeStoreContext(): TreeStore {
   const ctx = useContext(TreeStoreContext);
   if (!ctx) {
-    throw new Error(
-      'TreeList compound components must be used within <TreeList.Root>',
-    );
+    throw new Error('TreeList compound components must be used within <TreeList.Root>');
   }
   return ctx;
 }
@@ -46,9 +38,7 @@ export const TreeActionsContext = createContext<TreeActionsContextValue | null>(
 export function useTreeActions(): TreeActionsContextValue {
   const ctx = useContext(TreeActionsContext);
   if (!ctx) {
-    throw new Error(
-      'TreeList compound components must be used within <TreeList.Root>',
-    );
+    throw new Error('TreeList compound components must be used within <TreeList.Root>');
   }
   return ctx;
 }

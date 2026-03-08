@@ -141,10 +141,7 @@ function TreeListRootImpl<TItem>(
   });
 
   const listId = useId();
-  const fullConfig = useMemo(
-    () => ({ ...config, listId }),
-    [config, listId],
-  );
+  const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
 
   // Build an O(1) lookup map from flat nodes so renderNode avoids O(n) scans
   const flatNodesMapRef = useRef<Map<Key, FlatNode>>(new Map());
@@ -166,35 +163,41 @@ function TreeListRootImpl<TItem>(
   const { handleKeyDown } = useTreeFocus({ config: fullConfig, actions, store });
 
   // Adapt tree store to List-shaped store for typeahead reuse
-  const typeaheadStore = useMemo(() => ({
-    getRegisteredKeys: store.getRegisteredKeys,
-    getSnapshot: () => {
-      const snap = store.getSnapshot();
-      return {
-        selectedKeys: snap.selectedKeys,
-        activeKey: snap.activeKey,
-        disabledKeys: snap.disabledKeys,
-        registeredKeys: [...snap.flattenedKeys],
-      };
-    },
-    getTextValue: store.getTextValue,
-    subscribe: store.subscribe,
-    getItemState: store.getItemState,
-    setSelectedKeys: store.setSelectedKeys,
-    setActiveKey: store.setActiveKey,
-    registerItem: () => () => {},
-  }), [store]);
+  const typeaheadStore = useMemo(
+    () => ({
+      getRegisteredKeys: store.getRegisteredKeys,
+      getSnapshot: () => {
+        const snap = store.getSnapshot();
+        return {
+          selectedKeys: snap.selectedKeys,
+          activeKey: snap.activeKey,
+          disabledKeys: snap.disabledKeys,
+          registeredKeys: [...snap.flattenedKeys],
+        };
+      },
+      getTextValue: store.getTextValue,
+      subscribe: store.subscribe,
+      getItemState: store.getItemState,
+      setSelectedKeys: store.setSelectedKeys,
+      setActiveKey: store.setActiveKey,
+      registerItem: () => () => {},
+    }),
+    [store],
+  );
 
-  const typeaheadActions = useMemo(() => ({
-    select: actions.select,
-    deselect: actions.deselect,
-    toggle: actions.toggle,
-    selectRange: actions.selectRange,
-    selectAll: actions.selectAll,
-    clearSelection: actions.clearSelection,
-    setActiveKey: actions.setActiveKey,
-    registerItem: () => () => {},
-  }), [actions]);
+  const typeaheadActions = useMemo(
+    () => ({
+      select: actions.select,
+      deselect: actions.deselect,
+      toggle: actions.toggle,
+      selectRange: actions.selectRange,
+      selectAll: actions.selectAll,
+      clearSelection: actions.clearSelection,
+      setActiveKey: actions.setActiveKey,
+      registerItem: () => () => {},
+    }),
+    [actions],
+  );
 
   const { handleTypeahead } = useTypeahead({
     enabled: config.typeahead,
@@ -238,11 +241,7 @@ function TreeListRootImpl<TItem>(
               {...styleDataAttributes({ variant, color, size })}
               {...domProps}
             >
-              {error ? (
-                <div className={styles.Empty}>{error}</div>
-              ) : (
-                children
-              )}
+              {error ? <div className={styles.Empty}>{error}</div> : children}
             </div>
           </TreeActionsContext.Provider>
         </TreeStoreContext.Provider>
@@ -345,11 +344,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
         {flatNodes.map((node) => {
           const nodeMeta = store.getNodeMeta(node.key);
           if (!nodeMeta) return null;
-          return (
-            <Fragment key={node.key}>
-              {renderNode(node.key, nodeMeta)}
-            </Fragment>
-          );
+          return <Fragment key={node.key}>{renderNode(node.key, nodeMeta)}</Fragment>;
         })}
         {children}
       </div>
@@ -361,69 +356,67 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
 // Item
 // ---------------------------------------------------------------------------
 
-const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(
-  function TreeListItem(
-    { className, itemKey, disabled = false, textValue, children, onClick, ...props },
-    ref,
-  ) {
-    const store = useTreeStoreContext();
-    const actions = useTreeActions();
-    const config = useTreeConfig();
-    const itemState = useTreeItemHook(store, itemKey, textValue);
-    const nodeMeta = store.getNodeMeta(itemKey);
+const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function TreeListItem(
+  { className, itemKey, disabled = false, textValue, children, onClick, ...props },
+  ref,
+) {
+  const store = useTreeStoreContext();
+  const actions = useTreeActions();
+  const config = useTreeConfig();
+  const itemState = useTreeItemHook(store, itemKey, textValue);
+  const nodeMeta = store.getNodeMeta(itemKey);
 
-    const isDisabled = disabled || itemState.isDisabled;
+  const isDisabled = disabled || itemState.isDisabled;
 
-    const handleClick = useCallback(
-      (event: MouseEvent<HTMLDivElement>) => {
-        if (isDisabled) {
-          onClick?.(event);
-          return;
-        }
-
-        actions.setActiveKey(itemKey);
-
-        if (config.selectionMode !== 'none') {
-          if (event.shiftKey && config.selectionMode === 'multiple') {
-            actions.selectRange(itemKey);
-          } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
-            actions.toggle(itemKey);
-          } else if (config.selectionBehavior === 'toggle') {
-            actions.toggle(itemKey);
-          } else {
-            actions.select(itemKey);
-          }
-        }
-
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      if (isDisabled) {
         onClick?.(event);
-      },
-      [isDisabled, config.selectionMode, config.selectionBehavior, actions, itemKey, onClick],
-    );
+        return;
+      }
 
-    return (
-      <div
-        ref={ref}
-        id={`${config.listId}-item-${itemKey}`}
-        role="treeitem"
-        aria-selected={itemState.isSelected || undefined}
-        aria-disabled={isDisabled || undefined}
-        aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
-        aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
-        className={cn(styles.Item, className)}
-        data-ov-selected={itemState.isSelected}
-        data-ov-active={itemState.isActive}
-        data-ov-disabled={isDisabled}
-        data-ov-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
-        data-ov-branch={itemState.isBranch || undefined}
-        data-ov-depth={nodeMeta?.depth}
-        onClick={handleClick}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+      actions.setActiveKey(itemKey);
+
+      if (config.selectionMode !== 'none') {
+        if (event.shiftKey && config.selectionMode === 'multiple') {
+          actions.selectRange(itemKey);
+        } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
+          actions.toggle(itemKey);
+        } else if (config.selectionBehavior === 'toggle') {
+          actions.toggle(itemKey);
+        } else {
+          actions.select(itemKey);
+        }
+      }
+
+      onClick?.(event);
+    },
+    [isDisabled, config.selectionMode, config.selectionBehavior, actions, itemKey, onClick],
+  );
+
+  return (
+    <div
+      ref={ref}
+      id={`${config.listId}-item-${itemKey}`}
+      role="treeitem"
+      aria-selected={itemState.isSelected || undefined}
+      aria-disabled={isDisabled || undefined}
+      aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
+      aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
+      className={cn(styles.Item, className)}
+      data-ov-selected={itemState.isSelected}
+      data-ov-active={itemState.isActive}
+      data-ov-disabled={isDisabled}
+      data-ov-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
+      data-ov-branch={itemState.isBranch || undefined}
+      data-ov-depth={nodeMeta?.depth}
+      onClick={handleClick}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // ItemIndent
@@ -436,7 +429,10 @@ interface TreeListItemIndentProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
-  function TreeListItemIndent({ className, depth = 0, ancestorIsLast, isLastChild, style, ...props }, ref) {
+  function TreeListItemIndent(
+    { className, depth = 0, ancestorIsLast, isLastChild, style, ...props },
+    ref,
+  ) {
     const config = useTreeConfig();
 
     // When branch connectors are enabled, render individual guide segments
@@ -446,10 +442,12 @@ const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
           ref={ref}
           className={cn(styles.ItemIndent, className)}
           data-ov-guides=""
-          style={{
-            ...style,
-            '--_ov-tree-indent': `${config.indentation}px`,
-          } as CSSProperties}
+          style={
+            {
+              ...style,
+              '--_ov-tree-indent': `${config.indentation}px`,
+            } as CSSProperties
+          }
           {...props}
         >
           {Array.from({ length: depth }, (_, i) => {
@@ -474,11 +472,13 @@ const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
       <span
         ref={ref}
         className={cn(styles.ItemIndent, className)}
-        style={{
-          ...style,
-          '--tree-depth': depth,
-          '--_ov-tree-indent': `${config.indentation}px`,
-        } as CSSProperties}
+        style={
+          {
+            ...style,
+            '--tree-depth': depth,
+            '--_ov-tree-indent': `${config.indentation}px`,
+          } as CSSProperties
+        }
         {...props}
       />
     );
@@ -499,10 +499,7 @@ const TreeListItemToggle = forwardRef<HTMLButtonElement, TreeListItemToggleProps
     const store = useTreeStoreContext();
 
     // Subscribe reactively so loading/expanded state triggers re-render
-    const itemState = useTreeItemHook(
-      store,
-      itemKeyProp ?? '',
-    );
+    const itemState = useTreeItemHook(store, itemKeyProp ?? '');
 
     const handleClick = useCallback(
       (event: MouseEvent<HTMLButtonElement>) => {
@@ -537,11 +534,25 @@ const TreeListItemToggle = forwardRef<HTMLButtonElement, TreeListItemToggleProps
       >
         {isLoading ? (
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20" strokeLinecap="round" />
+            <circle
+              cx="6"
+              cy="6"
+              r="5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeDasharray="20"
+              strokeLinecap="round"
+            />
           </svg>
         ) : (
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M4.5 2.5L8 6L4.5 9.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         )}
       </button>
@@ -608,33 +619,35 @@ interface TreeListEmptyProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const TreeListEmpty = forwardRef<HTMLDivElement, TreeListEmptyProps>(
-  function TreeListEmpty({ className, ...props }, ref) {
-    const store = useTreeStoreContext();
-    const visibleCount = useSyncExternalStore(
-      store.subscribe,
-      () => store.getSnapshot().visibleCount,
-      () => 0,
-    );
+const TreeListEmpty = forwardRef<HTMLDivElement, TreeListEmptyProps>(function TreeListEmpty(
+  { className, ...props },
+  ref,
+) {
+  const store = useTreeStoreContext();
+  const visibleCount = useSyncExternalStore(
+    store.subscribe,
+    () => store.getSnapshot().visibleCount,
+    () => 0,
+  );
 
-    if (visibleCount > 0) return null;
-    return <div ref={ref} className={cn(styles.Empty, className)} {...props} />;
-  },
-);
+  if (visibleCount > 0) return null;
+  return <div ref={ref} className={cn(styles.Empty, className)} {...props} />;
+});
 
 interface TreeListLoadingProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-const TreeListLoading = forwardRef<HTMLDivElement, TreeListLoadingProps>(
-  function TreeListLoading({ className, children, ...props }, ref) {
-    return (
-      <div ref={ref} className={cn(styles.Loading, className)} {...props}>
-        {children ?? 'Loading\u2026'}
-      </div>
-    );
-  },
-);
+const TreeListLoading = forwardRef<HTMLDivElement, TreeListLoadingProps>(function TreeListLoading(
+  { className, children, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.Loading, className)} {...props}>
+      {children ?? 'Loading\u2026'}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Display names

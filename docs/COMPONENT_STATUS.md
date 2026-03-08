@@ -6,12 +6,14 @@ This document reflects the current implementation state in `packages/base-ui/src
 
 These are the only components currently in scope and exported:
 
+- `Accordion`
 - `ActionList`
 - `AlertDialog`
 - `AspectRatio`
 - `Autocomplete`
 - `Avatar`
 - `AvatarGroup`
+- `Badge`
 - `Banner`
 - `Box`
 - `Button`
@@ -20,11 +22,15 @@ These are the only components currently in scope and exported:
 - `Checkbox`
 - `CheckboxGroup`
 - `Chip`
+- `ClipboardText`
 - `CodeBlock`
 - `Combobox`
 - `Container`
 - `ContextMenu`
+- `DescriptionList`
+- `Dialog`
 - `Drawer`
+- `EmptyState`
 - `Grid`
 - `IconButton`
 - `Image`
@@ -43,13 +49,16 @@ These are the only components currently in scope and exported:
 - `Select`
 - `Separator`
 - `Sheet`
+- `Skeleton`
 - `Slider`
 - `Spinner`
 - `Stack`
+- `StatusDot`
 - `Switch`
 - `Tabs`
 - `TextField`
 - `TextArea`
+- `Toast`
 - `Tooltip`
 - `ToggleButton`
 - `ToggleButtonGroup`

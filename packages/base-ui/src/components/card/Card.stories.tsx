@@ -18,7 +18,10 @@ const meta = {
     color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     elevation: { control: 'inline-radio', options: [0, 1, 2, 3] },
-    surface: { control: 'select', options: ['base', 'default', 'raised', 'overlay', 'inset', 'elevated'] },
+    surface: {
+      control: 'select',
+      options: ['base', 'default', 'raised', 'overlay', 'inset', 'elevated'],
+    },
   },
   parameters: {
     docs: {
@@ -119,10 +122,14 @@ export const StatusCard: Story = {
         </Card.Action>
       </Card.Header>
       <Card.Body>
-        <Card.KeyValue label="Replicas" mono>3/3</Card.KeyValue>
+        <Card.KeyValue label="Replicas" mono>
+          3/3
+        </Card.KeyValue>
         <Card.KeyValue label="Namespace">production</Card.KeyValue>
         <Card.KeyValue label="Age">14d</Card.KeyValue>
-        <Card.KeyValue label="CPU Usage" mono>42%</Card.KeyValue>
+        <Card.KeyValue label="CPU Usage" mono>
+          42%
+        </Card.KeyValue>
       </Card.Body>
     </Card>
   ),
@@ -154,9 +161,13 @@ export const PropertyCard: Story = {
       </Card.Header>
       <Card.Separator />
       <Card.Body>
-        <Card.KeyValue label="Image" mono>coredns/coredns:1.11.1</Card.KeyValue>
+        <Card.KeyValue label="Image" mono>
+          coredns/coredns:1.11.1
+        </Card.KeyValue>
         <Card.KeyValue label="Restart Policy">Always</Card.KeyValue>
-        <Card.KeyValue label="Service Account" mono>coredns</Card.KeyValue>
+        <Card.KeyValue label="Service Account" mono>
+          coredns
+        </Card.KeyValue>
         <Card.KeyValue label="Node">worker-01</Card.KeyValue>
         <Card.KeyValue label="QoS Class">Burstable</Card.KeyValue>
       </Card.Body>
@@ -200,8 +211,12 @@ export const ProgressCard: Story = {
           />
         </div>
         <div style={{ marginTop: 8 }}>
-          <Card.KeyValue label="Step" mono>3 of 5</Card.KeyValue>
-          <Card.KeyValue label="Duration" mono>2m 14s</Card.KeyValue>
+          <Card.KeyValue label="Step" mono>
+            3 of 5
+          </Card.KeyValue>
+          <Card.KeyValue label="Duration" mono>
+            2m 14s
+          </Card.KeyValue>
           <Card.KeyValue label="Current">Running unit tests</Card.KeyValue>
         </div>
       </Card.Body>
@@ -218,7 +233,8 @@ export const MediaCard: Story = {
           style={{
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(135deg, var(--ov-color-brand-400) 0%, var(--ov-color-info) 100%)',
+            background:
+              'linear-gradient(135deg, var(--ov-color-brand-400) 0%, var(--ov-color-info) 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -317,7 +333,9 @@ export const HorizontalCard: Story = {
       <Card.Separator />
       <Card.Body>
         <Card.KeyValue label="Team">Infrastructure</Card.KeyValue>
-        <Card.KeyValue label="Clusters" mono>12</Card.KeyValue>
+        <Card.KeyValue label="Clusters" mono>
+          12
+        </Card.KeyValue>
         <Card.KeyValue label="Last Active">2 min ago</Card.KeyValue>
       </Card.Body>
     </Card>
@@ -328,26 +346,41 @@ export const CardGrid: Story = {
   name: 'Card Grid',
   render: () => (
     <Card.Group columns={3} gap="md">
-      {(['API Gateway', 'Auth Service', 'Worker Pool', 'Cache Layer', 'Message Queue', 'Scheduler'] as const).map(
-        (name, i) => {
-          const statuses = ['success', 'success', 'warning', 'success', 'danger', 'success'] as const;
-          const values = ['23ms', '45ms', '210ms', '8ms', '—', '67ms'];
-          return (
-            <Card key={name} variant="soft" size="sm">
-              <Card.Header>
-                <Card.Indicator status={statuses[i]}>
-                  {statuses[i] === 'success' ? 'Healthy' : statuses[i] === 'warning' ? 'Degraded' : 'Down'}
-                </Card.Indicator>
-                <Card.Title>{name}</Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Card.KeyValue label="Latency" mono>{values[i]}</Card.KeyValue>
-                <Card.KeyValue label="Uptime" mono>{statuses[i] === 'danger' ? '94.2%' : '99.9%'}</Card.KeyValue>
-              </Card.Body>
-            </Card>
-          );
-        },
-      )}
+      {(
+        [
+          'API Gateway',
+          'Auth Service',
+          'Worker Pool',
+          'Cache Layer',
+          'Message Queue',
+          'Scheduler',
+        ] as const
+      ).map((name, i) => {
+        const statuses = ['success', 'success', 'warning', 'success', 'danger', 'success'] as const;
+        const values = ['23ms', '45ms', '210ms', '8ms', '—', '67ms'];
+        return (
+          <Card key={name} variant="soft" size="sm">
+            <Card.Header>
+              <Card.Indicator status={statuses[i]}>
+                {statuses[i] === 'success'
+                  ? 'Healthy'
+                  : statuses[i] === 'warning'
+                    ? 'Degraded'
+                    : 'Down'}
+              </Card.Indicator>
+              <Card.Title>{name}</Card.Title>
+            </Card.Header>
+            <Card.Body>
+              <Card.KeyValue label="Latency" mono>
+                {values[i]}
+              </Card.KeyValue>
+              <Card.KeyValue label="Uptime" mono>
+                {statuses[i] === 'danger' ? '94.2%' : '99.9%'}
+              </Card.KeyValue>
+            </Card.Body>
+          </Card>
+        );
+      })}
     </Card.Group>
   ),
 };
@@ -361,7 +394,8 @@ export const NotificationCard: Story = {
         <Card.Indicator status="warning">Warning</Card.Indicator>
         <Card.Title>High Memory Usage Detected</Card.Title>
         <Card.Description>
-          Node worker-03 is using 92% of available memory. Consider scaling or investigating the workload.
+          Node worker-03 is using 92% of available memory. Consider scaling or investigating the
+          workload.
         </Card.Description>
       </Card.Header>
       <Card.Footer>

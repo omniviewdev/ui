@@ -12,7 +12,14 @@ interface MemoizedRowProps {
 }
 
 function MemoizedRowInner(props: MemoizedRowProps) {
-  const { children, className, isSelected, isExpanded, translateY, 'data-index': dataIndex } = props;
+  const {
+    children,
+    className,
+    isSelected,
+    isExpanded,
+    translateY,
+    'data-index': dataIndex,
+  } = props;
 
   return (
     <tr

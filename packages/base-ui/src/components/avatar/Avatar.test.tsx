@@ -15,7 +15,9 @@ describe('Avatar', () => {
   });
 
   it('applies styled props and shape to the root element', () => {
-    renderWithTheme(<Avatar name="Mina Park" variant="outline" color="warning" size="lg" shape="rounded" />);
+    renderWithTheme(
+      <Avatar name="Mina Park" variant="outline" color="warning" size="lg" shape="rounded" />,
+    );
 
     const root = screen.getByText('MP').closest('[data-ov-avatar-root="true"]');
     expect(root).toHaveAttribute('data-ov-variant', 'outline');

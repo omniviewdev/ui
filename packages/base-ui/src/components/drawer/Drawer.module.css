@@ -212,8 +212,7 @@
   content: '';
   position: absolute;
   background: transparent;
-  transition:
-    background var(--ov-duration-interactive) var(--ov-ease-standard);
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .Root[data-ov-anchor='top'] .HandleEdge::after,

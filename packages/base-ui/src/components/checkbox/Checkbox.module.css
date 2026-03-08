@@ -5,7 +5,11 @@
   --_ov-control-bg: var(--ov-color-bg-surface-raised);
   --_ov-control-border: var(--ov-color-border-default);
   --_ov-control-fg: var(--ov-color-fg-default);
-  --_ov-control-bg-hover: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+  --_ov-control-bg-hover: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 82%,
+    var(--ov-color-state-hover) 18%
+  );
   --_ov-control-border-hover: var(--ov-color-border-strong);
   --_ov-control-bg-checked: var(--ov-color-brand-500);
   --_ov-control-border-checked: var(--ov-color-brand-500);
@@ -112,7 +116,11 @@
 }
 
 .Root[data-ov-variant='soft'] {
-  --_ov-control-bg: color-mix(in srgb, var(--ov-color-bg-surface-raised) 88%, var(--ov-color-state-hover) 12%);
+  --_ov-control-bg: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 88%,
+    var(--ov-color-state-hover) 12%
+  );
   --_ov-control-border: transparent;
   --_ov-control-border-hover: transparent;
   --_ov-control-bg-checked: var(--_ov-accent-soft-bg);

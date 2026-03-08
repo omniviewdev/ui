@@ -6,10 +6,7 @@ import type { Key, CommandListItemState, CommandListStore } from '../types';
  * Uses useSyncExternalStore so the item only re-renders when
  * its own isActive/isDisabled changes.
  */
-export function useCommandListItem(
-  store: CommandListStore,
-  key: Key,
-): CommandListItemState {
+export function useCommandListItem(store: CommandListStore, key: Key): CommandListItemState {
   const prevRef = useRef<CommandListItemState>({
     isActive: false,
     isDisabled: false,
@@ -18,10 +15,7 @@ export function useCommandListItem(
   const getSnapshot = useCallback((): CommandListItemState => {
     const next = store.getItemState(key);
     const prev = prevRef.current;
-    if (
-      prev.isActive === next.isActive &&
-      prev.isDisabled === next.isDisabled
-    ) {
+    if (prev.isActive === next.isActive && prev.isDisabled === next.isDisabled) {
       return prev;
     }
     prevRef.current = next;

@@ -10,10 +10,26 @@ function makeModifierArgs(
   return {
     transform,
     draggingNodeRect: draggingNodeRect
-      ? { left: draggingNodeRect.left, right: draggingNodeRect.right, top: 0, bottom: 0, width: 0, height: 0 }
+      ? {
+          left: draggingNodeRect.left,
+          right: draggingNodeRect.right,
+          top: 0,
+          bottom: 0,
+          width: 0,
+          height: 0,
+        }
       : null,
     scrollableAncestorRects: ancestorRect
-      ? [{ left: ancestorRect.left, right: ancestorRect.right, top: 0, bottom: 0, width: 0, height: 0 }]
+      ? [
+          {
+            left: ancestorRect.left,
+            right: ancestorRect.right,
+            top: 0,
+            bottom: 0,
+            width: 0,
+            height: 0,
+          },
+        ]
       : [],
     active: null,
     activatorEvent: null,
@@ -98,9 +114,7 @@ describe('createDetachAwareModifier', () => {
     const modeRef = { current: 'reorder' as DragMode };
     const modifier = createDetachAwareModifier(modeRef);
 
-    const result = modifier(
-      makeModifierArgs({ x: 50, y: 30, scaleX: 1, scaleY: 1 }),
-    );
+    const result = modifier(makeModifierArgs({ x: 50, y: 30, scaleX: 1, scaleY: 1 }));
 
     expect(result.y).toBe(0);
     expect(result.x).toBe(50); // No clamping without ancestor

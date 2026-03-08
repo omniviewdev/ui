@@ -92,16 +92,13 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
     const editingKeyRef = useRef(editingKey);
     editingKeyRef.current = editingKey;
 
-    const registerField = useCallback(
-      (name: string, el: FieldElement) => {
-        fieldRefsMap.current.set(name, el);
-        return () => {
-          fieldRefsMap.current.delete(name);
-          fieldValuesMap.current.delete(name);
-        };
-      },
-      [],
-    );
+    const registerField = useCallback((name: string, el: FieldElement) => {
+      fieldRefsMap.current.set(name, el);
+      return () => {
+        fieldRefsMap.current.delete(name);
+        fieldValuesMap.current.delete(name);
+      };
+    }, []);
 
     const setFieldValue = useCallback((name: string, value: string) => {
       fieldValuesMap.current.set(name, value);
@@ -119,10 +116,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
     const gatherValues = useCallback(() => {
       const values: Record<string, string> = {};
       // Collect all known field names from both maps
-      const allNames = new Set([
-        ...fieldValuesMap.current.keys(),
-        ...fieldRefsMap.current.keys(),
-      ]);
+      const allNames = new Set([...fieldValuesMap.current.keys(), ...fieldRefsMap.current.keys()]);
       for (const name of allNames) {
         // Prefer the synchronized value from useField().setValue / setFieldValue,
         // fall back to reading the DOM element's .value directly
@@ -208,14 +202,18 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
             if (active instanceof HTMLTextAreaElement) return true;
             if (active instanceof HTMLSelectElement) return true;
             if (active instanceof HTMLInputElement) {
-              const nonText = new Set([
-                'button', 'checkbox', 'radio', 'submit', 'reset', 'image',
-              ]);
+              const nonText = new Set(['button', 'checkbox', 'radio', 'submit', 'reset', 'image']);
               return !nonText.has(active.type);
             }
             if (active.isContentEditable) return true;
             const role = active.getAttribute('role');
-            if (role === 'textbox' || role === 'searchbox' || role === 'combobox' || role === 'listbox') return true;
+            if (
+              role === 'textbox' ||
+              role === 'searchbox' ||
+              role === 'combobox' ||
+              role === 'listbox'
+            )
+              return true;
             return false;
           })();
 
@@ -246,7 +244,8 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
               const idx = fields.findIndex((f) => {
                 const node = f as unknown as Node;
                 if (node === active) return true;
-                if (active && typeof node.contains === 'function' && node.contains(active)) return true;
+                if (active && typeof node.contains === 'function' && node.contains(active))
+                  return true;
                 return false;
               });
               if (idx === -1) {
@@ -284,12 +283,9 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
           if (event.key === 'F2' || event.key === 'Enter') {
             if (!editable) return;
             // Find the active item key from the list's active descendant
-            const listbox = rootWrapperRef.current?.querySelector(
-              '[role="listbox"]',
-            );
+            const listbox = rootWrapperRef.current?.querySelector('[role="listbox"]');
             if (!listbox) return;
-            const activeDescId =
-              listbox.getAttribute('aria-activedescendant');
+            const activeDescId = listbox.getAttribute('aria-activedescendant');
             if (!activeDescId) return;
             const activeEl = document.getElementById(activeDescId);
             if (!activeEl) return;
@@ -316,9 +312,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
       prevEditingKeyRef.current = editingKey;
       if (prev != null && editingKey == null) {
         // Editing just ended — return focus to list root
-        const listbox = rootWrapperRef.current?.querySelector<HTMLElement>(
-          '[role="listbox"]',
-        );
+        const listbox = rootWrapperRef.current?.querySelector<HTMLElement>('[role="listbox"]');
         listbox?.focus();
       }
     }, [editingKey]);
@@ -356,20 +350,15 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
 // ---------------------------------------------------------------------------
 
 const EditableListItem = forwardRef<HTMLDivElement, EditableListItemProps>(
-  function EditableListItem(
-    { className, itemKey, disabled, onClick, ...props },
-    ref,
-  ) {
-    const { editingKey, editable, startEditing } =
-      useContext(EditableListContext);
+  function EditableListItem({ className, itemKey, disabled, onClick, ...props }, ref) {
+    const { editingKey, editable, startEditing } = useContext(EditableListContext);
     const isEditing = editingKey === itemKey;
 
     const handleDoubleClick = useCallback(
       (event: MouseEvent<HTMLDivElement>) => {
         // Check disabled from both the prop and data attribute on the element
         const el = event.currentTarget;
-        const isDisabled =
-          disabled || el.getAttribute('data-ov-disabled') === 'true';
+        const isDisabled = disabled || el.getAttribute('data-ov-disabled') === 'true';
         if (editable && !isEditing && !isDisabled) {
           startEditing(itemKey);
         }
@@ -465,10 +454,7 @@ const EditableListItemEditor = forwardRef<HTMLDivElement, EditableListItemEditor
  * }
  * ```
  */
-function useEditableField(
-  name: string,
-  defaultValue = '',
-): UseEditableFieldResult {
+function useEditableField(name: string, defaultValue = ''): UseEditableFieldResult {
   const { registerField, setFieldValue, clearFieldError, fieldErrors } =
     useContext(EditableListContext);
   const elRef = useRef<FieldElement | null>(null);
@@ -518,14 +504,7 @@ function useEditableField(
 
 const EditableListItemField = forwardRef<HTMLInputElement, EditableListItemFieldProps>(
   function EditableListItemField(
-    {
-      className,
-      name,
-      defaultValue = '',
-      placeholder,
-      autoFocus,
-      onChange,
-    },
+    { className, name, defaultValue = '', placeholder, autoFocus, onChange },
     forwardedRef,
   ) {
     const { ref: fieldRef, error } = useEditableField(name, defaultValue);
@@ -589,10 +568,7 @@ const EditableListItemField = forwardRef<HTMLInputElement, EditableListItemField
 // ---------------------------------------------------------------------------
 
 const EditableListItemSave = forwardRef<HTMLButtonElement, EditableListItemSaveProps>(
-  function EditableListItemSave(
-    { className, children, onClick, ...props },
-    ref,
-  ) {
+  function EditableListItemSave({ className, children, onClick, ...props }, ref) {
     const { commitEditing } = useContext(EditableListContext);
 
     const handleClick = useCallback(
@@ -624,10 +600,7 @@ const EditableListItemSave = forwardRef<HTMLButtonElement, EditableListItemSaveP
 // ---------------------------------------------------------------------------
 
 const EditableListItemCancel = forwardRef<HTMLButtonElement, EditableListItemCancelProps>(
-  function EditableListItemCancel(
-    { className, children, onClick, ...props },
-    ref,
-  ) {
+  function EditableListItemCancel({ className, children, onClick, ...props }, ref) {
     const { cancelEditing } = useContext(EditableListContext);
 
     const handleClick = useCallback(

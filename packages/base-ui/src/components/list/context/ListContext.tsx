@@ -1,9 +1,5 @@
 import { createContext, useContext } from 'react';
-import type {
-  ListConfigContextValue,
-  ListActionsContextValue,
-  ListStore,
-} from '../types';
+import type { ListConfigContextValue, ListActionsContextValue, ListStore } from '../types';
 
 // ---------------------------------------------------------------------------
 // Context 1: Config (rarely changes)
@@ -14,9 +10,7 @@ export const ListConfigContext = createContext<ListConfigContextValue | null>(nu
 export function useListConfig(): ListConfigContextValue {
   const ctx = useContext(ListConfigContext);
   if (!ctx) {
-    throw new Error(
-      'List compound components must be used within <List.Root>',
-    );
+    throw new Error('List compound components must be used within <List.Root>');
   }
   return ctx;
 }
@@ -30,9 +24,7 @@ export const ListStoreContext = createContext<ListStore | null>(null);
 export function useListStoreContext(): ListStore {
   const ctx = useContext(ListStoreContext);
   if (!ctx) {
-    throw new Error(
-      'List compound components must be used within <List.Root>',
-    );
+    throw new Error('List compound components must be used within <List.Root>');
   }
   return ctx;
 }
@@ -46,9 +38,7 @@ export const ListActionsContext = createContext<ListActionsContextValue | null>(
 export function useListActions(): ListActionsContextValue {
   const ctx = useContext(ListActionsContext);
   if (!ctx) {
-    throw new Error(
-      'List compound components must be used within <List.Root>',
-    );
+    throw new Error('List compound components must be used within <List.Root>');
   }
   return ctx;
 }

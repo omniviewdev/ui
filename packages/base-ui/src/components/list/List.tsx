@@ -1,4 +1,15 @@
-import { forwardRef, useCallback, useId, useMemo, useRef, useSyncExternalStore, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ListRootProps, ListViewportProps, ListItemProps, ListGroupProps } from './types';
@@ -20,225 +31,216 @@ import styles from './List.module.css';
 // Root
 // ---------------------------------------------------------------------------
 
-const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(
-  function ListRoot(
-    {
-      className,
-      variant,
-      color,
-      size,
-      children,
-      loading,
-      error,
-      onKeyDown,
-      // Strip list-specific props from DOM spread
-      selectionMode: _selectionMode,
-      selectionBehavior: _selectionBehavior,
-      selectedKeys: _selectedKeys,
-      defaultSelectedKeys: _defaultSelectedKeys,
-      onSelectedKeysChange: _onSelectedKeysChange,
-      activeKey: _activeKey,
-      defaultActiveKey: _defaultActiveKey,
-      onActiveKeyChange: _onActiveKeyChange,
-      disabledKeys: _disabledKeys,
-      orientation: _orientation,
-      loopFocus: _loopFocus,
-      typeahead: _typeahead,
-      density: _density,
-      virtualized: _virtualized,
-      overscan: _overscan,
-      estimatedItemSize: _estimatedItemSize,
-      ...props
-    },
-    ref,
-  ) {
-    const { config, store, actions } = useListState({
-      selectionMode: _selectionMode,
-      selectionBehavior: _selectionBehavior,
-      selectedKeys: _selectedKeys,
-      defaultSelectedKeys: _defaultSelectedKeys,
-      onSelectedKeysChange: _onSelectedKeysChange,
-      activeKey: _activeKey,
-      defaultActiveKey: _defaultActiveKey,
-      onActiveKeyChange: _onActiveKeyChange,
-      disabledKeys: _disabledKeys,
-      orientation: _orientation,
-      loopFocus: _loopFocus,
-      typeahead: _typeahead,
-      density: _density,
-      virtualized: _virtualized,
-      overscan: _overscan,
-      estimatedItemSize: _estimatedItemSize,
-      loading,
-      children,
-    });
-
-    const listId = useId();
-    const fullConfig = useMemo(
-      () => ({ ...config, listId }),
-      [config, listId],
-    );
-    const { handleKeyDown } = useListFocus({ config: fullConfig, actions, store });
-    const { handleTypeahead } = useTypeahead({
-      enabled: config.typeahead,
-      actions,
-      store,
-    });
-
-    // Derive the active descendant ID for aria-activedescendant
-    const activeDescendantId = useSyncExternalStore(
-      store.subscribe,
-      () => {
-        const snapshot = store.getSnapshot();
-        return snapshot.activeKey != null ? `${listId}-item-${snapshot.activeKey}` : undefined;
-      },
-      () => undefined,
-    );
-
-    const combinedKeyDown = useCallback(
-      (event: KeyboardEvent<HTMLDivElement>) => {
-        handleKeyDown(event);
-        handleTypeahead(event);
-        onKeyDown?.(event);
-      },
-      [handleKeyDown, handleTypeahead, onKeyDown],
-    );
-
-    return (
-      <ListConfigContext.Provider value={fullConfig}>
-        <ListStoreContext.Provider value={store}>
-          <ListActionsContext.Provider value={actions}>
-            <div
-              ref={ref}
-              role="listbox"
-              tabIndex={0}
-              aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
-              aria-activedescendant={activeDescendantId}
-              className={cn(styles.Root, className)}
-              data-ov-density={fullConfig.density}
-              data-ov-list-id={listId}
-              onKeyDown={combinedKeyDown}
-              {...styleDataAttributes({ variant, color, size })}
-              {...props}
-            >
-              {error ? (
-                <div className={styles.Empty}>{error}</div>
-              ) : (
-                children
-              )}
-            </div>
-          </ListActionsContext.Provider>
-        </ListStoreContext.Provider>
-      </ListConfigContext.Provider>
-    );
+const ListRoot = forwardRef<HTMLDivElement, ListRootProps>(function ListRoot(
+  {
+    className,
+    variant,
+    color,
+    size,
+    children,
+    loading,
+    error,
+    onKeyDown,
+    // Strip list-specific props from DOM spread
+    selectionMode: _selectionMode,
+    selectionBehavior: _selectionBehavior,
+    selectedKeys: _selectedKeys,
+    defaultSelectedKeys: _defaultSelectedKeys,
+    onSelectedKeysChange: _onSelectedKeysChange,
+    activeKey: _activeKey,
+    defaultActiveKey: _defaultActiveKey,
+    onActiveKeyChange: _onActiveKeyChange,
+    disabledKeys: _disabledKeys,
+    orientation: _orientation,
+    loopFocus: _loopFocus,
+    typeahead: _typeahead,
+    density: _density,
+    virtualized: _virtualized,
+    overscan: _overscan,
+    estimatedItemSize: _estimatedItemSize,
+    ...props
   },
-);
+  ref,
+) {
+  const { config, store, actions } = useListState({
+    selectionMode: _selectionMode,
+    selectionBehavior: _selectionBehavior,
+    selectedKeys: _selectedKeys,
+    defaultSelectedKeys: _defaultSelectedKeys,
+    onSelectedKeysChange: _onSelectedKeysChange,
+    activeKey: _activeKey,
+    defaultActiveKey: _defaultActiveKey,
+    onActiveKeyChange: _onActiveKeyChange,
+    disabledKeys: _disabledKeys,
+    orientation: _orientation,
+    loopFocus: _loopFocus,
+    typeahead: _typeahead,
+    density: _density,
+    virtualized: _virtualized,
+    overscan: _overscan,
+    estimatedItemSize: _estimatedItemSize,
+    loading,
+    children,
+  });
+
+  const listId = useId();
+  const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
+  const { handleKeyDown } = useListFocus({ config: fullConfig, actions, store });
+  const { handleTypeahead } = useTypeahead({
+    enabled: config.typeahead,
+    actions,
+    store,
+  });
+
+  // Derive the active descendant ID for aria-activedescendant
+  const activeDescendantId = useSyncExternalStore(
+    store.subscribe,
+    () => {
+      const snapshot = store.getSnapshot();
+      return snapshot.activeKey != null ? `${listId}-item-${snapshot.activeKey}` : undefined;
+    },
+    () => undefined,
+  );
+
+  const combinedKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      handleKeyDown(event);
+      handleTypeahead(event);
+      onKeyDown?.(event);
+    },
+    [handleKeyDown, handleTypeahead, onKeyDown],
+  );
+
+  return (
+    <ListConfigContext.Provider value={fullConfig}>
+      <ListStoreContext.Provider value={store}>
+        <ListActionsContext.Provider value={actions}>
+          <div
+            ref={ref}
+            role="listbox"
+            tabIndex={0}
+            aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
+            aria-activedescendant={activeDescendantId}
+            className={cn(styles.Root, className)}
+            data-ov-density={fullConfig.density}
+            data-ov-list-id={listId}
+            onKeyDown={combinedKeyDown}
+            {...styleDataAttributes({ variant, color, size })}
+            {...props}
+          >
+            {error ? <div className={styles.Empty}>{error}</div> : children}
+          </div>
+        </ListActionsContext.Provider>
+      </ListStoreContext.Provider>
+    </ListConfigContext.Provider>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Viewport
 // ---------------------------------------------------------------------------
 
-const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(
-  function ListViewport({ className, onReachEnd, children, ...props }, ref) {
-    const config = useListConfig();
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const hasReachedEndRef = useRef(false);
+const ListViewport = forwardRef<HTMLDivElement, ListViewportProps>(function ListViewport(
+  { className, onReachEnd, children, ...props },
+  ref,
+) {
+  const config = useListConfig();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const hasReachedEndRef = useRef(false);
 
-    const handleScroll = useCallback(() => {
-      const el = scrollRef.current;
-      if (!el) return;
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
-      const atEnd = config.orientation === 'horizontal'
+    const atEnd =
+      config.orientation === 'horizontal'
         ? el.scrollLeft + el.clientWidth >= el.scrollWidth - 1
         : el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
 
-      if (atEnd && !hasReachedEndRef.current) {
-        hasReachedEndRef.current = true;
-        onReachEnd?.();
-      } else if (!atEnd) {
-        hasReachedEndRef.current = false;
-      }
-    }, [onReachEnd, config.orientation]);
+    if (atEnd && !hasReachedEndRef.current) {
+      hasReachedEndRef.current = true;
+      onReachEnd?.();
+    } else if (!atEnd) {
+      hasReachedEndRef.current = false;
+    }
+  }, [onReachEnd, config.orientation]);
 
-    return (
-      <div
-        ref={(node) => {
-          scrollRef.current = node;
-          if (typeof ref === 'function') ref(node);
-          else if (ref) ref.current = node;
-        }}
-        role="presentation"
-        className={cn(styles.Viewport, className)}
-        onScroll={handleScroll}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={(node) => {
+        scrollRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      }}
+      role="presentation"
+      className={cn(styles.Viewport, className)}
+      onScroll={handleScroll}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Item
 // ---------------------------------------------------------------------------
 
-const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
-  function ListItem(
-    { className, itemKey, disabled = false, textValue, children, onClick, ...props },
-    ref,
-  ) {
-    const store = useListStoreContext();
-    const actions = useListActions();
-    const config = useListConfig();
-    const itemState = useListItemHook(store, itemKey, textValue);
+const ListItem = forwardRef<HTMLDivElement, ListItemProps>(function ListItem(
+  { className, itemKey, disabled = false, textValue, children, onClick, ...props },
+  ref,
+) {
+  const store = useListStoreContext();
+  const actions = useListActions();
+  const config = useListConfig();
+  const itemState = useListItemHook(store, itemKey, textValue);
 
-    const isDisabled = disabled || itemState.isDisabled;
+  const isDisabled = disabled || itemState.isDisabled;
 
-    const handleClick = useCallback(
-      (event: MouseEvent<HTMLDivElement>) => {
-        if (isDisabled) {
-          onClick?.(event);
-          return;
-        }
-
-        actions.setActiveKey(itemKey);
-
-        if (config.selectionMode !== 'none') {
-          if (event.shiftKey && config.selectionMode === 'multiple') {
-            actions.selectRange(itemKey);
-          } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
-            actions.toggle(itemKey);
-          } else if (config.selectionBehavior === 'toggle') {
-            actions.toggle(itemKey);
-          } else {
-            actions.select(itemKey);
-          }
-        }
-
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      if (isDisabled) {
         onClick?.(event);
-      },
-      [isDisabled, config.selectionMode, config.selectionBehavior, actions, itemKey, onClick],
-    );
+        return;
+      }
 
-    return (
-      <div
-        ref={ref}
-        id={`${config.listId}-item-${itemKey}`}
-        role="option"
-        aria-selected={itemState.isSelected || undefined}
-        aria-disabled={isDisabled || undefined}
-        className={cn(styles.Item, className)}
-        data-ov-selected={itemState.isSelected}
-        data-ov-active={itemState.isActive}
-        data-ov-disabled={isDisabled}
-        onClick={handleClick}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+      actions.setActiveKey(itemKey);
+
+      if (config.selectionMode !== 'none') {
+        if (event.shiftKey && config.selectionMode === 'multiple') {
+          actions.selectRange(itemKey);
+        } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
+          actions.toggle(itemKey);
+        } else if (config.selectionBehavior === 'toggle') {
+          actions.toggle(itemKey);
+        } else {
+          actions.select(itemKey);
+        }
+      }
+
+      onClick?.(event);
+    },
+    [isDisabled, config.selectionMode, config.selectionBehavior, actions, itemKey, onClick],
+  );
+
+  return (
+    <div
+      ref={ref}
+      id={`${config.listId}-item-${itemKey}`}
+      role="option"
+      aria-selected={itemState.isSelected || undefined}
+      aria-disabled={isDisabled || undefined}
+      className={cn(styles.Item, className)}
+      data-ov-selected={itemState.isSelected}
+      data-ov-active={itemState.isActive}
+      data-ov-disabled={isDisabled}
+      onClick={handleClick}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Presentational slots (no state subscription)
@@ -278,13 +280,12 @@ const ListItemActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement
 // Structural
 // ---------------------------------------------------------------------------
 
-const ListGroup = forwardRef<HTMLDivElement, ListGroupProps>(
-  function ListGroup({ className, ...props }, ref) {
-    return (
-      <div ref={ref} role="group" className={cn(styles.Group, className)} {...props} />
-    );
-  },
-);
+const ListGroup = forwardRef<HTMLDivElement, ListGroupProps>(function ListGroup(
+  { className, ...props },
+  ref,
+) {
+  return <div ref={ref} role="group" className={cn(styles.Group, className)} {...props} />;
+});
 
 const ListGroupHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   function ListGroupHeader({ className, ...props }, ref) {
@@ -306,25 +307,27 @@ export interface ListEmptyProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const ListEmpty = forwardRef<HTMLDivElement, ListEmptyProps>(
-  function ListEmpty({ className, ...props }, ref) {
-    return <div ref={ref} className={cn(styles.Empty, className)} {...props} />;
-  },
-);
+const ListEmpty = forwardRef<HTMLDivElement, ListEmptyProps>(function ListEmpty(
+  { className, ...props },
+  ref,
+) {
+  return <div ref={ref} className={cn(styles.Empty, className)} {...props} />;
+});
 
 export interface ListLoadingProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-const ListLoading = forwardRef<HTMLDivElement, ListLoadingProps>(
-  function ListLoading({ className, children, ...props }, ref) {
-    return (
-      <div ref={ref} className={cn(styles.Loading, className)} {...props}>
-        {children ?? 'Loading\u2026'}
-      </div>
-    );
-  },
-);
+const ListLoading = forwardRef<HTMLDivElement, ListLoadingProps>(function ListLoading(
+  { className, children, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.Loading, className)} {...props}>
+      {children ?? 'Loading\u2026'}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Display names

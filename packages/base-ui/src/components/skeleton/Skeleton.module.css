@@ -1,0 +1,119 @@
+.Root {
+  display: block;
+  background: var(--ov-color-bg-surface-raised);
+}
+
+/* ---------- Variants ---------- */
+
+.Root[data-ov-variant='text'] {
+  height: 1em;
+  width: 100%;
+  border-radius: var(--ov-radius-sm);
+}
+
+.Root[data-ov-variant='circular'] {
+  border-radius: 50%;
+}
+
+.Root[data-ov-variant='rectangular'] {
+  border-radius: 0;
+}
+
+.Root[data-ov-variant='rounded'] {
+  border-radius: var(--ov-radius-md);
+}
+
+/* ---------- Size variants ---------- */
+
+.Root[data-ov-variant='text'][data-ov-size='sm'] {
+  height: 0.75em;
+}
+
+.Root[data-ov-variant='text'][data-ov-size='md'] {
+  height: 1em;
+}
+
+.Root[data-ov-variant='text'][data-ov-size='lg'] {
+  height: 1.25em;
+}
+
+/* ---------- Pulse animation ---------- */
+
+.Root[data-ov-animation='pulse'] {
+  animation: ov-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ov-skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Wave animation ---------- */
+
+.Root[data-ov-animation='wave'] {
+  position: relative;
+  overflow: hidden;
+}
+
+.Root[data-ov-animation='wave']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--ov-color-bg-elevated), transparent);
+  background-size: 200% 100%;
+  animation: ov-skeleton-wave 1.6s linear infinite;
+}
+
+@keyframes ov-skeleton-wave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- No animation ---------- */
+
+.Root[data-ov-animation='none'] {
+  animation: none;
+}
+
+.Root[data-ov-animation='none']::after {
+  animation: none;
+}
+
+/* ---------- Multi-line wrapper ---------- */
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+/* ---------- Reduced motion ---------- */
+
+:root[data-ov-motion='reduced'] .Root {
+  animation: none;
+}
+
+:root[data-ov-motion='reduced'] .Root::after {
+  content: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root {
+    animation: none;
+  }
+
+  .Root::after {
+    content: none;
+  }
+}

@@ -10,18 +10,14 @@ import styles from './BasicList.module.css';
 
 export type BasicListRootProps = ListRootProps;
 
-const BasicListRoot = forwardRef<HTMLDivElement, BasicListRootProps>(
-  function BasicListRoot({ className, variant = 'ghost', ...props }, ref) {
-    return (
-      <List.Root
-        ref={ref}
-        className={cn(styles.Root, className)}
-        variant={variant}
-        {...props}
-      />
-    );
-  },
-);
+const BasicListRoot = forwardRef<HTMLDivElement, BasicListRootProps>(function BasicListRoot(
+  { className, variant = 'ghost', ...props },
+  ref,
+) {
+  return (
+    <List.Root ref={ref} className={cn(styles.Root, className)} variant={variant} {...props} />
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Item (extends List.Item with optional secondaryAction)
@@ -29,17 +25,12 @@ const BasicListRoot = forwardRef<HTMLDivElement, BasicListRootProps>(
 
 export type BasicListItemProps = ListItemProps;
 
-const BasicListItem = forwardRef<HTMLDivElement, BasicListItemProps>(
-  function BasicListItem({ className, ...props }, ref) {
-    return (
-      <List.Item
-        ref={ref}
-        className={cn(styles.Item, className)}
-        {...props}
-      />
-    );
-  },
-);
+const BasicListItem = forwardRef<HTMLDivElement, BasicListItemProps>(function BasicListItem(
+  { className, ...props },
+  ref,
+) {
+  return <List.Item ref={ref} className={cn(styles.Item, className)} {...props} />;
+});
 
 // ---------------------------------------------------------------------------
 // ItemBadge (new slot)

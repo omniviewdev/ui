@@ -20,7 +20,8 @@ import {
 } from 'react-icons/lu';
 import { EditorTabs } from './EditorTabs';
 import { ContextMenu } from '../context-menu';
-import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId } from './types';
+import { TabDragBrokerProvider } from './context/TabDragBroker';
+import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, AttachCommit } from './types';
 
 // ---------------------------------------------------------------------------
 // Meta
@@ -743,3 +744,435 @@ export const DetachDisabled: StoryObj<typeof EditorTabs> = {
     );
   },
 };
+
+// ---------------------------------------------------------------------------
+// Cross-window attach stories
+// ---------------------------------------------------------------------------
+
+function BrokerFakeWindow({
+  tab,
+  instanceId,
+  x,
+  y,
+  onClose,
+  onRemoveTab,
+}: {
+  tab: TabDescriptor;
+  instanceId: string;
+  x: number;
+  y: number;
+  onClose: () => void;
+  onRemoveTab: (tabId: string) => void;
+}) {
+  const [pos, setPos] = useState({ x, y });
+  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [pos]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    setPos({
+      x: dragRef.current.originX + (e.clientX - dragRef.current.startX),
+      y: dragRef.current.originY + (e.clientY - dragRef.current.startY),
+    });
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    dragRef.current = null;
+  }, []);
+
+  const handleAttachTab = useCallback(
+    (_commit: AttachCommit) => {
+      // Single-tab windows in this demo — attach is handled by the main strip
+    },
+    [],
+  );
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: pos.x,
+        top: pos.y,
+        width: 420,
+        minHeight: 260,
+        borderRadius: 8,
+        overflow: 'hidden',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)',
+        border: '1px solid var(--ov-color-border-default, #333)',
+        background: 'var(--ov-color-bg-surface, #1e1e1e)',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 9999,
+        fontFamily: 'var(--ov-font-sans, system-ui, sans-serif)',
+      }}
+    >
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '6px 10px',
+          background: 'var(--ov-color-bg-surface-raised, #252526)',
+          borderBottom: '1px solid var(--ov-color-border-default, #333)',
+          cursor: 'grab',
+          userSelect: 'none',
+          fontSize: 13,
+        }}
+      >
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              width: 12, height: 12, borderRadius: '50%',
+              background: '#ff5f57', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 0, fontSize: 8, color: 'transparent',
+            }}
+            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = '#4a0002'; }}
+            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = 'transparent'; }}
+          >
+            <LuX />
+          </button>
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#febc2e' }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
+        </div>
+        <span style={{ flex: 1, textAlign: 'center', opacity: 0.8, fontSize: 12 }}>
+          {tab.title}
+        </span>
+      </div>
+      <div style={{
+        background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
+        borderBottom: '1px solid var(--ov-color-border-default, #333)',
+      }}>
+        <EditorTabs
+          tabs={[{ ...tab, closable: false }]}
+          defaultActiveId={tab.id}
+          detachable={true}
+          detachToBroker={true}
+          instanceId={instanceId}
+          onAttachTab={handleAttachTab}
+          onDetachCommit={(commit) => {
+            onRemoveTab(commit.id);
+          }}
+        />
+      </div>
+      <div style={{
+        flex: 1,
+        padding: '12px 16px',
+        fontSize: 12,
+        fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
+        lineHeight: 1.6,
+        color: 'var(--ov-color-fg-default, #d4d4d4)',
+        whiteSpace: 'pre',
+        overflow: 'auto',
+      }}>
+        {fileContents[tab.title] ?? `// ${tab.title}\n// No preview available`}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Cross-window attach: Detach a tab to spawn a FakeWindow, then drag a tab
+ * from the FakeWindow back onto the main strip (or another window).
+ *
+ * **Demo flow:**
+ * 1. Drag a tab downward from the main strip to detach → FakeWindow spawns
+ * 2. Drag a tab downward from a FakeWindow → ghost follows pointer
+ * 3. Move ghost over the main strip → strip highlights with insertion indicator
+ * 4. Release → tab attaches at that position
+ * 5. Release elsewhere → tab returns to its source FakeWindow
+ */
+export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
+  args: {
+    tabs: [
+      { id: 'file1', title: 'index.ts', icon: <LuFileCode />, closable: true, payload: { path: '/src/index.ts' } },
+      { id: 'file2', title: 'App.tsx', icon: <LuFileCode />, closable: true, payload: { path: '/src/App.tsx' } },
+      { id: 'file3', title: 'styles.css', icon: <LuFile />, closable: true, payload: { path: '/src/styles.css' } },
+      { id: 'file4', title: 'vite.config.ts', icon: <LuSettings />, closable: true, payload: { path: '/vite.config.ts' } },
+    ],
+    defaultActiveId: 'file1',
+    detachable: true,
+    detachThresholdPx: 18,
+  },
+  render: function CrossWindowAttachRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+    const [windows, setWindows] = useState<DetachedWindow[]>([]);
+    const lastPointerRef = useRef({ x: 0, y: 0 });
+
+    const handlePointerMove = useCallback((e: React.PointerEvent) => {
+      lastPointerRef.current = { x: e.clientX, y: e.clientY };
+    }, []);
+
+    const handleAttachTab = useCallback((commit: AttachCommit) => {
+      // Remove from source window if it came from one
+      setWindows((prev) => prev.filter((w) => w.tab.id !== commit.tab.id));
+      // Insert at the specified position
+      setTabs((prev) => {
+        const filtered = prev.filter((t) => t.id !== commit.tab.id);
+        const idx = Math.min(commit.insertIndex, filtered.length);
+        const next = [...filtered];
+        next.splice(idx, 0, commit.tab);
+        return next;
+      });
+    }, []);
+
+    const handleCancel = useCallback((session: { tab: TabDescriptor; sourceInstanceId: string }) => {
+      // Only re-create FakeWindow if the source was a window (not the main strip)
+      if (!session.sourceInstanceId.startsWith('window-')) return;
+      setWindows((prev) => {
+        if (prev.some((w) => w.tab.id === session.tab.id)) return prev;
+        return [...prev, { id: session.tab.id, tab: session.tab, x: 200, y: 200 }];
+      });
+    }, []);
+
+    return (
+      <TabDragBrokerProvider onCancel={handleCancel}>
+        <div onPointerMove={handlePointerMove} style={{ position: 'relative' }}>
+          <EditorTabs
+            {...args}
+            tabs={tabs}
+            instanceId="main"
+            onReorder={(nextTabs) => setTabs(nextTabs)}
+            onAttachTab={handleAttachTab}
+            onDetachCommit={(commit) => {
+              const tab = tabs.find((t) => t.id === commit.id);
+              if (!tab) return;
+              setWindows((prev) => [
+                ...prev,
+                {
+                  id: commit.id,
+                  tab,
+                  x: lastPointerRef.current.x - 210,
+                  y: lastPointerRef.current.y + 8,
+                },
+              ]);
+              setTabs((prev) => prev.filter((t) => t.id !== commit.id));
+            }}
+          />
+          {windows.map((w) => (
+            <BrokerFakeWindow
+              key={w.id}
+              tab={w.tab}
+              instanceId={`window-${w.id}`}
+              x={w.x}
+              y={w.y}
+              onRemoveTab={(tabId) => {
+                setWindows((prev) => prev.filter((p) => p.tab.id !== tabId));
+              }}
+              onClose={() => {
+                setWindows((prev) => prev.filter((p) => p.id !== w.id));
+                setTabs((prev) => [...prev, w.tab]);
+              }}
+            />
+          ))}
+        </div>
+      </TabDragBrokerProvider>
+    );
+  },
+};
+
+/**
+ * Split pane attach: Two EditorTabs side by side. Drag a tab vertically from
+ * one pane and drop it onto the other pane's tab strip.
+ *
+ * **Demo flow:**
+ * 1. Drag a tab downward from the left pane → ghost follows pointer
+ * 2. Move ghost over the right pane → right strip highlights with insertion indicator
+ * 3. Release → tab moves from left to right pane at the drop position
+ * 4. Works in both directions
+ */
+export const SplitPaneAttach: StoryObj<typeof EditorTabs> = {
+  render: function SplitPaneAttachRender() {
+    const [leftTabs, setLeftTabs] = useState<TabDescriptor[]>([
+      { id: 'l1', title: 'index.ts', icon: <LuFileCode /> },
+      { id: 'l2', title: 'App.tsx', icon: <LuCode /> },
+      { id: 'l3', title: 'styles.css', icon: <LuFileType /> },
+    ]);
+    const [rightTabs, setRightTabs] = useState<TabDescriptor[]>([
+      { id: 'r1', title: 'README.md', icon: <LuFileText /> },
+      { id: 'r2', title: 'vite.config.ts', icon: <LuSettings /> },
+    ]);
+    const [leftActiveId, setLeftActiveId] = useState<string | undefined>('l1');
+    const [rightActiveId, setRightActiveId] = useState<string | undefined>('r1');
+
+    const handleLeftAttach = useCallback((commit: AttachCommit) => {
+      setRightTabs((prev) => prev.filter((t) => t.id !== commit.tab.id));
+      setLeftTabs((prev) => {
+        const filtered = prev.filter((t) => t.id !== commit.tab.id);
+        const idx = Math.min(commit.insertIndex, filtered.length);
+        const next = [...filtered];
+        next.splice(idx, 0, commit.tab);
+        return next;
+      });
+      // Activate the dropped tab
+      setLeftActiveId(commit.tab.id);
+    }, []);
+
+    const handleRightAttach = useCallback((commit: AttachCommit) => {
+      setLeftTabs((prev) => prev.filter((t) => t.id !== commit.tab.id));
+      setRightTabs((prev) => {
+        const filtered = prev.filter((t) => t.id !== commit.tab.id);
+        const idx = Math.min(commit.insertIndex, filtered.length);
+        const next = [...filtered];
+        next.splice(idx, 0, commit.tab);
+        return next;
+      });
+      // Activate the dropped tab
+      setRightActiveId(commit.tab.id);
+    }, []);
+
+    const handleLeftDetach = useCallback((commit: { id: string }) => {
+      setLeftTabs((prev) => {
+        const remaining = prev.filter((t) => t.id !== commit.id);
+        // If we detached the active tab, select a neighbor
+        setLeftActiveId((current) => {
+          if (current !== commit.id) return current;
+          return remaining[0]?.id;
+        });
+        return remaining;
+      });
+    }, []);
+
+    const handleRightDetach = useCallback((commit: { id: string }) => {
+      setRightTabs((prev) => {
+        const remaining = prev.filter((t) => t.id !== commit.id);
+        setRightActiveId((current) => {
+          if (current !== commit.id) return current;
+          return remaining[0]?.id;
+        });
+        return remaining;
+      });
+    }, []);
+
+    const handleCancel = useCallback((session: { tab: TabDescriptor; sourceInstanceId: string }) => {
+      if (session.sourceInstanceId === 'left') {
+        setLeftTabs((prev) =>
+          prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
+        );
+      } else if (session.sourceInstanceId === 'right') {
+        setRightTabs((prev) =>
+          prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
+        );
+      }
+    }, []);
+
+    return (
+      <TabDragBrokerProvider onCancel={handleCancel}>
+        <SplitPaneInner
+          leftTabs={leftTabs}
+          rightTabs={rightTabs}
+          leftActiveId={leftActiveId}
+          rightActiveId={rightActiveId}
+          setLeftActiveId={setLeftActiveId}
+          setRightActiveId={setRightActiveId}
+          setLeftTabs={setLeftTabs}
+          setRightTabs={setRightTabs}
+          onLeftAttach={handleLeftAttach}
+          onRightAttach={handleRightAttach}
+          onLeftDetach={handleLeftDetach}
+          onRightDetach={handleRightDetach}
+        />
+      </TabDragBrokerProvider>
+    );
+  },
+};
+
+function SplitPaneInner({
+  leftTabs,
+  rightTabs,
+  leftActiveId,
+  rightActiveId,
+  setLeftActiveId,
+  setRightActiveId,
+  setLeftTabs,
+  setRightTabs,
+  onLeftAttach,
+  onRightAttach,
+  onLeftDetach,
+  onRightDetach,
+}: {
+  leftTabs: TabDescriptor[];
+  rightTabs: TabDescriptor[];
+  leftActiveId: string | undefined;
+  rightActiveId: string | undefined;
+  setLeftActiveId: (id: string) => void;
+  setRightActiveId: (id: string) => void;
+  setLeftTabs: React.Dispatch<React.SetStateAction<TabDescriptor[]>>;
+  setRightTabs: React.Dispatch<React.SetStateAction<TabDescriptor[]>>;
+  onLeftAttach: (commit: AttachCommit) => void;
+  onRightAttach: (commit: AttachCommit) => void;
+  onLeftDetach: (commit: { id: string }) => void;
+  onRightDetach: (commit: { id: string }) => void;
+}) {
+  const leftActiveTab = leftTabs.find((t) => t.id === leftActiveId) ?? leftTabs[0];
+  const rightActiveTab = rightTabs.find((t) => t.id === rightActiveId) ?? rightTabs[0];
+
+  return (
+    <div style={{ display: 'flex', gap: 2 }}>
+      <div style={{ flex: 1, border: '1px solid var(--ov-color-border-default, #333)', borderRadius: 4, overflow: 'hidden' }}>
+        <div style={{ padding: '4px 8px', fontSize: 11, opacity: 0.6, background: 'var(--ov-color-bg-surface-raised, #252526)' }}>
+          Left Pane
+        </div>
+        <EditorTabs
+          tabs={leftTabs}
+          activeId={leftActiveId}
+          onActiveChange={setLeftActiveId}
+          detachable={true}
+          detachToBroker={true}
+          instanceId="left"
+          onReorder={(nextTabs) => setLeftTabs(nextTabs)}
+          onAttachTab={onLeftAttach}
+          onDetachCommit={onLeftDetach}
+        />
+        <div style={{
+          padding: '12px 16px',
+          fontSize: 12,
+          fontFamily: 'var(--ov-font-mono, monospace)',
+          color: 'var(--ov-color-fg-default, #d4d4d4)',
+          minHeight: 120,
+          whiteSpace: 'pre',
+        }}>
+          {leftActiveTab
+            ? fileContents[leftActiveTab.title] ?? `// ${leftActiveTab.title}`
+            : '// No files open'}
+        </div>
+      </div>
+      <div style={{ flex: 1, border: '1px solid var(--ov-color-border-default, #333)', borderRadius: 4, overflow: 'hidden' }}>
+        <div style={{ padding: '4px 8px', fontSize: 11, opacity: 0.6, background: 'var(--ov-color-bg-surface-raised, #252526)' }}>
+          Right Pane
+        </div>
+        <EditorTabs
+          tabs={rightTabs}
+          activeId={rightActiveId}
+          onActiveChange={setRightActiveId}
+          detachable={true}
+          detachToBroker={true}
+          instanceId="right"
+          onReorder={(nextTabs) => setRightTabs(nextTabs)}
+          onAttachTab={onRightAttach}
+          onDetachCommit={onRightDetach}
+        />
+        <div style={{
+          padding: '12px 16px',
+          fontSize: 12,
+          fontFamily: 'var(--ov-font-mono, monospace)',
+          color: 'var(--ov-color-fg-default, #d4d4d4)',
+          minHeight: 120,
+          whiteSpace: 'pre',
+        }}>
+          {rightActiveTab
+            ? fileContents[rightActiveTab.title] ?? `// ${rightActiveTab.title}`
+            : '// No files open'}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -223,6 +223,35 @@ describe('EditorTabs', () => {
     addSpy.mockRestore();
   });
 
+  it('accepts onAttachTab prop without error', () => {
+    const onAttachTab = vi.fn();
+    renderWithTheme(
+      <EditorTabs
+        tabs={baseTabs}
+        activeId="file1"
+        onAttachTab={onAttachTab}
+        instanceId="test-instance"
+      />,
+    );
+
+    expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
+    expect(onAttachTab).not.toHaveBeenCalled();
+  });
+
+  it('data-attach-drop-target NOT present without active broker session', () => {
+    renderWithTheme(
+      <EditorTabs
+        tabs={baseTabs}
+        activeId="file1"
+        onAttachTab={vi.fn()}
+        instanceId="test-instance"
+      />,
+    );
+
+    const dropTarget = document.querySelector('[data-attach-drop-target]');
+    expect(dropTarget).not.toBeInTheDocument();
+  });
+
   it('detachable tab wires onDetachCommit through without crashing', () => {
     // Full pointer drag simulation is not feasible in jsdom (dnd-kit requires
     // setPointerCapture, getBoundingClientRect, etc.). The useTabDetach hook

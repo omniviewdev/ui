@@ -212,6 +212,72 @@ describe('useTabDetach', () => {
     expect(result.current.dragMode).toBe('idle');
   });
 
+  it('transitions to detach-armed when pointer exceeds threshold past right edge', () => {
+    const viewportRef = createMockViewportRef({ left: 0, right: 800 });
+    const { result } = renderHook(() =>
+      useTabDetach({ detachable: true, detachThresholdPx: 18, viewportRef, tabs }),
+    );
+
+    act(() => {
+      result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
+    });
+
+    const pointerMoveHandler = addSpy.mock.calls.find(
+      (call) => call[0] === 'pointermove',
+    )?.[1] as EventListener;
+
+    act(() => {
+      // 800 + 18 + 1 = 819
+      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 819, clientY: 120, screenX: 819, screenY: 120 }));
+    });
+
+    expect(result.current.dragModeRef.current).toBe('detach-armed');
+  });
+
+  it('transitions to detach-armed when pointer exceeds threshold past left edge', () => {
+    const viewportRef = createMockViewportRef({ left: 100, right: 800 });
+    const { result } = renderHook(() =>
+      useTabDetach({ detachable: true, detachThresholdPx: 18, viewportRef, tabs }),
+    );
+
+    act(() => {
+      result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
+    });
+
+    const pointerMoveHandler = addSpy.mock.calls.find(
+      (call) => call[0] === 'pointermove',
+    )?.[1] as EventListener;
+
+    act(() => {
+      // 100 - 18 - 1 = 81
+      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 81, clientY: 120, screenX: 81, screenY: 120 }));
+    });
+
+    expect(result.current.dragModeRef.current).toBe('detach-armed');
+  });
+
+  it('stays in reorder when pointer is within horizontal threshold', () => {
+    const viewportRef = createMockViewportRef({ left: 0, right: 800 });
+    const { result } = renderHook(() =>
+      useTabDetach({ detachable: true, detachThresholdPx: 18, viewportRef, tabs }),
+    );
+
+    act(() => {
+      result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
+    });
+
+    const pointerMoveHandler = addSpy.mock.calls.find(
+      (call) => call[0] === 'pointermove',
+    )?.[1] as EventListener;
+
+    act(() => {
+      // 800 + 17 = 817, still within threshold
+      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 817, clientY: 120, screenX: 817, screenY: 120 }));
+    });
+
+    expect(result.current.dragModeRef.current).toBe('reorder');
+  });
+
   it('reverts to reorder when pointer returns within hysteresis zone', () => {
     const viewportRef = createMockViewportRef({ top: 100, bottom: 140 });
     const { result } = renderHook(() =>
@@ -226,15 +292,15 @@ describe('useTabDetach', () => {
       (call) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
-    // Move above threshold
+    // Move above threshold (clientX within viewport bounds so only Y triggers)
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientY: 50, screenX: 0, screenY: 0 }));
+      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 400, clientY: 50, screenX: 400, screenY: 50 }));
     });
     expect(result.current.dragModeRef.current).toBe('detach-armed');
 
-    // Move back within hysteresis (threshold/2 = 9, so within 100 - 9 = 91)
+    // Move back within hysteresis on both axes (threshold/2 = 9, so Y within 100 - 9 = 91)
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientY: 92, screenX: 0, screenY: 0 }));
+      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 400, clientY: 92, screenX: 400, screenY: 92 }));
     });
     expect(result.current.dragModeRef.current).toBe('reorder');
   });

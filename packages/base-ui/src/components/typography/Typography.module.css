@@ -231,6 +231,7 @@
   align-items: center;
   justify-content: center;
   min-height: var(--ov-size-typography-hotkey-min-height);
+  min-width: var(--ov-size-typography-hotkey-min-height);
   padding: var(--ov-size-typography-hotkey-padding-block)
     var(--ov-size-typography-hotkey-padding-inline);
   border-radius: var(--ov-size-typography-hotkey-radius);
@@ -242,10 +243,12 @@
   );
   box-shadow: inset 0 -1px 0 var(--ov-color-border-muted);
   font-weight: var(--ov-font-weight-label);
+  text-align: center;
 }
 
 .Hotkey[data-ov-size='sm'] {
   min-height: calc(var(--ov-size-typography-hotkey-min-height) - 2px);
+  min-width: calc(var(--ov-size-typography-hotkey-min-height) - 2px);
   padding: calc(var(--ov-size-typography-hotkey-padding-block) - 1px)
     calc(var(--ov-size-typography-hotkey-padding-inline) - 1px);
 }

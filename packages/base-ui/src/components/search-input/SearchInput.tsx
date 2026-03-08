@@ -3,6 +3,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ElementRef,
   type HTMLAttributes,
   type ReactNode,
@@ -32,6 +33,7 @@ export interface SearchInputProps
       | 'variant'
       | 'color'
       | 'size'
+      | 'style'
     >,
     StyledComponentProps {
   value?: string;
@@ -43,6 +45,7 @@ export interface SearchInputProps
   startDecorator?: ReactNode;
   endDecorator?: ReactNode;
   clearDecorator?: ReactNode;
+  style?: CSSProperties;
   className?: string;
   controlClassName?: string;
   rootProps?: Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>;
@@ -71,6 +74,7 @@ export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchIn
       variant,
       color,
       size,
+      style,
       ...props
     },
     ref,
@@ -123,6 +127,7 @@ export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchIn
         color={resolvedColor}
         size={resolvedSize}
         disabled={disabled}
+        style={style}
         {...rootProps}
       >
         <Input.Control

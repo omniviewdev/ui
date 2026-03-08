@@ -34,3 +34,12 @@ export type ReorderMeta = {
   from: number;
   to: number;
 };
+
+export type DetachCommit = {
+  id: TabId;
+  payload?: unknown;
+  screenX: number;
+  screenY: number;
+};
+
+export type DragMode = 'idle' | 'reorder' | 'detach-armed';

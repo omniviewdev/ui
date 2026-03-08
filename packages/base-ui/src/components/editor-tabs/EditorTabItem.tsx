@@ -18,7 +18,7 @@ export const EditorTabItem = memo(
     { tab, className },
     ref,
   ) {
-    const { activeId, onActiveChange, onCloseTab, onContextMenuTab, tabs } =
+    const { activeId, onActiveChange, onCloseTab, onContextMenuTab, tabs, dragMode } =
       useEditorTabsContext();
     const isActive = activeId === tab.id;
     const closable = tab.closable !== false;
@@ -120,7 +120,8 @@ export const EditorTabItem = memo(
         {...(tab.pinned ? { 'data-pinned': '' } : {})}
         {...(tab.disabled ? { 'data-disabled': '' } : {})}
         {...(showTrailing ? { 'data-has-trailing': '' } : {})}
-        {...(isDragging ? { 'data-dragging': '' } : {})}
+        {...(isDragging && dragMode !== 'detach-armed' ? { 'data-dragging': '' } : {})}
+        {...(isDragging && dragMode === 'detach-armed' ? { 'data-detach-source': '' } : {})}
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         onKeyDown={handleKeyDown}

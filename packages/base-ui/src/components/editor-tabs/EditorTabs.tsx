@@ -1,12 +1,13 @@
 import { forwardRef, useCallback, useMemo, useState } from 'react';
-import { DndContext, closestCenter, type Modifier } from '@dnd-kit/core';
-import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
+import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import { EditorTabsContext } from './context/EditorTabsContext';
 import { useTabScroll } from './hooks/useTabScroll';
 import { useTabReorder } from './hooks/useTabReorder';
+import { useTabDetach } from './hooks/useTabDetach';
+import { createDetachAwareModifier } from './modifiers/createDetachAwareModifier';
 import { computeTabSegments } from './utils/computeTabSegments';
 import { EditorTabItem } from './EditorTabItem';
 import { EditorTabsSegment } from './EditorTabsSegment';
@@ -15,33 +16,9 @@ import { EditorTabScrollButton } from './EditorTabScrollButton';
 import { EditorTabScrollShadow } from './EditorTabScrollShadow';
 import { EditorTabCloseButton } from './EditorTabCloseButton';
 import { EditorTabGroupChip } from './EditorTabGroupChip';
-import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, ReorderMeta } from './types';
+import { DetachGhostTab } from './DetachGhostTab';
+import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, ReorderMeta, DetachCommit } from './types';
 import styles from './EditorTabs.module.css';
-
-/**
- * Custom modifier that clamps the drag transform to the *visible* bounds of
- * the first scrollable ancestor. Unlike `restrictToFirstScrollableAncestor`
- * (which uses full scroll width), this uses the client rect so tabs can't
- * be dragged beyond the visible viewport area.
- */
-const restrictToVisibleScrollArea: Modifier = ({
-  transform,
-  draggingNodeRect,
-  scrollableAncestorRects,
-}) => {
-  const ancestor = scrollableAncestorRects[0];
-  if (!draggingNodeRect || !ancestor) return transform;
-
-  return {
-    ...transform,
-    x: Math.min(
-      Math.max(transform.x, ancestor.left - draggingNodeRect.left),
-      ancestor.right - draggingNodeRect.right,
-    ),
-  };
-};
-
-const dndModifiers = [restrictToHorizontalAxis, restrictToVisibleScrollArea];
 
 export interface EditorTabsProps extends StyledComponentProps {
   tabs: TabDescriptor[];
@@ -56,8 +33,31 @@ export interface EditorTabsProps extends StyledComponentProps {
   onReorder?: (nextTabs: TabDescriptor[], meta: ReorderMeta) => void;
   allowReorderAcrossPinnedBoundary?: boolean;
   allowReorderAcrossGroups?: boolean;
+  detachable?: boolean;
+  detachThresholdPx?: number;
+  onDetachCommit?: (commit: DetachCommit) => void;
   className?: string;
 }
+
+/** CSS custom properties scoped to .Root that need snapshotting for DragOverlay portal. */
+const CSS_VAR_SNAPSHOT_KEYS = [
+  '--_ov-tab-height',
+  '--_ov-tab-bg',
+  '--_ov-tab-fg',
+  '--_ov-tab-active-bg',
+  '--_ov-tab-active-fg',
+  '--_ov-tab-active-border',
+  '--_ov-tab-hover-bg',
+  '--_ov-tab-hover-fg',
+  '--_ov-tab-modified-border',
+  '--_ov-tab-border',
+  '--_ov-tab-divider',
+  '--_ov-tab-font-size',
+  '--_ov-tab-padding-x',
+  '--_ov-tab-padding-trailing',
+  '--_ov-tab-close-size',
+  '--_ov-group-header-bg',
+] as const;
 
 const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function EditorTabsRoot(
   {
@@ -73,6 +73,9 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     onReorder,
     allowReorderAcrossPinnedBoundary,
     allowReorderAcrossGroups,
+    detachable = true,
+    detachThresholdPx = 18,
+    onDetachCommit,
     variant,
     color,
     size,
@@ -98,13 +101,20 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
   );
 
   const { scrollState, scrollTo, viewportRef } = useTabScroll();
-  const {
-    sensors,
-    dragActiveId,
-    handleDragStart,
-    handleDragEnd,
-    handleDragCancel,
-  } = useTabReorder({
+
+  const rootElRef = useMemo(() => ({ current: null as HTMLDivElement | null }), []);
+  const cssVarSnapshotRef = useMemo(() => ({ current: null as React.CSSProperties | null }), []);
+
+  const rootRefCb = useCallback(
+    (node: HTMLDivElement | null) => {
+      rootElRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) (ref as { current: HTMLDivElement | null }).current = node;
+    },
+    [ref, rootElRef],
+  );
+
+  const reorder = useTabReorder({
     tabs,
     groups,
     onReorder,
@@ -112,12 +122,65 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     allowReorderAcrossGroups,
   });
 
+  const detach = useTabDetach({
+    detachable,
+    detachThresholdPx,
+    viewportRef,
+    tabs,
+    onDetachCommit,
+  });
+
+  const dndModifiers = useMemo(
+    () => [createDetachAwareModifier(detach.dragModeRef)],
+    [detach.dragModeRef],
+  );
+
+  const handleDragStart = useCallback(
+    (event: Parameters<NonNullable<React.ComponentProps<typeof DndContext>['onDragStart']>>[0]) => {
+      // Snapshot CSS vars from the root element for the DragOverlay
+      if (rootElRef.current) {
+        const computed = getComputedStyle(rootElRef.current);
+        const snapshot: Record<string, string> = {};
+        for (const key of CSS_VAR_SNAPSHOT_KEYS) {
+          snapshot[key] = computed.getPropertyValue(key);
+        }
+        cssVarSnapshotRef.current = snapshot as unknown as React.CSSProperties;
+      }
+      reorder.handleDragStart(event);
+      detach.handleDetachDragStart(event);
+    },
+    [reorder, detach, rootElRef, cssVarSnapshotRef],
+  );
+
+  const handleDragEnd = useCallback(
+    (event: Parameters<NonNullable<React.ComponentProps<typeof DndContext>['onDragEnd']>>[0]) => {
+      if (detach.dragModeRef.current === 'detach-armed') {
+        detach.handleDetachDragEnd(event);
+        reorder.handleDragCancel();
+      } else {
+        reorder.handleDragEnd(event);
+        detach.handleDetachDragCancel();
+      }
+    },
+    [reorder, detach],
+  );
+
+  const handleDragCancel = useCallback(() => {
+    reorder.handleDragCancel();
+    detach.handleDetachDragCancel();
+  }, [reorder, detach]);
+
   const segments = useMemo(() => computeTabSegments(tabs, groups), [tabs, groups]);
 
   const pinnedIds = useMemo(() => segments.pinned.map((t) => t.id), [segments.pinned]);
   const ungroupedIds = useMemo(() => segments.ungrouped.map((t) => t.id), [segments.ungrouped]);
 
   const tabIds = useMemo(() => tabs.filter((t) => !t.disabled).map((t) => t.id), [tabs]);
+
+  const activeTabDescriptor = useMemo(() => {
+    if (!reorder.dragActiveId) return null;
+    return tabs.find((t) => t.id === reorder.dragActiveId) ?? null;
+  }, [tabs, reorder.dragActiveId]);
 
   const contextValue = useMemo(
     () => ({
@@ -131,15 +194,16 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       scrollTo,
       viewportRef,
       tabs: tabIds,
-      dragActiveId,
+      dragActiveId: reorder.dragActiveId,
+      dragMode: detach.dragMode,
     }),
-    [activeId, onActiveChange, onCloseTab, onContextMenuTab, onToggleGroupCollapsed, onGroupContextMenu, scrollState, scrollTo, viewportRef, tabIds, dragActiveId],
+    [activeId, onActiveChange, onCloseTab, onContextMenuTab, onToggleGroupCollapsed, onGroupContextMenu, scrollState, scrollTo, viewportRef, tabIds, reorder.dragActiveId, detach.dragMode],
   );
 
   return (
     <EditorTabsContext.Provider value={contextValue}>
       <DndContext
-        sensors={sensors}
+        sensors={reorder.sensors}
         collisionDetection={closestCenter}
         modifiers={dndModifiers}
         onDragStart={handleDragStart}
@@ -147,7 +211,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
         onDragCancel={handleDragCancel}
       >
         <div
-          ref={ref}
+          ref={rootRefCb}
           className={cn(styles.Root, className)}
           role="tablist"
           aria-orientation="horizontal"
@@ -184,6 +248,11 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           <EditorTabScrollShadow side="right" />
           <EditorTabScrollButton direction="right" />
         </div>
+        {detach.dragMode === 'detach-armed' && activeTabDescriptor && (
+          <DragOverlay dropAnimation={null} style={cssVarSnapshotRef.current ?? undefined}>
+            <DetachGhostTab tab={activeTabDescriptor} />
+          </DragOverlay>
+        )}
       </DndContext>
     </EditorTabsContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { TabGroupId, TabId } from '../types';
+import type { DragMode, TabGroupId, TabId } from '../types';
 
 export interface ScrollState {
   canScrollLeft: boolean;
@@ -18,6 +18,7 @@ export interface EditorTabsContextValue {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   tabs: TabId[];
   dragActiveId: TabId | null;
+  dragMode: DragMode;
 }
 
 const EditorTabsContext = createContext<EditorTabsContextValue | null>(null);

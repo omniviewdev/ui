@@ -161,4 +161,34 @@ describe('EditorTabs', () => {
     const secondTab = screen.getByRole('tab', { name: 'App.tsx' });
     expect(document.activeElement).toBe(secondTab);
   });
+
+  it('renders normally with detachable={false}', () => {
+    renderWithTheme(
+      <EditorTabs tabs={baseTabs} activeId="file1" detachable={false} />,
+    );
+
+    expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'App.tsx' })).toBeInTheDocument();
+  });
+
+  it('does not apply data-detach-source during normal render', () => {
+    renderWithTheme(<EditorTabs tabs={baseTabs} activeId="file1" />);
+
+    const detachSource = document.querySelector('[data-detach-source]');
+    expect(detachSource).not.toBeInTheDocument();
+  });
+
+  it('accepts onDetachCommit prop without error', () => {
+    const onDetachCommit = vi.fn();
+    renderWithTheme(
+      <EditorTabs
+        tabs={baseTabs}
+        activeId="file1"
+        onDetachCommit={onDetachCommit}
+      />,
+    );
+
+    expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
+    expect(onDetachCommit).not.toHaveBeenCalled();
+  });
 });

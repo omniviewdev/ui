@@ -7,6 +7,8 @@ export type {
   TabGroupId,
   TabSegments,
   ReorderMeta,
+  DetachCommit,
+  DragMode,
 } from './types';
 export { computeTabSegments } from './utils/computeTabSegments';
 export { useEditorTabsContext } from './context/EditorTabsContext';

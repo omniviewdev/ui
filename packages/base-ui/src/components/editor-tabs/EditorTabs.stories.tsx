@@ -520,3 +520,225 @@ export const ReorderableWithGroups: Story = {
     );
   },
 };
+
+// ---------------------------------------------------------------------------
+// Detachable stories
+// ---------------------------------------------------------------------------
+
+type DetachedWindow = {
+  id: string;
+  tab: TabDescriptor;
+  x: number;
+  y: number;
+};
+
+const fileContents: Record<string, string> = {
+  'index.ts': `import { createApp } from './app';\n\nconst app = createApp();\napp.listen(3000, () => {\n  console.log('Server running on :3000');\n});`,
+  'App.tsx': `export function App() {\n  return (\n    <div className="app">\n      <h1>Hello World</h1>\n    </div>\n  );\n}`,
+  'styles.css': `.app {\n  font-family: system-ui, sans-serif;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 2rem;\n}`,
+  'vite.config.ts': `import { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\n\nexport default defineConfig({\n  plugins: [react()],\n});`,
+};
+
+function FakeWindow({
+  tab,
+  x,
+  y,
+  onClose,
+}: {
+  tab: TabDescriptor;
+  x: number;
+  y: number;
+  onClose: () => void;
+}) {
+  const [pos, setPos] = useState({ x, y });
+  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pos.x, originY: pos.y };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [pos]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    setPos({
+      x: dragRef.current.originX + (e.clientX - dragRef.current.startX),
+      y: dragRef.current.originY + (e.clientY - dragRef.current.startY),
+    });
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    dragRef.current = null;
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: pos.x,
+        top: pos.y,
+        width: 420,
+        minHeight: 260,
+        borderRadius: 8,
+        overflow: 'hidden',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)',
+        border: '1px solid var(--ov-color-border-default, #333)',
+        background: 'var(--ov-color-bg-surface, #1e1e1e)',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 9999,
+        fontFamily: 'var(--ov-font-sans, system-ui, sans-serif)',
+      }}
+    >
+      {/* Title bar */}
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '6px 10px',
+          background: 'var(--ov-color-bg-surface-raised, #252526)',
+          borderBottom: '1px solid var(--ov-color-border-default, #333)',
+          cursor: 'grab',
+          userSelect: 'none',
+          fontSize: 13,
+        }}
+      >
+        {/* Traffic lights */}
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            onClick={onClose}
+            style={{
+              width: 12, height: 12, borderRadius: '50%',
+              background: '#ff5f57', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 0, fontSize: 8, color: 'transparent',
+            }}
+            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = '#4a0002'; }}
+            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = 'transparent'; }}
+          >
+            <LuX />
+          </button>
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#febc2e' }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
+        </div>
+        <span style={{ flex: 1, textAlign: 'center', opacity: 0.8, fontSize: 12 }}>
+          {tab.title}
+        </span>
+      </div>
+      {/* Tab bar (single tab) */}
+      <div style={{
+        background: 'var(--ov-color-editor-group-header-bg, #1e1e1e)',
+        borderBottom: '1px solid var(--ov-color-border-default, #333)',
+        padding: '0',
+      }}>
+        <EditorTabs
+          tabs={[{ ...tab, closable: false }]}
+          defaultActiveId={tab.id}
+          detachable={false}
+        />
+      </div>
+      {/* Editor content */}
+      <div style={{
+        flex: 1,
+        padding: '12px 16px',
+        fontSize: 12,
+        fontFamily: 'var(--ov-font-mono, "SF Mono", "Fira Code", monospace)',
+        lineHeight: 1.6,
+        color: 'var(--ov-color-fg-default, #d4d4d4)',
+        whiteSpace: 'pre',
+        overflow: 'auto',
+      }}>
+        {fileContents[tab.title] ?? `// ${tab.title}\n// No preview available`}
+      </div>
+    </div>
+  );
+}
+
+export const Detachable: StoryObj<typeof EditorTabs> = {
+  args: {
+    tabs: [
+      { id: 'file1', title: 'index.ts', icon: <LuFileCode />, closable: true, payload: { path: '/src/index.ts' } },
+      { id: 'file2', title: 'App.tsx', icon: <LuFileCode />, closable: true, payload: { path: '/src/App.tsx' } },
+      { id: 'file3', title: 'styles.css', icon: <LuFile />, closable: true, payload: { path: '/src/styles.css' } },
+      { id: 'file4', title: 'vite.config.ts', icon: <LuSettings />, closable: true, payload: { path: '/vite.config.ts' } },
+    ],
+    defaultActiveId: 'file1',
+    detachable: true,
+    detachThresholdPx: 18,
+  },
+  render: function DetachableRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+    const [windows, setWindows] = useState<DetachedWindow[]>([]);
+    // Track last pointer position in viewport coords for accurate window placement
+    const lastPointerRef = useRef({ x: 0, y: 0 });
+
+    const handlePointerMove = useCallback((e: React.PointerEvent) => {
+      lastPointerRef.current = { x: e.clientX, y: e.clientY };
+    }, []);
+
+    return (
+      <div onPointerMove={handlePointerMove} style={{ position: 'relative' }}>
+        <EditorTabs
+          {...args}
+          tabs={tabs}
+          onReorder={(nextTabs) => setTabs(nextTabs)}
+          onDetachCommit={(commit) => {
+            const tab = tabs.find((t) => t.id === commit.id);
+            if (!tab) return;
+
+            // Use tracked viewport-relative coords; offset so the window
+            // appears centered below the pointer rather than top-left aligned
+            setWindows((prev) => [
+              ...prev,
+              {
+                id: commit.id,
+                tab,
+                x: lastPointerRef.current.x - 210,
+                y: lastPointerRef.current.y + 8,
+              },
+            ]);
+            setTabs((prev) => prev.filter((t) => t.id !== commit.id));
+          }}
+        />
+        {windows.map((w) => (
+          <FakeWindow
+            key={w.id}
+            tab={w.tab}
+            x={w.x}
+            y={w.y}
+            onClose={() => {
+              setWindows((prev) => prev.filter((p) => p.id !== w.id));
+              setTabs((prev) => [...prev, w.tab]);
+            }}
+          />
+        ))}
+      </div>
+    );
+  },
+};
+
+export const DetachDisabled: StoryObj<typeof EditorTabs> = {
+  args: {
+    tabs: [
+      { id: 'file1', title: 'index.ts', icon: <LuFileCode />, closable: true },
+      { id: 'file2', title: 'App.tsx', icon: <LuFileCode />, closable: true },
+      { id: 'file3', title: 'styles.css', icon: <LuFile />, closable: true },
+    ],
+    defaultActiveId: 'file1',
+    detachable: false,
+  },
+  render: function DetachDisabledRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+
+    return (
+      <EditorTabs
+        {...args}
+        tabs={tabs}
+        onReorder={(nextTabs) => setTabs(nextTabs)}
+      />
+    );
+  },
+};

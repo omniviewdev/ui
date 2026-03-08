@@ -208,8 +208,8 @@ export const DensityVariants: Story = {
           </div>
           <RowList
             columns={basicColumns}
-            density={density}
             {...args}
+            density={density}
             style={{ width: 360 }}
           >
             <RowList.Header />
@@ -256,8 +256,8 @@ export const ProblemsPanel: Story = {
     <RowList
       columns={problemsColumns}
       selectionMode="single"
-      density="compact"
       {...args}
+      density="compact"
       style={{ width: 520 }}
     >
       <RowList.Header />

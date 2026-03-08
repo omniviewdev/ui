@@ -1,2 +1,2 @@
 export { Terminal } from './Terminal';
-export type { TerminalProps, TerminalHandle } from './Terminal';
+export type { TerminalProps, TerminalHandle, TerminalSignal } from './Terminal';

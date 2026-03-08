@@ -45,6 +45,11 @@ function matchesSearch(key: string, value: unknown, query: string): boolean {
   return false;
 }
 
+/** Check if a value is a non-null object that can be tracked by WeakSet. */
+function isObjectRef(value: unknown): value is object {
+  return value !== null && (typeof value === 'object' || typeof value === 'function');
+}
+
 interface TreeNodeProps {
   nodeKey: string;
   value: unknown;
@@ -52,31 +57,57 @@ interface TreeNodeProps {
   defaultExpanded: boolean | number;
   searchQuery: string;
   isLast: boolean;
+  /** Ancestor object references for circular reference detection. */
+  ancestors: WeakSet<object>;
 }
 
-function TreeNode({ nodeKey, value, depth, defaultExpanded, searchQuery, isLast }: TreeNodeProps) {
+function TreeNode({
+  nodeKey,
+  value,
+  depth,
+  defaultExpanded,
+  searchQuery,
+  isLast,
+  ancestors,
+}: TreeNodeProps) {
   const type = getType(value);
   const isExpandable = type === 'object' || type === 'array';
+
+  // Detect circular references by checking if this value is already an ancestor
+  const isCircular = isExpandable && isObjectRef(value) && ancestors.has(value);
+
   const [expanded, setExpanded] = useState(
-    () => isExpandable && shouldExpand(defaultExpanded, depth),
+    () => isExpandable && !isCircular && shouldExpand(defaultExpanded, depth),
   );
 
+  // Create a new ancestors set that includes this value for children.
+  // WeakSet doesn't support iteration, so we use a duck-typed wrapper
+  // that checks both the parent set and the current value.
+  const childAncestors = useMemo(() => {
+    if (!isExpandable || !isObjectRef(value) || isCircular) return ancestors;
+    return {
+      has: (v: object) => v === value || ancestors.has(v),
+    } as WeakSet<object>;
+  }, [isExpandable, value, isCircular, ancestors]);
+
   const entries = useMemo(() => {
-    if (!isExpandable || value === null || value === undefined) return [];
+    if (!isExpandable || value === null || value === undefined || isCircular) return [];
     return Object.entries(value as Record<string, unknown>);
-  }, [isExpandable, value]);
+  }, [isExpandable, value, isCircular]);
 
   const toggle = useCallback(() => {
-    if (isExpandable) setExpanded((prev) => !prev);
-  }, [isExpandable]);
+    if (isExpandable && !isCircular) setExpanded((prev) => !prev);
+  }, [isExpandable, isCircular]);
 
   const isHighlighted = searchQuery && matchesSearch(nodeKey, value, searchQuery);
 
-  const preview = isExpandable
-    ? type === 'array'
-      ? `Array(${(value as unknown[]).length})`
-      : `{${entries.length}}`
-    : null;
+  const preview = isCircular
+    ? '[Circular]'
+    : isExpandable
+      ? type === 'array'
+        ? `Array(${(value as unknown[]).length})`
+        : `{${entries.length}}`
+      : null;
 
   return (
     <div className={styles.Node} data-depth={depth}>
@@ -85,10 +116,10 @@ function TreeNode({ nodeKey, value, depth, defaultExpanded, searchQuery, isLast 
         style={{ paddingLeft: depth * 16 }}
         onClick={toggle}
         role="treeitem"
-        aria-expanded={isExpandable ? expanded : undefined}
+        aria-expanded={isExpandable && !isCircular ? expanded : undefined}
         data-testid={`inspector-node-${nodeKey}`}
       >
-        {isExpandable ? (
+        {isExpandable && !isCircular ? (
           <span className={cn(styles.Chevron, expanded && styles.ChevronExpanded)}>&#9656;</span>
         ) : (
           <span className={styles.ChevronSpacer} />
@@ -114,11 +145,15 @@ function TreeNode({ nodeKey, value, depth, defaultExpanded, searchQuery, isLast 
             defaultExpanded={defaultExpanded}
             searchQuery={searchQuery}
             isLast={i === entries.length - 1}
+            ancestors={childAncestors}
           />
         ))}
     </div>
   );
 }
+
+/** Shared empty WeakSet used as the initial ancestors set. */
+const EMPTY_ANCESTORS = new WeakSet<object>();
 
 export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
   function ObjectInspector(
@@ -136,15 +171,22 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleCopy = useCallback(async () => {
-      let text: string;
-      if (format === 'yaml') {
-        // Simple YAML serialization for flat/nested objects
-        text = toYaml(data);
-      } else {
-        text = JSON.stringify(data, null, 2);
+      try {
+        let text: string;
+        if (format === 'yaml') {
+          text = toYaml(data);
+        } else {
+          text = JSON.stringify(data, null, 2);
+        }
+        await navigator.clipboard.writeText(text);
+      } catch {
+        // Clipboard API may not be available (e.g., insecure context)
       }
-      await navigator.clipboard.writeText(text);
     }, [data, format]);
+
+    // Root starts with an empty ancestors set — the root node itself
+    // is not its own ancestor, but its children will see it as one
+    const rootAncestors = EMPTY_ANCESTORS;
 
     return (
       <div
@@ -187,6 +229,7 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
             defaultExpanded={defaultExpanded}
             searchQuery={searchQuery}
             isLast
+            ancestors={rootAncestors}
           />
         </div>
       </div>
@@ -197,7 +240,7 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
 ObjectInspector.displayName = 'ObjectInspector';
 
 /** Simple YAML serializer (no dependency) */
-function toYaml(value: unknown, indent: number = 0): string {
+function toYaml(value: unknown, indent: number = 0, seen?: WeakSet<object>): string {
   const prefix = '  '.repeat(indent);
   if (value === null) return 'null';
   if (value === undefined) return 'null';
@@ -206,16 +249,25 @@ function toYaml(value: unknown, indent: number = 0): string {
       ? `|\n${prefix}  ${value.split('\n').join(`\n${prefix}  `)}`
       : value;
   if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  if (Array.isArray(value)) {
-    if (value.length === 0) return '[]';
-    return value.map((item) => `${prefix}- ${toYaml(item, indent + 1).trimStart()}`).join('\n');
-  }
+
+  // Circular reference guard for objects/arrays
   if (typeof value === 'object') {
+    const tracking = seen ?? new WeakSet<object>();
+    if (tracking.has(value as object)) return '[Circular]';
+    tracking.add(value as object);
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) return '[]';
+      return value
+        .map((item) => `${prefix}- ${toYaml(item, indent + 1, tracking).trimStart()}`)
+        .join('\n');
+    }
+
     const entries = Object.entries(value as Record<string, unknown>);
     if (entries.length === 0) return '{}';
     return entries
       .map(([k, v]) => {
-        const serialized = toYaml(v, indent + 1);
+        const serialized = toYaml(v, indent + 1, tracking);
         if (
           typeof v === 'object' &&
           v !== null &&
@@ -227,5 +279,6 @@ function toYaml(value: unknown, indent: number = 0): string {
       })
       .join('\n');
   }
+
   return String(value);
 }

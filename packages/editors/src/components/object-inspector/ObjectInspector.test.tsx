@@ -93,4 +93,36 @@ describe('ObjectInspector', () => {
     render(<ObjectInspector data={testData} ref={ref} />);
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
+
+  it('handles circular references without crashing', () => {
+    const circular: Record<string, unknown> = { name: 'test' };
+    circular.self = circular;
+    // Should not throw or infinite loop
+    expect(() => render(<ObjectInspector data={circular} defaultExpanded />)).not.toThrow();
+    // The circular ref should show [Circular]
+    expect(screen.getByText('[Circular]')).toBeInTheDocument();
+  });
+
+  it('handles empty object', () => {
+    render(<ObjectInspector data={{}} defaultExpanded />);
+    expect(screen.getByTestId('inspector-node-root')).toBeInTheDocument();
+  });
+
+  it('handles empty array', () => {
+    render(<ObjectInspector data={[]} defaultExpanded />);
+    expect(screen.getByTestId('inspector-node-root')).toBeInTheDocument();
+  });
+
+  it('handles clipboard API failure gracefully', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: vi.fn().mockRejectedValue(new Error('Not allowed')),
+      },
+      writable: true,
+      configurable: true,
+    });
+    render(<ObjectInspector data={testData} copyable />);
+    // Should not throw
+    expect(() => fireEvent.click(screen.getByTestId('inspector-copy'))).not.toThrow();
+  });
 });

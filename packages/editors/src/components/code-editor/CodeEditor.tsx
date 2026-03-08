@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -61,8 +62,8 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
 
   const resolvedLanguage = language ?? (filename ? detectLanguage(filename) : undefined);
 
-  // Format JSON content for display
-  const displayValue = (() => {
+  // Format JSON content for display (memoized to avoid re-parsing on every render)
+  const displayValue = useMemo(() => {
     if (resolvedLanguage === 'json' && value) {
       try {
         return JSON.stringify(JSON.parse(value), null, 2);
@@ -71,7 +72,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
       }
     }
     return value;
-  })();
+  }, [resolvedLanguage, value]);
 
   const handleEditorDidMount = useCallback(
     (editor: unknown, monaco: unknown) => {

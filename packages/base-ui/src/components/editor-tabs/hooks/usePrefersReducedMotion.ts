@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 const QUERY = '(prefers-reduced-motion: reduce)';
 
 export function usePrefersReducedMotion(): boolean {
-  const [matches, setMatches] = useState(false);
+  const [matches, setMatches] = useState(
+    () => window.matchMedia(QUERY).matches,
+  );
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     const mql = window.matchMedia(QUERY);
-    setMatches(mql.matches);
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
     mql.addEventListener('change', handler);
     return () => mql.removeEventListener('change', handler);

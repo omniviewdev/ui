@@ -8,6 +8,8 @@ export interface UseTabDetachOptions {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   tabs: TabDescriptor[];
   onDetachCommit?: (commit: DetachCommit) => void;
+  /** Called when transitioning to detach-armed (pointer still down). Uses client coords for positioning. */
+  onDetachArmed?: (tabId: TabId, clientX: number, clientY: number) => void;
 }
 
 export interface UseTabDetachReturn {
@@ -24,6 +26,7 @@ export function useTabDetach({
   viewportRef,
   tabs,
   onDetachCommit,
+  onDetachArmed,
 }: UseTabDetachOptions): UseTabDetachReturn {
   const [dragMode, setDragMode] = useState<DragMode>('idle');
   const dragModeRef = useRef<DragMode>('idle');
@@ -74,17 +77,25 @@ export function useTabDetach({
         const rect = stripRectRef.current;
         if (!rect) return;
 
+        // Vertical escape
         const above = e.clientY < rect.top - threshold;
         const below = e.clientY > rect.bottom + threshold;
+        // Horizontal escape
+        const pastLeft = e.clientX < rect.left - threshold;
+        const pastRight = e.clientX > rect.right + threshold;
+
         const currentMode = dragModeRef.current;
 
-        if (currentMode === 'reorder' && (above || below)) {
+        if (currentMode === 'reorder' && (above || below || pastLeft || pastRight)) {
           updateMode('detach-armed');
-        } else if (currentMode === 'detach-armed') {
-          // Hysteresis: must come back closer than half threshold to revert
-          const withinHysteresis =
+          onDetachArmed?.(activeIdRef.current!, e.clientX, e.clientY);
+        } else if (currentMode === 'detach-armed' && !onDetachArmed) {
+          // Hysteresis: must come back within half-threshold on BOTH axes to revert.
+          const withinY =
             e.clientY >= rect.top - hysteresis && e.clientY <= rect.bottom + hysteresis;
-          if (withinHysteresis) {
+          const withinX =
+            e.clientX >= rect.left - hysteresis && e.clientX <= rect.right + hysteresis;
+          if (withinX && withinY) {
             updateMode('reorder');
           }
         }
@@ -93,7 +104,7 @@ export function useTabDetach({
       listenerRef.current = onPointerMove;
       document.addEventListener('pointermove', onPointerMove);
     },
-    [detachable, detachThresholdPx, viewportRef, updateMode],
+    [detachable, detachThresholdPx, viewportRef, updateMode, onDetachArmed],
   );
 
   const handleDetachDragEnd = useCallback(

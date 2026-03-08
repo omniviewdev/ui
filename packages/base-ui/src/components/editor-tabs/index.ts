@@ -8,7 +8,9 @@ export type {
   TabSegments,
   ReorderMeta,
   DetachCommit,
+  AttachCommit,
   DragMode,
 } from './types';
 export { computeTabSegments } from './utils/computeTabSegments';
 export { useEditorTabsContext } from './context/EditorTabsContext';
+export { TabDragBrokerProvider, useTabDragBroker } from './context/TabDragBroker';

@@ -42,4 +42,10 @@ export type DetachCommit = {
   screenY: number;
 };
 
+export type AttachCommit = {
+  tab: TabDescriptor;
+  sourceInstanceId: string;
+  insertIndex: number;
+};
+
 export type DragMode = 'idle' | 'reorder' | 'detach-armed';

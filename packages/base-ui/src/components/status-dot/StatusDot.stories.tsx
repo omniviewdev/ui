@@ -9,6 +9,7 @@ const meta = {
     status: 'neutral',
     size: 'md',
     pulse: false,
+    pulseIntensity: 'default',
     label: '',
   },
   argTypes: {
@@ -18,6 +19,7 @@ const meta = {
     },
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     pulse: { control: 'boolean' },
+    pulseIntensity: { control: 'inline-radio', options: ['subtle', 'default', 'strong'] },
     label: { control: 'text' },
   },
 } satisfies Meta<StatusDotProps>;
@@ -29,6 +31,7 @@ export const Playground: Story = {
   args: {
     status: 'success',
     label: 'Online',
+    pulse: true,
   },
 };
 
@@ -69,12 +72,77 @@ export const PulseAnimation: Story = {
   ),
 };
 
+export const PulseIntensity: Story = {
+  name: 'Pulse intensity levels',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <StatusDot status="success" label="Subtle" pulse pulseIntensity="subtle" />
+      <StatusDot status="success" label="Default" pulse pulseIntensity="default" />
+      <StatusDot status="success" label="Strong" pulse pulseIntensity="strong" />
+    </div>
+  ),
+};
+
 export const SizeVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <StatusDot size="sm" status="success" label="Small" />
-      <StatusDot size="md" status="success" label="Medium" />
-      <StatusDot size="lg" status="success" label="Large" />
+      <StatusDot size="sm" status="success" label="Small" pulse />
+      <StatusDot size="md" status="success" label="Medium" pulse />
+      <StatusDot size="lg" status="success" label="Large" pulse />
+    </div>
+  ),
+};
+
+export const SizeWithIntensity: Story = {
+  name: 'Size + intensity combinations',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+        <StatusDot
+          size="sm"
+          status="danger"
+          label="Alert (sm, strong)"
+          pulse
+          pulseIntensity="strong"
+        />
+        <StatusDot
+          size="md"
+          status="danger"
+          label="Alert (md, strong)"
+          pulse
+          pulseIntensity="strong"
+        />
+        <StatusDot
+          size="lg"
+          status="danger"
+          label="Alert (lg, strong)"
+          pulse
+          pulseIntensity="strong"
+        />
+      </div>
+      <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+        <StatusDot
+          size="sm"
+          status="info"
+          label="Sync (sm, subtle)"
+          pulse
+          pulseIntensity="subtle"
+        />
+        <StatusDot
+          size="md"
+          status="info"
+          label="Sync (md, subtle)"
+          pulse
+          pulseIntensity="subtle"
+        />
+        <StatusDot
+          size="lg"
+          status="info"
+          label="Sync (lg, subtle)"
+          pulse
+          pulseIntensity="subtle"
+        />
+      </div>
     </div>
   ),
 };

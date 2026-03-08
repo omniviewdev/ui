@@ -124,4 +124,37 @@ describe('Badge', () => {
 
     expect(screen.getByText('new')).toBeInTheDocument();
   });
+
+  it('pulse prop applies data attribute', () => {
+    renderWithTheme(
+      <Badge content={1} pulse>
+        <span>Icon</span>
+      </Badge>,
+    );
+
+    const badge = document.querySelector('[data-ov-pulse="true"]');
+    expect(badge).toBeInTheDocument();
+  });
+
+  it('size prop applies data attribute', () => {
+    renderWithTheme(
+      <Badge content={1} size="lg">
+        <span>Icon</span>
+      </Badge>,
+    );
+
+    const badge = document.querySelector('[data-ov-size="lg"]');
+    expect(badge).toBeInTheDocument();
+  });
+
+  it('overlap prop applies data attribute for circular', () => {
+    renderWithTheme(
+      <Badge content={1} overlap="circular">
+        <span>Avatar</span>
+      </Badge>,
+    );
+
+    const badge = document.querySelector('[data-ov-overlap="circular"]');
+    expect(badge).toBeInTheDocument();
+  });
 });

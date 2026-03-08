@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuAlertTriangle, LuSettings, LuTrash2 } from 'react-icons/lu';
+import { LuTriangleAlert, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { Dialog, type DialogSize } from './Dialog';
+import { Button } from '../button/Button';
 
 function PlaygroundDemo({ size }: { size?: DialogSize }) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)}>
+      <Button variant="solid" color="brand" onClick={() => setOpen(true)}>
         Open Dialog
-      </button>
+      </Button>
       <Dialog open={open} onClose={() => setOpen(false)} size={size}>
         <Dialog.Close />
         <Dialog.Title>Dialog Title</Dialog.Title>
@@ -18,12 +19,12 @@ function PlaygroundDemo({ size }: { size?: DialogSize }) {
           <p>This is a general-purpose dialog for displaying arbitrary content.</p>
         </Dialog.Body>
         <Dialog.Footer>
-          <button type="button" onClick={() => setOpen(false)}>
+          <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
-          </button>
-          <button type="button" onClick={() => setOpen(false)}>
+          </Button>
+          <Button variant="solid" color="brand" onClick={() => setOpen(false)}>
             Confirm
-          </button>
+          </Button>
         </Dialog.Footer>
       </Dialog>
     </>
@@ -37,9 +38,9 @@ function SizeVariantsDemo() {
   return (
     <div style={{ display: 'flex', gap: 8 }}>
       {sizes.map((size) => (
-        <button key={size} type="button" onClick={() => setActiveSize(size)}>
+        <Button key={size} variant="outline" onClick={() => setActiveSize(size)}>
           {size.toUpperCase()}
-        </button>
+        </Button>
       ))}
       {activeSize ? (
         <Dialog open size={activeSize} onClose={() => setActiveSize(null)}>
@@ -51,9 +52,9 @@ function SizeVariantsDemo() {
             </p>
           </Dialog.Body>
           <Dialog.Footer>
-            <button type="button" onClick={() => setActiveSize(null)}>
+            <Button variant="solid" onClick={() => setActiveSize(null)}>
               Close
-            </button>
+            </Button>
           </Dialog.Footer>
         </Dialog>
       ) : null}
@@ -66,9 +67,9 @@ function FormContentDemo() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)}>
+      <Button variant="soft" startDecorator={<LuSettings />} onClick={() => setOpen(true)}>
         Edit Settings
-      </button>
+      </Button>
       <Dialog open={open} onClose={() => setOpen(false)} size="md">
         <Dialog.Close />
         <Dialog.Title icon={<LuSettings />}>Settings</Dialog.Title>
@@ -99,12 +100,12 @@ function FormContentDemo() {
           </form>
         </Dialog.Body>
         <Dialog.Footer>
-          <button type="button" onClick={() => setOpen(false)}>
+          <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
-          </button>
-          <button type="button" onClick={() => setOpen(false)}>
+          </Button>
+          <Button variant="solid" color="brand" onClick={() => setOpen(false)}>
             Save
-          </button>
+          </Button>
         </Dialog.Footer>
       </Dialog>
     </>
@@ -116,9 +117,9 @@ function ScrollableBodyDemo() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)}>
+      <Button variant="outline" onClick={() => setOpen(true)}>
         Open Scrollable Dialog
-      </button>
+      </Button>
       <Dialog open={open} onClose={() => setOpen(false)} size="md">
         <Dialog.Close />
         <Dialog.Title>Terms of Service</Dialog.Title>
@@ -131,12 +132,12 @@ function ScrollableBodyDemo() {
           ))}
         </Dialog.Body>
         <Dialog.Footer>
-          <button type="button" onClick={() => setOpen(false)}>
+          <Button variant="ghost" onClick={() => setOpen(false)}>
             Decline
-          </button>
-          <button type="button" onClick={() => setOpen(false)}>
+          </Button>
+          <Button variant="solid" color="brand" onClick={() => setOpen(false)}>
             Accept
-          </button>
+          </Button>
         </Dialog.Footer>
       </Dialog>
     </>
@@ -148,23 +149,22 @@ function WithIconInTitleDemo() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)}>
+      <Button variant="solid" color="danger" startDecorator={<LuTrash2 />} onClick={() => setOpen(true)}>
         Delete Item
-      </button>
+      </Button>
       <Dialog open={open} onClose={() => setOpen(false)} size="sm">
         <Dialog.Close />
-        <Dialog.Title icon={<LuAlertTriangle />}>Confirm Deletion</Dialog.Title>
+        <Dialog.Title icon={<LuTriangleAlert />}>Confirm Deletion</Dialog.Title>
         <Dialog.Body>
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>
         </Dialog.Body>
         <Dialog.Footer>
-          <button type="button" onClick={() => setOpen(false)}>
+          <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
-          </button>
-          <button type="button" onClick={() => setOpen(false)}>
-            <LuTrash2 style={{ marginRight: 4 }} />
+          </Button>
+          <Button variant="solid" color="danger" startDecorator={<LuTrash2 />} onClick={() => setOpen(false)}>
             Delete
-          </button>
+          </Button>
         </Dialog.Footer>
       </Dialog>
     </>

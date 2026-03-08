@@ -8,10 +8,12 @@ const meta = {
   tags: ['autodocs'],
   args: {
     exclusive: false,
+    animation: 'default',
   },
   argTypes: {
     exclusive: { control: 'boolean' },
     defaultExpanded: { control: 'object' },
+    animation: { control: 'inline-radio', options: ['default', 'fast', 'none'] },
   },
 } satisfies Meta<AccordionProps>;
 
@@ -65,6 +67,65 @@ export const ExclusiveMode: Story = {
         <p>Opening this closes whichever is currently open.</p>
       </Accordion.Item>
     </Accordion>
+  ),
+};
+
+export const AnimationSpeed: Story = {
+  name: 'Animation speed',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div>
+        <p
+          style={{
+            margin: '0 0 8px',
+            fontFamily: 'var(--ov-font-sans)',
+            fontSize: 'var(--ov-font-size-caption)',
+            color: 'var(--ov-color-fg-muted)',
+          }}
+        >
+          Default (150ms)
+        </p>
+        <Accordion animation="default">
+          <Accordion.Item id="d1" title="Default speed">
+            <p>Standard animation timing.</p>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+      <div>
+        <p
+          style={{
+            margin: '0 0 8px',
+            fontFamily: 'var(--ov-font-sans)',
+            fontSize: 'var(--ov-font-size-caption)',
+            color: 'var(--ov-color-fg-muted)',
+          }}
+        >
+          Fast (100ms)
+        </p>
+        <Accordion animation="fast">
+          <Accordion.Item id="f1" title="Fast speed">
+            <p>Snappier animation timing.</p>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+      <div>
+        <p
+          style={{
+            margin: '0 0 8px',
+            fontFamily: 'var(--ov-font-sans)',
+            fontSize: 'var(--ov-font-size-caption)',
+            color: 'var(--ov-color-fg-muted)',
+          }}
+        >
+          None (instant)
+        </p>
+        <Accordion animation="none">
+          <Accordion.Item id="n1" title="No animation">
+            <p>Instant expand/collapse with no transition.</p>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+    </div>
   ),
 };
 

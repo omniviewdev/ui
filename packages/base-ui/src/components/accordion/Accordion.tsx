@@ -26,11 +26,15 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 // ─── Public types ───────────────────────────────────────────────────────────
 
+export type AccordionAnimation = 'default' | 'fast' | 'none';
+
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time. */
   exclusive?: boolean;
   /** IDs of initially expanded items. */
   defaultExpanded?: string[];
+  /** Animation speed for expand/collapse. */
+  animation?: AccordionAnimation;
 }
 
 export interface AccordionItemProps extends HTMLAttributes<HTMLDivElement> {
@@ -128,7 +132,9 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
 
       {/* Collapsible content */}
       <div id={panelId} role="region" aria-labelledby={headerId} className={styles.ContentWrapper}>
-        <div className={styles.Content}>{children}</div>
+        <div className={styles.Content}>
+          <div className={styles.ContentInner}>{children}</div>
+        </div>
       </div>
     </div>
   );
@@ -137,7 +143,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
 // ─── AccordionRoot ──────────────────────────────────────────────────────────
 
 const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function AccordionRoot(
-  { exclusive = false, defaultExpanded, className, children, ...props },
+  { exclusive = false, defaultExpanded, animation = 'default', className, children, ...props },
   ref,
 ) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(defaultExpanded ?? []));
@@ -179,6 +185,7 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
         ref={ref}
         className={cn(styles.Root, className)}
         data-ov-component="accordion"
+        data-ov-animation={animation}
         {...props}
       >
         {children}

@@ -4,12 +4,15 @@ import styles from './Skeleton.module.css';
 
 export type SkeletonVariant = 'text' | 'circular' | 'rectangular' | 'rounded';
 
+export type SkeletonSize = 'sm' | 'md' | 'lg';
+
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   variant?: SkeletonVariant;
   width?: string | number;
   height?: string | number;
   lines?: number;
   animation?: 'pulse' | 'wave' | 'none';
+  size?: SkeletonSize;
 }
 
 function toCss(value: string | number | undefined): string | undefined {
@@ -18,7 +21,17 @@ function toCss(value: string | number | undefined): string | undefined {
 }
 
 export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton(
-  { variant = 'text', width, height, lines = 1, animation = 'pulse', className, style, ...props },
+  {
+    variant = 'text',
+    width,
+    height,
+    lines = 1,
+    animation = 'pulse',
+    size = 'md',
+    className,
+    style,
+    ...props
+  },
   ref,
 ) {
   const cssWidth = toCss(width);
@@ -34,6 +47,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
         data-ov-component="skeleton"
         data-ov-variant={variant}
         data-ov-animation={animation}
+        data-ov-size={size}
         style={style}
         {...props}
       >
@@ -43,6 +57,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
             className={styles.Root}
             data-ov-variant={variant}
             data-ov-animation={animation}
+            data-ov-size={size}
             style={{
               width:
                 i === clampedLines - 1 ? (cssWidth ? `calc(${cssWidth} * 0.8)` : '80%') : cssWidth,
@@ -61,6 +76,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
       data-ov-component="skeleton"
       data-ov-variant={variant}
       data-ov-animation={animation}
+      data-ov-size={size}
       style={{ width: cssWidth, height: cssHeight, ...style }}
       {...props}
     />

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuInbox, LuSearch, LuFileX } from 'react-icons/lu';
+import { LuInbox, LuSearch, LuFileX, LuUpload, LuFilterX } from 'react-icons/lu';
+import { Button } from '../button/Button';
 import { EmptyState } from './EmptyState';
 
 const meta = {
@@ -25,7 +26,11 @@ export const Playground: Story = {
     title: 'No items found',
     description: 'Try changing your search or filters.',
     icon: <LuInbox />,
-    action: <button type="button">Clear filters</button>,
+    action: (
+      <Button variant="soft" color="brand">
+        Clear filters
+      </Button>
+    ),
   },
 };
 
@@ -48,6 +53,7 @@ export const SizeVariants: Story = {
 export const WithIcon: Story = {
   args: {
     title: 'No search results',
+    description: 'Try a different search term.',
     icon: <LuSearch />,
   },
 };
@@ -56,7 +62,11 @@ export const WithAction: Story = {
   args: {
     title: 'No files',
     description: 'Upload a file to get started.',
-    action: <button type="button">Upload file</button>,
+    action: (
+      <Button variant="solid" color="brand" startDecorator={<LuUpload />}>
+        Upload file
+      </Button>
+    ),
   },
 };
 
@@ -68,8 +78,12 @@ export const FullExample: Story = {
     icon: <LuFileX />,
     action: (
       <div style={{ display: 'flex', gap: 8 }}>
-        <button type="button">Upload</button>
-        <button type="button">Clear filters</button>
+        <Button variant="solid" color="brand" startDecorator={<LuUpload />}>
+          Upload
+        </Button>
+        <Button variant="ghost" color="neutral" startDecorator={<LuFilterX />}>
+          Clear filters
+        </Button>
       </div>
     ),
     size: 'lg',

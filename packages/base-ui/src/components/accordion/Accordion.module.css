@@ -1,8 +1,20 @@
 /* ─── Root ────────────────────────────────────────────────────────────────── */
 
 .Root {
+  --_ov-accordion-duration: 150ms;
+
   display: flex;
   flex-direction: column;
+}
+
+/* ─── Animation speed ─────────────────────────────────────────────────────── */
+
+.Root[data-ov-animation='none'] {
+  --_ov-accordion-duration: 0ms;
+}
+
+.Root[data-ov-animation='fast'] {
+  --_ov-accordion-duration: 100ms;
 }
 
 /* ─── Item ────────────────────────────────────────────────────────────────── */
@@ -107,7 +119,7 @@
 .Chevron {
   flex-shrink: 0;
   color: var(--ov-color-fg-muted);
-  transition: transform var(--ov-duration-collapse, 200ms) var(--ov-ease-standard, ease);
+  transition: transform var(--_ov-accordion-duration) var(--ov-ease-standard, ease);
   transform: rotate(0deg);
 }
 
@@ -120,7 +132,8 @@
 .ContentWrapper {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--ov-duration-collapse, 200ms) var(--ov-ease-standard, ease);
+  overflow: hidden;
+  transition: grid-template-rows var(--_ov-accordion-duration) var(--ov-ease-standard, ease);
 }
 
 .Item[data-ov-expanded='true'] .ContentWrapper {
@@ -132,7 +145,11 @@
   min-height: 0;
 }
 
-.Item[data-ov-expanded='true'] .Content {
+/*
+  Use an inner padding wrapper so the padding animates with the grid,
+  avoiding a layout jump on expand/collapse.
+*/
+.ContentInner {
   padding: 0 12px 12px;
 }
 

@@ -1,9 +1,9 @@
 @keyframes ov-pulse {
   0% {
-    box-shadow: 0 0 0 0 var(--_ov-dot-color-alpha);
+    box-shadow: 0 0 0 0 var(--_ov-pulse-color);
   }
   70% {
-    box-shadow: 0 0 0 4px transparent;
+    box-shadow: 0 0 0 var(--_ov-pulse-spread) transparent;
   }
   100% {
     box-shadow: 0 0 0 0 transparent;
@@ -13,7 +13,8 @@
 .Root {
   --_ov-dot-size: 8px;
   --_ov-dot-color: var(--ov-color-fg-muted);
-  --_ov-dot-color-alpha: color-mix(in srgb, var(--_ov-dot-color) 40%, transparent 60%);
+  --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 60%, transparent 40%);
+  --_ov-pulse-spread: 6px;
   --_ov-label-font-size: var(--ov-font-size-sm);
 
   display: inline-flex;
@@ -25,12 +26,14 @@
 
 .Root[data-ov-size='sm'] {
   --_ov-dot-size: 6px;
+  --_ov-pulse-spread: 4px;
   --_ov-label-font-size: var(--ov-font-size-xs);
   gap: 4px;
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-dot-size: 10px;
+  --_ov-pulse-spread: 8px;
   --_ov-label-font-size: var(--ov-font-size-md);
   gap: 8px;
 }
@@ -76,6 +79,22 @@
 
 .Root[data-ov-pulse='true'] .Dot {
   animation: ov-pulse 1.5s ease-in-out infinite;
+}
+
+/* ---- Pulse intensity ---- */
+
+.Root[data-ov-pulse-intensity='subtle'] {
+  --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 40%, transparent 60%);
+  --_ov-pulse-spread: 4px;
+}
+
+.Root[data-ov-pulse-intensity='default'] {
+  --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 60%, transparent 40%);
+}
+
+.Root[data-ov-pulse-intensity='strong'] {
+  --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 80%, transparent 20%);
+  --_ov-pulse-spread: 10px;
 }
 
 :root[data-ov-motion='reduced'] .Root[data-ov-pulse='true'] .Dot {

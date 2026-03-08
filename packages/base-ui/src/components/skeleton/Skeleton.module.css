@@ -1,6 +1,6 @@
 .Root {
   display: block;
-  background: var(--ov-color-bg-inset);
+  background: var(--ov-color-bg-surface-raised);
 }
 
 /* ---------- Variants ---------- */
@@ -21,6 +21,20 @@
 
 .Root[data-ov-variant='rounded'] {
   border-radius: var(--ov-radius-md);
+}
+
+/* ---------- Size variants ---------- */
+
+.Root[data-ov-variant='text'][data-ov-size='sm'] {
+  height: 0.75em;
+}
+
+.Root[data-ov-variant='text'][data-ov-size='md'] {
+  height: 1em;
+}
+
+.Root[data-ov-variant='text'][data-ov-size='lg'] {
+  height: 1.25em;
 }
 
 /* ---------- Pulse animation ---------- */
@@ -52,7 +66,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, var(--ov-color-bg-surface), transparent);
+  background: linear-gradient(90deg, transparent, var(--ov-color-bg-elevated), transparent);
   background-size: 200% 100%;
   animation: ov-skeleton-wave 1.6s linear infinite;
 }

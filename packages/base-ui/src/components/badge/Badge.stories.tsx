@@ -15,6 +15,9 @@ const meta = {
     position: 'top-right',
     max: 99,
     invisible: false,
+    pulse: false,
+    size: 'md',
+    overlap: 'rectangular',
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['standard', 'dot'] },
@@ -23,14 +26,17 @@ const meta = {
       control: 'select',
       options: ['top-right', 'top-left', 'bottom-right', 'bottom-left'],
     },
+    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    overlap: { control: 'inline-radio', options: ['rectangular', 'circular'] },
     max: { control: 'number' },
     content: { control: 'text' },
     invisible: { control: 'boolean' },
+    pulse: { control: 'boolean' },
   },
-} satisfies Meta<BadgeProps>;
+} as Meta<BadgeProps>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<BadgeProps>;
 
 const IconBox = ({ children }: { children: ReactNode }) => (
   <span
@@ -47,6 +53,25 @@ const IconBox = ({ children }: { children: ReactNode }) => (
     }}
   >
     {children}
+  </span>
+);
+
+const Avatar = ({ initials, size = 48 }: { initials: string; size?: number }) => (
+  <span
+    style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: size,
+      height: size,
+      borderRadius: '50%',
+      background: 'var(--ov-color-brand-500)',
+      color: 'var(--ov-color-fg-inverse)',
+      fontWeight: 600,
+      fontSize: size * 0.35,
+    }}
+  >
+    {initials}
   </span>
 );
 
@@ -84,6 +109,80 @@ export const DotVariant: Story = {
           </IconBox>
         </Badge>
       ))}
+    </div>
+  ),
+};
+
+export const SizeVariants: Story = {
+  name: 'Size variants',
+  render: () => (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <Badge content={3} color="danger" size="sm">
+          <IconBox>
+            <LuBell />
+          </IconBox>
+        </Badge>
+        <div style={{ marginTop: 8, fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)' }}>
+          sm
+        </div>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <Badge content={3} color="danger" size="md">
+          <IconBox>
+            <LuBell />
+          </IconBox>
+        </Badge>
+        <div style={{ marginTop: 8, fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)' }}>
+          md
+        </div>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <Badge content={3} color="danger" size="lg">
+          <IconBox>
+            <LuBell />
+          </IconBox>
+        </Badge>
+        <div style={{ marginTop: 8, fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)' }}>
+          lg
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+export const PulsingBadge: Story = {
+  name: 'Pulsing (connected indicator)',
+  render: () => (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+      <Badge variant="dot" color="success" pulse overlap="circular">
+        <Avatar initials="JP" />
+      </Badge>
+      <Badge variant="dot" color="danger" pulse overlap="circular">
+        <Avatar initials="AL" />
+      </Badge>
+      <Badge variant="dot" color="brand" pulse>
+        <IconBox>
+          <LuBell />
+        </IconBox>
+      </Badge>
+    </div>
+  ),
+};
+
+export const OnAvatar: Story = {
+  name: 'On avatar (circular overlap)',
+  render: () => (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+      <Badge content={3} color="danger" overlap="circular">
+        <Avatar initials="JP" />
+      </Badge>
+      <Badge variant="dot" color="success" overlap="circular">
+        <Avatar initials="AL" size={56} />
+      </Badge>
+      <Badge content="new" color="brand" overlap="circular" size="lg">
+        <Avatar initials="MK" size={56} />
+      </Badge>
     </div>
   ),
 };
@@ -143,23 +242,8 @@ export const OnAvatarAndIcon: Story = {
           <LuShoppingCart />
         </IconBox>
       </Badge>
-      <Badge variant="dot" color="success">
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            background: 'var(--ov-color-brand-500)',
-            color: 'var(--ov-color-fg-inverse)',
-            fontWeight: 600,
-            fontSize: 14,
-          }}
-        >
-          JP
-        </span>
+      <Badge variant="dot" color="success" overlap="circular" pulse>
+        <Avatar initials="JP" />
       </Badge>
       <Badge content="new" color="brand">
         <IconBox>

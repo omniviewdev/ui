@@ -35,7 +35,7 @@ function ToastTrigger({
       </button>
       <button
         type="button"
-        onClick={() => dismiss((window as unknown as Record<string, string>).__lastToastId)}
+        onClick={() => dismiss((window as unknown as Record<string, string>).__lastToastId ?? '')}
       >
         dismiss-one
       </button>
@@ -152,6 +152,75 @@ describe('Toast', () => {
 
     const toasts = screen.getAllByText('Toast');
     expect(toasts).toHaveLength(2);
+  });
+
+  it('renders title and message when title is provided', async () => {
+    function TitleTrigger() {
+      const { toast } = useToast();
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            toast('Description text', { title: 'Title text', severity: 'success', duration: 0 })
+          }
+        >
+          trigger-title
+        </button>
+      );
+    }
+
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithTheme(
+      <ToastProvider>
+        <TitleTrigger />
+      </ToastProvider>,
+    );
+
+    await user.click(screen.getByText('trigger-title'));
+    expect(screen.getByText('Title text')).toBeVisible();
+    expect(screen.getByText('Description text')).toBeVisible();
+  });
+
+  it('promise toast transitions from loading to success', async () => {
+    let resolver: (value: string) => void;
+    const p = new Promise<string>((resolve) => {
+      resolver = resolve;
+    });
+
+    function PromiseTrigger() {
+      const { promise } = useToast();
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            promise(p, {
+              loading: 'Loading...',
+              success: (data) => `Done: ${data}`,
+              error: 'Failed',
+            })
+          }
+        >
+          trigger-promise
+        </button>
+      );
+    }
+
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithTheme(
+      <ToastProvider>
+        <PromiseTrigger />
+      </ToastProvider>,
+    );
+
+    await user.click(screen.getByText('trigger-promise'));
+    expect(screen.getByText('Loading...')).toBeVisible();
+
+    // Resolve the promise
+    await act(async () => {
+      resolver!('ok');
+    });
+
+    expect(screen.getByText('Done: ok')).toBeVisible();
   });
 
   it('forwards a custom className on the provider container', async () => {

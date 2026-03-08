@@ -12,6 +12,7 @@ import {
 import { createPortal } from 'react-dom';
 import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
+import type { SurfaceType, SurfaceElevation } from '../../system/types';
 import styles from './Toast.module.css';
 
 // ---------------------------------------------------------------------------
@@ -34,6 +35,14 @@ export interface ToastOptions {
   duration?: number;
   /** Optional action button rendered inside the toast. */
   action?: { label: string; onClick: () => void };
+  /** Optional title displayed above the message. */
+  title?: string;
+}
+
+export interface ToastPromiseMessages<T> {
+  loading: string;
+  success: string | ((data: T) => string);
+  error: string | ((err: unknown) => string);
 }
 
 export interface ToastProviderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -41,6 +50,10 @@ export interface ToastProviderProps extends Omit<HTMLAttributes<HTMLDivElement>,
   position?: ToastPosition;
   /** Maximum visible toasts before older ones are dismissed. @default 5 */
   maxVisible?: number;
+  /** Background surface level for toasts. @default 'raised' */
+  surface?: SurfaceType;
+  /** Shadow elevation level. @default 2 */
+  elevation?: SurfaceElevation;
   children: ReactNode;
 }
 
@@ -51,9 +64,11 @@ export interface ToastProviderProps extends Omit<HTMLAttributes<HTMLDivElement>,
 interface ToastItem {
   id: string;
   message: string;
+  title?: string;
   severity: ToastSeverity;
   duration: number;
   action?: { label: string; onClick: () => void };
+  loading?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -64,6 +79,7 @@ interface ToastContextValue {
   toast: (message: string, options?: ToastOptions) => string;
   dismiss: (id: string) => void;
   dismissAll: () => void;
+  promise: <T>(promise: Promise<T>, messages: ToastPromiseMessages<T>) => Promise<T>;
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null);
@@ -102,24 +118,32 @@ function ToastEntry({ item, onDismiss }: ToastEntryProps) {
   }, [item.id, onDismiss]);
 
   useEffect(() => {
-    if (item.duration > 0) {
+    if (item.duration > 0 && !item.loading) {
       timerRef.current = setTimeout(startExit, item.duration);
     }
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [item.duration, startExit]);
+  }, [item.duration, item.loading, startExit]);
 
   return (
     <div
-      className={cn(styles.Toast, exiting && styles.ToastExiting)}
+      className={cn(
+        styles.Toast,
+        exiting && styles.ToastExiting,
+        item.loading && styles.ToastLoading,
+      )}
       data-ov-component="toast"
       data-ov-severity={item.severity}
       data-ov-exiting={exiting ? '' : undefined}
+      data-ov-loading={item.loading ? '' : undefined}
       role="status"
       aria-live="polite"
     >
-      <span className={styles.Message}>{item.message}</span>
+      <div className={styles.MessageGroup}>
+        {item.title && <span className={styles.Title}>{item.title}</span>}
+        <span className={styles.Message}>{item.message}</span>
+      </div>
 
       {item.action && (
         <button
@@ -134,9 +158,16 @@ function ToastEntry({ item, onDismiss }: ToastEntryProps) {
         </button>
       )}
 
-      <button type="button" className={styles.Close} aria-label="Close" onClick={() => startExit()}>
-        <LuX aria-hidden size={14} />
-      </button>
+      {!item.loading && (
+        <button
+          type="button"
+          className={styles.Close}
+          aria-label="Close"
+          onClick={() => startExit()}
+        >
+          <LuX aria-hidden size={14} />
+        </button>
+      )}
     </div>
   );
 }
@@ -152,7 +183,7 @@ function generateId(): string {
 }
 
 export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(function ToastProvider(
-  { position = 'bottom-right', maxVisible = 5, className, children, ...containerProps },
+  { position = 'bottom-right', maxVisible = 5, surface = 'raised', elevation = 2, className, children, ...containerProps },
   ref,
 ) {
   const [items, setItems] = useState<ToastItem[]>([]);
@@ -165,12 +196,17 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
     setItems([]);
   }, []);
 
+  const updateItem = useCallback((id: string, updates: Partial<ToastItem>) => {
+    setItems((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
+  }, []);
+
   const toast = useCallback(
     (message: string, options?: ToastOptions): string => {
       const id = generateId();
       const newItem: ToastItem = {
         id,
         message,
+        title: options?.title,
         severity: options?.severity ?? 'info',
         duration: options?.duration ?? 5000,
         action: options?.action,
@@ -178,7 +214,6 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
 
       setItems((prev) => {
         const next = [newItem, ...prev];
-        // Enforce maxVisible by trimming oldest
         if (next.length > maxVisible) {
           return next.slice(0, maxVisible);
         }
@@ -190,11 +225,73 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
     [maxVisible],
   );
 
-  const contextValue: ToastContextValue = { toast, dismiss, dismissAll };
+  const toastPromise = useCallback(
+    <T,>(promise: Promise<T>, messages: ToastPromiseMessages<T>): Promise<T> => {
+      const id = generateId();
+      const loadingItem: ToastItem = {
+        id,
+        message: messages.loading,
+        severity: 'info',
+        duration: 0,
+        loading: true,
+      };
+
+      setItems((prev) => {
+        const next = [loadingItem, ...prev];
+        if (next.length > maxVisible) {
+          return next.slice(0, maxVisible);
+        }
+        return next;
+      });
+
+      promise.then(
+        (data) => {
+          const msg =
+            typeof messages.success === 'function' ? messages.success(data) : messages.success;
+          updateItem(id, {
+            message: msg,
+            severity: 'success',
+            loading: false,
+            duration: 5000,
+          });
+        },
+        (err) => {
+          const msg = typeof messages.error === 'function' ? messages.error(err) : messages.error;
+          updateItem(id, {
+            message: msg,
+            severity: 'danger',
+            loading: false,
+            duration: 5000,
+          });
+        },
+      );
+
+      return promise;
+    },
+    [maxVisible, updateItem],
+  );
+
+  const contextValue: ToastContextValue = {
+    toast,
+    dismiss,
+    dismissAll,
+    promise: toastPromise,
+  };
 
   // Determine stack order: for top positions, newest first; for bottom, newest last
   const isTop = position.startsWith('top');
   const orderedItems = isTop ? items : [...items].reverse();
+
+  // Copy theme attributes from document root so the portal inherits the theme
+  const portalAttrs: Record<string, string> = {};
+  if (typeof document !== 'undefined') {
+    const root = document.documentElement;
+    for (const attr of root.getAttributeNames()) {
+      if (attr.startsWith('data-ov-')) {
+        portalAttrs[attr] = root.getAttribute(attr) ?? '';
+      }
+    }
+  }
 
   const container =
     typeof document !== 'undefined'
@@ -204,6 +301,9 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
             className={cn(styles.Container, className)}
             data-ov-component="toast-container"
             data-ov-position={position}
+            data-ov-surface={surface}
+            data-ov-elevation={elevation}
+            {...portalAttrs}
             {...containerProps}
           >
             {orderedItems.map((item) => (

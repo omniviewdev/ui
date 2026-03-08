@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, useState, type HTMLAttributes } from 'react';
+import { LuCheck, LuCopy } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './ClipboardText.module.css';
 
@@ -11,45 +12,6 @@ export interface ClipboardTextProps extends HTMLAttributes<HTMLElement> {
   truncate?: boolean;
   /** Milliseconds to show success state (default: 1500). */
   feedbackDuration?: number;
-}
-
-function CopyIcon() {
-  return (
-    <svg
-      aria-hidden
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
 }
 
 export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(function ClipboardText(
@@ -81,7 +43,7 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
         onClick={handleCopy}
         aria-label="Copy to clipboard"
       >
-        {copied ? <CheckIcon /> : <CopyIcon />}
+        {copied ? <LuCheck aria-hidden size={14} /> : <LuCopy aria-hidden size={14} />}
       </button>
     </span>
   );

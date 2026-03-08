@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './Toast.module.css';
 
@@ -132,19 +133,7 @@ function ToastEntry({ item, onDismiss }: ToastEntryProps) {
       )}
 
       <button type="button" className={styles.Close} aria-label="Close" onClick={() => startExit()}>
-        <svg
-          aria-hidden="true"
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="3" y1="3" x2="11" y2="11" />
-          <line x1="11" y1="3" x2="3" y2="11" />
-        </svg>
+        <LuX aria-hidden size={14} />
       </button>
     </div>
   );

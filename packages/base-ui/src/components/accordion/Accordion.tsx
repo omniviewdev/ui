@@ -10,6 +10,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
+import { LuChevronRight } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './Accordion.module.css';
 
@@ -47,29 +48,6 @@ export interface AccordionItemProps extends HTMLAttributes<HTMLDivElement> {
   defaultExpanded?: boolean;
   /** Prevents toggling. */
   disabled?: boolean;
-}
-
-// ─── Chevron SVG ────────────────────────────────────────────────────────────
-
-function ChevronIcon() {
-  return (
-    <svg
-      className={styles.Chevron}
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M6 4l4 4-4 4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
 }
 
 // ─── AccordionItem ──────────────────────────────────────────────────────────
@@ -144,7 +122,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
             {endDecorator}
           </span>
         ) : null}
-        <ChevronIcon />
+        <LuChevronRight aria-hidden className={styles.Chevron} size={16} />
       </button>
 
       {/* Collapsible content */}

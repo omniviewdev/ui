@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useRef, type HTMLAttributes, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './Dialog.module.css';
 
@@ -141,20 +142,7 @@ const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(function Dia
       aria-label="Close"
       {...props}
     >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <line x1="4" y1="4" x2="12" y2="12" />
-        <line x1="12" y1="4" x2="4" y2="12" />
-      </svg>
+      <LuX aria-hidden size={16} />
     </button>
   );
 });

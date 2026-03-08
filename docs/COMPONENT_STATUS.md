@@ -8,6 +8,7 @@ These are the only components currently in scope and exported:
 
 - `Accordion`
 - `ActionList`
+- `AppShell`
 - `AlertDialog`
 - `AspectRatio`
 - `Autocomplete`
@@ -31,6 +32,7 @@ These are the only components currently in scope and exported:
 - `ContextMenu`
 - `DescriptionList`
 - `Dialog`
+- `DockLayout`
 - `Drawer`
 - `EmptyState`
 - `FormField`
@@ -49,6 +51,7 @@ These are the only components currently in scope and exported:
 - `Progress`
 - `Radio`
 - `RadioGroup`
+- `ResizableSplitPane`
 - `ScrollArea`
 - `SearchInput`
 - `Select`

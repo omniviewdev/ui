@@ -1,0 +1,109 @@
+/* ───────────────────────────────────────────────
+   ResizableSplitPane
+   ─────────────────────────────────────────────── */
+
+.Root {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Horizontal: side by side */
+.Root[data-ov-direction='horizontal'] {
+  grid-template-columns: var(--_ov-split-size, 200px) auto 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* Vertical: stacked */
+.Root[data-ov-direction='vertical'] {
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--_ov-split-size, 200px) auto 1fr;
+}
+
+/* ─── Panes ─────────────────────────────────── */
+
+.Pane {
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.FirstPane {
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.SecondPane {
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ─── Handle ────────────────────────────────── */
+
+.Handle {
+  position: relative;
+  flex-shrink: 0;
+  background: var(--ov-color-border-muted);
+  transition: background var(--ov-duration-fast, 90ms) var(--ov-ease-standard, ease);
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+/* Horizontal handle (vertical bar between side-by-side panes) */
+.Handle[data-ov-direction='horizontal'] {
+  width: 4px;
+  cursor: col-resize;
+}
+
+/* Vertical handle (horizontal bar between stacked panes) */
+.Handle[data-ov-direction='vertical'] {
+  height: 4px;
+  cursor: row-resize;
+}
+
+/* Invisible hit area expansion */
+.Handle::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+}
+
+.Handle[data-ov-direction='horizontal']::before {
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+}
+
+.Handle[data-ov-direction='vertical']::before {
+  left: 0;
+  right: 0;
+  top: -6px;
+  bottom: -6px;
+}
+
+/* Hover state */
+.Handle:hover,
+.Handle:focus-visible {
+  background: var(--ov-color-border-default);
+}
+
+/* Active/dragging state */
+.Handle:active {
+  background: var(--ov-color-bg-brand);
+}
+
+/* Focus ring */
+.Handle:focus-visible {
+  outline: 2px solid var(--ov-color-focus-ring);
+  outline-offset: -1px;
+}
+
+/* Reduced motion */
+:root[data-ov-motion='reduced'] .Handle {
+  transition: none;
+}

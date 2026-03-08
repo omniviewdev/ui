@@ -73,3 +73,6 @@ export * from './toolbar';
 export * from './tooltip';
 export * from './tree-list';
 export * from './typography';
+export * from './resizable-split-pane';
+export * from './app-shell';
+export * from './dock-layout';

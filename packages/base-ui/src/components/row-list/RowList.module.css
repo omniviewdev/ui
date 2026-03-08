@@ -23,6 +23,7 @@
   display: flex;
   align-items: center;
   gap: var(--ov-space-inline-xs, 4px);
+  min-width: 0;
   min-height: var(--_ov-item-height);
   padding-inline: var(--_ov-item-padding-inline);
   font-size: var(--ov-font-size-caption);

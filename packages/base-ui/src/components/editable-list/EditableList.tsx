@@ -373,7 +373,6 @@ const EditableListItem = forwardRef<HTMLDivElement, EditableListItemProps>(
         if (editable && !isEditing && !isDisabled) {
           startEditing(itemKey);
         }
-        void event;
       },
       [editable, isEditing, disabled, startEditing, itemKey],
     );
@@ -600,7 +599,7 @@ const EditableListItemSave = forwardRef<HTMLButtonElement, EditableListItemSaveP
       (event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         commitEditing();
-        onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
+        onClick?.(event);
       },
       [commitEditing, onClick],
     );
@@ -635,7 +634,7 @@ const EditableListItemCancel = forwardRef<HTMLButtonElement, EditableListItemCan
       (event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         cancelEditing();
-        onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
+        onClick?.(event);
       },
       [cancelEditing, onClick],
     );

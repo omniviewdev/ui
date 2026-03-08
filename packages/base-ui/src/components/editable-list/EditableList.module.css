@@ -76,3 +76,8 @@
 .ActionButton:hover {
   background: var(--ov-color-state-hover, var(--_ov-highlight-bg));
 }
+
+.ActionButton:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}

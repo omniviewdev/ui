@@ -88,6 +88,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
     const fieldValuesMap = useRef(new Map<string, string>());
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
     const rootWrapperRef = useRef<HTMLDivElement>(null);
+    const commitInFlightRef = useRef(false);
 
     const registerField = useCallback(
       (name: string, el: FieldElement) => {
@@ -114,32 +115,51 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
 
     const gatherValues = useCallback(() => {
       const values: Record<string, string> = {};
-      for (const [name, el] of fieldRefsMap.current) {
-        values[name] = el.value;
+      // Collect all known field names from both maps
+      const allNames = new Set([
+        ...fieldValuesMap.current.keys(),
+        ...fieldRefsMap.current.keys(),
+      ]);
+      for (const name of allNames) {
+        // Prefer the synchronized value from useField().setValue / setFieldValue,
+        // fall back to reading the DOM element's .value directly
+        const synced = fieldValuesMap.current.get(name);
+        if (synced !== undefined) {
+          values[name] = synced;
+        } else {
+          const el = fieldRefsMap.current.get(name);
+          if (el) values[name] = el.value;
+        }
       }
       return values;
     }, []);
 
     const commitEditing = useCallback(async () => {
       if (editingKey == null) return;
+      if (commitInFlightRef.current) return;
+      commitInFlightRef.current = true;
       const key = editingKey;
 
-      const values = gatherValues();
+      try {
+        const values = gatherValues();
 
-      if (validateItem) {
-        const errors = await validateItem(key, values);
-        const hasErrors = Object.values(errors).some(Boolean);
-        if (hasErrors) {
-          setFieldErrors(errors);
-          return;
+        if (validateItem) {
+          const errors = await validateItem(key, values);
+          const hasErrors = Object.values(errors).some(Boolean);
+          if (hasErrors) {
+            setFieldErrors(errors);
+            return;
+          }
         }
-      }
 
-      onCommit?.(key, values);
-      setEditingKey(null);
-      setFieldErrors({});
-      fieldRefsMap.current.clear();
-      fieldValuesMap.current.clear();
+        onCommit?.(key, values);
+        setEditingKey(null);
+        setFieldErrors({});
+        fieldRefsMap.current.clear();
+        fieldValuesMap.current.clear();
+      } finally {
+        commitInFlightRef.current = false;
+      }
     }, [editingKey, gatherValues, validateItem, onCommit, setEditingKey]);
 
     const cancelEditing = useCallback(() => {
@@ -172,8 +192,29 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
       (event: KeyboardEvent<HTMLDivElement>) => {
         if (editingKey != null) {
           // --- Editing mode ---
+
+          // Detect if focus is on a text-editable control that needs
+          // Space, Home, End, and arrow keys to work normally.
+          const active = document.activeElement as HTMLElement | null;
+          const isTextEditable = (() => {
+            if (!active) return false;
+            if (active instanceof HTMLTextAreaElement) return true;
+            if (active instanceof HTMLInputElement) {
+              const nonText = new Set([
+                'button', 'checkbox', 'radio', 'submit', 'reset', 'image',
+              ]);
+              return !nonText.has(active.type);
+            }
+            if (active.isContentEditable) return true;
+            const role = active.getAttribute('role');
+            if (role === 'textbox' || role === 'searchbox') return true;
+            return false;
+          })();
+
           switch (event.key) {
             case 'Enter':
+              // Let textarea handle Enter for newlines
+              if (active instanceof HTMLTextAreaElement) return;
               event.preventDefault();
               event.stopPropagation();
               commitEditing();
@@ -191,7 +232,6 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
                 event.stopPropagation();
                 return;
               }
-              const active = document.activeElement;
               // FieldElement may be the focused node itself, or a wrapper containing it
               const idx = fields.findIndex((f) => {
                 if ((f as unknown) === active) return true;
@@ -222,7 +262,14 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
             case 'Home':
             case 'End':
             case ' ':
-              // Suppress list navigation while editing
+              if (isTextEditable) {
+                // Let the text control handle the key, but stop propagation
+                // so the list's own keydown handler doesn't interfere
+                // (e.g. Space toggling selection, arrows navigating items)
+                event.stopPropagation();
+                return;
+              }
+              // Non-text control — suppress list navigation entirely
               event.preventDefault();
               event.stopPropagation();
               return;

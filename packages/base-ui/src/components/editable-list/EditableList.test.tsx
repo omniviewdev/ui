@@ -323,4 +323,58 @@ describe('EditableList', () => {
       expect(document.activeElement).toBe(screen.getByRole('listbox'));
     });
   });
+
+  it('space and Home/End keys work inside text fields while editing', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<TestList />);
+
+    const item = screen.getByText('HOST').closest('[role="option"]')!;
+    await user.dblClick(item);
+
+    const inputs = screen.getAllByRole('textbox');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(inputs[0]!);
+    });
+
+    // Clear and type text with a space in the middle
+    await user.clear(inputs[0]!);
+    await user.type(inputs[0]!, 'MY VAR');
+
+    expect(inputs[0]!).toHaveValue('MY VAR');
+  });
+
+  it('async validation prevents duplicate commits on repeated Enter', async () => {
+    const user = userEvent.setup();
+    const onCommit = vi.fn();
+
+    // Async validator that takes time to resolve (valid)
+    let resolveValidation!: () => void;
+    const validateItem = vi.fn().mockImplementation(
+      () =>
+        new Promise<Record<string, string | undefined>>((resolve) => {
+          resolveValidation = () => resolve({});
+        }),
+    );
+
+    renderWithTheme(
+      <TestList onCommit={onCommit} validateItem={validateItem} />,
+    );
+
+    const item = screen.getByText('HOST').closest('[role="option"]')!;
+    await user.dblClick(item);
+
+    // Press Enter multiple times rapidly
+    await user.keyboard('{Enter}');
+    await user.keyboard('{Enter}');
+    await user.keyboard('{Enter}');
+
+    // Validation should only have been called once (guard blocks re-entry)
+    expect(validateItem).toHaveBeenCalledTimes(1);
+
+    // Resolve the pending validation
+    resolveValidation();
+    await waitFor(() => {
+      expect(onCommit).toHaveBeenCalledTimes(1);
+    });
+  });
 });

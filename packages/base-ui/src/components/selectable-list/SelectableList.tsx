@@ -144,7 +144,10 @@ interface SelectAllSnapshot {
 const SelectableListSelectAll = forwardRef<
   HTMLDivElement,
   SelectableListSelectAllProps
->(function SelectableListSelectAll({ className, children, onClick, ...props }, ref) {
+>(function SelectableListSelectAll(
+  { className, children, onClick, onKeyDown: onKeyDownProp, ...props },
+  ref,
+) {
   const store = useListStoreContext();
   const actions = useListActions();
   const { checkBehavior } = useContext(SelectableListContext);
@@ -185,11 +188,16 @@ const SelectableListSelectAll = forwardRef<
 
   const handleToggle = useCallback(() => {
     if (snapshot.allSelected) {
-      actions.clearSelection();
+      // Only deselect enabled keys so disabled-but-selected items stay selected
+      const s = store.getSnapshot();
+      const enabled = s.registeredKeys.filter((k) => !s.disabledKeys.has(k));
+      for (const k of enabled) {
+        actions.deselect(k);
+      }
     } else {
       actions.selectAll();
     }
-  }, [snapshot.allSelected, actions]);
+  }, [snapshot.allSelected, actions, store]);
 
   const handleClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -205,8 +213,9 @@ const SelectableListSelectAll = forwardRef<
         event.preventDefault();
         handleToggle();
       }
+      onKeyDownProp?.(event);
     },
-    [handleToggle],
+    [handleToggle, onKeyDownProp],
   );
 
   const isCheckbox = checkBehavior === 'checkbox';
@@ -218,6 +227,7 @@ const SelectableListSelectAll = forwardRef<
 
   return (
     <div
+      {...props}
       ref={ref}
       role="checkbox"
       aria-checked={ariaChecked}
@@ -225,7 +235,6 @@ const SelectableListSelectAll = forwardRef<
       className={cn(styles.SelectAll, className)}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      {...props}
     >
       <span
         aria-hidden="true"
@@ -314,7 +323,7 @@ const SelectableListGroupSelectAll = forwardRef<
   HTMLDivElement,
   SelectableListGroupSelectAllProps
 >(function SelectableListGroupSelectAll(
-  { className, groupKeys, children, onClick, ...props },
+  { className, groupKeys, children, onClick, onKeyDown: onKeyDownProp, ...props },
   ref,
 ) {
   const store = useListStoreContext();
@@ -380,8 +389,9 @@ const SelectableListGroupSelectAll = forwardRef<
         event.preventDefault();
         handleToggle();
       }
+      onKeyDownProp?.(event);
     },
-    [handleToggle],
+    [handleToggle, onKeyDownProp],
   );
 
   const isCheckbox = checkBehavior === 'checkbox';
@@ -393,6 +403,7 @@ const SelectableListGroupSelectAll = forwardRef<
 
   return (
     <div
+      {...props}
       ref={ref}
       role="checkbox"
       aria-checked={ariaChecked}
@@ -400,7 +411,6 @@ const SelectableListGroupSelectAll = forwardRef<
       className={cn(styles.GroupSelectAll, className)}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      {...props}
     >
       <span
         aria-hidden="true"

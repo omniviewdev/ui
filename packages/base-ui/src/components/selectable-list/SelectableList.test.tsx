@@ -268,7 +268,8 @@ describe('SelectableList', () => {
     expect(indicator).toHaveAttribute('data-indeterminate', '');
   });
 
-  it('disabled items show disabled styling and cannot be toggled', () => {
+  it('disabled items show disabled styling and cannot be toggled', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
     renderWithTheme(
       <SelectableList selectionMode="multiple" disabledKeys={['b']}>
         <SelectableList.Viewport>
@@ -288,7 +289,9 @@ describe('SelectableList', () => {
     // Disabled items have aria-disabled and data-ov-disabled
     expect(itemB).toHaveAttribute('aria-disabled', 'true');
     expect(itemB).toHaveAttribute('data-ov-disabled', 'true');
-    // pointer-events: none prevents interaction (CSS-level)
+
+    // Attempt to click disabled item — it should remain unselected
+    await user.click(itemB);
     expect(itemB).not.toHaveAttribute('aria-selected', 'true');
   });
 
@@ -361,11 +364,10 @@ describe('SelectableList', () => {
       </SelectableList>,
     );
 
-    // The indicator should have CheckboxIndicator class, not RadioIndicator
-    const indicator = document.querySelector('[aria-hidden="true"]');
+    // Scope indicator lookup to the rendered item
+    const item = screen.getByRole('option');
+    const indicator = item.querySelector('[aria-hidden="true"]');
     expect(indicator).toBeInTheDocument();
-    // Checkbox indicators have choice-radius (not full round)
-    // We can verify by checking the class
     expect(indicator?.className).toContain('CheckboxIndicator');
   });
 });

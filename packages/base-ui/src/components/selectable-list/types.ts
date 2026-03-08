@@ -22,8 +22,7 @@ export interface SelectableListRootProps extends ListRootProps {
 
 export type SelectableListItemProps = ListItemProps;
 
-export interface SelectableListItemIndicatorProps
-  extends HTMLAttributes<HTMLSpanElement> {}
+export type SelectableListItemIndicatorProps = HTMLAttributes<HTMLSpanElement>;
 
 export interface SelectableListSelectAllProps
   extends HTMLAttributes<HTMLDivElement> {

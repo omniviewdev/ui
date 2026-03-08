@@ -36,9 +36,14 @@ function ThreeItemList(props: Record<string, unknown> = {}) {
 describe('SelectableList', () => {
   it('renders checkbox indicators by default (selectionMode=multiple)', () => {
     renderWithTheme(<ThreeItemList />);
-    const indicators = document.querySelectorAll('[aria-hidden="true"]');
-    // Each item has an indicator wrapper with CheckboxIndicator class
-    expect(indicators.length).toBeGreaterThanOrEqual(3);
+    // Each item renders an indicator with the CheckboxIndicator class
+    const items = screen.getAllByRole('option');
+    expect(items).toHaveLength(3);
+    for (const item of items) {
+      const indicator = item.querySelector('[aria-hidden="true"]');
+      expect(indicator).toBeInTheDocument();
+      expect(indicator?.className).toContain('CheckboxIndicator');
+    }
   });
 
   it('renders radio indicators for selectionMode=single', () => {
@@ -176,7 +181,7 @@ describe('SelectableList', () => {
       </SelectableList>,
     );
 
-    const selectAllBtn = screen.getByText('Select all').closest('[role="presentation"]')!;
+    const selectAllBtn = screen.getByText('Select all').closest('[role="checkbox"]')!;
 
     // Select all
     await user.click(selectAllBtn);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   LuBox,
@@ -375,30 +375,36 @@ export const WithSelectionSummary: Story = {
 // 9. LargeVirtualized (placeholder — virtualized not yet integrated)
 // ---------------------------------------------------------------------------
 
-export const LargeList: Story = {
-  render: (args) => {
-    const items = Array.from({ length: 200 }, (_, i) => ({
-      id: `item-${i}`,
-      label: `Resource ${i + 1}`,
-    }));
+function LargeListStory(args: Record<string, unknown>) {
+  const items = useMemo(
+    () =>
+      Array.from({ length: 200 }, (_, i) => ({
+        id: `item-${i}`,
+        label: `Resource ${i + 1}`,
+      })),
+    [],
+  );
 
-    return (
-      <SelectableList
-        selectionMode="multiple"
-        {...args}
-        style={{ width: 320 }}
-      >
-        <SelectableList.SelectAll>Select all</SelectableList.SelectAll>
-        <SelectableList.Viewport style={{ maxHeight: 400 }}>
-          {items.map((item) => (
-            <SelectableList.Item key={item.id} itemKey={item.id} textValue={item.label}>
-              <SelectableList.ItemIndicator />
-              <SelectableList.ItemLabel>{item.label}</SelectableList.ItemLabel>
-            </SelectableList.Item>
-          ))}
-        </SelectableList.Viewport>
-        <SelectableList.SelectionSummary />
-      </SelectableList>
-    );
-  },
+  return (
+    <SelectableList
+      selectionMode="multiple"
+      {...args}
+      style={{ width: 320 }}
+    >
+      <SelectableList.SelectAll>Select all</SelectableList.SelectAll>
+      <SelectableList.Viewport style={{ maxHeight: 400 }}>
+        {items.map((item) => (
+          <SelectableList.Item key={item.id} itemKey={item.id} textValue={item.label}>
+            <SelectableList.ItemIndicator />
+            <SelectableList.ItemLabel>{item.label}</SelectableList.ItemLabel>
+          </SelectableList.Item>
+        ))}
+      </SelectableList.Viewport>
+      <SelectableList.SelectionSummary />
+    </SelectableList>
+  );
+}
+
+export const LargeList: Story = {
+  render: (args) => <LargeListStory {...args} />,
 };

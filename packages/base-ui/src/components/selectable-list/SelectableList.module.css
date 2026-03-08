@@ -93,7 +93,7 @@
   inline-size: calc(var(--_ov-indicator-size) * 0.5);
   block-size: calc(var(--_ov-indicator-size) * 0.5);
   border-radius: 999px;
-  background: currentColor;
+  background: currentcolor;
 }
 
 /* ---------------------------------------------------------------------------

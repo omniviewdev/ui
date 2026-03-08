@@ -5,6 +5,7 @@ import {
   useContext,
   useRef,
   useSyncExternalStore,
+  type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
 } from 'react';
@@ -182,26 +183,48 @@ const SelectableListSelectAll = forwardRef<
     () => prevRef.current,
   );
 
+  const handleToggle = useCallback(() => {
+    if (snapshot.allSelected) {
+      actions.clearSelection();
+    } else {
+      actions.selectAll();
+    }
+  }, [snapshot.allSelected, actions]);
+
   const handleClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      if (snapshot.allSelected) {
-        actions.clearSelection();
-      } else {
-        actions.selectAll();
-      }
+      handleToggle();
       onClick?.(event);
     },
-    [snapshot.allSelected, actions, onClick],
+    [handleToggle, onClick],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleToggle();
+      }
+    },
+    [handleToggle],
   );
 
   const isCheckbox = checkBehavior === 'checkbox';
+  const ariaChecked = snapshot.allSelected
+    ? true
+    : snapshot.someSelected
+      ? ('mixed' as const)
+      : false;
 
   return (
     <div
       ref={ref}
-      role="presentation"
+      role="checkbox"
+      aria-checked={ariaChecked}
+      tabIndex={0}
       className={cn(styles.SelectAll, className)}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       {...props}
     >
       <span
@@ -328,33 +351,55 @@ const SelectableListGroupSelectAll = forwardRef<
     () => prevRef.current,
   );
 
+  const handleToggle = useCallback(() => {
+    const s = store.getSnapshot();
+    const enabled = groupKeys.filter((k) => !s.disabledKeys.has(k));
+
+    if (snapshot.allSelected) {
+      for (const k of enabled) {
+        actions.deselect(k);
+      }
+    } else {
+      for (const k of enabled) {
+        actions.select(k);
+      }
+    }
+  }, [snapshot.allSelected, store, groupKeys, actions]);
+
   const handleClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      const s = store.getSnapshot();
-      const enabled = groupKeys.filter((k) => !s.disabledKeys.has(k));
-
-      if (snapshot.allSelected) {
-        for (const k of enabled) {
-          actions.deselect(k);
-        }
-      } else {
-        for (const k of enabled) {
-          actions.select(k);
-        }
-      }
+      handleToggle();
       onClick?.(event);
     },
-    [snapshot.allSelected, store, groupKeys, actions, onClick],
+    [handleToggle, onClick],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleToggle();
+      }
+    },
+    [handleToggle],
   );
 
   const isCheckbox = checkBehavior === 'checkbox';
+  const ariaChecked = snapshot.allSelected
+    ? true
+    : snapshot.someSelected
+      ? ('mixed' as const)
+      : false;
 
   return (
     <div
       ref={ref}
-      role="presentation"
+      role="checkbox"
+      aria-checked={ariaChecked}
+      tabIndex={0}
       className={cn(styles.GroupSelectAll, className)}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       {...props}
     >
       <span
@@ -378,7 +423,7 @@ const SelectableListGroupSelectAll = forwardRef<
           )}
         </span>
       </span>
-      {children && <span>{children}</span>}
+      {children && <span className={styles.SelectAllLabel}>{children}</span>}
     </div>
   );
 });

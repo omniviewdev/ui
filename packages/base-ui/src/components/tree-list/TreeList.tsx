@@ -19,7 +19,7 @@ import {
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ComponentColor } from '../../system/types';
-import type { TreeListRootProps, TreeListItemProps, TreeNodeMeta, Key } from './types';
+import type { TreeListRootProps, TreeListItemProps, TreeNodeMeta, FlatNode, Key } from './types';
 import { useTreeState } from './hooks/useTreeState';
 import { useTreeItem as useTreeItemHook } from './hooks/useTreeItem';
 import { useTreeFocus } from './hooks/useTreeFocus';
@@ -74,6 +74,7 @@ function TreeListRootImpl<TItem>(
     getTextValue,
     renderItem,
     loadChildren,
+    onLoadError,
     selectionMode,
     selectionBehavior,
     selectedKeys: selectedKeysProp,
@@ -110,6 +111,7 @@ function TreeListRootImpl<TItem>(
     getTextValue,
     renderItem,
     loadChildren,
+    onLoadError,
     selectionMode,
     selectionBehavior,
     selectedKeys: selectedKeysProp,
@@ -144,14 +146,17 @@ function TreeListRootImpl<TItem>(
     [config, listId],
   );
 
-  // Build the closed-over render function so Viewport never sees TItem
-  const flatNodesRef = useRef(store.getFlatNodes());
-  // Keep ref fresh — updated each render from the latest store state
-  flatNodesRef.current = store.getFlatNodes();
+  // Build an O(1) lookup map from flat nodes so renderNode avoids O(n) scans
+  const flatNodesMapRef = useRef<Map<Key, FlatNode>>(new Map());
+  const currentFlatNodes = store.getFlatNodes();
+  // Rebuild map each render from the latest store state
+  const map = new Map<Key, FlatNode>();
+  for (const node of currentFlatNodes) map.set(node.key, node);
+  flatNodesMapRef.current = map;
 
   const renderNode: RenderNodeFn = useCallback(
     (key: Key, node: TreeNodeMeta) => {
-      const flat = flatNodesRef.current.find((n) => n.key === key);
+      const flat = flatNodesMapRef.current.get(key);
       if (!flat) return null;
       return renderItem(flat.item as TItem, node);
     },

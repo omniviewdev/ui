@@ -366,6 +366,25 @@ describe('TreeList', () => {
     expect(components).toHaveAttribute('data-ov-active', 'true');
   });
 
+  it('ArrowRight on expanded branch skips disabled first child', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(
+      <TestTree
+        defaultExpandedKeys={new Set(['/src'])}
+        disabledKeys={['/src/components']}
+      />,
+    );
+
+    const tree = screen.getByRole('tree');
+    tree.focus();
+
+    await user.keyboard('{ArrowDown}'); // active: /src (expanded)
+    await user.keyboard('{ArrowRight}'); // should skip disabled /src/components
+
+    const indexTs = screen.getByText('index.ts').closest('[role="treeitem"]');
+    expect(indexTs).toHaveAttribute('data-ov-active', 'true');
+  });
+
   it('collapses expanded branch with ArrowLeft', async () => {
     const user = userEvent.setup();
     renderWithTheme(<TestTree defaultExpandedKeys={new Set(['/src'])} />);
@@ -877,6 +896,29 @@ describe('TreeList', () => {
     );
 
     expect(screen.getByText('child.ts')).toBeInTheDocument();
+  });
+
+  it('calls onLoadError when loadChildren rejects', async () => {
+    const user = userEvent.setup();
+    const error = new Error('network failure');
+    const loadChildren = vi.fn().mockRejectedValue(error);
+    const onLoadError = vi.fn();
+
+    const lazyData: FileItem[] = [
+      { path: '/lazy', name: 'lazy', type: 'directory', children: [] },
+    ];
+
+    renderWithTheme(
+      <TestTree items={lazyData} loadChildren={loadChildren} onLoadError={onLoadError} />,
+    );
+
+    const toggle = screen.getByRole('button', { name: /expand/i });
+    await user.click(toggle);
+
+    // Wait for the rejection to be handled
+    await vi.waitFor(() => {
+      expect(onLoadError).toHaveBeenCalledWith(error, '/lazy', expect.objectContaining({ path: '/lazy' }));
+    });
   });
 
   // -------------------------------------------------------------------------

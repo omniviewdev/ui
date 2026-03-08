@@ -1200,7 +1200,7 @@ export const FilterByStatus: Story = {
 };
 
 // ---------------------------------------------------------------------------
-// 10. ControlledExpansion
+// 12. ControlledExpansion (source-only)
 // ---------------------------------------------------------------------------
 
 export const ControlledExpansion: Story = {

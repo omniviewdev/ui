@@ -57,6 +57,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     defaultFilterText,
     onFilterTextChange,
     filterFn: filterFnProp,
+    onLoadError,
   } = props;
 
   const disabledKeys = useMemo(
@@ -276,8 +277,9 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
               return next;
             });
           },
-          () => {
+          (err) => {
             store.setLoadingKey(key, false);
+            onLoadError?.(err, key, item);
           },
         );
       } else {
@@ -288,7 +290,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         });
       }
     },
-    [flatNodes, getChildren, isBranch, loadChildren, store, setExpandedKeys],
+    [flatNodes, getChildren, isBranch, loadChildren, onLoadError, store, setExpandedKeys],
   );
 
   const collapse = useCallback(

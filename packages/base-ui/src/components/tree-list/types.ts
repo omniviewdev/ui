@@ -141,6 +141,7 @@ export interface TreeListRootProps<TItem = unknown>
 
   // Async
   loadChildren?: (key: Key, item: TItem) => Promise<void>;
+  onLoadError?: (error: unknown, key: Key, item: TItem) => void;
 
   // Selection
   selectionMode?: SelectionMode;

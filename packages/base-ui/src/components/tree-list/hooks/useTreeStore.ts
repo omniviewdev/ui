@@ -50,7 +50,7 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
       flattenedKeys: flatNodes.map((n) => n.key),
       visibleCount: flatNodes.length,
     };
-    listenersRef.current.forEach((l) => l());
+    for (const l of listenersRef.current) l();
   }, []);
 
   const subscribe = useCallback((listener: () => void) => {

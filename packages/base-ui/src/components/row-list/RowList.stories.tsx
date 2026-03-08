@@ -88,40 +88,42 @@ const sortableData = [
   { key: '4', name: 'index.ts', size: '4.2 KB', modified: '1 hour ago' },
 ];
 
+function WithSortingStory(args: Record<string, unknown>) {
+  const [sortState, setSortState] = useState<SortState>({
+    columnId: 'name',
+    direction: 'ascending',
+  });
+
+  const sorted = [...sortableData].sort((a, b) => {
+    const col = sortState.columnId as keyof typeof a;
+    const cmp = (a[col] ?? '').localeCompare(b[col] ?? '');
+    return sortState.direction === 'ascending' ? cmp : -cmp;
+  });
+
+  return (
+    <RowList
+      columns={sortableColumns}
+      sortState={sortState}
+      onSortChange={setSortState}
+      {...args}
+      style={{ width: 480 }}
+    >
+      <RowList.Header />
+      <RowList.Viewport>
+        {sorted.map((row) => (
+          <RowList.Item key={row.key} itemKey={row.key} textValue={row.name}>
+            <RowList.Cell column="name">{row.name}</RowList.Cell>
+            <RowList.Cell column="size">{row.size}</RowList.Cell>
+            <RowList.Cell column="modified">{row.modified}</RowList.Cell>
+          </RowList.Item>
+        ))}
+      </RowList.Viewport>
+    </RowList>
+  );
+}
+
 export const WithSorting: Story = {
-  render: (args) => {
-    const [sortState, setSortState] = useState<SortState>({
-      columnId: 'name',
-      direction: 'ascending',
-    });
-
-    const sorted = [...sortableData].sort((a, b) => {
-      const col = sortState.columnId as keyof typeof a;
-      const cmp = (a[col] ?? '').localeCompare(b[col] ?? '');
-      return sortState.direction === 'ascending' ? cmp : -cmp;
-    });
-
-    return (
-      <RowList
-        columns={sortableColumns}
-        sortState={sortState}
-        onSortChange={setSortState}
-        {...args}
-        style={{ width: 480 }}
-      >
-        <RowList.Header />
-        <RowList.Viewport>
-          {sorted.map((row) => (
-            <RowList.Item key={row.key} itemKey={row.key} textValue={row.name}>
-              <RowList.Cell column="name">{row.name}</RowList.Cell>
-              <RowList.Cell column="size">{row.size}</RowList.Cell>
-              <RowList.Cell column="modified">{row.modified}</RowList.Cell>
-            </RowList.Item>
-          ))}
-        </RowList.Viewport>
-      </RowList>
-    );
-  },
+  render: (args) => <WithSortingStory {...args} />,
 };
 
 // ---------------------------------------------------------------------------
@@ -324,7 +326,7 @@ const largeData = Array.from({ length: 200 }, (_, i) => ({
   id: i + 1,
   task: `Task ${i + 1}: ${['Build', 'Test', 'Lint', 'Deploy', 'Package'][i % 5]} step`,
   status: ['Passed', 'Failed', 'Running', 'Skipped'][i % 4],
-  duration: `${Math.floor(Math.random() * 120)}s`,
+  duration: `${(i * 7) % 120}s`,
 }));
 
 export const LargeList: Story = {

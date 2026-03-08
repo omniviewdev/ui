@@ -38,4 +38,4 @@ export interface RowListCellProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-export interface RowListHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+export type RowListHeaderProps = HTMLAttributes<HTMLDivElement>;

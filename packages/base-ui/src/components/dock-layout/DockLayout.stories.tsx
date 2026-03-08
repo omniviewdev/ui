@@ -2,15 +2,6 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { DockLayout, type DockLayoutProps, type DockNode, type DockSplit } from './DockLayout';
 
-const meta = {
-  title: 'Layout/DockLayout',
-  component: DockLayout,
-  tags: ['autodocs'],
-} satisfies Meta<DockLayoutProps>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
 const PanelContent = ({ label }: { label: string }) => (
   <div
     style={{
@@ -114,6 +105,18 @@ const ideLayout: DockSplit = {
   sizes: [1, 4],
 };
 
+const meta = {
+  title: 'Layout/DockLayout',
+  component: DockLayout,
+  tags: ['autodocs'],
+  args: {
+    layout: simpleLayout,
+  },
+} satisfies Meta<DockLayoutProps>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
 export const Playground: Story = {
   args: {
     layout: simpleLayout,
@@ -135,7 +138,6 @@ function SplitViewDemo() {
 }
 
 export const SplitView: Story = {
-  args: { layout: splitLayout },
   render: () => <SplitViewDemo />,
 };
 
@@ -150,12 +152,10 @@ function IDELayoutDemo() {
 
 export const IDELayout: Story = {
   name: 'IDE-Style Layout',
-  args: { layout: ideLayout },
   render: () => <IDELayoutDemo />,
 };
 
 export const SinglePanel: Story = {
-  args: { layout: simpleLayout },
   render: () => {
     const layout: DockNode = {
       type: 'leaf',

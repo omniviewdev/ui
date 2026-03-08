@@ -129,10 +129,12 @@ const DIVIDER_KEYBOARD_STEP = 20;
 
 interface DockDividerProps {
   direction: DockDirection;
+  /** Current position as a percentage (0–100) for aria-valuenow. */
+  valueNow?: number;
   onDrag: (delta: number) => void;
 }
 
-function DockDivider({ direction, onDrag }: DockDividerProps) {
+function DockDivider({ direction, valueNow = 50, onDrag }: DockDividerProps) {
   const dragging = useRef(false);
   const lastPos = useRef(0);
 
@@ -188,7 +190,7 @@ function DockDivider({ direction, onDrag }: DockDividerProps) {
       role="separator"
       tabIndex={0}
       aria-orientation={direction === 'horizontal' ? 'vertical' : 'horizontal'}
-      aria-valuenow={50}
+      aria-valuenow={Math.round(valueNow)}
       aria-valuemin={0}
       aria-valuemax={100}
       onPointerDown={handlePointerDown}
@@ -350,7 +352,7 @@ function DockSplitContainer({ node, onTabClick, onTabClose, onDividerDrag }: Doc
     >
       {node.children.map((child, i) => (
         <DockNodeRenderer
-          key={child.type === 'leaf' ? child.id : `split-${i}-${getSplitId(child)}`}
+          key={child.type === 'leaf' ? child.id : `split-${getSplitId(child)}`}
           node={child}
           onTabClick={onTabClick}
           onTabClose={onTabClose}
@@ -359,6 +361,7 @@ function DockSplitContainer({ node, onTabClick, onTabClose, onDividerDrag }: Doc
             i > 0 ? (
               <DockDivider
                 direction={node.direction}
+                valueNow={total > 0 ? ((sizes.slice(0, i).reduce((a, b) => a + b, 0)) / total) * 100 : 50}
                 onDrag={(delta) => onDividerDrag(splitId, node.direction, i - 1, delta)}
               />
             ) : null
@@ -461,8 +464,12 @@ const DockLayoutRoot = forwardRef<HTMLDivElement, DockLayoutProps>(
         const newSizes = [...existingSizes];
         const minFraction = 0.05 * total;
 
-        newSizes[dividerIndex] = Math.max(minFraction, newSizes[dividerIndex] + deltaFraction);
-        newSizes[dividerIndex + 1] = Math.max(minFraction, newSizes[dividerIndex + 1] - deltaFraction);
+        const left = newSizes[dividerIndex];
+        const right = newSizes[dividerIndex + 1];
+        if (left == null || right == null) return;
+
+        newSizes[dividerIndex] = Math.max(minFraction, left + deltaFraction);
+        newSizes[dividerIndex + 1] = Math.max(minFraction, right - deltaFraction);
 
         const newLayout = updateSizesByPath(currentLayout, path, newSizes);
         emitChange(newLayout);

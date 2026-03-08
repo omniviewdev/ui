@@ -229,6 +229,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onLostPointerCapture={handlePointerUp}
           onDoubleClick={handleDoubleClick}
           onKeyDown={handleKeyDown}
         />

@@ -1,5 +1,6 @@
 import { createRef } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { DockLayout, type DockLeaf, type DockSplit } from './DockLayout';
@@ -217,20 +218,20 @@ describe('DockLayout', () => {
     expect(panel).toHaveAttribute('aria-labelledby', activeTab.id);
   });
 
-  it('navigates tabs with arrow keys', () => {
+  it('navigates tabs with arrow keys', async () => {
+    const user = userEvent.setup();
     renderWithTheme(<DockLayout layout={singleLeaf} data-testid="dock" />);
 
     const tab1 = screen.getByRole('tab', { name: 'File 1' });
     tab1.focus();
 
     // ArrowRight moves to next tab
-    fireEvent.keyDown(tab1, { key: 'ArrowRight' });
-    expect(screen.getByText('Content 2')).toBeInTheDocument();
+    await user.keyboard('{ArrowRight}');
+    expect(await screen.findByText('Content 2')).toBeInTheDocument();
 
     // ArrowRight again moves to third tab
-    const tab2 = screen.getByRole('tab', { name: 'File 2' });
-    fireEvent.keyDown(tab2, { key: 'ArrowRight' });
-    expect(screen.getByText('Content 3')).toBeInTheDocument();
+    await user.keyboard('{ArrowRight}');
+    expect(await screen.findByText('Content 3')).toBeInTheDocument();
   });
 
   it('wraps tab navigation with arrow keys', () => {

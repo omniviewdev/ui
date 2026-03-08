@@ -55,10 +55,12 @@
   color: var(--ov-color-fg-default);
 }
 
-/* Item row — grid layout overrides List.Item flex */
+/* Item row — grid layout overrides List.Item flex.
+   Reset inherited padding-inline so cells align with header cells. */
 .Item {
   display: grid;
   grid-template-columns: var(--_ov-row-grid-columns);
+  padding-inline: 0;
 }
 
 /* Cell */

@@ -19,6 +19,7 @@ export type TabGroupDescriptor = {
   id: TabGroupId;
   title?: string;
   color?: string;
+  fg?: string;
   collapsed?: boolean;
 };
 

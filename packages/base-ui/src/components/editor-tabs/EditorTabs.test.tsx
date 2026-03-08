@@ -1,8 +1,10 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { EditorTabs } from './EditorTabs';
 import type { TabDescriptor, TabGroupDescriptor } from './types';
+
+const OriginalResizeObserver = globalThis.ResizeObserver;
 
 beforeAll(() => {
   globalThis.ResizeObserver = class ResizeObserver {
@@ -10,6 +12,10 @@ beforeAll(() => {
     unobserve() {}
     disconnect() {}
   };
+});
+
+afterAll(() => {
+  globalThis.ResizeObserver = OriginalResizeObserver;
 });
 
 const baseTabs: TabDescriptor[] = [
@@ -60,7 +66,7 @@ describe('EditorTabs', () => {
       />,
     );
 
-    const closeButtons = screen.getAllByLabelText('Close tab');
+    const closeButtons = screen.getAllByLabelText(/^Close /);
     fireEvent.click(closeButtons[0]!);
 
     expect(onCloseTab).toHaveBeenCalledWith('file1');

@@ -18,8 +18,9 @@ export const EditorTabScrollButton = forwardRef<HTMLButtonElement, EditorTabScro
         ref={ref}
         type="button"
         className={cn(styles.ScrollButton, className)}
-        aria-hidden="true"
-        tabIndex={-1}
+        aria-label={`Scroll tabs ${direction}`}
+        disabled={!visible}
+        aria-disabled={!visible || undefined}
         {...(visible ? { 'data-visible': '' } : {})}
         onClick={() => scrollTo(direction)}
       >

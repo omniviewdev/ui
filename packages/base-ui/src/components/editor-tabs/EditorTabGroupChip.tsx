@@ -1,8 +1,22 @@
-import { forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import { Chip } from '../chip';
 import { useEditorTabsContext } from './context/EditorTabsContext';
 import type { TabGroupDescriptor } from './types';
 import styles from './EditorTabs.module.css';
+
+/**
+ * Compute relative luminance from a hex color and return a contrasting fg.
+ * Falls back to '#fff' for non-hex or unparseable values.
+ */
+function contrastFg(hex: string): string {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+  if (!m) return '#fff';
+  const [r, g, b] = [parseInt(m[1]!, 16), parseInt(m[2]!, 16), parseInt(m[3]!, 16)];
+  // YIQ brightness
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 150 ? '#000' : '#fff';
+}
 
 export interface EditorTabGroupChipProps {
   group: TabGroupDescriptor;
@@ -31,6 +45,24 @@ export const EditorTabGroupChip = forwardRef<HTMLElement, EditorTabGroupChipProp
       <span className={styles.GroupChipCount}>{tabCount}</span>
     ) : undefined;
 
+    const chipStyle = useMemo((): CSSProperties => {
+      const base: CSSProperties = {
+        borderRadius: 'var(--ov-size-chip-radius)',
+        alignSelf: 'center',
+        margin: '0 2px',
+      };
+      if (group.color) {
+        const fg = group.fg ?? contrastFg(group.color);
+        return {
+          ...base,
+          '--_ov-accent-bg': group.color,
+          '--_ov-accent-fg': fg,
+          '--_ov-accent-border': group.color,
+        } as CSSProperties;
+      }
+      return base;
+    }, [group.color, group.fg]);
+
     return (
       <Chip
         ref={ref}
@@ -43,18 +75,7 @@ export const EditorTabGroupChip = forwardRef<HTMLElement, EditorTabGroupChipProp
         aria-label={`${group.title ?? 'Group'} — ${tabCount} tab${tabCount !== 1 ? 's' : ''}`}
         onClick={handleClick}
         onContextMenu={handleContextMenu}
-        style={
-          group.color
-            ? ({
-                '--_ov-accent-bg': group.color,
-                '--_ov-accent-fg': '#fff',
-                '--_ov-accent-border': group.color,
-                borderRadius: 'var(--ov-size-chip-radius)',
-                alignSelf: 'center',
-                margin: '0 2px',
-              } as React.CSSProperties)
-            : ({ alignSelf: 'center', margin: '0 2px' } as React.CSSProperties)
-        }
+        style={chipStyle}
       >
         {group.title}
       </Chip>

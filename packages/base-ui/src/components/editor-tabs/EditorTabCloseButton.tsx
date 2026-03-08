@@ -4,19 +4,20 @@ import styles from './EditorTabs.module.css';
 
 export interface EditorTabCloseButtonProps {
   tabId: string;
+  tabTitle: string;
   dirty?: boolean;
   onClose: (id: string) => void;
   className?: string;
 }
 
 export const EditorTabCloseButton = forwardRef<HTMLButtonElement, EditorTabCloseButtonProps>(
-  function EditorTabCloseButton({ tabId, dirty, onClose, className }, ref) {
+  function EditorTabCloseButton({ tabId, tabTitle, dirty, onClose, className }, ref) {
     return (
       <button
         ref={ref}
         type="button"
         className={cn(styles.CloseButton, className)}
-        aria-label="Close tab"
+        aria-label={`Close ${tabTitle}`}
         {...(dirty ? { 'data-has-dirty': '' } : {})}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => {

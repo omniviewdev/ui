@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type WheelEvent } from 'react';
 import type { ScrollState } from '../context/EditorTabsContext';
 
 const SCROLL_AMOUNT = 200;
@@ -32,13 +32,16 @@ export function useTabScroll() {
     el.scrollBy({ left: delta, behavior: 'smooth' });
   }, []);
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
+  const handleWheel = useCallback((e: WheelEvent) => {
     const el = viewportRef.current;
     if (!el) return;
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.preventDefault();
-      el.scrollLeft += e.deltaY;
-    }
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) return;
+    if (e.deltaY > 0 && el.scrollLeft >= maxScroll) return;
+    if (e.deltaY < 0 && el.scrollLeft <= 0) return;
+    e.preventDefault();
+    el.scrollLeft += e.deltaY;
   }, []);
 
   useEffect(() => {
@@ -49,12 +52,16 @@ export function useTabScroll() {
 
     el.addEventListener('scroll', updateScrollState, { passive: true });
 
-    const observer = new ResizeObserver(updateScrollState);
-    observer.observe(el);
+    const resizeObserver = new ResizeObserver(updateScrollState);
+    resizeObserver.observe(el);
+
+    const mutationObserver = new MutationObserver(updateScrollState);
+    mutationObserver.observe(el, { childList: true, subtree: true });
 
     return () => {
       el.removeEventListener('scroll', updateScrollState);
-      observer.disconnect();
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
     };
   }, [updateScrollState]);
 

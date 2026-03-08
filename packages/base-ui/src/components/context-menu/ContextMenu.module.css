@@ -68,6 +68,7 @@
 .Popup[data-ov-variant='ghost'] {
   --_ov-bg: transparent;
   --_ov-border: transparent;
+  --_ov-separator: var(--ov-color-border-muted);
 }
 
 .Popup[data-ov-color='brand'] {
@@ -99,7 +100,7 @@
 .Separator {
   height: 1px;
   margin: 0;
-  background: color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
+  background: var(--_ov-separator, color-mix(in srgb, var(--_ov-border) 72%, transparent 28%));
 }
 
 .Item,

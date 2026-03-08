@@ -242,10 +242,9 @@ export const WithContextMenu: Story = {
     const closeTab = useCallback((id: TabId) => {
       setTabs((prev) => {
         const next = prev.filter((t) => t.id !== id);
-        setActiveId((current) => {
-          if (current === id && next.length > 0) return next[0]!.id;
-          return current;
-        });
+        if (next.length > 0) {
+          setActiveId((current) => (current === id ? next[0]!.id : current));
+        }
         return next;
       });
     }, []);
@@ -358,7 +357,7 @@ export const WithContextMenu: Story = {
                 onClick={() => {
                   const id = getContextTab();
                   const tab = id ? findTab(id) : undefined;
-                  if (tab) void navigator.clipboard.writeText(tab.title);
+                  if (tab) navigator.clipboard.writeText(tab.title).catch(() => {});
                 }}
               >
                 Copy File Name

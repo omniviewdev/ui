@@ -99,7 +99,7 @@ export const EditorTabItem = memo(
         {showTrailing && (
           <span className={styles.TabTrailing}>
             {tab.dirty && <span className={styles.DirtyDot} />}
-            <EditorTabCloseButton tabId={tab.id} dirty={tab.dirty} onClose={onCloseTab} />
+            <EditorTabCloseButton tabId={tab.id} tabTitle={tab.title} dirty={tab.dirty} onClose={onCloseTab} />
           </span>
         )}
       </div>

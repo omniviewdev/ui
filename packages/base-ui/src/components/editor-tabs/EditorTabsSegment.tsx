@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode } from 'react';
+import { forwardRef, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import type { TabGroupDescriptor } from './types';
 import { EditorTabGroupChip } from './EditorTabGroupChip';
@@ -23,7 +23,7 @@ export const EditorTabsSegment = forwardRef<HTMLDivElement, EditorTabsSegmentPro
         data-segment={type}
         role="presentation"
         {...(isCollapsed ? { 'data-collapsed': '' } : {})}
-        {...(group?.color ? { style: { '--_ov-group-color': group.color } as React.CSSProperties } : {})}
+        {...(group?.color ? { style: { '--_ov-group-color': group.color } as CSSProperties } : {})}
       >
         {type === 'group' && group && (
           <EditorTabGroupChip group={group} tabCount={tabCount} />

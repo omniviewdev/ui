@@ -152,7 +152,7 @@
   height: 14px;
   padding: 0 3px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.25);
+  background: var(--ov-color-state-hover, rgb(255 255 255 / 0.25));
   font-size: var(--ov-primitive-font-size-11);
   line-height: 1;
 }
@@ -256,7 +256,7 @@
 .TabTitle {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  max-width: var(--_ov-tab-title-max-width, 160px);
 }
 
 /* Trailing slot: dirty dot and close button occupy the same fixed-size space */

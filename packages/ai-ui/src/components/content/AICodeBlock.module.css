@@ -1,0 +1,97 @@
+.Root {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+  overflow: hidden;
+  background: var(--ov-color-markdown-code-bg, var(--ov-color-bg-inset));
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  border-bottom: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface);
+}
+
+.FileInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  min-width: 0;
+}
+
+.Filename {
+  font-family: var(--ov-font-family-mono, monospace);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Language {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  text-transform: lowercase;
+}
+
+.HeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+}
+
+.CopyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: var(--ov-radius-sm, 3px);
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.CopyButton:hover {
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+}
+
+.CopyButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
+.Pre {
+  margin: 0;
+  padding: var(--ov-space-3, 12px);
+  overflow-x: auto;
+}
+
+.Code {
+  font-family: var(--ov-font-family-mono, monospace);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  color: var(--ov-color-fg-default);
+}
+
+.Line {
+  display: block;
+}
+
+.LineNumber {
+  display: inline-block;
+  width: 3ch;
+  margin-right: var(--ov-space-3, 12px);
+  text-align: right;
+  color: var(--ov-color-editor-line-number, var(--ov-color-fg-subtle));
+  user-select: none;
+}
+
+.LineContent {
+  white-space: pre;
+}

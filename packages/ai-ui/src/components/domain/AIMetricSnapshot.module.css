@@ -1,0 +1,53 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+}
+
+.Label {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+}
+
+.Value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--ov-space-1, 4px);
+  font-size: var(--ov-font-size-lg, 1.0625rem);
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-default);
+}
+
+.Root[data-ov-status='warning'] .Value {
+  color: var(--ov-color-warning-default);
+}
+
+.Root[data-ov-status='critical'] .Value {
+  color: var(--ov-color-danger-default);
+}
+
+.Unit {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-normal, 400);
+  color: var(--ov-color-fg-muted);
+}
+
+.Trend {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+}
+
+.Trend[data-ov-trend='up'] {
+  color: var(--ov-color-danger-default);
+}
+
+.Trend[data-ov-trend='down'] {
+  color: var(--ov-color-success-default);
+}
+
+.Trend[data-ov-trend='stable'] {
+  color: var(--ov-color-fg-muted);
+}

@@ -1,0 +1,18 @@
+.Root {
+  display: inline;
+  font-size: 0.75em;
+  color: var(--ov-color-chat-citation, var(--ov-color-fg-brand));
+  cursor: pointer;
+  vertical-align: super;
+  font-weight: var(--ov-font-weight-medium, 500);
+}
+
+.Root:hover {
+  text-decoration: underline;
+}
+
+.Root:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+  border-radius: var(--ov-radius-sm, 3px);
+}

@@ -1,0 +1,72 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+}
+
+.Root[data-ov-destructive='true'] {
+  border-color: var(--ov-color-danger-default);
+}
+
+.Title {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-default);
+}
+
+.Description {
+  margin: 0;
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  color: var(--ov-color-fg-muted);
+  line-height: var(--ov-line-height-normal, 1.5);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  justify-content: flex-end;
+}
+
+.CancelButton {
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  cursor: pointer;
+}
+
+.CancelButton:hover {
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.ConfirmButton {
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  border: 1px solid var(--ov-color-success-default);
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-success-default);
+  color: var(--ov-color-fg-on-solid, #fff);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  cursor: pointer;
+}
+
+.ConfirmButton:hover {
+  opacity: 0.9;
+}
+
+.ConfirmButton[data-ov-destructive='true'] {
+  background: var(--ov-color-danger-default);
+  border-color: var(--ov-color-danger-default);
+}
+
+.CancelButton:focus-visible,
+.ConfirmButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}

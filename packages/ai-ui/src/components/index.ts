@@ -4,3 +4,5 @@ export * from './reasoning';
 export * from './tool-calls';
 export * from './agent';
 export * from './permissions';
+export * from './content';
+export * from './domain';

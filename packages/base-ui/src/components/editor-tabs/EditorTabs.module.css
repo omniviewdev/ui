@@ -400,6 +400,24 @@
   display: none;
 }
 
+/* Source tab hidden when detach overlay is visible */
+.Tab[data-detach-source] {
+  visibility: hidden;
+}
+
+/* Detach ghost: elevated, slightly transparent */
+.DetachGhost {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
+  border-radius: var(--ov-primitive-radius-sm);
+  cursor: grabbing;
+  pointer-events: none;
+}
+
+.DetachGhost::after {
+  display: none;
+}
+
 /* ---------------------------------------------------------------------------
    Reduced motion
    --------------------------------------------------------------------------- */
@@ -408,6 +426,8 @@
   .Tab,
   .Tab::after,
   .Tab[data-dragging],
+  .Tab[data-detach-source],
+  .DetachGhost,
   .CloseButton,
   .TabTrailing .DirtyDot,
   .ScrollButton,

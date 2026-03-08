@@ -1,21 +1,46 @@
 import { forwardRef, useCallback, useMemo } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { Chip } from '../chip';
 import { useEditorTabsContext } from './context/EditorTabsContext';
 import type { TabGroupDescriptor } from './types';
 import styles from './EditorTabs.module.css';
 
+/** Convert an sRGB channel (0–255) to linear light. */
+function srgbToLinear(c: number): number {
+  const s = c / 255;
+  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+}
+
+/** WCAG relative luminance from linear RGB. */
+function luminance(r: number, g: number, b: number): number {
+  return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b);
+}
+
+/** WCAG contrast ratio between two luminances. */
+function contrastRatio(l1: number, l2: number): number {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 /**
- * Compute relative luminance from a hex color and return a contrasting fg.
- * Falls back to '#fff' for non-hex or unparseable values.
+ * Return '#000' or '#fff' — whichever has higher WCAG contrast against `hex`.
+ * Accepts 3- or 6-digit hex. Falls back to '#fff' for unparseable values.
  */
 function contrastFg(hex: string): string {
-  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+  // 3-digit shorthand
+  let m = /^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(hex);
+  if (m) {
+    const [r, g, b] = [parseInt(m[1]! + m[1]!, 16), parseInt(m[2]! + m[2]!, 16), parseInt(m[3]! + m[3]!, 16)];
+    const l = luminance(r, g, b);
+    return contrastRatio(l, 1) >= contrastRatio(l, 0) ? '#fff' : '#000';
+  }
+  // 6-digit
+  m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
   if (!m) return '#fff';
   const [r, g, b] = [parseInt(m[1]!, 16), parseInt(m[2]!, 16), parseInt(m[3]!, 16)];
-  // YIQ brightness
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-  return yiq >= 150 ? '#000' : '#fff';
+  const l = luminance(r, g, b);
+  return contrastRatio(l, 1) >= contrastRatio(l, 0) ? '#fff' : '#000';
 }
 
 export interface EditorTabGroupChipProps {
@@ -33,7 +58,7 @@ export const EditorTabGroupChip = forwardRef<HTMLElement, EditorTabGroupChipProp
     }, [group.id, onToggleGroupCollapsed]);
 
     const handleContextMenu = useCallback(
-      (e: React.MouseEvent<HTMLElement>) => {
+      (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
         e.stopPropagation();
         onGroupContextMenu?.(group.id, e);

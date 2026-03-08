@@ -36,6 +36,7 @@
   --_ov-tab-active-bg: var(--ov-color-bg-surface);
   --_ov-tab-active-border: var(--ov-color-brand-400);
   --_ov-group-header-bg: var(--ov-color-bg-surface-raised);
+
   border-bottom-color: var(--_ov-tab-border);
 }
 
@@ -56,6 +57,7 @@
   --_ov-tab-active-border: var(--ov-color-brand-400);
   --_ov-tab-divider: var(--ov-color-border-strong);
   --_ov-group-header-bg: transparent;
+
   border-bottom-color: var(--ov-color-border-default);
 }
 
@@ -65,6 +67,7 @@
   --_ov-tab-active-border: var(--ov-color-brand-400);
   --_ov-tab-divider: transparent;
   --_ov-group-header-bg: transparent;
+
   border-bottom-color: transparent;
 }
 

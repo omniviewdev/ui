@@ -257,6 +257,7 @@ export const WithContextMenu: Story = {
     const closeToRight = useCallback((id: TabId) => {
       setTabs((prev) => {
         const idx = prev.findIndex((t) => t.id === id);
+        if (idx === -1) return prev;
         const next = prev.slice(0, idx + 1);
         setActiveId((current) => {
           if (!next.some((t) => t.id === current) && next.length > 0) return next[next.length - 1]!.id;
@@ -269,6 +270,7 @@ export const WithContextMenu: Story = {
     const closeToLeft = useCallback((id: TabId) => {
       setTabs((prev) => {
         const idx = prev.findIndex((t) => t.id === id);
+        if (idx === -1) return prev;
         const next = prev.slice(idx);
         setActiveId((current) => {
           if (!next.some((t) => t.id === current) && next.length > 0) return next[0]!.id;

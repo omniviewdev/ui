@@ -21,7 +21,13 @@ export function useTabScroll() {
   const updateScrollState = useCallback(() => {
     const el = viewportRef.current;
     if (el) {
-      setScrollState(computeScrollState(el));
+      const next = computeScrollState(el);
+      setScrollState((prev) => {
+        if (prev.canScrollLeft === next.canScrollLeft && prev.canScrollRight === next.canScrollRight) {
+          return prev;
+        }
+        return next;
+      });
     }
   }, []);
 

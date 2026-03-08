@@ -134,6 +134,18 @@ describe('FormField', () => {
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
+
+  it('wraps children inside label when htmlFor is absent', () => {
+    renderWithTheme(
+      <FormField label="Wrapped">
+        <input data-testid="wrapped-input" />
+      </FormField>,
+    );
+
+    const label = screen.getByText('Wrapped').closest('label');
+    expect(label).not.toBeNull();
+    expect(label!.contains(screen.getByTestId('wrapped-input'))).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------

@@ -12,7 +12,7 @@ import type { ComponentSize } from '../../system/types';
 import styles from './Breadcrumbs.module.css';
 
 export interface BreadcrumbsProps extends HTMLAttributes<HTMLElement> {
-  /** Separator rendered between items. Defaults to '/'. */
+  /** Separator rendered between items. Defaults to a chevron right icon. */
   separator?: ReactNode;
   /** Maximum number of visible items before collapsing. Defaults to 8. */
   maxItems?: number;
@@ -100,6 +100,11 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
       Math.max(0, maxItems - 1 - effectiveBefore),
     );
 
+    // If both are 0, collapsing would show only the ellipsis — skip it
+    if (effectiveBefore + effectiveAfter === 0) {
+      visibleItems = childArray;
+    } else {
+
     const before = childArray.slice(0, effectiveBefore);
     const after = childArray.slice(totalItems - effectiveAfter);
 
@@ -119,6 +124,7 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
     );
 
     visibleItems = [...before, ellipsis, ...after];
+    }
   } else {
     visibleItems = childArray;
   }
@@ -136,7 +142,7 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
           <li key={isValidElement(child) ? (child.key ?? index) : index} className={styles.Entry}>
             {child}
             {index < visibleItems.length - 1 ? (
-              <span className={styles.Separator} aria-hidden="true">
+              <span className={styles.Separator} aria-hidden="true" data-ov-role="separator">
                 {separator}
               </span>
             ) : null}

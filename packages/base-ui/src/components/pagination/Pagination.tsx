@@ -98,7 +98,8 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
             className={styles.Item}
             aria-current={item === page ? 'page' : undefined}
             data-ov-active={item === page ? 'true' : undefined}
-            onClick={handleClick(item)}
+            disabled={item === page}
+            onClick={item === page ? undefined : handleClick(item)}
           >
             {item}
           </button>

@@ -87,6 +87,10 @@ describe('Toolbar', () => {
 
       const group = screen.getByTestId('sep-group');
       expect(group).toHaveAttribute('data-ov-separator', 'true');
+
+      // Assert the actual separator element is rendered
+      const separator = group.querySelector('[aria-hidden="true"]');
+      expect(separator).toBeInTheDocument();
     });
 
     it('does not render separator by default', () => {

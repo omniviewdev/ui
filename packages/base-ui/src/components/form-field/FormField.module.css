@@ -20,6 +20,7 @@
 }
 
 .Description {
+  display: block;
   margin: 0;
   font-size: var(--ov-font-size-caption);
   color: var(--ov-color-fg-muted);

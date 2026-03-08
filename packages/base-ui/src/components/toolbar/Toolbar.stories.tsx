@@ -94,7 +94,7 @@ export const AllSizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <div key={size}>
-          <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', color: '#888' }}>
+          <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>
             size=&quot;{size}&quot;
           </div>
           <Toolbar aria-label={`Toolbar ${size}`} size={size}>

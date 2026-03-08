@@ -57,8 +57,8 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(function For
               *
             </span>
           ) : null}
-          {description ? <p className={styles.Description}>{description}</p> : null}
-          <div className={styles.Control}>{children}</div>
+          {description ? <span className={styles.Description}>{description}</span> : null}
+          <span className={styles.Control}>{children}</span>
         </label>
       )}
       {error ? (

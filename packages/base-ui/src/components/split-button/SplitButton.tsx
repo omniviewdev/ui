@@ -23,7 +23,8 @@ export interface SplitButtonProps
   disabled?: boolean;
 }
 
-export interface SplitButtonActionProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'color'> {
+export interface SplitButtonActionProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
   disabled?: boolean;
 }
 
@@ -132,6 +133,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
         aria-haspopup="true"
         aria-expanded={open}
         aria-controls={dropdownId}
+        aria-label="More actions"
         onClick={toggle}
         {...styleDataAttributes({
           variant: ctx?.variant,
@@ -143,7 +145,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
       </button>
 
       {open && (
-        <div id={dropdownId} className={styles.Dropdown} role="menu">
+        <div id={dropdownId} className={styles.Dropdown}>
           {children}
         </div>
       )}

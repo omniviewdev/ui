@@ -50,7 +50,7 @@ describe('SplitButton', () => {
     );
 
     // Dropdown should not be visible initially
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    expect(screen.queryByText('Save as Draft')).not.toBeInTheDocument();
 
     // Click trigger
     const trigger = screen
@@ -59,7 +59,6 @@ describe('SplitButton', () => {
     fireEvent.click(trigger);
 
     // Dropdown should be visible
-    expect(screen.getByRole('menu')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save as Draft' })).toBeInTheDocument();
   });
 

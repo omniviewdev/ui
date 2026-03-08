@@ -12,7 +12,8 @@ import type { StyledComponentProps, ComponentColor } from '../../system/types';
 import styles from './ConfirmButton.module.css';
 
 export interface ConfirmButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick'>, StyledComponentProps {
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick' | 'type'>,
+    StyledComponentProps {
   /** Text shown in the confirm state. */
   confirmLabel?: string;
   /** Color applied in the confirm state. */
@@ -45,15 +46,19 @@ export const ConfirmButton = forwardRef<HTMLButtonElement, ConfirmButtonProps>(
   ) {
     const [confirming, setConfirming] = useState(false);
 
-    const handleClick = useCallback(() => {
-      if (disabled) return;
-      if (confirming) {
-        onConfirm();
-        setConfirming(false);
-      } else {
-        setConfirming(true);
-      }
-    }, [confirming, disabled, onConfirm]);
+    const handleClick = useCallback(
+      (event: React.MouseEvent) => {
+        if (disabled) return;
+        if (confirming) {
+          onConfirm();
+          setConfirming(false);
+        } else {
+          event.preventDefault();
+          setConfirming(true);
+        }
+      },
+      [confirming, disabled, onConfirm],
+    );
 
     useEffect(() => {
       if (!confirming) return;

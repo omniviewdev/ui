@@ -20,9 +20,8 @@ describe('Breadcrumbs', () => {
 
     // Default separator is an icon; verify separator spans are rendered
     const nav = screen.getByRole('navigation');
-    const separators = nav.querySelectorAll('[aria-hidden="true"]');
-    // 2 separators between 3 items
-    expect(separators.length).toBeGreaterThanOrEqual(2);
+    const separators = nav.querySelectorAll('[data-ov-role="separator"]');
+    expect(separators).toHaveLength(2);
   });
 
   it('renders a custom separator', () => {

@@ -68,6 +68,14 @@ describe('Pagination', () => {
     expect(ellipses.length).toBeGreaterThanOrEqual(2);
   });
 
+  it('does not emit onChange when the active page is clicked', () => {
+    const onChange = vi.fn();
+    renderWithTheme(<Pagination count={5} page={3} onChange={onChange} />);
+
+    fireEvent.click(screen.getByRole('button', { name: '3' }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('fires onChange with the correct page number', () => {
     const onChange = vi.fn();
     renderWithTheme(<Pagination count={5} page={3} onChange={onChange} />);

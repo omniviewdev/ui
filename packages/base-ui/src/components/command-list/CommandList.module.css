@@ -1,0 +1,222 @@
+/* ---------------------------------------------------------------------------
+ * CommandList styles
+ * Command palette / combobox list styling.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  --_ov-list-gap: 0;
+  --_ov-item-height: var(--ov-size-list-item-height-md);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-md);
+  --_ov-item-radius: var(--ov-size-list-item-radius);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-highlight-bg: var(--ov-color-state-hover);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-md);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-md);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-md);
+
+  /* Command-list specific */
+  --_ov-cmdlist-max-height: 400px;
+  --_ov-cmdlist-highlight-color: var(--ov-color-accent-fg);
+  --_ov-cmdlist-highlight-weight: 600;
+
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  font-family: var(--ov-font-sans);
+  outline: none;
+}
+
+/* --- Density variants ----------------------------------------------------- */
+
+.Root[data-ov-density='compact'] {
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-density='comfortable'] {
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-lg);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+/* ---------------------------------------------------------------------------
+ * Input — uses SearchInput, border-bottom separates from results
+ * --------------------------------------------------------------------------- */
+
+.Input {
+  border-bottom: 1px solid var(--ov-color-border-muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * Results / Viewport — themed scrollbar
+ * --------------------------------------------------------------------------- */
+
+.Results {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  max-block-size: var(--_ov-cmdlist-max-height);
+  outline: none;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ov-color-scrollarea-thumb) var(--ov-color-scrollarea-track);
+  scrollbar-gutter: stable;
+}
+
+.Results::-webkit-scrollbar {
+  width: var(--ov-size-scrollarea-scrollbar-sm);
+}
+
+.Results::-webkit-scrollbar-track {
+  background: var(--ov-color-scrollarea-track);
+}
+
+.Results::-webkit-scrollbar-thumb {
+  background: var(--ov-color-scrollarea-thumb);
+  border-radius: var(--ov-size-scrollarea-scrollbar-sm);
+}
+
+.Results::-webkit-scrollbar-thumb:hover {
+  background: var(--ov-color-scrollarea-thumb-hover);
+}
+
+/* ---------------------------------------------------------------------------
+ * Group
+ * --------------------------------------------------------------------------- */
+
+.Group {
+  display: flex;
+  flex-direction: column;
+}
+
+.GroupHeader {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  letter-spacing: 0.02em;
+  padding-inline: var(--_ov-item-padding-inline);
+  padding-block: 6px;
+  line-height: 1;
+}
+
+/* Thin separator line between groups — skip the first group */
+.Group + .Group > .GroupHeader {
+  border-block-start: 1px solid var(--ov-color-border-muted);
+  margin-block-start: 2px;
+  padding-block-start: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Item
+ * --------------------------------------------------------------------------- */
+
+.Item {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-control);
+  min-height: var(--_ov-item-height);
+  padding-inline: var(--_ov-item-padding-inline);
+  border-radius: var(--_ov-item-radius);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.25;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item:hover {
+  background: var(--_ov-highlight-bg);
+}
+
+.Item[data-ov-active='true'] {
+  background: var(--_ov-highlight-bg);
+}
+
+.Item[data-ov-disabled='true'] {
+  opacity: var(--ov-opacity-disabled);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Item slots
+ * --------------------------------------------------------------------------- */
+
+.ItemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--_ov-icon-size);
+  min-inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+  color: var(--ov-color-fg-muted);
+}
+
+.ItemIcon :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+.ItemLabel {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Highlight {
+  color: var(--_ov-cmdlist-highlight-color);
+  font-weight: var(--_ov-cmdlist-highlight-weight);
+  background: none;
+}
+
+.ItemDescription {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemShortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}
+
+/* ---------------------------------------------------------------------------
+ * Structural
+ * --------------------------------------------------------------------------- */
+
+.Empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-body);
+}
+
+.Loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-body);
+}
+
+.Separator {
+  height: 1px;
+  background: var(--ov-color-border-muted);
+  margin-block: 2px;
+}

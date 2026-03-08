@@ -17,20 +17,18 @@ describe('useDebouncedValue', () => {
   });
 
   it('does not update immediately on value change', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebouncedValue(value, 300),
-      { initialProps: { value: 'a' } },
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
     expect(result.current).toBe('a');
   });
 
   it('updates after the delay', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebouncedValue(value, 300),
-      { initialProps: { value: 'a' } },
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
 
@@ -42,10 +40,9 @@ describe('useDebouncedValue', () => {
   });
 
   it('only emits the final value on rapid changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebouncedValue(value, 300),
-      { initialProps: { value: 'a' } },
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
     act(() => {
@@ -66,10 +63,9 @@ describe('useDebouncedValue', () => {
   });
 
   it('cleans up timeout on unmount', () => {
-    const { rerender, unmount } = renderHook(
-      ({ value }) => useDebouncedValue(value, 300),
-      { initialProps: { value: 'a' } },
-    );
+    const { rerender, unmount } = renderHook(({ value }) => useDebouncedValue(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
     unmount();
@@ -81,10 +77,9 @@ describe('useDebouncedValue', () => {
   });
 
   it('uses default delay of 300ms', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebouncedValue(value),
-      { initialProps: { value: 'a' } },
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
 

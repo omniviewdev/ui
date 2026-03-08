@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-type DebouncedFunction<T extends (...args: never[]) => unknown> = T & {
+interface DebouncedFunction<TArgs extends unknown[], TReturn> {
+  (...args: TArgs): void;
   cancel: () => void;
-  flush: () => void;
-};
+  flush: () => TReturn | undefined;
+}
 
 /**
  * Returns a debounced version of the callback that only fires after `delay` ms
  * of no invocations. Includes `cancel()` and `flush()` methods.
  */
-export function useDebouncedCallback<T extends (...args: never[]) => unknown>(
-  callback: T,
+export function useDebouncedCallback<TArgs extends unknown[], TReturn>(
+  callback: (...args: TArgs) => TReturn,
   delay = 300,
-): DebouncedFunction<T> {
+): DebouncedFunction<TArgs, TReturn> {
   const callbackRef = useRef(callback);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
-  const pendingArgsRef = useRef<Parameters<T>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pendingArgsRef = useRef<TArgs | undefined>(undefined);
 
   // Keep callback ref fresh without re-creating the debounced function
   callbackRef.current = callback;
@@ -28,20 +29,25 @@ export function useDebouncedCallback<T extends (...args: never[]) => unknown>(
     pendingArgsRef.current = undefined;
   }, []);
 
-  const flush = useCallback(() => {
+  const flush = useCallback((): TReturn | undefined => {
     if (timerRef.current !== undefined && pendingArgsRef.current !== undefined) {
       clearTimeout(timerRef.current);
       timerRef.current = undefined;
-      callbackRef.current(...pendingArgsRef.current);
+      const args = pendingArgsRef.current;
       pendingArgsRef.current = undefined;
+      return callbackRef.current(...args);
     }
+    return undefined;
   }, []);
 
   // Clean up on unmount
   useEffect(() => cancel, [cancel]);
 
+  // Cancel pending timers when delay changes
+  useEffect(() => cancel, [delay, cancel]);
+
   const debounced = useCallback(
-    (...args: Parameters<T>) => {
+    (...args: TArgs) => {
       pendingArgsRef.current = args;
       if (timerRef.current !== undefined) {
         clearTimeout(timerRef.current);
@@ -53,7 +59,7 @@ export function useDebouncedCallback<T extends (...args: never[]) => unknown>(
       }, delay);
     },
     [delay],
-  ) as DebouncedFunction<T>;
+  ) as DebouncedFunction<TArgs, TReturn>;
 
   debounced.cancel = cancel;
   debounced.flush = flush;

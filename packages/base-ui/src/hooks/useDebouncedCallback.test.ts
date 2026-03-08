@@ -66,20 +66,22 @@ describe('useDebouncedCallback', () => {
     expect(fn).not.toHaveBeenCalled();
   });
 
-  it('flush() immediately invokes the pending call', () => {
-    const fn = vi.fn();
+  it('flush() immediately invokes the pending call and returns the result', () => {
+    const fn = vi.fn((x: string) => `result:${x}`);
     const { result } = renderHook(() => useDebouncedCallback(fn, 300));
 
     act(() => {
       result.current('flushed');
     });
 
+    let returnValue: string | undefined;
     act(() => {
-      result.current.flush();
+      returnValue = result.current.flush();
     });
 
     expect(fn).toHaveBeenCalledWith('flushed');
     expect(fn).toHaveBeenCalledTimes(1);
+    expect(returnValue).toBe('result:flushed');
 
     // Should not fire again after delay
     act(() => {
@@ -87,6 +89,19 @@ describe('useDebouncedCallback', () => {
     });
 
     expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it('flush() returns undefined when nothing is pending', () => {
+    const fn = vi.fn(() => 'value');
+    const { result } = renderHook(() => useDebouncedCallback(fn, 300));
+
+    let returnValue: string | undefined;
+    act(() => {
+      returnValue = result.current.flush();
+    });
+
+    expect(returnValue).toBeUndefined();
+    expect(fn).not.toHaveBeenCalled();
   });
 
   it('cleans up on unmount', () => {
@@ -106,13 +121,38 @@ describe('useDebouncedCallback', () => {
     expect(fn).not.toHaveBeenCalled();
   });
 
+  it('cancels pending timer when delay changes', () => {
+    const fn = vi.fn();
+    const { result, rerender } = renderHook(({ delay }) => useDebouncedCallback(fn, delay), {
+      initialProps: { delay: 300 },
+    });
+
+    act(() => {
+      result.current('pending');
+    });
+
+    // Change delay while timer is pending
+    rerender({ delay: 500 });
+
+    // Old delay fires — callback should NOT be called
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+    expect(fn).not.toHaveBeenCalled();
+
+    // New delay fires — still no call since the pending work was cancelled
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(fn).not.toHaveBeenCalled();
+  });
+
   it('uses latest callback ref', () => {
     const fn1 = vi.fn();
     const fn2 = vi.fn();
-    const { result, rerender } = renderHook(
-      ({ cb }) => useDebouncedCallback(cb, 300),
-      { initialProps: { cb: fn1 } },
-    );
+    const { result, rerender } = renderHook(({ cb }) => useDebouncedCallback(cb, 300), {
+      initialProps: { cb: fn1 },
+    });
 
     act(() => {
       result.current('test');

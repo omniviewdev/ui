@@ -105,7 +105,7 @@ describe('Chip', () => {
     });
 
     it('forwards ref', () => {
-      const ref = { current: null } as React.RefObject<HTMLDivElement>;
+      const ref = { current: null } as unknown as React.RefObject<HTMLDivElement>;
       renderWithTheme(
         <Chip.Group ref={ref}>
           <Chip.Item>A</Chip.Item>

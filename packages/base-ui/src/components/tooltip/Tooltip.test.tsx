@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { Tooltip } from './Tooltip';
@@ -55,6 +56,57 @@ describe('Tooltip', () => {
       );
 
       expect(screen.getByText('Lazy content')).toBeInTheDocument();
+    });
+
+    it('renders content immediately on subsequent opens (hasOpened persists)', async () => {
+      const user = userEvent.setup();
+
+      renderWithTheme(
+        <Tooltip.Provider delay={0} closeDelay={0}>
+          <Tooltip.Root lazy>
+            <Tooltip.Trigger>Hover me</Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Positioner>
+                <Tooltip.Popup>Persistent content</Tooltip.Popup>
+              </Tooltip.Positioner>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>,
+      );
+
+      // Content not rendered initially
+      expect(screen.queryByText('Persistent content')).not.toBeInTheDocument();
+
+      // Hover to open — content appears
+      await user.hover(screen.getByRole('button', { name: 'Hover me' }));
+      expect(await screen.findByText('Persistent content')).toBeInTheDocument();
+
+      // Unhover to close, then hover again — content should appear immediately
+      await user.unhover(screen.getByRole('button', { name: 'Hover me' }));
+      await user.hover(screen.getByRole('button', { name: 'Hover me' }));
+      expect(await screen.findByText('Persistent content')).toBeInTheDocument();
+    });
+
+    it('renders popup content on user hover interaction', async () => {
+      const user = userEvent.setup();
+
+      renderWithTheme(
+        <Tooltip.Provider delay={0} closeDelay={0}>
+          <Tooltip.Root lazy>
+            <Tooltip.Trigger>Hover target</Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Positioner>
+                <Tooltip.Popup>Hover content</Tooltip.Popup>
+              </Tooltip.Positioner>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>,
+      );
+
+      expect(screen.queryByText('Hover content')).not.toBeInTheDocument();
+
+      await user.hover(screen.getByRole('button', { name: 'Hover target' }));
+      expect(await screen.findByText('Hover content')).toBeInTheDocument();
     });
 
     it('always renders content when lazy=false (default)', () => {

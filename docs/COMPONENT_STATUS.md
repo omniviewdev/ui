@@ -1,6 +1,6 @@
 # Component Status
 
-This document reflects the current implementation state in `packages/base-ui/src/components`.
+This document reflects the current implementation state in `packages/base-ui/src/components`, `packages/base-ui/src/hooks`, and `packages/base-ui/src/system`.
 
 ## Approved component set
 

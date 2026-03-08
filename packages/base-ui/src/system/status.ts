@@ -1,33 +1,6 @@
-export type StatusValue =
-  | 'success'
-  | 'healthy'
-  | 'running'
-  | 'ready'
-  | 'active'
-  | 'complete'
-  | 'connected'
-  | 'warning'
-  | 'degraded'
-  | 'slow'
-  | 'danger'
-  | 'error'
-  | 'failed'
-  | 'unhealthy'
-  | 'critical'
-  | 'disconnected'
-  | 'info'
-  | 'pending'
-  | 'waiting'
-  | 'building'
-  | 'syncing'
-  | 'neutral'
-  | 'unknown'
-  | 'idle'
-  | 'stopped';
-
 export type StatusColor = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 
-const STATUS_MAP: Record<string, StatusColor> = {
+const STATUS_MAP = {
   success: 'success',
   healthy: 'success',
   running: 'success',
@@ -53,12 +26,14 @@ const STATUS_MAP: Record<string, StatusColor> = {
   unknown: 'neutral',
   idle: 'neutral',
   stopped: 'neutral',
-};
+} as const satisfies Record<string, StatusColor>;
+
+export type StatusValue = keyof typeof STATUS_MAP;
 
 /**
  * Maps a semantic status string to a component color.
  * Case-insensitive. Unknown values default to 'neutral'.
  */
 export function statusToColor(status: string): StatusColor {
-  return STATUS_MAP[status.toLowerCase()] ?? 'neutral';
+  return (STATUS_MAP as Record<string, StatusColor>)[status.toLowerCase()] ?? 'neutral';
 }

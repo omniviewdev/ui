@@ -4,6 +4,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useState,
   type ComponentPropsWithoutRef,
   type ElementRef,
@@ -72,8 +73,15 @@ function TooltipRoot<Payload>({
   const resolved = useResolvedStyleProps({ variant, color, size });
   const [hasOpened, setHasOpened] = useState(!lazy || !!defaultOpen || !!open);
 
-  const handleOpenChange: typeof onOpenChange = useCallback(
-    (nextOpen, event) => {
+  // Sync controlled open prop to hasOpened
+  useEffect(() => {
+    if (open && !hasOpened) {
+      setHasOpened(true);
+    }
+  }, [open, hasOpened]);
+
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean, event: BaseTooltip.Root.ChangeEventDetails) => {
       if (nextOpen && !hasOpened) {
         setHasOpened(true);
       }

@@ -4,7 +4,7 @@ import { Card } from '../card';
 import { Separator, type SeparatorProps } from './Separator';
 
 const meta = {
-  title: 'Components/Separator',
+  title: 'Layout/Separator',
   component: Separator,
   tags: ['autodocs'],
   args: {

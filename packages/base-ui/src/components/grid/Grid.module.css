@@ -1,0 +1,372 @@
+.Root {
+  display: grid;
+  gap: var(--_ov-spacing, var(--ov-primitive-space-2));
+}
+
+/* Fixed columns mode */
+.Root[data-ov-grid-mode='fixed'] {
+  grid-template-columns: repeat(var(--_ov-columns, 12), 1fr);
+}
+
+/* Auto-responsive mode */
+.Root[data-ov-grid-mode='auto'] {
+  grid-template-columns: repeat(auto-fit, minmax(var(--_ov-min-child-width, 200px), 1fr));
+}
+
+/* Fixed column counts */
+.Root[data-ov-columns='1'] {
+  --_ov-columns: 1;
+}
+.Root[data-ov-columns='2'] {
+  --_ov-columns: 2;
+}
+.Root[data-ov-columns='3'] {
+  --_ov-columns: 3;
+}
+.Root[data-ov-columns='4'] {
+  --_ov-columns: 4;
+}
+.Root[data-ov-columns='5'] {
+  --_ov-columns: 5;
+}
+.Root[data-ov-columns='6'] {
+  --_ov-columns: 6;
+}
+.Root[data-ov-columns='7'] {
+  --_ov-columns: 7;
+}
+.Root[data-ov-columns='8'] {
+  --_ov-columns: 8;
+}
+.Root[data-ov-columns='9'] {
+  --_ov-columns: 9;
+}
+.Root[data-ov-columns='10'] {
+  --_ov-columns: 10;
+}
+.Root[data-ov-columns='11'] {
+  --_ov-columns: 11;
+}
+.Root[data-ov-columns='12'] {
+  --_ov-columns: 12;
+}
+
+/* Spacing scale */
+.Root[data-ov-spacing='0'] {
+  --_ov-spacing: var(--ov-primitive-space-0);
+}
+.Root[data-ov-spacing='1'] {
+  --_ov-spacing: var(--ov-primitive-space-1);
+}
+.Root[data-ov-spacing='2'] {
+  --_ov-spacing: var(--ov-primitive-space-2);
+}
+.Root[data-ov-spacing='3'] {
+  --_ov-spacing: var(--ov-primitive-space-3);
+}
+.Root[data-ov-spacing='4'] {
+  --_ov-spacing: var(--ov-primitive-space-4);
+}
+
+/* Row spacing overrides */
+.Root[data-ov-row-spacing='0'] {
+  row-gap: var(--ov-primitive-space-0);
+}
+.Root[data-ov-row-spacing='1'] {
+  row-gap: var(--ov-primitive-space-1);
+}
+.Root[data-ov-row-spacing='2'] {
+  row-gap: var(--ov-primitive-space-2);
+}
+.Root[data-ov-row-spacing='3'] {
+  row-gap: var(--ov-primitive-space-3);
+}
+.Root[data-ov-row-spacing='4'] {
+  row-gap: var(--ov-primitive-space-4);
+}
+
+/* Column spacing overrides */
+.Root[data-ov-column-spacing='0'] {
+  column-gap: var(--ov-primitive-space-0);
+}
+.Root[data-ov-column-spacing='1'] {
+  column-gap: var(--ov-primitive-space-1);
+}
+.Root[data-ov-column-spacing='2'] {
+  column-gap: var(--ov-primitive-space-2);
+}
+.Root[data-ov-column-spacing='3'] {
+  column-gap: var(--ov-primitive-space-3);
+}
+.Root[data-ov-column-spacing='4'] {
+  column-gap: var(--ov-primitive-space-4);
+}
+
+/* ───────────────────────────────────────────────
+   Grid items
+   ─────────────────────────────────────────────── */
+
+.Item {
+  min-width: 0;
+}
+
+/* Static span (applies at all sizes when using span={N}) */
+.Item[data-ov-span='1'] {
+  grid-column: span 1;
+}
+.Item[data-ov-span='2'] {
+  grid-column: span 2;
+}
+.Item[data-ov-span='3'] {
+  grid-column: span 3;
+}
+.Item[data-ov-span='4'] {
+  grid-column: span 4;
+}
+.Item[data-ov-span='5'] {
+  grid-column: span 5;
+}
+.Item[data-ov-span='6'] {
+  grid-column: span 6;
+}
+.Item[data-ov-span='7'] {
+  grid-column: span 7;
+}
+.Item[data-ov-span='8'] {
+  grid-column: span 8;
+}
+.Item[data-ov-span='9'] {
+  grid-column: span 9;
+}
+.Item[data-ov-span='10'] {
+  grid-column: span 10;
+}
+.Item[data-ov-span='11'] {
+  grid-column: span 11;
+}
+.Item[data-ov-span='12'] {
+  grid-column: span 12;
+}
+
+/* Row spans */
+.Item[data-ov-row-span='1'] {
+  grid-row: span 1;
+}
+.Item[data-ov-row-span='2'] {
+  grid-row: span 2;
+}
+.Item[data-ov-row-span='3'] {
+  grid-row: span 3;
+}
+.Item[data-ov-row-span='4'] {
+  grid-row: span 4;
+}
+.Item[data-ov-row-span='5'] {
+  grid-row: span 5;
+}
+.Item[data-ov-row-span='6'] {
+  grid-row: span 6;
+}
+
+/* ───────────────────────────────────────────────
+   Responsive spans — mobile-first breakpoints
+   Usage: <Grid.Item span={{ xs: 12, md: 6 }} />
+   ─────────────────────────────────────────────── */
+
+/* xs: 0px+ (base — no media query needed) */
+.Item[data-ov-span-xs='1'] {
+  grid-column: span 1;
+}
+.Item[data-ov-span-xs='2'] {
+  grid-column: span 2;
+}
+.Item[data-ov-span-xs='3'] {
+  grid-column: span 3;
+}
+.Item[data-ov-span-xs='4'] {
+  grid-column: span 4;
+}
+.Item[data-ov-span-xs='5'] {
+  grid-column: span 5;
+}
+.Item[data-ov-span-xs='6'] {
+  grid-column: span 6;
+}
+.Item[data-ov-span-xs='7'] {
+  grid-column: span 7;
+}
+.Item[data-ov-span-xs='8'] {
+  grid-column: span 8;
+}
+.Item[data-ov-span-xs='9'] {
+  grid-column: span 9;
+}
+.Item[data-ov-span-xs='10'] {
+  grid-column: span 10;
+}
+.Item[data-ov-span-xs='11'] {
+  grid-column: span 11;
+}
+.Item[data-ov-span-xs='12'] {
+  grid-column: span 12;
+}
+
+/* sm: 600px+ */
+@media (min-width: 600px) {
+  .Item[data-ov-span-sm='1'] {
+    grid-column: span 1;
+  }
+  .Item[data-ov-span-sm='2'] {
+    grid-column: span 2;
+  }
+  .Item[data-ov-span-sm='3'] {
+    grid-column: span 3;
+  }
+  .Item[data-ov-span-sm='4'] {
+    grid-column: span 4;
+  }
+  .Item[data-ov-span-sm='5'] {
+    grid-column: span 5;
+  }
+  .Item[data-ov-span-sm='6'] {
+    grid-column: span 6;
+  }
+  .Item[data-ov-span-sm='7'] {
+    grid-column: span 7;
+  }
+  .Item[data-ov-span-sm='8'] {
+    grid-column: span 8;
+  }
+  .Item[data-ov-span-sm='9'] {
+    grid-column: span 9;
+  }
+  .Item[data-ov-span-sm='10'] {
+    grid-column: span 10;
+  }
+  .Item[data-ov-span-sm='11'] {
+    grid-column: span 11;
+  }
+  .Item[data-ov-span-sm='12'] {
+    grid-column: span 12;
+  }
+}
+
+/* md: 900px+ */
+@media (min-width: 900px) {
+  .Item[data-ov-span-md='1'] {
+    grid-column: span 1;
+  }
+  .Item[data-ov-span-md='2'] {
+    grid-column: span 2;
+  }
+  .Item[data-ov-span-md='3'] {
+    grid-column: span 3;
+  }
+  .Item[data-ov-span-md='4'] {
+    grid-column: span 4;
+  }
+  .Item[data-ov-span-md='5'] {
+    grid-column: span 5;
+  }
+  .Item[data-ov-span-md='6'] {
+    grid-column: span 6;
+  }
+  .Item[data-ov-span-md='7'] {
+    grid-column: span 7;
+  }
+  .Item[data-ov-span-md='8'] {
+    grid-column: span 8;
+  }
+  .Item[data-ov-span-md='9'] {
+    grid-column: span 9;
+  }
+  .Item[data-ov-span-md='10'] {
+    grid-column: span 10;
+  }
+  .Item[data-ov-span-md='11'] {
+    grid-column: span 11;
+  }
+  .Item[data-ov-span-md='12'] {
+    grid-column: span 12;
+  }
+}
+
+/* lg: 1200px+ */
+@media (min-width: 1200px) {
+  .Item[data-ov-span-lg='1'] {
+    grid-column: span 1;
+  }
+  .Item[data-ov-span-lg='2'] {
+    grid-column: span 2;
+  }
+  .Item[data-ov-span-lg='3'] {
+    grid-column: span 3;
+  }
+  .Item[data-ov-span-lg='4'] {
+    grid-column: span 4;
+  }
+  .Item[data-ov-span-lg='5'] {
+    grid-column: span 5;
+  }
+  .Item[data-ov-span-lg='6'] {
+    grid-column: span 6;
+  }
+  .Item[data-ov-span-lg='7'] {
+    grid-column: span 7;
+  }
+  .Item[data-ov-span-lg='8'] {
+    grid-column: span 8;
+  }
+  .Item[data-ov-span-lg='9'] {
+    grid-column: span 9;
+  }
+  .Item[data-ov-span-lg='10'] {
+    grid-column: span 10;
+  }
+  .Item[data-ov-span-lg='11'] {
+    grid-column: span 11;
+  }
+  .Item[data-ov-span-lg='12'] {
+    grid-column: span 12;
+  }
+}
+
+/* xl: 1536px+ */
+@media (min-width: 1536px) {
+  .Item[data-ov-span-xl='1'] {
+    grid-column: span 1;
+  }
+  .Item[data-ov-span-xl='2'] {
+    grid-column: span 2;
+  }
+  .Item[data-ov-span-xl='3'] {
+    grid-column: span 3;
+  }
+  .Item[data-ov-span-xl='4'] {
+    grid-column: span 4;
+  }
+  .Item[data-ov-span-xl='5'] {
+    grid-column: span 5;
+  }
+  .Item[data-ov-span-xl='6'] {
+    grid-column: span 6;
+  }
+  .Item[data-ov-span-xl='7'] {
+    grid-column: span 7;
+  }
+  .Item[data-ov-span-xl='8'] {
+    grid-column: span 8;
+  }
+  .Item[data-ov-span-xl='9'] {
+    grid-column: span 9;
+  }
+  .Item[data-ov-span-xl='10'] {
+    grid-column: span 10;
+  }
+  .Item[data-ov-span-xl='11'] {
+    grid-column: span 11;
+  }
+  .Item[data-ov-span-xl='12'] {
+    grid-column: span 12;
+  }
+}

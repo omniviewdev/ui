@@ -1,0 +1,63 @@
+.Root {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  border-radius: var(--_ov-radius, 0);
+}
+
+.Img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.Root[data-ov-object-fit='contain'] .Img {
+  object-fit: contain;
+}
+.Root[data-ov-object-fit='cover'] .Img {
+  object-fit: cover;
+}
+.Root[data-ov-object-fit='fill'] .Img {
+  object-fit: fill;
+}
+.Root[data-ov-object-fit='none'] .Img {
+  object-fit: none;
+}
+.Root[data-ov-object-fit='scale-down'] .Img {
+  object-fit: scale-down;
+}
+
+.Root[data-ov-radius='none'] {
+  --_ov-radius: 0;
+}
+.Root[data-ov-radius='sm'] {
+  --_ov-radius: var(--ov-primitive-radius-sm);
+}
+.Root[data-ov-radius='md'] {
+  --_ov-radius: var(--ov-primitive-radius-md);
+}
+.Root[data-ov-radius='lg'] {
+  --_ov-radius: var(--ov-primitive-radius-lg);
+}
+.Root[data-ov-radius='full'] {
+  --_ov-radius: 9999px;
+}
+
+.Fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--ov-color-bg-inset);
+  color: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-status='loading'] .Img {
+  opacity: 0;
+}
+
+.Root[data-ov-status='loaded'] .Img {
+  opacity: 1;
+  transition: opacity var(--ov-duration-panel) var(--ov-ease-standard);
+}

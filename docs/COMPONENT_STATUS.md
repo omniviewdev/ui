@@ -13,6 +13,7 @@ These are the only components currently in scope and exported:
 - `Avatar`
 - `AvatarGroup`
 - `Banner`
+- `Box`
 - `Button`
 - `ButtonGroup`
 - `Card`
@@ -21,9 +22,13 @@ These are the only components currently in scope and exported:
 - `Chip`
 - `CodeBlock`
 - `Combobox`
+- `Container`
 - `ContextMenu`
 - `Drawer`
+- `Grid`
 - `IconButton`
+- `Image`
+- `ImageList`
 - `Input`
 - `Menu`
 - `MultiSelect`
@@ -36,8 +41,10 @@ These are the only components currently in scope and exported:
 - `ScrollArea`
 - `SearchInput`
 - `Select`
+- `Separator`
 - `Sheet`
 - `Slider`
+- `Stack`
 - `Spinner`
 - `Switch`
 - `Tabs`

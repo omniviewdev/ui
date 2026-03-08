@@ -1,0 +1,408 @@
+/* ---------------------------------------------------------------------------
+ * TreeList styles
+ * Tree-specific overrides of the List foundation token pattern.
+ * Trees need tighter spacing — the toggle arrow should sit snug to the
+ * left edge so that the visual indentation comes only from ItemIndent.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  --_ov-list-gap: 0;
+  --_ov-item-height: var(--ov-size-list-item-height-md);
+  --_ov-item-padding-inline: 4px;
+  --_ov-item-gap: 4px;
+  --_ov-item-radius: var(--ov-size-list-item-radius);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-selected-bg: var(--ov-color-state-selected);
+  --_ov-highlight-bg: var(--ov-color-state-hover);
+
+  /* Tree-specific */
+  --_ov-tree-indent: 16px;
+  --_ov-tree-toggle-size: 16px;
+  --_ov-tree-connector-width: 1px;
+  --_ov-tree-connector-color: var(--ov-color-border-muted);
+
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  font-family: var(--ov-font-sans);
+  outline: none;
+}
+
+/* --- Size variants -------------------------------------------------------- */
+
+.Root[data-ov-size='sm'] {
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-item-padding-inline: 2px;
+  --_ov-item-gap: 3px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-item-padding-inline: 6px;
+  --_ov-item-gap: 6px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+/* --- Density variants ----------------------------------------------------- */
+
+.Root[data-ov-density='compact'] {
+  --_ov-item-height: var(--ov-size-list-item-height-sm);
+  --_ov-item-padding-inline: 2px;
+  --_ov-item-gap: 3px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+}
+
+.Root[data-ov-density='comfortable'] {
+  --_ov-item-height: var(--ov-size-list-item-height-lg);
+  --_ov-item-padding-inline: 6px;
+  --_ov-item-gap: 6px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+/* --- Color variants ------------------------------------------------------- */
+
+.Root[data-ov-color='brand'] {
+  --_ov-selected-bg: var(--ov-color-accent-soft);
+}
+
+.Root[data-ov-color='success'] {
+  --_ov-selected-bg: var(--ov-color-success-soft);
+}
+
+.Root[data-ov-color='warning'] {
+  --_ov-selected-bg: var(--ov-color-warning-soft);
+}
+
+.Root[data-ov-color='danger'] {
+  --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+/* ---------------------------------------------------------------------------
+ * Viewport — themed scrollbar matching ScrollArea
+ * Uses scrollbar-gutter: stable to prevent layout shift.
+ * --------------------------------------------------------------------------- */
+
+.Viewport {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  outline: none;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ov-color-scrollarea-thumb) var(--ov-color-scrollarea-track);
+  scrollbar-gutter: stable;
+}
+
+.Viewport::-webkit-scrollbar {
+  width: var(--ov-size-scrollarea-scrollbar-sm);
+}
+
+.Viewport::-webkit-scrollbar-track {
+  background: var(--ov-color-scrollarea-track);
+}
+
+.Viewport::-webkit-scrollbar-thumb {
+  background: var(--ov-color-scrollarea-thumb);
+  border-radius: var(--ov-size-scrollarea-scrollbar-sm);
+}
+
+.Viewport::-webkit-scrollbar-thumb:hover {
+  background: var(--ov-color-scrollarea-thumb-hover);
+}
+
+/* ---------------------------------------------------------------------------
+ * Item — tight gap so toggle sits snug to left edge
+ * --------------------------------------------------------------------------- */
+
+.Item {
+  display: flex;
+  align-items: center;
+  gap: var(--_ov-item-gap);
+  min-height: var(--_ov-item-height);
+  padding-inline: var(--_ov-item-padding-inline);
+  border-radius: var(--_ov-item-radius);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.25;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-size='sm'] .Item {
+  font-size: var(--ov-font-size-caption);
+}
+
+.Item:hover {
+  background: var(--_ov-highlight-bg);
+}
+
+.Item[data-ov-active='true'] {
+  background: var(--_ov-highlight-bg);
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.Item[data-ov-selected='true'] {
+  background: var(--_ov-selected-bg);
+}
+
+.Item[data-ov-selected='true']:hover {
+  background: var(--_ov-selected-bg);
+}
+
+.Item[data-ov-selected='true'][data-ov-active='true'] {
+  background: var(--_ov-selected-bg);
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.Item[data-ov-disabled='true'] {
+  opacity: var(--ov-opacity-disabled);
+  pointer-events: none;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------------------
+ * Tree-specific item slots
+ * --------------------------------------------------------------------------- */
+
+.ItemIndent {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: calc(var(--tree-depth, 0) * var(--_ov-tree-indent));
+}
+
+/* When branch connectors are rendered, width is driven by guide children.
+ * align-self: stretch overrides Item's align-items:center so guides span
+ * the full row height — needed for vertical connector lines. */
+.ItemIndent[data-ov-guides] {
+  width: auto;
+  align-self: stretch;
+}
+
+/* --- Branch connector guides ---------------------------------------------- */
+
+.ItemGuide {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--_ov-tree-indent);
+  position: relative;
+}
+
+/* Vertical pass-through line (ancestor has more siblings below) */
+.ItemGuide[data-ov-line]::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--_ov-tree-indent) / 2);
+  top: 0;
+  bottom: 0;
+  width: var(--_ov-tree-connector-width);
+  background: var(--_ov-tree-connector-color);
+}
+
+/* Connector: vertical portion */
+.ItemGuide[data-ov-connector]::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--_ov-tree-indent) / 2);
+  top: 0;
+  width: var(--_ov-tree-connector-width);
+  background: var(--_ov-tree-connector-color);
+}
+
+/* Mid-child connector: vertical line runs full height */
+.ItemGuide[data-ov-connector='mid']::before {
+  bottom: 0;
+}
+
+/* Last-child connector: vertical line runs to center only */
+.ItemGuide[data-ov-connector='last']::before {
+  height: 50%;
+}
+
+/* Connector: horizontal branch to the right */
+.ItemGuide[data-ov-connector]::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--_ov-tree-indent) / 2);
+  top: 50%;
+  right: 0;
+  height: var(--_ov-tree-connector-width);
+  background: var(--_ov-tree-connector-color);
+}
+
+.ItemToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--_ov-tree-toggle-size);
+  width: var(--_ov-tree-toggle-size);
+  height: var(--_ov-tree-toggle-size);
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ov-color-fg-muted);
+  border-radius: var(--ov-radius-sm);
+  transition: transform var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.ItemToggle:hover {
+  color: var(--ov-color-fg-default);
+  background: var(--_ov-highlight-bg);
+}
+
+.ItemToggle[data-ov-expanded='true'] {
+  transform: rotate(90deg);
+}
+
+.ItemToggle[data-ov-leaf='true'] {
+  visibility: hidden;
+}
+
+.ItemToggle[data-ov-loading='true'] {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------------------
+ * Shared item slots (mirrors List)
+ * --------------------------------------------------------------------------- */
+
+.ItemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--_ov-icon-size);
+  min-inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+  color: var(--ov-color-fg-muted);
+}
+
+.ItemIcon :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+.ItemLabel {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemDescription {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemMeta {
+  flex: 0 0 auto;
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  letter-spacing: 0.01em;
+}
+
+/* Only push the first meta to the right */
+.ItemMeta:first-of-type {
+  margin-inline-start: auto;
+}
+
+.ItemBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 4px;
+  border-radius: var(--ov-radius-sm);
+  font-size: 10px;
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.ItemBadge[data-ov-color='success'] {
+  background: var(--ov-color-success-soft);
+  color: var(--ov-color-success-fg);
+}
+
+.ItemBadge[data-ov-color='warning'] {
+  background: var(--ov-color-warning-soft);
+  color: var(--ov-color-warning-fg);
+}
+
+.ItemBadge[data-ov-color='danger'] {
+  background: var(--ov-color-danger-soft);
+  color: var(--ov-color-danger-fg);
+}
+
+.ItemBadge[data-ov-color='info'] {
+  background: var(--ov-color-info-soft);
+  color: var(--ov-color-info-fg);
+}
+
+.ItemBadge[data-ov-color='brand'] {
+  background: var(--ov-color-accent-soft);
+  color: var(--ov-color-accent-fg);
+}
+
+.ItemBadge[data-ov-color='neutral'] {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-muted);
+}
+
+.ItemActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  opacity: 0;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item:hover .ItemActions,
+.Item:focus-within .ItemActions,
+.Item[data-ov-active='true'] .ItemActions {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Structural
+ * --------------------------------------------------------------------------- */
+
+.Empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-body);
+}
+
+.Loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ov-space-stack-lg);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-body);
+}

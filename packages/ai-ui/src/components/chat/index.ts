@@ -4,3 +4,7 @@ export { ChatAvatar } from './ChatAvatar';
 export type { ChatAvatarProps } from './ChatAvatar';
 export { ChatInput } from './ChatInput';
 export type { ChatInputProps } from './ChatInput';
+export { ChatMessageList } from './ChatMessageList';
+export type { ChatMessageListProps } from './ChatMessageList';
+export { ChatSuggestions } from './ChatSuggestions';
+export type { ChatSuggestionsProps, ChatSuggestion } from './ChatSuggestions';

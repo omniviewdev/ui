@@ -1,8 +1,31 @@
 .Group {
   display: inline-flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--ov-size-chip-group-gap);
+  gap: var(--_ov-group-spacing, var(--ov-primitive-space-1));
+}
+
+.Group[data-ov-wrap='true'] {
+  flex-wrap: wrap;
+}
+
+.Group[data-ov-wrap='false'] {
+  flex-wrap: nowrap;
+}
+
+.Group[data-ov-spacing='0'] {
+  --_ov-group-spacing: var(--ov-primitive-space-0);
+}
+.Group[data-ov-spacing='1'] {
+  --_ov-group-spacing: var(--ov-primitive-space-1);
+}
+.Group[data-ov-spacing='2'] {
+  --_ov-group-spacing: var(--ov-primitive-space-2);
+}
+.Group[data-ov-spacing='3'] {
+  --_ov-group-spacing: var(--ov-primitive-space-3);
+}
+.Group[data-ov-spacing='4'] {
+  --_ov-group-spacing: var(--ov-primitive-space-4);
 }
 
 .Root {

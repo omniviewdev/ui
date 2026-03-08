@@ -58,3 +58,26 @@ export const Open: Story = {
     defaultOpen: true,
   },
 };
+
+export const LazyTooltip: Story = {
+  render: (args) => (
+    <Tooltip.Provider delay={120} closeDelay={40}>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {Array.from({ length: 20 }, (_, i) => (
+          <Tooltip.Root key={i} lazy {...args}>
+            <Tooltip.Trigger>Item {i + 1}</Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Positioner sideOffset={8}>
+                <Tooltip.Popup>
+                  Tooltip content for item {i + 1}. This content is only rendered when the tooltip
+                  first opens.
+                </Tooltip.Popup>
+                <Tooltip.Arrow />
+              </Tooltip.Positioner>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        ))}
+      </div>
+    </Tooltip.Provider>
+  ),
+};

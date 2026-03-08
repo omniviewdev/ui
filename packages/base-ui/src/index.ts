@@ -10,3 +10,7 @@ export type {
   SurfaceElevation,
   SurfaceType,
 } from './system/types';
+export { statusToColor } from './system/status';
+export type { StatusColor, StatusValue } from './system/status';
+export { useDebouncedValue } from './hooks/useDebouncedValue';
+export { useDebouncedCallback } from './hooks/useDebouncedCallback';

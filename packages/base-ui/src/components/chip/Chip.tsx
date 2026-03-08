@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
-import type { StyledComponentProps } from '../../system/types';
+import type { Spacing, StyledComponentProps } from '../../system/types';
 import styles from './Chip.module.css';
 
 interface ChipContextValue {
@@ -35,6 +35,10 @@ export interface ChipGroupProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   mono?: boolean;
   clickable?: boolean;
+  /** Gap between chips. Default: 1 */
+  spacing?: Spacing;
+  /** Whether chips wrap to the next line. Default: true */
+  wrap?: boolean;
 }
 
 const ChipRoot = forwardRef<HTMLElement, ChipProps>(function ChipRoot(
@@ -105,12 +109,28 @@ const ChipRoot = forwardRef<HTMLElement, ChipProps>(function ChipRoot(
 });
 
 const ChipGroup = forwardRef<HTMLDivElement, ChipGroupProps>(function ChipGroup(
-  { className, variant, color, size, mono = false, clickable = false, ...props },
+  {
+    className,
+    variant,
+    color,
+    size,
+    mono = false,
+    clickable = false,
+    spacing = 1,
+    wrap = true,
+    ...props
+  },
   ref,
 ) {
   return (
     <ChipContext.Provider value={{ variant, color, size, mono, clickable }}>
-      <div ref={ref} className={cn(styles.Group, className)} {...props} />
+      <div
+        ref={ref}
+        className={cn(styles.Group, className)}
+        data-ov-spacing={String(spacing)}
+        data-ov-wrap={wrap ? 'true' : 'false'}
+        {...props}
+      />
     </ChipContext.Provider>
   );
 });

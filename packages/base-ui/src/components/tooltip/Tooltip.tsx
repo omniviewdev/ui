@@ -2,7 +2,9 @@ import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 import {
   createContext,
   forwardRef,
+  useCallback,
   useContext,
+  useState,
   type ComponentPropsWithoutRef,
   type ElementRef,
 } from 'react';
@@ -18,10 +20,17 @@ import styles from './Tooltip.module.css';
 
 type ResolvedStyleProps = Required<StyledComponentProps>;
 
-const TooltipStyleContext = createContext<ResolvedStyleProps>({
+interface TooltipContextValue extends ResolvedStyleProps {
+  lazy: boolean;
+  hasOpened: boolean;
+}
+
+const TooltipStyleContext = createContext<TooltipContextValue>({
   variant: DEFAULT_VARIANT,
   color: DEFAULT_COLOR,
   size: DEFAULT_SIZE,
+  lazy: false,
+  hasOpened: false,
 });
 
 function useResolvedStyleProps(overrides?: StyledComponentProps): ResolvedStyleProps {
@@ -34,7 +43,10 @@ function useResolvedStyleProps(overrides?: StyledComponentProps): ResolvedStyleP
 }
 
 export type TooltipRootProps<Payload = unknown> = Omit<BaseTooltip.Root.Props<Payload>, 'color'> &
-  StyledComponentProps;
+  StyledComponentProps & {
+    /** Defer content rendering until the tooltip first opens. Default: false */
+    lazy?: boolean;
+  };
 
 export interface TooltipTriggerProps
   extends
@@ -47,12 +59,37 @@ export interface TooltipPopupProps
 export interface TooltipArrowProps
   extends Omit<ComponentPropsWithoutRef<typeof BaseTooltip.Arrow>, 'color'>, StyledComponentProps {}
 
-function TooltipRoot<Payload>({ variant, color, size, ...props }: TooltipRootProps<Payload>) {
+function TooltipRoot<Payload>({
+  variant,
+  color,
+  size,
+  lazy = false,
+  defaultOpen,
+  open,
+  onOpenChange,
+  ...props
+}: TooltipRootProps<Payload>) {
   const resolved = useResolvedStyleProps({ variant, color, size });
+  const [hasOpened, setHasOpened] = useState(!lazy || !!defaultOpen || !!open);
+
+  const handleOpenChange: typeof onOpenChange = useCallback(
+    (nextOpen, event) => {
+      if (nextOpen && !hasOpened) {
+        setHasOpened(true);
+      }
+      onOpenChange?.(nextOpen, event);
+    },
+    [hasOpened, onOpenChange],
+  );
 
   return (
-    <TooltipStyleContext.Provider value={resolved}>
-      <BaseTooltip.Root<Payload> {...props} />
+    <TooltipStyleContext.Provider value={{ ...resolved, lazy, hasOpened }}>
+      <BaseTooltip.Root<Payload>
+        defaultOpen={defaultOpen}
+        open={open}
+        onOpenChange={handleOpenChange}
+        {...props}
+      />
     </TooltipStyleContext.Provider>
   );
 }
@@ -99,15 +136,18 @@ const TooltipPositioner = forwardRef<
 });
 
 const TooltipPopup = forwardRef<ElementRef<typeof BaseTooltip.Popup>, TooltipPopupProps>(
-  function TooltipPopup({ className, variant, color, size, ...props }, ref) {
+  function TooltipPopup({ className, variant, color, size, children, ...props }, ref) {
     const resolved = useResolvedStyleProps({ variant, color, size });
+    const { lazy, hasOpened } = useContext(TooltipStyleContext);
     return (
       <BaseTooltip.Popup
         ref={ref}
         className={withBaseClassName(styles.Popup, className)}
         {...styleDataAttributes(resolved)}
         {...props}
-      />
+      >
+        {lazy && !hasOpened ? null : children}
+      </BaseTooltip.Popup>
     );
   },
 );

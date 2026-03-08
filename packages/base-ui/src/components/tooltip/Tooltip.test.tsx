@@ -25,4 +25,51 @@ describe('Tooltip', () => {
     expect(popup).toHaveAttribute('data-ov-size', 'sm');
     expect(popup).toHaveAttribute('data-ov-variant', 'outline');
   });
+
+  describe('lazy', () => {
+    it('does not render popup content before opening when lazy=true', () => {
+      renderWithTheme(
+        <Tooltip.Root lazy>
+          <Tooltip.Trigger>Hover me</Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Popup>Lazy content</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>,
+      );
+
+      expect(screen.queryByText('Lazy content')).not.toBeInTheDocument();
+    });
+
+    it('renders popup content when lazy tooltip is open', () => {
+      renderWithTheme(
+        <Tooltip.Root lazy defaultOpen>
+          <Tooltip.Trigger>Hover me</Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Popup>Lazy content</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>,
+      );
+
+      expect(screen.getByText('Lazy content')).toBeInTheDocument();
+    });
+
+    it('always renders content when lazy=false (default)', () => {
+      renderWithTheme(
+        <Tooltip.Root defaultOpen>
+          <Tooltip.Trigger>Hover me</Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Popup>Eager content</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>,
+      );
+
+      expect(screen.getByText('Eager content')).toBeInTheDocument();
+    });
+  });
 });

@@ -75,6 +75,12 @@ These are the only components currently in scope and exported:
 - `ToggleButtonGroup`
 - `Toolbar`
 
+## Approved hooks and utilities
+
+- `statusToColor` — Maps semantic status strings to component colors (`system/status.ts`)
+- `useDebouncedCallback` — Debounced callback hook with cancel/flush (`hooks/useDebouncedCallback.ts`)
+- `useDebouncedValue` — Debounced value hook (`hooks/useDebouncedValue.ts`)
+
 Each approved component must include:
 
 1. A themed wrapper using semantic token-driven CSS modules.

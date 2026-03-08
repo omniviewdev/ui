@@ -113,8 +113,8 @@
 .Tab {
   display: flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1, 4px);
-  padding: 0 var(--ov-primitive-space-3, 12px);
+  gap: var(--ov-space-1, 4px);
+  padding: 0 var(--ov-space-3, 12px);
   font-size: var(--ov-font-size-sm, 0.8125rem);
   color: var(--ov-color-fg-muted);
   cursor: pointer;
@@ -163,14 +163,14 @@
   justify-content: center;
   width: 16px;
   height: 16px;
-  margin-left: var(--ov-primitive-space-1, 4px);
+  margin-left: var(--ov-space-1, 4px);
   padding: 0;
   border: none;
   border-radius: var(--ov-radius-sm, 4px);
   background: transparent;
   color: var(--ov-color-fg-muted);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--ov-font-size-sm, 0.8125rem);
   line-height: 1;
 }
 

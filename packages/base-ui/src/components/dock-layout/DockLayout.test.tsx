@@ -2,7 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
-import { DockLayout, type DockLeaf, type DockNode, type DockSplit } from './DockLayout';
+import { DockLayout, type DockLeaf, type DockSplit } from './DockLayout';
 
 const singleLeaf: DockLeaf = {
   type: 'leaf',
@@ -10,6 +10,7 @@ const singleLeaf: DockLeaf = {
   tabs: [
     { id: 'tab-1', title: 'File 1', content: 'Content 1' },
     { id: 'tab-2', title: 'File 2', content: 'Content 2' },
+    { id: 'tab-3', title: 'File 3', content: 'Content 3' },
   ],
   activeTab: 'tab-1',
 };
@@ -89,7 +90,6 @@ describe('DockLayout', () => {
     renderWithTheme(<DockLayout layout={singleLeaf} />);
 
     expect(screen.getByText('Content 1')).toBeInTheDocument();
-    // Content 2 should not be visible (only active tab content rendered)
     expect(screen.queryByText('Content 2')).not.toBeInTheDocument();
   });
 
@@ -114,7 +114,7 @@ describe('DockLayout', () => {
     expect(onChange).toHaveBeenCalledTimes(1);
     const newLayout = onChange.mock.calls[0][0] as DockLeaf;
     expect(newLayout.type).toBe('leaf');
-    expect(newLayout.tabs).toHaveLength(1);
+    expect(newLayout.tabs).toHaveLength(2);
     expect(newLayout.tabs[0].id).toBe('tab-2');
   });
 
@@ -131,19 +131,16 @@ describe('DockLayout', () => {
   it('works as uncontrolled component without onLayoutChange', () => {
     renderWithTheme(<DockLayout layout={singleLeaf} data-testid="dock" />);
 
-    // Should render without errors
     expect(screen.getByTestId('dock')).toBeInTheDocument();
 
-    // Click tab 2 — should update internal state
     fireEvent.click(screen.getByRole('tab', { name: 'File 2' }));
     expect(screen.getByText('Content 2')).toBeInTheDocument();
   });
 
   it('serialized layout can be restored', () => {
-    const layout: DockNode = JSON.parse(JSON.stringify(nestedLayout));
-    // Content is ReactNode so we need to re-add it
     const restored: DockSplit = {
-      ...layout as DockSplit,
+      type: 'split',
+      direction: 'horizontal',
       children: [
         {
           type: 'leaf',
@@ -208,5 +205,97 @@ describe('DockLayout', () => {
 
     renderWithTheme(<DockLayout layout={layout} />);
     expect(screen.queryByRole('button', { name: /Close/ })).not.toBeInTheDocument();
+  });
+
+  it('links tab to panel via aria-controls', () => {
+    renderWithTheme(<DockLayout layout={singleLeaf} />);
+
+    const activeTab = screen.getByRole('tab', { name: 'File 1' });
+    const panel = screen.getByRole('tabpanel');
+
+    expect(activeTab).toHaveAttribute('aria-controls', panel.id);
+    expect(panel).toHaveAttribute('aria-labelledby', activeTab.id);
+  });
+
+  it('navigates tabs with arrow keys', () => {
+    renderWithTheme(<DockLayout layout={singleLeaf} data-testid="dock" />);
+
+    const tab1 = screen.getByRole('tab', { name: 'File 1' });
+    tab1.focus();
+
+    // ArrowRight moves to next tab
+    fireEvent.keyDown(tab1, { key: 'ArrowRight' });
+    expect(screen.getByText('Content 2')).toBeInTheDocument();
+
+    // ArrowRight again moves to third tab
+    const tab2 = screen.getByRole('tab', { name: 'File 2' });
+    fireEvent.keyDown(tab2, { key: 'ArrowRight' });
+    expect(screen.getByText('Content 3')).toBeInTheDocument();
+  });
+
+  it('wraps tab navigation with arrow keys', () => {
+    renderWithTheme(<DockLayout layout={singleLeaf} data-testid="dock" />);
+
+    const tab1 = screen.getByRole('tab', { name: 'File 1' });
+    tab1.focus();
+
+    // ArrowLeft from first tab wraps to last
+    fireEvent.keyDown(tab1, { key: 'ArrowLeft' });
+    expect(screen.getByText('Content 3')).toBeInTheDocument();
+  });
+
+  it('navigates to first/last tab with Home/End', () => {
+    const onChange = vi.fn();
+    const layout: DockLeaf = { ...singleLeaf, activeTab: 'tab-2' };
+    renderWithTheme(<DockLayout layout={layout} onLayoutChange={onChange} />);
+
+    const tab2 = screen.getByRole('tab', { name: 'File 2' });
+    tab2.focus();
+
+    fireEvent.keyDown(tab2, { key: 'Home' });
+    expect(onChange).toHaveBeenCalled();
+    const homeLayout = onChange.mock.calls[0][0] as DockLeaf;
+    expect(homeLayout.activeTab).toBe('tab-1');
+
+    fireEvent.keyDown(tab2, { key: 'End' });
+    const endLayout = onChange.mock.calls[1][0] as DockLeaf;
+    expect(endLayout.activeTab).toBe('tab-3');
+  });
+
+  it('removes empty leaf from split when last tab is closed', () => {
+    const twoLeafSplit: DockSplit = {
+      type: 'split',
+      direction: 'horizontal',
+      children: [
+        {
+          type: 'leaf',
+          id: 'left',
+          tabs: [{ id: 'only-tab', title: 'Only Tab', content: 'Only content' }],
+        },
+        {
+          type: 'leaf',
+          id: 'right',
+          tabs: [{ id: 'other', title: 'Other', content: 'Other content' }],
+        },
+      ],
+    };
+
+    const onChange = vi.fn();
+    renderWithTheme(<DockLayout layout={twoLeafSplit} onLayoutChange={onChange} />);
+
+    // Close the only tab in the left leaf
+    const closeButton = screen.getAllByRole('button', { name: /Close/ })[0];
+    fireEvent.click(closeButton);
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    // When left leaf becomes empty, the split collapses to just the right leaf
+    const newLayout = onChange.mock.calls[0][0] as DockLeaf;
+    expect(newLayout.type).toBe('leaf');
+    expect(newLayout.id).toBe('right');
+  });
+
+  it('renders tablist role on tab bar', () => {
+    renderWithTheme(<DockLayout layout={singleLeaf} />);
+    expect(screen.getByRole('tablist')).toBeInTheDocument();
   });
 });

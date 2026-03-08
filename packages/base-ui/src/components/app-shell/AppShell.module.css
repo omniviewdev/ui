@@ -7,6 +7,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  transition: grid-template-columns var(--ov-duration-slow, 260ms) var(--ov-ease-standard, ease);
 }
 
 /* Sidebar left (default) */
@@ -46,15 +47,15 @@
   grid-area: sidebar;
   overflow: auto;
   min-width: 0;
-  background: var(--ov-color-bg-surface);
-  transition: width var(--ov-duration-slow, 260ms) var(--ov-ease-standard, ease);
 }
 
 .Root[data-ov-sidebar-position='left'] .Sidebar {
+  background: var(--ov-color-bg-surface);
   border-right: 1px solid var(--ov-color-border-muted);
 }
 
 .Root[data-ov-sidebar-position='right'] .Sidebar {
+  background: var(--ov-color-bg-surface);
   border-left: 1px solid var(--ov-color-border-muted);
 }
 
@@ -87,6 +88,6 @@
 
 /* ─── Reduced motion ────────────────────────── */
 
-:root[data-ov-motion='reduced'] .Sidebar {
+:root[data-ov-motion='reduced'] .Root {
   transition: none;
 }

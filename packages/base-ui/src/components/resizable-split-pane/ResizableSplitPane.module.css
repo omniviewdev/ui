@@ -21,21 +21,14 @@
   grid-template-rows: var(--_ov-split-size, 200px) auto 1fr;
 }
 
-/* ─── Panes ─────────────────────────────────── */
+/* Disable text selection during drag */
+.Root[data-ov-dragging] {
+  user-select: none;
+}
+
+/* ─── Pane ──────────────────────────────────── */
 
 .Pane {
-  overflow: auto;
-  min-width: 0;
-  min-height: 0;
-}
-
-.FirstPane {
-  overflow: auto;
-  min-width: 0;
-  min-height: 0;
-}
-
-.SecondPane {
   overflow: auto;
   min-width: 0;
   min-height: 0;

@@ -57,6 +57,23 @@ describe('ResizableSplitPane', () => {
     expect(onResize).toHaveBeenCalledWith(250);
   });
 
+  it('updates CSS custom property directly during drag', () => {
+    renderWithTheme(
+      <ResizableSplitPane defaultSize={200} data-testid="split">
+        {['A', 'B']}
+      </ResizableSplitPane>,
+    );
+
+    const el = screen.getByTestId('split');
+    const handle = screen.getByRole('separator');
+
+    fireEvent.pointerDown(handle, { clientX: 200, clientY: 0 });
+    fireEvent.pointerMove(handle, { clientX: 300, clientY: 0 });
+
+    // Size should be updated via direct DOM manipulation
+    expect(el.style.getPropertyValue('--_ov-split-size')).toBe('300px');
+  });
+
   it('enforces minSize constraint', () => {
     const onResize = vi.fn();
     renderWithTheme(
@@ -163,7 +180,7 @@ describe('ResizableSplitPane', () => {
 
   it('renders handle with correct aria attributes', () => {
     renderWithTheme(
-      <ResizableSplitPane>
+      <ResizableSplitPane defaultSize={200} minSize={50} maxSize={500}>
         {['A', 'B']}
       </ResizableSplitPane>,
     );
@@ -171,6 +188,9 @@ describe('ResizableSplitPane', () => {
     const handle = screen.getByRole('separator');
     expect(handle).toHaveAttribute('aria-orientation', 'vertical');
     expect(handle).toHaveAttribute('tabindex', '0');
+    expect(handle).toHaveAttribute('aria-valuenow', '200');
+    expect(handle).toHaveAttribute('aria-valuemin', '50');
+    expect(handle).toHaveAttribute('aria-valuemax', '500');
   });
 
   it('renders vertical handle with horizontal aria-orientation', () => {
@@ -182,5 +202,44 @@ describe('ResizableSplitPane', () => {
 
     const handle = screen.getByRole('separator');
     expect(handle).toHaveAttribute('aria-orientation', 'horizontal');
+  });
+
+  it('does not override user resize when defaultSize has not changed', () => {
+    const onResize = vi.fn();
+    renderWithTheme(
+      <ResizableSplitPane defaultSize={200} onResize={onResize} data-testid="split">
+        {['A', 'B']}
+      </ResizableSplitPane>,
+    );
+
+    const handle = screen.getByRole('separator');
+
+    // User drags to 350
+    fireEvent.pointerDown(handle, { clientX: 200, clientY: 0 });
+    fireEvent.pointerMove(handle, { clientX: 350, clientY: 0 });
+    fireEvent.pointerUp(handle);
+
+    // Size should remain at 350, not reset to 200
+    const el = screen.getByTestId('split');
+    expect(el.style.getPropertyValue('--_ov-split-size')).toBe('350px');
+  });
+
+  it('sets data-ov-dragging during drag and removes after', () => {
+    renderWithTheme(
+      <ResizableSplitPane data-testid="split">
+        {['A', 'B']}
+      </ResizableSplitPane>,
+    );
+
+    const el = screen.getByTestId('split');
+    const handle = screen.getByRole('separator');
+
+    expect(el).not.toHaveAttribute('data-ov-dragging');
+
+    fireEvent.pointerDown(handle, { clientX: 200, clientY: 0 });
+    expect(el).toHaveAttribute('data-ov-dragging');
+
+    fireEvent.pointerUp(handle);
+    expect(el).not.toHaveAttribute('data-ov-dragging');
   });
 });

@@ -21,34 +21,46 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-export interface AppShellSlotProps extends HTMLAttributes<HTMLDivElement> {
+export interface AppShellHeaderProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
-const Header = forwardRef<HTMLDivElement, AppShellSlotProps>(
+export interface AppShellSidebarProps extends HTMLAttributes<HTMLElement> {
+  children?: ReactNode;
+}
+
+export interface AppShellContentProps extends HTMLAttributes<HTMLElement> {
+  children?: ReactNode;
+}
+
+export interface AppShellFooterProps extends HTMLAttributes<HTMLElement> {
+  children?: ReactNode;
+}
+
+const Header = forwardRef<HTMLElement, AppShellHeaderProps>(
   function Header({ className, ...props }, ref) {
-    return <div ref={ref} className={cn(styles.Header, className)} {...props} />;
+    return <header ref={ref} className={cn(styles.Header, className)} {...props} />;
   },
 );
 Header.displayName = 'AppShell.Header';
 
-const Sidebar = forwardRef<HTMLDivElement, AppShellSlotProps>(
+const Sidebar = forwardRef<HTMLElement, AppShellSidebarProps>(
   function Sidebar({ className, ...props }, ref) {
-    return <div ref={ref} className={cn(styles.Sidebar, className)} {...props} />;
+    return <aside ref={ref} className={cn(styles.Sidebar, className)} {...props} />;
   },
 );
 Sidebar.displayName = 'AppShell.Sidebar';
 
-const Content = forwardRef<HTMLDivElement, AppShellSlotProps>(
+const Content = forwardRef<HTMLElement, AppShellContentProps>(
   function Content({ className, ...props }, ref) {
-    return <div ref={ref} className={cn(styles.Content, className)} {...props} />;
+    return <main ref={ref} className={cn(styles.Content, className)} {...props} />;
   },
 );
 Content.displayName = 'AppShell.Content';
 
-const Footer = forwardRef<HTMLDivElement, AppShellSlotProps>(
+const Footer = forwardRef<HTMLElement, AppShellFooterProps>(
   function Footer({ className, ...props }, ref) {
-    return <div ref={ref} className={cn(styles.Footer, className)} {...props} />;
+    return <footer ref={ref} className={cn(styles.Footer, className)} {...props} />;
   },
 );
 Footer.displayName = 'AppShell.Footer';

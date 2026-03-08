@@ -22,6 +22,22 @@ describe('AppShell', () => {
     expect(screen.getByTestId('footer')).toHaveTextContent('Footer');
   });
 
+  it('uses semantic HTML elements for slots', () => {
+    renderWithTheme(
+      <AppShell>
+        <AppShell.Header data-testid="header">H</AppShell.Header>
+        <AppShell.Sidebar data-testid="sidebar">S</AppShell.Sidebar>
+        <AppShell.Content data-testid="content">C</AppShell.Content>
+        <AppShell.Footer data-testid="footer">F</AppShell.Footer>
+      </AppShell>,
+    );
+
+    expect(screen.getByTestId('header').tagName).toBe('HEADER');
+    expect(screen.getByTestId('sidebar').tagName).toBe('ASIDE');
+    expect(screen.getByTestId('content').tagName).toBe('MAIN');
+    expect(screen.getByTestId('footer').tagName).toBe('FOOTER');
+  });
+
   it('defaults to left sidebar position', () => {
     renderWithTheme(
       <AppShell data-testid="shell">
@@ -106,7 +122,7 @@ describe('AppShell', () => {
     expect(screen.getByText('Only content')).toBeInTheDocument();
   });
 
-  it('forwards ref', () => {
+  it('forwards ref on root', () => {
     const ref = createRef<HTMLDivElement>();
     renderWithTheme(
       <AppShell ref={ref}>
@@ -128,10 +144,10 @@ describe('AppShell', () => {
   });
 
   it('forwards ref on sub-components', () => {
-    const headerRef = createRef<HTMLDivElement>();
-    const sidebarRef = createRef<HTMLDivElement>();
-    const contentRef = createRef<HTMLDivElement>();
-    const footerRef = createRef<HTMLDivElement>();
+    const headerRef = createRef<HTMLElement>();
+    const sidebarRef = createRef<HTMLElement>();
+    const contentRef = createRef<HTMLElement>();
+    const footerRef = createRef<HTMLElement>();
 
     renderWithTheme(
       <AppShell>
@@ -142,9 +158,25 @@ describe('AppShell', () => {
       </AppShell>,
     );
 
-    expect(headerRef.current).toBeInstanceOf(HTMLDivElement);
-    expect(sidebarRef.current).toBeInstanceOf(HTMLDivElement);
-    expect(contentRef.current).toBeInstanceOf(HTMLDivElement);
-    expect(footerRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(headerRef.current).toBeInstanceOf(HTMLElement);
+    expect(sidebarRef.current).toBeInstanceOf(HTMLElement);
+    expect(contentRef.current).toBeInstanceOf(HTMLElement);
+    expect(footerRef.current).toBeInstanceOf(HTMLElement);
+  });
+
+  it('merges className on sub-components', () => {
+    renderWithTheme(
+      <AppShell>
+        <AppShell.Header className="h-cls" data-testid="header">H</AppShell.Header>
+        <AppShell.Sidebar className="s-cls" data-testid="sidebar">S</AppShell.Sidebar>
+        <AppShell.Content className="c-cls" data-testid="content">C</AppShell.Content>
+        <AppShell.Footer className="f-cls" data-testid="footer">F</AppShell.Footer>
+      </AppShell>,
+    );
+
+    expect(screen.getByTestId('header')).toHaveClass('h-cls');
+    expect(screen.getByTestId('sidebar')).toHaveClass('s-cls');
+    expect(screen.getByTestId('content')).toHaveClass('c-cls');
+    expect(screen.getByTestId('footer')).toHaveClass('f-cls');
   });
 });

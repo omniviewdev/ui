@@ -1,7 +1,6 @@
 import {
   forwardRef,
   useCallback,
-  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -85,11 +84,17 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
     },
     ref,
   ) {
+    // React state only for keyboard/reset interactions — drag uses direct DOM
     const [size, setSize] = useState(defaultSize);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const rootRef = useRef<HTMLDivElement>(null);
+    const sizeRef = useRef(defaultSize);
     const dragging = useRef(false);
     const startPos = useRef(0);
     const startSize = useRef(0);
+
+    // Keep refs in sync with callbacks
+    const onResizeRef = useRef(onResize);
+    onResizeRef.current = onResize;
 
     const clamp = useCallback(
       (value: number) => {
@@ -102,18 +107,33 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       [minSize, maxSize],
     );
 
+    // Direct DOM update for 60fps drag — bypasses React reconciliation
+    const applySize = useCallback(
+      (newSize: number) => {
+        const el = rootRef.current;
+        if (el) {
+          el.style.setProperty('--_ov-split-size', `${newSize}px`);
+        }
+        sizeRef.current = newSize;
+        onResizeRef.current?.(newSize);
+      },
+      [],
+    );
+
     const handlePointerDown = useCallback(
       (e: React.PointerEvent) => {
         e.preventDefault();
         dragging.current = true;
         startPos.current = direction === 'horizontal' ? e.clientX : e.clientY;
-        startSize.current = size;
+        startSize.current = sizeRef.current;
         const target = e.target as HTMLElement;
         if (target.setPointerCapture) {
           target.setPointerCapture(e.pointerId);
         }
+        // Set dragging attribute on root for cursor override
+        rootRef.current?.setAttribute('data-ov-dragging', '');
       },
-      [direction, size],
+      [direction],
     );
 
     const handlePointerMove = useCallback(
@@ -122,21 +142,23 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
         const currentPos = direction === 'horizontal' ? e.clientX : e.clientY;
         const delta = currentPos - startPos.current;
         const newSize = clamp(startSize.current + delta);
-        setSize(newSize);
-        onResize?.(newSize);
+        applySize(newSize);
       },
-      [direction, clamp, onResize],
+      [direction, clamp, applySize],
     );
 
     const handlePointerUp = useCallback(() => {
       dragging.current = false;
+      // Sync React state for keyboard handlers
+      setSize(sizeRef.current);
+      rootRef.current?.removeAttribute('data-ov-dragging');
     }, []);
 
     const handleDoubleClick = useCallback(() => {
       const reset = clamp(defaultSize);
       setSize(reset);
-      onResize?.(reset);
-    }, [defaultSize, clamp, onResize]);
+      applySize(reset);
+    }, [defaultSize, clamp, applySize]);
 
     const handleKeyDown = useCallback(
       (e: KeyboardEvent) => {
@@ -162,16 +184,24 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
           e.preventDefault();
           const newSize = clamp(size + delta);
           setSize(newSize);
-          onResize?.(newSize);
+          applySize(newSize);
         }
       },
-      [direction, size, minSize, maxSize, clamp, onResize],
+      [direction, size, minSize, maxSize, clamp, applySize],
     );
 
-    // Sync size when defaultSize changes externally
-    useEffect(() => {
-      setSize(clamp(defaultSize));
-    }, [defaultSize, clamp]);
+    // Merge external ref with internal ref
+    const setRefs = useCallback(
+      (node: HTMLDivElement | null) => {
+        (rootRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }
+      },
+      [ref],
+    );
 
     const mergedStyle: CSSProperties = {
       '--_ov-split-size': `${size}px`,
@@ -180,23 +210,25 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
 
     return (
       <div
-        ref={ref ?? containerRef}
+        ref={setRefs}
         className={cn(styles.Root, className)}
         style={mergedStyle}
         data-ov-direction={direction}
-        data-ov-dragging={dragging.current || undefined}
         {...props}
       >
-        <Pane className={styles.FirstPane}>{children[0]}</Pane>
+        <Pane>{children[0]}</Pane>
         <Handle
           direction={direction}
+          aria-valuenow={size}
+          aria-valuemin={minSize}
+          aria-valuemax={maxSize}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onDoubleClick={handleDoubleClick}
           onKeyDown={handleKeyDown}
         />
-        <Pane className={styles.SecondPane}>{children[1]}</Pane>
+        <Pane>{children[1]}</Pane>
       </div>
     );
   },

@@ -424,3 +424,99 @@ export const WithContextMenu: Story = {
     },
   },
 };
+
+/**
+ * Drag tabs to reorder. The `onReorder` callback receives the updated tab array.
+ */
+export const Reorderable: Story = {
+  args: {
+    tabs: basicTabs,
+    defaultActiveId: 'index',
+  },
+  render: function ReorderableRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+
+    const handleReorder = useCallback((nextTabs: TabDescriptor[]) => {
+      setTabs(nextTabs);
+    }, []);
+
+    return (
+      <EditorTabs
+        {...args}
+        tabs={tabs}
+        onReorder={handleReorder}
+      />
+    );
+  },
+};
+
+/**
+ * Pinned tabs stay in the pinned zone; unpinned tabs stay in the unpinned zone.
+ * Drag across the boundary to see the constraint in action (tab snaps back).
+ */
+export const ReorderableWithPinned: Story = {
+  args: {
+    tabs: [
+      { id: 'pin1', title: 'package.json', icon: <LuPackage size={14} />, pinned: true },
+      { id: 'pin2', title: 'tsconfig.json', icon: <LuFileJson size={14} />, pinned: true },
+      { id: 'file1', title: 'index.ts', icon: <LuFileCode size={14} /> },
+      { id: 'file2', title: 'App.tsx', icon: <LuCode size={14} /> },
+      { id: 'file3', title: 'utils.ts', icon: <LuWrench size={14} /> },
+      { id: 'file4', title: 'hooks.ts', icon: <LuBraces size={14} /> },
+    ],
+    defaultActiveId: 'file1',
+  },
+  render: function ReorderableWithPinnedRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+
+    return (
+      <EditorTabs
+        {...args}
+        tabs={tabs}
+        onReorder={(nextTabs) => setTabs(nextTabs)}
+      />
+    );
+  },
+};
+
+/**
+ * Tabs within a group can be reordered, but cannot be dragged to another group
+ * by default. Toggle `allowReorderAcrossGroups` to relax the constraint.
+ */
+export const ReorderableWithGroups: Story = {
+  args: {
+    tabs: [
+      { id: 'comp1', title: 'Button.tsx', icon: <LuCode size={14} />, groupId: 'components' },
+      { id: 'comp2', title: 'Input.tsx', icon: <LuCode size={14} />, groupId: 'components' },
+      { id: 'comp3', title: 'Select.tsx', icon: <LuCode size={14} />, groupId: 'components' },
+      { id: 'api1', title: 'users.ts', icon: <LuFileCode size={14} />, groupId: 'api' },
+      { id: 'api2', title: 'auth.ts', icon: <LuFileCode size={14} />, groupId: 'api' },
+      { id: 'misc1', title: 'README.md', icon: <LuFileText size={14} /> },
+    ],
+    groups: [
+      { id: 'components', title: 'Components', color: '#4CAF50' },
+      { id: 'api', title: 'API', color: '#2196F3' },
+    ],
+    defaultActiveId: 'comp1',
+  },
+  render: function ReorderableWithGroupsRender(args) {
+    const [tabs, setTabs] = useState(args.tabs);
+    const [groups, setGroups] = useState<TabGroupDescriptor[]>(args.groups ?? []);
+
+    const handleToggle = useCallback((groupId: TabGroupId) => {
+      setGroups((prev) =>
+        prev.map((g) => (g.id === groupId ? { ...g, collapsed: !g.collapsed } : g)),
+      );
+    }, []);
+
+    return (
+      <EditorTabs
+        {...args}
+        tabs={tabs}
+        groups={groups}
+        onReorder={(nextTabs) => setTabs(nextTabs)}
+        onToggleGroupCollapsed={handleToggle}
+      />
+    );
+  },
+};

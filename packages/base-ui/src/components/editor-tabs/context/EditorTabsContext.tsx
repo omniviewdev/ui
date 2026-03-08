@@ -17,6 +17,7 @@ export interface EditorTabsContextValue {
   scrollTo: (direction: 'left' | 'right') => void;
   viewportRef: React.RefObject<HTMLDivElement | null>;
   tabs: TabId[];
+  dragActiveId: TabId | null;
 }
 
 const EditorTabsContext = createContext<EditorTabsContextValue | null>(null);

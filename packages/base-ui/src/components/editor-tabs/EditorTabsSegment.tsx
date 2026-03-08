@@ -1,4 +1,5 @@
 import { forwardRef, type CSSProperties, type ReactNode } from 'react';
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { cn } from '../../system/classnames';
 import type { TabGroupDescriptor } from './types';
 import { EditorTabGroupChip } from './EditorTabGroupChip';
@@ -8,13 +9,24 @@ export interface EditorTabsSegmentProps {
   type: 'pinned' | 'group' | 'ungrouped';
   group?: TabGroupDescriptor;
   tabCount?: number;
+  items?: string[];
   children: ReactNode;
   className?: string;
 }
 
 export const EditorTabsSegment = forwardRef<HTMLDivElement, EditorTabsSegmentProps>(
-  function EditorTabsSegment({ type, group, tabCount = 0, children, className }, ref) {
+  function EditorTabsSegment({ type, group, tabCount = 0, items, children, className }, ref) {
     const isCollapsed = type === 'group' && group?.collapsed;
+
+    const content = !isCollapsed
+      ? items
+        ? (
+            <SortableContext items={items} strategy={horizontalListSortingStrategy}>
+              {children}
+            </SortableContext>
+          )
+        : children
+      : null;
 
     return (
       <div
@@ -28,7 +40,7 @@ export const EditorTabsSegment = forwardRef<HTMLDivElement, EditorTabsSegmentPro
         {type === 'group' && group && (
           <EditorTabGroupChip group={group} tabCount={tabCount} />
         )}
-        {!isCollapsed && children}
+        {content}
       </div>
     );
   },

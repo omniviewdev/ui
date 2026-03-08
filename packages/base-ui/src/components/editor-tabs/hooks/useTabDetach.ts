@@ -8,8 +8,8 @@ export interface UseTabDetachOptions {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   tabs: TabDescriptor[];
   onDetachCommit?: (commit: DetachCommit) => void;
-  /** Called when transitioning to detach-armed (pointer still down). */
-  onDetachArmed?: (tabId: TabId, screenX: number, screenY: number) => void;
+  /** Called when transitioning to detach-armed (pointer still down). Uses client coords for positioning. */
+  onDetachArmed?: (tabId: TabId, clientX: number, clientY: number) => void;
 }
 
 export interface UseTabDetachReturn {
@@ -88,7 +88,7 @@ export function useTabDetach({
 
         if (currentMode === 'reorder' && (above || below || pastLeft || pastRight)) {
           updateMode('detach-armed');
-          onDetachArmed?.(activeIdRef.current!, e.screenX, e.screenY);
+          onDetachArmed?.(activeIdRef.current!, e.clientX, e.clientY);
         } else if (currentMode === 'detach-armed' && !onDetachArmed) {
           // Hysteresis: must come back within half-threshold on BOTH axes to revert.
           const withinY =

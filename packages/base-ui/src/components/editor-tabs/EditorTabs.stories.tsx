@@ -783,13 +783,6 @@ function BrokerFakeWindow({
     dragRef.current = null;
   }, []);
 
-  const handleAttachTab = useCallback(
-    (_commit: AttachCommit) => {
-      // Single-tab windows in this demo — attach is handled by the main strip
-    },
-    [],
-  );
-
   return (
     <div
       style={{
@@ -857,7 +850,6 @@ function BrokerFakeWindow({
           detachable={true}
           detachToBroker={true}
           instanceId={instanceId}
-          onAttachTab={handleAttachTab}
           onDetachCommit={(commit) => {
             onRemoveTab(commit.id);
           }}

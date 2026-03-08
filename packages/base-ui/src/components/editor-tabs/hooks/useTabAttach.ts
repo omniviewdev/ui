@@ -27,6 +27,7 @@ export function useTabAttach({
     broker.registerDropZone({
       instanceId,
       getRect: () => viewportRef.current?.getBoundingClientRect() ?? null,
+      getElement: () => viewportRef.current,
       onAttach: onAttachTab,
     });
 

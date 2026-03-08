@@ -181,6 +181,7 @@ describe('TabDragBroker', () => {
       result.current!.registerDropZone({
         instanceId: 'target',
         getRect: () => ({ left: 50, right: 250, top: 50, bottom: 100 } as DOMRect),
+        getElement: () => document.createElement('div'),
         onAttach,
       });
     });
@@ -219,6 +220,7 @@ describe('TabDragBroker', () => {
       result.current!.registerDropZone({
         instanceId: 'zone1',
         getRect: () => ({ left: 0, right: 100, top: 0, bottom: 50 } as DOMRect),
+        getElement: () => document.createElement('div'),
         onAttach: vi.fn(),
       });
     });

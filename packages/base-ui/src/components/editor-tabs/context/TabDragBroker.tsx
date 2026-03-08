@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { AttachCommit, TabDescriptor } from '../types';
 import { DetachGhostTab } from '../DetachGhostTab';
@@ -16,12 +16,13 @@ export interface TabDragSession {
 export interface DropZoneRegistration {
   instanceId: string;
   getRect: () => DOMRect | null;
+  getElement: () => HTMLElement | null;
   onAttach: (commit: AttachCommit) => void;
 }
 
 export interface TabDragBrokerValue {
   activeSession: TabDragSession | null;
-  beginSession: (session: TabDragSession, screenX: number, screenY: number) => void;
+  beginSession: (session: TabDragSession, clientX: number, clientY: number) => void;
   cancelSession: () => void;
   /** Clears the session without calling onCancel (used when reverting mid-drag). */
   clearSession: () => void;
@@ -96,44 +97,36 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
   }, []);
 
   const computeInsertIndex = useCallback((zone: DropZoneRegistration, clientX: number): number => {
-    const rect = zone.getRect();
-    if (!rect) return 0;
+    const el = zone.getElement();
+    if (!el) return 0;
 
-    const allTabs = document.querySelectorAll<HTMLElement>('[data-tab-id]');
-    const zoneTabs: HTMLElement[] = [];
-    for (const tab of allTabs) {
-      const tabRect = tab.getBoundingClientRect();
-      if (
-        tabRect.top < rect.bottom &&
-        tabRect.bottom > rect.top &&
-        tabRect.left < rect.right &&
-        tabRect.right > rect.left
-      ) {
-        zoneTabs.push(tab);
-      }
-    }
+    const tabEls = el.querySelectorAll<HTMLElement>('[data-tab-id]');
+    if (tabEls.length === 0) return 0;
 
-    if (zoneTabs.length === 0) return 0;
+    const sorted = Array.from(tabEls).sort(
+      (a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left,
+    );
 
-    zoneTabs.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
-
-    for (let i = 0; i < zoneTabs.length; i++) {
-      const tabRect = zoneTabs[i]!.getBoundingClientRect();
+    for (let i = 0; i < sorted.length; i++) {
+      const tabRect = sorted[i]!.getBoundingClientRect();
       const midpoint = tabRect.left + tabRect.width / 2;
       if (clientX < midpoint) return i;
     }
-    return zoneTabs.length;
+    return sorted.length;
   }, []);
 
+  // Tear down listeners if the provider unmounts during an active session.
+  useEffect(() => cleanup, [cleanup]);
+
   const beginSession = useCallback(
-    (session: TabDragSession, screenX: number, screenY: number) => {
+    (session: TabDragSession, clientX: number, clientY: number) => {
       // No-op if a session is already active
       if (sessionRef.current) return;
 
       sessionRef.current = session;
       setActiveSession(session);
-      setPointerX(screenX);
-      setPointerY(screenY);
+      setPointerX(clientX);
+      setPointerY(clientY);
 
       const onPointerMove = (e: PointerEvent) => {
         cancelAnimationFrame(rafRef.current);

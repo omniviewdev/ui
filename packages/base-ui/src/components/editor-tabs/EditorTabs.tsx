@@ -156,15 +156,15 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     tabs,
     onDetachCommit,
     onDetachArmed: broker && detachToBroker
-      ? (tabId, screenX, screenY) => {
+      ? (tabId, clientX, clientY) => {
           const tab = tabs.find((t) => t.id === tabId);
           if (!tab) return;
           snapshotCssVars();
           brokerSessionStarted.current = true;
           broker.beginSession(
             { tab, sourceInstanceId: instanceId, ghostStyle: cssVarSnapshotRef.current ?? undefined },
-            screenX,
-            screenY,
+            clientX,
+            clientY,
           );
         }
       : undefined,

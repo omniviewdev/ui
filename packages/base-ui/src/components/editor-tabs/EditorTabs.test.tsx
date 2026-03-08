@@ -5,6 +5,7 @@ import { EditorTabs } from './EditorTabs';
 import type { TabDescriptor, TabGroupDescriptor } from './types';
 
 const OriginalResizeObserver = globalThis.ResizeObserver;
+const OriginalMatchMedia = window.matchMedia;
 
 beforeAll(() => {
   globalThis.ResizeObserver = class ResizeObserver {
@@ -30,6 +31,7 @@ beforeAll(() => {
 
 afterAll(() => {
   globalThis.ResizeObserver = OriginalResizeObserver;
+  window.matchMedia = OriginalMatchMedia;
 });
 
 const baseTabs: TabDescriptor[] = [

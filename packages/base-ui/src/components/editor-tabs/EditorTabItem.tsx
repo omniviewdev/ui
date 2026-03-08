@@ -4,6 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { cn } from '../../system/classnames';
 import { useEditorTabsContext } from './context/EditorTabsContext';
 import { EditorTabCloseButton } from './EditorTabCloseButton';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import type { TabDescriptor } from './types';
 import styles from './EditorTabs.module.css';
 
@@ -41,8 +42,7 @@ export const EditorTabItem = memo(
       [ref, setNodeRef],
     );
 
-    const prefersReducedMotion =
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = usePrefersReducedMotion();
 
     const sortableStyle = {
       transform: CSS.Translate.toString(transform),

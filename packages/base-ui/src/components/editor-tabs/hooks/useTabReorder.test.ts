@@ -58,5 +58,21 @@ describe('useTabReorder constraints', () => {
     it('rejects pinned → group by default', () => {
       expect(canReorder(pinnedTab, groupATab, defaultOptions)).toBe(false);
     });
+
+    it('rejects ungrouped → group by default', () => {
+      expect(canReorder(ungroupedTab, groupATab, defaultOptions)).toBe(false);
+    });
+
+    it('rejects group → ungrouped by default', () => {
+      expect(canReorder(groupATab, ungroupedTab, defaultOptions)).toBe(false);
+    });
+
+    it('allows ungrouped → group when allowReorderAcrossGroups is true', () => {
+      expect(canReorder(ungroupedTab, groupATab, { ...defaultOptions, allowReorderAcrossGroups: true })).toBe(true);
+    });
+
+    it('allows group → ungrouped when allowReorderAcrossGroups is true', () => {
+      expect(canReorder(groupATab, ungroupedTab, { ...defaultOptions, allowReorderAcrossGroups: true })).toBe(true);
+    });
   });
 });

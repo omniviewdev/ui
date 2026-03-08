@@ -1,0 +1,81 @@
+.Root {
+  --_ov-cols: 3;
+  --_ov-gap: var(--ov-size-image-list-gap);
+}
+
+/* Standard uses CSS Grid */
+.Root[data-ov-variant='standard'] {
+  display: grid;
+  grid-template-columns: repeat(var(--_ov-cols), 1fr);
+  gap: var(--_ov-gap);
+}
+
+/* Quilted uses CSS Grid with dense packing */
+.Root[data-ov-variant='quilted'] {
+  display: grid;
+  grid-template-columns: repeat(var(--_ov-cols), 1fr);
+  gap: var(--_ov-gap);
+  grid-auto-flow: dense;
+}
+
+/* Masonry uses CSS columns */
+.Root[data-ov-variant='masonry'] {
+  columns: var(--_ov-cols);
+  column-gap: var(--_ov-gap);
+}
+
+.Root[data-ov-variant='masonry'] > .Item {
+  break-inside: avoid;
+  margin-bottom: var(--_ov-gap);
+}
+
+/* Column counts */
+.Root[data-ov-cols='1'] {
+  --_ov-cols: 1;
+}
+.Root[data-ov-cols='2'] {
+  --_ov-cols: 2;
+}
+.Root[data-ov-cols='3'] {
+  --_ov-cols: 3;
+}
+.Root[data-ov-cols='4'] {
+  --_ov-cols: 4;
+}
+.Root[data-ov-cols='5'] {
+  --_ov-cols: 5;
+}
+.Root[data-ov-cols='6'] {
+  --_ov-cols: 6;
+}
+
+/* Gap scale */
+.Root[data-ov-gap='0'] {
+  --_ov-gap: var(--ov-primitive-space-0);
+}
+.Root[data-ov-gap='1'] {
+  --_ov-gap: var(--ov-primitive-space-1);
+}
+.Root[data-ov-gap='2'] {
+  --_ov-gap: var(--ov-primitive-space-2);
+}
+.Root[data-ov-gap='3'] {
+  --_ov-gap: var(--ov-primitive-space-3);
+}
+.Root[data-ov-gap='4'] {
+  --_ov-gap: var(--ov-primitive-space-4);
+}
+
+/* Item spans (quilted mode) */
+.Item[data-ov-col-span='2'] {
+  grid-column: span 2;
+}
+.Item[data-ov-col-span='3'] {
+  grid-column: span 3;
+}
+.Item[data-ov-row-span='2'] {
+  grid-row: span 2;
+}
+.Item[data-ov-row-span='3'] {
+  grid-row: span 3;
+}

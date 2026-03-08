@@ -1,0 +1,70 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-spacing, var(--ov-primitive-space-2));
+}
+
+.Root[data-ov-direction='row'] {
+  flex-direction: row;
+}
+.Root[data-ov-direction='row-reverse'] {
+  flex-direction: row-reverse;
+}
+.Root[data-ov-direction='column-reverse'] {
+  flex-direction: column-reverse;
+}
+
+.Root[data-ov-spacing='0'] {
+  --_ov-spacing: var(--ov-primitive-space-0);
+}
+.Root[data-ov-spacing='1'] {
+  --_ov-spacing: var(--ov-primitive-space-1);
+}
+.Root[data-ov-spacing='2'] {
+  --_ov-spacing: var(--ov-primitive-space-2);
+}
+.Root[data-ov-spacing='3'] {
+  --_ov-spacing: var(--ov-primitive-space-3);
+}
+.Root[data-ov-spacing='4'] {
+  --_ov-spacing: var(--ov-primitive-space-4);
+}
+
+.Root[data-ov-align='start'] {
+  align-items: flex-start;
+}
+.Root[data-ov-align='center'] {
+  align-items: center;
+}
+.Root[data-ov-align='end'] {
+  align-items: flex-end;
+}
+.Root[data-ov-align='stretch'] {
+  align-items: stretch;
+}
+.Root[data-ov-align='baseline'] {
+  align-items: baseline;
+}
+
+.Root[data-ov-justify='start'] {
+  justify-content: flex-start;
+}
+.Root[data-ov-justify='center'] {
+  justify-content: center;
+}
+.Root[data-ov-justify='end'] {
+  justify-content: flex-end;
+}
+.Root[data-ov-justify='between'] {
+  justify-content: space-between;
+}
+.Root[data-ov-justify='around'] {
+  justify-content: space-around;
+}
+.Root[data-ov-justify='evenly'] {
+  justify-content: space-evenly;
+}
+
+.Root[data-ov-wrap='true'] {
+  flex-wrap: wrap;
+}

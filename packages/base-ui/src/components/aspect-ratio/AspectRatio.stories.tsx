@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { AspectRatio } from './AspectRatio';
 
 const meta = {
-  title: 'Surfaces/AspectRatio',
+  title: 'Layout/AspectRatio',
   component: AspectRatio,
   tags: ['autodocs'],
   args: { ratio: 16 / 9 },

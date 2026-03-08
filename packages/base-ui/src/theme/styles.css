@@ -286,6 +286,12 @@
   --ov-size-sheet-padding-sm: 8px;
   --ov-size-sheet-padding-md: 16px;
   --ov-size-sheet-padding-lg: 24px;
+  --ov-size-container-sm: 640px;
+  --ov-size-container-md: 768px;
+  --ov-size-container-lg: 1024px;
+  --ov-size-container-xl: 1280px;
+  --ov-size-container-gutter: var(--ov-primitive-space-4);
+  --ov-size-image-list-gap: var(--ov-primitive-space-2);
   --ov-size-banner-padding-inline-sm: 10px;
   --ov-size-banner-padding-inline-md: 14px;
   --ov-size-banner-padding-inline-lg: 18px;
@@ -647,6 +653,8 @@
   --ov-size-sheet-padding-sm: 6px;
   --ov-size-sheet-padding-md: 12px;
   --ov-size-sheet-padding-lg: 18px;
+  --ov-size-container-gutter: var(--ov-primitive-space-3);
+  --ov-size-image-list-gap: var(--ov-primitive-space-1);
   --ov-size-banner-padding-inline-sm: 8px;
   --ov-size-banner-padding-inline-md: 10px;
   --ov-size-banner-padding-inline-lg: 14px;
@@ -813,6 +821,8 @@
   --ov-size-sheet-padding-sm: 8px;
   --ov-size-sheet-padding-md: 16px;
   --ov-size-sheet-padding-lg: 24px;
+  --ov-size-container-gutter: var(--ov-primitive-space-4);
+  --ov-size-image-list-gap: var(--ov-primitive-space-3);
   --ov-size-banner-padding-inline-sm: 10px;
   --ov-size-banner-padding-inline-md: 14px;
   --ov-size-banner-padding-inline-lg: 18px;

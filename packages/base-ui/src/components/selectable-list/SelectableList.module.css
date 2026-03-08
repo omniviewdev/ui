@@ -1,0 +1,159 @@
+/* ---------------------------------------------------------------------------
+ * SelectableList styles
+ * Extends List foundation with checkbox/radio selection indicators.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  --_ov-control-size: var(--ov-size-choice-control-md);
+  --_ov-indicator-size: var(--ov-size-choice-indicator-md);
+}
+
+/* --- Density overrides --------------------------------------------------- */
+
+.Root[data-ov-density='compact'] {
+  --_ov-control-size: var(--ov-size-choice-control-sm);
+  --_ov-indicator-size: var(--ov-size-choice-indicator-sm);
+}
+
+.Root[data-ov-density='comfortable'] {
+  --_ov-control-size: var(--ov-size-choice-control-lg);
+  --_ov-indicator-size: var(--ov-size-choice-indicator-lg);
+}
+
+/* ---------------------------------------------------------------------------
+ * ItemIndicator — visual checkbox/radio control
+ * --------------------------------------------------------------------------- */
+
+.IndicatorWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  inline-size: var(--_ov-control-size);
+  block-size: var(--_ov-control-size);
+}
+
+.IndicatorControl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--_ov-control-size);
+  block-size: var(--_ov-control-size);
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+  color: transparent;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+/* Checkbox gets choice-radius, radio gets full round */
+.CheckboxIndicator .IndicatorControl {
+  border-radius: var(--ov-size-choice-radius);
+}
+
+.RadioIndicator .IndicatorControl {
+  border-radius: 999px;
+}
+
+/* Checked state */
+.IndicatorWrapper[data-checked] .IndicatorControl {
+  background: var(--ov-color-brand-500);
+  border-color: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
+}
+
+/* Indeterminate state */
+.IndicatorWrapper[data-indeterminate] .IndicatorControl {
+  background: var(--ov-color-brand-500);
+  border-color: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
+}
+
+/* Hover on parent item highlights unchecked control */
+.Item:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
+  border-color: var(--ov-color-border-strong);
+  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+}
+
+/* Disabled state */
+.Item[data-ov-disabled='true'] .IndicatorWrapper {
+  opacity: var(--ov-opacity-disabled);
+}
+
+/* Indicator icon sizing */
+.IndicatorIcon {
+  inline-size: var(--_ov-indicator-size);
+  block-size: var(--_ov-indicator-size);
+}
+
+/* Radio dot */
+.RadioDot {
+  inline-size: calc(var(--_ov-indicator-size) * 0.5);
+  block-size: calc(var(--_ov-indicator-size) * 0.5);
+  border-radius: 999px;
+  background: currentColor;
+}
+
+/* ---------------------------------------------------------------------------
+ * SelectAll — header row
+ * --------------------------------------------------------------------------- */
+
+.SelectAll {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-control);
+  min-height: var(--_ov-item-height, 32px);
+  padding-inline: var(--_ov-item-padding-inline, 8px);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--ov-color-border-muted);
+}
+
+.SelectAll:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
+  border-color: var(--ov-color-border-strong);
+  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+}
+
+.SelectAllLabel {
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  color: var(--ov-color-fg-muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * SelectionSummary — footer row
+ * --------------------------------------------------------------------------- */
+
+.SelectionSummary {
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-subtle);
+  padding-inline: var(--_ov-item-padding-inline, 8px);
+  padding-block: var(--ov-space-stack-xs, 4px);
+  border-top: 1px solid var(--ov-color-border-muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * GroupSelectAll — group-scoped toggle
+ * --------------------------------------------------------------------------- */
+
+.GroupSelectAll {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-control);
+  padding-inline: var(--_ov-item-padding-inline, 8px);
+  cursor: pointer;
+  user-select: none;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-group-label-font-size, var(--ov-font-size-caption));
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.2;
+  margin-block-start: var(--_ov-group-label-gap-top, 8px);
+  margin-block-end: var(--_ov-group-label-gap-after, 4px);
+}
+
+.GroupSelectAll:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
+  border-color: var(--ov-color-border-strong);
+  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+}

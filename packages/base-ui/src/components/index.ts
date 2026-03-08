@@ -47,3 +47,4 @@ export * from './basic-list';
 export * from './nav-list';
 export * from './tree-list';
 export * from './command-list';
+export * from './selectable-list';

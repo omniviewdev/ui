@@ -19,6 +19,8 @@ export interface EditorTabsContextValue {
   tabs: TabId[];
   dragActiveId: TabId | null;
   dragMode: DragMode;
+  isAttachDropTarget: boolean;
+  attachInsertIndex: number | null;
 }
 
 const EditorTabsContext = createContext<EditorTabsContextValue | null>(null);

@@ -1,12 +1,14 @@
-import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useId, useMemo, useRef, useState } from 'react';
 import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from '@dnd-kit/core';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import { EditorTabsContext } from './context/EditorTabsContext';
+import { useTabDragBroker } from './context/TabDragBroker';
 import { useTabScroll } from './hooks/useTabScroll';
 import { useTabReorder } from './hooks/useTabReorder';
 import { useTabDetach } from './hooks/useTabDetach';
+import { useTabAttach } from './hooks/useTabAttach';
 import { createDetachAwareModifier } from './modifiers/createDetachAwareModifier';
 import { computeTabSegments } from './utils/computeTabSegments';
 import { EditorTabItem } from './EditorTabItem';
@@ -17,7 +19,7 @@ import { EditorTabScrollShadow } from './EditorTabScrollShadow';
 import { EditorTabCloseButton } from './EditorTabCloseButton';
 import { EditorTabGroupChip } from './EditorTabGroupChip';
 import { DetachGhostTab } from './DetachGhostTab';
-import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, ReorderMeta, DetachCommit } from './types';
+import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, ReorderMeta, DetachCommit, AttachCommit } from './types';
 import styles from './EditorTabs.module.css';
 
 export interface EditorTabsProps extends StyledComponentProps {
@@ -36,6 +38,11 @@ export interface EditorTabsProps extends StyledComponentProps {
   detachable?: boolean;
   detachThresholdPx?: number;
   onDetachCommit?: (commit: DetachCommit) => void;
+  instanceId?: string;
+  onAttachTab?: (commit: AttachCommit) => void;
+  /** When true and a TabDragBrokerProvider is present, vertical detach starts a
+   *  broker session instead of the default Phase 3 flow. */
+  detachToBroker?: boolean;
   className?: string;
 }
 
@@ -76,6 +83,9 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     detachable = true,
     detachThresholdPx = 18,
     onDetachCommit,
+    instanceId: instanceIdProp,
+    onAttachTab,
+    detachToBroker = false,
     variant,
     color,
     size,
@@ -83,6 +93,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
   },
   ref,
 ) {
+  const generatedId = useId();
+  const instanceId = instanceIdProp ?? generatedId;
   const [uncontrolledActiveId, setUncontrolledActiveId] = useState(
     () => defaultActiveId ?? tabs[0]?.id ?? '',
   );
@@ -104,6 +116,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
 
   const rootElRef = useRef<HTMLDivElement | null>(null);
   const cssVarSnapshotRef = useRef<React.CSSProperties | null>(null);
+  /** Tracks whether we handed the detach off to the broker (ref for sync access). */
+  const brokerSessionStarted = useRef(false);
 
   const rootRefCb = useCallback(
     (node: HTMLDivElement | null) => {
@@ -114,6 +128,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     [ref],
   );
 
+  const broker = useTabDragBroker();
+
   const reorder = useTabReorder({
     tabs,
     groups,
@@ -122,13 +138,47 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     allowReorderAcrossGroups,
   });
 
+  // Snapshot CSS vars (used by both DragOverlay and broker ghost)
+  const snapshotCssVars = useCallback(() => {
+    if (!rootElRef.current) return;
+    const computed = getComputedStyle(rootElRef.current);
+    const snapshot: Partial<Record<string, string>> & React.CSSProperties = {};
+    for (const key of CSS_VAR_SNAPSHOT_KEYS) {
+      snapshot[key] = computed.getPropertyValue(key);
+    }
+    cssVarSnapshotRef.current = snapshot;
+  }, []);
+
   const detach = useTabDetach({
     detachable,
     detachThresholdPx,
     viewportRef,
     tabs,
     onDetachCommit,
+    onDetachArmed: broker && detachToBroker
+      ? (tabId, clientX, clientY) => {
+          const tab = tabs.find((t) => t.id === tabId);
+          if (!tab) return;
+          snapshotCssVars();
+          brokerSessionStarted.current = true;
+          broker.beginSession(
+            { tab, sourceInstanceId: instanceId, ghostStyle: cssVarSnapshotRef.current ?? undefined },
+            clientX,
+            clientY,
+          );
+        }
+      : undefined,
+    onDetachReverted: broker && detachToBroker
+      ? () => {
+          if (brokerSessionStarted.current) {
+            broker.clearSession();
+            brokerSessionStarted.current = false;
+          }
+        }
+      : undefined,
   });
+
+  const attach = useTabAttach({ instanceId, viewportRef, onAttachTab });
 
   const dndModifiers = useMemo(
     () => [createDetachAwareModifier(detach.dragModeRef)],
@@ -137,19 +187,11 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
 
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
-      // Snapshot CSS vars from the root element for the DragOverlay
-      if (rootElRef.current) {
-        const computed = getComputedStyle(rootElRef.current);
-        const snapshot: Partial<Record<string, string>> & React.CSSProperties = {};
-        for (const key of CSS_VAR_SNAPSHOT_KEYS) {
-          snapshot[key] = computed.getPropertyValue(key);
-        }
-        cssVarSnapshotRef.current = snapshot;
-      }
+      snapshotCssVars();
       reorder.handleDragStart(event);
       detach.handleDetachDragStart(event);
     },
-    [reorder, detach],
+    [reorder, detach, snapshotCssVars],
   );
 
   const handleDragEnd = useCallback(
@@ -160,15 +202,24 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       } else {
         reorder.handleDragEnd(event);
         detach.handleDetachDragCancel();
+        // If broker was started but user reverted to reorder, clear it
+        if (brokerSessionStarted.current && broker) {
+          broker.clearSession();
+        }
       }
+      brokerSessionStarted.current = false;
     },
-    [reorder, detach],
+    [reorder, detach, broker],
   );
 
   const handleDragCancel = useCallback(() => {
     reorder.handleDragCancel();
     detach.handleDetachDragCancel();
-  }, [reorder, detach]);
+    if (brokerSessionStarted.current && broker) {
+      broker.clearSession();
+    }
+    brokerSessionStarted.current = false;
+  }, [reorder, detach, broker]);
 
   const segments = useMemo(() => computeTabSegments(tabs, groups), [tabs, groups]);
 
@@ -196,9 +247,18 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       tabs: tabIds,
       dragActiveId: reorder.dragActiveId,
       dragMode: detach.dragMode,
+      isAttachDropTarget: attach.isDropTarget,
+      attachInsertIndex: attach.insertIndex,
     }),
-    [activeId, onActiveChange, onCloseTab, onContextMenuTab, onToggleGroupCollapsed, onGroupContextMenu, scrollState, scrollTo, viewportRef, tabIds, reorder.dragActiveId, detach.dragMode],
+    [activeId, onActiveChange, onCloseTab, onContextMenuTab, onToggleGroupCollapsed, onGroupContextMenu, scrollState, scrollTo, viewportRef, tabIds, reorder.dragActiveId, detach.dragMode, attach.isDropTarget, attach.insertIndex],
   );
+
+  // Show dnd-kit's DragOverlay only when detach-armed AND the broker hasn't
+  // taken over the ghost rendering (brokerSessionStarted).
+  const showDndOverlay =
+    detach.dragMode === 'detach-armed' &&
+    activeTabDescriptor &&
+    !brokerSessionStarted.current;
 
   return (
     <EditorTabsContext.Provider value={contextValue}>
@@ -248,7 +308,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           <EditorTabScrollShadow side="right" />
           <EditorTabScrollButton direction="right" />
         </div>
-        {detach.dragMode === 'detach-armed' && activeTabDescriptor && (
+        {showDndOverlay && (
           <DragOverlay dropAnimation={null} style={cssVarSnapshotRef.current ?? undefined}>
             <DetachGhostTab tab={activeTabDescriptor} />
           </DragOverlay>

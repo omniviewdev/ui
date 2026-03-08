@@ -46,7 +46,11 @@ export const EditorTabItem = memo(
 
     const sortableStyle = {
       transform: CSS.Translate.toString(transform),
-      transition: prefersReducedMotion ? 'none' : (transition ?? undefined),
+      // Suppress the return-to-origin transition when a detach is in progress
+      // so the remaining tabs don't visually "fall" back into place.
+      transition: prefersReducedMotion || dragMode === 'detach-armed'
+        ? 'none'
+        : (transition ?? undefined),
     };
 
     const handleClick = useCallback(() => {

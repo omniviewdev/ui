@@ -1,0 +1,76 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  background: var(--ov-color-chat-input-bg, var(--ov-color-input-bg));
+  border: 1px solid var(--ov-color-chat-input-border, var(--ov-color-input-border));
+  border-radius: var(--ov-radius-lg, 8px);
+  padding: var(--ov-space-2, 8px);
+  transition: border-color var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Root:focus-within {
+  border-color: var(--ov-color-border-focus, var(--ov-color-brand-default));
+}
+
+.Root[data-ov-disabled='true'] {
+  opacity: var(--ov-opacity-disabled, 0.5);
+  pointer-events: none;
+}
+
+.Textarea {
+  display: block;
+  width: 100%;
+  min-height: 1.5em;
+  max-height: 200px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font-family: inherit;
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  line-height: var(--ov-line-height-normal, 1.5);
+  padding: 0;
+}
+
+.Textarea::placeholder {
+  color: var(--ov-color-input-placeholder, var(--ov-color-fg-muted));
+}
+
+.Footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 0;
+}
+
+.Footer:empty {
+  display: none;
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+}
+
+.Counter {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  margin-left: auto;
+}
+
+.Counter[data-ov-near-limit='true'] {
+  color: var(--ov-color-fg-warning, var(--ov-color-warning-default));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Root {
+  transition: none;
+}

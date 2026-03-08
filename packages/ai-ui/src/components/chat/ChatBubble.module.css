@@ -1,0 +1,93 @@
+.Root {
+  display: flex;
+  gap: var(--ov-space-2, 8px);
+  max-width: 85%;
+  padding: var(--ov-space-1, 4px) 0;
+}
+
+.Root[data-ov-role='user'] {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.Root[data-ov-role='assistant'] {
+  align-self: flex-start;
+}
+
+.Root[data-ov-role='system'] {
+  align-self: center;
+  max-width: 70%;
+}
+
+.Avatar {
+  flex-shrink: 0;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  min-width: 0;
+}
+
+.Bubble {
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  border-radius: var(--ov-radius-lg, 8px);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  line-height: var(--ov-line-height-normal, 1.5);
+  word-break: break-word;
+}
+
+.Root[data-ov-role='user'] .Bubble {
+  background: var(--ov-color-chat-user-bubble-bg, var(--ov-color-bg-surface-raised));
+  color: var(--ov-color-chat-user-bubble-fg, var(--ov-color-fg-default));
+}
+
+.Root[data-ov-role='assistant'] .Bubble {
+  background: var(--ov-color-chat-assistant-bubble-bg, var(--ov-color-bg-surface));
+  color: var(--ov-color-chat-assistant-bubble-fg, var(--ov-color-fg-default));
+}
+
+.Root[data-ov-role='system'] .Bubble {
+  background: var(--ov-color-bg-inset);
+  color: var(--ov-color-fg-muted);
+  text-align: center;
+  font-size: var(--ov-font-size-xs, 0.75rem);
+}
+
+.Meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Root[data-ov-role='user'] .Meta {
+  justify-content: flex-end;
+}
+
+.Timestamp {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  opacity: 0;
+  transition: opacity var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Root:hover .Actions {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Actions {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Actions {
+  transition: none;
+}

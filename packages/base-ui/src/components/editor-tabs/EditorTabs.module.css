@@ -168,7 +168,6 @@
   height: 100%;
   padding: 0 var(--_ov-tab-padding-x);
   border: none;
-  border-right: none;
   border-bottom: 2px solid transparent;
   background: var(--_ov-tab-bg);
   color: var(--_ov-tab-fg);

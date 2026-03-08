@@ -409,7 +409,10 @@ export const WithContextMenu: Story = {
         <ContextMenu.Item onClick={() => togglePin(contextTabRef.current)}>
           Pin Tab
         </ContextMenu.Item>
-        <ContextMenu.Item onClick={() => copyName(contextTabRef.current)}>
+        <ContextMenu.Item onClick={() => {
+          const tab = tabs.find((t) => t.id === contextTabRef.current);
+          if (tab) navigator.clipboard.writeText(tab.title);
+        }}>
           Copy File Name
         </ContextMenu.Item>
       </ContextMenu.Popup>

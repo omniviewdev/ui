@@ -1,0 +1,73 @@
+/* ---------------------------------------------------------------------------
+ * RowList styles
+ * Extends List foundation with CSS Grid column layout for tabular data.
+ * --------------------------------------------------------------------------- */
+
+.Root {
+  min-inline-size: 0;
+}
+
+/* Header row — sticky, grid layout */
+.Header {
+  display: grid;
+  grid-template-columns: var(--_ov-row-grid-columns);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--ov-color-bg-surface);
+  border-bottom: 1px solid var(--ov-color-border-muted);
+}
+
+/* Header cell */
+.HeaderCell {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-inline-xs, 4px);
+  min-height: var(--_ov-item-height);
+  padding-inline: var(--_ov-item-padding-inline);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.HeaderCell[data-sortable] {
+  cursor: pointer;
+}
+
+.HeaderCell[data-sortable]:hover {
+  color: var(--ov-color-fg-default);
+}
+
+/* Sort icon */
+.SortIcon {
+  flex: 0 0 auto;
+  inline-size: 12px;
+  block-size: 12px;
+  color: var(--ov-color-fg-subtle);
+  transition: transform var(--ov-duration-interactive, 150ms) var(--ov-ease-standard, ease);
+}
+
+.HeaderCell[aria-sort] .SortIcon {
+  color: var(--ov-color-fg-default);
+}
+
+/* Item row — grid layout overrides List.Item flex */
+.Item {
+  display: grid;
+  grid-template-columns: var(--_ov-row-grid-columns);
+}
+
+/* Cell */
+.Cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-inline: var(--_ov-item-padding-inline);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

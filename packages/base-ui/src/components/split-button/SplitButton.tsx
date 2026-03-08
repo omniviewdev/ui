@@ -9,6 +9,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
+import { LuChevronDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
@@ -127,22 +128,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
           size: ctx?.size,
         })}
       >
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M3 5L6 8L9 5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <LuChevronDown aria-hidden="true" />
       </button>
 
       {open && (

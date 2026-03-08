@@ -8,6 +8,7 @@ import {
   type ClipboardEvent,
   type ChangeEvent,
 } from 'react';
+import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
 import styles from './TagInput.module.css';
@@ -165,7 +166,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
             }}
             tabIndex={-1}
           >
-            &times;
+            <LuX aria-hidden />
           </button>
         </span>
       ))}

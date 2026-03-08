@@ -8,6 +8,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
+import { LuCheck } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './Stepper.module.css';
 
@@ -149,18 +150,7 @@ const StepperStep = forwardRef<HTMLDivElement, StepProps & InjectedStepProps>(fu
       {/* Circle indicator */}
       <div className={styles.Circle} data-ov-status={status}>
         {status === 'completed' && !icon ? (
-          <svg
-            className={styles.CheckIcon}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={3}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <LuCheck className={styles.CheckIcon} aria-hidden="true" />
         ) : icon ? (
           <span className={styles.IconSlot}>{icon}</span>
         ) : (

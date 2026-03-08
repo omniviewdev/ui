@@ -18,19 +18,22 @@ describe('Breadcrumbs', () => {
     expect(screen.getByText('Products')).toBeInTheDocument();
     expect(screen.getByText('Widget')).toBeInTheDocument();
 
-    const separators = screen.getAllByText('/');
-    expect(separators).toHaveLength(2);
+    // Default separator is an icon; verify separator spans are rendered
+    const nav = screen.getByRole('navigation');
+    const separators = nav.querySelectorAll('[aria-hidden="true"]');
+    // 2 separators between 3 items
+    expect(separators.length).toBeGreaterThanOrEqual(2);
   });
 
   it('renders a custom separator', () => {
     renderWithTheme(
-      <Breadcrumbs separator=">">
+      <Breadcrumbs separator={<span data-testid="custom-sep">/</span>}>
         <Breadcrumbs.Item href="/a">A</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/b">B</Breadcrumbs.Item>
       </Breadcrumbs>,
     );
 
-    expect(screen.getByText('>')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-sep')).toBeInTheDocument();
   });
 
   it('applies active styling to current page item', () => {

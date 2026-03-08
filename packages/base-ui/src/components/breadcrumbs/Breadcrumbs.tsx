@@ -6,6 +6,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
+import { LuChevronRight, LuEllipsis } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
 import styles from './Breadcrumbs.module.css';
@@ -71,7 +72,7 @@ BreadcrumbsItem.displayName = 'Breadcrumbs.Item';
 const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function BreadcrumbsRoot(
   {
     className,
-    separator = '/',
+    separator = <LuChevronRight aria-hidden />,
     maxItems = 8,
     itemsBeforeCollapse = 1,
     itemsAfterCollapse = 1,
@@ -102,7 +103,7 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
             setExpanded(true);
           }}
         >
-          ...
+          <LuEllipsis aria-hidden />
         </button>
       </span>
     );

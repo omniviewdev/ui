@@ -1,4 +1,11 @@
 import { forwardRef, type HTMLAttributes, useCallback } from 'react';
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+  LuEllipsis,
+} from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
 import { usePaginationRange } from './usePaginationRange';
@@ -65,7 +72,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
           disabled={isFirstPage}
           onClick={handleClick(1)}
         >
-          {'\u00AB'}
+          <LuChevronsLeft aria-hidden />
         </button>
       )}
 
@@ -76,13 +83,13 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
         disabled={isFirstPage}
         onClick={handleClick(page - 1)}
       >
-        {'\u2039'}
+        <LuChevronLeft aria-hidden />
       </button>
 
       {items.map((item, index) =>
         item === 'ellipsis' ? (
           <span key={`ellipsis-${index}`} className={styles.Ellipsis} aria-hidden="true">
-            {'\u2026'}
+            <LuEllipsis />
           </span>
         ) : (
           <button
@@ -105,7 +112,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
         disabled={isLastPage}
         onClick={handleClick(page + 1)}
       >
-        {'\u203A'}
+        <LuChevronRight aria-hidden />
       </button>
 
       {showFirstLast && (
@@ -116,7 +123,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
           disabled={isLastPage}
           onClick={handleClick(count)}
         >
-          {'\u00BB'}
+          <LuChevronsRight aria-hidden />
         </button>
       )}
     </nav>

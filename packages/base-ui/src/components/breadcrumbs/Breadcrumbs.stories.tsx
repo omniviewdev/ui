@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { LuChevronRight, LuMinus, LuSlash } from 'react-icons/lu';
 import { Breadcrumbs } from './Breadcrumbs';
 
 const meta = {
@@ -6,14 +7,14 @@ const meta = {
   component: Breadcrumbs,
   tags: ['autodocs'],
   args: {
-    separator: '/',
+    separator: undefined,
     maxItems: 8,
     itemsBeforeCollapse: 1,
     itemsAfterCollapse: 1,
     size: 'md',
   },
   argTypes: {
-    separator: { control: 'text' },
+    separator: { control: false },
     maxItems: { control: 'number' },
     itemsBeforeCollapse: { control: 'number' },
     itemsAfterCollapse: { control: 'number' },
@@ -62,25 +63,19 @@ export const WithCollapse: Story = {
 export const CustomSeparator: Story = {
   render: () => (
     <div style={{ display: 'grid', gap: 16 }}>
-      <Breadcrumbs separator=">">
+      <Breadcrumbs separator={<LuChevronRight aria-hidden />}>
         <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/settings">Settings</Breadcrumbs.Item>
         <Breadcrumbs.Item active>Profile</Breadcrumbs.Item>
       </Breadcrumbs>
 
-      <Breadcrumbs separator="|">
+      <Breadcrumbs separator={<LuSlash aria-hidden />}>
         <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/settings">Settings</Breadcrumbs.Item>
         <Breadcrumbs.Item active>Profile</Breadcrumbs.Item>
       </Breadcrumbs>
 
-      <Breadcrumbs
-        separator={
-          <span aria-hidden="true" style={{ fontSize: '0.75em' }}>
-            {'\u276F'}
-          </span>
-        }
-      >
+      <Breadcrumbs separator={<LuMinus aria-hidden />}>
         <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/settings">Settings</Breadcrumbs.Item>
         <Breadcrumbs.Item active>Profile</Breadcrumbs.Item>

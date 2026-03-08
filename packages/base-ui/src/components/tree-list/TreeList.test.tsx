@@ -510,6 +510,8 @@ describe('TreeList', () => {
     );
 
     const readme = screen.getByText('README.md').closest('[role="treeitem"]')!;
+    // Using fireEvent.click (not userEvent) to issue a low-level DOM click
+    // directly on the disabled treeitem and verify it doesn't trigger selection.
     fireEvent.click(readme);
     expect(onChange).not.toHaveBeenCalled();
   });

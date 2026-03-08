@@ -315,8 +315,10 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     [expandedKeys, expand, collapse],
   );
 
+  // NOTE: expandAll performs a synchronous full-tree traversal. For trees
+  // with 10k+ nodes this may cause a noticeable frame drop. Prefer
+  // expandAllAsync for very large datasets.
   const expandAll = useCallback(() => {
-    // Collect all branch keys from the full tree (not just visible)
     const allBranchKeys = new Set<Key>();
     function walk(siblings: readonly TItem[]) {
       for (const item of siblings) {
@@ -330,6 +332,35 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     walk(items);
     setExpandedKeys(allBranchKeys);
   }, [items, itemKey, getChildren, isBranch, setExpandedKeys]);
+
+  const expandAllAsync = useCallback(
+    () =>
+      new Promise<void>((resolve) => {
+        const allBranchKeys = new Set<Key>();
+        const stack: (readonly TItem[])[] = [items];
+        function chunk() {
+          const deadline = performance.now() + 4; // ~4ms budget per frame
+          while (stack.length > 0 && performance.now() < deadline) {
+            const siblings = stack.pop()!;
+            for (const item of siblings) {
+              if (isBranch(item)) {
+                allBranchKeys.add(itemKey(item));
+                const children = getChildren(item);
+                if (children && children.length > 0) stack.push(children);
+              }
+            }
+          }
+          if (stack.length > 0) {
+            setTimeout(chunk, 0);
+          } else {
+            setExpandedKeys(allBranchKeys);
+            resolve();
+          }
+        }
+        chunk();
+      }),
+    [items, itemKey, getChildren, isBranch, setExpandedKeys],
+  );
 
   const collapseAll = useCallback(() => {
     setExpandedKeys(new Set());
@@ -366,9 +397,10 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
       collapse,
       toggleExpanded,
       expandAll,
+      expandAllAsync,
       collapseAll,
     }),
-    [select, deselect, toggle, selectRange, selectAll, clearSelection, setActiveKeyAction, expand, collapse, toggleExpanded, expandAll, collapseAll],
+    [select, deselect, toggle, selectRange, selectAll, clearSelection, setActiveKeyAction, expand, collapse, toggleExpanded, expandAll, expandAllAsync, collapseAll],
   );
 
   return { config, store, actions };

@@ -116,6 +116,8 @@ export interface TreeActionsContextValue {
   collapse: (key: Key) => void;
   toggleExpanded: (key: Key) => void;
   expandAll: () => void;
+  /** Non-blocking alternative to expandAll for very large trees (10k+ nodes). */
+  expandAllAsync: () => Promise<void>;
   collapseAll: () => void;
 }
 

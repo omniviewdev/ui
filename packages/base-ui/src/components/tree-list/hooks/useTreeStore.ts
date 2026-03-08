@@ -156,7 +156,14 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     return flatNodesRef.current.map((n) => n.key);
   }, []);
 
-  // Stable ref so the store identity never changes
+  // Stable ref so the store identity never changes across renders.
+  // All callbacks listed here (subscribe, getSnapshot, getItemState,
+  // getNodeMeta, getFlatNodes, setSelectedKeys, setActiveKey,
+  // setExpandedKeys, setLoadingKey, setFlatNodes, registerTextValue,
+  // getTextValue, getRegisteredKeys) and their shared dependency `emit`
+  // must remain referentially stable (empty dependency arrays) — adding
+  // changing deps to any of them will silently break useSyncExternalStore
+  // consumers that hold the initial store reference.
   const storeRef = useRef<TreeStore>({
     subscribe,
     getSnapshot,

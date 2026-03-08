@@ -122,11 +122,12 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
 
     const commitEditing = useCallback(async () => {
       if (editingKey == null) return;
+      const key = editingKey;
 
       const values = gatherValues();
 
       if (validateItem) {
-        const errors = await validateItem(editingKey, values);
+        const errors = await validateItem(key, values);
         const hasErrors = Object.values(errors).some(Boolean);
         if (hasErrors) {
           setFieldErrors(errors);
@@ -134,7 +135,7 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
         }
       }
 
-      onCommit?.(editingKey, values);
+      onCommit?.(key, values);
       setEditingKey(null);
       setFieldErrors({});
       fieldRefsMap.current.clear();
@@ -191,8 +192,18 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
                 return;
               }
               const active = document.activeElement;
-              // FieldElement may be a native element or a wrapper — compare loosely
-              const idx = fields.findIndex((f) => (f as unknown) === active);
+              // FieldElement may be the focused node itself, or a wrapper containing it
+              const idx = fields.findIndex((f) => {
+                if ((f as unknown) === active) return true;
+                if (
+                  active &&
+                  typeof (f as unknown as Node).contains === 'function' &&
+                  (f as unknown as Node).contains(active as Node)
+                ) {
+                  return true;
+                }
+                return false;
+              });
               if (idx === -1) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -463,18 +474,23 @@ const EditableListItemField = forwardRef<HTMLInputElement, EditableListItemField
       autoFocus,
       onChange,
     },
-    _ref,
+    forwardedRef,
   ) {
     const { ref: fieldRef, error } = useEditableField(name, defaultValue);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Bridge: pass the input element to both the field registry and our local ref
+    // Bridge: pass the input element to the field registry, local ref, and forwarded ref
     const setRef = useCallback(
       (el: HTMLInputElement | null) => {
         inputRef.current = el;
         fieldRef(el);
+        if (typeof forwardedRef === 'function') {
+          forwardedRef(el);
+        } else if (forwardedRef) {
+          forwardedRef.current = el;
+        }
       },
-      [fieldRef],
+      [fieldRef, forwardedRef],
     );
 
     // Set initial value and auto-focus

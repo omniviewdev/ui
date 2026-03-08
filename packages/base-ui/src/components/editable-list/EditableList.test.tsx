@@ -49,7 +49,7 @@ function ControlledTestList() {
   const [editingKey, setEditingKey] = useState<Key | null>(null);
   return (
     <div>
-      <button onClick={() => setEditingKey('2')} data-testid="edit-port">
+      <button type="button" onClick={() => setEditingKey('2')} data-testid="edit-port">
         Edit PORT
       </button>
       <TestList

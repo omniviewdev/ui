@@ -245,6 +245,7 @@ function ControlledEditingStory(args: Record<string, unknown>) {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
           {items.map((item) => (
             <button
+              type="button"
               key={item.id}
               onClick={() => setEditingKey(item.id)}
               style={{ fontSize: 12 }}
@@ -252,7 +253,7 @@ function ControlledEditingStory(args: Record<string, unknown>) {
               Edit {item.name}
             </button>
           ))}
-          <button onClick={() => setEditingKey(null)} style={{ fontSize: 12 }}>
+          <button type="button" onClick={() => setEditingKey(null)} style={{ fontSize: 12 }}>
             Cancel
           </button>
         </div>

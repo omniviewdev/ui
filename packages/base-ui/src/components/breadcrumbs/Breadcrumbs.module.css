@@ -1,0 +1,93 @@
+.Root {
+  --_ov-font-size: var(--ov-font-size-body);
+
+  display: block;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-font-size: var(--ov-font-size-body);
+}
+
+.List {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--_ov-font-size);
+}
+
+.Entry {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+}
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.Link {
+  color: var(--ov-color-brand-400);
+  text-decoration: none;
+  transition:
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    text-decoration var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Link:hover {
+  text-decoration: underline;
+}
+
+.Link:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm);
+}
+
+.Text {
+  color: var(--ov-color-fg-default);
+  font-weight: var(--ov-font-weight-label);
+}
+
+.Item[data-ov-active='true'] .Text {
+  color: var(--ov-color-fg-default);
+}
+
+.Separator {
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.Ellipsis {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-font-size);
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: var(--ov-radius-sm);
+  transition:
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Ellipsis:hover {
+  color: var(--ov-color-fg-default);
+  background-color: var(--ov-color-state-hover);
+}
+
+.Ellipsis:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
+}

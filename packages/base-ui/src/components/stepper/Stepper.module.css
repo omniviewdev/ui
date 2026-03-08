@@ -1,0 +1,190 @@
+/* ---------------------------------------------------------------------------
+ * Stepper – Root
+ * ------------------------------------------------------------------------- */
+
+.Root {
+  --_ov-circle-size: 28px;
+  --_ov-connector-thickness: 2px;
+
+  display: flex;
+  font-family: var(--ov-font-sans);
+}
+
+.Root[data-ov-orientation='horizontal'] {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.Root[data-ov-orientation='vertical'] {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ---------------------------------------------------------------------------
+ * Step
+ * ------------------------------------------------------------------------- */
+
+.Step {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.Step[data-ov-orientation='horizontal'] {
+  flex: 1 1 0%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Step[data-ov-orientation='vertical'] {
+  flex-direction: row;
+  align-items: flex-start;
+  padding-block-end: var(--ov-space-stack-lg);
+}
+
+.Step[data-ov-disabled] {
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Connector
+ * ------------------------------------------------------------------------- */
+
+.Connector {
+  background: var(--ov-color-border-muted);
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Connector[data-ov-status='completed'] {
+  background: var(--ov-color-brand-500);
+}
+
+/* Horizontal connector */
+.Step[data-ov-orientation='horizontal'] .Connector {
+  flex: 1 1 0%;
+  height: var(--_ov-connector-thickness);
+  margin-inline: var(--ov-space-inline-sm);
+}
+
+/* Vertical connector */
+.Step[data-ov-orientation='vertical'] .Connector {
+  position: absolute;
+  top: 0;
+  left: calc(var(--_ov-circle-size) / 2 - var(--_ov-connector-thickness) / 2);
+  width: var(--_ov-connector-thickness);
+  height: var(--ov-space-stack-lg);
+  transform: translateY(calc(var(--_ov-circle-size) * -1 - var(--ov-space-stack-xs)));
+}
+
+/* Hide the vertical connector when it would appear above the first step */
+.Step[data-ov-orientation='vertical']:first-child .Connector {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Circle (step indicator)
+ * ------------------------------------------------------------------------- */
+
+.Circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--_ov-circle-size);
+  height: var(--_ov-circle-size);
+  border-radius: var(--ov-radius-full, 9999px);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  transition:
+    background var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+/* Pending */
+.Circle[data-ov-status='pending'] {
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-muted);
+  box-shadow: inset 0 0 0 1px var(--ov-color-border-muted);
+}
+
+/* Active */
+.Circle[data-ov-status='active'] {
+  background: var(--ov-color-bg-brand);
+  color: var(--ov-color-fg-inverse);
+}
+
+/* Completed */
+.Circle[data-ov-status='completed'] {
+  background: var(--ov-color-success);
+  color: var(--ov-color-fg-inverse);
+}
+
+/* Error */
+.Circle[data-ov-status='error'] {
+  background: var(--ov-color-danger);
+  color: var(--ov-color-fg-inverse);
+}
+
+/* ---------------------------------------------------------------------------
+ * Circle content: check icon, number, custom icon
+ * ------------------------------------------------------------------------- */
+
+.CheckIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.IconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.Number {
+  line-height: 1;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Content (label + description)
+ * ------------------------------------------------------------------------- */
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  margin-inline-start: var(--ov-space-inline-sm);
+  min-width: 0;
+}
+
+.Label {
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  line-height: var(--ov-line-height-body, 1.4);
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Label[data-ov-status='active'] {
+  color: var(--ov-color-fg-default);
+}
+
+.Label[data-ov-status='completed'] {
+  color: var(--ov-color-fg-default);
+}
+
+.Label[data-ov-status='pending'] {
+  color: var(--ov-color-fg-muted);
+}
+
+.Label[data-ov-status='error'] {
+  color: var(--ov-color-danger);
+}
+
+.Description {
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+  line-height: var(--ov-line-height-caption, 1.3);
+  margin-block-start: var(--ov-space-stack-xs);
+}

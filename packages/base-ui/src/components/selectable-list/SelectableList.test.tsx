@@ -107,11 +107,7 @@ describe('SelectableList', () => {
 
     await user.click(itemB);
     expect(itemB).toHaveAttribute('aria-selected', 'true');
-    // In single+toggle mode, clicking B toggles B on. A is still selected
-    // because toggle doesn't deselect others. But with single mode, List
-    // only allows one selection at a time.
-    // Actually, selectionBehavior='toggle' with selectionMode='single'
-    // still only allows one key. Let's verify:
+    // Single selection with toggle behavior still enforces only one selected item
     expect(itemA).not.toHaveAttribute('aria-selected', 'true');
   });
 
@@ -355,6 +351,85 @@ describe('SelectableList', () => {
     await user.click(itemA);
 
     expect(screen.getByText('1 of 3 selected')).toBeInTheDocument();
+  });
+
+  // ---------------------------------------------------------------------------
+  // Keyboard interaction tests
+  // ---------------------------------------------------------------------------
+
+  it('Space toggles selection on focused item', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<ThreeItemList />);
+
+    const root = screen.getByRole('listbox');
+    // Focus the list, then press ArrowDown to activate first item
+    root.focus();
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard(' ');
+
+    const itemA = screen.getByText('A').closest('[role="option"]')!;
+    expect(itemA).toHaveAttribute('aria-selected', 'true');
+    const indicator = itemA.querySelector('[aria-hidden="true"]');
+    expect(indicator).toHaveAttribute('data-checked', '');
+
+    // Press Space again to deselect
+    await user.keyboard(' ');
+    expect(itemA).not.toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('Shift+Arrow range selects items', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<ThreeItemList />);
+
+    const root = screen.getByRole('listbox');
+    root.focus();
+    // Move to first item and select it
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard(' ');
+    // Shift+ArrowDown to range-select through B and C
+    await user.keyboard('{Shift>}{ArrowDown}{ArrowDown}{/Shift}');
+
+    const items = screen.getAllByRole('option');
+    // All three items should be selected via range
+    for (const item of items) {
+      expect(item).toHaveAttribute('aria-selected', 'true');
+    }
+  });
+
+  it('Ctrl+A selects all items', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(
+      <SelectableList selectionMode="multiple">
+        <SelectableList.SelectAll data-testid="select-all">Select all</SelectableList.SelectAll>
+        <SelectableList.Viewport>
+          <SelectableList.Item itemKey="a" textValue="A">
+            <SelectableList.ItemIndicator />
+            <SelectableList.ItemLabel>A</SelectableList.ItemLabel>
+          </SelectableList.Item>
+          <SelectableList.Item itemKey="b" textValue="B">
+            <SelectableList.ItemIndicator />
+            <SelectableList.ItemLabel>B</SelectableList.ItemLabel>
+          </SelectableList.Item>
+          <SelectableList.Item itemKey="c" textValue="C">
+            <SelectableList.ItemIndicator />
+            <SelectableList.ItemLabel>C</SelectableList.ItemLabel>
+          </SelectableList.Item>
+        </SelectableList.Viewport>
+      </SelectableList>,
+    );
+
+    const root = screen.getByRole('listbox');
+    root.focus();
+    await user.keyboard('{Control>}a{/Control}');
+
+    const items = screen.getAllByRole('option');
+    for (const item of items) {
+      expect(item).toHaveAttribute('aria-selected', 'true');
+    }
+
+    // SelectAll checkbox should reflect all-selected state
+    const selectAll = screen.getByTestId('select-all');
+    expect(selectAll).toHaveAttribute('aria-checked', 'true');
   });
 
   it('checkBehavior override: force checkbox even with selectionMode=single', () => {

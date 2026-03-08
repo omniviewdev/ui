@@ -280,11 +280,13 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     const scrollRef = useRef<HTMLDivElement>(null);
     const renderNode = useRenderNode();
 
-    const flatNodes = useSyncExternalStore(
-      store.subscribe,
-      () => store.getFlatNodes(),
-      () => store.getFlatNodes(),
-    );
+    // Subscribe to the full snapshot so the Viewport re-renders when any
+    // store state changes (loading, expanded, selection) — not only when
+    // flatNodes changes. This ensures renderItem sees live nodeMeta flags.
+    const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+    const flatNodes = store.getFlatNodes();
+    // Reference snapshot to prevent tree-shaking / unused-var lint
+    void snapshot;
 
     const virtualizer = useListVirtualizer({
       count: flatNodes.length,

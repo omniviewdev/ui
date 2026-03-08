@@ -257,16 +257,18 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
   const expand = useCallback(
     (key: Key) => {
-      // Find the item for async loading check
       const flatNode = flatNodes.find((n) => n.key === key);
       if (!flatNode) return;
 
       const item = flatNode.item as TItem;
       const children = getChildren(item);
-      const hasNoChildren = !children || children.length === 0;
+      // undefined = children not yet loaded; [] = loaded but empty.
+      // Only trigger loadChildren when children are truly unknown.
+      const notYetLoaded = children === undefined || children === null;
 
-      if (loadChildren && isBranch(item) && hasNoChildren) {
-        // Async loading
+      if (loadChildren && isBranch(item) && notYetLoaded) {
+        // Guard against duplicate concurrent loads
+        if (store.getSnapshot().loadingKeys.has(key)) return;
         store.setLoadingKey(key, true);
         loadChildren(key, item).then(
           () => {

@@ -836,12 +836,13 @@ describe('TreeList', () => {
     const user = userEvent.setup();
     const loadChildren = vi.fn().mockResolvedValue(undefined);
 
+    // children: undefined means "not yet loaded" → triggers loadChildren
     const lazyData: FileItem[] = [
       {
         path: '/lazy',
         name: 'lazy',
         type: 'directory',
-        children: [],
+        // children intentionally omitted (undefined = not yet loaded)
       },
     ];
 
@@ -858,12 +859,12 @@ describe('TreeList', () => {
   it('shows children after async load and re-render', async () => {
     const user = userEvent.setup();
 
+    // children: undefined means "not yet loaded" → triggers loadChildren
     const lazyData: FileItem[] = [
       {
         path: '/lazy',
         name: 'lazy',
         type: 'directory',
-        children: [],
       },
     ];
 
@@ -900,6 +901,40 @@ describe('TreeList', () => {
     expect(screen.getByText('child.ts')).toBeInTheDocument();
   });
 
+  it('renderItem receives node.isLoading=true while loadChildren is pending', async () => {
+    const user = userEvent.setup();
+    let resolveLoad!: () => void;
+    const loadPromise = new Promise<void>((r) => { resolveLoad = r; });
+    const loadChildren = vi.fn().mockReturnValue(loadPromise);
+    const renderItemSpy = vi.fn(renderItem);
+
+    const lazyData: FileItem[] = [
+      { path: '/lazy', name: 'lazy', type: 'directory' },
+    ];
+
+    renderWithTheme(
+      <TestTree
+        items={lazyData}
+        loadChildren={loadChildren}
+        renderItem={renderItemSpy}
+      />,
+    );
+
+    const toggle = screen.getByRole('button', { name: /expand/i });
+    await user.click(toggle);
+
+    // While the promise is pending, renderItem should see isLoading=true
+    await vi.waitFor(() => {
+      const lastCall = renderItemSpy.mock.calls[renderItemSpy.mock.calls.length - 1];
+      expect(lastCall).toBeDefined();
+      const nodeMeta = lastCall![1] as TreeNodeMeta;
+      expect(nodeMeta.isLoading).toBe(true);
+    });
+
+    // Clean up
+    resolveLoad();
+  });
+
   it('calls onLoadError when loadChildren rejects', async () => {
     const user = userEvent.setup();
     const error = new Error('network failure');
@@ -907,7 +942,7 @@ describe('TreeList', () => {
     const onLoadError = vi.fn();
 
     const lazyData: FileItem[] = [
-      { path: '/lazy', name: 'lazy', type: 'directory', children: [] },
+      { path: '/lazy', name: 'lazy', type: 'directory' },
     ];
 
     renderWithTheme(

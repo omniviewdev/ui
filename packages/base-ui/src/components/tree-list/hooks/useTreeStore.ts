@@ -78,7 +78,14 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   }, []);
 
   const getNodeMeta = useCallback((key: Key): TreeNodeMeta | undefined => {
-    return nodeMetaMapRef.current.get(key);
+    const cached = nodeMetaMapRef.current.get(key);
+    if (!cached) return undefined;
+    // Derive volatile flags from live refs so callers never see stale state
+    return {
+      ...cached,
+      isExpanded: expandedKeysRef.current.has(key),
+      isLoading: loadingKeysRef.current.has(key),
+    };
   }, []);
 
   const getFlatNodes = useCallback((): readonly FlatNode[] => {

@@ -131,6 +131,8 @@ export interface TreeListRootProps<TItem = unknown>
   // Data
   items: readonly TItem[];
   itemKey: (item: TItem) => Key;
+  /** Return the children array, or `undefined` if children haven't been loaded yet.
+   *  An empty array `[]` means "loaded, no children" and will NOT trigger `loadChildren`. */
   getChildren: (item: TItem) => readonly TItem[] | undefined;
   isBranch?: (item: TItem) => boolean;
   getTextValue?: (item: TItem) => string;
@@ -142,6 +144,8 @@ export interface TreeListRootProps<TItem = unknown>
   onExpandedKeysChange?: (keys: ReadonlySet<Key>) => void;
 
   // Async
+  /** Called when a branch is expanded whose `getChildren` returns `undefined` (not yet loaded).
+   *  Not called for branches that return `[]` (loaded but empty). */
   loadChildren?: (key: Key, item: TItem) => Promise<void>;
   onLoadError?: (error: unknown, key: Key, item: TItem) => void;
 

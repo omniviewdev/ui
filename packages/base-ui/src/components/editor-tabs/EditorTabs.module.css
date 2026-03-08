@@ -138,13 +138,8 @@
   border-right: 1px solid var(--_ov-tab-border);
 }
 
-.Segment[data-segment='group'] {
-  /* no left border — the group chip provides the visual indicator */
-}
-
-.Segment[data-collapsed] {
-  /* collapsed group only shows the chip */
-}
+/* Group segment: visual indicator provided by the group chip, not a border.
+   Collapsed group: only the chip is visible (tabs hidden via render logic). */
 
 /* Collapsed tab count badge inside the group chip */
 .GroupChipCount {
@@ -360,6 +355,11 @@
   color: var(--_ov-tab-active-fg);
 }
 
+.ScrollButton:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
 .ScrollShadow {
   position: absolute;
   top: 0;
@@ -383,4 +383,19 @@
 .ScrollShadow[data-side='right'] {
   right: 24px;
   background: linear-gradient(to left, var(--_ov-group-header-bg), transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .Tab,
+  .Tab::after,
+  .CloseButton,
+  .TabTrailing .DirtyDot,
+  .ScrollButton,
+  .ScrollShadow {
+    transition: none;
+  }
 }

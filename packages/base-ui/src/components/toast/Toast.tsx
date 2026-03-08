@@ -92,10 +92,12 @@ interface ToastEntryProps {
 function ToastEntry({ item, onDismiss }: ToastEntryProps) {
   const [exiting, setExiting] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const exitingRef = useRef(false);
 
   const startExit = useCallback(() => {
+    if (exitingRef.current) return;
+    exitingRef.current = true;
     setExiting(true);
-    // Allow the CSS exit animation to play before removing from DOM
     setTimeout(() => onDismiss(item.id), 200);
   }, [item.id, onDismiss]);
 

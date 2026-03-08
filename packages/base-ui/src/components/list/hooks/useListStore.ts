@@ -6,9 +6,7 @@ import type { Key, ListStore, ListStoreSnapshot, ItemState } from '../types';
  * Items subscribe via useSyncExternalStore to their own key's slice,
  * preventing cascading re-renders when selection/active state changes.
  */
-export function useListStore(
-  disabledKeys: Set<Key>,
-): ListStore {
+export function useListStore(disabledKeys: Set<Key>): ListStore {
   const listenersRef = useRef(new Set<() => void>());
   const selectedKeysRef = useRef<Set<Key>>(new Set());
   const activeKeyRef = useRef<Key | null>(null);
@@ -89,9 +87,7 @@ export function useListStore(
       }
       emit();
       return () => {
-        registeredKeysRef.current = registeredKeysRef.current.filter(
-          (k) => k !== key,
-        );
+        registeredKeysRef.current = registeredKeysRef.current.filter((k) => k !== key);
         textValuesRef.current.delete(key);
         emit();
       };

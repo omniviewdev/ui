@@ -60,10 +60,7 @@ describe('EditorTabs', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: 'App.tsx' }));
     expect(screen.getByRole('tab', { name: 'App.tsx' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('tab', { name: 'index.ts' })).toHaveAttribute(
-      'aria-selected',
-      'false',
-    );
+    expect(screen.getByRole('tab', { name: 'index.ts' })).toHaveAttribute('aria-selected', 'false');
   });
 
   it('close button fires onCloseTab without onActiveChange', () => {
@@ -138,9 +135,7 @@ describe('EditorTabs', () => {
       { id: 'file1', title: 'index.ts' },
       { id: 'file2', title: 'disabled.ts', disabled: true },
     ];
-    renderWithTheme(
-      <EditorTabs tabs={tabs} activeId="file1" onActiveChange={onActiveChange} />,
-    );
+    renderWithTheme(<EditorTabs tabs={tabs} activeId="file1" onActiveChange={onActiveChange} />);
 
     const disabledTab = screen.getByRole('tab', { name: 'disabled.ts' });
     expect(disabledTab).toHaveAttribute('aria-disabled', 'true');
@@ -163,9 +158,7 @@ describe('EditorTabs', () => {
   });
 
   it('renders normally with detachable={false}', () => {
-    renderWithTheme(
-      <EditorTabs tabs={baseTabs} activeId="file1" detachable={false} />,
-    );
+    renderWithTheme(<EditorTabs tabs={baseTabs} activeId="file1" detachable={false} />);
 
     expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'App.tsx' })).toBeInTheDocument();
@@ -181,11 +174,7 @@ describe('EditorTabs', () => {
   it('accepts onDetachCommit prop without error', () => {
     const onDetachCommit = vi.fn();
     renderWithTheme(
-      <EditorTabs
-        tabs={baseTabs}
-        activeId="file1"
-        onDetachCommit={onDetachCommit}
-      />,
+      <EditorTabs tabs={baseTabs} activeId="file1" onDetachCommit={onDetachCommit} />,
     );
 
     expect(screen.getByRole('tab', { name: 'index.ts' })).toBeInTheDocument();
@@ -211,9 +200,7 @@ describe('EditorTabs', () => {
     const tab = screen.getByRole('tab', { name: 'index.ts' });
     fireEvent.pointerDown(tab, { clientX: 100, clientY: 120, pointerId: 1 });
 
-    const pointermoveCalls = addSpy.mock.calls.filter(
-      (call) => call[0] === 'pointermove',
-    );
+    const pointermoveCalls = addSpy.mock.calls.filter((call) => call[0] === 'pointermove');
     // No pointermove listener should be added for detach tracking
     expect(pointermoveCalls).toHaveLength(0);
 

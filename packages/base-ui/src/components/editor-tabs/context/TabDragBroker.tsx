@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 import type { AttachCommit, TabDescriptor } from '../types';
 import { DetachGhostTab } from '../DetachGhostTab';
@@ -202,13 +210,10 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
     dropZonesRef.current.set(reg.instanceId, reg);
   }, []);
 
-  const unregisterDropZone = useCallback(
-    (instanceId: string) => {
-      dropZonesRef.current.delete(instanceId);
-      setHoverInstanceId((prev) => (prev === instanceId ? null : prev));
-    },
-    [],
-  );
+  const unregisterDropZone = useCallback((instanceId: string) => {
+    dropZonesRef.current.delete(instanceId);
+    setHoverInstanceId((prev) => (prev === instanceId ? null : prev));
+  }, []);
 
   const value: TabDragBrokerValue = {
     activeSession,
@@ -225,7 +230,7 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
   return (
     <TabDragBrokerContext.Provider value={value}>
       {children}
-      {activeSession && (
+      {activeSession &&
         createPortal(
           <div
             style={{
@@ -241,8 +246,7 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
             <DetachGhostTab tab={activeSession.tab} style={activeSession.ghostStyle} />
           </div>,
           document.body,
-        )
-      )}
+        )}
     </TabDragBrokerContext.Provider>
   );
 }

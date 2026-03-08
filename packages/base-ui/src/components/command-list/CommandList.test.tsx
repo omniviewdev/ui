@@ -20,8 +20,20 @@ interface TestCommand {
 
 const commands: TestCommand[] = [
   { id: 'open', label: 'Open File', description: 'Open a file', shortcut: '⌘O', category: 'file' },
-  { id: 'save', label: 'Save File', description: 'Save current file', shortcut: '⌘S', category: 'file' },
-  { id: 'find', label: 'Find in Files', description: 'Search across files', shortcut: '⇧⌘F', category: 'search' },
+  {
+    id: 'save',
+    label: 'Save File',
+    description: 'Save current file',
+    shortcut: '⌘S',
+    category: 'file',
+  },
+  {
+    id: 'find',
+    label: 'Find in Files',
+    description: 'Search across files',
+    shortcut: '⇧⌘F',
+    category: 'search',
+  },
   { id: 'replace', label: 'Find and Replace', shortcut: '⌘H', category: 'search' },
   { id: 'terminal', label: 'Toggle Terminal', category: 'view' },
 ];
@@ -42,9 +54,7 @@ function TestCommandList(overrides: Story = {}) {
         {item.description && (
           <CommandList.ItemDescription>{item.description}</CommandList.ItemDescription>
         )}
-        {item.shortcut && (
-          <CommandList.ItemShortcut keys={[item.shortcut]} />
-        )}
+        {item.shortcut && <CommandList.ItemShortcut keys={[item.shortcut]} />}
       </CommandList.Item>
     ),
     children,
@@ -52,12 +62,7 @@ function TestCommandList(overrides: Story = {}) {
   } = overrides;
 
   return (
-    <CommandList.Root
-      items={items}
-      itemKey={itemKey}
-      renderItem={renderItem}
-      {...rest}
-    >
+    <CommandList.Root items={items} itemKey={itemKey} renderItem={renderItem} {...rest}>
       <CommandList.Input />
       <CommandList.Results />
       <CommandList.Empty>No results found</CommandList.Empty>
@@ -333,8 +338,12 @@ describe('CommandList', () => {
       const searchHeader = screen.getByText('Search');
 
       // Verify DOM order: View before File before Search
-      expect(viewHeader.compareDocumentPosition(fileHeader) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-      expect(fileHeader.compareDocumentPosition(searchHeader) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(
+        viewHeader.compareDocumentPosition(fileHeader) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(
+        fileHeader.compareDocumentPosition(searchHeader) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
     });
   });
 
@@ -380,12 +389,7 @@ describe('CommandList', () => {
         { id: 'c', label: 'C' },
       ];
 
-      renderWithTheme(
-        <TestCommandList
-          items={itemsForTest}
-          disabledKeys={['b']}
-        />,
-      );
+      renderWithTheme(<TestCommandList items={itemsForTest} disabledKeys={['b']} />);
 
       await user.keyboard('{ArrowDown}');
 
@@ -401,9 +405,7 @@ describe('CommandList', () => {
         { id: 'c', label: 'C' },
       ];
 
-      renderWithTheme(
-        <TestCommandList items={itemsWithDisabled} />,
-      );
+      renderWithTheme(<TestCommandList items={itemsWithDisabled} />);
 
       const options = screen.getAllByRole('option');
       expect(options[1]).toHaveAttribute('aria-disabled', 'true');
@@ -411,9 +413,7 @@ describe('CommandList', () => {
     });
 
     it('renders disabled items with aria-disabled', () => {
-      renderWithTheme(
-        <TestCommandList disabledKeys={['open']} />,
-      );
+      renderWithTheme(<TestCommandList disabledKeys={['open']} />);
 
       const firstOption = screen.getAllByRole('option')[0]!;
       expect(firstOption).toHaveAttribute('aria-disabled', 'true');
@@ -428,11 +428,7 @@ describe('CommandList', () => {
       ];
 
       renderWithTheme(
-        <TestCommandList
-          items={itemsWithDisabled}
-          disabledKeys={['a']}
-          onAction={onAction}
-        />,
+        <TestCommandList items={itemsWithDisabled} disabledKeys={['a']} onAction={onAction} />,
       );
 
       // Active should be on first non-disabled = 'b'
@@ -447,9 +443,7 @@ describe('CommandList', () => {
 
   describe('Active tracking', () => {
     it('resets active to first item when items change', () => {
-      const { rerender } = renderWithTheme(
-        <TestCommandList items={commands} />,
-      );
+      const { rerender } = renderWithTheme(<TestCommandList items={commands} />);
 
       // Initially first item is active
       let options = screen.getAllByRole('option');

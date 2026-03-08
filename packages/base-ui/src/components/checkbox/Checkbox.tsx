@@ -13,11 +13,11 @@ import type { StyledComponentProps } from '../../system/types';
 import styles from './Checkbox.module.css';
 
 export interface CheckboxRootProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseCheckbox.Root>, 'color'>,
-    StyledComponentProps {}
+  extends Omit<ComponentPropsWithoutRef<typeof BaseCheckbox.Root>, 'color'>, StyledComponentProps {}
 
 export interface CheckboxIndicatorProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseCheckbox.Indicator>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseCheckbox.Indicator>, 'color'>,
     StyledComponentProps {}
 
 export type CheckboxControlProps = HTMLAttributes<HTMLSpanElement>;

@@ -12,7 +12,7 @@ function PlaygroundDemo({ size }: { size?: DialogSize }) {
         Open Dialog
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} size={size}>
-        <Dialog.Close onClick={() => setOpen(false)} />
+        <Dialog.Close />
         <Dialog.Title>Dialog Title</Dialog.Title>
         <Dialog.Body>
           <p>This is a general-purpose dialog for displaying arbitrary content.</p>
@@ -43,7 +43,7 @@ function SizeVariantsDemo() {
       ))}
       {activeSize ? (
         <Dialog open size={activeSize} onClose={() => setActiveSize(null)}>
-          <Dialog.Close onClick={() => setActiveSize(null)} />
+          <Dialog.Close />
           <Dialog.Title>Size: {activeSize}</Dialog.Title>
           <Dialog.Body>
             <p>
@@ -70,7 +70,7 @@ function FormContentDemo() {
         Edit Settings
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} size="md">
-        <Dialog.Close onClick={() => setOpen(false)} />
+        <Dialog.Close />
         <Dialog.Title icon={<LuSettings />}>Settings</Dialog.Title>
         <Dialog.Body>
           <form
@@ -120,7 +120,7 @@ function ScrollableBodyDemo() {
         Open Scrollable Dialog
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} size="md">
-        <Dialog.Close onClick={() => setOpen(false)} />
+        <Dialog.Close />
         <Dialog.Title>Terms of Service</Dialog.Title>
         <Dialog.Body>
           {Array.from({ length: 30 }, (_, i) => (
@@ -152,7 +152,7 @@ function WithIconInTitleDemo() {
         Delete Item
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} size="sm">
-        <Dialog.Close onClick={() => setOpen(false)} />
+        <Dialog.Close />
         <Dialog.Title icon={<LuAlertTriangle />}>Confirm Deletion</Dialog.Title>
         <Dialog.Body>
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>

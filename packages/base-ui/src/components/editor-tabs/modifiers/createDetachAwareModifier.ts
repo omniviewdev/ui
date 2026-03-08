@@ -1,9 +1,7 @@
 import type { Modifier } from '@dnd-kit/core';
 import type { DragMode } from '../types';
 
-export function createDetachAwareModifier(
-  dragModeRef: React.RefObject<DragMode>,
-): Modifier {
+export function createDetachAwareModifier(dragModeRef: React.RefObject<DragMode>): Modifier {
   return ({ transform, draggingNodeRect, scrollableAncestorRects }) => {
     if (dragModeRef.current === 'detach-armed') {
       return transform;

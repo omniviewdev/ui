@@ -43,7 +43,10 @@ export const Grouped: Story = {
       <RadioGroup.Item value="balanced" description="Balanced performance and safety defaults.">
         Balanced mode
       </RadioGroup.Item>
-      <RadioGroup.Item value="performance" description="Maximum local performance, fewer safeguards.">
+      <RadioGroup.Item
+        value="performance"
+        description="Maximum local performance, fewer safeguards."
+      >
         Performance mode
       </RadioGroup.Item>
     </RadioGroup>

@@ -44,10 +44,7 @@ export function useListState(props: ListRootProps): ListStateReturn {
     virtualized = false,
   } = props;
 
-  const disabledKeys = useMemo(
-    () => new Set(disabledKeysProp ?? []),
-    [disabledKeysProp],
-  );
+  const disabledKeys = useMemo(() => new Set(disabledKeysProp ?? []), [disabledKeysProp]);
 
   const store = useListStore(disabledKeys);
 
@@ -145,9 +142,7 @@ export function useListState(props: ListRootProps): ListStateReturn {
 
       const start = Math.min(fromIndex, toIndex);
       const end = Math.max(fromIndex, toIndex);
-      const rangeKeys = keys
-        .slice(start, end + 1)
-        .filter((k) => !disabledKeys.has(k));
+      const rangeKeys = keys.slice(start, end + 1).filter((k) => !disabledKeys.has(k));
 
       setSelectedKeys(new Set(rangeKeys));
     },
@@ -193,7 +188,15 @@ export function useListState(props: ListRootProps): ListStateReturn {
       loopFocus,
       virtualized,
     }),
-    [selectionMode, selectionBehavior, density, orientation, typeaheadEnabled, loopFocus, virtualized],
+    [
+      selectionMode,
+      selectionBehavior,
+      density,
+      orientation,
+      typeaheadEnabled,
+      loopFocus,
+      virtualized,
+    ],
   );
 
   const actions = useMemo<ListActionsContextValue>(
@@ -207,7 +210,16 @@ export function useListState(props: ListRootProps): ListStateReturn {
       setActiveKey: setActiveKeyAction,
       registerItem,
     }),
-    [select, deselect, toggle, selectRange, selectAll, clearSelection, setActiveKeyAction, registerItem],
+    [
+      select,
+      deselect,
+      toggle,
+      selectRange,
+      selectAll,
+      clearSelection,
+      setActiveKeyAction,
+      registerItem,
+    ],
   );
 
   return { config, store, actions };

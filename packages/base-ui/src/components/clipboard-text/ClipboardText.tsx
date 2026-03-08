@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useState, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState, type HTMLAttributes } from 'react';
 import { LuCheck, LuCopy } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './ClipboardText.module.css';
@@ -19,12 +19,25 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
   ref,
 ) {
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), feedbackDuration);
-    });
+    navigator.clipboard.writeText(value).then(
+      () => {
+        setCopied(true);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => setCopied(false), feedbackDuration);
+      },
+      () => {
+        // Clipboard write failed — silently ignore
+      },
+    );
   }, [value, feedbackDuration]);
 
   return (
@@ -41,7 +54,7 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
         type="button"
         className={styles.CopyButton}
         onClick={handleCopy}
-        aria-label="Copy to clipboard"
+        aria-label={copied ? 'Copied' : 'Copy to clipboard'}
       >
         {copied ? <LuCheck aria-hidden size={14} /> : <LuCopy aria-hidden size={14} />}
       </button>

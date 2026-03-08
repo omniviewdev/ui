@@ -17,6 +17,9 @@
 
 .Item[data-ov-disabled='true'] {
   opacity: 0.45;
+}
+
+.Item[data-ov-disabled='true'] > .Header {
   pointer-events: none;
 }
 
@@ -138,4 +141,11 @@
 :root[data-ov-motion='reduced'] .Chevron,
 :root[data-ov-motion='reduced'] .ContentWrapper {
   transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Chevron,
+  .ContentWrapper {
+    transition: none;
+  }
 }

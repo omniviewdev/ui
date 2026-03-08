@@ -21,7 +21,8 @@ interface ChipContextValue {
 
 const ChipContext = createContext<ChipContextValue | null>(null);
 
-export interface ChipProps extends Omit<HTMLAttributes<HTMLElement>, 'color'>, StyledComponentProps {
+export interface ChipProps
+  extends Omit<HTMLAttributes<HTMLElement>, 'color'>, StyledComponentProps {
   as?: 'span' | 'div' | 'button';
   mono?: boolean;
   clickable?: boolean;
@@ -31,8 +32,7 @@ export interface ChipProps extends Omit<HTMLAttributes<HTMLElement>, 'color'>, S
 }
 
 export interface ChipGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   mono?: boolean;
   clickable?: boolean;
 }

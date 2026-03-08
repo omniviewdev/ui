@@ -23,7 +23,10 @@ describe('useTabReorder constraints', () => {
   });
 
   describe('canReorder', () => {
-    const defaultOptions = { allowReorderAcrossPinnedBoundary: false, allowReorderAcrossGroups: false };
+    const defaultOptions = {
+      allowReorderAcrossPinnedBoundary: false,
+      allowReorderAcrossGroups: false,
+    };
 
     it('allows reorder within the same lane', () => {
       const tab2: TabDescriptor = { id: 'u2', title: 'other.ts' };
@@ -39,7 +42,12 @@ describe('useTabReorder constraints', () => {
     });
 
     it('allows pinned → ungrouped when allowReorderAcrossPinnedBoundary is true', () => {
-      expect(canReorder(pinnedTab, ungroupedTab, { ...defaultOptions, allowReorderAcrossPinnedBoundary: true })).toBe(true);
+      expect(
+        canReorder(pinnedTab, ungroupedTab, {
+          ...defaultOptions,
+          allowReorderAcrossPinnedBoundary: true,
+        }),
+      ).toBe(true);
     });
 
     it('rejects group A → group B by default', () => {
@@ -47,7 +55,9 @@ describe('useTabReorder constraints', () => {
     });
 
     it('allows group A → group B when allowReorderAcrossGroups is true', () => {
-      expect(canReorder(groupATab, groupBTab, { ...defaultOptions, allowReorderAcrossGroups: true })).toBe(true);
+      expect(
+        canReorder(groupATab, groupBTab, { ...defaultOptions, allowReorderAcrossGroups: true }),
+      ).toBe(true);
     });
 
     it('allows reorder within same group', () => {
@@ -68,11 +78,15 @@ describe('useTabReorder constraints', () => {
     });
 
     it('allows ungrouped → group when allowReorderAcrossGroups is true', () => {
-      expect(canReorder(ungroupedTab, groupATab, { ...defaultOptions, allowReorderAcrossGroups: true })).toBe(true);
+      expect(
+        canReorder(ungroupedTab, groupATab, { ...defaultOptions, allowReorderAcrossGroups: true }),
+      ).toBe(true);
     });
 
     it('allows group → ungrouped when allowReorderAcrossGroups is true', () => {
-      expect(canReorder(groupATab, ungroupedTab, { ...defaultOptions, allowReorderAcrossGroups: true })).toBe(true);
+      expect(
+        canReorder(groupATab, ungroupedTab, { ...defaultOptions, allowReorderAcrossGroups: true }),
+      ).toBe(true);
     });
   });
 });

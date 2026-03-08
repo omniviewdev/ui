@@ -19,9 +19,7 @@ export function useListFocus({ config, actions, store }: UseListFocusOptions) {
       if (keys.length === 0) return;
 
       const snapshot = store.getSnapshot();
-      const currentIndex = snapshot.activeKey != null
-        ? keys.indexOf(snapshot.activeKey)
-        : -1;
+      const currentIndex = snapshot.activeKey != null ? keys.indexOf(snapshot.activeKey) : -1;
 
       const isVertical = config.orientation === 'vertical';
       const prevKey = isVertical ? 'ArrowUp' : 'ArrowLeft';

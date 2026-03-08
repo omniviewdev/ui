@@ -44,10 +44,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                     : flexRender(header.column.columnDef.header, header.getContext())}
 
                   {canSort && sorted && (
-                    <span
-                      className={styles.SortIndicator}
-                      data-ov-active="true"
-                    >
+                    <span className={styles.SortIndicator} data-ov-active="true">
                       {sorted === 'asc' ? '\u2191' : '\u2193'}
                     </span>
                   )}
@@ -58,9 +55,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       aria-orientation="vertical"
                       tabIndex={0}
                       className={styles.ResizeHandle}
-                      data-ov-resizing={
-                        isResizing === header.column.id ? 'true' : 'false'
-                      }
+                      data-ov-resizing={isResizing === header.column.id ? 'true' : 'false'}
                       onMouseDown={header.getResizeHandler()}
                       onTouchStart={header.getResizeHandler()}
                       onDoubleClick={() => header.column.resetSize()}

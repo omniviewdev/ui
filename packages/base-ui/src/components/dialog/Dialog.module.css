@@ -15,7 +15,7 @@
   position: fixed;
   inset: 0;
   background: var(--ov-color-bg-overlay, rgba(0, 0, 0, 0.5));
-  animation: fadeIn var(--ov-duration-enter, 200ms) var(--ov-ease-standard, ease-out);
+  animation: ov-dialog-fade-in var(--ov-duration-enter, 200ms) var(--ov-ease-standard, ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -38,7 +38,7 @@
   box-shadow: var(--ov-shadow-overlay, 0 8px 32px rgba(0, 0, 0, 0.24));
   color: var(--ov-color-fg-default);
   outline: none;
-  animation: dialogEnter var(--ov-duration-enter, 200ms) var(--ov-ease-standard, ease-out);
+  animation: ov-dialog-enter var(--ov-duration-enter, 200ms) var(--ov-ease-standard, ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -144,7 +144,7 @@
 
 /* ---- Animations ---- */
 
-@keyframes fadeIn {
+@keyframes ov-dialog-fade-in {
   from {
     opacity: 0;
   }
@@ -153,7 +153,7 @@
   }
 }
 
-@keyframes dialogEnter {
+@keyframes ov-dialog-enter {
   from {
     opacity: 0;
     transform: scale(0.95);

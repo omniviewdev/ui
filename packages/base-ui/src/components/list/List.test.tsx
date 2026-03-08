@@ -74,9 +74,7 @@ describe('List', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestList selectionMode="single" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestList selectionMode="single" onSelectedKeysChange={onChange} />);
 
     await user.click(screen.getByText('Bravo'));
     expect(onChange).toHaveBeenCalledWith(new Set(['b']));
@@ -106,9 +104,7 @@ describe('List', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestList selectionMode="multiple" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestList selectionMode="multiple" onSelectedKeysChange={onChange} />);
 
     await user.click(screen.getByText('Alpha'));
     expect(onChange).toHaveBeenLastCalledWith(new Set(['a']));
@@ -144,9 +140,7 @@ describe('List', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestList selectionMode="single" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestList selectionMode="single" onSelectedKeysChange={onChange} />);
     const listbox = screen.getByRole('listbox');
     listbox.focus();
 
@@ -158,9 +152,7 @@ describe('List', () => {
   it('navigates to first item with Home', async () => {
     const user = userEvent.setup();
 
-    renderWithTheme(
-      <TestList selectionMode="single" defaultActiveKey="c" />,
-    );
+    renderWithTheme(<TestList selectionMode="single" defaultActiveKey="c" />);
     const listbox = screen.getByRole('listbox');
     listbox.focus();
 
@@ -172,9 +164,7 @@ describe('List', () => {
   it('navigates to last item with End', async () => {
     const user = userEvent.setup();
 
-    renderWithTheme(
-      <TestList selectionMode="single" defaultActiveKey="a" />,
-    );
+    renderWithTheme(<TestList selectionMode="single" defaultActiveKey="a" />);
     const listbox = screen.getByRole('listbox');
     listbox.focus();
 
@@ -187,9 +177,7 @@ describe('List', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestList selectionMode="multiple" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestList selectionMode="multiple" onSelectedKeysChange={onChange} />);
 
     const listbox = screen.getByRole('listbox');
     listbox.focus();
@@ -218,9 +206,7 @@ describe('List', () => {
   it('skips disabled items in keyboard navigation', async () => {
     const user = userEvent.setup();
 
-    renderWithTheme(
-      <TestList selectionMode="single" disabledKeys={['b']} />,
-    );
+    renderWithTheme(<TestList selectionMode="single" disabledKeys={['b']} />);
     const listbox = screen.getByRole('listbox');
     listbox.focus();
 
@@ -240,11 +226,7 @@ describe('List', () => {
     const onChange = vi.fn();
 
     renderWithTheme(
-      <TestList
-        selectionMode="single"
-        disabledKeys={['b']}
-        onSelectedKeysChange={onChange}
-      />,
+      <TestList selectionMode="single" disabledKeys={['b']} onSelectedKeysChange={onChange} />,
     );
 
     const bravo = screen.getByText('Bravo').closest('[role="option"]')!;

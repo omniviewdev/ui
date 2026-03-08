@@ -39,19 +39,23 @@ function useResolvedStyleProps(overrides?: StyledComponentProps): ResolvedStyleP
 }
 
 export interface NumberInputRootProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Root>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Root>, 'color'>,
     StyledComponentProps {}
 
 export interface NumberInputGroupProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Group>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Group>, 'color'>,
     StyledComponentProps {}
 
 export interface NumberInputInputProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Input>, 'color' | 'size'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Input>, 'color' | 'size'>,
     StyledComponentProps {}
 
 export interface NumberInputStepperProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Increment>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseNumberField.Increment>, 'color'>,
     StyledComponentProps {
   children?: ReactNode;
 }
@@ -79,42 +83,43 @@ const NumberInputRoot = forwardRef<ElementRef<typeof BaseNumberField.Root>, Numb
   },
 );
 
-const NumberInputLabel = forwardRef<HTMLLabelElement, NumberInputLabelProps>(function NumberInputLabel(
-  { className, ...props },
-  ref,
-) {
-  return <label ref={ref} className={cn(styles.Label, className)} {...props} />;
+const NumberInputLabel = forwardRef<HTMLLabelElement, NumberInputLabelProps>(
+  function NumberInputLabel({ className, ...props }, ref) {
+    return <label ref={ref} className={cn(styles.Label, className)} {...props} />;
+  },
+);
+
+const NumberInputGroup = forwardRef<
+  ElementRef<typeof BaseNumberField.Group>,
+  NumberInputGroupProps
+>(function NumberInputGroup({ className, variant, color, size, ...props }, ref) {
+  const resolved = useResolvedStyleProps({ variant, color, size });
+
+  return (
+    <BaseNumberField.Group
+      ref={ref}
+      className={withBaseClassName<BaseNumberField.Group.State>(styles.Group, className)}
+      {...styleDataAttributes(resolved)}
+      {...props}
+    />
+  );
 });
 
-const NumberInputGroup = forwardRef<ElementRef<typeof BaseNumberField.Group>, NumberInputGroupProps>(
-  function NumberInputGroup({ className, variant, color, size, ...props }, ref) {
-    const resolved = useResolvedStyleProps({ variant, color, size });
+const NumberInputInput = forwardRef<
+  ElementRef<typeof BaseNumberField.Input>,
+  NumberInputInputProps
+>(function NumberInputInput({ className, variant, color, size, ...props }, ref) {
+  const resolved = useResolvedStyleProps({ variant, color, size });
 
-    return (
-      <BaseNumberField.Group
-        ref={ref}
-        className={withBaseClassName<BaseNumberField.Group.State>(styles.Group, className)}
-        {...styleDataAttributes(resolved)}
-        {...props}
-      />
-    );
-  },
-);
-
-const NumberInputInput = forwardRef<ElementRef<typeof BaseNumberField.Input>, NumberInputInputProps>(
-  function NumberInputInput({ className, variant, color, size, ...props }, ref) {
-    const resolved = useResolvedStyleProps({ variant, color, size });
-
-    return (
-      <BaseNumberField.Input
-        ref={ref}
-        className={withBaseClassName<BaseNumberField.Input.State>(styles.Input, className)}
-        {...styleDataAttributes(resolved)}
-        {...props}
-      />
-    );
-  },
-);
+  return (
+    <BaseNumberField.Input
+      ref={ref}
+      className={withBaseClassName<BaseNumberField.Input.State>(styles.Input, className)}
+      {...styleDataAttributes(resolved)}
+      {...props}
+    />
+  );
+});
 
 const NumberInputIncrement = forwardRef<
   ElementRef<typeof BaseNumberField.Increment>,
@@ -158,12 +163,11 @@ const NumberInputDescription = forwardRef<HTMLParagraphElement, NumberInputDescr
   },
 );
 
-const NumberInputError = forwardRef<HTMLDivElement, NumberInputErrorProps>(function NumberInputError(
-  { className, ...props },
-  ref,
-) {
-  return <div ref={ref} className={cn(styles.Error, className)} {...props} />;
-});
+const NumberInputError = forwardRef<HTMLDivElement, NumberInputErrorProps>(
+  function NumberInputError({ className, ...props }, ref) {
+    return <div ref={ref} className={cn(styles.Error, className)} {...props} />;
+  },
+);
 
 NumberInputRoot.displayName = 'NumberInput.Root';
 NumberInputLabel.displayName = 'NumberInput.Label';

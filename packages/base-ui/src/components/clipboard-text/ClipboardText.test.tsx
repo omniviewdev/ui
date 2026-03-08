@@ -1,10 +1,18 @@
 import { createRef } from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { ClipboardText } from './ClipboardText';
 
+const originalClipboard = navigator.clipboard;
+
 describe('ClipboardText', () => {
+  afterEach(() => {
+    Object.defineProperty(window.navigator, 'clipboard', {
+      value: originalClipboard,
+      configurable: true,
+    });
+  });
   it('renders text content', () => {
     renderWithTheme(<ClipboardText value="hello-world" />);
     expect(screen.getByText('hello-world')).toBeInTheDocument();

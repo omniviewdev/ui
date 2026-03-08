@@ -1,4 +1,13 @@
-import { forwardRef, useEffect, useRef, type HTMLAttributes, type ReactNode } from 'react';
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
@@ -22,12 +31,20 @@ export type DialogFooterProps = HTMLAttributes<HTMLDivElement>;
 
 export type DialogCloseProps = HTMLAttributes<HTMLButtonElement>;
 
+interface DialogContextValue {
+  onClose: () => void;
+  titleId: string;
+}
+
+const DialogContext = createContext<DialogContextValue | null>(null);
+
 const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
   { open, onClose, size = 'md', className, children, ...props },
   ref,
 ) {
   const internalRef = useRef<HTMLDivElement>(null);
   const dialogRef = (ref as React.RefObject<HTMLDivElement>) ?? internalRef;
+  const titleId = `ov-dialog-title-${useId()}`;
 
   useEffect(() => {
     if (!open) return;
@@ -51,27 +68,30 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
   if (!open) return null;
 
   return createPortal(
-    <div className={styles.Overlay} data-ov-component="dialog">
-      <div
-        className={styles.Backdrop}
-        data-ov-slot="backdrop"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div
-        ref={dialogRef}
-        className={cn(styles.Surface, className)}
-        role="dialog"
-        aria-modal="true"
-        tabIndex={-1}
-        data-ov-component="dialog"
-        data-ov-slot="surface"
-        data-ov-size={size}
-        {...props}
-      >
-        {children}
+    <DialogContext.Provider value={{ onClose, titleId }}>
+      <div className={styles.Overlay} data-ov-component="dialog">
+        <div
+          className={styles.Backdrop}
+          data-ov-slot="backdrop"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+        <div
+          ref={dialogRef}
+          className={cn(styles.Surface, className)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
+          data-ov-component="dialog"
+          data-ov-slot="surface"
+          data-ov-size={size}
+          {...props}
+        >
+          {children}
+        </div>
       </div>
-    </div>,
+    </DialogContext.Provider>,
     document.body,
   );
 });
@@ -80,9 +100,12 @@ const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(function Di
   { icon, className, children, ...props },
   ref,
 ) {
+  const ctx = useContext(DialogContext);
+
   return (
     <h2
       ref={ref}
+      id={ctx?.titleId}
       className={cn(styles.Title, className)}
       data-ov-component="dialog"
       data-ov-slot="title"
@@ -129,9 +152,18 @@ const DialogFooter = forwardRef<HTMLDivElement, DialogFooterProps>(function Dial
 });
 
 const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(function DialogClose(
-  { className, ...props },
+  { className, onClick, ...props },
   ref,
 ) {
+  const ctx = useContext(DialogContext);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick?.(e);
+    if (!e.defaultPrevented) {
+      ctx?.onClose();
+    }
+  };
+
   return (
     <button
       ref={ref}
@@ -140,6 +172,7 @@ const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(function Dia
       data-ov-component="dialog"
       data-ov-slot="close"
       aria-label="Close"
+      onClick={handleClick}
       {...props}
     >
       <LuX aria-hidden size={16} />

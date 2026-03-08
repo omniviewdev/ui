@@ -1,10 +1,7 @@
 export { DataTable } from './DataTable';
 export type { DataTableRootProps } from './DataTable';
 
-export type {
-  UseDataTableOptions,
-  DataTableFeatures,
-} from './types';
+export type { UseDataTableOptions, DataTableFeatures } from './types';
 
 export type { DataTableContainerProps } from './DataTableContainer';
 export type { DataTableHeaderProps } from './DataTableHeader';

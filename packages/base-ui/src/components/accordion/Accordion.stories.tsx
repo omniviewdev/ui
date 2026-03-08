@@ -11,6 +11,7 @@ const meta = {
   },
   argTypes: {
     exclusive: { control: 'boolean' },
+    defaultExpanded: { control: 'object' },
   },
 } satisfies Meta<AccordionProps>;
 

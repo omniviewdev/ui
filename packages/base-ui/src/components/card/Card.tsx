@@ -65,7 +65,16 @@ export interface CardGroupProps extends HTMLAttributes<HTMLDivElement> {
 /* ─── Components ─── */
 
 const CardRoot = forwardRef<HTMLElement, CardProps>(function Card(
-  { as: Element = 'section', className, variant, color, size, elevation = 0, surface = 'default', ...props },
+  {
+    as: Element = 'section',
+    className,
+    variant,
+    color,
+    size,
+    elevation = 0,
+    surface = 'default',
+    ...props
+  },
   ref,
 ) {
   return (
@@ -264,7 +273,7 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(function CardGroup(
 ) {
   const columnStyle =
     columns != null && columns !== 'auto'
-      ? { ...style, '--_ov-columns': columns } as React.CSSProperties
+      ? ({ ...style, '--_ov-columns': columns } as React.CSSProperties)
       : style;
 
   return (

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LuBell, LuMail, LuMessageSquare, LuShoppingCart } from 'react-icons/lu';
 import type { BadgeProps } from './Badge';
@@ -31,7 +32,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const IconBox = ({ children }: { children: React.ReactNode }) => (
+const IconBox = ({ children }: { children: ReactNode }) => (
   <span
     style={{
       display: 'inline-flex',

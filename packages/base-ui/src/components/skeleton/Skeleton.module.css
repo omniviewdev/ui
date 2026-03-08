@@ -91,7 +91,7 @@
 }
 
 :root[data-ov-motion='reduced'] .Root::after {
-  animation: none;
+  content: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -100,6 +100,6 @@
   }
 
   .Root::after {
-    animation: none;
+    content: none;
   }
 }

@@ -14,10 +14,25 @@ const meta = {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
   },
   render: (args) => (
-    <ScrollArea {...args} style={{ height: 200, width: 320, border: '1px solid var(--ov-color-border-muted)', borderRadius: 'var(--ov-radius-surface)' }}>
+    <ScrollArea
+      {...args}
+      style={{
+        height: 200,
+        width: 320,
+        border: '1px solid var(--ov-color-border-muted)',
+        borderRadius: 'var(--ov-radius-surface)',
+      }}
+    >
       <div style={{ padding: 'var(--ov-panel-padding)' }}>
         {Array.from({ length: 20 }, (_, i) => (
-          <p key={i} style={{ margin: '0 0 8px', color: 'var(--ov-color-fg-muted)', fontSize: 'var(--ov-font-size-caption)' }}>
+          <p
+            key={i}
+            style={{
+              margin: '0 0 8px',
+              color: 'var(--ov-color-fg-muted)',
+              fontSize: 'var(--ov-font-size-caption)',
+            }}
+          >
             Line {i + 1} — Scrollable content inside a styled scroll container.
           </p>
         ))}
@@ -34,7 +49,14 @@ export const Playground: Story = {};
 export const Horizontal: Story = {
   args: { orientation: 'horizontal' },
   render: (args) => (
-    <ScrollArea {...args} style={{ width: 320, border: '1px solid var(--ov-color-border-muted)', borderRadius: 'var(--ov-radius-surface)' }}>
+    <ScrollArea
+      {...args}
+      style={{
+        width: 320,
+        border: '1px solid var(--ov-color-border-muted)',
+        borderRadius: 'var(--ov-radius-surface)',
+      }}
+    >
       <div style={{ display: 'flex', gap: 12, padding: 'var(--ov-panel-padding)', width: 900 }}>
         {Array.from({ length: 10 }, (_, i) => (
           <div

@@ -14,24 +14,17 @@ export interface EditorTabItemProps {
 }
 
 export const EditorTabItem = memo(
-  forwardRef<HTMLDivElement, EditorTabItemProps>(function EditorTabItem(
-    { tab, className },
-    ref,
-  ) {
+  forwardRef<HTMLDivElement, EditorTabItemProps>(function EditorTabItem({ tab, className }, ref) {
     const { activeId, onActiveChange, onCloseTab, onContextMenuTab, tabs, dragMode } =
       useEditorTabsContext();
     const isActive = activeId === tab.id;
     const closable = tab.closable !== false;
     const showTrailing = !tab.pinned && closable && !!onCloseTab;
 
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id: tab.id, disabled: tab.disabled });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: tab.id,
+      disabled: tab.disabled,
+    });
 
     const mergedRef = useCallback(
       (node: HTMLDivElement | null) => {
@@ -48,9 +41,8 @@ export const EditorTabItem = memo(
       transform: CSS.Translate.toString(transform),
       // Suppress the return-to-origin transition when a detach is in progress
       // so the remaining tabs don't visually "fall" back into place.
-      transition: prefersReducedMotion || dragMode === 'detach-armed'
-        ? 'none'
-        : (transition ?? undefined),
+      transition:
+        prefersReducedMotion || dragMode === 'detach-armed' ? 'none' : (transition ?? undefined),
     };
 
     const handleClick = useCallback(() => {
@@ -99,9 +91,7 @@ export const EditorTabItem = memo(
 
         e.preventDefault();
         const targetId = allTabs[targetIndex];
-        const targetEl = document.querySelector<HTMLElement>(
-          `[data-tab-id="${targetId}"]`,
-        );
+        const targetEl = document.querySelector<HTMLElement>(`[data-tab-id="${targetId}"]`);
         targetEl?.focus();
       },
       [tabs, tab.id, closable, onCloseTab],
@@ -136,7 +126,12 @@ export const EditorTabItem = memo(
         {showTrailing && (
           <span className={styles.TabTrailing}>
             {tab.dirty && <span className={styles.DirtyDot} />}
-            <EditorTabCloseButton tabId={tab.id} tabTitle={tab.title} dirty={tab.dirty} onClose={onCloseTab} />
+            <EditorTabCloseButton
+              tabId={tab.id}
+              tabTitle={tab.title}
+              dirty={tab.dirty}
+              onClose={onCloseTab}
+            />
           </span>
         )}
       </div>

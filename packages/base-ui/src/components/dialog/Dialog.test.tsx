@@ -104,7 +104,7 @@ describe('Dialog', () => {
     const onClose = vi.fn();
     renderWithTheme(
       <Dialog open onClose={onClose}>
-        <Dialog.Close onClick={onClose} />
+        <Dialog.Close />
       </Dialog>,
     );
 

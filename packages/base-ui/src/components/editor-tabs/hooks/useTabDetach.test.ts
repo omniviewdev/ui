@@ -28,14 +28,22 @@ const tabs: TabDescriptor[] = [
 
 function makeDragStartEvent(id: string): DragStartEvent {
   return {
-    active: { id, data: { current: undefined }, rect: { current: { initial: null, translated: null } } },
+    active: {
+      id,
+      data: { current: undefined },
+      rect: { current: { initial: null, translated: null } },
+    },
     activatorEvent: new PointerEvent('pointerdown'),
   } as unknown as DragStartEvent;
 }
 
 function makeDragEndEvent(id: string): DragEndEvent {
   return {
-    active: { id, data: { current: undefined }, rect: { current: { initial: null, translated: null } } },
+    active: {
+      id,
+      data: { current: undefined },
+      rect: { current: { initial: null, translated: null } },
+    },
     activatorEvent: new PointerEvent('pointerup'),
     collisions: null,
     delta: { x: 0, y: 0 },
@@ -110,7 +118,9 @@ describe('useTabDetach', () => {
     expect(pointerMoveHandler).toBeDefined();
 
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientY: 81, screenX: 500, screenY: 200 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientY: 81, screenX: 500, screenY: 200 }),
+      );
     });
 
     // The ref is updated synchronously; state update is batched via rAF
@@ -133,7 +143,9 @@ describe('useTabDetach', () => {
 
     act(() => {
       // Pointer at 83 is within threshold (100 - 18 + 1 = 83)
-      pointerMoveHandler(new PointerEvent('pointermove', { clientY: 83, screenX: 500, screenY: 200 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientY: 83, screenX: 500, screenY: 200 }),
+      );
     });
 
     expect(result.current.dragModeRef.current).toBe('reorder');
@@ -155,7 +167,9 @@ describe('useTabDetach', () => {
     )?.[1] as EventListener;
 
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientY: 50, screenX: 500, screenY: 200 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientY: 50, screenX: 500, screenY: 200 }),
+      );
     });
 
     expect(result.current.dragModeRef.current).toBe('detach-armed');
@@ -200,9 +214,7 @@ describe('useTabDetach', () => {
       result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
     });
 
-    const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
-    )?.[1];
+    const pointerMoveHandler = addSpy.mock.calls.find((call) => call[0] === 'pointermove')?.[1];
 
     act(() => {
       result.current.handleDetachDragCancel();
@@ -228,7 +240,9 @@ describe('useTabDetach', () => {
 
     act(() => {
       // 800 + 18 + 1 = 819
-      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 819, clientY: 120, screenX: 819, screenY: 120 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 819, clientY: 120, screenX: 819, screenY: 120 }),
+      );
     });
 
     expect(result.current.dragModeRef.current).toBe('detach-armed');
@@ -250,7 +264,9 @@ describe('useTabDetach', () => {
 
     act(() => {
       // 100 - 18 - 1 = 81
-      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 81, clientY: 120, screenX: 81, screenY: 120 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 81, clientY: 120, screenX: 81, screenY: 120 }),
+      );
     });
 
     expect(result.current.dragModeRef.current).toBe('detach-armed');
@@ -272,7 +288,9 @@ describe('useTabDetach', () => {
 
     act(() => {
       // 800 + 17 = 817, still within threshold
-      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 817, clientY: 120, screenX: 817, screenY: 120 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 817, clientY: 120, screenX: 817, screenY: 120 }),
+      );
     });
 
     expect(result.current.dragModeRef.current).toBe('reorder');
@@ -294,13 +312,17 @@ describe('useTabDetach', () => {
 
     // Move above threshold (clientX within viewport bounds so only Y triggers)
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 400, clientY: 50, screenX: 400, screenY: 50 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 400, clientY: 50, screenX: 400, screenY: 50 }),
+      );
     });
     expect(result.current.dragModeRef.current).toBe('detach-armed');
 
     // Move back within hysteresis on both axes (threshold/2 = 9, so Y within 100 - 9 = 91)
     act(() => {
-      pointerMoveHandler(new PointerEvent('pointermove', { clientX: 400, clientY: 92, screenX: 400, screenY: 92 }));
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 400, clientY: 92, screenX: 400, screenY: 92 }),
+      );
     });
     expect(result.current.dragModeRef.current).toBe('reorder');
   });

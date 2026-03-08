@@ -7,8 +7,7 @@ import buttonStyles from '../button/Button.module.css';
 import styles from './ToggleButton.module.css';
 
 export interface ToggleButtonProps
-  extends Omit<BaseToggle.Props<string>, 'color'>,
-    StyledComponentProps {
+  extends Omit<BaseToggle.Props<string>, 'color'>, StyledComponentProps {
   startDecorator?: ReactNode;
   endDecorator?: ReactNode;
 }

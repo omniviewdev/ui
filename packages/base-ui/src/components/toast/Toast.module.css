@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 300px;
+  min-width: min(300px, 100vw - 32px);
   max-width: 420px;
   padding: 12px 16px;
   border-radius: var(--ov-radius-surface);
@@ -68,7 +68,7 @@
   font-family: var(--ov-font-sans);
   font-size: var(--ov-font-size-body);
   pointer-events: auto;
-  animation: toastSlideIn var(--ov-duration-enter, 200ms) var(--ov-ease-decelerate, ease-out);
+  animation: ov-toast-slide-in var(--ov-duration-enter, 200ms) var(--ov-ease-decelerate, ease-out);
 }
 
 /* Severity accent colours */
@@ -161,7 +161,7 @@
 /* Enter / Exit animations                                             */
 /* ------------------------------------------------------------------ */
 
-@keyframes toastSlideIn {
+@keyframes ov-toast-slide-in {
   from {
     opacity: 0;
     transform: translateX(24px);
@@ -173,11 +173,11 @@
 }
 
 .ToastExiting {
-  animation: toastSlideOut var(--ov-duration-exit, 200ms) var(--ov-ease-accelerate, ease-in)
+  animation: ov-toast-slide-out var(--ov-duration-exit, 200ms) var(--ov-ease-accelerate, ease-in)
     forwards;
 }
 
-@keyframes toastSlideOut {
+@keyframes ov-toast-slide-out {
   from {
     opacity: 1;
     transform: translateX(0);
@@ -191,15 +191,15 @@
 /* Left-side positions: slide from left */
 .Container[data-ov-position='top-left'] .Toast,
 .Container[data-ov-position='bottom-left'] .Toast {
-  animation-name: toastSlideInLeft;
+  animation-name: ov-toast-slide-inLeft;
 }
 
 .Container[data-ov-position='top-left'] .ToastExiting,
 .Container[data-ov-position='bottom-left'] .ToastExiting {
-  animation-name: toastSlideOutLeft;
+  animation-name: ov-toast-slide-outLeft;
 }
 
-@keyframes toastSlideInLeft {
+@keyframes ov-toast-slide-inLeft {
   from {
     opacity: 0;
     transform: translateX(-24px);
@@ -210,7 +210,7 @@
   }
 }
 
-@keyframes toastSlideOutLeft {
+@keyframes ov-toast-slide-outLeft {
   from {
     opacity: 1;
     transform: translateX(0);
@@ -223,22 +223,22 @@
 
 /* Center positions: slide from top/bottom */
 .Container[data-ov-position='top-center'] .Toast {
-  animation-name: toastSlideInTop;
+  animation-name: ov-toast-slide-inTop;
 }
 
 .Container[data-ov-position='top-center'] .ToastExiting {
-  animation-name: toastSlideOutTop;
+  animation-name: ov-toast-slide-outTop;
 }
 
 .Container[data-ov-position='bottom-center'] .Toast {
-  animation-name: toastSlideInBottom;
+  animation-name: ov-toast-slide-inBottom;
 }
 
 .Container[data-ov-position='bottom-center'] .ToastExiting {
-  animation-name: toastSlideOutBottom;
+  animation-name: ov-toast-slide-outBottom;
 }
 
-@keyframes toastSlideInTop {
+@keyframes ov-toast-slide-inTop {
   from {
     opacity: 0;
     transform: translateY(-24px);
@@ -249,7 +249,7 @@
   }
 }
 
-@keyframes toastSlideOutTop {
+@keyframes ov-toast-slide-outTop {
   from {
     opacity: 1;
     transform: translateY(0);
@@ -260,7 +260,7 @@
   }
 }
 
-@keyframes toastSlideInBottom {
+@keyframes ov-toast-slide-inBottom {
   from {
     opacity: 0;
     transform: translateY(24px);
@@ -271,7 +271,7 @@
   }
 }
 
-@keyframes toastSlideOutBottom {
+@keyframes ov-toast-slide-outBottom {
   from {
     opacity: 1;
     transform: translateY(0);
@@ -289,4 +289,11 @@
 :root[data-ov-motion='reduced'] .Toast,
 :root[data-ov-motion='reduced'] .ToastExiting {
   animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Toast,
+  .ToastExiting {
+    animation: none;
+  }
 }

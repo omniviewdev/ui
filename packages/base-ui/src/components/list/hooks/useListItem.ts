@@ -6,11 +6,7 @@ import type { Key, ItemState, ListStore } from '../types';
  * Uses useSyncExternalStore so the item only re-renders when
  * its own isSelected/isActive/isDisabled changes.
  */
-export function useListItem(
-  store: ListStore,
-  key: Key,
-  textValue?: string,
-): ItemState {
+export function useListItem(store: ListStore, key: Key, textValue?: string): ItemState {
   // Register this item with the store
   useEffect(() => {
     return store.registerItem(key, textValue);

@@ -56,18 +56,46 @@
   animation: ov-spinner-fade 0.8s linear infinite;
 }
 
-.Bar:nth-child(1) { transform: translateX(-50%) rotate(0deg);   animation-delay: -0.8s; }
-.Bar:nth-child(2) { transform: translateX(-50%) rotate(45deg);  animation-delay: -0.7s; }
-.Bar:nth-child(3) { transform: translateX(-50%) rotate(90deg);  animation-delay: -0.6s; }
-.Bar:nth-child(4) { transform: translateX(-50%) rotate(135deg); animation-delay: -0.5s; }
-.Bar:nth-child(5) { transform: translateX(-50%) rotate(180deg); animation-delay: -0.4s; }
-.Bar:nth-child(6) { transform: translateX(-50%) rotate(225deg); animation-delay: -0.3s; }
-.Bar:nth-child(7) { transform: translateX(-50%) rotate(270deg); animation-delay: -0.2s; }
-.Bar:nth-child(8) { transform: translateX(-50%) rotate(315deg); animation-delay: -0.1s; }
+.Bar:nth-child(1) {
+  transform: translateX(-50%) rotate(0deg);
+  animation-delay: -0.8s;
+}
+.Bar:nth-child(2) {
+  transform: translateX(-50%) rotate(45deg);
+  animation-delay: -0.7s;
+}
+.Bar:nth-child(3) {
+  transform: translateX(-50%) rotate(90deg);
+  animation-delay: -0.6s;
+}
+.Bar:nth-child(4) {
+  transform: translateX(-50%) rotate(135deg);
+  animation-delay: -0.5s;
+}
+.Bar:nth-child(5) {
+  transform: translateX(-50%) rotate(180deg);
+  animation-delay: -0.4s;
+}
+.Bar:nth-child(6) {
+  transform: translateX(-50%) rotate(225deg);
+  animation-delay: -0.3s;
+}
+.Bar:nth-child(7) {
+  transform: translateX(-50%) rotate(270deg);
+  animation-delay: -0.2s;
+}
+.Bar:nth-child(8) {
+  transform: translateX(-50%) rotate(315deg);
+  animation-delay: -0.1s;
+}
 
 @keyframes ov-spinner-fade {
-  0% { opacity: 1; }
-  100% { opacity: 0.15; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -24,8 +24,7 @@ import { DataTableLoading } from './DataTableLoading';
 // ---------------------------------------------------------------------------
 
 export interface DataTableRootProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: Table<any>;
   features?: DataTableFeatures;

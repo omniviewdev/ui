@@ -45,10 +45,37 @@ const fileExplorerData: FileItem[] = [
         type: 'directory',
         permissions: 'drwxr-xr-x',
         children: [
-          { path: '/src/components/App.tsx', name: 'App.tsx', type: 'file', status: 'M', permissions: '-rw-r--r--', size: '2.4 KB' },
-          { path: '/src/components/Header.tsx', name: 'Header.tsx', type: 'file', status: 'A', permissions: '-rw-r--r--', size: '1.1 KB' },
-          { path: '/src/components/Footer.tsx', name: 'Footer.tsx', type: 'file', permissions: '-rw-r--r--', size: '0.8 KB' },
-          { path: '/src/components/Sidebar.tsx', name: 'Sidebar.tsx', type: 'file', status: 'M', permissions: '-rw-r--r--', size: '3.2 KB' },
+          {
+            path: '/src/components/App.tsx',
+            name: 'App.tsx',
+            type: 'file',
+            status: 'M',
+            permissions: '-rw-r--r--',
+            size: '2.4 KB',
+          },
+          {
+            path: '/src/components/Header.tsx',
+            name: 'Header.tsx',
+            type: 'file',
+            status: 'A',
+            permissions: '-rw-r--r--',
+            size: '1.1 KB',
+          },
+          {
+            path: '/src/components/Footer.tsx',
+            name: 'Footer.tsx',
+            type: 'file',
+            permissions: '-rw-r--r--',
+            size: '0.8 KB',
+          },
+          {
+            path: '/src/components/Sidebar.tsx',
+            name: 'Sidebar.tsx',
+            type: 'file',
+            status: 'M',
+            permissions: '-rw-r--r--',
+            size: '3.2 KB',
+          },
         ],
       },
       {
@@ -57,8 +84,21 @@ const fileExplorerData: FileItem[] = [
         type: 'directory',
         permissions: 'drwxr-xr-x',
         children: [
-          { path: '/src/hooks/useAuth.ts', name: 'useAuth.ts', type: 'file', permissions: '-rw-r--r--', size: '1.8 KB' },
-          { path: '/src/hooks/useTheme.ts', name: 'useTheme.ts', type: 'file', status: 'A', permissions: '-rw-r--r--', size: '0.9 KB' },
+          {
+            path: '/src/hooks/useAuth.ts',
+            name: 'useAuth.ts',
+            type: 'file',
+            permissions: '-rw-r--r--',
+            size: '1.8 KB',
+          },
+          {
+            path: '/src/hooks/useTheme.ts',
+            name: 'useTheme.ts',
+            type: 'file',
+            status: 'A',
+            permissions: '-rw-r--r--',
+            size: '0.9 KB',
+          },
         ],
       },
       {
@@ -67,12 +107,38 @@ const fileExplorerData: FileItem[] = [
         type: 'directory',
         permissions: 'drwxr-xr-x',
         children: [
-          { path: '/src/utils/api.ts', name: 'api.ts', type: 'file', permissions: '-rw-r--r--', size: '4.1 KB' },
-          { path: '/src/utils/helpers.ts', name: 'helpers.ts', type: 'file', status: 'D', permissions: '-rw-r--r--', size: '0.5 KB' },
+          {
+            path: '/src/utils/api.ts',
+            name: 'api.ts',
+            type: 'file',
+            permissions: '-rw-r--r--',
+            size: '4.1 KB',
+          },
+          {
+            path: '/src/utils/helpers.ts',
+            name: 'helpers.ts',
+            type: 'file',
+            status: 'D',
+            permissions: '-rw-r--r--',
+            size: '0.5 KB',
+          },
         ],
       },
-      { path: '/src/index.ts', name: 'index.ts', type: 'file', status: 'M', permissions: '-rw-r--r--', size: '0.3 KB' },
-      { path: '/src/types.ts', name: 'types.ts', type: 'file', permissions: '-rw-r--r--', size: '1.2 KB' },
+      {
+        path: '/src/index.ts',
+        name: 'index.ts',
+        type: 'file',
+        status: 'M',
+        permissions: '-rw-r--r--',
+        size: '0.3 KB',
+      },
+      {
+        path: '/src/types.ts',
+        name: 'types.ts',
+        type: 'file',
+        permissions: '-rw-r--r--',
+        size: '1.2 KB',
+      },
     ],
   },
   {
@@ -81,13 +147,46 @@ const fileExplorerData: FileItem[] = [
     type: 'directory',
     permissions: 'drwxr-xr-x',
     children: [
-      { path: '/public/index.html', name: 'index.html', type: 'file', permissions: '-rw-r--r--', size: '0.5 KB' },
-      { path: '/public/favicon.ico', name: 'favicon.ico', type: 'file', permissions: '-rw-r--r--', size: '4.2 KB' },
+      {
+        path: '/public/index.html',
+        name: 'index.html',
+        type: 'file',
+        permissions: '-rw-r--r--',
+        size: '0.5 KB',
+      },
+      {
+        path: '/public/favicon.ico',
+        name: 'favicon.ico',
+        type: 'file',
+        permissions: '-rw-r--r--',
+        size: '4.2 KB',
+      },
     ],
   },
-  { path: '/package.json', name: 'package.json', type: 'file', status: 'M', permissions: '-rw-r--r--', size: '1.8 KB' },
-  { path: '/tsconfig.json', name: 'tsconfig.json', type: 'file', permissions: '-rw-r--r--', size: '0.6 KB' },
-  { path: '/README.md', name: 'README.md', type: 'file', status: 'M', permissions: '-rw-r--r--', size: '2.1 KB', linkTarget: undefined },
+  {
+    path: '/package.json',
+    name: 'package.json',
+    type: 'file',
+    status: 'M',
+    permissions: '-rw-r--r--',
+    size: '1.8 KB',
+  },
+  {
+    path: '/tsconfig.json',
+    name: 'tsconfig.json',
+    type: 'file',
+    permissions: '-rw-r--r--',
+    size: '0.6 KB',
+  },
+  {
+    path: '/README.md',
+    name: 'README.md',
+    type: 'file',
+    status: 'M',
+    permissions: '-rw-r--r--',
+    size: '2.1 KB',
+    linkTarget: undefined,
+  },
 ];
 
 function getFileIcon(item: FileItem, isExpanded: boolean) {
@@ -183,7 +282,16 @@ const meta: Meta<PlaygroundArgs> = {
   },
   parameters: {
     controls: {
-      include: ['size', 'density', 'selectionMode', 'selectionBehavior', 'loopFocus', 'typeahead', 'indentation', 'showBranchConnectors'],
+      include: [
+        'size',
+        'density',
+        'selectionMode',
+        'selectionBehavior',
+        'loopFocus',
+        'typeahead',
+        'indentation',
+        'showBranchConnectors',
+      ],
     },
   },
 };
@@ -223,7 +331,16 @@ export const Playground: Story = {
       },
     },
   },
-  render: ({ size, density, selectionMode, selectionBehavior, loopFocus, typeahead, indentation, showBranchConnectors }) => (
+  render: ({
+    size,
+    density,
+    selectionMode,
+    selectionBehavior,
+    loopFocus,
+    typeahead,
+    indentation,
+    showBranchConnectors,
+  }) => (
     <TreeList.Root
       items={fileExplorerData}
       itemKey={(item) => item.path}
@@ -233,7 +350,11 @@ export const Playground: Story = {
       defaultExpandedKeys={new Set(['/src', '/src/components'])}
       renderItem={(item, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+          <TreeList.ItemIndent
+            depth={node.depth}
+            ancestorIsLast={node.ancestorIsLast}
+            isLastChild={node.isLastChild}
+          />
           <TreeList.ItemToggle itemKey={node.key} />
           <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -277,7 +398,11 @@ function FileExplorerStory() {
       defaultExpandedKeys={new Set(['/src', '/src/components'])}
       renderItem={(item, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+          <TreeList.ItemIndent
+            depth={node.depth}
+            ancestorIsLast={node.ancestorIsLast}
+            isLastChild={node.isLastChild}
+          />
           <TreeList.ItemToggle itemKey={node.key} />
           <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -351,8 +476,16 @@ function AsyncLoadingStory() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const fakeChildren: LazyFolder[] = [
-      { id: `${key}/file-1`, name: `report-${Math.random().toString(36).slice(2, 6)}.pdf`, type: 'file' },
-      { id: `${key}/file-2`, name: `notes-${Math.random().toString(36).slice(2, 6)}.md`, type: 'file' },
+      {
+        id: `${key}/file-1`,
+        name: `report-${Math.random().toString(36).slice(2, 6)}.pdf`,
+        type: 'file',
+      },
+      {
+        id: `${key}/file-2`,
+        name: `notes-${Math.random().toString(36).slice(2, 6)}.md`,
+        type: 'file',
+      },
       { id: `${key}/sub`, name: 'Subfolder', type: 'directory', children: [] },
     ];
 
@@ -374,7 +507,13 @@ function AsyncLoadingStory() {
 
   return (
     <div>
-      <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginBottom: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Click a folder arrow to load children (simulated 1s delay).
       </p>
       <TreeList.Root
@@ -387,12 +526,22 @@ function AsyncLoadingStory() {
         selectionMode="single"
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>
-              {item.type === 'directory'
-                ? (node.isExpanded ? <LuFolderOpen /> : <LuFolder />)
-                : <LuFile />}
+              {item.type === 'directory' ? (
+                node.isExpanded ? (
+                  <LuFolderOpen />
+                ) : (
+                  <LuFolder />
+                )
+              ) : (
+                <LuFile />
+              )}
             </TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
           </TreeList.Item>
@@ -494,7 +643,13 @@ function LargeTreeStory() {
 
   return (
     <div>
-      <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginBottom: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         {totalNodeCount.toLocaleString()} total nodes. Virtualized. Selected: {selected.size}
       </p>
       <TreeList.Root
@@ -510,12 +665,22 @@ function LargeTreeStory() {
         virtualized
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>
-              {item.children !== undefined
-                ? (node.isExpanded ? <LuFolderOpen /> : <LuFolder />)
-                : <LuFileCode />}
+              {item.children !== undefined ? (
+                node.isExpanded ? (
+                  <LuFolderOpen />
+                ) : (
+                  <LuFolder />
+                )
+              ) : (
+                <LuFileCode />
+              )}
             </TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
           </TreeList.Item>
@@ -610,12 +775,18 @@ const symbolData: SymbolItem[] = [
 
 function getSymbolIcon(kind: SymbolItem['kind']) {
   switch (kind) {
-    case 'class': return <LuBox />;
-    case 'interface': return <LuBraces />;
-    case 'method': return <LuHash />;
-    case 'function': return <LuHash />;
-    case 'property': return <LuChevronRight />;
-    case 'type': return <LuType />;
+    case 'class':
+      return <LuBox />;
+    case 'interface':
+      return <LuBraces />;
+    case 'method':
+      return <LuHash />;
+    case 'function':
+      return <LuHash />;
+    case 'property':
+      return <LuChevronRight />;
+    case 'type':
+      return <LuType />;
   }
 }
 
@@ -632,7 +803,11 @@ function SymbolOutlineStory() {
       density="compact"
       renderItem={(item, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+          <TreeList.ItemIndent
+            depth={node.depth}
+            ancestorIsLast={node.ancestorIsLast}
+            isLastChild={node.isLastChild}
+          />
           <TreeList.ItemToggle itemKey={node.key} />
           <TreeList.ItemIcon>{getSymbolIcon(item.kind)}</TreeList.ItemIcon>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -686,7 +861,13 @@ function MultiSelectStory() {
 
   return (
     <div>
-      <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginBottom: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Ctrl+click to toggle. Shift+click for range. Ctrl+A to select all visible.
       </p>
       <TreeList.Root
@@ -701,7 +882,11 @@ function MultiSelectStory() {
         defaultExpandedKeys={new Set(['/src', '/src/components'])}
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -711,7 +896,13 @@ function MultiSelectStory() {
       >
         <TreeList.Viewport />
       </TreeList.Root>
-      <p style={{ marginTop: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginTop: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Selected: {selected.size === 0 ? 'none' : [...selected].join(', ')}
       </p>
     </div>
@@ -790,7 +981,11 @@ export const WithBranchConnectors: Story = {
       showBranchConnectors
       renderItem={(item, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+          <TreeList.ItemIndent
+            depth={node.depth}
+            ancestorIsLast={node.ancestorIsLast}
+            isLastChild={node.isLastChild}
+          />
           <TreeList.ItemToggle itemKey={node.key} />
           <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -836,7 +1031,13 @@ export const DensityVariants: Story = {
     <div style={{ display: 'flex', gap: 24 }}>
       {(['compact', 'default', 'comfortable'] as const).map((density) => (
         <div key={density}>
-          <p style={{ marginBottom: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+          <p
+            style={{
+              marginBottom: 8,
+              color: 'var(--ov-color-fg-subtle)',
+              fontSize: 'var(--ov-font-size-caption)',
+            }}
+          >
             {density}
           </p>
           <TreeList.Root
@@ -850,7 +1051,11 @@ export const DensityVariants: Story = {
             density={density}
             renderItem={(item, node) => (
               <TreeList.Item itemKey={node.key} textValue={item.name}>
-                <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+                <TreeList.ItemIndent
+                  depth={node.depth}
+                  ancestorIsLast={node.ancestorIsLast}
+                  isLastChild={node.isLastChild}
+                />
                 <TreeList.ItemToggle itemKey={node.key} />
                 <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
               </TreeList.Item>
@@ -884,7 +1089,11 @@ function ControlledExpansionStory() {
         </button>
         <button
           type="button"
-          onClick={() => setExpandedKeys(new Set(['/src', '/src/components', '/src/hooks', '/src/utils', '/public']))}
+          onClick={() =>
+            setExpandedKeys(
+              new Set(['/src', '/src/components', '/src/hooks', '/src/utils', '/public']),
+            )
+          }
           style={{ fontSize: 'var(--ov-font-size-caption)', padding: '4px 8px', cursor: 'pointer' }}
         >
           Expand All
@@ -901,7 +1110,11 @@ function ControlledExpansionStory() {
         onExpandedKeysChange={setExpandedKeys}
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
@@ -911,7 +1124,13 @@ function ControlledExpansionStory() {
       >
         <TreeList.Viewport />
       </TreeList.Root>
-      <p style={{ marginTop: 8, color: 'var(--ov-color-fg-subtle)', fontSize: 'var(--ov-font-size-caption)' }}>
+      <p
+        style={{
+          marginTop: 8,
+          color: 'var(--ov-color-fg-subtle)',
+          fontSize: 'var(--ov-font-size-caption)',
+        }}
+      >
         Expanded: {expandedKeys.size === 0 ? 'none' : [...expandedKeys].join(', ')}
       </p>
     </div>
@@ -949,12 +1168,18 @@ function FilterableTreeStory() {
         filterText={query}
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
             {item.status && (
-              <TreeList.ItemBadge color={statusColor[item.status]}>{item.status}</TreeList.ItemBadge>
+              <TreeList.ItemBadge color={statusColor[item.status]}>
+                {item.status}
+              </TreeList.ItemBadge>
             )}
           </TreeList.Item>
         )}
@@ -1012,14 +1237,11 @@ function CustomFilterStory() {
   const [query, setQuery] = useState('');
 
   // Custom filter: match by file extension
-  const filterByExtension = useCallback(
-    (item: FileItem, text: string) => {
-      if (item.type === 'directory') return false;
-      const ext = item.name.split('.').pop() ?? '';
-      return ext.toLowerCase().includes(text.toLowerCase());
-    },
-    [],
-  );
+  const filterByExtension = useCallback((item: FileItem, text: string) => {
+    if (item.type === 'directory') return false;
+    const ext = item.name.split('.').pop() ?? '';
+    return ext.toLowerCase().includes(text.toLowerCase());
+  }, []);
 
   return (
     <div style={{ width: 400 }}>
@@ -1043,12 +1265,18 @@ function CustomFilterStory() {
         filterFn={filterByExtension}
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
             {item.status && (
-              <TreeList.ItemBadge color={statusColor[item.status]}>{item.status}</TreeList.ItemBadge>
+              <TreeList.ItemBadge color={statusColor[item.status]}>
+                {item.status}
+              </TreeList.ItemBadge>
             )}
           </TreeList.Item>
         )}
@@ -1117,13 +1345,10 @@ function FilterByStatusStory() {
   const [statusFilter, setStatusFilter] = useState('');
 
   // Custom filter: match by git status badge
-  const filterByStatus = useCallback(
-    (item: FileItem, text: string) => {
-      if (!item.status) return false;
-      return item.status.toLowerCase() === text.toLowerCase();
-    },
-    [],
-  );
+  const filterByStatus = useCallback((item: FileItem, text: string) => {
+    if (!item.status) return false;
+    return item.status.toLowerCase() === text.toLowerCase();
+  }, []);
 
   return (
     <div style={{ width: 400 }}>
@@ -1138,7 +1363,10 @@ function FilterByStatusStory() {
               padding: '4px 8px',
               cursor: 'pointer',
               borderRadius: 'var(--ov-radius-sm)',
-              border: statusFilter === s ? '1px solid var(--ov-color-state-focus-ring)' : '1px solid var(--ov-color-border-muted)',
+              border:
+                statusFilter === s
+                  ? '1px solid var(--ov-color-state-focus-ring)'
+                  : '1px solid var(--ov-color-border-muted)',
               background: statusFilter === s ? 'var(--ov-color-state-hover)' : 'transparent',
               color: 'var(--ov-color-fg-default)',
             }}
@@ -1159,12 +1387,18 @@ function FilterByStatusStory() {
         filterFn={filterByStatus}
         renderItem={(item, node) => (
           <TreeList.Item itemKey={node.key} textValue={item.name}>
-            <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
             <TreeList.ItemToggle itemKey={node.key} />
             <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
             <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
             {item.status && (
-              <TreeList.ItemBadge color={statusColor[item.status]}>{item.status}</TreeList.ItemBadge>
+              <TreeList.ItemBadge color={statusColor[item.status]}>
+                {item.status}
+              </TreeList.ItemBadge>
             )}
           </TreeList.Item>
         )}

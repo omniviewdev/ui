@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuBox, LuNetwork, LuRocket, LuSettings, LuLock, LuGlobe, LuLayers, LuServer } from 'react-icons/lu';
+import {
+  LuBox,
+  LuNetwork,
+  LuRocket,
+  LuSettings,
+  LuLock,
+  LuGlobe,
+  LuLayers,
+  LuServer,
+} from 'react-icons/lu';
 import { BasicList } from './BasicList';
 
 const meta: Meta = {
@@ -51,42 +60,58 @@ export const ResourcePicker: Story = {
     <BasicList {...args} defaultSelectedKeys={['pods']} style={{ width: 320 }}>
       <BasicList.Viewport>
         <BasicList.Item itemKey="pods" textValue="Pods">
-          <BasicList.ItemIcon><LuBox /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuBox />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Pods</BasicList.ItemLabel>
           <BasicList.ItemBadge>12</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="services" textValue="Services">
-          <BasicList.ItemIcon><LuNetwork /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuNetwork />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Services</BasicList.ItemLabel>
           <BasicList.ItemBadge>8</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="deployments" textValue="Deployments">
-          <BasicList.ItemIcon><LuRocket /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuRocket />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Deployments</BasicList.ItemLabel>
           <BasicList.ItemBadge>5</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="configmaps" textValue="ConfigMaps">
-          <BasicList.ItemIcon><LuSettings /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuSettings />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>ConfigMaps</BasicList.ItemLabel>
           <BasicList.ItemBadge>23</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="secrets" textValue="Secrets">
-          <BasicList.ItemIcon><LuLock /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuLock />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Secrets</BasicList.ItemLabel>
           <BasicList.ItemBadge>14</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="ingresses" textValue="Ingresses">
-          <BasicList.ItemIcon><LuGlobe /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuGlobe />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Ingresses</BasicList.ItemLabel>
           <BasicList.ItemBadge>3</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="namespaces" textValue="Namespaces">
-          <BasicList.ItemIcon><LuLayers /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuLayers />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Namespaces</BasicList.ItemLabel>
           <BasicList.ItemBadge>4</BasicList.ItemBadge>
         </BasicList.Item>
         <BasicList.Item itemKey="nodes" textValue="Nodes">
-          <BasicList.ItemIcon><LuServer /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuServer />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Nodes</BasicList.ItemLabel>
           <BasicList.ItemBadge>6</BasicList.ItemBadge>
         </BasicList.Item>
@@ -163,27 +188,37 @@ export const WithChevrons: Story = {
     <BasicList selectionMode="single" style={{ width: 320 }}>
       <BasicList.Viewport>
         <BasicList.Item itemKey="pods" textValue="Pods">
-          <BasicList.ItemIcon><LuBox /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuBox />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Pods</BasicList.ItemLabel>
           <BasicList.ItemChevron />
         </BasicList.Item>
         <BasicList.Item itemKey="services" textValue="Services">
-          <BasicList.ItemIcon><LuNetwork /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuNetwork />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Services</BasicList.ItemLabel>
           <BasicList.ItemChevron />
         </BasicList.Item>
         <BasicList.Item itemKey="deployments" textValue="Deployments">
-          <BasicList.ItemIcon><LuRocket /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuRocket />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Deployments</BasicList.ItemLabel>
           <BasicList.ItemChevron />
         </BasicList.Item>
         <BasicList.Item itemKey="configmaps" textValue="ConfigMaps">
-          <BasicList.ItemIcon><LuSettings /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuSettings />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>ConfigMaps</BasicList.ItemLabel>
           <BasicList.ItemChevron />
         </BasicList.Item>
         <BasicList.Item itemKey="secrets" textValue="Secrets">
-          <BasicList.ItemIcon><LuLock /></BasicList.ItemIcon>
+          <BasicList.ItemIcon>
+            <LuLock />
+          </BasicList.ItemIcon>
           <BasicList.ItemLabel>Secrets</BasicList.ItemLabel>
           <BasicList.ItemChevron />
         </BasicList.Item>
@@ -228,12 +263,16 @@ export const WithGroups: Story = {
         <BasicList.Group>
           <BasicList.GroupHeader>Workloads</BasicList.GroupHeader>
           <BasicList.Item itemKey="pods" textValue="Pods">
-            <BasicList.ItemIcon><LuBox /></BasicList.ItemIcon>
+            <BasicList.ItemIcon>
+              <LuBox />
+            </BasicList.ItemIcon>
             <BasicList.ItemLabel>Pods</BasicList.ItemLabel>
             <BasicList.ItemBadge>12</BasicList.ItemBadge>
           </BasicList.Item>
           <BasicList.Item itemKey="deployments" textValue="Deployments">
-            <BasicList.ItemIcon><LuRocket /></BasicList.ItemIcon>
+            <BasicList.ItemIcon>
+              <LuRocket />
+            </BasicList.ItemIcon>
             <BasicList.ItemLabel>Deployments</BasicList.ItemLabel>
             <BasicList.ItemBadge>5</BasicList.ItemBadge>
           </BasicList.Item>
@@ -242,12 +281,16 @@ export const WithGroups: Story = {
         <BasicList.Group>
           <BasicList.GroupHeader>Configuration</BasicList.GroupHeader>
           <BasicList.Item itemKey="configmaps" textValue="ConfigMaps">
-            <BasicList.ItemIcon><LuSettings /></BasicList.ItemIcon>
+            <BasicList.ItemIcon>
+              <LuSettings />
+            </BasicList.ItemIcon>
             <BasicList.ItemLabel>ConfigMaps</BasicList.ItemLabel>
             <BasicList.ItemBadge>23</BasicList.ItemBadge>
           </BasicList.Item>
           <BasicList.Item itemKey="secrets" textValue="Secrets">
-            <BasicList.ItemIcon><LuLock /></BasicList.ItemIcon>
+            <BasicList.ItemIcon>
+              <LuLock />
+            </BasicList.ItemIcon>
             <BasicList.ItemLabel>Secrets</BasicList.ItemLabel>
             <BasicList.ItemBadge>14</BasicList.ItemBadge>
           </BasicList.Item>
@@ -271,9 +314,7 @@ function SearchResultsStory() {
     { id: 'namespaces', label: 'Namespaces', count: 4 },
     { id: 'nodes', label: 'Nodes', count: 6 },
   ];
-  const filtered = allResources.filter((r) =>
-    r.label.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filtered = allResources.filter((r) => r.label.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div style={{ width: 320 }}>

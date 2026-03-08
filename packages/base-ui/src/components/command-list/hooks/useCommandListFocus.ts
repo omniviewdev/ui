@@ -15,11 +15,7 @@ interface UseCommandListFocusOptions {
  * Keyboard navigation handler for command list.
  * Handles ArrowUp/Down, Enter, Escape, Home/End.
  */
-export function useCommandListFocus({
-  config,
-  actions,
-  store,
-}: UseCommandListFocusOptions) {
+export function useCommandListFocus({ config, actions, store }: UseCommandListFocusOptions) {
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       const items = store.getItems();

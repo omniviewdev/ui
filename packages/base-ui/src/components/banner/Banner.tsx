@@ -13,8 +13,10 @@ export type BannerTitleProps = HTMLAttributes<HTMLParagraphElement>;
 export type BannerContentProps = HTMLAttributes<HTMLDivElement>;
 export type BannerActionsProps = HTMLAttributes<HTMLDivElement>;
 
-export interface BannerCloseProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+export interface BannerCloseProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'children'
+> {
   'aria-label'?: string;
 }
 

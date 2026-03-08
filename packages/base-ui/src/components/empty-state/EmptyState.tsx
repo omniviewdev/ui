@@ -21,7 +21,7 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function E
           {icon}
         </span>
       )}
-      <p className={styles.Title}>{title}</p>
+      <h3 className={styles.Title}>{title}</h3>
       {description && <p className={styles.Description}>{description}</p>}
       {action && <div className={styles.Action}>{action}</div>}
     </div>

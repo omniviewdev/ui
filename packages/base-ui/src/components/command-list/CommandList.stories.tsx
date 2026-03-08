@@ -47,19 +47,67 @@ const allCommands: Command[] = [
   { id: 'new-file', label: 'New File', shortcut: '⌘N', category: 'file', icon: <LuFile /> },
   { id: 'open-folder', label: 'Open Folder', category: 'file', icon: <LuFolder /> },
   { id: 'find', label: 'Find in Files', shortcut: '⇧⌘F', category: 'search', icon: <LuSearch /> },
-  { id: 'replace', label: 'Find and Replace', shortcut: '⌘H', category: 'search', icon: <LuSearch /> },
+  {
+    id: 'replace',
+    label: 'Find and Replace',
+    shortcut: '⌘H',
+    category: 'search',
+    icon: <LuSearch />,
+  },
   { id: 'go-to-line', label: 'Go to Line', shortcut: '⌘G', category: 'search', icon: <LuCode /> },
-  { id: 'go-to-symbol', label: 'Go to Symbol', shortcut: '⌘⇧O', category: 'search', icon: <LuCode /> },
-  { id: 'toggle-terminal', label: 'Toggle Terminal', shortcut: '⌘`', category: 'view', icon: <LuTerminal /> },
-  { id: 'toggle-sidebar', label: 'Toggle Sidebar', shortcut: '⌘B', category: 'view', icon: <LuPalette /> },
-  { id: 'settings', label: 'Open Settings', shortcut: '⌘,', category: 'preferences', icon: <LuSettings /> },
-  { id: 'keyboard-shortcuts', label: 'Keyboard Shortcuts', shortcut: '⌘K ⌘S', category: 'preferences', icon: <LuSettings /> },
+  {
+    id: 'go-to-symbol',
+    label: 'Go to Symbol',
+    shortcut: '⌘⇧O',
+    category: 'search',
+    icon: <LuCode />,
+  },
+  {
+    id: 'toggle-terminal',
+    label: 'Toggle Terminal',
+    shortcut: '⌘`',
+    category: 'view',
+    icon: <LuTerminal />,
+  },
+  {
+    id: 'toggle-sidebar',
+    label: 'Toggle Sidebar',
+    shortcut: '⌘B',
+    category: 'view',
+    icon: <LuPalette />,
+  },
+  {
+    id: 'settings',
+    label: 'Open Settings',
+    shortcut: '⌘,',
+    category: 'preferences',
+    icon: <LuSettings />,
+  },
+  {
+    id: 'keyboard-shortcuts',
+    label: 'Keyboard Shortcuts',
+    shortcut: '⌘K ⌘S',
+    category: 'preferences',
+    icon: <LuSettings />,
+  },
   { id: 'color-theme', label: 'Color Theme', category: 'preferences', icon: <LuPalette /> },
   { id: 'git-checkout', label: 'Git: Checkout to...', category: 'git', icon: <LuGitBranch /> },
   { id: 'git-pull', label: 'Git: Pull', category: 'git', icon: <LuGitBranch /> },
   { id: 'git-push', label: 'Git: Push', category: 'git', icon: <LuGitBranch /> },
-  { id: 'debug-start', label: 'Start Debugging', shortcut: 'F5', category: 'debug', icon: <LuBug /> },
-  { id: 'debug-stop', label: 'Stop Debugging', shortcut: '⇧F5', category: 'debug', icon: <LuBug /> },
+  {
+    id: 'debug-start',
+    label: 'Start Debugging',
+    shortcut: 'F5',
+    category: 'debug',
+    icon: <LuBug />,
+  },
+  {
+    id: 'debug-stop',
+    label: 'Stop Debugging',
+    shortcut: '⇧F5',
+    category: 'debug',
+    icon: <LuBug />,
+  },
   { id: 'run-task', label: 'Run Task', category: 'debug', icon: <LuPlay /> },
   { id: 'copy', label: 'Copy', shortcut: '⌘C', category: 'edit', icon: <LuCopy /> },
   { id: 'cut', label: 'Cut', shortcut: '⌘X', category: 'edit', icon: <LuScissors /> },
@@ -87,15 +135,11 @@ function defaultRenderItem(item: Command, meta: CommandItemMeta) {
   return (
     <CommandList.Item itemKey={meta.key} disabled={item.disabled}>
       {item.icon && <CommandList.ItemIcon>{item.icon}</CommandList.ItemIcon>}
-      <CommandList.ItemLabel highlights={meta.highlights}>
-        {item.label}
-      </CommandList.ItemLabel>
+      <CommandList.ItemLabel highlights={meta.highlights}>{item.label}</CommandList.ItemLabel>
       {item.description && (
         <CommandList.ItemDescription>{item.description}</CommandList.ItemDescription>
       )}
-      {item.shortcut && (
-        <CommandList.ItemShortcut keys={item.shortcut.split(' ')} />
-      )}
+      {item.shortcut && <CommandList.ItemShortcut keys={item.shortcut.split(' ')} />}
     </CommandList.Item>
   );
 }
@@ -118,7 +162,14 @@ export default meta;
 
 export const BasicCommands: StoryObj = {
   render: () => (
-    <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+    <div
+      style={{
+        width: 520,
+        border: '1px solid var(--ov-color-border-default)',
+        borderRadius: 'var(--ov-radius-md)',
+        overflow: 'hidden',
+      }}
+    >
       <CommandList.Root
         items={allCommands.slice(0, 10)}
         itemKey={(item) => item.id}
@@ -192,7 +243,14 @@ export const ExternalSearch: StoryObj = {
     const { results, loading, highlights, search } = useDebouncedSearch(allCommands);
 
     return (
-      <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: 520,
+          border: '1px solid var(--ov-color-border-default)',
+          borderRadius: 'var(--ov-radius-md)',
+          overflow: 'hidden',
+        }}
+      >
         <CommandList.Root
           items={results}
           itemKey={(item) => item.id}
@@ -220,7 +278,14 @@ export const ExternalSearch: StoryObj = {
 
 export const ClientFiltering: StoryObj = {
   render: () => (
-    <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+    <div
+      style={{
+        width: 520,
+        border: '1px solid var(--ov-color-border-default)',
+        borderRadius: 'var(--ov-radius-md)',
+        overflow: 'hidden',
+      }}
+    >
       <CommandList.Root
         items={allCommands}
         itemKey={(item) => item.id}
@@ -250,7 +315,14 @@ export const ClientFiltering: StoryObj = {
 
 export const GroupedCommands: StoryObj = {
   render: () => (
-    <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+    <div
+      style={{
+        width: 520,
+        border: '1px solid var(--ov-color-border-default)',
+        borderRadius: 'var(--ov-radius-md)',
+        overflow: 'hidden',
+      }}
+    >
       <CommandList.Root
         items={allCommands}
         itemKey={(item) => item.id}
@@ -297,7 +369,14 @@ export const LargeResultSet: StoryObj = {
       : manyCommands;
 
     return (
-      <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: 520,
+          border: '1px solid var(--ov-color-border-default)',
+          borderRadius: 'var(--ov-radius-md)',
+          overflow: 'hidden',
+        }}
+      >
         <CommandList.Root
           items={filtered}
           itemKey={(item) => item.id}
@@ -326,11 +405,24 @@ export const WithHighlights: StoryObj = {
       ['open-file', [{ start: 0, end: 4 }]],
       ['save-file', [{ start: 0, end: 4 }]],
       ['find', [{ start: 0, end: 4 }]],
-      ['replace', [{ start: 0, end: 4 }, { start: 9, end: 12 }]],
+      [
+        'replace',
+        [
+          { start: 0, end: 4 },
+          { start: 9, end: 12 },
+        ],
+      ],
     ]);
 
     return (
-      <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: 520,
+          border: '1px solid var(--ov-color-border-default)',
+          borderRadius: 'var(--ov-radius-md)',
+          overflow: 'hidden',
+        }}
+      >
         <CommandList.Root
           items={allCommands.slice(0, 8)}
           itemKey={(item) => item.id}
@@ -358,11 +450,42 @@ export const EmptyAndLoading: StoryObj = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button type="button" onClick={() => { setLoading(true); setItems([]); }}>Show Loading</button>
-          <button type="button" onClick={() => { setLoading(false); setItems([]); }}>Show Empty</button>
-          <button type="button" onClick={() => { setLoading(false); setItems(allCommands.slice(0, 3)); }}>Show Results</button>
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(true);
+              setItems([]);
+            }}
+          >
+            Show Loading
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(false);
+              setItems([]);
+            }}
+          >
+            Show Empty
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(false);
+              setItems(allCommands.slice(0, 3));
+            }}
+          >
+            Show Results
+          </button>
         </div>
-        <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+        <div
+          style={{
+            width: 520,
+            border: '1px solid var(--ov-color-border-default)',
+            borderRadius: 'var(--ov-radius-md)',
+            overflow: 'hidden',
+          }}
+        >
           <CommandList.Root
             items={items}
             itemKey={(item) => item.id}
@@ -389,8 +512,23 @@ export const DensityVariants: StoryObj = {
   render: () => (
     <div style={{ display: 'flex', gap: 24 }}>
       {(['compact', 'default', 'comfortable'] as const).map((d) => (
-        <div key={d} style={{ width: 320, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
-          <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--ov-color-border-muted)', fontSize: 'var(--ov-font-size-caption)', color: 'var(--ov-color-fg-muted)' }}>
+        <div
+          key={d}
+          style={{
+            width: 320,
+            border: '1px solid var(--ov-color-border-default)',
+            borderRadius: 'var(--ov-radius-md)',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              padding: '8px 12px',
+              borderBottom: '1px solid var(--ov-color-border-muted)',
+              fontSize: 'var(--ov-font-size-caption)',
+              color: 'var(--ov-color-fg-muted)',
+            }}
+          >
             density=&quot;{d}&quot;
           </div>
           <CommandList.Root
@@ -415,7 +553,14 @@ export const DensityVariants: StoryObj = {
 
 export const DisabledItems: StoryObj = {
   render: () => (
-    <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+    <div
+      style={{
+        width: 520,
+        border: '1px solid var(--ov-color-border-default)',
+        borderRadius: 'var(--ov-radius-md)',
+        overflow: 'hidden',
+      }}
+    >
       <CommandList.Root
         items={allCommands.slice(0, 8)}
         itemKey={(item) => item.id}
@@ -437,15 +582,20 @@ export const DisabledItems: StoryObj = {
 
 export const CustomRenderItem: StoryObj = {
   render: () => (
-    <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+    <div
+      style={{
+        width: 520,
+        border: '1px solid var(--ov-color-border-default)',
+        borderRadius: 'var(--ov-radius-md)',
+        overflow: 'hidden',
+      }}
+    >
       <CommandList.Root
         items={allCommands.slice(0, 10)}
         itemKey={(item) => item.id}
         renderItem={(item, meta) => (
           <CommandList.Item itemKey={meta.key}>
-            <CommandList.ItemIcon>
-              {item.icon ?? <LuZap />}
-            </CommandList.ItemIcon>
+            <CommandList.ItemIcon>{item.icon ?? <LuZap />}</CommandList.ItemIcon>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
               <CommandList.ItemLabel highlights={meta.highlights}>
                 {item.label}
@@ -455,19 +605,19 @@ export const CustomRenderItem: StoryObj = {
               )}
             </div>
             {item.category && (
-              <span style={{
-                fontSize: 10,
-                padding: '2px 6px',
-                borderRadius: 'var(--ov-radius-sm)',
-                background: 'var(--ov-color-state-hover)',
-                color: 'var(--ov-color-fg-muted)',
-              }}>
+              <span
+                style={{
+                  fontSize: 10,
+                  padding: '2px 6px',
+                  borderRadius: 'var(--ov-radius-sm)',
+                  background: 'var(--ov-color-state-hover)',
+                  color: 'var(--ov-color-fg-muted)',
+                }}
+              >
                 {item.category}
               </span>
             )}
-            {item.shortcut && (
-              <CommandList.ItemShortcut keys={item.shortcut.split(' ')} />
-            )}
+            {item.shortcut && <CommandList.ItemShortcut keys={item.shortcut.split(' ')} />}
           </CommandList.Item>
         )}
         onAction={(key) => console.log('Action:', key)}
@@ -489,7 +639,14 @@ export const HybridSearch: StoryObj = {
     const { results, loading, highlights, search } = useDebouncedSearch(allCommands, 150);
 
     return (
-      <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: 520,
+          border: '1px solid var(--ov-color-border-default)',
+          borderRadius: 'var(--ov-radius-md)',
+          overflow: 'hidden',
+        }}
+      >
         <CommandList.Root
           items={results}
           itemKey={(item) => item.id}
@@ -524,23 +681,36 @@ export const ControlledQuery: StoryObj = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button type="button" onClick={() => setQuery('')}>Clear</button>
-          <button type="button" onClick={() => setQuery('git')}>Set &quot;git&quot;</button>
-          <button type="button" onClick={() => setQuery('save')}>Set &quot;save&quot;</button>
-          <span style={{ color: 'var(--ov-color-fg-muted)', fontSize: 'var(--ov-font-size-caption)' }}>
+          <button type="button" onClick={() => setQuery('')}>
+            Clear
+          </button>
+          <button type="button" onClick={() => setQuery('git')}>
+            Set &quot;git&quot;
+          </button>
+          <button type="button" onClick={() => setQuery('save')}>
+            Set &quot;save&quot;
+          </button>
+          <span
+            style={{ color: 'var(--ov-color-fg-muted)', fontSize: 'var(--ov-font-size-caption)' }}
+          >
             Query: &quot;{query}&quot;
           </span>
         </div>
-        <div style={{ width: 520, border: '1px solid var(--ov-color-border-default)', borderRadius: 'var(--ov-radius-md)', overflow: 'hidden' }}>
+        <div
+          style={{
+            width: 520,
+            border: '1px solid var(--ov-color-border-default)',
+            borderRadius: 'var(--ov-radius-md)',
+            overflow: 'hidden',
+          }}
+        >
           <CommandList.Root
             items={allCommands}
             itemKey={(item) => item.id}
             renderItem={defaultRenderItem}
             query={query}
             onQueryChange={setQuery}
-            filterFn={(item, q) =>
-              item.label.toLowerCase().includes(q.toLowerCase())
-            }
+            filterFn={(item, q) => item.label.toLowerCase().includes(q.toLowerCase())}
             onAction={(key) => console.log('Action:', key)}
             placeholder="Controlled query..."
           >

@@ -58,4 +58,3 @@ export interface UseDataTableOptions<TData> {
   pageCount?: number;
   globalFilterFn?: 'auto' | 'includesString' | 'includesStringSensitive';
 }
-

@@ -13,12 +13,10 @@ import type { StyledComponentProps } from '../../system/types';
 import styles from './Switch.module.css';
 
 export interface SwitchRootProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseSwitch.Root>, 'color'>,
-    StyledComponentProps {}
+  extends Omit<ComponentPropsWithoutRef<typeof BaseSwitch.Root>, 'color'>, StyledComponentProps {}
 
 export interface SwitchThumbProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseSwitch.Thumb>, 'color'>,
-    StyledComponentProps {}
+  extends Omit<ComponentPropsWithoutRef<typeof BaseSwitch.Thumb>, 'color'>, StyledComponentProps {}
 
 export type SwitchFieldProps = HTMLAttributes<HTMLLabelElement>;
 export type SwitchLabelProps = HTMLAttributes<HTMLSpanElement>;
@@ -115,9 +113,7 @@ const SwitchBase = forwardRef<ElementRef<typeof BaseSwitch.Root>, SwitchProps>(f
       aria-describedby={resolvedAriaDescribedBy}
       {...props}
     >
-      {thumb ?? (
-        <SwitchThumb variant={variant} color={color} size={size} {...thumbProps} />
-      )}
+      {thumb ?? <SwitchThumb variant={variant} color={color} size={size} {...thumbProps} />}
     </SwitchRoot>
   );
 
@@ -134,14 +130,18 @@ const SwitchBase = forwardRef<ElementRef<typeof BaseSwitch.Root>, SwitchProps>(f
       {labelPosition === 'start' ? (
         <span className={styles.Content}>
           {children ? <SwitchLabel id={labelId}>{children}</SwitchLabel> : null}
-          {description ? <SwitchDescription id={descriptionId}>{description}</SwitchDescription> : null}
+          {description ? (
+            <SwitchDescription id={descriptionId}>{description}</SwitchDescription>
+          ) : null}
         </span>
       ) : null}
       {switchControl}
       {labelPosition === 'end' ? (
         <span className={styles.Content}>
           {children ? <SwitchLabel id={labelId}>{children}</SwitchLabel> : null}
-          {description ? <SwitchDescription id={descriptionId}>{description}</SwitchDescription> : null}
+          {description ? (
+            <SwitchDescription id={descriptionId}>{description}</SwitchDescription>
+          ) : null}
         </span>
       ) : null}
     </SwitchField>

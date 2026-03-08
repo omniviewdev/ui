@@ -74,7 +74,11 @@
 /* Hover on parent item highlights unchecked control */
 .Item:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
   border-color: var(--ov-color-border-strong);
-  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+  background: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 82%,
+    var(--ov-color-state-hover) 18%
+  );
 }
 
 /* Disabled state */
@@ -113,7 +117,11 @@
 
 .SelectAll:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
   border-color: var(--ov-color-border-strong);
-  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+  background: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 82%,
+    var(--ov-color-state-hover) 18%
+  );
 }
 
 .SelectAllLabel {
@@ -153,7 +161,13 @@
   margin-block-end: var(--_ov-group-label-gap-after, 4px);
 }
 
-.GroupSelectAll:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
+.GroupSelectAll:hover
+  .IndicatorWrapper:not([data-checked], [data-indeterminate])
+  .IndicatorControl {
   border-color: var(--ov-color-border-strong);
-  background: color-mix(in srgb, var(--ov-color-bg-surface-raised) 82%, var(--ov-color-state-hover) 18%);
+  background: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 82%,
+    var(--ov-color-state-hover) 18%
+  );
 }

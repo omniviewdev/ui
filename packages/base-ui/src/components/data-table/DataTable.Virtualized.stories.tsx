@@ -84,13 +84,7 @@ const actionsColumn: ColumnDef<LogEntry, unknown> = {
   id: 'actions',
   header: '',
   cell: () => (
-    <IconButton
-      dense
-      variant="ghost"
-      color="neutral"
-      size="sm"
-      aria-label="Row actions"
-    >
+    <IconButton dense variant="ghost" color="neutral" size="sm" aria-label="Row actions">
       <LuEllipsisVertical />
     </IconButton>
   ),
@@ -118,11 +112,7 @@ const virtualizedFeatures = {
 
 const tenKData = generateLogData(10_000);
 
-const logColumns: ColumnDef<LogEntry, unknown>[] = [
-  selectColumn,
-  ...baseLogColumns,
-  actionsColumn,
-];
+const logColumns: ColumnDef<LogEntry, unknown>[] = [selectColumn, ...baseLogColumns, actionsColumn];
 
 function TenThousandRowsStory() {
   const table = useDataTable({
@@ -139,13 +129,7 @@ function TenThousandRowsStory() {
   });
 
   return (
-    <DataTable.Root
-      table={table}
-      features={virtualizedFeatures}
-      variant="soft"
-      size="sm"
-      hoverable
-    >
+    <DataTable.Root table={table} features={virtualizedFeatures} variant="soft" size="sm" hoverable>
       <DataTable.Toolbar searchPlaceholder="Search 10,000 log entries..." />
       <DataTable.Container height={600}>
         <DataTable.Header />
@@ -172,13 +156,7 @@ function FiftyThousandRowsStory() {
   });
 
   return (
-    <DataTable.Root
-      table={table}
-      features={virtualizedFeatures}
-      variant="soft"
-      size="sm"
-      hoverable
-    >
+    <DataTable.Root table={table} features={virtualizedFeatures} variant="soft" size="sm" hoverable>
       <DataTable.Toolbar searchPlaceholder="Search 50,000 log entries..." />
       <DataTable.Container height={600}>
         <DataTable.Header />

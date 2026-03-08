@@ -63,3 +63,9 @@
   color: var(--ov-color-success);
   opacity: 1;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .CopyButton {
+    transition: none;
+  }
+}

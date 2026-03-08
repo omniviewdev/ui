@@ -9,7 +9,10 @@ export interface DataTableToolbarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps>(
-  function DataTableToolbar({ className, searchPlaceholder = 'Search...', children, ...props }, ref) {
+  function DataTableToolbar(
+    { className, searchPlaceholder = 'Search...', children, ...props },
+    ref,
+  ) {
     const { table, features } = useDataTableContext();
 
     return (

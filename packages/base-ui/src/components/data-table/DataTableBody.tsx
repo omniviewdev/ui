@@ -55,10 +55,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
           </tr>
           {features.rowExpansion && isExpanded && renderExpandedRow && (
             <tr className={styles.ExpandedRow}>
-              <td
-                className={styles.ExpandedRowContent}
-                colSpan={row.getVisibleCells().length}
-              >
+              <td className={styles.ExpandedRowContent} colSpan={row.getVisibleCells().length}>
                 {renderExpandedRow(row.original)}
               </td>
             </tr>
@@ -88,7 +85,11 @@ DataTableBody.displayName = 'DataTable.Body';
 const MemoizedTbody = memo(
   forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
     function MemoizedTbody({ children, ...props }, ref) {
-      return <tbody ref={ref} {...props}>{children}</tbody>;
+      return (
+        <tbody ref={ref} {...props}>
+          {children}
+        </tbody>
+      );
     },
   ),
   (prev, next) => prev.children === next.children,

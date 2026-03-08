@@ -58,7 +58,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Header>
-          <Card.Eyebrow mono data-testid="eyebrow">v2.1.0</Card.Eyebrow>
+          <Card.Eyebrow mono data-testid="eyebrow">
+            v2.1.0
+          </Card.Eyebrow>
         </Card.Header>
       </Card>,
     );
@@ -126,7 +128,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Body>
-          <Card.KeyValue label="Namespace" mono>production</Card.KeyValue>
+          <Card.KeyValue label="Namespace" mono>
+            production
+          </Card.KeyValue>
         </Card.Body>
       </Card>,
     );
@@ -139,7 +143,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Body>
-          <Card.KeyValue label="Region" data-testid="kv">us-east-1</Card.KeyValue>
+          <Card.KeyValue label="Region" data-testid="kv">
+            us-east-1
+          </Card.KeyValue>
         </Card.Body>
       </Card>,
     );
@@ -154,7 +160,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Header>
-          <Card.Stat mono data-testid="stat">142ms</Card.Stat>
+          <Card.Stat mono data-testid="stat">
+            142ms
+          </Card.Stat>
         </Card.Header>
       </Card>,
     );
@@ -168,7 +176,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Header>
-          <Card.Indicator status="success" data-testid="indicator">Healthy</Card.Indicator>
+          <Card.Indicator status="success" data-testid="indicator">
+            Healthy
+          </Card.Indicator>
         </Card.Header>
       </Card>,
     );
@@ -182,7 +192,9 @@ describe('Card', () => {
     renderWithTheme(
       <Card>
         <Card.Header>
-          <Card.Indicator status="warning" pulse data-testid="indicator">Building</Card.Indicator>
+          <Card.Indicator status="warning" pulse data-testid="indicator">
+            Building
+          </Card.Indicator>
         </Card.Header>
       </Card>,
     );
@@ -264,8 +276,12 @@ describe('Card', () => {
   it('renders Group with columns and gap', () => {
     renderWithTheme(
       <Card.Group columns={3} gap="lg" data-testid="group">
-        <Card><Card.Body>A</Card.Body></Card>
-        <Card><Card.Body>B</Card.Body></Card>
+        <Card>
+          <Card.Body>A</Card.Body>
+        </Card>
+        <Card>
+          <Card.Body>B</Card.Body>
+        </Card>
       </Card.Group>,
     );
 
@@ -277,7 +293,9 @@ describe('Card', () => {
   it('renders Group with auto columns', () => {
     renderWithTheme(
       <Card.Group columns="auto" data-testid="group">
-        <Card><Card.Body>A</Card.Body></Card>
+        <Card>
+          <Card.Body>A</Card.Body>
+        </Card>
       </Card.Group>,
     );
 

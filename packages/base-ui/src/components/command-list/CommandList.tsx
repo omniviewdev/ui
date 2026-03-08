@@ -37,11 +37,7 @@ import {
   useCommandListStoreContext,
   useCommandListActions,
 } from './context/CommandListContext';
-import {
-  MdKeyboardCommandKey,
-  MdKeyboardOptionKey,
-  MdKeyboardControlKey,
-} from 'react-icons/md';
+import { MdKeyboardCommandKey, MdKeyboardOptionKey, MdKeyboardControlKey } from 'react-icons/md';
 import { BsShift } from 'react-icons/bs';
 import { SearchInput, type SearchInputProps } from '../search-input';
 import { Hotkey } from '../typography/Hotkey';
@@ -144,10 +140,7 @@ function CommandListRootImpl<TItem>(
 
   const listId = useId();
   const resultsId = `${listId}-results`;
-  const fullConfig = useMemo(
-    () => ({ ...config, listId }),
-    [config, listId],
-  );
+  const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
 
   // Build renderItem closure that captures TItem
   const itemsMap = useMemo(() => {
@@ -370,7 +363,12 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
               if (group.items.length === 0) return null;
               const headerId = `${config.listId}-group-${group.key}`;
               return (
-                <div key={group.key} role="group" aria-labelledby={headerId} className={styles.Group}>
+                <div
+                  key={group.key}
+                  role="group"
+                  aria-labelledby={headerId}
+                  className={styles.Group}
+                >
                   {group.label && (
                     <div id={headerId} role="presentation" className={styles.GroupHeader}>
                       {group.label}
@@ -385,11 +383,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                       score: procItem.score,
                       highlights: procItem.highlights,
                     };
-                    return (
-                      <Fragment key={procItem.key}>
-                        {renderItem(procItem.key, meta)}
-                      </Fragment>
-                    );
+                    return <Fragment key={procItem.key}>{renderItem(procItem.key, meta)}</Fragment>;
                   })}
                 </div>
               );
@@ -403,11 +397,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                 score: procItem.score,
                 highlights: procItem.highlights,
               };
-              return (
-                <Fragment key={procItem.key}>
-                  {renderItem(procItem.key, meta)}
-                </Fragment>
-              );
+              return <Fragment key={procItem.key}>{renderItem(procItem.key, meta)}</Fragment>;
             })}
         {children}
       </div>
@@ -419,55 +409,53 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
 // Item
 // ---------------------------------------------------------------------------
 
-const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(
-  function CommandListItem(
-    { className, itemKey, disabled = false, children, onClick, ...props },
-    ref,
-  ) {
-    const store = useCommandListStoreContext();
-    const actions = useCommandListActions();
-    const config = useCommandListConfig();
-    const itemState = useCommandListItemHook(store, itemKey);
+const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(function CommandListItem(
+  { className, itemKey, disabled = false, children, onClick, ...props },
+  ref,
+) {
+  const store = useCommandListStoreContext();
+  const actions = useCommandListActions();
+  const config = useCommandListConfig();
+  const itemState = useCommandListItemHook(store, itemKey);
 
-    const isDisabled = disabled || itemState.isDisabled;
+  const isDisabled = disabled || itemState.isDisabled;
 
-    const handleClick = useCallback(
-      (event: MouseEvent<HTMLDivElement>) => {
-        if (isDisabled) {
-          onClick?.(event);
-          return;
-        }
-        actions.invoke(itemKey);
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      if (isDisabled) {
         onClick?.(event);
-      },
-      [isDisabled, actions, itemKey, onClick],
-    );
-
-    const handleMouseMove = useCallback(() => {
-      if (!isDisabled && !itemState.isActive) {
-        store.setActiveKey(itemKey);
+        return;
       }
-    }, [isDisabled, itemState.isActive, store, itemKey]);
+      actions.invoke(itemKey);
+      onClick?.(event);
+    },
+    [isDisabled, actions, itemKey, onClick],
+  );
 
-    return (
-      <div
-        ref={ref}
-        id={`${config.listId}-item-${itemKey}`}
-        role="option"
-        aria-selected={itemState.isActive || undefined}
-        aria-disabled={isDisabled || undefined}
-        className={cn(styles.Item, className)}
-        data-ov-active={itemState.isActive}
-        data-ov-disabled={isDisabled}
-        onClick={handleClick}
-        onMouseMove={handleMouseMove}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  const handleMouseMove = useCallback(() => {
+    if (!isDisabled && !itemState.isActive) {
+      store.setActiveKey(itemKey);
+    }
+  }, [isDisabled, itemState.isActive, store, itemKey]);
+
+  return (
+    <div
+      ref={ref}
+      id={`${config.listId}-item-${itemKey}`}
+      role="option"
+      aria-selected={itemState.isActive || undefined}
+      aria-disabled={isDisabled || undefined}
+      className={cn(styles.Item, className)}
+      data-ov-active={itemState.isActive}
+      data-ov-disabled={isDisabled}
+      onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // ItemIcon
@@ -487,7 +475,10 @@ interface CommandListItemLabelProps extends HTMLAttributes<HTMLSpanElement> {
   highlights?: HighlightRange[];
 }
 
-function splitByRanges(text: string, ranges: HighlightRange[]): { text: string; highlighted: boolean }[] {
+function splitByRanges(
+  text: string,
+  ranges: HighlightRange[],
+): { text: string; highlighted: boolean }[] {
   if (!ranges.length) return [{ text, highlighted: false }];
 
   // Clamp ranges to text bounds and discard invalid ones
@@ -536,15 +527,23 @@ const CommandListItemLabel = forwardRef<HTMLSpanElement, CommandListItemLabelPro
       return (
         <span ref={ref} className={cn(styles.ItemLabel, className)} {...props}>
           {segments.map((seg, i) =>
-            seg.highlighted
-              ? <mark key={i} className={styles.Highlight}>{seg.text}</mark>
-              : <span key={i}>{seg.text}</span>,
+            seg.highlighted ? (
+              <mark key={i} className={styles.Highlight}>
+                {seg.text}
+              </mark>
+            ) : (
+              <span key={i}>{seg.text}</span>
+            ),
           )}
         </span>
       );
     }
 
-    return <span ref={ref} className={cn(styles.ItemLabel, className)} {...props}>{children}</span>;
+    return (
+      <span ref={ref} className={cn(styles.ItemLabel, className)} {...props}>
+        {children}
+      </span>
+    );
   },
 );
 

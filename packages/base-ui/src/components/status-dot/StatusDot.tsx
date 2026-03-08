@@ -22,6 +22,7 @@ export const StatusDot = forwardRef<HTMLSpanElement, StatusDotProps>(function St
       data-ov-status={status}
       data-ov-size={size}
       data-ov-pulse={pulse ? 'true' : 'false'}
+      role={pulse ? 'status' : undefined}
       {...props}
     >
       <span className={styles.Dot} />

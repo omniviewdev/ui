@@ -91,3 +91,11 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+/* ---- Reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-pulse='true'] .Dot {
+    animation: none;
+  }
+}

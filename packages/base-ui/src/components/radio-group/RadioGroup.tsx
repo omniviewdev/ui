@@ -16,14 +16,14 @@ interface RadioGroupContextValue extends StyledComponentProps {}
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
 export interface RadioGroupProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseRadioGroup<string>>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseRadioGroup<string>>, 'color'>,
     StyledComponentProps {
   orientation?: 'vertical' | 'horizontal';
 }
 
 export interface RadioGroupItemProps
-  extends Omit<RadioItemProps, 'variant' | 'color' | 'size' | 'value'>,
-    StyledComponentProps {
+  extends Omit<RadioItemProps, 'variant' | 'color' | 'size' | 'value'>, StyledComponentProps {
   value: string;
 }
 

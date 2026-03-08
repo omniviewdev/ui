@@ -13,7 +13,11 @@
 }
 
 .Root[data-ov-variant='soft'][data-pressed] {
-  --_ov-bg: color-mix(in srgb, var(--_ov-toggle-selected-bg) 80%, var(--ov-color-bg-surface-overlay) 20%);
+  --_ov-bg: color-mix(
+    in srgb,
+    var(--_ov-toggle-selected-bg) 80%,
+    var(--ov-color-bg-surface-overlay) 20%
+  );
   --_ov-fg: var(--_ov-toggle-selected-fg);
 }
 

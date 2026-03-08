@@ -84,8 +84,9 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Deterministic panel id for aria-controls.
-  const panelId = `ov-accordion-panel-${useId()}`;
+  const uid = useId();
+  const panelId = `ov-accordion-panel-${uid}`;
+  const headerId = `ov-accordion-header-${uid}`;
 
   return (
     <div
@@ -99,8 +100,8 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
       {/* Header trigger */}
       <button
         type="button"
+        id={headerId}
         className={styles.Header}
-        role="button"
         aria-expanded={expanded}
         aria-controls={panelId}
         disabled={disabled}
@@ -126,7 +127,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
       </button>
 
       {/* Collapsible content */}
-      <div id={panelId} role="region" className={styles.ContentWrapper}>
+      <div id={panelId} role="region" aria-labelledby={headerId} className={styles.ContentWrapper}>
         <div className={styles.Content}>{children}</div>
       </div>
     </div>
@@ -159,14 +160,18 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
     [exclusive],
   );
 
-  const registerDefault = useCallback((id: string) => {
-    setExpandedIds((prev) => {
-      if (prev.has(id)) return prev;
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  }, []);
+  const registerDefault = useCallback(
+    (id: string) => {
+      setExpandedIds((prev) => {
+        if (prev.has(id)) return prev;
+        if (exclusive && prev.size > 0) return prev;
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+    },
+    [exclusive],
+  );
 
   return (
     <AccordionContext.Provider value={{ expandedIds, toggle, registerDefault }}>

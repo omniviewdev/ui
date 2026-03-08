@@ -58,10 +58,7 @@ export const EditorTabsViewport = forwardRef<HTMLDivElement, EditorTabsViewportP
       >
         {children}
         {isAttachDropTarget && indicatorLeft != null && (
-          <div
-            className={styles.AttachDropIndicator}
-            style={{ left: indicatorLeft }}
-          />
+          <div className={styles.AttachDropIndicator} style={{ left: indicatorLeft }} />
         )}
       </div>
     );

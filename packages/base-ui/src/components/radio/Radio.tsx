@@ -12,13 +12,15 @@ import type { StyledComponentProps } from '../../system/types';
 import styles from './Radio.module.css';
 
 export interface RadioRootProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseRadio.Root<string>>, 'color' | 'value'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseRadio.Root<string>>, 'color' | 'value'>,
     StyledComponentProps {
   value: string;
 }
 
 export interface RadioIndicatorProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseRadio.Indicator>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseRadio.Indicator>, 'color'>,
     StyledComponentProps {}
 
 export type RadioControlProps = HTMLAttributes<HTMLSpanElement>;
@@ -72,12 +74,11 @@ const RadioLabel = forwardRef<HTMLSpanElement, RadioLabelProps>(function RadioLa
   return <span ref={ref} className={cn(styles.Label, className)} {...props} />;
 });
 
-const RadioDescription = forwardRef<HTMLSpanElement, RadioDescriptionProps>(function RadioDescription(
-  { className, ...props },
-  ref,
-) {
-  return <span ref={ref} className={cn(styles.Description, className)} {...props} />;
-});
+const RadioDescription = forwardRef<HTMLSpanElement, RadioDescriptionProps>(
+  function RadioDescription({ className, ...props }, ref) {
+    return <span ref={ref} className={cn(styles.Description, className)} {...props} />;
+  },
+);
 
 const RadioItem = forwardRef<ElementRef<typeof BaseRadio.Root<string>>, RadioItemProps>(
   function RadioItem(

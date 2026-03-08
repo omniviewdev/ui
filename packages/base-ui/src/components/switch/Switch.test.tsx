@@ -33,7 +33,14 @@ describe('Switch', () => {
 
   it('supports custom thumb content', () => {
     renderWithTheme(
-      <Switch defaultChecked thumb={<Switch.Thumb><span data-testid="thumb-dot" /></Switch.Thumb>}>
+      <Switch
+        defaultChecked
+        thumb={
+          <Switch.Thumb>
+            <span data-testid="thumb-dot" />
+          </Switch.Thumb>
+        }
+      >
         Custom thumb
       </Switch>,
     );

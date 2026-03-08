@@ -80,11 +80,13 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   );
 
   // Compute maxSize default based on viewport
-  const resolvedMaxSize = maxSize ?? (typeof window !== 'undefined'
-    ? Math.round(
-        (anchor === 'top' || anchor === 'bottom' ? window.innerHeight : window.innerWidth) * 0.8,
-      )
-    : 800);
+  const resolvedMaxSize =
+    maxSize ??
+    (typeof window !== 'undefined'
+      ? Math.round(
+          (anchor === 'top' || anchor === 'bottom' ? window.innerHeight : window.innerWidth) * 0.8,
+        )
+      : 800);
 
   // Normalize min so the range never inverts when viewport shrinks
   const resolvedMinSize = Math.min(minSize, resolvedMaxSize);
@@ -184,7 +186,7 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
 
       const vert = anchor === 'top' || anchor === 'bottom';
       // For bottom/right anchors, "up/left" visually grows the drawer
-      const sign = (anchor === 'bottom' || anchor === 'right') ? -1 : 1;
+      const sign = anchor === 'bottom' || anchor === 'right' ? -1 : 1;
       const rect = root.getBoundingClientRect();
       const size = vert ? rect.height : rect.width;
       let newSize: number;

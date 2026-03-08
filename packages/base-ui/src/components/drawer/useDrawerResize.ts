@@ -58,7 +58,11 @@ export function useDrawerResize(
 
       // Release pointer capture if still held
       if (activePointerId !== -1) {
-        try { handle.releasePointerCapture(activePointerId); } catch { /* already released */ }
+        try {
+          handle.releasePointerCapture(activePointerId);
+        } catch {
+          /* already released */
+        }
         activePointerId = -1;
       }
 

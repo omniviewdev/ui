@@ -95,5 +95,5 @@
 /* ── Invisible ── */
 .Badge[data-ov-invisible='true'] {
   opacity: 0;
-  transform: scale(0);
+  visibility: hidden;
 }

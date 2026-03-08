@@ -24,7 +24,9 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
   const cssWidth = toCss(width);
   const cssHeight = toCss(height);
 
-  if (variant === 'text' && lines > 1) {
+  const clampedLines = Math.max(1, Math.floor(lines));
+
+  if (variant === 'text' && clampedLines > 1) {
     return (
       <div
         ref={ref}
@@ -35,14 +37,15 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
         style={style}
         {...props}
       >
-        {Array.from({ length: lines }, (_, i) => (
+        {Array.from({ length: clampedLines }, (_, i) => (
           <div
             key={i}
             className={styles.Root}
             data-ov-variant={variant}
             data-ov-animation={animation}
             style={{
-              width: i === lines - 1 ? (cssWidth ? `calc(${cssWidth} * 0.8)` : '80%') : cssWidth,
+              width:
+                i === clampedLines - 1 ? (cssWidth ? `calc(${cssWidth} * 0.8)` : '80%') : cssWidth,
               height: cssHeight,
             }}
           />

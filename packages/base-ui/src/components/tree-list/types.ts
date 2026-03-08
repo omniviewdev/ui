@@ -126,8 +126,7 @@ export interface TreeActionsContextValue {
 // ---------------------------------------------------------------------------
 
 export interface TreeListRootProps<TItem = unknown>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>,
-    StyledComponentProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
   // Data
   items: readonly TItem[];
   itemKey: (item: TItem) => Key;
@@ -186,8 +185,7 @@ export interface TreeListRootProps<TItem = unknown>
   children?: ReactNode;
 }
 
-export interface TreeListItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+export interface TreeListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   itemKey: Key;
   disabled?: boolean;
   textValue?: string;

@@ -146,7 +146,11 @@ describe('DataTable features', () => {
     });
 
     return (
-      <DataTable.Root table={table} features={{ globalFilter: true, filtering: true }} data-testid="dt-root">
+      <DataTable.Root
+        table={table}
+        features={{ globalFilter: true, filtering: true }}
+        data-testid="dt-root"
+      >
         <DataTable.Toolbar />
         <DataTable.Container>
           <DataTable.Header />

@@ -45,13 +45,13 @@ export const Polymorphic: Story = {
   name: 'Polymorphic Elements',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {(['div', 'span', 'section', 'article', 'aside', 'main', 'nav', 'header', 'footer'] as const).map(
-        (tag) => (
-          <Box key={tag} as={tag} style={cellStyle}>
-            &lt;{tag}&gt;
-          </Box>
-        ),
-      )}
+      {(
+        ['div', 'span', 'section', 'article', 'aside', 'main', 'nav', 'header', 'footer'] as const
+      ).map((tag) => (
+        <Box key={tag} as={tag} style={cellStyle}>
+          &lt;{tag}&gt;
+        </Box>
+      ))}
 
       {/* List elements with semantically correct children */}
       <Box as="ul" style={{ ...cellStyle, listStyle: 'disc', paddingLeft: 32 }}>

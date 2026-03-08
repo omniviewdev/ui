@@ -43,7 +43,8 @@ export type TextAreaDescriptionProps = BaseField.Description.Props;
 export type TextAreaErrorProps = BaseField.Error.Props;
 
 export interface TextAreaControlProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'color'>,
+  extends
+    Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'color'>,
     StyledComponentProps {
   mono?: boolean;
   resize?: CSSProperties['resize'];
@@ -80,34 +81,36 @@ const TextAreaLabel = forwardRef<HTMLElement, TextAreaLabelProps>(function TextA
   );
 });
 
-const TextAreaControl = forwardRef<HTMLTextAreaElement, TextAreaControlProps>(function TextAreaControl(
-  {
-    className,
-    variant,
-    color,
-    size,
-    mono = false,
-    resize = 'vertical',
-    style,
-    rows = 4,
-    ...props
-  },
-  ref,
-) {
-  const resolved = useResolvedStyleProps({ variant, color, size });
+const TextAreaControl = forwardRef<HTMLTextAreaElement, TextAreaControlProps>(
+  function TextAreaControl(
+    {
+      className,
+      variant,
+      color,
+      size,
+      mono = false,
+      resize = 'vertical',
+      style,
+      rows = 4,
+      ...props
+    },
+    ref,
+  ) {
+    const resolved = useResolvedStyleProps({ variant, color, size });
 
-  return (
-    <textarea
-      ref={ref}
-      className={cn(styles.Control, className)}
-      data-ov-mono={mono ? 'true' : undefined}
-      rows={rows}
-      style={{ ...style, resize }}
-      {...styleDataAttributes(resolved)}
-      {...props}
-    />
-  );
-});
+    return (
+      <textarea
+        ref={ref}
+        className={cn(styles.Control, className)}
+        data-ov-mono={mono ? 'true' : undefined}
+        rows={rows}
+        style={{ ...style, resize }}
+        {...styleDataAttributes(resolved)}
+        {...props}
+      />
+    );
+  },
+);
 
 const TextAreaDescription = forwardRef<HTMLParagraphElement, TextAreaDescriptionProps>(
   function TextAreaDescription({ className, ...props }, ref) {

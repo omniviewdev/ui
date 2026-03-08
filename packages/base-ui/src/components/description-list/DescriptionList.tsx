@@ -42,8 +42,9 @@ const DescriptionListItem = forwardRef<HTMLDivElement, DescriptionListItemProps>
   function DescriptionListItem({ className, label, copyable = false, children, ...props }, ref) {
     let value: ReactNode = children;
 
-    if (copyable && typeof children === 'string') {
-      value = <ClipboardText value={children}>{children}</ClipboardText>;
+    if (copyable && (typeof children === 'string' || typeof children === 'number')) {
+      const text = String(children);
+      value = <ClipboardText value={text}>{text}</ClipboardText>;
     }
 
     return (

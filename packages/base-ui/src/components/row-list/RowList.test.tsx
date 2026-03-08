@@ -73,28 +73,20 @@ describe('RowList', () => {
     };
     renderWithTheme(<ThreeRowList sortState={sortState} />);
 
-    const severityHeader = screen.getByText('Severity').closest(
-      '[role="columnheader"]',
-    )!;
+    const severityHeader = screen.getByText('Severity').closest('[role="columnheader"]')!;
     expect(severityHeader).toHaveAttribute('aria-sort', 'ascending');
 
     // Other headers should not have aria-sort
-    const messageHeader = screen.getByText('Message').closest(
-      '[role="columnheader"]',
-    )!;
+    const messageHeader = screen.getByText('Message').closest('[role="columnheader"]')!;
     expect(messageHeader).not.toHaveAttribute('aria-sort');
   });
 
   it('calls onSortChange with ascending when clicking unsorted sortable header', async () => {
     const user = userEvent.setup();
     const onSortChange = vi.fn();
-    renderWithTheme(
-      <ThreeRowList onSortChange={onSortChange} />,
-    );
+    renderWithTheme(<ThreeRowList onSortChange={onSortChange} />);
 
-    const severityHeader = screen.getByText('Severity').closest(
-      '[role="columnheader"]',
-    )!;
+    const severityHeader = screen.getByText('Severity').closest('[role="columnheader"]')!;
     await user.click(severityHeader);
 
     expect(onSortChange).toHaveBeenCalledWith({
@@ -113,9 +105,7 @@ describe('RowList', () => {
       />,
     );
 
-    const severityHeader = screen.getByText('Severity').closest(
-      '[role="columnheader"]',
-    )!;
+    const severityHeader = screen.getByText('Severity').closest('[role="columnheader"]')!;
     await user.click(severityHeader);
 
     expect(onSortChange).toHaveBeenCalledWith({
@@ -127,13 +117,9 @@ describe('RowList', () => {
   it('non-sortable headers do not respond to click', async () => {
     const user = userEvent.setup();
     const onSortChange = vi.fn();
-    renderWithTheme(
-      <ThreeRowList onSortChange={onSortChange} />,
-    );
+    renderWithTheme(<ThreeRowList onSortChange={onSortChange} />);
 
-    const messageHeader = screen.getByText('Message').closest(
-      '[role="columnheader"]',
-    )!;
+    const messageHeader = screen.getByText('Message').closest('[role="columnheader"]')!;
     await user.click(messageHeader);
 
     expect(onSortChange).not.toHaveBeenCalled();
@@ -159,9 +145,7 @@ describe('RowList', () => {
 
   it('keyboard navigation works (ArrowDown/Up moves active row)', async () => {
     const user = userEvent.setup();
-    renderWithTheme(
-      <ThreeRowList selectionMode="single" />,
-    );
+    renderWithTheme(<ThreeRowList selectionMode="single" />);
 
     const listbox = screen.getByRole('listbox');
     listbox.focus();
@@ -176,9 +160,7 @@ describe('RowList', () => {
   });
 
   it('disabled rows show disabled state', () => {
-    renderWithTheme(
-      <ThreeRowList disabledKeys={['err-2']} />,
-    );
+    renderWithTheme(<ThreeRowList disabledKeys={['err-2']} />);
 
     const items = screen.getAllByRole('option');
     expect(items[1]).toHaveAttribute('data-ov-disabled', 'true');
@@ -193,9 +175,7 @@ describe('RowList', () => {
   it('column widths set grid template via CSS variable', () => {
     renderWithTheme(<ThreeRowList />);
     const listbox = screen.getByRole('listbox');
-    const styleValue = listbox.style.getPropertyValue(
-      '--_ov-row-grid-columns',
-    );
+    const styleValue = listbox.style.getPropertyValue('--_ov-row-grid-columns');
     expect(styleValue).toBe('80px 1fr 120px');
   });
 

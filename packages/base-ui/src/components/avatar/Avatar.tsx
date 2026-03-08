@@ -47,19 +47,18 @@ function useResolvedStyleProps(overrides?: StyledComponentProps): ResolvedStyleP
 }
 
 export interface AvatarRootProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Root>, 'color'>,
-    StyledComponentProps {
+  extends Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Root>, 'color'>, StyledComponentProps {
   shape?: AvatarShape;
   deterministic?: boolean;
   paletteIndex?: number;
 }
 
 export interface AvatarImageProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Image>, 'color'>,
-    StyledComponentProps {}
+  extends Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Image>, 'color'>, StyledComponentProps {}
 
 export interface AvatarFallbackProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Fallback>, 'color'>,
+  extends
+    Omit<ComponentPropsWithoutRef<typeof BaseAvatar.Fallback>, 'color'>,
     StyledComponentProps {}
 
 export interface AvatarProps extends AvatarRootProps {

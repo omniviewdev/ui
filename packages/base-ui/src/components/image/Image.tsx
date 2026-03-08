@@ -1,4 +1,11 @@
-import { forwardRef, useState, useEffect, useCallback, type ImgHTMLAttributes, type ReactNode } from 'react';
+import {
+  forwardRef,
+  useState,
+  useEffect,
+  useCallback,
+  type ImgHTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { cn } from '../../system/classnames';
 import styles from './Image.module.css';
 
@@ -13,8 +20,13 @@ export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'p
 
 /** Attributes that belong on the <img> element, not the wrapper <div>. */
 const IMG_ATTRS = new Set([
-  'crossOrigin', 'decoding', 'fetchPriority', 'referrerPolicy',
-  'sizes', 'srcSet', 'useMap',
+  'crossOrigin',
+  'decoding',
+  'fetchPriority',
+  'referrerPolicy',
+  'sizes',
+  'srcSet',
+  'useMap',
 ]);
 
 function splitProps(

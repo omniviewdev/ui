@@ -3,8 +3,16 @@
   --_ov-track-height: var(--ov-size-switch-track-height-md);
   --_ov-thumb-size: var(--ov-size-switch-thumb-size-md);
   --_ov-track-padding: calc((var(--_ov-track-height) - var(--_ov-thumb-size)) / 2);
-  --_ov-track-bg-off: color-mix(in srgb, var(--ov-color-fg-muted) 74%, var(--ov-color-bg-surface-raised) 26%);
-  --_ov-track-border-off: color-mix(in srgb, var(--ov-color-fg-subtle) 60%, var(--ov-color-border-default) 40%);
+  --_ov-track-bg-off: color-mix(
+    in srgb,
+    var(--ov-color-fg-muted) 74%,
+    var(--ov-color-bg-surface-raised) 26%
+  );
+  --_ov-track-border-off: color-mix(
+    in srgb,
+    var(--ov-color-fg-subtle) 60%,
+    var(--ov-color-border-default) 40%
+  );
   --_ov-track-bg-off-hover: color-mix(in srgb, var(--_ov-track-bg-off) 85%, white 15%);
   --_ov-track-bg-on: var(--ov-color-brand-500);
   --_ov-track-border-on: color-mix(in srgb, var(--ov-color-brand-500) 82%, black 18%);
@@ -142,7 +150,9 @@
 }
 
 .Root[data-checked] .Thumb {
-  transform: translateX(calc(var(--_ov-track-width) - var(--_ov-thumb-size) - (var(--_ov-track-padding) * 2)));
+  transform: translateX(
+    calc(var(--_ov-track-width) - var(--_ov-thumb-size) - (var(--_ov-track-padding) * 2))
+  );
 }
 
 .Field {

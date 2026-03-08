@@ -40,7 +40,11 @@ const treeData: FileItem[] = [
 function renderItem(item: FileItem, node: TreeNodeMeta) {
   return (
     <TreeList.Item itemKey={node.key} textValue={item.name}>
-      <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+      <TreeList.ItemIndent
+        depth={node.depth}
+        ancestorIsLast={node.ancestorIsLast}
+        isLastChild={node.isLastChild}
+      />
       <TreeList.ItemToggle itemKey={node.key} />
       <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
     </TreeList.Item>
@@ -164,18 +168,14 @@ describe('TreeList', () => {
   });
 
   it('respects defaultExpandedKeys', () => {
-    renderWithTheme(
-      <TestTree defaultExpandedKeys={new Set(['/src', '/src/components'])} />,
-    );
+    renderWithTheme(<TestTree defaultExpandedKeys={new Set(['/src', '/src/components'])} />);
     expect(screen.getByText('App.tsx')).toBeInTheDocument();
     expect(screen.getByText('Header.tsx')).toBeInTheDocument();
   });
 
   it('supports controlled expandedKeys', () => {
     const onChange = vi.fn();
-    renderWithTheme(
-      <TestTree expandedKeys={new Set(['/src'])} onExpandedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestTree expandedKeys={new Set(['/src'])} onExpandedKeysChange={onChange} />);
     expect(screen.getByText('index.ts')).toBeInTheDocument();
   });
 
@@ -187,9 +187,7 @@ describe('TreeList', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestTree selectionMode="single" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestTree selectionMode="single" onSelectedKeysChange={onChange} />);
 
     await user.click(screen.getByText('README.md'));
     expect(onChange).toHaveBeenCalledWith(new Set(['/README.md']));
@@ -303,9 +301,7 @@ describe('TreeList', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestTree selectionMode="multiple" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestTree selectionMode="multiple" onSelectedKeysChange={onChange} />);
 
     await user.click(screen.getByText('src'));
     expect(onChange).toHaveBeenLastCalledWith(new Set(['/src']));
@@ -369,10 +365,7 @@ describe('TreeList', () => {
   it('ArrowRight on expanded branch skips disabled first child', async () => {
     const user = userEvent.setup();
     renderWithTheme(
-      <TestTree
-        defaultExpandedKeys={new Set(['/src'])}
-        disabledKeys={['/src/components']}
-      />,
+      <TestTree defaultExpandedKeys={new Set(['/src'])} disabledKeys={['/src/components']} />,
     );
 
     const tree = screen.getByRole('tree');
@@ -442,9 +435,7 @@ describe('TreeList', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestTree selectionMode="single" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestTree selectionMode="single" onSelectedKeysChange={onChange} />);
 
     const tree = screen.getByRole('tree');
     tree.focus();
@@ -458,9 +449,7 @@ describe('TreeList', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithTheme(
-      <TestTree selectionMode="multiple" onSelectedKeysChange={onChange} />,
-    );
+    renderWithTheme(<TestTree selectionMode="multiple" onSelectedKeysChange={onChange} />);
 
     const tree = screen.getByRole('tree');
     tree.focus();
@@ -476,9 +465,7 @@ describe('TreeList', () => {
   it('skips disabled items in keyboard navigation', async () => {
     const user = userEvent.setup();
 
-    renderWithTheme(
-      <TestTree disabledKeys={['/README.md']} />,
-    );
+    renderWithTheme(<TestTree disabledKeys={['/README.md']} />);
 
     const tree = screen.getByRole('tree');
     tree.focus();
@@ -521,9 +508,7 @@ describe('TreeList', () => {
   // -------------------------------------------------------------------------
 
   it('sets --tree-depth CSS variable on ItemIndent', () => {
-    renderWithTheme(
-      <TestTree defaultExpandedKeys={new Set(['/src'])} />,
-    );
+    renderWithTheme(<TestTree defaultExpandedKeys={new Set(['/src'])} />);
 
     // /src is depth 0, components is depth 1
     const src = screen.getByText('src').closest('[role="treeitem"]');
@@ -628,9 +613,7 @@ describe('TreeList', () => {
           path: '/only',
           name: 'only',
           type: 'directory',
-          children: [
-            { path: '/only/child.ts', name: 'child.ts', type: 'file' },
-          ],
+          children: [{ path: '/only/child.ts', name: 'child.ts', type: 'file' }],
         },
       ];
 
@@ -690,10 +673,7 @@ describe('TreeList', () => {
   describe('filtering', () => {
     it('filters items by text using getTextValue', () => {
       renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          filterText="App"
-        />,
+        <TestTree defaultExpandedKeys={new Set(['/src', '/src/components'])} filterText="App" />,
       );
 
       // App.tsx matches — should be visible
@@ -706,9 +686,7 @@ describe('TreeList', () => {
     });
 
     it('shows ancestor branches for deeply nested matches', () => {
-      renderWithTheme(
-        <TestTree filterText="App" />,
-      );
+      renderWithTheme(<TestTree filterText="App" />);
 
       // Even without defaultExpandedKeys, filtering auto-expands to show App.tsx
       expect(screen.getByText('App.tsx')).toBeInTheDocument();
@@ -717,9 +695,7 @@ describe('TreeList', () => {
     });
 
     it('hides branches with no matching descendants', () => {
-      renderWithTheme(
-        <TestTree filterText="README" />,
-      );
+      renderWithTheme(<TestTree filterText="README" />);
 
       // README.md is a root-level file — should be visible
       expect(screen.getByText('README.md')).toBeInTheDocument();
@@ -748,20 +724,15 @@ describe('TreeList', () => {
     });
 
     it('is case-insensitive by default', () => {
-      renderWithTheme(
-        <TestTree filterText="app" />,
-      );
+      renderWithTheme(<TestTree filterText="app" />);
 
       expect(screen.getByText('App.tsx')).toBeInTheDocument();
     });
 
     it('supports custom filterFn', () => {
-      const customFilter = (item: FileItem, text: string) =>
-        item.path.endsWith(text);
+      const customFilter = (item: FileItem, text: string) => item.path.endsWith(text);
 
-      renderWithTheme(
-        <TestTree filterText=".md" filterFn={customFilter} />,
-      );
+      renderWithTheme(<TestTree filterText=".md" filterFn={customFilter} />);
 
       expect(screen.getByText('README.md')).toBeInTheDocument();
       expect(screen.queryByText('src')).not.toBeInTheDocument();
@@ -769,12 +740,7 @@ describe('TreeList', () => {
 
     it('uses controlled filterText', () => {
       const onChange = vi.fn();
-      renderWithTheme(
-        <TestTree
-          filterText="Header"
-          onFilterTextChange={onChange}
-        />,
-      );
+      renderWithTheme(<TestTree filterText="Header" onFilterTextChange={onChange} />);
 
       // Only Header.tsx and its ancestors should be visible
       expect(screen.getByText('Header.tsx')).toBeInTheDocument();
@@ -782,21 +748,14 @@ describe('TreeList', () => {
     });
 
     it('uses uncontrolled defaultFilterText', () => {
-      renderWithTheme(
-        <TestTree defaultFilterText="index" />,
-      );
+      renderWithTheme(<TestTree defaultFilterText="index" />);
 
       expect(screen.getByText('index.ts')).toBeInTheDocument();
       expect(screen.queryByText('App.tsx')).not.toBeInTheDocument();
     });
 
     it('shows all items when filterText is empty', () => {
-      renderWithTheme(
-        <TestTree
-          filterText=""
-          defaultExpandedKeys={new Set(['/src'])}
-        />,
-      );
+      renderWithTheme(<TestTree filterText="" defaultExpandedKeys={new Set(['/src'])} />);
 
       // All root items visible
       expect(screen.getByText('src')).toBeInTheDocument();
@@ -846,9 +805,7 @@ describe('TreeList', () => {
       },
     ];
 
-    renderWithTheme(
-      <TestTree items={lazyData} loadChildren={loadChildren} />,
-    );
+    renderWithTheme(<TestTree items={lazyData} loadChildren={loadChildren} />);
 
     const toggle = screen.getByRole('button', { name: /expand/i });
     await user.click(toggle);
@@ -873,17 +830,12 @@ describe('TreeList', () => {
         path: '/lazy',
         name: 'lazy',
         type: 'directory',
-        children: [
-          { path: '/lazy/child.ts', name: 'child.ts', type: 'file' },
-        ],
+        children: [{ path: '/lazy/child.ts', name: 'child.ts', type: 'file' }],
       },
     ];
 
     const { rerender } = renderWithTheme(
-      <TestTree
-        items={lazyData}
-        loadChildren={async () => {}}
-      />,
+      <TestTree items={lazyData} loadChildren={async () => {}} />,
     );
 
     const toggle = screen.getByRole('button', { name: /expand/i });
@@ -904,20 +856,16 @@ describe('TreeList', () => {
   it('renderItem receives node.isLoading=true while loadChildren is pending', async () => {
     const user = userEvent.setup();
     let resolveLoad!: () => void;
-    const loadPromise = new Promise<void>((r) => { resolveLoad = r; });
+    const loadPromise = new Promise<void>((r) => {
+      resolveLoad = r;
+    });
     const loadChildren = vi.fn().mockReturnValue(loadPromise);
     const renderItemSpy = vi.fn(renderItem);
 
-    const lazyData: FileItem[] = [
-      { path: '/lazy', name: 'lazy', type: 'directory' },
-    ];
+    const lazyData: FileItem[] = [{ path: '/lazy', name: 'lazy', type: 'directory' }];
 
     renderWithTheme(
-      <TestTree
-        items={lazyData}
-        loadChildren={loadChildren}
-        renderItem={renderItemSpy}
-      />,
+      <TestTree items={lazyData} loadChildren={loadChildren} renderItem={renderItemSpy} />,
     );
 
     const toggle = screen.getByRole('button', { name: /expand/i });
@@ -941,9 +889,7 @@ describe('TreeList', () => {
     const loadChildren = vi.fn().mockRejectedValue(error);
     const onLoadError = vi.fn();
 
-    const lazyData: FileItem[] = [
-      { path: '/lazy', name: 'lazy', type: 'directory' },
-    ];
+    const lazyData: FileItem[] = [{ path: '/lazy', name: 'lazy', type: 'directory' }];
 
     renderWithTheme(
       <TestTree items={lazyData} loadChildren={loadChildren} onLoadError={onLoadError} />,
@@ -954,7 +900,11 @@ describe('TreeList', () => {
 
     // Wait for the rejection to be handled
     await vi.waitFor(() => {
-      expect(onLoadError).toHaveBeenCalledWith(error, '/lazy', expect.objectContaining({ path: '/lazy' }));
+      expect(onLoadError).toHaveBeenCalledWith(
+        error,
+        '/lazy',
+        expect.objectContaining({ path: '/lazy' }),
+      );
     });
   });
 

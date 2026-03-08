@@ -24,6 +24,7 @@ function ToastTrigger({
   return (
     <>
       <button
+        type="button"
         onClick={() => {
           const id = toast(message, { severity, duration, action });
           // Expose the id for dismiss tests
@@ -32,10 +33,15 @@ function ToastTrigger({
       >
         trigger
       </button>
-      <button onClick={() => dismiss((window as unknown as Record<string, string>).__lastToastId)}>
+      <button
+        type="button"
+        onClick={() => dismiss((window as unknown as Record<string, string>).__lastToastId)}
+      >
         dismiss-one
       </button>
-      <button onClick={dismissAll}>dismiss-all</button>
+      <button type="button" onClick={dismissAll}>
+        dismiss-all
+      </button>
     </>
   );
 }

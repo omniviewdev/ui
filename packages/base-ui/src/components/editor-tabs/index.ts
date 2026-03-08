@@ -6,6 +6,7 @@ export type {
   TabId,
   TabGroupId,
   TabSegments,
+  ReorderMeta,
 } from './types';
 export { computeTabSegments } from './utils/computeTabSegments';
 export { useEditorTabsContext } from './context/EditorTabsContext';

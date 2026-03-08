@@ -1,7 +1,10 @@
 import { forwardRef, memo, useCallback } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { cn } from '../../system/classnames';
 import { useEditorTabsContext } from './context/EditorTabsContext';
 import { EditorTabCloseButton } from './EditorTabCloseButton';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import type { TabDescriptor } from './types';
 import styles from './EditorTabs.module.css';
 
@@ -20,6 +23,31 @@ export const EditorTabItem = memo(
     const isActive = activeId === tab.id;
     const closable = tab.closable !== false;
     const showTrailing = !tab.pinned && closable && !!onCloseTab;
+
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: tab.id, disabled: tab.disabled });
+
+    const mergedRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        setNodeRef(node);
+        if (typeof ref === 'function') ref(node);
+        else if (ref) (ref as { current: HTMLDivElement | null }).current = node;
+      },
+      [ref, setNodeRef],
+    );
+
+    const prefersReducedMotion = usePrefersReducedMotion();
+
+    const sortableStyle = {
+      transform: CSS.Translate.toString(transform),
+      transition: prefersReducedMotion ? 'none' : (transition ?? undefined),
+    };
 
     const handleClick = useCallback(() => {
       if (!tab.disabled) {
@@ -77,9 +105,12 @@ export const EditorTabItem = memo(
 
     return (
       <div
-        ref={ref}
+        {...attributes}
+        {...listeners}
+        ref={mergedRef}
         role="tab"
         className={cn(styles.Tab, className)}
+        style={sortableStyle}
         aria-selected={isActive}
         aria-disabled={tab.disabled || undefined}
         tabIndex={isActive ? 0 : -1}
@@ -89,6 +120,7 @@ export const EditorTabItem = memo(
         {...(tab.pinned ? { 'data-pinned': '' } : {})}
         {...(tab.disabled ? { 'data-disabled': '' } : {})}
         {...(showTrailing ? { 'data-has-trailing': '' } : {})}
+        {...(isDragging ? { 'data-dragging': '' } : {})}
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         onKeyDown={handleKeyDown}

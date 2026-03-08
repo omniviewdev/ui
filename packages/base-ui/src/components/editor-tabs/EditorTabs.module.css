@@ -386,12 +386,28 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Drag state
+   --------------------------------------------------------------------------- */
+
+/* Tab being dragged — elevated with shadow, hide divider */
+.Tab[data-dragging] {
+  z-index: 1;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  cursor: grabbing;
+}
+
+.Tab[data-dragging]::after {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
    Reduced motion
    --------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   .Tab,
   .Tab::after,
+  .Tab[data-dragging],
   .CloseButton,
   .TabTrailing .DirtyDot,
   .ScrollButton,

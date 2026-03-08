@@ -28,3 +28,9 @@ export type TabSegments = {
   groups: Array<{ group: TabGroupDescriptor; tabs: TabDescriptor[] }>;
   ungrouped: TabDescriptor[];
 };
+
+export type ReorderMeta = {
+  id: TabId;
+  from: number;
+  to: number;
+};

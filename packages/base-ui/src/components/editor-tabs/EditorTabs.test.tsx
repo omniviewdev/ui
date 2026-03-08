@@ -5,6 +5,7 @@ import { EditorTabs } from './EditorTabs';
 import type { TabDescriptor, TabGroupDescriptor } from './types';
 
 const OriginalResizeObserver = globalThis.ResizeObserver;
+const OriginalMatchMedia = window.matchMedia;
 
 beforeAll(() => {
   globalThis.ResizeObserver = class ResizeObserver {
@@ -12,10 +13,25 @@ beforeAll(() => {
     unobserve() {}
     disconnect() {}
   };
+
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
 });
 
 afterAll(() => {
   globalThis.ResizeObserver = OriginalResizeObserver;
+  window.matchMedia = OriginalMatchMedia;
 });
 
 const baseTabs: TabDescriptor[] = [

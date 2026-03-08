@@ -1,0 +1,292 @@
+/* ------------------------------------------------------------------ */
+/* Container – fixed positioning at screen edge                       */
+/* ------------------------------------------------------------------ */
+
+.Container {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Position mapping via data-ov-position */
+.Container[data-ov-position='top-right'] {
+  top: 0;
+  right: 0;
+}
+
+.Container[data-ov-position='top-left'] {
+  top: 0;
+  left: 0;
+}
+
+.Container[data-ov-position='bottom-right'] {
+  bottom: 0;
+  right: 0;
+}
+
+.Container[data-ov-position='bottom-left'] {
+  bottom: 0;
+  left: 0;
+}
+
+.Container[data-ov-position='top-center'] {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.Container[data-ov-position='bottom-center'] {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Individual Toast                                                    */
+/* ------------------------------------------------------------------ */
+
+.Toast {
+  --_ov-border-accent: var(--ov-color-info);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 300px;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: var(--ov-radius-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-left: 3px solid var(--_ov-border-accent);
+  background: var(--ov-color-bg-surface-raised);
+  box-shadow: var(--ov-shadow-raised);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  pointer-events: auto;
+  animation: toastSlideIn var(--ov-duration-enter, 200ms) var(--ov-ease-decelerate, ease-out);
+}
+
+/* Severity accent colours */
+.Toast[data-ov-severity='success'] {
+  --_ov-border-accent: var(--ov-color-success);
+}
+
+.Toast[data-ov-severity='warning'] {
+  --_ov-border-accent: var(--ov-color-warning);
+}
+
+.Toast[data-ov-severity='danger'] {
+  --_ov-border-accent: var(--ov-color-danger);
+}
+
+.Toast[data-ov-severity='info'] {
+  --_ov-border-accent: var(--ov-color-info);
+}
+
+/* ------------------------------------------------------------------ */
+/* Message                                                             */
+/* ------------------------------------------------------------------ */
+
+.Message {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Action button                                                       */
+/* ------------------------------------------------------------------ */
+
+.Action {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--_ov-border-accent);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Action:hover {
+  opacity: 0.8;
+}
+
+.Action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+  border-radius: var(--ov-radius-control);
+}
+
+/* ------------------------------------------------------------------ */
+/* Close button                                                        */
+/* ------------------------------------------------------------------ */
+
+.Close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: var(--ov-radius-control);
+  background: transparent;
+  color: currentcolor;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Close:hover {
+  opacity: 1;
+}
+
+.Close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+/* ------------------------------------------------------------------ */
+/* Enter / Exit animations                                             */
+/* ------------------------------------------------------------------ */
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ToastExiting {
+  animation: toastSlideOut var(--ov-duration-exit, 200ms) var(--ov-ease-accelerate, ease-in)
+    forwards;
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+/* Left-side positions: slide from left */
+.Container[data-ov-position='top-left'] .Toast,
+.Container[data-ov-position='bottom-left'] .Toast {
+  animation-name: toastSlideInLeft;
+}
+
+.Container[data-ov-position='top-left'] .ToastExiting,
+.Container[data-ov-position='bottom-left'] .ToastExiting {
+  animation-name: toastSlideOutLeft;
+}
+
+@keyframes toastSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+/* Center positions: slide from top/bottom */
+.Container[data-ov-position='top-center'] .Toast {
+  animation-name: toastSlideInTop;
+}
+
+.Container[data-ov-position='top-center'] .ToastExiting {
+  animation-name: toastSlideOutTop;
+}
+
+.Container[data-ov-position='bottom-center'] .Toast {
+  animation-name: toastSlideInBottom;
+}
+
+.Container[data-ov-position='bottom-center'] .ToastExiting {
+  animation-name: toastSlideOutBottom;
+}
+
+@keyframes toastSlideInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideOutTop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes toastSlideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideOutBottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                      */
+/* ------------------------------------------------------------------ */
+
+:root[data-ov-motion='reduced'] .Toast,
+:root[data-ov-motion='reduced'] .ToastExiting {
+  animation: none;
+}

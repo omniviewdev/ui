@@ -1,0 +1,141 @@
+/* ─── Root ────────────────────────────────────────────────────────────────── */
+
+.Root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Item ────────────────────────────────────────────────────────────────── */
+
+.Item {
+  border-bottom: 1px solid var(--ov-color-border-muted);
+}
+
+.Item:last-child {
+  border-bottom: none;
+}
+
+.Item[data-ov-disabled='true'] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+
+.Header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.4;
+  cursor: pointer;
+  text-align: start;
+  transition: background-color var(--ov-duration-interactive, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Header:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.Header:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ov-color-state-focus-ring);
+}
+
+.Header:disabled {
+  cursor: default;
+}
+
+/* ─── Header slots ────────────────────────────────────────────────────────── */
+
+.Icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+}
+
+.Icon :where(svg) {
+  width: 16px;
+  height: 16px;
+}
+
+.Title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption, 0.75rem);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.EndDecorator {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+}
+
+/* ─── Chevron ─────────────────────────────────────────────────────────────── */
+
+.Chevron {
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+  transition: transform var(--ov-duration-collapse, 200ms) var(--ov-ease-standard, ease);
+  transform: rotate(0deg);
+}
+
+.Item[data-ov-expanded='true'] .Chevron {
+  transform: rotate(90deg);
+}
+
+/* ─── Content (grid-row animation) ────────────────────────────────────────── */
+
+.ContentWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ov-duration-collapse, 200ms) var(--ov-ease-standard, ease);
+}
+
+.Item[data-ov-expanded='true'] .ContentWrapper {
+  grid-template-rows: 1fr;
+}
+
+.Content {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.Item[data-ov-expanded='true'] .Content {
+  padding: 0 12px 12px;
+}
+
+/* ─── Reduced motion ──────────────────────────────────────────────────────── */
+
+:root[data-ov-motion='reduced'] .Chevron,
+:root[data-ov-motion='reduced'] .ContentWrapper {
+  transition: none;
+}

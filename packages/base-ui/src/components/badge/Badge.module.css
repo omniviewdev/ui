@@ -1,0 +1,99 @@
+.Root {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.Badge {
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-inverse);
+
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-family: var(--ov-font-sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  border: 2px solid var(--ov-color-bg-surface);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+/* ── Color variants ── */
+.Badge[data-ov-color='neutral'] {
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+}
+
+.Badge[data-ov-color='brand'] {
+  --_ov-bg: var(--ov-color-brand-500);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Badge[data-ov-color='success'] {
+  --_ov-bg: var(--ov-color-success);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Badge[data-ov-color='warning'] {
+  --_ov-bg: var(--ov-color-warning);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Badge[data-ov-color='danger'] {
+  --_ov-bg: var(--ov-color-danger);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+/* ── Dot variant ── */
+.Badge[data-ov-variant='dot'] {
+  min-width: 8px;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* ── Position variants ── */
+.Badge[data-ov-position='top-right'] {
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.Badge[data-ov-position='top-left'] {
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.Badge[data-ov-position='bottom-right'] {
+  bottom: 0;
+  right: 0;
+  transform: translate(50%, 50%);
+}
+
+.Badge[data-ov-position='bottom-left'] {
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+}
+
+/* ── Invisible ── */
+.Badge[data-ov-invisible='true'] {
+  opacity: 0;
+  transform: scale(0);
+}

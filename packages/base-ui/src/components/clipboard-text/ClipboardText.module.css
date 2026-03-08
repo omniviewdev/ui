@@ -1,0 +1,65 @@
+.Root {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  font-family: var(--ov-font-sans);
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--ov-color-fg-default);
+}
+
+.Root[data-ov-mono='true'] {
+  font-family: var(--ov-font-mono);
+}
+
+.Root[data-ov-truncate='true'] > .Text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.Text {
+  display: inline-block;
+  min-width: 0;
+}
+
+.CopyButton {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ov-radius-sm, 4px);
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--ov-duration-interactive, 150ms) var(--ov-ease-standard, ease),
+    color var(--ov-duration-interactive, 150ms) var(--ov-ease-standard, ease),
+    background-color var(--ov-duration-interactive, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Root:hover > .CopyButton,
+.Root:focus-within > .CopyButton {
+  opacity: 1;
+}
+
+.CopyButton:hover {
+  color: var(--ov-color-fg-default);
+  background-color: var(--ov-color-state-hover);
+}
+
+.CopyButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ov-color-state-focus-ring);
+  opacity: 1;
+}
+
+.Root[data-ov-copied='true'] > .CopyButton {
+  color: var(--ov-color-success);
+  opacity: 1;
+}

@@ -1,0 +1,93 @@
+@keyframes ov-pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--_ov-dot-color-alpha);
+  }
+  70% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.Root {
+  --_ov-dot-size: 8px;
+  --_ov-dot-color: var(--ov-color-fg-muted);
+  --_ov-dot-color-alpha: color-mix(in srgb, var(--_ov-dot-color) 40%, transparent 60%);
+  --_ov-label-font-size: var(--ov-font-size-sm);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- Size ---- */
+
+.Root[data-ov-size='sm'] {
+  --_ov-dot-size: 6px;
+  --_ov-label-font-size: var(--ov-font-size-xs);
+  gap: 4px;
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-dot-size: 10px;
+  --_ov-label-font-size: var(--ov-font-size-md);
+  gap: 8px;
+}
+
+/* ---- Status colors ---- */
+
+.Root[data-ov-status='success'] {
+  --_ov-dot-color: var(--ov-color-success);
+}
+
+.Root[data-ov-status='warning'] {
+  --_ov-dot-color: var(--ov-color-warning);
+}
+
+.Root[data-ov-status='danger'] {
+  --_ov-dot-color: var(--ov-color-danger);
+}
+
+.Root[data-ov-status='info'] {
+  --_ov-dot-color: var(--ov-color-info);
+}
+
+.Root[data-ov-status='neutral'] {
+  --_ov-dot-color: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-status='pending'] {
+  --_ov-dot-color: var(--ov-color-brand-400);
+}
+
+/* ---- Dot ---- */
+
+.Dot {
+  display: inline-block;
+  width: var(--_ov-dot-size);
+  height: var(--_ov-dot-size);
+  border-radius: 50%;
+  background-color: var(--_ov-dot-color);
+  flex-shrink: 0;
+}
+
+/* ---- Pulse ---- */
+
+.Root[data-ov-pulse='true'] .Dot {
+  animation: ov-pulse 1.5s ease-in-out infinite;
+}
+
+:root[data-ov-motion='reduced'] .Root[data-ov-pulse='true'] .Dot {
+  animation: none;
+}
+
+/* ---- Label ---- */
+
+.Label {
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-label-font-size);
+  line-height: 1;
+  white-space: nowrap;
+}

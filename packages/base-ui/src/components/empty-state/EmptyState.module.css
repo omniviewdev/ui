@@ -1,0 +1,69 @@
+.Root {
+  --_ov-padding: 32px;
+  --_ov-gap: 8px;
+  --_ov-icon-size: 48px;
+  --_ov-title-font-size: var(--ov-font-size-lg);
+  --_ov-description-font-size: var(--ov-font-size-md);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--_ov-gap);
+  padding: var(--_ov-padding);
+  font-family: var(--ov-font-sans);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-padding: 20px;
+  --_ov-gap: 6px;
+  --_ov-icon-size: 32px;
+  --_ov-title-font-size: var(--ov-font-size-md);
+  --_ov-description-font-size: var(--ov-font-size-sm);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-padding: 48px;
+  --_ov-gap: 12px;
+  --_ov-icon-size: 64px;
+  --_ov-title-font-size: var(--ov-font-size-xl);
+  --_ov-description-font-size: var(--ov-font-size-lg);
+}
+
+.Icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_ov-icon-size);
+  height: var(--_ov-icon-size);
+  color: var(--ov-color-fg-muted);
+}
+
+.Icon :where(svg) {
+  width: 100%;
+  height: 100%;
+}
+
+.Title {
+  margin: 0;
+  font-size: var(--_ov-title-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1.35;
+  color: var(--ov-color-fg-default);
+}
+
+.Description {
+  margin: 0;
+  font-size: var(--_ov-description-font-size);
+  line-height: 1.5;
+  color: var(--ov-color-fg-muted);
+  max-width: 36ch;
+}
+
+.Action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}

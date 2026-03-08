@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
-import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from '@dnd-kit/core';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
@@ -136,7 +136,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
   );
 
   const handleDragStart = useCallback(
-    (event: Parameters<NonNullable<React.ComponentProps<typeof DndContext>['onDragStart']>>[0]) => {
+    (event: DragStartEvent) => {
       // Snapshot CSS vars from the root element for the DragOverlay
       if (rootElRef.current) {
         const computed = getComputedStyle(rootElRef.current);
@@ -153,7 +153,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
   );
 
   const handleDragEnd = useCallback(
-    (event: Parameters<NonNullable<React.ComponentProps<typeof DndContext>['onDragEnd']>>[0]) => {
+    (event: DragEndEvent) => {
       if (detach.dragModeRef.current === 'detach-armed') {
         detach.handleDetachDragEnd(event);
         reorder.handleDragCancel();

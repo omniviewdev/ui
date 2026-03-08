@@ -7,9 +7,6 @@
 .Root[data-ov-direction='row'] {
   flex-direction: row;
 }
-.Root[data-ov-direction='column'] {
-  flex-direction: column;
-}
 .Root[data-ov-direction='row-reverse'] {
   flex-direction: row-reverse;
 }

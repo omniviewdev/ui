@@ -48,6 +48,14 @@ describe('Image', () => {
     expect(screen.getByTestId('wrapper')).toHaveAttribute('data-ov-status', 'error');
   });
 
+  it('transitions to loaded on successful load', () => {
+    renderWithTheme(<Image data-testid="wrapper" src="https://example.com/photo.jpg" alt="test" />);
+    const wrapper = screen.getByTestId('wrapper');
+    expect(wrapper).toHaveAttribute('data-ov-status', 'loading');
+    fireEvent.load(screen.getByRole('img'));
+    expect(wrapper).toHaveAttribute('data-ov-status', 'loaded');
+  });
+
   it('merges className on wrapper', () => {
     renderWithTheme(
       <Image

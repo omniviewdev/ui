@@ -1,12 +1,13 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
+import type { Spacing } from '../../system/types';
 import styles from './ImageList.module.css';
 
 export type ImageListVariant = 'standard' | 'masonry' | 'quilted';
 
 export interface ImageListProps extends HTMLAttributes<HTMLDivElement> {
   cols?: number;
-  gap?: 0 | 1 | 2 | 3 | 4;
+  gap?: Spacing;
   variant?: ImageListVariant;
 }
 
@@ -43,8 +44,8 @@ const ImageListItem = forwardRef<HTMLDivElement, ImageListItemProps>(function Im
     <div
       ref={ref}
       className={cn(styles.Item, className)}
-      {...(colSpan !== undefined ? { 'data-ov-col-span': colSpan } : undefined)}
-      {...(rowSpan !== undefined ? { 'data-ov-row-span': rowSpan } : undefined)}
+      {...(colSpan != null ? { 'data-ov-col-span': colSpan } : undefined)}
+      {...(rowSpan != null ? { 'data-ov-row-span': rowSpan } : undefined)}
       {...props}
     >
       {children}

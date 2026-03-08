@@ -1,4 +1,4 @@
-import { forwardRef, useState, useCallback, type ImgHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useState, useEffect, useCallback, type ImgHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import styles from './Image.module.css';
 
@@ -9,6 +9,27 @@ export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'p
   fallback?: ReactNode;
   objectFit?: ImageObjectFit;
   borderRadius?: ImageBorderRadius;
+}
+
+/** Attributes that belong on the <img> element, not the wrapper <div>. */
+const IMG_ATTRS = new Set([
+  'crossOrigin', 'decoding', 'fetchPriority', 'referrerPolicy',
+  'sizes', 'srcSet', 'useMap',
+]);
+
+function splitProps(
+  props: Record<string, unknown>,
+): [Record<string, unknown>, Record<string, unknown>] {
+  const imgProps: Record<string, unknown> = {};
+  const wrapperProps: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (IMG_ATTRS.has(key)) {
+      imgProps[key] = value;
+    } else {
+      wrapperProps[key] = value;
+    }
+  }
+  return [wrapperProps, imgProps];
 }
 
 const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
@@ -25,11 +46,16 @@ const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
     onLoad,
     onError,
     style,
-    ...props
+    ...rest
   },
   ref,
 ) {
+  const [wrapperProps, imgProps] = splitProps(rest);
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>(src ? 'loading' : 'error');
+
+  useEffect(() => {
+    setStatus(src ? 'loading' : 'error');
+  }, [src]);
 
   const handleLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -54,7 +80,7 @@ const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
       data-ov-object-fit={objectFit}
       data-ov-radius={borderRadius}
       style={{ width, height, ...style }}
-      {...props}
+      {...wrapperProps}
     >
       {status !== 'error' ? (
         <img
@@ -67,6 +93,7 @@ const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
           height={height}
           onLoad={handleLoad}
           onError={handleError}
+          {...imgProps}
         />
       ) : fallback ? (
         <div className={styles.Fallback}>{fallback}</div>

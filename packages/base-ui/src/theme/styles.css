@@ -654,6 +654,7 @@
   --ov-size-sheet-padding-md: 12px;
   --ov-size-sheet-padding-lg: 18px;
   --ov-size-container-gutter: var(--ov-primitive-space-3);
+  --ov-size-image-list-gap: var(--ov-primitive-space-1);
   --ov-size-banner-padding-inline-sm: 8px;
   --ov-size-banner-padding-inline-md: 10px;
   --ov-size-banner-padding-inline-lg: 14px;
@@ -821,6 +822,7 @@
   --ov-size-sheet-padding-md: 16px;
   --ov-size-sheet-padding-lg: 24px;
   --ov-size-container-gutter: var(--ov-primitive-space-4);
+  --ov-size-image-list-gap: var(--ov-primitive-space-3);
   --ov-size-banner-padding-inline-sm: 10px;
   --ov-size-banner-padding-inline-md: 14px;
   --ov-size-banner-padding-inline-lg: 18px;

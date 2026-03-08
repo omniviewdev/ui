@@ -44,8 +44,8 @@ These are the only components currently in scope and exported:
 - `Separator`
 - `Sheet`
 - `Slider`
-- `Stack`
 - `Spinner`
+- `Stack`
 - `Switch`
 - `Tabs`
 - `TextField`

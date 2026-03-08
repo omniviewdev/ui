@@ -33,8 +33,10 @@ const StackRoot = forwardRef<HTMLElement, StackProps>(function Stack(
 ) {
   const isHorizontal = direction === 'row' || direction === 'row-reverse';
 
+  const isList = Element === 'ul' || Element === 'ol';
+
   let content: ReactNode = children;
-  if (divider) {
+  if (divider && !isList) {
     const items = Children.toArray(children);
     const interleaved: ReactNode[] = [];
     items.forEach((child, index) => {
@@ -58,10 +60,10 @@ const StackRoot = forwardRef<HTMLElement, StackProps>(function Stack(
       className={cn(styles.Root, className)}
       data-ov-direction={direction}
       data-ov-spacing={String(spacing)}
-      {...(align ? { 'data-ov-align': align } : undefined)}
-      {...(justify ? { 'data-ov-justify': justify } : undefined)}
-      {...(wrap ? { 'data-ov-wrap': 'true' } : undefined)}
-      {...(divider ? { 'data-ov-divider': 'true' } : undefined)}
+      data-ov-align={align || undefined}
+      data-ov-justify={justify || undefined}
+      data-ov-wrap={wrap ? 'true' : undefined}
+      data-ov-divider={divider ? 'true' : undefined}
       {...props}
     >
       {content}

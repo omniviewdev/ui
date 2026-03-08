@@ -1,4 +1,5 @@
 .Root {
+  box-sizing: border-box;
   width: 100%;
   margin-inline: auto;
   padding-inline: var(--ov-size-container-gutter);

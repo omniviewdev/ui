@@ -1,8 +1,9 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
+import type { Spacing } from '../../system/types';
 import styles from './Grid.module.css';
 
-export type GridSpacing = 0 | 1 | 2 | 3 | 4;
+export type GridSpacing = Spacing;
 
 /** Breakpoints matching common responsive design thresholds. */
 export type GridBreakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -10,13 +11,23 @@ export type GridBreakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 /** A span value can be a plain number or a per-breakpoint responsive object. */
 export type ResponsiveSpan = number | Partial<Record<GridBreakpoint, number>>;
 
-export interface GridProps extends HTMLAttributes<HTMLDivElement> {
-  columns?: number;
-  minChildWidth?: string;
+interface GridBaseProps extends HTMLAttributes<HTMLDivElement> {
   spacing?: GridSpacing;
   rowSpacing?: GridSpacing;
   columnSpacing?: GridSpacing;
 }
+
+interface GridPropsWithColumns extends GridBaseProps {
+  columns?: number;
+  minChildWidth?: never;
+}
+
+interface GridPropsWithMinChildWidth extends GridBaseProps {
+  columns?: never;
+  minChildWidth?: string;
+}
+
+export type GridProps = GridPropsWithColumns | GridPropsWithMinChildWidth;
 
 export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
   /** Column span — number for all sizes, or { xs: 12, md: 6 } for responsive. */

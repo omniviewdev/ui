@@ -106,14 +106,14 @@ describe('Breadcrumbs', () => {
     renderWithTheme(
       <Breadcrumbs>
         <Breadcrumbs.Item href="/home">Home</Breadcrumbs.Item>
-        <Breadcrumbs.Item active href="/current">Current</Breadcrumbs.Item>
+        <Breadcrumbs.Item active>Current</Breadcrumbs.Item>
       </Breadcrumbs>,
     );
 
     const link = screen.getByRole('link', { name: 'Home' });
     expect(link).toHaveAttribute('href', '/home');
 
-    // Active item should not be a link even when href is provided
+    // Active item renders as text, not a link
     expect(screen.queryByRole('link', { name: 'Current' })).not.toBeInTheDocument();
   });
 

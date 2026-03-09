@@ -33,7 +33,7 @@ type BreadcrumbItemBaseProps = {
 
 export type BreadcrumbItemProps =
   | (BreadcrumbItemBaseProps & Omit<HTMLAttributes<HTMLElement>, 'color'> & { href?: never })
-  | (BreadcrumbItemBaseProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> & { href: string });
+  | (BreadcrumbItemBaseProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> & { href: string; active?: false });
 
 /* ----- BreadcrumbsItem ----- */
 
@@ -93,7 +93,7 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
   // Reset expansion when the trail changes
   useEffect(() => {
     setExpanded(false);
-  }, [totalItems, maxItems]);
+  }, [totalItems, maxItems, itemsBeforeCollapse, itemsAfterCollapse]);
 
   const shouldCollapse = !expanded && totalItems > maxItems;
 

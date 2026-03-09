@@ -30,6 +30,8 @@ export interface SplitButtonActionProps
 
 export interface SplitButtonMenuProps {
   children: ReactNode;
+  /** Accessible label for the menu trigger button. @default 'More actions' */
+  menuAriaLabel?: string;
 }
 
 /* --------------------------------- Context -------------------------------- */
@@ -89,7 +91,7 @@ const SplitButtonAction = forwardRef<HTMLButtonElement, SplitButtonActionProps>(
 /* ---------------------------------- Menu ---------------------------------- */
 
 const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(function SplitButtonMenu(
-  { children },
+  { children, menuAriaLabel = 'More actions' },
   ref,
 ) {
   const ctx = useContext(SplitButtonContext);
@@ -101,7 +103,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
         <Menu.Trigger
           className={styles.MenuTrigger}
           disabled={isDisabled}
-          aria-label="More actions"
+          aria-label={menuAriaLabel}
           {...styleDataAttributes({
             variant: ctx?.variant,
             color: ctx?.color,

@@ -125,10 +125,11 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
 
   const handlePaste = useCallback(
     (event: ClipboardEvent<HTMLInputElement>) => {
-      event.preventDefault();
       const pasted = event.clipboardData.getData('text/plain');
       const parts = splitByDelimiter(pasted);
-      addTags(parts);
+      if (addTags(parts) > 0) {
+        event.preventDefault();
+      }
     },
     [addTags, splitByDelimiter],
   );
@@ -137,14 +138,31 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
     setInputValue(event.target.value);
   }, []);
 
-  const handleContainerClick = useCallback(() => {
-    if (!disabled) {
-      inputRef.current?.focus();
-    }
-  }, [disabled]);
+  const handleContainerClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!disabled) {
+        inputRef.current?.focus();
+      }
+      props.onClick?.(event);
+    },
+    [disabled, props.onClick],
+  );
 
-  const handleFocus = useCallback(() => setFocused(true), []);
-  const handleBlur = useCallback(() => setFocused(false), []);
+  const handleFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setFocused(true);
+      inputPropsProp?.onFocus?.(event);
+    },
+    [inputPropsProp?.onFocus],
+  );
+
+  const handleBlur = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setFocused(false);
+      inputPropsProp?.onBlur?.(event);
+    },
+    [inputPropsProp?.onBlur],
+  );
 
   const showPlaceholder = value.length === 0 && inputValue === '';
 
@@ -187,7 +205,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
       <input
         {...inputPropsProp}
         ref={inputRef}
-        className={styles.Input}
+        className={cn(styles.Input, inputPropsProp?.className)}
         type="text"
         value={inputValue}
         onChange={handleChange}

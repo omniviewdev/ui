@@ -15,7 +15,14 @@ describe('Toolbar', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
-  it('applies role="toolbar"', () => {
+  it('does not default to role="toolbar"', () => {
+    const { container } = renderWithTheme(<Toolbar>content</Toolbar>);
+
+    expect(screen.queryByRole('toolbar')).not.toBeInTheDocument();
+    expect(container.firstElementChild).not.toHaveAttribute('role');
+  });
+
+  it('applies role="toolbar" when explicitly set', () => {
     renderWithTheme(<Toolbar role="toolbar" aria-label="Actions">content</Toolbar>);
 
     expect(screen.getByRole('toolbar')).toBeInTheDocument();
@@ -104,6 +111,7 @@ describe('Toolbar', () => {
 
       const group = screen.getByTestId('no-sep');
       expect(group).not.toHaveAttribute('data-ov-separator');
+      expect(group.querySelector('[role="separator"]')).not.toBeInTheDocument();
     });
 
     it('forwards ref on Group', () => {

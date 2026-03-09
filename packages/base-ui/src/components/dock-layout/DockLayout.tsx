@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
+import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './DockLayout.module.css';
 
@@ -281,7 +282,7 @@ function DockTabBar({ tabs, activeTab, leafId, onTabClick, onTabClose }: DockTab
                   onTabClose(tab.id);
                 }}
               >
-                ×
+                <LuX />
               </button>
             )}
           </div>

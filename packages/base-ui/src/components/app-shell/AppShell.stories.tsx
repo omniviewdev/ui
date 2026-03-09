@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { LuPanelLeftClose, LuPanelLeftOpen } from 'react-icons/lu';
 import { AppShell, type AppShellProps } from './AppShell';
+import { Button } from '../button';
 
 const meta = {
   title: 'Layout/AppShell',
@@ -69,21 +71,14 @@ function CollapsibleSidebarDemo() {
       <AppShell sidebarCollapsed={collapsed}>
         <AppShell.Header>
           <div style={{ padding: '0 12px' }}>
-            <button
-              type="button"
+            <Button
+              size="sm"
+              variant="outline"
+              startDecorator={collapsed ? <LuPanelLeftOpen /> : <LuPanelLeftClose />}
               onClick={() => setCollapsed((c) => !c)}
-              style={{
-                padding: '4px 8px',
-                fontSize: 12,
-                cursor: 'pointer',
-                background: 'var(--ov-color-bg-surface-raised)',
-                border: '1px solid var(--ov-color-border-default)',
-                borderRadius: 'var(--ov-radius-sm, 4px)',
-                color: 'var(--ov-color-fg-default)',
-              }}
             >
               {collapsed ? 'Expand' : 'Collapse'} Sidebar
-            </button>
+            </Button>
           </div>
         </AppShell.Header>
         <AppShell.Sidebar>

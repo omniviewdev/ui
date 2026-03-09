@@ -1,5 +1,7 @@
 import {
+  createContext,
   forwardRef,
+  useContext,
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
@@ -37,6 +39,8 @@ export interface AppShellFooterProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
+const AppShellContext = createContext({ sidebarCollapsed: false });
+
 const Header = forwardRef<HTMLElement, AppShellHeaderProps>(
   function Header({ className, ...props }, ref) {
     return <header ref={ref} className={cn(styles.Header, className)} {...props} />;
@@ -46,7 +50,17 @@ Header.displayName = 'AppShell.Header';
 
 const Sidebar = forwardRef<HTMLElement, AppShellSidebarProps>(
   function Sidebar({ className, ...props }, ref) {
-    return <aside ref={ref} className={cn(styles.Sidebar, className)} {...props} />;
+    const { sidebarCollapsed } = useContext(AppShellContext);
+    return (
+      <aside
+        ref={ref}
+        className={cn(styles.Sidebar, className)}
+        aria-hidden={sidebarCollapsed || undefined}
+        // @ts-expect-error -- inert is a valid HTML attribute, React types lag behind
+        inert={sidebarCollapsed ? '' : undefined}
+        {...props}
+      />
+    );
   },
 );
 Sidebar.displayName = 'AppShell.Sidebar';
@@ -79,7 +93,7 @@ const CSS_SIZE_RE = /^(\d+\.?\d*)(px|rem|em|%|vh|vw|dvh|dvw|ch|ex|svh|svw|lvh|lv
  */
 function formatSize(value: number | string | undefined, fallback: string): string {
   if (value == null) return fallback;
-  if (typeof value === 'number') return `${value}px`;
+  if (typeof value === 'number') return Number.isFinite(value) && value >= 0 ? `${value}px` : fallback;
   return CSS_SIZE_RE.test(value) ? value : fallback;
 }
 
@@ -106,16 +120,18 @@ const AppShellRoot = forwardRef<HTMLDivElement, AppShellProps>(
     } as CSSProperties;
 
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        style={mergedStyle}
-        data-ov-sidebar-position={sidebarPosition}
-        data-ov-sidebar-collapsed={sidebarCollapsed || undefined}
-        {...props}
-      >
-        {children}
-      </div>
+      <AppShellContext.Provider value={{ sidebarCollapsed }}>
+        <div
+          ref={ref}
+          className={cn(styles.Root, className)}
+          style={mergedStyle}
+          data-ov-sidebar-position={sidebarPosition}
+          data-ov-sidebar-collapsed={sidebarCollapsed || undefined}
+          {...props}
+        >
+          {children}
+        </div>
+      </AppShellContext.Provider>
     );
   },
 );

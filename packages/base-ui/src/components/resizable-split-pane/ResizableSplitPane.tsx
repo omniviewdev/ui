@@ -130,12 +130,15 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
     }, [clamp]);
 
     // Direct DOM update for 60fps drag — bypasses React reconciliation
+    const handleRef = useRef<HTMLDivElement>(null);
     const applySize = useCallback(
       (newSize: number) => {
         const el = rootRef.current;
         if (el) {
           el.style.setProperty('--_ov-split-size', `${newSize}px`);
         }
+        // Keep aria-valuenow in sync during drag without a React re-render
+        handleRef.current?.setAttribute('aria-valuenow', String(newSize));
         sizeRef.current = newSize;
         onResizeRef.current?.(newSize);
       },
@@ -248,6 +251,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       >
         <Pane>{children[0]}</Pane>
         <Handle
+          ref={handleRef}
           direction={direction}
           aria-label={handleLabel}
           aria-valuenow={size}

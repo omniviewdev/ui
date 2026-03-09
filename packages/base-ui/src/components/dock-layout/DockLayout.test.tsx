@@ -122,11 +122,14 @@ describe('DockLayout', () => {
   it('fires onLayoutChange on tab click', () => {
     const onChange = vi.fn();
     renderWithTheme(
-      <DockLayout layout={horizontalSplit} onLayoutChange={onChange} />,
+      <DockLayout layout={singleLeaf} onLayoutChange={onChange} />,
     );
 
-    fireEvent.click(screen.getByRole('tab', { name: 'Editor' }));
-    expect(onChange).toHaveBeenCalled();
+    // Click an inactive tab to trigger a real state transition
+    fireEvent.click(screen.getByRole('tab', { name: 'File 2' }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    const newLayout = onChange.mock.calls[0]![0] as DockLeaf;
+    expect(newLayout.activeTab).toBe('tab-2');
   });
 
   it('works as uncontrolled component without onLayoutChange', () => {

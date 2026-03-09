@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -22,6 +23,8 @@ export interface ResizableSplitPaneProps extends HTMLAttributes<HTMLDivElement> 
   minSize?: number;
   /** Maximum size of the first pane in pixels. */
   maxSize?: number;
+  /** Accessible label for the resize handle (role="separator"). */
+  handleLabel?: string;
   /** Callback fired during resize with the current first-pane size in px. */
   onResize?: (size: number) => void;
   /** The two pane contents. */
@@ -78,6 +81,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       defaultSize = 200,
       minSize = 100,
       maxSize,
+      handleLabel,
       onResize,
       children,
       ...props
@@ -110,6 +114,20 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       },
       [minSize, maxSize],
     );
+
+    // Re-clamp when bounds change after mount
+    useEffect(() => {
+      const clamped = clamp(sizeRef.current);
+      if (clamped !== sizeRef.current) {
+        sizeRef.current = clamped;
+        setSize(clamped);
+        const el = rootRef.current;
+        if (el) {
+          el.style.setProperty('--_ov-split-size', `${clamped}px`);
+        }
+        onResizeRef.current?.(clamped);
+      }
+    }, [clamp]);
 
     // Direct DOM update for 60fps drag — bypasses React reconciliation
     const applySize = useCallback(
@@ -168,27 +186,35 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       (e: KeyboardEvent) => {
         const isHorizontal = direction === 'horizontal';
         let delta = 0;
+        let handled = false;
+
         if (
           (isHorizontal && e.key === 'ArrowRight') ||
           (!isHorizontal && e.key === 'ArrowDown')
         ) {
           delta = KEYBOARD_STEP;
+          handled = true;
         } else if (
           (isHorizontal && e.key === 'ArrowLeft') ||
           (!isHorizontal && e.key === 'ArrowUp')
         ) {
           delta = -KEYBOARD_STEP;
+          handled = true;
         } else if (e.key === 'Home') {
           delta = -(size - minSize);
+          handled = true;
         } else if (e.key === 'End' && maxSize != null) {
           delta = maxSize - size;
+          handled = true;
         }
 
-        if (delta !== 0) {
+        if (handled) {
           e.preventDefault();
-          const newSize = clamp(size + delta);
-          setSize(newSize);
-          applySize(newSize);
+          if (delta !== 0) {
+            const newSize = clamp(size + delta);
+            setSize(newSize);
+            applySize(newSize);
+          }
         }
       },
       [direction, size, minSize, maxSize, clamp, applySize],
@@ -223,6 +249,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
         <Pane>{children[0]}</Pane>
         <Handle
           direction={direction}
+          aria-label={handleLabel}
           aria-valuenow={size}
           aria-valuemin={minSize}
           aria-valuemax={maxSize}
@@ -241,12 +268,4 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
 
 ResizableSplitPaneRoot.displayName = 'ResizableSplitPane';
 
-type ResizableSplitPaneCompound = typeof ResizableSplitPaneRoot & {
-  Pane: typeof Pane;
-  Handle: typeof Handle;
-};
-
-export const ResizableSplitPane = Object.assign(ResizableSplitPaneRoot, {
-  Pane,
-  Handle,
-}) as ResizableSplitPaneCompound;
+export const ResizableSplitPane = ResizableSplitPaneRoot;

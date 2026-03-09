@@ -65,9 +65,22 @@ const Footer = forwardRef<HTMLElement, AppShellFooterProps>(
 );
 Footer.displayName = 'AppShell.Footer';
 
+const CSS_SIZE_RE = /^(\d+\.?\d*)(px|rem|em|%|vh|vw|dvh|dvw|ch|ex|svh|svw|lvh|lvw)$|^(auto|max-content|min-content|fit-content)$/;
+
+/**
+ * Convert a size prop to a CSS value string.
+ *
+ * - Numbers are treated as px (e.g. `240` → `"240px"`).
+ * - Strings that match a recognised CSS unit (`px`, `rem`, `em`, `%`,
+ *   `vh`, `vw`, `dvh`, `dvw`, `ch`, `ex`, `svh`, `svw`, `lvh`, `lvw`)
+ *   or keyword (`auto`, `max-content`, `min-content`, `fit-content`)
+ *   are passed through unchanged.
+ * - Invalid strings fall back to the provided `fallback` value.
+ */
 function formatSize(value: number | string | undefined, fallback: string): string {
   if (value == null) return fallback;
-  return typeof value === 'number' ? `${value}px` : value;
+  if (typeof value === 'number') return `${value}px`;
+  return CSS_SIZE_RE.test(value) ? value : fallback;
 }
 
 const AppShellRoot = forwardRef<HTMLDivElement, AppShellProps>(

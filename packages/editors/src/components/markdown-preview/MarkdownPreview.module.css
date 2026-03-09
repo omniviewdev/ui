@@ -40,44 +40,6 @@
   margin-bottom: var(--ov-space-3, 12px);
 }
 
-.Root a {
-  color: var(--ov-color-markdown-link, var(--ov-color-fg-accent));
-  text-decoration: none;
-}
-
-.Root a:hover {
-  text-decoration: underline;
-}
-
-.Root code {
-  background: var(--ov-color-markdown-code-bg, var(--ov-color-bg-subtle));
-  border-radius: var(--ov-radius-xs, 3px);
-  padding: 0.15em 0.4em;
-  font-family: var(--ov-font-family-mono, monospace);
-  font-size: 0.9em;
-}
-
-.Root pre {
-  background: var(--ov-color-markdown-code-bg, var(--ov-color-bg-subtle));
-  border-radius: var(--ov-radius-sm, 4px);
-  padding: var(--ov-space-3, 12px);
-  overflow-x: auto;
-  margin-bottom: var(--ov-space-3, 12px);
-}
-
-.Root pre code {
-  background: none;
-  padding: 0;
-  border-radius: 0;
-}
-
-.Root blockquote {
-  margin: 0 0 var(--ov-space-3, 12px) 0;
-  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
-  border-left: 3px solid var(--ov-color-markdown-quote-border, var(--ov-color-border-default));
-  color: var(--ov-color-fg-muted);
-}
-
 .Root ul,
 .Root ol {
   margin-top: 0;
@@ -89,28 +51,31 @@
   margin-bottom: var(--ov-space-1, 4px);
 }
 
-.Root table {
-  border-collapse: collapse;
-  width: 100%;
+.Root figure {
+  margin: 0 0 var(--ov-space-3, 12px) 0;
+}
+
+/* Strip bottom margin from last paragraph inside blockquotes */
+.Root blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Blockquote spacing between siblings */
+.Root blockquote {
   margin-bottom: var(--ov-space-3, 12px);
 }
 
-.Root th,
-.Root td {
-  border: 1px solid var(--ov-color-border-default);
-  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
-  text-align: left;
+/* Task list checkboxes — keep inline with text */
+.Root :global(.ov-md-checkbox) {
+  display: inline-grid;
+  width: auto;
+  vertical-align: middle;
+  margin-right: var(--ov-space-1, 4px);
 }
 
-.Root th {
-  background: var(--ov-color-bg-subtle);
-  font-weight: var(--ov-font-weight-semibold, 500);
-}
-
-.Root hr {
-  border: none;
-  border-top: 1px solid var(--ov-color-border-default);
-  margin: var(--ov-space-4, 16px) 0;
+/* Task list items should not show bullet */
+.Root li:has(> :global(.ov-md-checkbox)) {
+  list-style: none;
 }
 
 .Root img {
@@ -119,8 +84,9 @@
   border-radius: var(--ov-radius-sm, 4px);
 }
 
-.Root input[type='checkbox'] {
-  margin-right: var(--ov-space-1, 4px);
+/* Accordion spacing for details/summary blocks */
+.Root [data-ov-component='accordion'] {
+  margin-bottom: var(--ov-space-3, 12px);
 }
 
 .Loading {

@@ -137,6 +137,51 @@ export const DecoratedClickable: Story = {
   ),
 };
 
+export const GroupSpacingAndWrap: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: '16px', maxWidth: '280px' }}>
+      <div>
+        <p style={{ margin: '0 0 4px', fontSize: '11px', opacity: 0.6 }}>spacing=0</p>
+        <Chip.Group variant="outline" color="neutral" mono spacing={0}>
+          <Chip.Item>alpha</Chip.Item>
+          <Chip.Item>bravo</Chip.Item>
+          <Chip.Item>charlie</Chip.Item>
+        </Chip.Group>
+      </div>
+      <div>
+        <p style={{ margin: '0 0 4px', fontSize: '11px', opacity: 0.6 }}>spacing=2</p>
+        <Chip.Group variant="outline" color="neutral" mono spacing={2}>
+          <Chip.Item>alpha</Chip.Item>
+          <Chip.Item>bravo</Chip.Item>
+          <Chip.Item>charlie</Chip.Item>
+        </Chip.Group>
+      </div>
+      <div>
+        <p style={{ margin: '0 0 4px', fontSize: '11px', opacity: 0.6 }}>spacing=4</p>
+        <Chip.Group variant="outline" color="neutral" mono spacing={4}>
+          <Chip.Item>alpha</Chip.Item>
+          <Chip.Item>bravo</Chip.Item>
+          <Chip.Item>charlie</Chip.Item>
+        </Chip.Group>
+      </div>
+      <div>
+        <p style={{ margin: '0 0 4px', fontSize: '11px', opacity: 0.6 }}>
+          wrap=false (overflow hidden)
+        </p>
+        <div style={{ maxWidth: '180px', overflow: 'hidden' }}>
+          <Chip.Group variant="soft" color="brand" wrap={false}>
+            <Chip.Item>one</Chip.Item>
+            <Chip.Item>two</Chip.Item>
+            <Chip.Item>three</Chip.Item>
+            <Chip.Item>four</Chip.Item>
+            <Chip.Item>five</Chip.Item>
+          </Chip.Group>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'grid', gap: '10px' }}>

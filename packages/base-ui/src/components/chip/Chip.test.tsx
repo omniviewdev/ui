@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { Chip } from './Chip';
@@ -57,5 +58,61 @@ describe('Chip', () => {
     expect(chip).toHaveAttribute('data-ov-size', 'lg');
     expect(chip).toHaveAttribute('data-ov-mono', 'true');
     expect(chip).toHaveAttribute('data-ov-clickable', 'true');
+  });
+
+  describe('Chip.Group', () => {
+    it('renders children in a wrapping row by default', () => {
+      renderWithTheme(
+        <Chip.Group data-testid="group">
+          <Chip.Item>A</Chip.Item>
+          <Chip.Item>B</Chip.Item>
+        </Chip.Group>,
+      );
+
+      const group = screen.getByTestId('group');
+      expect(group).toHaveAttribute('data-ov-wrap', 'true');
+      expect(group).toHaveAttribute('data-ov-spacing', '1');
+    });
+
+    it('applies custom spacing', () => {
+      renderWithTheme(
+        <Chip.Group data-testid="group" spacing={3}>
+          <Chip.Item>A</Chip.Item>
+        </Chip.Group>,
+      );
+
+      expect(screen.getByTestId('group')).toHaveAttribute('data-ov-spacing', '3');
+    });
+
+    it('disables wrapping when wrap is false', () => {
+      renderWithTheme(
+        <Chip.Group data-testid="group" wrap={false}>
+          <Chip.Item>A</Chip.Item>
+        </Chip.Group>,
+      );
+
+      expect(screen.getByTestId('group')).toHaveAttribute('data-ov-wrap', 'false');
+    });
+
+    it('merges className', () => {
+      renderWithTheme(
+        <Chip.Group data-testid="group" className="custom">
+          <Chip.Item>A</Chip.Item>
+        </Chip.Group>,
+      );
+
+      expect(screen.getByTestId('group').className).toContain('custom');
+    });
+
+    it('forwards ref', () => {
+      const ref = { current: null } as unknown as React.RefObject<HTMLDivElement>;
+      renderWithTheme(
+        <Chip.Group ref={ref}>
+          <Chip.Item>A</Chip.Item>
+        </Chip.Group>,
+      );
+
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+    });
   });
 });

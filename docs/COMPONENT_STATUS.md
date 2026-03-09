@@ -1,6 +1,6 @@
 # Component Status
 
-This document reflects the current implementation state in `packages/base-ui/src/components`.
+This document reflects the current implementation state in `packages/base-ui/src/components`, `packages/base-ui/src/hooks`, and `packages/base-ui/src/system`.
 
 ## Approved component set
 
@@ -74,6 +74,12 @@ These are the only components currently in scope and exported:
 - `ToggleButton`
 - `ToggleButtonGroup`
 - `Toolbar`
+
+## Approved hooks and utilities
+
+- `statusToColor` — Maps semantic status strings to component colors (`system/status.ts`)
+- `useDebouncedCallback` — Debounced callback hook with cancel/flush (`hooks/useDebouncedCallback.ts`)
+- `useDebouncedValue` — Debounced value hook (`hooks/useDebouncedValue.ts`)
 
 Each approved component must include:
 

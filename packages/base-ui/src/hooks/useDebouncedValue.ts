@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 /**
  * Returns a debounced version of the value that only updates after `delay` ms
@@ -8,7 +8,7 @@ export function useDebouncedValue<T>(value: T, delay = 300): T {
   const [debounced, setDebounced] = useState(value);
   const isFirstRender = useRef(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;

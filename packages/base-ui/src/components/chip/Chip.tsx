@@ -126,10 +126,10 @@ const ChipGroup = forwardRef<HTMLDivElement, ChipGroupProps>(function ChipGroup(
     <ChipContext.Provider value={{ variant, color, size, mono, clickable }}>
       <div
         ref={ref}
+        {...props}
         className={cn(styles.Group, className)}
         data-ov-spacing={String(spacing)}
         data-ov-wrap={wrap ? 'true' : 'false'}
-        {...props}
       />
     </ChipContext.Provider>
   );

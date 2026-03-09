@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 interface DebouncedFunction<TArgs extends unknown[], TReturn> {
   (...args: TArgs): void;
@@ -43,8 +43,8 @@ export function useDebouncedCallback<TArgs extends unknown[], TReturn>(
   // Clean up on unmount
   useEffect(() => cancel, [cancel]);
 
-  // Cancel pending timers when delay changes
-  useEffect(() => cancel, [delay, cancel]);
+  // Cancel pending timers synchronously when delay changes
+  useLayoutEffect(() => cancel, [delay, cancel]);
 
   const debounced = useCallback(
     (...args: TArgs) => {

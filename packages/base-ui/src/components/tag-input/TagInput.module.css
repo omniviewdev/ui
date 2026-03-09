@@ -1,0 +1,90 @@
+.Root {
+  --_ov-min-height: var(--ov-size-button-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-gap: var(--ov-space-stack-xs, var(--ov-primitive-space-1));
+  --_ov-padding: var(--ov-space-stack-sm);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-min-height);
+  padding: var(--_ov-padding);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  cursor: text;
+  box-sizing: border-box;
+  transition:
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-min-height: var(--ov-size-button-height-sm);
+  --_ov-font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-min-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-font-size-subheading);
+}
+
+.Root[data-ov-focused='true'] {
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Root[data-ov-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.TagRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  font-size: inherit;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.TagRemove:hover {
+  color: var(--ov-color-danger);
+}
+
+.TagRemove:disabled {
+  cursor: not-allowed;
+}
+
+.TagRemove:disabled:hover {
+  color: var(--ov-color-fg-muted);
+}
+
+.Input {
+  flex: 1;
+  min-width: 60px;
+  border: none;
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font: inherit;
+  font-size: var(--_ov-font-size);
+  line-height: 1.4;
+  outline: none;
+  padding: 0;
+}
+
+.Input::placeholder {
+  color: var(--ov-color-fg-muted);
+}
+
+.Input:disabled {
+  cursor: not-allowed;
+}

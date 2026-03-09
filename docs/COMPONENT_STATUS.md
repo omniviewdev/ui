@@ -16,6 +16,7 @@ These are the only components currently in scope and exported:
 - `Badge`
 - `Banner`
 - `Box`
+- `Breadcrumbs`
 - `Button`
 - `ButtonGroup`
 - `Card`
@@ -25,12 +26,15 @@ These are the only components currently in scope and exported:
 - `ClipboardText`
 - `CodeBlock`
 - `Combobox`
+- `ConfirmButton`
 - `Container`
 - `ContextMenu`
 - `DescriptionList`
 - `Dialog`
 - `Drawer`
 - `EmptyState`
+- `FormField`
+- `FormSection`
 - `Grid`
 - `IconButton`
 - `Image`
@@ -39,6 +43,7 @@ These are the only components currently in scope and exported:
 - `Menu`
 - `MultiSelect`
 - `NumberInput`
+- `Pagination`
 - `Paper`
 - `Popover`
 - `Progress`
@@ -52,16 +57,20 @@ These are the only components currently in scope and exported:
 - `Skeleton`
 - `Slider`
 - `Spinner`
+- `SplitButton`
 - `Stack`
 - `StatusDot`
+- `Stepper`
 - `Switch`
 - `Tabs`
+- `TagInput`
 - `TextField`
 - `TextArea`
 - `Toast`
 - `Tooltip`
 - `ToggleButton`
 - `ToggleButtonGroup`
+- `Toolbar`
 
 Each approved component must include:
 

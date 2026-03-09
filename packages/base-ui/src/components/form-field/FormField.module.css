@@ -1,0 +1,98 @@
+/* ---------------------------------------------------------------------------
+ * FormField
+ * ------------------------------------------------------------------------- */
+
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-primitive-space-1);
+}
+
+.Label {
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  color: var(--ov-color-fg-default);
+  line-height: 1.4;
+}
+
+.Required {
+  color: var(--ov-color-danger);
+}
+
+.Description {
+  display: block;
+  margin: 0;
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+  line-height: 1.4;
+}
+
+.Control {
+  display: flex;
+  flex-direction: column;
+}
+
+.Error {
+  margin: 0;
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-danger);
+  line-height: 1.4;
+}
+
+/* Size variants */
+
+.Root[data-ov-size='sm'] {
+  gap: calc(var(--ov-primitive-space-1) - 1px);
+}
+
+.Root[data-ov-size='sm'] .Label {
+  font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  gap: var(--ov-space-stack-xs);
+}
+
+.Root[data-ov-size='lg'] .Label {
+  font-size: var(--ov-font-size-body);
+}
+
+/* ---------------------------------------------------------------------------
+ * FormSection
+ * ------------------------------------------------------------------------- */
+
+.Section {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-md);
+}
+
+.SectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-primitive-space-1);
+}
+
+.SectionTitle {
+  font-size: var(--ov-font-size-title);
+  font-weight: var(--ov-font-weight-title);
+  color: var(--ov-color-fg-default);
+  padding: 0;
+  line-height: 1.4;
+}
+
+.SectionDescription {
+  margin: 0;
+  font-size: var(--ov-font-size-body);
+  color: var(--ov-color-fg-muted);
+  line-height: 1.4;
+}
+
+.SectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-md);
+}

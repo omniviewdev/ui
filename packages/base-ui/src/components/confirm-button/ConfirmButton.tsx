@@ -1,0 +1,88 @@
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+} from 'react';
+import { cn } from '../../system/classnames';
+import { styleDataAttributes } from '../../system/styleProps';
+import type { StyledComponentProps, ComponentColor } from '../../system/types';
+import styles from './ConfirmButton.module.css';
+
+export interface ConfirmButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick' | 'type'>,
+    StyledComponentProps {
+  /** Text shown in the confirm state. */
+  confirmLabel?: string;
+  /** Color applied in the confirm state. */
+  confirmColor?: ComponentColor;
+  /** Milliseconds before the confirm state reverts to default. */
+  confirmTimeout?: number;
+  /** Callback fired on the second (confirming) click. */
+  onConfirm: () => void;
+  /** Whether the button is disabled. */
+  disabled?: boolean;
+  children: ReactNode;
+}
+
+export const ConfirmButton = forwardRef<HTMLButtonElement, ConfirmButtonProps>(
+  function ConfirmButton(
+    {
+      className,
+      variant,
+      color,
+      size,
+      confirmLabel = 'Confirm',
+      confirmColor = 'danger',
+      confirmTimeout = 3000,
+      onConfirm,
+      disabled,
+      children,
+      ...props
+    },
+    ref,
+  ) {
+    const [confirming, setConfirming] = useState(false);
+
+    const handleClick = useCallback(
+      (event: React.MouseEvent) => {
+        if (disabled) return;
+        if (confirming) {
+          setConfirming(false);
+          onConfirm();
+        } else {
+          event.preventDefault();
+          setConfirming(true);
+        }
+      },
+      [confirming, disabled, onConfirm],
+    );
+
+    useEffect(() => {
+      if (!confirming) return;
+      const timer = setTimeout(() => setConfirming(false), confirmTimeout);
+      return () => clearTimeout(timer);
+    }, [confirming, confirmTimeout]);
+
+    const activeColor = confirming ? confirmColor : color;
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        className={cn(styles.Root, className)}
+        disabled={disabled}
+        {...styleDataAttributes({ variant, color: activeColor, size })}
+        {...(confirming ? { 'data-ov-confirming': 'true' } : undefined)}
+        {...props}
+        onClick={handleClick}
+      >
+        {confirming ? confirmLabel : children}
+      </button>
+    );
+  },
+);
+
+ConfirmButton.displayName = 'ConfirmButton';

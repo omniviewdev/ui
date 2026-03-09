@@ -1,0 +1,96 @@
+.Root {
+  --_ov-font-size: var(--ov-font-size-body);
+
+  display: block;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-font-size: var(--ov-font-size-subheading);
+}
+
+.List {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--_ov-font-size);
+}
+
+.Entry {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+}
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.Link {
+  color: var(--ov-color-fg-muted);
+  text-decoration: none;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Link:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.Link:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm);
+}
+
+.Text {
+  color: var(--ov-color-fg-default);
+  font-weight: var(--ov-font-weight-label);
+}
+
+.Separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+  flex-shrink: 0;
+  line-height: 1;
+  font-size: 0.85em;
+}
+
+.Ellipsis {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-font-size);
+  cursor: pointer;
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+  transition:
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Ellipsis:hover {
+  color: var(--ov-color-fg-default);
+  background-color: var(--ov-color-state-hover);
+  border-color: var(--ov-color-border-strong);
+}
+
+.Ellipsis:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
+}

@@ -1,0 +1,93 @@
+.Root {
+  --_ov-item-height: var(--ov-size-button-height-sm);
+  --_ov-item-min-width: var(--ov-size-button-height-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-gap: var(--ov-primitive-space-1, 4px);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+}
+
+/* ── Size variants ─────────────────────────────────────────────── */
+
+.Root[data-ov-size='sm'] {
+  --_ov-item-height: 1.5rem;
+  --_ov-item-min-width: 1.5rem;
+  --_ov-font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-item-height: var(--ov-size-button-height-md);
+  --_ov-item-min-width: var(--ov-size-button-height-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+}
+
+/* ── Page / nav button ─────────────────────────────────────────── */
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--_ov-item-height);
+  min-width: var(--_ov-item-min-width);
+  padding: 0 var(--ov-space-stack-xs);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-font-size);
+  font-weight: var(--ov-font-weight-label);
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Item:not(:disabled, [data-ov-active='true']):hover {
+  background: var(--ov-color-state-hover);
+}
+
+.Item:not(:disabled, [data-ov-active='true']):active {
+  background: var(--ov-color-state-pressed);
+}
+
+/* Active (current page) */
+
+.Item[data-ov-active='true'] {
+  background: var(--ov-color-bg-brand);
+  color: var(--ov-color-fg-inverse);
+  border-color: var(--ov-color-bg-brand);
+  cursor: default;
+}
+
+/* Disabled (prev on first page, next on last page – excludes active page) */
+
+.Item:disabled:not([data-ov-active='true']) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Ellipsis ──────────────────────────────────────────────────── */
+
+.Ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--_ov-item-height);
+  min-width: var(--_ov-item-min-width);
+  font-size: var(--_ov-font-size);
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+  line-height: 1;
+}

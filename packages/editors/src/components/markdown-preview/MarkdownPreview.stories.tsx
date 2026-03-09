@@ -68,7 +68,7 @@ interface PodListResponse {
 
 export async function fetchPods(namespace: string): Promise<PodListResponse> {
   const { data } = await client.get<PodListResponse>(
-    \\\`/api/v1/namespaces/\\\${namespace}/pods\\\`,
+    \`/api/v1/namespaces/\${namespace}/pods\`,
   );
   return data;
 }

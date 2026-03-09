@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
@@ -26,7 +27,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@omniview/base-ui': new URL('../base-ui/src/index.ts', import.meta.url).pathname,
+      '@omniview/base-ui': fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)),
       // monaco-editor@0.52 only has "module" (no "main"/"exports"), which
       // Vite 5's resolver can't find. Point directly to the ESM entry.
       'monaco-editor': 'monaco-editor/esm/vs/editor/editor.main.js',

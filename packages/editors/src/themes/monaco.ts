@@ -1,6 +1,5 @@
 import { getComputedToken } from './useEditorTheme';
-
-type ThemeMode = 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light';
+import type { ThemeMode } from './types';
 
 interface MonacoThemeData {
   base: 'vs' | 'vs-dark' | 'hc-black' | 'hc-light';

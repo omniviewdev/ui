@@ -4,6 +4,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
 
 let mockEditorInstance: Record<string, unknown>;
+let mockModel: Record<string, unknown>;
 
 const mockCreate = vi.fn();
 const mockGetModel = vi.fn();
@@ -23,14 +24,15 @@ vi.mock('monaco-editor', () => {
     editor: {
       create: (...args: unknown[]) => {
         mockCreate(...args);
+        mockModel = {
+          getFullModelRange: vi.fn(() => ({})),
+          uri: { toString: () => 'test', path: 'test' },
+          dispose: vi.fn(),
+        };
         mockEditorInstance = {
           getValue: vi.fn(() => ''),
           setValue: vi.fn(),
-          getModel: vi.fn(() => ({
-            getFullModelRange: vi.fn(() => ({})),
-            uri: { toString: () => 'test', path: 'test' },
-            dispose: vi.fn(),
-          })),
+          getModel: vi.fn(() => mockModel),
           updateOptions: vi.fn(),
           executeEdits: vi.fn(),
           pushUndoStop: vi.fn(),
@@ -202,9 +204,10 @@ describe('CodeEditor', () => {
     expect(mockCreate).toHaveBeenCalled();
   });
 
-  it('disposes editor on unmount', () => {
+  it('disposes editor and model on unmount', () => {
     const { unmount } = render(<CodeEditor value="" />);
     unmount();
+    expect(mockModel.dispose).toHaveBeenCalled();
     expect(mockEditorInstance.dispose).toHaveBeenCalled();
   });
 });

@@ -34,6 +34,9 @@ function hastText(node: any): string {
   return '';
 }
 
+/** Counter for generating unique IDs for details/summary accordion items. */
+let detailsCounter = 0;
+
 /** Stable component overrides for react-markdown */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MdProps = Record<string, any>;
@@ -106,7 +109,7 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
       body.push(child);
     });
 
-    const itemId = `md-details-${summaryText.replace(/\s+/g, '-').toLowerCase().slice(0, 32)}`;
+    const itemId = `md-details-${summaryText.replace(/\s+/g, '-').toLowerCase().slice(0, 32)}-${detailsCounter++}`;
 
     return (
       <Accordion animation="fast">

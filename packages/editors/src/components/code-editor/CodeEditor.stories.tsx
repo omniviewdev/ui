@@ -413,6 +413,13 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
 
   const loadedCount = Object.values(loaded).filter(Boolean).length;
 
+  function schemaStatusLabel(): string {
+    if (loadedCount === 0) return 'none — no completions available';
+    const count = `${loadedCount} schema(s)`;
+    if (loaded[activeGvr]) return `${count} — active file has schema`;
+    return `${count} — active file has NO schema loaded`;
+  }
+
   return (
     <div>
       <div style={{ marginBottom: 8, fontSize: 13, fontWeight: 500 }}>
@@ -427,6 +434,7 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
       <div style={{ marginBottom: 12, display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
         {k8sSchemas.map((entry) => (
           <button
+            type="button"
             key={entry.gvr}
             onClick={() => {
               void loadSchema(entry);
@@ -456,6 +464,7 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
         ))}
         {loadedCount > 0 && (
           <button
+            type="button"
             onClick={unloadAll}
             style={{
               padding: '4px 12px',
@@ -475,6 +484,7 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
       <div style={{ marginBottom: 4, display: 'flex', gap: 6 }}>
         {k8sSchemas.map((entry) => (
           <button
+            type="button"
             key={entry.gvr}
             onClick={() => {
               setActiveGvr(entry.gvr);
@@ -503,8 +513,7 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
         file: {gvrFilename(activeGvr)}
       </div>
       <div style={{ marginBottom: 8, fontSize: 11, opacity: 0.4 }}>
-        Loaded: {loadedCount === 0 ? 'none — no completions available' : `${loadedCount} schema(s)`}
-        {loaded[activeGvr] ? ' — active file has schema' : loaded[activeGvr] === undefined && loadedCount > 0 ? ' — active file has NO schema loaded' : ''}
+        Loaded: {schemaStatusLabel()}
       </div>
 
       <CodeEditor

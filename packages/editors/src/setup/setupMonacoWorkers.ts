@@ -34,11 +34,21 @@ function warn(...args: unknown[]) {
 
 log('Module loaded — configuring MonacoEnvironment');
 
+// Idempotency guard — prevent double-initialization when the module is
+// imported more than once (e.g. HMR or duplicate bundles).
+const SETUP_KEY = '__omniview_monaco_setup__';
+if ((globalThis as Record<string, unknown>)[SETUP_KEY]) {
+  log('Already initialized — skipping duplicate setup');
+} else {
+(globalThis as Record<string, unknown>)[SETUP_KEY] = true;
+
 // ---------------------------------------------------------------------------
 // 1. MonacoEnvironment.getWorker — maps language labels to bundled workers
 // ---------------------------------------------------------------------------
 
+const existingEnv = self.MonacoEnvironment ?? {};
 self.MonacoEnvironment = {
+  ...existingEnv,
   getWorker(_workerId: string, label: string) {
     log(`getWorker called — label="${label}", workerId="${_workerId}"`);
 
@@ -102,8 +112,12 @@ try {
   editorSchemas._setYamlHandle(yamlHandle as unknown as Parameters<typeof editorSchemas._setYamlHandle>[0]);
   log('YAML handle injected into EditorSchemaRegistry');
 } catch (err) {
-  warn('configureMonacoYaml FAILED:', err);
+  // Surface YAML config errors so they are visible in the console even
+  // when DEBUG is off — a silent failure here breaks all YAML completions.
+  console.error('[monaco-setup] configureMonacoYaml FAILED:', err);
 }
+
+} // end idempotency guard
 
 // Re-export for consumers that need the function form
 export function setupMonacoWorkers(): void {

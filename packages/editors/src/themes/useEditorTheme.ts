@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-type ThemeMode = 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light';
+import type { ThemeMode } from './types';
 
 function getCurrentTheme(): ThemeMode {
   if (typeof document === 'undefined') return 'dark';

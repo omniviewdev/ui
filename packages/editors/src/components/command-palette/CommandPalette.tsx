@@ -43,15 +43,20 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
     if (!open) return null;
 
     return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         className={styles.Overlay}
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onClose();
+        }}
         data-testid="command-palette-overlay"
       >
         <div
           ref={ref}
           className={styles.Root}
           onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"
           aria-label="Command palette"

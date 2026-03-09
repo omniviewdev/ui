@@ -26,7 +26,7 @@ tries `'then' in descriptorOrWorker` (line ~110). When `descriptorOrWorker` is
 `undefined` — which happens because `monaco-worker-manager` doesn't pass
 `opts.worker` — this crashes with:
 
-```
+```text
 TypeError: Cannot use 'in' operator to search for 'then' in undefined
 ```
 
@@ -53,7 +53,7 @@ structurally incompatible with how `monaco-worker-manager` bootstraps workers.
 
 ### Summary
 
-```
+```text
 monaco-editor@0.55 + monaco-yaml@5.4.1 = broken (hangs on "Loading...")
 monaco-editor@0.52 + monaco-yaml@5.4.1 = working (completions + validation)
 ```
@@ -97,7 +97,7 @@ whenever schemas change.
 
 ### Schema URI Bug — YAML(768) "No schema request service"
 
-```
+```text
 Unable to load schema from '...'. No schema request service available YAML(768)
 ```
 

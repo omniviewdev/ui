@@ -247,8 +247,8 @@ class EditorSchemaRegistryImpl {
     for (const fn of this._listeners) {
       try {
         fn();
-      } catch {
-        // listener errors shouldn't break registry
+      } catch (err) {
+        console.error('[schema-registry] listener threw during _notify():', err);
       }
     }
   }

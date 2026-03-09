@@ -102,10 +102,11 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
 
   // Update language
   useEffect(() => {
-    if (!editorRef.current || !isReady || !language) return;
+    if (!editorRef.current || !isReady) return;
+    const lang = language ?? 'plaintext';
     const models = editorRef.current.getModel();
-    if (models?.original) monaco.editor.setModelLanguage(models.original, language);
-    if (models?.modified) monaco.editor.setModelLanguage(models.modified, language);
+    if (models?.original) monaco.editor.setModelLanguage(models.original, lang);
+    if (models?.modified) monaco.editor.setModelLanguage(models.modified, lang);
   }, [language, isReady]);
 
   // Update options

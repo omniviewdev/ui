@@ -328,6 +328,7 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
   const addonsRef = useRef<Array<{ dispose: () => void }>>([]);
   const observerRef = useRef<ResizeObserver | null>(null);
   const debouncedFitRef = useRef<{ run: () => void; cancel: () => void } | null>(null);
+  const windowResizeCleanupRef = useRef<(() => void) | null>(null);
   const theme = useEditorTheme();
 
   // Stable refs for callbacks to avoid re-initializing terminal
@@ -436,7 +437,12 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
     },
   }));
 
-  // Initialize xterm lazily
+  // Initialize xterm lazily.
+  // @note Mount-only props (read once during init, not reactive): fontFamily, fontWeight,
+  // fontWeightBold, allowTransparency, convertEol, macOptionIsMeta,
+  // macOptionClickForcesSelection, drawBoldTextInBrightColors, disableStdin, cursorWidth,
+  // initialRows, initialCols, screenReaderMode, minimumContrastRatio, customKeyEventHandler,
+  // autoFocus, renderer, linkHandling. Changing these after mount requires remounting.
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -637,11 +643,10 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       };
       window.addEventListener('resize', handleWindowResize);
 
-      // Store window resize cleanup
-      (container as HTMLDivElement & { __windowResizeCleanup?: () => void }).__windowResizeCleanup =
-        () => {
-          window.removeEventListener('resize', handleWindowResize);
-        };
+      // Store window resize cleanup in a ref (not on the DOM node)
+      windowResizeCleanupRef.current = () => {
+        window.removeEventListener('resize', handleWindowResize);
+      };
 
       // Auto-focus if requested
       if (autoFocus) {
@@ -668,9 +673,8 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       observerRef.current = null;
 
       // Remove window resize listener
-      const windowCleanup = (container as HTMLDivElement & { __windowResizeCleanup?: () => void })
-        .__windowResizeCleanup;
-      windowCleanup?.();
+      windowResizeCleanupRef.current?.();
+      windowResizeCleanupRef.current = null;
 
       // Dispose addons first, then terminal (proper order)
       for (const addon of addonsRef.current) {

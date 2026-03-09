@@ -115,6 +115,13 @@ function TreeNode({
         className={cn(styles.Row, isHighlighted && styles.RowHighlight)}
         style={{ paddingLeft: depth * 16 }}
         onClick={toggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        tabIndex={0}
         role="treeitem"
         aria-expanded={isExpandable && !isCircular ? expanded : undefined}
         data-testid={`inspector-node-${nodeKey}`}
@@ -176,7 +183,7 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
         if (format === 'yaml') {
           text = toYaml(data);
         } else {
-          text = JSON.stringify(data, null, 2);
+          text = safeJsonStringify(data);
         }
         await navigator.clipboard.writeText(text);
       } catch {
@@ -238,6 +245,22 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
 );
 
 ObjectInspector.displayName = 'ObjectInspector';
+
+/** JSON.stringify with circular reference safety. */
+function safeJsonStringify(value: unknown): string {
+  const seen = new WeakSet<object>();
+  return JSON.stringify(
+    value,
+    (_key, val) => {
+      if (typeof val === 'object' && val !== null) {
+        if (seen.has(val)) return '[Circular]';
+        seen.add(val);
+      }
+      return val;
+    },
+    2,
+  );
+}
 
 /** Simple YAML serializer (no dependency) */
 function toYaml(value: unknown, indent: number = 0, seen?: WeakSet<object>): string {

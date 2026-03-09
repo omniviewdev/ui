@@ -35,7 +35,7 @@ vi.mock('monaco-editor', () => ({
       };
       return mockDiffEditorInstance;
     },
-    createModel: vi.fn((_value: string, _lang?: string) => ({
+    createModel: vi.fn(() => ({
       setValue: vi.fn(),
       getValue: vi.fn(() => ''),
       dispose: vi.fn(),
@@ -139,9 +139,12 @@ describe('DiffViewer', () => {
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
 
-  it('disposes editor on unmount', () => {
+  it('disposes editor and models on unmount', () => {
     const { unmount } = render(<DiffViewer original="" modified="" />);
+    const models = (mockDiffEditorInstance.getModel as ReturnType<typeof vi.fn>)();
     unmount();
+    expect(models.original.dispose).toHaveBeenCalled();
+    expect(models.modified.dispose).toHaveBeenCalled();
     expect(mockDiffEditorInstance.dispose).toHaveBeenCalled();
   });
 });

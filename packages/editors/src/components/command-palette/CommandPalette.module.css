@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   padding-top: 20vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--ov-color-overlay-bg, rgba(0, 0, 0, 0.4));
 }
 
 .Root {

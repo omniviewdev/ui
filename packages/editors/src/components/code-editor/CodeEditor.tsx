@@ -389,6 +389,8 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
         editorRef.current = null;
         setIsReady(false);
       };
+      // Intentional mount-once effect — props like value, language, readOnly,
+      // theme, filename, and callbacks are synced via dedicated effects below.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -403,10 +405,12 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       if (editor.getOption(monaco.editor.EditorOption.readOnly)) {
         editor.setValue(displayValue);
       } else if (displayValue !== editor.getValue()) {
+        const model = editor.getModel();
+        if (!model) return;
         preventTriggerChangeEvent.current = true;
         editor.executeEdits('', [
           {
-            range: editor.getModel()!.getFullModelRange(),
+            range: model.getFullModelRange(),
             text: displayValue,
             forceMoveMarkers: true,
           },

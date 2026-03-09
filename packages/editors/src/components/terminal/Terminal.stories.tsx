@@ -329,18 +329,21 @@ function SearchStory(args: TerminalProps) {
           style={{ padding: '4px 8px', background: '#2d2d2d', color: '#fff', border: '1px solid #555', borderRadius: 4, fontSize: 13 }}
         />
         <button
+          type="button"
           onClick={() => ref.current?.findNext(searchTerm)}
           style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
         >
           Find Next
         </button>
         <button
+          type="button"
           onClick={() => ref.current?.findPrevious(searchTerm)}
           style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
         >
           Find Previous
         </button>
         <button
+          type="button"
           onClick={() => ref.current?.clearSearch()}
           style={{ padding: '4px 12px', background: '#333', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
         >
@@ -448,6 +451,7 @@ function SerializationStory(args: TerminalProps) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ padding: 8, background: '#1e1e1e', borderBottom: '1px solid #333' }}>
         <button
+          type="button"
           onClick={() => setBuffer(ref.current?.getBufferContent() ?? '')}
           style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
         >

@@ -7,8 +7,8 @@ import { CommandPalette, type CommandItem } from './CommandPalette';
 // Mock @omniview/base-ui — CommandList compound component
 // ---------------------------------------------------------------------------
 
-vi.mock('@omniview/base-ui', () => {
-  const React = require('react');
+vi.mock('@omniview/base-ui', async () => {
+  const React = await vi.importActual<typeof import('react')>('react');
 
   // Simple CommandList mock that renders items directly and supports filtering
   function MockRoot({
@@ -159,9 +159,9 @@ vi.mock('@omniview/base-ui', () => {
   }
   MockResults.displayName = 'CommandList.Results';
 
-  function MockItem({ children, itemKey: _ik, ...props }: Record<string, unknown>) {
+  function MockItem({ children, itemKey: _itemKey, ...props }: Record<string, unknown>) {
     return (
-      <div role="option" aria-selected={props['data-active'] === true} {...props}>
+      <div role="option" tabIndex={0} aria-selected={props['data-active'] === true} {...props}>
         {children as React.ReactNode}
       </div>
     );

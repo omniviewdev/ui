@@ -48,7 +48,7 @@ function PlaygroundStory(args: CommandPaletteProps) {
   const [lastSelected, setLastSelected] = useState<string | null>(null);
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open Command Palette</button>
+      <button type="button" onClick={() => setOpen(true)}>Open Command Palette</button>
       {lastSelected && (
         <p style={{ marginTop: 8, fontSize: 13, opacity: 0.7 }}>Last selected: {lastSelected}</p>
       )}
@@ -79,7 +79,7 @@ function ManyCommandsStory(args: CommandPaletteProps) {
   }));
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open (100 commands)</button>
+      <button type="button" onClick={() => setOpen(true)}>Open (100 commands)</button>
       <CommandPalette
         {...args}
         commands={manyCommands}
@@ -132,7 +132,7 @@ function WithDescriptionsStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open</button>
+      <button type="button" onClick={() => setOpen(true)}>Open</button>
       <CommandPalette
         {...args}
         commands={commands}
@@ -162,7 +162,7 @@ function WithDisabledStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open (disabled items hidden)</button>
+      <button type="button" onClick={() => setOpen(true)}>Open (disabled items hidden)</button>
       <CommandPalette
         {...args}
         commands={commands}
@@ -183,7 +183,7 @@ function EmptyStory(args: CommandPaletteProps) {
   const [open, setOpen] = useState(true);
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open (empty)</button>
+      <button type="button" onClick={() => setOpen(true)}>Open (empty)</button>
       <CommandPalette
         {...args}
         commands={[]}
@@ -213,7 +213,7 @@ function UngroupedStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open (ungrouped)</button>
+      <button type="button" onClick={() => setOpen(true)}>Open (ungrouped)</button>
       <CommandPalette
         {...args}
         commands={commands}
@@ -234,7 +234,7 @@ function CustomPlaceholderStory(args: CommandPaletteProps) {
   const [open, setOpen] = useState(true);
   return (
     <div>
-      <button onClick={() => setOpen(true)}>Open</button>
+      <button type="button" onClick={() => setOpen(true)}>Open</button>
       <CommandPalette
         {...args}
         placeholder="Search Kubernetes resources…"

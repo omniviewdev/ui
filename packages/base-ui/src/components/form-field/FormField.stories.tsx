@@ -76,7 +76,7 @@ export const WithError: Story = {
       <input
         id="port"
         defaultValue="99999"
-        style={{ ...inputStyle, border: '1px solid var(--ov-color-fg-danger)' }}
+        style={{ ...inputStyle, border: '1px solid var(--ov-color-danger)' }}
       />
     </FormField>
   ),

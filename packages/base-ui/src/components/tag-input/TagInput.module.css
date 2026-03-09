@@ -57,7 +57,7 @@
 }
 
 .TagRemove:hover {
-  color: var(--ov-color-fg-danger);
+  color: var(--ov-color-danger);
 }
 
 .TagRemove:disabled {

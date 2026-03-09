@@ -16,7 +16,7 @@
 }
 
 .Required {
-  color: var(--ov-color-fg-danger);
+  color: var(--ov-color-danger);
 }
 
 .Description {
@@ -35,7 +35,7 @@
 .Error {
   margin: 0;
   font-size: var(--ov-font-size-caption);
-  color: var(--ov-color-fg-danger);
+  color: var(--ov-color-danger);
   line-height: 1.4;
 }
 

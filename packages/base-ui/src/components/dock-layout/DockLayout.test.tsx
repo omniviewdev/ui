@@ -119,16 +119,15 @@ describe('DockLayout', () => {
     expect(newLayout.tabs[0]!.id).toBe('tab-2');
   });
 
-  it('does not fire onLayoutChange when clicking the active tab', () => {
+  it('keeps activeTab unchanged when clicking the already-active tab', () => {
     const onChange = vi.fn();
     renderWithTheme(
       <DockLayout layout={singleLeaf} onLayoutChange={onChange} />,
     );
 
-    // Click the already-active tab — should be a no-op
     fireEvent.click(screen.getByRole('tab', { name: 'File 1' }));
-    // onLayoutChange still fires (sets same activeTab), but the layout is equivalent
-    // The key assertion: activeTab stays the same
+
+    expect(onChange).toHaveBeenCalled();
     const newLayout = onChange.mock.calls[0]![0] as DockLeaf;
     expect(newLayout.activeTab).toBe('tab-1');
   });

@@ -56,8 +56,7 @@ const Sidebar = forwardRef<HTMLElement, AppShellSidebarProps>(
         ref={ref}
         className={cn(styles.Sidebar, className)}
         aria-hidden={sidebarCollapsed || undefined}
-        // @ts-expect-error -- inert is a valid HTML attribute, React types lag behind
-        inert={sidebarCollapsed ? '' : undefined}
+        inert={sidebarCollapsed || undefined}
         {...props}
       />
     );

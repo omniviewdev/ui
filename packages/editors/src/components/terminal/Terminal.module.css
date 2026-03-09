@@ -6,4 +6,6 @@
   border: 1px solid var(--ov-color-terminal-border, var(--ov-color-border-default));
   border-radius: var(--ov-radius-sm, 4px);
   padding: var(--ov-space-1, 4px);
+  /* Prevent parent sans-serif font from leaking into xterm's rendering */
+  font-family: var(--ov-font-family-mono, monospace);
 }

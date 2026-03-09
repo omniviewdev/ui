@@ -13,11 +13,18 @@ const meta: Meta<typeof Terminal> = {
     fontSize: { control: { type: 'range', min: 10, max: 24, step: 1 } },
     scrollback: { control: { type: 'number', min: 0, max: 50000, step: 500 } },
     cursorBlink: { control: 'boolean' },
+    cursorStyle: { control: 'select', options: ['block', 'underline', 'bar'] },
     convertEol: { control: 'boolean' },
     macOptionIsMeta: { control: 'boolean' },
     macOptionClickForcesSelection: { control: 'boolean' },
     linkHandling: { control: 'boolean' },
     allowTransparency: { control: 'boolean' },
+    disableStdin: { control: 'boolean' },
+    renderer: { control: 'select', options: ['auto', 'webgl', 'dom'] },
+    lineHeight: { control: { type: 'range', min: 1.0, max: 2.0, step: 0.1 } },
+    letterSpacing: { control: { type: 'range', min: -2, max: 5, step: 0.5 } },
+    screenReaderMode: { control: 'boolean' },
+    minimumContrastRatio: { control: { type: 'range', min: 1, max: 21, step: 0.5 } },
   },
   decorators: [
     (Story) => (
@@ -286,4 +293,221 @@ function ClickableLinksStory(args: TerminalProps) {
 
 export const ClickableLinks: Story = {
   render: (args) => <ClickableLinksStory {...args} />,
+};
+
+/** Search story — 100 lines of log output with search bar UI. */
+function SearchStory(args: TerminalProps) {
+  const ref = useRef<TerminalHandle>(null);
+  const [searchTerm, setSearchTerm] = useState('ERROR');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!ref.current) return;
+      for (let i = 0; i < 100; i++) {
+        const level =
+          i % 10 === 0
+            ? '\x1b[31mERROR\x1b[0m'
+            : i % 5 === 0
+              ? '\x1b[33mWARN\x1b[0m'
+              : '\x1b[32mINFO\x1b[0m';
+        ref.current.writeln(
+          `[${String(i).padStart(3, '0')}] ${level}  Processing request #${i + 1000}`,
+        );
+      }
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ display: 'flex', gap: 8, padding: 8, background: '#1e1e1e', borderBottom: '1px solid #333' }}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search..."
+          style={{ padding: '4px 8px', background: '#2d2d2d', color: '#fff', border: '1px solid #555', borderRadius: 4, fontSize: 13 }}
+        />
+        <button
+          onClick={() => ref.current?.findNext(searchTerm)}
+          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+        >
+          Find Next
+        </button>
+        <button
+          onClick={() => ref.current?.findPrevious(searchTerm)}
+          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+        >
+          Find Previous
+        </button>
+        <button
+          onClick={() => ref.current?.clearSearch()}
+          style={{ padding: '4px 12px', background: '#333', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+        >
+          Clear
+        </button>
+      </div>
+      <div style={{ flex: 1 }}>
+        <Terminal ref={ref} {...args} />
+      </div>
+    </div>
+  );
+}
+
+export const Search: Story = {
+  render: (args) => <SearchStory {...args} />,
+};
+
+/** ReadOnly terminal that streams simulated log output. */
+function ReadOnlyStory(args: TerminalProps) {
+  const ref = useRef<TerminalHandle>(null);
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (!ref.current) return;
+      const level = i % 7 === 0 ? '\x1b[31mERROR\x1b[0m' : i % 3 === 0 ? '\x1b[33mWARN\x1b[0m' : '\x1b[32mINFO\x1b[0m';
+      const ts = new Date().toISOString();
+      ref.current.writeln(`${ts}  ${level}  app.server  Event #${i + 1}`);
+      i++;
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <Terminal ref={ref} {...args} disableStdin />;
+}
+
+export const ReadOnly: Story = {
+  render: (args) => <ReadOnlyStory {...args} />,
+};
+
+/** Three terminals side-by-side comparing renderers. */
+function RendererComparisonStory() {
+  return (
+    <div style={{ display: 'flex', gap: 8, height: 350 }}>
+      {(['webgl', 'dom'] as const).map((r) => (
+        <RendererPanel key={r} renderer={r} />
+      ))}
+    </div>
+  );
+}
+
+function RendererPanel({ renderer }: { renderer: 'webgl' | 'dom' }) {
+  const ref = useRef<TerminalHandle>(null);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!ref.current) return;
+      ref.current.writeln(`\x1b[1mRenderer: ${renderer}\x1b[0m`);
+      ref.current.writeln('');
+      ref.current.writeln('The quick brown fox jumps');
+      ref.current.writeln('over the lazy dog.');
+      ref.current.writeln('');
+      ref.current.writeln('\x1b[31mRed\x1b[0m \x1b[32mGreen\x1b[0m \x1b[34mBlue\x1b[0m');
+    }, 400);
+    return () => clearTimeout(t);
+  }, [renderer]);
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '4px 8px', background: '#1e1e1e', color: '#ccc', fontSize: 12, borderBottom: '1px solid #333' }}>
+        {renderer.toUpperCase()}
+      </div>
+      <div style={{ flex: 1 }}>
+        <Terminal ref={ref} renderer={renderer} />
+      </div>
+    </div>
+  );
+}
+
+export const RendererComparison: Story = {
+  render: () => <RendererComparisonStory />,
+  decorators: [],
+};
+
+/** Serialization — save the buffer content. */
+function SerializationStory(args: TerminalProps) {
+  const ref = useRef<TerminalHandle>(null);
+  const [buffer, setBuffer] = useState('');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!ref.current) return;
+      ref.current.writeln('$ echo "Hello from the terminal"');
+      ref.current.writeln('Hello from the terminal');
+      ref.current.writeln('$ date');
+      ref.current.writeln('Mon Jan 15 10:30:00 UTC 2024');
+      ref.current.writeln('$ whoami');
+      ref.current.writeln('developer');
+      ref.current.write('$ ');
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ padding: 8, background: '#1e1e1e', borderBottom: '1px solid #333' }}>
+        <button
+          onClick={() => setBuffer(ref.current?.getBufferContent() ?? '')}
+          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+        >
+          Save Buffer
+        </button>
+      </div>
+      <div style={{ flex: 1 }}>
+        <Terminal ref={ref} {...args} />
+      </div>
+      {buffer && (
+        <pre style={{ margin: 0, padding: 8, background: '#111', color: '#aaa', fontSize: 12, maxHeight: 120, overflow: 'auto', borderTop: '1px solid #333' }}>
+          {buffer}
+        </pre>
+      )}
+    </div>
+  );
+}
+
+export const Serialization: Story = {
+  render: (args) => <SerializationStory {...args} />,
+};
+
+/** Custom key handler — intercepts Ctrl+C to show custom behavior. */
+function CustomKeyHandlerStory(args: TerminalProps) {
+  const ref = useRef<TerminalHandle>(null);
+  const [intercepted, setIntercepted] = useState(false);
+
+  const handleKey = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.key === 'c') {
+      setIntercepted(true);
+      ref.current?.writeln('\r\n\x1b[33m[Ctrl+C intercepted by custom handler]\x1b[0m');
+      ref.current?.write('$ ');
+      setTimeout(() => setIntercepted(false), 1500);
+      return false; // Prevent default xterm handling
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      ref.current?.writeln('Type Ctrl+C to see the custom key handler intercept it.');
+      ref.current?.write('$ ');
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {intercepted && (
+        <div style={{ padding: '6px 12px', background: '#4a3000', color: '#ffd700', fontSize: 13 }}>
+          Ctrl+C was intercepted!
+        </div>
+      )}
+      <div style={{ flex: 1 }}>
+        <Terminal ref={ref} {...args} customKeyEventHandler={handleKey} />
+      </div>
+    </div>
+  );
+}
+
+export const CustomKeyHandler: Story = {
+  render: (args) => <CustomKeyHandlerStory {...args} />,
 };

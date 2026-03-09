@@ -33,6 +33,8 @@ export interface TagInputProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onC
   size?: ComponentSize;
   /** Disables the entire input. */
   disabled?: boolean;
+  /** Props forwarded to the inner `<input>` element (e.g. id, name, aria-*, autoComplete). */
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagInput(
@@ -46,6 +48,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
     validate,
     size = 'md',
     disabled = false,
+    inputProps: inputPropsProp,
     className,
     ...props
   },
@@ -55,8 +58,9 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  /** Attempts to add tags; returns the number actually added. */
   const addTags = useCallback(
-    (raw: string[]) => {
+    (raw: string[]): number => {
       const next = [...value];
       for (const r of raw) {
         const tag = r.trim();
@@ -66,9 +70,11 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
         if (validate && !validate(tag)) continue;
         next.push(tag);
       }
-      if (next.length !== value.length) {
+      const added = next.length - value.length;
+      if (added > 0) {
         onChange(next);
       }
+      return added;
     },
     [value, onChange, max, allowDuplicates, validate],
   );
@@ -94,8 +100,9 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
       if (event.key === 'Enter') {
         event.preventDefault();
         const parts = splitByDelimiter(inputValue);
-        addTags(parts);
-        setInputValue('');
+        if (addTags(parts) > 0) {
+          setInputValue('');
+        }
         return;
       }
 
@@ -108,8 +115,9 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
       if (typeof delimiter === 'string' && delimiter.length === 1 && event.key === delimiter) {
         event.preventDefault();
         const parts = splitByDelimiter(inputValue);
-        addTags(parts);
-        setInputValue('');
+        if (addTags(parts) > 0) {
+          setInputValue('');
+        }
       }
     },
     [inputValue, value, addTags, removeTag, splitByDelimiter, delimiter],
@@ -177,6 +185,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
         </Chip>
       ))}
       <input
+        {...inputPropsProp}
         ref={inputRef}
         className={styles.Input}
         type="text"

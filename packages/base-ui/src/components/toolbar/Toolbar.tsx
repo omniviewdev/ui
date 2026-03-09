@@ -14,13 +14,12 @@ export interface ToolbarGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const ToolbarRoot = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar(
-  { className, size = 'md', role = 'toolbar', ...props },
+  { className, size = 'md', ...props },
   ref,
 ) {
   return (
     <div
       ref={ref}
-      role={role}
       className={cn(styles.Root, className)}
       data-ov-size={size}
       {...props}

@@ -8,6 +8,8 @@ const meta = {
   tags: ['autodocs'],
   args: {
     separator: undefined,
+    // Intentionally lower than the component default (8) so Playground
+    // demonstrates collapse behaviour with its 7-item trail.
     maxItems: 4,
     itemsBeforeCollapse: 1,
     itemsAfterCollapse: 2,

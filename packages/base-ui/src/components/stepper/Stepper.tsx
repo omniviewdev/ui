@@ -1,5 +1,6 @@
 import {
   Children,
+  Fragment,
   cloneElement,
   createContext,
   forwardRef,
@@ -68,13 +69,33 @@ const StepperRoot = forwardRef<HTMLDivElement, StepperProps>(function StepperRoo
   { className, activeStep, orientation = 'horizontal', children, ...props },
   ref,
 ) {
-  // Inject _index and _isFirst into Stepper.Step children only
-  const steps = Children.map(children, (child, index) => {
-    if (isValidElement<StepProps & InjectedStepProps>(child) && child.type === StepperStep) {
-      return cloneElement(child, { _index: index, _isFirst: index === 0 });
-    }
-    return child;
-  });
+  // Recursively inject _index and _isFirst into StepperStep children,
+  // even when nested inside Fragments or wrapper elements.
+  const counterRef = { current: 0 };
+
+  function processChildren(nodes: ReactNode): ReactNode {
+    return Children.map(nodes, (child) => {
+      if (!isValidElement(child)) return child;
+
+      if (child.type === StepperStep) {
+        const idx = counterRef.current++;
+        return cloneElement(child as React.ReactElement<StepProps & InjectedStepProps>, {
+          _index: idx,
+          _isFirst: idx === 0,
+        });
+      }
+
+      // Traverse into Fragments and wrapper elements
+      if (child.type === Fragment || (child.props as { children?: ReactNode }).children) {
+        const processed = processChildren((child.props as { children?: ReactNode }).children);
+        return cloneElement(child, undefined, processed);
+      }
+
+      return child;
+    });
+  }
+
+  const steps = processChildren(children);
 
   return (
     <StepperContext.Provider value={{ activeStep, orientation }}>

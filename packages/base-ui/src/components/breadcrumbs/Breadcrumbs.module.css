@@ -55,10 +55,6 @@
   font-weight: var(--ov-font-weight-label);
 }
 
-.Item[data-ov-active='true'] .Text {
-  color: var(--ov-color-fg-default);
-}
-
 .Separator {
   display: inline-flex;
   align-items: center;

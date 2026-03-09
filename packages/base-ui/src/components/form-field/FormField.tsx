@@ -73,10 +73,12 @@ export const FormSection = forwardRef<HTMLFieldSetElement, FormSectionProps>(fun
 ) {
   return (
     <fieldset ref={ref} className={cn(styles.Section, className)} {...props}>
-      <div className={styles.SectionHeader}>
-        <legend className={styles.SectionTitle}>{title}</legend>
-        {description ? <p className={styles.SectionDescription}>{description}</p> : null}
-      </div>
+      <legend className={styles.SectionTitle}>{title}</legend>
+      {description ? (
+        <div className={styles.SectionHeader}>
+          <p className={styles.SectionDescription}>{description}</p>
+        </div>
+      ) : null}
       <div className={styles.SectionContent}>{children}</div>
     </fieldset>
   );

@@ -7,7 +7,7 @@ import { Toolbar } from './Toolbar';
 describe('Toolbar', () => {
   it('renders children', () => {
     renderWithTheme(
-      <Toolbar aria-label="Actions">
+      <Toolbar role="toolbar" aria-label="Actions">
         <button type="button">Save</button>
       </Toolbar>,
     );
@@ -16,14 +16,14 @@ describe('Toolbar', () => {
   });
 
   it('applies role="toolbar"', () => {
-    renderWithTheme(<Toolbar aria-label="Actions">content</Toolbar>);
+    renderWithTheme(<Toolbar role="toolbar" aria-label="Actions">content</Toolbar>);
 
     expect(screen.getByRole('toolbar')).toBeInTheDocument();
   });
 
   it('applies size data attribute', () => {
     renderWithTheme(
-      <Toolbar aria-label="Actions" size="sm">
+      <Toolbar role="toolbar" aria-label="Actions" size="sm">
         content
       </Toolbar>,
     );
@@ -32,14 +32,14 @@ describe('Toolbar', () => {
   });
 
   it('defaults size to md', () => {
-    renderWithTheme(<Toolbar aria-label="Actions">content</Toolbar>);
+    renderWithTheme(<Toolbar role="toolbar" aria-label="Actions">content</Toolbar>);
 
     expect(screen.getByRole('toolbar')).toHaveAttribute('data-ov-size', 'md');
   });
 
   it('merges className', () => {
     renderWithTheme(
-      <Toolbar aria-label="Actions" className="custom-class">
+      <Toolbar role="toolbar" aria-label="Actions" className="custom-class">
         content
       </Toolbar>,
     );
@@ -50,7 +50,7 @@ describe('Toolbar', () => {
   it('forwards ref', () => {
     const ref = createRef<HTMLDivElement>();
     renderWithTheme(
-      <Toolbar ref={ref} aria-label="Actions">
+      <Toolbar ref={ref} role="toolbar" aria-label="Actions">
         content
       </Toolbar>,
     );
@@ -61,7 +61,7 @@ describe('Toolbar', () => {
   describe('Toolbar.Group', () => {
     it('renders children within a group', () => {
       renderWithTheme(
-        <Toolbar aria-label="Actions">
+        <Toolbar role="toolbar" aria-label="Actions">
           <Toolbar.Group>
             <button type="button">Cut</button>
             <button type="button">Copy</button>
@@ -75,7 +75,7 @@ describe('Toolbar', () => {
 
     it('renders with separator', () => {
       renderWithTheme(
-        <Toolbar aria-label="Actions">
+        <Toolbar role="toolbar" aria-label="Actions">
           <Toolbar.Group>
             <button type="button">Cut</button>
           </Toolbar.Group>
@@ -95,7 +95,7 @@ describe('Toolbar', () => {
 
     it('does not render separator by default', () => {
       renderWithTheme(
-        <Toolbar aria-label="Actions">
+        <Toolbar role="toolbar" aria-label="Actions">
           <Toolbar.Group data-testid="no-sep">
             <button type="button">Cut</button>
           </Toolbar.Group>
@@ -109,7 +109,7 @@ describe('Toolbar', () => {
     it('forwards ref on Group', () => {
       const ref = createRef<HTMLDivElement>();
       renderWithTheme(
-        <Toolbar aria-label="Actions">
+        <Toolbar role="toolbar" aria-label="Actions">
           <Toolbar.Group ref={ref}>
             <button type="button">Cut</button>
           </Toolbar.Group>
@@ -121,7 +121,7 @@ describe('Toolbar', () => {
 
     it('merges className on Group', () => {
       renderWithTheme(
-        <Toolbar aria-label="Actions">
+        <Toolbar role="toolbar" aria-label="Actions">
           <Toolbar.Group className="group-custom" data-testid="g">
             <button type="button">Cut</button>
           </Toolbar.Group>

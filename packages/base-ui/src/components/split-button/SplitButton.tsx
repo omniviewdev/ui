@@ -8,14 +8,18 @@ import {
 import { LuChevronDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
-import type { StyledComponentProps } from '../../system/types';
+import type { ComponentSize, ComponentVariant } from '../../system/types';
 import { Menu } from '../menu';
 import styles from './SplitButton.module.css';
 
 /* ---------------------------------- Types --------------------------------- */
 
-export interface SplitButtonProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
+export type SplitButtonColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger';
+
+export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+  variant?: ComponentVariant;
+  color?: SplitButtonColor;
+  size?: ComponentSize;
   disabled?: boolean;
 }
 
@@ -30,7 +34,10 @@ export interface SplitButtonMenuProps {
 
 /* --------------------------------- Context -------------------------------- */
 
-interface SplitButtonContextValue extends StyledComponentProps {
+interface SplitButtonContextValue {
+  variant?: ComponentVariant;
+  color?: SplitButtonColor;
+  size?: ComponentSize;
   disabled?: boolean;
 }
 

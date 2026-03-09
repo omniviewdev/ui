@@ -3,6 +3,8 @@ import type { SplitButtonProps } from './SplitButton';
 import { SplitButton } from './SplitButton';
 import { Menu } from '../menu';
 
+const noop = () => {};
+
 const meta = {
   title: 'Inputs/SplitButton',
   component: SplitButton,
@@ -26,11 +28,11 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   render: (args) => (
     <SplitButton {...args}>
-      <SplitButton.Action onClick={() => alert('Save clicked')}>Save</SplitButton.Action>
+      <SplitButton.Action onClick={noop}>Save</SplitButton.Action>
       <SplitButton.Menu>
-        <Menu.Item onClick={() => alert('Save as Draft')}>Save as Draft</Menu.Item>
-        <Menu.Item onClick={() => alert('Save and Publish')}>Save and Publish</Menu.Item>
-        <Menu.Item onClick={() => alert('Save as Template')}>Save as Template</Menu.Item>
+        <Menu.Item onClick={noop}>Save as Draft</Menu.Item>
+        <Menu.Item onClick={noop}>Save and Publish</Menu.Item>
+        <Menu.Item onClick={noop}>Save as Template</Menu.Item>
       </SplitButton.Menu>
     </SplitButton>
   ),
@@ -73,7 +75,7 @@ export const Colors: Story = {
 export const WithMenuItems: Story = {
   render: (args) => (
     <SplitButton {...args} variant="outline" color="neutral">
-      <SplitButton.Action onClick={() => alert('Deploy to Production')}>Deploy</SplitButton.Action>
+      <SplitButton.Action onClick={noop}>Deploy</SplitButton.Action>
       <SplitButton.Menu>
         <Menu.Item>Deploy to Staging</Menu.Item>
         <Menu.Item>Deploy to Preview</Menu.Item>

@@ -26,6 +26,7 @@ const meta = {
   component: Toolbar,
   tags: ['autodocs'],
   args: {
+    role: 'toolbar',
     size: 'md',
     'aria-label': 'Toolbar',
   },
@@ -55,7 +56,7 @@ export const Playground: Story = {};
 export const BasicToolbar: Story = {
   name: 'Basic toolbar with groups',
   render: () => (
-    <Toolbar aria-label="Text formatting">
+    <Toolbar role="toolbar" aria-label="Text formatting">
       <Toolbar.Group>
         <IconButton variant="ghost" size="sm" aria-label="Bold"><LuBold /></IconButton>
         <IconButton variant="ghost" size="sm" aria-label="Italic"><LuItalic /></IconButton>
@@ -73,7 +74,7 @@ export const BasicToolbar: Story = {
 export const WithSeparators: Story = {
   name: 'With separators between groups',
   render: () => (
-    <Toolbar aria-label="Editor actions">
+    <Toolbar role="toolbar" aria-label="Editor actions">
       <Toolbar.Group>
         <Button variant="ghost" size="sm" startDecorator={<LuFilePlus />}>New</Button>
         <Button variant="ghost" size="sm" startDecorator={<LuFolderOpen />}>Open</Button>
@@ -95,7 +96,7 @@ export const WithSeparators: Story = {
 export const RightAlignedGroup: Story = {
   name: 'Right-aligned group',
   render: () => (
-    <Toolbar aria-label="Document actions" style={{ width: '100%' }}>
+    <Toolbar role="toolbar" aria-label="Document actions" style={{ width: '100%' }}>
       <Toolbar.Group>
         <Button variant="ghost" size="sm" startDecorator={<LuSave />}>Save</Button>
         <Button variant="ghost" size="sm">Save As</Button>
@@ -117,7 +118,7 @@ export const AllSizes: Story = {
           <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>
             size=&quot;{size}&quot;
           </div>
-          <Toolbar aria-label={`Toolbar ${size}`} size={size}>
+          <Toolbar role="toolbar" aria-label={`Toolbar ${size}`} size={size}>
             <Toolbar.Group>
               <IconButton variant="ghost" size="sm" aria-label="Cut"><LuScissors /></IconButton>
               <IconButton variant="ghost" size="sm" aria-label="Copy"><LuClipboard /></IconButton>

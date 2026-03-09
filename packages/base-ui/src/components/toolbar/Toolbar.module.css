@@ -35,7 +35,7 @@
 .Separator {
   display: block;
   width: 1px;
-  height: 60%;
+  height: calc(var(--_ov-toolbar-height, 2.25rem) * 0.6);
   margin-block: auto;
   background-color: var(--ov-color-border-muted);
   margin-inline-end: var(--ov-primitive-space-1);

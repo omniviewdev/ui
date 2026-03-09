@@ -24,6 +24,14 @@ function ControlledPagination(props: PaginationProps) {
 
 function SimplePagination(props: Omit<PaginationProps, 'onChange'>) {
   const [page, setPage] = useState(props.page);
+
+  useEffect(() => {
+    setPage((prev) => {
+      const clamped = Math.max(1, Math.min(prev, props.count));
+      return props.page !== prev ? Math.max(1, Math.min(props.page, props.count)) : clamped;
+    });
+  }, [props.page, props.count]);
+
   return <Pagination {...props} page={page} onChange={setPage} />;
 }
 

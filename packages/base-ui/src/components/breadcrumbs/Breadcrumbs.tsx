@@ -114,26 +114,25 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
     if (effectiveBefore + effectiveAfter === 0) {
       visibleItems = childArray;
     } else {
+      const before = childArray.slice(0, effectiveBefore);
+      const after = childArray.slice(totalItems - effectiveAfter);
 
-    const before = childArray.slice(0, effectiveBefore);
-    const after = childArray.slice(totalItems - effectiveAfter);
+      const ellipsis = (
+        <span key="__ov-breadcrumbs-ellipsis" className={styles.Item}>
+          <button
+            type="button"
+            className={styles.Ellipsis}
+            aria-label="Show more breadcrumbs"
+            onClick={() => {
+              setExpanded(true);
+            }}
+          >
+            <LuEllipsis aria-hidden />
+          </button>
+        </span>
+      );
 
-    const ellipsis = (
-      <span key="__ov-breadcrumbs-ellipsis" className={styles.Item}>
-        <button
-          type="button"
-          className={styles.Ellipsis}
-          aria-label="Show more breadcrumbs"
-          onClick={() => {
-            setExpanded(true);
-          }}
-        >
-          <LuEllipsis aria-hidden />
-        </button>
-      </span>
-    );
-
-    visibleItems = [...before, ellipsis, ...after];
+      visibleItems = [...before, ellipsis, ...after];
     }
   } else {
     visibleItems = childArray;

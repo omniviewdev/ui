@@ -90,7 +90,7 @@ export const RequiredField: Story = {
   },
   render: (args) => (
     <FormField {...args}>
-      <input id="api-key" type="password" placeholder="sk-..." style={inputStyle} />
+      <input id="api-key" type="password" placeholder="sk-..." required style={inputStyle} />
     </FormField>
   ),
 };
@@ -100,13 +100,13 @@ export const FormSectionGrouping: Story = {
   render: () => (
     <FormSection title="Connection Settings" description="Configure the target cluster connection.">
       <FormField label="Host" required htmlFor="host">
-        <input id="host" placeholder="api.example.com" style={inputStyle} />
+        <input id="host" placeholder="api.example.com" required style={inputStyle} />
       </FormField>
       <FormField label="Port" description="TCP port number." htmlFor="port-section">
         <input id="port-section" placeholder="443" style={inputStyle} />
       </FormField>
       <FormField label="Token" required error="Token is expired." htmlFor="token">
-        <input id="token" type="password" style={inputStyle} />
+        <input id="token" type="password" required style={inputStyle} />
       </FormField>
     </FormSection>
   ),

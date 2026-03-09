@@ -27,9 +27,45 @@
   --ov-primitive-amber-500: #cf9030;
   --ov-primitive-amber-600: #b17727;
 
+  --ov-primitive-red-300: #e89a9a;
   --ov-primitive-red-400: #d97777;
   --ov-primitive-red-500: #c45f5f;
   --ov-primitive-red-600: #ad4f4f;
+
+  --ov-primitive-purple-300: #b89aee;
+  --ov-primitive-purple-400: #a67de8;
+  --ov-primitive-purple-500: #9363db;
+  --ov-primitive-purple-600: #7c4ec4;
+
+  --ov-primitive-cyan-300: #7ad4e8;
+  --ov-primitive-cyan-400: #5ac4db;
+  --ov-primitive-cyan-500: #3fb0c9;
+  --ov-primitive-cyan-600: #2e97ae;
+
+  --ov-primitive-blue-200: #a4bdf3;
+
+  --ov-primitive-coral-400: #ff7b72;
+  --ov-primitive-orange-300: #ffa657;
+  --ov-primitive-sky-200: #a5d6ff;
+  --ov-primitive-sky-300: #79c0ff;
+  --ov-primitive-lavender-300: #d2a8ff;
+
+  --ov-primitive-ansi-black: #3b4252;
+  --ov-primitive-ansi-red: #bf616a;
+  --ov-primitive-ansi-green: #a3be8c;
+  --ov-primitive-ansi-yellow: #ebcb8b;
+  --ov-primitive-ansi-blue: #81a1c1;
+  --ov-primitive-ansi-magenta: #b48ead;
+  --ov-primitive-ansi-cyan: #88c0d0;
+  --ov-primitive-ansi-white: #e5e9f0;
+  --ov-primitive-ansi-bright-black: #4c566a;
+  --ov-primitive-ansi-bright-red: #d08770;
+  --ov-primitive-ansi-bright-green: #a3be8c;
+  --ov-primitive-ansi-bright-yellow: #ebcb8b;
+  --ov-primitive-ansi-bright-blue: #81a1c1;
+  --ov-primitive-ansi-bright-magenta: #b48ead;
+  --ov-primitive-ansi-bright-cyan: #8fbcbb;
+  --ov-primitive-ansi-bright-white: #eceff4;
 
   --ov-primitive-font-sans: 'Inter Variable', 'SF Pro Text', 'Segoe UI', -apple-system, sans-serif;
   --ov-primitive-font-mono: 'JetBrains Mono Variable', 'SF Mono', 'Cascadia Mono', monospace;
@@ -385,6 +421,94 @@
   --ov-color-editor-group-header-bg: var(--ov-color-bg-surface-raised);
   --ov-color-editor-group-drop-border: var(--ov-color-brand-400);
   --ov-size-tab-height: 34px;
+
+  /* Editor tokens */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-editor-selection-inactive-bg: rgb(161 169 182 / 0.1);
+  --ov-color-editor-line-highlight-bg: rgb(255 255 255 / 0.04);
+  --ov-color-editor-line-highlight-border: transparent;
+  --ov-color-editor-line-number: var(--ov-color-fg-subtle);
+  --ov-color-editor-line-number-active: var(--ov-color-fg-muted);
+  --ov-color-editor-whitespace: var(--ov-primitive-gray-400);
+  --ov-color-editor-indent-guide: var(--ov-primitive-gray-300);
+  --ov-color-editor-indent-guide-active: var(--ov-primitive-gray-500);
+  --ov-color-editor-ruler: var(--ov-primitive-gray-300);
+  --ov-color-editor-find-match-bg: rgb(207 144 48 / 0.35);
+  --ov-color-editor-find-match-border: var(--ov-color-warning);
+  --ov-color-editor-find-range-bg: rgb(207 144 48 / 0.15);
+  --ov-color-editor-link: var(--ov-color-brand-300);
+  --ov-color-editor-bracket-match-bg: rgb(90 127 226 / 0.2);
+  --ov-color-editor-bracket-match-border: var(--ov-color-brand-400);
+  --ov-color-editor-bracket-1: #ffd700;
+  --ov-color-editor-bracket-2: #da70d6;
+  --ov-color-editor-bracket-3: #179fff;
+  --ov-color-editor-bracket-4: #ffd700;
+  --ov-color-editor-bracket-5: #da70d6;
+  --ov-color-editor-bracket-6: #179fff;
+  --ov-color-gutter-bg: var(--ov-color-editor-bg);
+  --ov-color-gutter-added: var(--ov-color-success);
+  --ov-color-gutter-modified: var(--ov-color-info);
+  --ov-color-gutter-deleted: var(--ov-color-danger);
+  --ov-color-diff-insert-bg: var(--ov-color-success-soft);
+  --ov-color-diff-remove-bg: var(--ov-color-danger-soft);
+  --ov-color-minimap-bg: var(--ov-color-bg-surface);
+  --ov-color-minimap-selection: var(--ov-color-accent-soft);
+  --ov-color-minimap-error: var(--ov-color-danger);
+  --ov-color-minimap-warning: var(--ov-color-warning);
+  --ov-color-minimap-find-match: var(--ov-color-warning);
+
+  /* Terminal tokens */
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
+  --ov-color-ansi-black: var(--ov-primitive-ansi-black);
+  --ov-color-ansi-red: var(--ov-primitive-ansi-red);
+  --ov-color-ansi-green: var(--ov-primitive-ansi-green);
+  --ov-color-ansi-yellow: var(--ov-primitive-ansi-yellow);
+  --ov-color-ansi-blue: var(--ov-primitive-ansi-blue);
+  --ov-color-ansi-magenta: var(--ov-primitive-ansi-magenta);
+  --ov-color-ansi-cyan: var(--ov-primitive-ansi-cyan);
+  --ov-color-ansi-white: var(--ov-primitive-ansi-white);
+  --ov-color-ansi-bright-black: var(--ov-primitive-ansi-bright-black);
+  --ov-color-ansi-bright-red: var(--ov-primitive-ansi-bright-red);
+  --ov-color-ansi-bright-green: var(--ov-primitive-ansi-bright-green);
+  --ov-color-ansi-bright-yellow: var(--ov-primitive-ansi-bright-yellow);
+  --ov-color-ansi-bright-blue: var(--ov-primitive-ansi-bright-blue);
+  --ov-color-ansi-bright-magenta: var(--ov-primitive-ansi-bright-magenta);
+  --ov-color-ansi-bright-cyan: var(--ov-primitive-ansi-bright-cyan);
+  --ov-color-ansi-bright-white: var(--ov-primitive-ansi-bright-white);
+
+  /* Syntax highlighting tokens */
+  --ov-syntax-comment: #8b949e;
+  --ov-syntax-string: var(--ov-primitive-sky-200);
+  --ov-syntax-string-escape: var(--ov-primitive-sky-300);
+  --ov-syntax-number: var(--ov-primitive-sky-300);
+  --ov-syntax-keyword: var(--ov-primitive-coral-400);
+  --ov-syntax-keyword-control: var(--ov-primitive-coral-400);
+  --ov-syntax-keyword-operator: var(--ov-primitive-coral-400);
+  --ov-syntax-type: var(--ov-primitive-orange-300);
+  --ov-syntax-class: var(--ov-primitive-orange-300);
+  --ov-syntax-interface: var(--ov-primitive-orange-300);
+  --ov-syntax-function: var(--ov-primitive-lavender-300);
+  --ov-syntax-method: var(--ov-primitive-lavender-300);
+  --ov-syntax-variable: var(--ov-color-fg-default);
+  --ov-syntax-parameter: var(--ov-primitive-orange-300);
+  --ov-syntax-property: var(--ov-primitive-sky-300);
+  --ov-syntax-namespace: var(--ov-primitive-orange-300);
+  --ov-syntax-decorator: var(--ov-primitive-lavender-300);
+  --ov-syntax-regexp: var(--ov-primitive-sky-200);
+  --ov-syntax-operator: var(--ov-primitive-coral-400);
+  --ov-syntax-punctuation: #e6edf3;
+  --ov-syntax-style-comment: italic;
+  --ov-syntax-style-keyword: normal;
+  --ov-syntax-style-function: normal;
+  --ov-syntax-style-type: normal;
 }
 
 :root[data-ov-theme='light'] {

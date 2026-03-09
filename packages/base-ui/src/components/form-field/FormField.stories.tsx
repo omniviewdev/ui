@@ -1,7 +1,8 @@
+import type { CSSProperties } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { FormField, FormSection, type FormFieldProps } from './FormField';
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
   padding: '6px 10px',
   border: '1px solid var(--ov-color-border-default)',
   borderRadius: 'var(--ov-radius-control)',
@@ -19,6 +20,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     label: 'Label',
+    htmlFor: 'field',
     size: 'md',
     required: false,
   },
@@ -94,6 +96,7 @@ export const RequiredField: Story = {
 };
 
 export const FormSectionGrouping: Story = {
+  args: { label: 'Host', htmlFor: 'host' },
   render: () => (
     <FormSection title="Connection Settings" description="Configure the target cluster connection.">
       <FormField label="Host" required htmlFor="host">
@@ -110,6 +113,7 @@ export const FormSectionGrouping: Story = {
 };
 
 export const AllSizes: Story = {
+  args: { label: 'Size', htmlFor: 'size-md' },
   render: () => (
     <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
       {(['sm', 'md', 'lg'] as const).map((size) => (

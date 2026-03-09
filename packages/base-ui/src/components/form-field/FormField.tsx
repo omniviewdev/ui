@@ -17,7 +17,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   /** Renders a required asterisk after the label. */
   required?: boolean;
   /** Associates the label with a form control via `htmlFor`. */
-  htmlFor?: string;
+  htmlFor: string;
   /** Controls density/font sizing. @default 'md' */
   size?: ComponentSize;
 }
@@ -34,33 +34,17 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(function For
       data-ov-error={error ? 'true' : undefined}
       {...props}
     >
-      {htmlFor ? (
-        <>
-          <label className={styles.Label} htmlFor={htmlFor}>
-            {label}
-            {required ? (
-              <span className={styles.Required} aria-hidden="true">
-                {' '}
-                *
-              </span>
-            ) : null}
-          </label>
-          {description ? <p className={styles.Description}>{description}</p> : null}
-          <div className={styles.Control}>{children}</div>
-        </>
-      ) : (
-        <label className={styles.Label}>
-          {label}
-          {required ? (
-            <span className={styles.Required} aria-hidden="true">
-              {' '}
-              *
-            </span>
-          ) : null}
-          {description ? <span className={styles.Description}>{description}</span> : null}
-          <span className={styles.Control}>{children}</span>
-        </label>
-      )}
+      <label className={styles.Label} htmlFor={htmlFor}>
+        {label}
+        {required ? (
+          <span className={styles.Required} aria-hidden="true">
+            {' '}
+            *
+          </span>
+        ) : null}
+      </label>
+      {description ? <p className={styles.Description}>{description}</p> : null}
+      <div className={styles.Control}>{children}</div>
       {error ? (
         <p className={styles.Error} role="alert">
           {error}
@@ -89,8 +73,10 @@ export const FormSection = forwardRef<HTMLFieldSetElement, FormSectionProps>(fun
 ) {
   return (
     <fieldset ref={ref} className={cn(styles.Section, className)} {...props}>
-      <legend className={styles.SectionTitle}>{title}</legend>
-      {description ? <p className={styles.SectionDescription}>{description}</p> : null}
+      <div className={styles.SectionHeader}>
+        <legend className={styles.SectionTitle}>{title}</legend>
+        {description ? <p className={styles.SectionDescription}>{description}</p> : null}
+      </div>
       <div className={styles.SectionContent}>{children}</div>
     </fieldset>
   );

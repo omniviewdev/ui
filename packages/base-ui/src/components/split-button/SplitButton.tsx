@@ -1,12 +1,7 @@
 import {
   createContext,
   forwardRef,
-  useCallback,
   useContext,
-  useEffect,
-  useId,
-  useRef,
-  useState,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -14,6 +9,7 @@ import { LuChevronDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
+import { Menu } from '../menu';
 import styles from './SplitButton.module.css';
 
 /* ---------------------------------- Types --------------------------------- */
@@ -28,7 +24,7 @@ export interface SplitButtonActionProps
   disabled?: boolean;
 }
 
-export interface SplitButtonMenuProps extends HTMLAttributes<HTMLDivElement> {
+export interface SplitButtonMenuProps {
   children: ReactNode;
 }
 
@@ -64,7 +60,7 @@ const SplitButtonRoot = forwardRef<HTMLDivElement, SplitButtonProps>(function Sp
 const SplitButtonAction = forwardRef<HTMLButtonElement, SplitButtonActionProps>(
   function SplitButtonAction({ className, disabled: disabledProp, ...props }, ref) {
     const ctx = useContext(SplitButtonContext);
-    const isDisabled = disabledProp ?? ctx?.disabled ?? false;
+    const isDisabled = ctx?.disabled || disabledProp || false;
 
     return (
       <button
@@ -86,69 +82,35 @@ const SplitButtonAction = forwardRef<HTMLButtonElement, SplitButtonActionProps>(
 /* ---------------------------------- Menu ---------------------------------- */
 
 const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(function SplitButtonMenu(
-  { className, children, ...props },
+  { children },
   ref,
 ) {
   const ctx = useContext(SplitButtonContext);
   const isDisabled = ctx?.disabled ?? false;
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const dropdownId = useId();
-
-  const toggle = useCallback(() => {
-    if (!isDisabled) {
-      setOpen((prev) => !prev);
-    }
-  }, [isDisabled]);
-
-  /* Close on outside click */
-  useEffect(() => {
-    if (!open) return;
-
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open]);
 
   return (
-    <div
-      ref={(node) => {
-        // Merge forwarded ref and internal containerRef
-        containerRef.current = node;
-        if (typeof ref === 'function') ref(node);
-        else if (ref) ref.current = node;
-      }}
-      className={cn(styles.MenuContainer, className)}
-      {...props}
-    >
-      <button
-        type="button"
-        className={styles.MenuTrigger}
-        disabled={isDisabled}
-        aria-haspopup="true"
-        aria-expanded={open}
-        aria-controls={dropdownId}
-        aria-label="More actions"
-        onClick={toggle}
-        {...styleDataAttributes({
-          variant: ctx?.variant,
-          color: ctx?.color,
-          size: ctx?.size,
-        })}
-      >
-        <LuChevronDown aria-hidden="true" />
-      </button>
-
-      {open && (
-        <div id={dropdownId} className={styles.Dropdown}>
-          {children}
-        </div>
-      )}
+    <div ref={ref} className={styles.MenuContainer}>
+      <Menu>
+        <Menu.Trigger
+          className={styles.MenuTrigger}
+          disabled={isDisabled}
+          aria-label="More actions"
+          {...styleDataAttributes({
+            variant: ctx?.variant,
+            color: ctx?.color,
+            size: ctx?.size,
+          })}
+        >
+          <LuChevronDown aria-hidden="true" />
+        </Menu.Trigger>
+        <Menu.Portal>
+          <Menu.Positioner side="bottom" align="end" sideOffset={4}>
+            <Menu.Popup>
+              {children}
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu>
     </div>
   );
 });

@@ -33,7 +33,7 @@ describe('Stepper', () => {
   });
 
   it('marks completed steps with a checkmark', () => {
-    renderWithTheme(
+    const { container } = renderWithTheme(
       <Stepper activeStep={2}>
         <Stepper.Step label="First" />
         <Stepper.Step label="Second" />
@@ -46,7 +46,7 @@ describe('Stepper', () => {
     expect(steps).toHaveAttribute('data-ov-status', 'completed');
 
     // Completed steps should render an SVG checkmark instead of a number
-    const svgs = document.querySelectorAll('svg');
+    const svgs = container.querySelectorAll('svg');
     expect(svgs.length).toBe(2); // First and Second steps
   });
 
@@ -170,7 +170,7 @@ describe('Stepper', () => {
     );
 
     // With only one step, there should be no connector elements
-    const connectors = container.querySelectorAll('[class*="Connector"]');
+    const connectors = container.querySelectorAll('[data-ov-role="connector"]');
     expect(connectors.length).toBe(0);
   });
 });

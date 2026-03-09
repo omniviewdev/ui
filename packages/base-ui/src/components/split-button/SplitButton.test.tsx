@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { SplitButton } from './SplitButton';
+import { Menu } from '../menu';
 
 describe('SplitButton', () => {
   it('renders action and menu trigger', () => {
@@ -10,7 +11,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Save as Draft</button>
+          <Menu.Item>Save as Draft</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -20,7 +21,7 @@ describe('SplitButton', () => {
     // menu trigger has aria-haspopup
     const trigger = screen
       .getAllByRole('button')
-      .find((btn) => btn.getAttribute('aria-haspopup') === 'true');
+      .find((btn) => btn.getAttribute('aria-haspopup') != null);
     expect(trigger).toBeDefined();
   });
 
@@ -30,7 +31,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action onClick={onClick}>Deploy</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Deploy to staging</button>
+          <Menu.Item>Deploy to staging</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -44,7 +45,7 @@ describe('SplitButton', () => {
       <SplitButton>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Save as Draft</button>
+          <Menu.Item>Save as Draft</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -55,11 +56,11 @@ describe('SplitButton', () => {
     // Click trigger
     const trigger = screen
       .getAllByRole('button')
-      .find((btn) => btn.getAttribute('aria-haspopup') === 'true')!;
+      .find((btn) => btn.getAttribute('aria-haspopup') != null)!;
     fireEvent.click(trigger);
 
     // Dropdown should be visible
-    expect(screen.getByRole('button', { name: 'Save as Draft' })).toBeInTheDocument();
+    expect(screen.getByText('Save as Draft')).toBeInTheDocument();
   });
 
   it('applies style data attributes', () => {
@@ -67,7 +68,7 @@ describe('SplitButton', () => {
       <SplitButton variant="outline" color="danger" size="lg">
         <SplitButton.Action>Delete</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Delete permanently</button>
+          <Menu.Item>Delete permanently</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -83,17 +84,17 @@ describe('SplitButton', () => {
       <SplitButton disabled>
         <SplitButton.Action>Save</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Save as Draft</button>
+          <Menu.Item>Save as Draft</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
 
-    const buttons = screen.getAllByRole('button');
-    // Action button and trigger should be disabled
     const action = screen.getByRole('button', { name: 'Save' });
     expect(action).toBeDisabled();
 
-    const trigger = buttons.find((btn) => btn.getAttribute('aria-haspopup') === 'true');
+    const trigger = screen
+      .getAllByRole('button')
+      .find((btn) => btn.getAttribute('aria-haspopup') != null);
     expect(trigger).toBeDisabled();
   });
 
@@ -102,7 +103,7 @@ describe('SplitButton', () => {
       <SplitButton className="my-custom-class">
         <SplitButton.Action>Run</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Option</button>
+          <Menu.Item>Option</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );
@@ -117,7 +118,7 @@ describe('SplitButton', () => {
       <SplitButton ref={ref}>
         <SplitButton.Action>Run</SplitButton.Action>
         <SplitButton.Menu>
-          <button type="button">Option</button>
+          <Menu.Item>Option</Menu.Item>
         </SplitButton.Menu>
       </SplitButton>,
     );

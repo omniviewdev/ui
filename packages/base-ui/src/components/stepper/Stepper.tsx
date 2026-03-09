@@ -41,7 +41,7 @@ export interface StepProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** Internal props injected by StepperRoot via Children.map. */
-interface InjectedStepProps {
+export interface InjectedStepProps {
   /** @internal */ _index?: number;
   /** @internal */ _isFirst?: boolean;
 }
@@ -68,9 +68,9 @@ const StepperRoot = forwardRef<HTMLDivElement, StepperProps>(function StepperRoo
   { className, activeStep, orientation = 'horizontal', children, ...props },
   ref,
 ) {
-  // Inject _index and _isFirst into each Step child
+  // Inject _index and _isFirst into Stepper.Step children only
   const steps = Children.map(children, (child, index) => {
-    if (isValidElement<StepProps & InjectedStepProps>(child)) {
+    if (isValidElement<StepProps & InjectedStepProps>(child) && child.type === StepperStep) {
       return cloneElement(child, { _index: index, _isFirst: index === 0 });
     }
     return child;
@@ -137,12 +137,14 @@ const StepperStep = forwardRef<HTMLDivElement, StepProps & InjectedStepProps>(fu
       data-ov-status={status}
       data-ov-disabled={disabled || undefined}
       aria-disabled={disabled || undefined}
+      aria-current={status === 'active' ? 'step' : undefined}
       {...props}
     >
       {/* Connector line (not before first step) */}
       {!_isFirst && (
         <div
           className={styles.Connector}
+          data-ov-role="connector"
           data-ov-status={isCompleted && !error ? 'completed' : 'pending'}
         />
       )}

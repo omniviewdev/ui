@@ -35,7 +35,6 @@
 .Separator {
   display: block;
   width: 1px;
-  align-self: stretch;
   height: 60%;
   margin-block: auto;
   background-color: var(--ov-color-border-muted);

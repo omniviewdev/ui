@@ -2,11 +2,15 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { TagInput, type TagInputProps } from './TagInput';
 
+const noop = () => {};
+
 const meta = {
   title: 'Inputs/TagInput',
   component: TagInput,
   tags: ['autodocs'],
   args: {
+    value: [],
+    onChange: noop,
     placeholder: 'Add a tag...',
     size: 'md',
     disabled: false,

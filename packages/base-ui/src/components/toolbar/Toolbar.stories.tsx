@@ -1,5 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  LuScissors,
+  LuClipboard,
+  LuClipboardPaste,
+  LuUndo2,
+  LuRedo2,
+  LuBold,
+  LuItalic,
+  LuUnderline,
+  LuAlignLeft,
+  LuAlignCenter,
+  LuAlignRight,
+  LuFilePlus,
+  LuFolderOpen,
+  LuSave,
+  LuSettings,
+  LuCircleHelp,
+} from 'react-icons/lu';
 import { Toolbar } from './Toolbar';
+import { Button } from '../button';
+import { IconButton } from '../icon-button';
 
 const meta = {
   title: 'Navigation/Toolbar',
@@ -15,13 +35,13 @@ const meta = {
   render: (args) => (
     <Toolbar {...args}>
       <Toolbar.Group>
-        <button type="button">Cut</button>
-        <button type="button">Copy</button>
-        <button type="button">Paste</button>
+        <IconButton variant="ghost" size="sm" aria-label="Cut"><LuScissors /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Copy"><LuClipboard /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Paste"><LuClipboardPaste /></IconButton>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button type="button">Undo</button>
-        <button type="button">Redo</button>
+        <IconButton variant="ghost" size="sm" aria-label="Undo"><LuUndo2 /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Redo"><LuRedo2 /></IconButton>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -37,14 +57,14 @@ export const BasicToolbar: Story = {
   render: () => (
     <Toolbar aria-label="Text formatting">
       <Toolbar.Group>
-        <button type="button">Bold</button>
-        <button type="button">Italic</button>
-        <button type="button">Underline</button>
+        <IconButton variant="ghost" size="sm" aria-label="Bold"><LuBold /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Italic"><LuItalic /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Underline"><LuUnderline /></IconButton>
       </Toolbar.Group>
       <Toolbar.Group>
-        <button type="button">Align left</button>
-        <button type="button">Center</button>
-        <button type="button">Align right</button>
+        <IconButton variant="ghost" size="sm" aria-label="Align left"><LuAlignLeft /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Center"><LuAlignCenter /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Align right"><LuAlignRight /></IconButton>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -55,18 +75,18 @@ export const WithSeparators: Story = {
   render: () => (
     <Toolbar aria-label="Editor actions">
       <Toolbar.Group>
-        <button type="button">New</button>
-        <button type="button">Open</button>
-        <button type="button">Save</button>
+        <Button variant="ghost" size="sm" startDecorator={<LuFilePlus />}>New</Button>
+        <Button variant="ghost" size="sm" startDecorator={<LuFolderOpen />}>Open</Button>
+        <Button variant="ghost" size="sm" startDecorator={<LuSave />}>Save</Button>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button type="button">Cut</button>
-        <button type="button">Copy</button>
-        <button type="button">Paste</button>
+        <IconButton variant="ghost" size="sm" aria-label="Cut"><LuScissors /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Copy"><LuClipboard /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Paste"><LuClipboardPaste /></IconButton>
       </Toolbar.Group>
       <Toolbar.Group separator>
-        <button type="button">Undo</button>
-        <button type="button">Redo</button>
+        <IconButton variant="ghost" size="sm" aria-label="Undo"><LuUndo2 /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Redo"><LuRedo2 /></IconButton>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -77,12 +97,12 @@ export const RightAlignedGroup: Story = {
   render: () => (
     <Toolbar aria-label="Document actions" style={{ width: '100%' }}>
       <Toolbar.Group>
-        <button type="button">Save</button>
-        <button type="button">Save As</button>
+        <Button variant="ghost" size="sm" startDecorator={<LuSave />}>Save</Button>
+        <Button variant="ghost" size="sm">Save As</Button>
       </Toolbar.Group>
       <Toolbar.Group separator style={{ marginInlineStart: 'auto' }}>
-        <button type="button">Settings</button>
-        <button type="button">Help</button>
+        <IconButton variant="ghost" size="sm" aria-label="Settings"><LuSettings /></IconButton>
+        <IconButton variant="ghost" size="sm" aria-label="Help"><LuCircleHelp /></IconButton>
       </Toolbar.Group>
     </Toolbar>
   ),
@@ -99,13 +119,13 @@ export const AllSizes: Story = {
           </div>
           <Toolbar aria-label={`Toolbar ${size}`} size={size}>
             <Toolbar.Group>
-              <button type="button">Cut</button>
-              <button type="button">Copy</button>
-              <button type="button">Paste</button>
+              <IconButton variant="ghost" size="sm" aria-label="Cut"><LuScissors /></IconButton>
+              <IconButton variant="ghost" size="sm" aria-label="Copy"><LuClipboard /></IconButton>
+              <IconButton variant="ghost" size="sm" aria-label="Paste"><LuClipboardPaste /></IconButton>
             </Toolbar.Group>
             <Toolbar.Group separator>
-              <button type="button">Undo</button>
-              <button type="button">Redo</button>
+              <IconButton variant="ghost" size="sm" aria-label="Undo"><LuUndo2 /></IconButton>
+              <IconButton variant="ghost" size="sm" aria-label="Redo"><LuRedo2 /></IconButton>
             </Toolbar.Group>
           </Toolbar>
         </div>

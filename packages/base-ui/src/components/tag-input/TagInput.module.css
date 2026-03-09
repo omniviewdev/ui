@@ -40,23 +40,6 @@
   cursor: not-allowed;
 }
 
-.Tag {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ov-primitive-space-1, 4px);
-  padding: 2px 8px;
-  background: var(--ov-color-bg-surface-raised);
-  color: var(--ov-color-fg-default);
-  border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-full);
-  font-size: var(--_ov-font-size);
-  line-height: 1.4;
-  white-space: nowrap;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .TagRemove {
   display: inline-flex;
   align-items: center;

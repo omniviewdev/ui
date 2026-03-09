@@ -42,7 +42,7 @@ const ToolbarGroup = forwardRef<HTMLDivElement, ToolbarGroupProps>(function Tool
       data-ov-separator={separator ? 'true' : undefined}
       {...props}
     >
-      {separator && <span className={styles.Separator} aria-hidden="true" />}
+      {separator && <span className={styles.Separator} role="separator" aria-hidden="true" />}
       {children}
     </div>
   );

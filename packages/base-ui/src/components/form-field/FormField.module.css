@@ -70,6 +70,12 @@
   gap: var(--ov-space-stack-md);
 }
 
+.SectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-primitive-space-1);
+}
+
 .SectionTitle {
   font-size: var(--ov-font-size-title);
   font-weight: var(--ov-font-weight-title);
@@ -80,8 +86,6 @@
 
 .SectionDescription {
   margin: 0;
-  /* Pull up closer to legend, then resume normal gap for children */
-  margin-top: calc(-1 * var(--ov-space-stack-md) + var(--ov-primitive-space-1));
   font-size: var(--ov-font-size-body);
   color: var(--ov-color-fg-muted);
   line-height: 1.4;

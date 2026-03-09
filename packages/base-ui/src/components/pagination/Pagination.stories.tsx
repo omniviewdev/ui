@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Pagination, type PaginationProps } from './Pagination';
 
 function ControlledPagination(props: PaginationProps) {
   const [page, setPage] = useState(props.page);
+
+  // Keep local state in sync with Storybook controls
+  useEffect(() => {
+    setPage((prev) => Math.min(props.page, props.count) || prev);
+  }, [props.page, props.count]);
+
   return (
     <Pagination
       {...props}
@@ -47,6 +53,8 @@ function AllSizesPagination() {
   );
 }
 
+const noop = () => {};
+
 const meta = {
   title: 'Navigation/Pagination',
   component: Pagination,
@@ -54,6 +62,7 @@ const meta = {
   args: {
     count: 10,
     page: 1,
+    onChange: noop,
     siblingCount: 1,
     boundaryCount: 1,
     showFirstLast: true,
@@ -78,17 +87,21 @@ export const Playground: Story = {
 };
 
 export const FewPages: Story = {
-  render: () => <SimplePagination count={5} page={1} />,
+  args: { count: 5, page: 1 },
+  render: (args) => <SimplePagination {...args} />,
 };
 
 export const ManyPages: Story = {
-  render: () => <SimplePagination count={50} page={10} />,
+  args: { count: 50, page: 10 },
+  render: (args) => <SimplePagination {...args} />,
 };
 
 export const AllSizes: Story = {
+  args: { count: 10, page: 3 },
   render: () => <AllSizesPagination />,
 };
 
 export const WithoutFirstLast: Story = {
-  render: () => <SimplePagination count={20} page={5} showFirstLast={false} />,
+  args: { count: 20, page: 5, showFirstLast: false },
+  render: (args) => <SimplePagination {...args} />,
 };

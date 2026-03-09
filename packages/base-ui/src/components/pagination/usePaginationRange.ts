@@ -41,7 +41,7 @@ export function buildPaginationRange(
 
   const siblingsEnd = Math.min(
     Math.max(page + siblingCount, boundaryCount + siblingCount * 2 + 2),
-    endPages.length > 0 ? endPages[0]! - 2 : count - 1,
+    endPages.length > 0 ? (endPages[0] ?? count) - 2 : count - 1,
   );
 
   const items: PaginationItem[] = [...startPages];

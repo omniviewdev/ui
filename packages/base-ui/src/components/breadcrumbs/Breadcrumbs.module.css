@@ -35,15 +35,13 @@
 }
 
 .Link {
-  color: var(--ov-color-brand-400);
+  color: var(--ov-color-fg-muted);
   text-decoration: none;
-  transition:
-    color var(--ov-duration-interactive) var(--ov-ease-standard),
-    text-decoration var(--ov-duration-interactive) var(--ov-ease-standard);
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .Link:hover {
-  text-decoration: underline;
+  color: var(--ov-color-fg-default);
 }
 
 .Link:focus-visible {
@@ -62,9 +60,13 @@
 }
 
 .Separator {
+  display: inline-flex;
+  align-items: center;
   color: var(--ov-color-fg-muted);
   user-select: none;
   flex-shrink: 0;
+  line-height: 1;
+  font-size: 0.85em;
 }
 
 .Ellipsis {
@@ -75,16 +77,21 @@
   color: var(--ov-color-fg-muted);
   font-size: var(--_ov-font-size);
   cursor: pointer;
-  padding: 0 2px;
-  border-radius: var(--ov-radius-sm);
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: var(--ov-radius-control);
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
   transition:
     color var(--ov-duration-interactive) var(--ov-ease-standard),
-    background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .Ellipsis:hover {
   color: var(--ov-color-fg-default);
   background-color: var(--ov-color-state-hover);
+  border-color: var(--ov-color-border-strong);
 }
 
 .Ellipsis:focus-visible {

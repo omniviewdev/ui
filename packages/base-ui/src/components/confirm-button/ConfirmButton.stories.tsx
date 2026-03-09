@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import type { ConfirmButtonProps } from './ConfirmButton';
 import { ConfirmButton } from './ConfirmButton';
+
+const noop = () => {};
 
 const meta = {
   title: 'Inputs/ConfirmButton',
@@ -9,7 +10,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     children: 'Delete Item',
-    onConfirm: fn(),
+    onConfirm: noop,
     variant: 'soft',
     color: 'neutral',
     size: 'md',
@@ -20,13 +21,14 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'] },
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     confirmColor: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger'],
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
     },
     confirmTimeout: { control: { type: 'number', min: 500, max: 10000, step: 500 } },
+    onConfirm: { action: 'onConfirm' },
   },
 } satisfies Meta<ConfirmButtonProps>;
 
@@ -39,15 +41,14 @@ export const Default: Story = {
   name: 'Default (click to see confirm state)',
   args: {
     children: 'Remove',
-    onConfirm: fn(),
   },
 };
 
 export const CustomLabelsAndColors: Story = {
-  render: () => (
+  render: (args) => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
       <ConfirmButton
-        onConfirm={fn()}
+        {...args}
         confirmLabel="Yes, delete"
         confirmColor="danger"
         variant="soft"
@@ -56,7 +57,7 @@ export const CustomLabelsAndColors: Story = {
         Delete File
       </ConfirmButton>
       <ConfirmButton
-        onConfirm={fn()}
+        {...args}
         confirmLabel="Really reset?"
         confirmColor="warning"
         variant="outline"
@@ -65,7 +66,7 @@ export const CustomLabelsAndColors: Story = {
         Reset Settings
       </ConfirmButton>
       <ConfirmButton
-        onConfirm={fn()}
+        {...args}
         confirmLabel="Confirm deploy"
         confirmColor="success"
         variant="solid"
@@ -78,18 +79,18 @@ export const CustomLabelsAndColors: Story = {
 };
 
 export const Variants: Story = {
-  render: () => (
+  render: (args) => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <ConfirmButton onConfirm={fn()} variant="solid" color="brand">
+      <ConfirmButton {...args} variant="solid" color="brand">
         Solid
       </ConfirmButton>
-      <ConfirmButton onConfirm={fn()} variant="soft" color="brand">
+      <ConfirmButton {...args} variant="soft" color="brand">
         Soft
       </ConfirmButton>
-      <ConfirmButton onConfirm={fn()} variant="outline" color="brand">
+      <ConfirmButton {...args} variant="outline" color="brand">
         Outline
       </ConfirmButton>
-      <ConfirmButton onConfirm={fn()} variant="ghost" color="brand">
+      <ConfirmButton {...args} variant="ghost" color="brand">
         Ghost
       </ConfirmButton>
     </div>
@@ -100,6 +101,5 @@ export const Disabled: Story = {
   args: {
     children: 'Cannot Delete',
     disabled: true,
-    onConfirm: fn(),
   },
 };

@@ -23,8 +23,8 @@ describe('FormField', () => {
 
   it('shows required asterisk when required is true', () => {
     renderWithTheme(
-      <FormField label="Email" required>
-        <input />
+      <FormField label="Email" required htmlFor="email">
+        <input id="email" />
       </FormField>,
     );
 
@@ -33,8 +33,8 @@ describe('FormField', () => {
 
   it('renders description text', () => {
     renderWithTheme(
-      <FormField label="Name" description="Enter your full name">
-        <input />
+      <FormField label="Name" description="Enter your full name" htmlFor="name">
+        <input id="name" />
       </FormField>,
     );
 
@@ -43,8 +43,8 @@ describe('FormField', () => {
 
   it('renders error message with role=alert', () => {
     renderWithTheme(
-      <FormField label="Password" error="Password is required">
-        <input />
+      <FormField label="Password" error="Password is required" htmlFor="password">
+        <input id="password" />
       </FormField>,
     );
 
@@ -54,8 +54,8 @@ describe('FormField', () => {
 
   it('sets data-ov-error when error is present', () => {
     renderWithTheme(
-      <FormField label="Port" error="Invalid port" data-testid="field">
-        <input />
+      <FormField label="Port" error="Invalid port" data-testid="field" htmlFor="port">
+        <input id="port" />
       </FormField>,
     );
 
@@ -64,8 +64,8 @@ describe('FormField', () => {
 
   it('does not set data-ov-error when no error', () => {
     renderWithTheme(
-      <FormField label="Port" data-testid="field">
-        <input />
+      <FormField label="Port" data-testid="field" htmlFor="port">
+        <input id="port" />
       </FormField>,
     );
 
@@ -74,8 +74,8 @@ describe('FormField', () => {
 
   it('renders children between description and error', () => {
     renderWithTheme(
-      <FormField label="Host" description="Server hostname" error="Required">
-        <input data-testid="child-input" />
+      <FormField label="Host" description="Server hostname" error="Required" htmlFor="host">
+        <input id="host" data-testid="child-input" />
       </FormField>,
     );
 
@@ -84,7 +84,6 @@ describe('FormField', () => {
     const error = screen.getByRole('alert');
 
     // Verify DOM order: description before input, input before error
-    // Use compareDocumentPosition since elements may be at different nesting levels
     const DOCUMENT_POSITION_FOLLOWING = 4;
     expect(description.compareDocumentPosition(childInput) & DOCUMENT_POSITION_FOLLOWING).toBe(
       DOCUMENT_POSITION_FOLLOWING,
@@ -96,8 +95,8 @@ describe('FormField', () => {
 
   it('sets data-ov-size attribute', () => {
     renderWithTheme(
-      <FormField label="Size Test" size="sm" data-testid="field">
-        <input />
+      <FormField label="Size Test" size="sm" data-testid="field" htmlFor="size-test">
+        <input id="size-test" />
       </FormField>,
     );
 
@@ -106,8 +105,8 @@ describe('FormField', () => {
 
   it('defaults data-ov-size to md', () => {
     renderWithTheme(
-      <FormField label="Default" data-testid="field">
-        <input />
+      <FormField label="Default" data-testid="field" htmlFor="default">
+        <input id="default" />
       </FormField>,
     );
 
@@ -116,8 +115,8 @@ describe('FormField', () => {
 
   it('merges className', () => {
     renderWithTheme(
-      <FormField label="Merge" className="custom-class" data-testid="field">
-        <input />
+      <FormField label="Merge" className="custom-class" data-testid="field" htmlFor="merge">
+        <input id="merge" />
       </FormField>,
     );
 
@@ -127,24 +126,12 @@ describe('FormField', () => {
   it('forwards ref', () => {
     const ref = createRef<HTMLDivElement>();
     renderWithTheme(
-      <FormField label="Ref" ref={ref}>
-        <input />
+      <FormField label="Ref" ref={ref} htmlFor="ref-test">
+        <input id="ref-test" />
       </FormField>,
     );
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
-  });
-
-  it('wraps children inside label when htmlFor is absent', () => {
-    renderWithTheme(
-      <FormField label="Wrapped">
-        <input data-testid="wrapped-input" />
-      </FormField>,
-    );
-
-    const label = screen.getByText('Wrapped').closest('label');
-    expect(label).not.toBeNull();
-    expect(label!.contains(screen.getByTestId('wrapped-input'))).toBe(true);
   });
 });
 

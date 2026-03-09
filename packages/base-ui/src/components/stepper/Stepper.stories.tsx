@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuUser, LuSettings, LuShield, LuCheckCircle } from 'react-icons/lu';
+import { LuUser, LuSettings, LuShield, LuCircleCheck } from 'react-icons/lu';
 import { Stepper } from './Stepper';
 
 const meta = {
@@ -127,7 +127,7 @@ export const WithCustomIcons: Story = {
       <Stepper.Step label="Account" icon={<LuUser size={14} />} />
       <Stepper.Step label="Security" icon={<LuShield size={14} />} />
       <Stepper.Step label="Settings" icon={<LuSettings size={14} />} />
-      <Stepper.Step label="Done" icon={<LuCheckCircle size={14} />} />
+      <Stepper.Step label="Done" icon={<LuCircleCheck size={14} />} />
     </Stepper>
   ),
 };

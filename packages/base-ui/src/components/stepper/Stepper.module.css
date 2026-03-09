@@ -70,11 +70,10 @@
 /* Vertical connector */
 .Step[data-ov-orientation='vertical'] .Connector {
   position: absolute;
-  top: 0;
+  top: calc(var(--_ov-circle-size) * -1 - var(--ov-space-stack-xs));
+  bottom: 0;
   left: calc(var(--_ov-circle-size) / 2 - var(--_ov-connector-thickness) / 2);
   width: var(--_ov-connector-thickness);
-  height: var(--ov-space-stack-lg);
-  transform: translateY(calc(var(--_ov-circle-size) * -1 - var(--ov-space-stack-xs)));
 }
 
 /* Hide the vertical connector when it would appear above the first step */

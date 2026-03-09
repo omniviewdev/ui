@@ -50,8 +50,8 @@ export const ConfirmButton = forwardRef<HTMLButtonElement, ConfirmButtonProps>(
       (event: React.MouseEvent) => {
         if (disabled) return;
         if (confirming) {
-          onConfirm();
           setConfirming(false);
+          onConfirm();
         } else {
           event.preventDefault();
           setConfirming(true);

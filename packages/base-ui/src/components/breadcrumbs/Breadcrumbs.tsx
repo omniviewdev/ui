@@ -2,7 +2,9 @@ import {
   Children,
   forwardRef,
   isValidElement,
+  useEffect,
   useState,
+  type AnchorHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -24,12 +26,14 @@ export interface BreadcrumbsProps extends HTMLAttributes<HTMLElement> {
   size?: ComponentSize;
 }
 
-export interface BreadcrumbItemProps extends HTMLAttributes<HTMLElement> {
-  /** If present, renders the item as a link. */
-  href?: string;
+type BreadcrumbItemBaseProps = {
   /** Marks this item as the current page (not a link, styled differently). */
   active?: boolean;
-}
+};
+
+export type BreadcrumbItemProps =
+  | (BreadcrumbItemBaseProps & Omit<HTMLAttributes<HTMLElement>, 'color'> & { href?: never })
+  | (BreadcrumbItemBaseProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> & { href: string });
 
 /* ----- BreadcrumbsItem ----- */
 
@@ -44,7 +48,7 @@ const BreadcrumbsItem = forwardRef<HTMLElement, BreadcrumbItemProps>(function Br
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={href}
           className={styles.Link}
-          {...(props as HTMLAttributes<HTMLAnchorElement>)}
+          {...(props as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'>)}
         >
           {children}
         </a>
@@ -58,7 +62,7 @@ const BreadcrumbsItem = forwardRef<HTMLElement, BreadcrumbItemProps>(function Br
       className={cn(styles.Item, className)}
       data-ov-active={active ? 'true' : 'false'}
       aria-current={active ? 'page' : undefined}
-      {...props}
+      {...(props as HTMLAttributes<HTMLElement>)}
     >
       <span className={styles.Text}>{children}</span>
     </span>
@@ -85,6 +89,12 @@ const BreadcrumbsRoot = forwardRef<HTMLElement, BreadcrumbsProps>(function Bread
   const [expanded, setExpanded] = useState(false);
   const childArray = Children.toArray(children).filter(isValidElement);
   const totalItems = childArray.length;
+
+  // Reset expansion when the trail changes
+  useEffect(() => {
+    setExpanded(false);
+  }, [totalItems, maxItems]);
+
   const shouldCollapse = !expanded && totalItems > maxItems;
 
   let visibleItems: ReactNode[];

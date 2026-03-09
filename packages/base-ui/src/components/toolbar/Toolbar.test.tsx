@@ -89,7 +89,7 @@ describe('Toolbar', () => {
       expect(group).toHaveAttribute('data-ov-separator', 'true');
 
       // Assert the actual separator element is rendered
-      const separator = group.querySelector('[aria-hidden="true"]');
+      const separator = group.querySelector('[role="separator"]');
       expect(separator).toBeInTheDocument();
     });
 

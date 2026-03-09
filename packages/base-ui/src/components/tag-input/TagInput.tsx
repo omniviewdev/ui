@@ -11,6 +11,7 @@ import {
 import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
+import { Chip } from '../chip';
 import styles from './TagInput.module.css';
 
 export interface TagInputProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -88,6 +89,8 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.nativeEvent.isComposing) return;
+
       if (event.key === 'Enter') {
         event.preventDefault();
         const parts = splitByDelimiter(inputValue);
@@ -150,22 +153,28 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
       {...props}
     >
       {value.map((tag, index) => (
-        <span key={`${tag}-${index}`} className={styles.Tag}>
+        <Chip
+          key={`${tag}-${index}`}
+          size={size}
+          variant="soft"
+          color="neutral"
+          endDecorator={
+            <button
+              type="button"
+              className={styles.TagRemove}
+              aria-label={`Remove ${tag}`}
+              disabled={disabled}
+              onClick={(e) => {
+                e.stopPropagation();
+                removeTag(index);
+              }}
+            >
+              <LuX aria-hidden />
+            </button>
+          }
+        >
           {tag}
-          <button
-            type="button"
-            className={styles.TagRemove}
-            aria-label={`Remove ${tag}`}
-            disabled={disabled}
-            onClick={(e) => {
-              e.stopPropagation();
-              removeTag(index);
-            }}
-            tabIndex={-1}
-          >
-            <LuX aria-hidden />
-          </button>
-        </span>
+        </Chip>
       ))}
       <input
         ref={inputRef}

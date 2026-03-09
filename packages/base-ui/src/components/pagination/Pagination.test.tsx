@@ -12,23 +12,15 @@ describe('buildPaginationRange', () => {
   });
 
   it('places right ellipsis when current page is near start', () => {
-    const range = buildPaginationRange(10, 2, 1, 1);
-    expect(range).toContain('ellipsis');
-    expect(range[0]).toBe(1);
-    expect(range[range.length - 1]).toBe(10);
+    expect(buildPaginationRange(10, 2, 1, 1)).toEqual([1, 2, 3, 4, 5, 'ellipsis', 10]);
   });
 
   it('places left ellipsis when current page is near end', () => {
-    const range = buildPaginationRange(10, 9, 1, 1);
-    expect(range).toContain('ellipsis');
-    expect(range[0]).toBe(1);
-    expect(range[range.length - 1]).toBe(10);
+    expect(buildPaginationRange(10, 9, 1, 1)).toEqual([1, 'ellipsis', 6, 7, 8, 9, 10]);
   });
 
   it('places both ellipses when current page is in the middle', () => {
-    const range = buildPaginationRange(20, 10, 1, 1);
-    const ellipses = range.filter((item) => item === 'ellipsis');
-    expect(ellipses).toHaveLength(2);
+    expect(buildPaginationRange(20, 10, 1, 1)).toEqual([1, 'ellipsis', 9, 10, 11, 'ellipsis', 20]);
   });
 
   it('respects siblingCount', () => {

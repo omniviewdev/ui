@@ -98,21 +98,6 @@
   border-left: 1px solid var(--_ov-border);
 }
 
-/* -------------------------------- Dropdown -------------------------------- */
-
-.Dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  z-index: 100;
-  min-width: 160px;
-  padding: var(--ov-space-stack-sm) 0;
-  border-radius: var(--ov-radius-surface);
-  background: var(--ov-color-bg-surface);
-  border: 1px solid var(--ov-color-border-default);
-  box-shadow: var(--ov-shadow-surface);
-}
-
 /* ----------------------------- Size variants ------------------------------ */
 
 .Action[data-ov-size='sm'],

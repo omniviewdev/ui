@@ -55,20 +55,38 @@ interface AncestorSet {
   has(value: object): boolean;
 }
 
-function subtreeMatches(value: unknown, query: string, ancestors: AncestorSet): boolean {
+/**
+ * Check if any descendant of `value` matches `query`. Results are cached
+ * per object+query in `cache` to avoid O(n²) re-scanning from each TreeNode.
+ */
+function subtreeMatches(
+  value: unknown,
+  query: string,
+  ancestors: AncestorSet,
+  cache: WeakMap<object, boolean>,
+): boolean {
   if (!query) return false;
   const type = getType(value);
   if (type !== 'object' && type !== 'array') return false;
   if (value === null || value === undefined) return false;
   if (isObjectRef(value) && ancestors.has(value)) return false;
+
+  // Return cached result if available
+  if (isObjectRef(value) && cache.has(value)) return cache.get(value)!;
+
   const childAncestors: AncestorSet = {
     has: (v: object) => v === value || ancestors.has(v),
   };
+  let result = false;
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-    if (matchesSearch(k, v, query)) return true;
-    if (subtreeMatches(v, query, childAncestors)) return true;
+    if (matchesSearch(k, v, query) || subtreeMatches(v, query, childAncestors, cache)) {
+      result = true;
+      break;
+    }
   }
-  return false;
+
+  if (isObjectRef(value)) cache.set(value, result);
+  return result;
 }
 
 interface TreeNodeProps {
@@ -80,6 +98,8 @@ interface TreeNodeProps {
   isLast: boolean;
   /** Ancestor object references for circular reference detection. */
   ancestors: AncestorSet;
+  /** Per-query cache for subtreeMatches results (shared across all nodes). */
+  searchCache: WeakMap<object, boolean>;
 }
 
 function TreeNode({
@@ -90,6 +110,7 @@ function TreeNode({
   searchQuery,
   isLast,
   ancestors,
+  searchCache,
 }: TreeNodeProps) {
   const type = getType(value);
   const isExpandable = type === 'object' || type === 'array';
@@ -101,28 +122,28 @@ function TreeNode({
     () => isExpandable && !isCircular && shouldExpand(defaultExpanded, depth),
   );
 
-  // Track whether the node was force-expanded by search so we can collapse
-  // it back when the search is cleared without disturbing user-toggled state.
+  // Track whether the node was force-expanded by search so we can restore
+  // the exact pre-search state when the search is cleared.
   const searchExpandedRef = useRef(false);
+  const preSearchExpandedRef = useRef(false);
 
   // Auto-expand when search matches a descendant
   const hasDescendantMatch = useMemo(
-    () => searchQuery ? subtreeMatches(value, searchQuery, ancestors) : false,
-    [searchQuery, value, ancestors],
+    () => searchQuery ? subtreeMatches(value, searchQuery, ancestors, searchCache) : false,
+    [searchQuery, value, ancestors, searchCache],
   );
 
   // Force expand when search finds matches in descendants
   useEffect(() => {
     if (searchQuery && hasDescendantMatch && isExpandable && !isCircular && !expanded) {
-      setExpanded(true);
+      preSearchExpandedRef.current = expanded;
       searchExpandedRef.current = true;
+      setExpanded(true);
     }
-    // Collapse back only nodes that were force-expanded by search
+    // Restore pre-search state only for nodes that were force-expanded
     if (!searchQuery && searchExpandedRef.current) {
       searchExpandedRef.current = false;
-      if (!shouldExpand(defaultExpanded, depth)) {
-        setExpanded(false);
-      }
+      setExpanded(preSearchExpandedRef.current);
     }
   }, [searchQuery, hasDescendantMatch, isExpandable, isCircular, expanded, defaultExpanded, depth]);
 
@@ -199,6 +220,7 @@ function TreeNode({
             searchQuery={searchQuery}
             isLast={i === entries.length - 1}
             ancestors={childAncestors}
+            searchCache={searchCache}
           />
         ))}
     </div>
@@ -240,6 +262,10 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
     // Root starts with an empty ancestors set — the root node itself
     // is not its own ancestor, but its children will see it as one
     const rootAncestors = EMPTY_ANCESTORS;
+
+    // Per-query cache for subtreeMatches — invalidated when query changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const searchCache = useMemo(() => new WeakMap<object, boolean>(), [searchQuery]);
 
     return (
       <div
@@ -283,6 +309,7 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
             searchQuery={searchQuery}
             isLast
             ancestors={rootAncestors}
+            searchCache={searchCache}
           />
         </div>
       </div>
@@ -323,9 +350,9 @@ function needsYamlQuoting(s: string): boolean {
   if (s === '') return true;
   if (/^[\s]/.test(s) || /[\s]$/.test(s)) return true;
   // Starts with indicator characters or reserved values
-  if (/^[-?:,\[\]{}#&*!|>'"%@`]/.test(s)) return true;
+  if (/^[-?:,[\]{}#&*!|>'"%@`]/.test(s)) return true;
   // Contains colon+space, hash+space, or other flow indicators
-  if (/[:\s]#|:\s|[{}\[\],]/.test(s)) return true;
+  if (/[:\s]#|:\s|[{}[\],]/.test(s)) return true;
   // YAML boolean/null literals (case-insensitive)
   if (/^(true|false|yes|no|on|off|null|~)$/i.test(s)) return true;
   // Looks like a number

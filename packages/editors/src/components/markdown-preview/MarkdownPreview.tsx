@@ -1,4 +1,4 @@
-import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, type HTMLAttributes } from 'react';
+import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
@@ -35,7 +35,7 @@ function hastText(node: any): string {
 }
 
 /** Accordion wrapper for <details>/<summary> that uses useId() for a stable, deterministic ID. */
-function DetailsAccordion({ summaryText, children }: { summaryText: string; children: React.ReactNode[] }) {
+function DetailsAccordion({ summaryText, children }: { summaryText: string; children: ReactNode[] }) {
   const id = useId();
   const itemId = `md-details-${id}`;
   return (
@@ -51,7 +51,7 @@ function DetailsAccordion({ summaryText, children }: { summaryText: string; chil
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MdProps = Record<string, any>;
 
-const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
+const markdownComponents: Record<string, ComponentType<MdProps>> = {
   // Code blocks & inline code
   pre: ({ children }: MdProps) => <>{children}</>,
   code: ({ className, children }: MdProps) => {
@@ -85,7 +85,8 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
   ),
 
   // Links
-  a: ({ children, href, node: _node, ...rest }: MdProps) => (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  a: ({ children, href, node, ...rest }: MdProps) => (
     <Link {...rest} href={href} target="_blank" rel="noopener noreferrer" underline="hover">
       {children}
     </Link>
@@ -112,7 +113,7 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
     }
 
     // Filter out the rendered summary element from React children
-    const body: React.ReactNode[] = [];
+    const body: ReactNode[] = [];
     Children.forEach(children, (child) => {
       // Skip the hidden summary marker
       if (isValidElement(child) && (child.props as MdProps)?.['data-md-summary']) {

@@ -67,6 +67,8 @@ TypeScript with syntax highlighting:
 \`\`\`typescript
 import { createClient } from './api/client';
 
+const client = createClient();
+
 interface PodListResponse {
   items: Array<{
     metadata: { name: string; namespace: string };

@@ -85,10 +85,15 @@ describe('DiffViewer', () => {
     expect(mockCreateDiffEditor).toHaveBeenCalled();
   });
 
-  it('passes language to createModel', async () => {
-    const monaco = await import('monaco-editor');
+  it('applies language to both models', () => {
     render(<DiffViewer original="" modified="" language="yaml" />);
-    expect(monaco.editor.createModel).toHaveBeenCalledWith('', 'yaml');
+    // Language sync effect calls setModelLanguage for both models
+    expect(mockSetModelLanguage).toHaveBeenCalledWith(
+      expect.anything(),
+      'yaml',
+    );
+    // Called twice — once for original, once for modified
+    expect(mockSetModelLanguage).toHaveBeenCalledTimes(2);
   });
 
   it('defaults to side-by-side mode', () => {

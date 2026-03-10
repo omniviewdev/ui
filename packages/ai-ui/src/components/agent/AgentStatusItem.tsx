@@ -1,5 +1,6 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
+import { AGENT_STATUS_ICONS } from '../../system/icons';
 import type { AgentStatus } from '../../system/types';
 import styles from './AgentStatusItem.module.css';
 
@@ -12,16 +13,10 @@ export interface AgentStatusItemProps extends HTMLAttributes<HTMLDivElement> {
   detail?: string;
 }
 
-const STATUS_ICONS: Record<AgentStatus, string> = {
-  idle: '○',
-  running: '◌',
-  paused: '⏸',
-  complete: '✓',
-  error: '✗',
-};
-
 export const AgentStatusItem = forwardRef<HTMLDivElement, AgentStatusItemProps>(
   function AgentStatusItem({ label, status, detail, className, ...rest }, ref) {
+    const StatusIcon = AGENT_STATUS_ICONS[status];
+
     return (
       <div
         ref={ref}
@@ -30,7 +25,7 @@ export const AgentStatusItem = forwardRef<HTMLDivElement, AgentStatusItemProps>(
         {...rest}
       >
         <span className={styles.Icon} data-ov-status={status}>
-          {STATUS_ICONS[status]}
+          <StatusIcon size={14} />
         </span>
         <span className={styles.Label}>{label}</span>
         {detail && <span className={styles.Detail}>{detail}</span>}

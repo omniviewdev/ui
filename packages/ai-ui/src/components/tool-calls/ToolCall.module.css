@@ -40,7 +40,6 @@
 
 .StatusIcon[data-ov-status='running'] {
   color: var(--ov-color-fg-brand, var(--ov-color-info-default));
-  animation: spin var(--ov-duration-slow, 1s) linear infinite;
 }
 
 .StatusIcon[data-ov-status='success'] {
@@ -64,8 +63,12 @@
 
 .Chevron {
   flex-shrink: 0;
-  font-size: 10px;
   color: var(--ov-color-fg-muted);
+  transition: transform var(--ov-duration-fast, 150ms) ease;
+}
+
+.Chevron[data-ov-open='true'] {
+  transform: rotate(180deg);
 }
 
 .Arguments {
@@ -82,18 +85,19 @@
   word-break: break-all;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.ResultContent {
+  border-top: 1px solid var(--ov-color-border-default);
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  font-family: var(--ov-font-family-mono, monospace);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  color: var(--ov-color-fg-default);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .StatusIcon[data-ov-status='running'] {
-    animation: none;
-  }
-}
-
-:root[data-ov-motion='reduced'] .StatusIcon[data-ov-status='running'] {
-  animation: none;
+.ResultContent[data-ov-status='error'] {
+  color: var(--ov-color-diagnostic-error, var(--ov-color-danger-default));
+  background: var(--ov-color-diagnostic-error-bg, transparent);
 }

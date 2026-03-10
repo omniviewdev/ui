@@ -17,7 +17,7 @@ describe('ChatAvatar', () => {
 
   it('renders role icon when no name or src', () => {
     renderAI(<ChatAvatar role="assistant" data-testid="ca" />);
-    expect(screen.getByTestId('ca')).toHaveTextContent('✦');
+    expect(screen.getByTestId('ca').querySelector('svg')).toBeInTheDocument();
   });
 
   it('renders image when src is provided', () => {

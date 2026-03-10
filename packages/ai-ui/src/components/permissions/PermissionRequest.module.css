@@ -1,103 +1,139 @@
 .Root {
+  --_ov-border: var(--ov-color-warning);
+  min-width: 0;
+}
+
+/* ── Icon badge ── */
+
+.IconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-warning-soft);
+  color: var(--ov-color-warning);
+}
+
+/* ── Content ── */
+
+.Content {
   display: flex;
   flex-direction: column;
-  gap: var(--ov-space-2, 8px);
-  padding: var(--ov-space-3, 12px);
-  background: var(--ov-color-bg-surface-raised);
-  border: 1px solid var(--ov-color-warning-default);
-  border-radius: var(--ov-radius-md, 6px);
+  gap: var(--ov-space-0-5, 2px);
+  min-width: 0;
+  flex: 1;
 }
 
 .Header {
   display: flex;
   align-items: center;
-  gap: var(--ov-space-2, 8px);
+  gap: var(--ov-space-1-5, 6px);
 }
 
-.Icon {
-  font-size: 14px;
+.Label {
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-label, 500);
+  color: var(--ov-color-warning);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .Tool {
-  font-family: var(--ov-font-family-mono, monospace);
-  font-size: var(--ov-font-size-sm, 0.8125rem);
-  font-weight: var(--ov-font-weight-semibold, 600);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  font-weight: var(--ov-font-weight-title, 600);
   color: var(--ov-color-fg-default);
+  line-height: 1.3;
 }
 
 .Description {
   margin: 0;
-  font-size: var(--ov-font-size-sm, 0.8125rem);
-  line-height: var(--ov-line-height-normal, 1.5);
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  line-height: 1.4;
   color: var(--ov-color-fg-muted);
 }
+
+/* ── Code block for commands/scripts ── */
+
+.CodeBlock {
+  margin-top: var(--ov-space-1, 4px);
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-bg-inset);
+  overflow: hidden;
+}
+
+.Code {
+  margin: 0;
+  padding: var(--ov-space-1-5, 6px) var(--ov-space-2, 8px);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  line-height: 1.5;
+  color: var(--ov-color-fg-muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.CodeCollapsed {
+  max-height: calc(1.5em * 6 + 12px); /* 6 lines + padding */
+  overflow-y: hidden;
+}
+
+.ShowMore {
+  display: block;
+  width: 100%;
+  padding: var(--ov-space-0-5, 2px) var(--ov-space-2, 8px) var(--ov-space-1, 4px);
+  border: none;
+  background: none;
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ShowMore:hover {
+  color: var(--ov-color-fg-muted);
+}
+
+/* ── Scope ── */
 
 .Scope {
   display: flex;
   align-items: center;
-  gap: var(--ov-space-2, 8px);
+  gap: var(--ov-space-1, 4px);
+  margin-top: var(--ov-space-0-5, 2px);
   font-size: var(--ov-font-size-xs, 0.75rem);
 }
 
 .ScopeLabel {
   color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
 }
 
 .ScopeValue {
-  font-family: var(--ov-font-family-mono, monospace);
+  font-family: var(--ov-font-mono);
   color: var(--ov-color-fg-muted);
   background: var(--ov-color-bg-inset);
   padding: 1px var(--ov-space-1, 4px);
   border-radius: var(--ov-radius-sm, 3px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.Actions {
+/* ── Footer actions ── */
+
+.AllowGroup {
   display: flex;
   align-items: center;
-  gap: var(--ov-space-2, 8px);
-  justify-content: flex-end;
-}
-
-.Button {
-  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
-  border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-md, 6px);
-  background: var(--ov-color-bg-surface);
-  color: var(--ov-color-fg-default);
-  font-size: var(--ov-font-size-sm, 0.8125rem);
-  cursor: pointer;
-  transition: background var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
-}
-
-.Button:hover {
-  background: var(--ov-color-bg-surface-raised);
-}
-
-.Button:focus-visible {
-  outline: 2px solid var(--ov-color-border-focus);
-  outline-offset: 1px;
-}
-
-.Button[data-ov-action='deny'] {
-  color: var(--ov-color-danger-default);
-}
-
-.Button[data-ov-action='allow'] {
-  background: var(--ov-color-success-default);
-  color: var(--ov-color-fg-on-solid, #fff);
-  border-color: var(--ov-color-success-default);
-}
-
-.Button[data-ov-action='allow']:hover {
-  opacity: 0.9;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .Button {
-    transition: none;
-  }
-}
-
-:root[data-ov-motion='reduced'] .Button {
-  transition: none;
+  gap: var(--ov-space-1-5, 6px);
+  margin-left: auto;
 }

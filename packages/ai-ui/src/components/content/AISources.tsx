@@ -1,4 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { List } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AISources.module.css';
 
@@ -9,7 +10,7 @@ export interface AISource {
   detail?: string;
 }
 
-export interface AISourcesProps extends HTMLAttributes<HTMLDivElement> {
+export interface AISourcesProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   /** List of sources */
   sources: AISource[];
   /** Called when a source is clicked */
@@ -21,23 +22,17 @@ export const AISources = forwardRef<HTMLDivElement, AISourcesProps>(
     if (sources.length === 0) return null;
 
     return (
-      <div ref={ref} className={cn(styles.Root, className)} {...rest}>
+      <div ref={ref} className={cn(styles.Root, className)} data-ov-ai-sources {...rest}>
         <div className={styles.Title}>Sources</div>
-        <div className={styles.List} role="list">
+        <List selectionMode="none" density="compact" size="sm">
           {sources.map((source, i) => (
-            <button
-              key={source.id}
-              type="button"
-              className={styles.Item}
-              role="listitem"
-              onClick={() => onNavigate?.(source)}
-            >
-              <span className={styles.Index}>{i + 1}</span>
-              <span className={styles.Label}>{source.label}</span>
-              {source.detail && <span className={styles.Detail}>{source.detail}</span>}
-            </button>
+            <List.Item key={source.id} itemKey={source.id} onClick={() => onNavigate?.(source)}>
+              <List.ItemIcon>{i + 1}</List.ItemIcon>
+              <List.ItemLabel>{source.label}</List.ItemLabel>
+              {source.detail && <List.ItemDescription>{source.detail}</List.ItemDescription>}
+            </List.Item>
           ))}
-        </div>
+        </List>
       </div>
     );
   },

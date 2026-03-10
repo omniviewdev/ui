@@ -28,9 +28,9 @@ describe('AgentTaskList', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('has role list', () => {
+  it('has role listbox', () => {
     renderAI(<AgentTaskList tasks={tasks} data-testid="atl" />);
-    expect(screen.getByTestId('atl')).toHaveAttribute('role', 'list');
+    expect(screen.getByTestId('atl')).toHaveAttribute('role', 'listbox');
   });
 
   it('forwards ref', () => {

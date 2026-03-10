@@ -1,26 +1,21 @@
 .Root {
   display: flex;
   gap: var(--ov-space-2, 8px);
-  max-width: 85%;
-  padding: var(--ov-space-1, 4px) 0;
+  padding: var(--ov-space-2, 8px) 0;
+  width: 100%;
 }
 
 .Root[data-ov-role='user'] {
-  align-self: flex-end;
   flex-direction: row-reverse;
 }
 
-.Root[data-ov-role='assistant'] {
-  align-self: flex-start;
-}
-
 .Root[data-ov-role='system'] {
-  align-self: center;
-  max-width: 70%;
+  justify-content: center;
 }
 
 .Avatar {
   flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .Content {
@@ -28,31 +23,33 @@
   flex-direction: column;
   gap: var(--ov-space-1, 4px);
   min-width: 0;
+  flex: 1;
 }
 
 .Bubble {
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  word-break: break-word;
+  color: var(--ov-color-fg-default);
+}
+
+/* User messages get a subtle inset background */
+.Root[data-ov-role='user'] .Bubble {
+  background: var(--ov-color-bg-surface-raised, rgba(255, 255, 255, 0.04));
   padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
   border-radius: var(--ov-radius-lg, 8px);
-  font-size: var(--ov-font-size-sm, 0.8125rem);
-  line-height: var(--ov-line-height-normal, 1.5);
-  word-break: break-word;
 }
 
-.Root[data-ov-role='user'] .Bubble {
-  background: var(--ov-color-chat-user-bubble-bg, var(--ov-color-bg-surface-raised));
-  color: var(--ov-color-chat-user-bubble-fg, var(--ov-color-fg-default));
-}
-
+/* Assistant messages: clean, no background */
 .Root[data-ov-role='assistant'] .Bubble {
-  background: var(--ov-color-chat-assistant-bubble-bg, var(--ov-color-bg-surface));
-  color: var(--ov-color-chat-assistant-bubble-fg, var(--ov-color-fg-default));
+  /* no background, no padding - clean text */
 }
 
+/* System messages: small, muted */
 .Root[data-ov-role='system'] .Bubble {
-  background: var(--ov-color-bg-inset);
   color: var(--ov-color-fg-muted);
-  text-align: center;
   font-size: var(--ov-font-size-xs, 0.75rem);
+  text-align: center;
 }
 
 .Meta {
@@ -68,6 +65,12 @@
 .Timestamp {
   font-size: var(--ov-font-size-xs, 0.75rem);
   color: var(--ov-color-fg-muted);
+  opacity: 0;
+  transition: opacity var(--ov-duration-fast, 150ms);
+}
+
+.Root:hover .Timestamp {
+  opacity: 1;
 }
 
 .Actions {
@@ -75,7 +78,7 @@
   align-items: center;
   gap: var(--ov-space-1, 4px);
   opacity: 0;
-  transition: opacity var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+  transition: opacity var(--ov-duration-fast, 150ms);
 }
 
 .Root:hover .Actions {
@@ -83,11 +86,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .Actions {
+  .Actions,
+  .Timestamp {
     transition: none;
   }
-}
-
-:root[data-ov-motion='reduced'] .Actions {
-  transition: none;
 }

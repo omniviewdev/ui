@@ -13,66 +13,114 @@
   margin-bottom: 0;
 }
 
-.Heading {
+/* Streaming cursor */
+.Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--ov-color-fg-default);
+  animation: cursor-blink var(--ov-duration-slow, 1s) step-end infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+    animation: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+  animation: none;
+}
+
+/* Headings */
+.Root h1,
+.Root h2,
+.Root h3,
+.Root h4,
+.Root h5,
+.Root h6 {
   margin: var(--ov-space-3, 12px) 0 var(--ov-space-2, 8px);
   font-weight: var(--ov-font-weight-semibold, 600);
   color: var(--ov-color-fg-default);
   line-height: 1.3;
 }
 
-h1.Heading { font-size: var(--ov-font-size-xl, 1.25rem); }
-h2.Heading { font-size: var(--ov-font-size-lg, 1.0625rem); }
-h3.Heading { font-size: var(--ov-font-size-md, 0.9375rem); }
-h4.Heading,
-h5.Heading,
-h6.Heading { font-size: var(--ov-font-size-sm, 0.8125rem); }
+.Root h1 { font-size: var(--ov-font-size-xl, 1.25rem); }
+.Root h2 { font-size: var(--ov-font-size-lg, 1.0625rem); }
+.Root h3 { font-size: var(--ov-font-size-md, 0.9375rem); }
+.Root h4,
+.Root h5,
+.Root h6 { font-size: var(--ov-font-size-sm, 0.8125rem); }
 
-.Paragraph {
+/* Paragraphs */
+.Root p {
   margin: var(--ov-space-2, 8px) 0;
 }
 
-.List {
+/* Lists */
+.Root ul,
+.Root ol {
   margin: var(--ov-space-2, 8px) 0;
-  padding-left: var(--ov-space-4, 16px);
+  padding-left: var(--ov-space-5, 20px);
 }
 
-.Blockquote {
-  margin: var(--ov-space-2, 8px) 0;
-  padding-left: var(--ov-space-3, 12px);
-  border-left: 3px solid var(--ov-color-markdown-quote-border, var(--ov-color-border-default));
-  color: var(--ov-color-fg-muted);
+.Root li {
+  margin: var(--ov-space-1, 4px) 0;
 }
 
-.CodeBlock {
+/* Blockquotes — spacing when using Blockquote component */
+.Root blockquote {
   margin: var(--ov-space-2, 8px) 0;
-  padding: var(--ov-space-3, 12px);
-  background: var(--ov-color-markdown-code-bg, var(--ov-color-bg-inset));
-  border-radius: var(--ov-radius-md, 6px);
-  overflow-x: auto;
-  font-family: var(--ov-font-family-mono, monospace);
-  font-size: var(--ov-font-size-xs, 0.75rem);
-  line-height: var(--ov-line-height-relaxed, 1.625);
 }
 
+/* Strip bottom margin from last paragraph inside blockquotes */
+.Root blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code blocks */
+.CodeBlockWrapper {
+  margin: var(--ov-space-3, 12px) 0;
+}
+
+/* Inline code */
 .InlineCode {
-  background: var(--ov-color-markdown-code-bg, var(--ov-color-bg-inset));
-  padding: 1px var(--ov-space-1, 4px);
-  border-radius: var(--ov-radius-sm, 3px);
-  font-family: var(--ov-font-family-mono, monospace);
   font-size: 0.9em;
 }
 
-.Link {
+/* Links */
+.Root a {
   color: var(--ov-color-markdown-link, var(--ov-color-fg-brand));
-  text-decoration: none;
 }
 
-.Link:hover {
-  text-decoration: underline;
-}
-
-.Hr {
+/* Horizontal rules */
+.Root hr {
   margin: var(--ov-space-3, 12px) 0;
-  border: none;
-  border-top: 1px solid var(--ov-color-border-default);
+}
+
+/* Task list checkboxes — keep inline with text */
+.Root :global(.ov-md-checkbox) {
+  display: inline-grid;
+  width: auto;
+  vertical-align: middle;
+  margin-right: var(--ov-space-1, 4px);
+}
+
+/* Task list items should not show bullet */
+.Root li:has(> :global(.ov-md-checkbox)) {
+  list-style: none;
+}
+
+/* Table spacing */
+.Root table {
+  margin: var(--ov-space-2, 8px) 0;
 }

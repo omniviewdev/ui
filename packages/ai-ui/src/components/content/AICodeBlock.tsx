@@ -1,4 +1,5 @@
-import { forwardRef, useCallback, useState, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { CodeBlock } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AICodeBlock.module.css';
 
@@ -20,20 +21,6 @@ export const AICodeBlock = forwardRef<HTMLDivElement, AICodeBlockProps>(
     { code, language, filename, showLineNumbers = false, actions, className, ...rest },
     ref,
   ) {
-    const [copied, setCopied] = useState(false);
-
-    const handleCopy = useCallback(async () => {
-      try {
-        await navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {
-        // Clipboard API may not be available
-      }
-    }, [code]);
-
-    const lines = code.split('\n');
-
     return (
       <div
         ref={ref}
@@ -41,40 +28,18 @@ export const AICodeBlock = forwardRef<HTMLDivElement, AICodeBlockProps>(
         data-language={language}
         {...rest}
       >
-        {(filename || actions || language) && (
+        {(filename || actions) && (
           <div className={styles.Header}>
-            <span className={styles.FileInfo}>
-              {filename && <span className={styles.Filename}>{filename}</span>}
-              {language && !filename && <span className={styles.Language}>{language}</span>}
-            </span>
-            <div className={styles.HeaderActions}>
-              <button
-                type="button"
-                className={styles.CopyButton}
-                onClick={handleCopy}
-                aria-label="Copy code"
-              >
-                {copied ? '✓' : '⎘'}
-              </button>
-              {actions}
-            </div>
+            {filename && <span className={styles.Filename}>{filename}</span>}
+            {actions && <div className={styles.HeaderActions}>{actions}</div>}
           </div>
         )}
-        <pre className={styles.Pre}>
-          {showLineNumbers ? (
-            <code className={styles.Code}>
-              {lines.map((line, i) => (
-                <span key={i} className={styles.Line}>
-                  <span className={styles.LineNumber}>{i + 1}</span>
-                  <span className={styles.LineContent}>{line}</span>
-                  {i < lines.length - 1 ? '\n' : ''}
-                </span>
-              ))}
-            </code>
-          ) : (
-            <code className={styles.Code}>{code}</code>
-          )}
-        </pre>
+        <CodeBlock
+          code={code}
+          language={language}
+          lineNumbers={showLineNumbers}
+          copyable
+        />
       </div>
     );
   },

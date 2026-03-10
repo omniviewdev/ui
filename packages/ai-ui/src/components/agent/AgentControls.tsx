@@ -1,4 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { Button } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import type { AgentStatus } from '../../system/types';
 import styles from './AgentControls.module.css';
@@ -40,24 +41,24 @@ export const AgentControls = forwardRef<HTMLDivElement, AgentControlsProps>(
         </span>
         <div className={styles.Actions}>
           {status === 'idle' && onStart && (
-            <button type="button" className={styles.Button} data-ov-action="start" onClick={onStart}>
+            <Button size="sm" variant="solid" color="brand" onClick={onStart}>
               Start
-            </button>
+            </Button>
           )}
           {status === 'running' && onPause && (
-            <button type="button" className={styles.Button} data-ov-action="pause" onClick={onPause}>
+            <Button size="sm" variant="outline" color="neutral" onClick={onPause}>
               Pause
-            </button>
+            </Button>
           )}
           {status === 'paused' && onResume && (
-            <button type="button" className={styles.Button} data-ov-action="resume" onClick={onResume}>
+            <Button size="sm" variant="solid" color="brand" onClick={onResume}>
               Resume
-            </button>
+            </Button>
           )}
           {(status === 'running' || status === 'paused') && onStop && (
-            <button type="button" className={styles.Button} data-ov-action="stop" onClick={onStop}>
+            <Button size="sm" variant="soft" color="danger" onClick={onStop}>
               Stop
-            </button>
+            </Button>
           )}
         </div>
       </div>

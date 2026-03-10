@@ -1,86 +1,53 @@
 .Root {
   display: flex;
   flex-direction: column;
-  gap: var(--ov-space-1, 4px);
-  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  gap: var(--ov-space-1-5, 6px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-2-5, 10px);
   background: var(--ov-color-bg-inset);
   border: 1px solid var(--ov-color-border-default);
   border-radius: var(--ov-radius-md, 6px);
+  font-family: var(--ov-font-sans);
 }
 
 .Root[data-ov-destructive='true'] {
-  border-color: var(--ov-color-danger-default);
+  border-color: color-mix(in srgb, var(--ov-color-danger) 50%, var(--ov-color-border-default) 50%);
 }
 
 .Command {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--ov-space-2, 8px);
+  gap: var(--ov-space-1-5, 6px);
+  min-width: 0;
+}
+
+.CommandIcon {
+  flex-shrink: 0;
+  color: var(--ov-color-fg-subtle);
 }
 
 .Code {
-  font-family: var(--ov-font-family-mono, monospace);
-  font-size: var(--ov-font-size-sm, 0.8125rem);
+  flex: 1;
+  min-width: 0;
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-caption, 0.8125rem);
   color: var(--ov-color-fg-default);
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.Actions {
-  display: flex;
-  align-items: center;
-  gap: var(--ov-space-1, 4px);
-  flex-shrink: 0;
-}
-
-.Button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  border-radius: var(--ov-radius-sm, 3px);
-  background: transparent;
-  color: var(--ov-color-fg-muted);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.Button:hover {
-  background: var(--ov-color-bg-surface-raised);
-  color: var(--ov-color-fg-default);
-}
-
-.ApplyButton {
-  padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
-  border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-sm, 3px);
-  background: var(--ov-color-bg-surface);
-  color: var(--ov-color-fg-default);
-  font-size: var(--ov-font-size-xs, 0.75rem);
-  cursor: pointer;
-}
-
-.ApplyButton:hover {
-  background: var(--ov-color-bg-surface-raised);
-}
-
-.ApplyButton[data-ov-destructive='true'] {
-  color: var(--ov-color-danger-default);
-  border-color: var(--ov-color-danger-default);
-}
-
-.ApplyButton:focus-visible {
-  outline: 2px solid var(--ov-color-border-focus);
-  outline-offset: 1px;
 }
 
 .Description {
   margin: 0;
   font-size: var(--ov-font-size-xs, 0.75rem);
   color: var(--ov-color-fg-muted);
-  line-height: var(--ov-line-height-normal, 1.5);
+  line-height: 1.4;
+  padding-left: calc(14px + var(--ov-space-1-5, 6px)); /* align with code after icon */
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+  padding-left: calc(14px + var(--ov-space-1-5, 6px));
 }

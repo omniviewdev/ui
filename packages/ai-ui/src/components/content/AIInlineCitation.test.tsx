@@ -18,9 +18,9 @@ describe('AIInlineCitation', () => {
     expect(onNavigate).toHaveBeenCalledTimes(1);
   });
 
-  it('shows source as title', () => {
+  it('does not use native title attribute (uses Tooltip instead)', () => {
     renderAI(<AIInlineCitation index={1} source="README.md" data-testid="c" />);
-    expect(screen.getByTestId('c')).toHaveAttribute('title', 'README.md');
+    expect(screen.getByTestId('c')).not.toHaveAttribute('title');
   });
 
   it('forwards ref', () => {

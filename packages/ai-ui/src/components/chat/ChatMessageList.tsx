@@ -2,13 +2,22 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
   type HTMLAttributes,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { Button } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
+import { LuArrowDown } from '../../system/icons';
 import styles from './ChatMessageList.module.css';
+
+export interface ChatMessageListHandle {
+  scrollToBottom: () => void;
+  scrollToIndex: (index: number) => void;
+  getScrollElement: () => HTMLDivElement | null;
+}
 
 export interface ChatMessageListProps extends HTMLAttributes<HTMLDivElement> {
   /** Auto-scroll to bottom on new children (default: true) */
@@ -23,7 +32,7 @@ export interface ChatMessageListProps extends HTMLAttributes<HTMLDivElement> {
   renderItem: (index: number) => React.ReactNode;
 }
 
-export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
+export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageListProps>(
   function ChatMessageList(
     {
       autoScroll = true,
@@ -46,6 +55,7 @@ export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
       getScrollElement: () => scrollRef.current,
       estimateSize: () => estimateSize,
       overscan: 5,
+      useAnimationFrameWithResizeObserver: true,
     });
 
     const scrollToBottom = useCallback(() => {
@@ -55,6 +65,14 @@ export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
         setShowNewIndicator(false);
       }
     }, []);
+
+    useImperativeHandle(ref, () => ({
+      scrollToBottom,
+      scrollToIndex: (index: number) => {
+        virtualizer.scrollToIndex(index, { align: 'start' });
+      },
+      getScrollElement: () => scrollRef.current,
+    }), [scrollToBottom, virtualizer]);
 
     const handleScroll = useCallback(() => {
       const el = scrollRef.current;
@@ -77,7 +95,6 @@ export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
     useEffect(() => {
       if (count > prevCountRef.current) {
         if (autoScroll && isAtBottom) {
-          // Use rAF to allow DOM to update first
           requestAnimationFrame(scrollToBottom);
         } else if (!isAtBottom) {
           setShowNewIndicator(true);
@@ -86,22 +103,25 @@ export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
       prevCountRef.current = count;
     }, [count, autoScroll, isAtBottom, scrollToBottom]);
 
-    const setRef = useCallback(
-      (node: HTMLDivElement | null) => {
-        (scrollRef as { current: HTMLDivElement | null }).current = node;
-        if (typeof ref === 'function') {
-          ref(node);
-        } else if (ref) {
-          (ref as { current: HTMLDivElement | null }).current = node;
+    // Auto-scroll when content height changes during streaming.
+    // When the user is pinned to the bottom and a message grows (e.g.
+    // ThinkingBlock/AIMarkdown streaming), keep the viewport pinned
+    // so the user doesn't have to manually chase the content.
+    const totalSize = virtualizer.getTotalSize();
+    const prevTotalSizeRef = useRef(totalSize);
+    useEffect(() => {
+      if (totalSize !== prevTotalSizeRef.current) {
+        prevTotalSizeRef.current = totalSize;
+        if (autoScroll && isAtBottom) {
+          requestAnimationFrame(scrollToBottom);
         }
-      },
-      [ref],
-    );
+      }
+    }, [totalSize, autoScroll, isAtBottom, scrollToBottom]);
 
     return (
       <div className={cn(styles.Wrapper, className)} {...rest}>
         <div
-          ref={setRef}
+          ref={scrollRef}
           className={styles.Root}
           onScroll={handleScroll}
         >
@@ -129,13 +149,15 @@ export const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
           </div>
         </div>
         {showNewIndicator && (
-          <button
-            type="button"
+          <Button
+            size="sm"
+            variant="soft"
+            color="brand"
             className={styles.NewMessages}
             onClick={scrollToBottom}
           >
-            ↓ New messages
-          </button>
+            <LuArrowDown size={14} /> New messages
+          </Button>
         )}
       </div>
     );

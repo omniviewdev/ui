@@ -1,108 +1,102 @@
 .Root {
-  border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-md, 6px);
-  background: var(--ov-color-bg-inset);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.Header {
+/* Trigger button — clean, borderless design */
+.Trigger {
   display: flex;
   align-items: center;
   gap: var(--ov-space-2, 8px);
   width: 100%;
-  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  padding: var(--ov-space-1, 4px) 0;
   background: transparent;
   border: none;
   color: var(--ov-color-fg-muted);
-  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  font-family: inherit;
   cursor: pointer;
   text-align: left;
+  transition: color 0.2s;
 }
 
-.Header:hover {
+.Trigger:hover {
   color: var(--ov-color-fg-default);
 }
 
-.Header:focus-visible {
+.Trigger:focus-visible {
   outline: 2px solid var(--ov-color-border-focus);
-  outline-offset: -2px;
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm, 3px);
 }
 
-.Icon {
+/* Brain icon — subtle animation while streaming */
+.BrainIcon {
   flex-shrink: 0;
-  font-size: 10px;
+  display: flex;
+  align-items: center;
   line-height: 1;
 }
 
-.Title {
+.Root[data-ov-streaming='true'] .BrainIcon {
+  animation: brain-pulse 2s ease-in-out infinite;
+}
+
+@keyframes brain-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Label */
+.Label {
   flex: 1;
-  font-weight: var(--ov-font-weight-medium, 500);
+  font-weight: var(--ov-font-weight-regular, 400);
 }
 
-.Duration {
-  font-size: var(--ov-font-size-xs, 0.75rem);
-  color: var(--ov-color-fg-subtle);
-  background: var(--ov-color-bg-surface);
-  border-radius: var(--ov-radius-full, 9999px);
-  padding: 1px var(--ov-space-2, 8px);
+/* Chevron with rotation transition */
+.Chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
 }
 
+.Chevron[data-ov-open='true'] {
+  transform: rotate(180deg);
+}
+
+.Chevron[data-ov-open='false'] {
+  transform: rotate(0deg);
+}
+
+/* Content area */
 .Content {
-  padding: 0 var(--ov-space-3, 12px) var(--ov-space-3, 12px);
+  padding: var(--ov-space-2, 8px) 0 var(--ov-space-1, 4px);
 }
 
 .Text {
   margin: 0;
-  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-size: var(--ov-font-size-sm, 0.875rem);
   line-height: var(--ov-line-height-relaxed, 1.625);
   color: var(--ov-color-fg-muted);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-.StreamDots {
-  display: inline-flex;
-  gap: 3px;
-  margin-left: var(--ov-space-1, 4px);
-  vertical-align: middle;
-}
-
-.Dot {
-  display: inline-block;
-  width: 4px;
-  height: 4px;
-  border-radius: var(--ov-radius-full, 9999px);
-  background: var(--ov-color-fg-muted);
-  animation: pulse var(--ov-duration-slow, 1s) ease-in-out infinite;
-}
-
-.Dot:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.Dot:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-@keyframes pulse {
-  0%,
-  60%,
-  100% {
-    opacity: 0.4;
-  }
-  30% {
-    opacity: 1;
-  }
-}
-
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .Dot {
+  .Root[data-ov-streaming='true'] .BrainIcon {
     animation: none;
-    opacity: 0.6;
+  }
+  .Chevron {
+    transition: none;
   }
 }
 
-:root[data-ov-motion='reduced'] .Dot {
+:root[data-ov-motion='reduced'] .Root[data-ov-streaming='true'] .BrainIcon {
   animation: none;
-  opacity: 0.6;
+}
+
+:root[data-ov-motion='reduced'] .Chevron {
+  transition: none;
 }

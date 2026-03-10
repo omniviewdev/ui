@@ -1,4 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { Chip } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './ChatSuggestions.module.css';
 
@@ -21,15 +22,17 @@ export const ChatSuggestions = forwardRef<HTMLDivElement, ChatSuggestionsProps>(
     return (
       <div ref={ref} className={cn(styles.Root, className)} role="list" {...rest}>
         {suggestions.map((suggestion) => (
-          <button
+          <Chip
             key={suggestion.value}
-            type="button"
-            className={styles.Item}
+            as="button"
+            clickable
+            variant="outline"
+            size="md"
             role="listitem"
             onClick={() => onSelect(suggestion.value)}
           >
             {suggestion.label}
-          </button>
+          </Chip>
         ))}
       </div>
     );

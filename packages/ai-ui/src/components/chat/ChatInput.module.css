@@ -1,12 +1,16 @@
+/* ───────────────────────────────────────────────
+   ChatInput
+   Single unified container: textarea on top,
+   toolbar below — all inside one rounded card.
+   ─────────────────────────────────────────────── */
+
 .Root {
   display: flex;
   flex-direction: column;
-  gap: var(--ov-space-1, 4px);
-  background: var(--ov-color-chat-input-bg, var(--ov-color-input-bg));
-  border: 1px solid var(--ov-color-chat-input-border, var(--ov-color-input-border));
-  border-radius: var(--ov-radius-lg, 8px);
-  padding: var(--ov-space-2, 8px);
-  transition: border-color var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-xl, 12px);
+  background: var(--ov-color-bg-surface);
+  transition: border-color var(--ov-duration-fast, 150ms);
 }
 
 .Root:focus-within {
@@ -17,6 +21,8 @@
   opacity: var(--ov-opacity-disabled, 0.5);
   pointer-events: none;
 }
+
+/* ─── Textarea ──────────────────────────────── */
 
 .Textarea {
   display: block;
@@ -29,48 +35,42 @@
   background: transparent;
   color: var(--ov-color-fg-default);
   font-family: inherit;
-  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-size: var(--ov-font-size-sm, 0.875rem);
   line-height: var(--ov-line-height-normal, 1.5);
-  padding: 0;
+  padding: var(--ov-space-3, 12px) var(--ov-space-3, 12px) 0;
 }
 
 .Textarea::placeholder {
-  color: var(--ov-color-input-placeholder, var(--ov-color-fg-muted));
-}
-
-.Footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 0;
-}
-
-.Footer:empty {
-  display: none;
-}
-
-.Actions {
-  display: flex;
-  align-items: center;
-  gap: var(--ov-space-1, 4px);
-}
-
-.Counter {
-  font-size: var(--ov-font-size-xs, 0.75rem);
   color: var(--ov-color-fg-muted);
+}
+
+/* ─── Toolbar ───────────────────────────────── */
+
+.Toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-2-5, 10px);
+  min-height: 36px;
+}
+
+.ToolbarStart {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+}
+
+.ToolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
   margin-left: auto;
 }
 
-.Counter[data-ov-near-limit='true'] {
-  color: var(--ov-color-fg-warning, var(--ov-color-warning-default));
-}
+/* ─── Reduced motion ────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .Root {
     transition: none;
   }
-}
-
-:root[data-ov-motion='reduced'] .Root {
-  transition: none;
 }

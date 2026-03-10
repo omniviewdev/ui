@@ -1,8 +1,10 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { Button, IconButton } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
+import { LuCopy, LuCornerDownRight } from '../../system/icons';
 import styles from './AICommandSuggestion.module.css';
 
-export interface AICommandSuggestionProps extends HTMLAttributes<HTMLDivElement> {
+export interface AICommandSuggestionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   /** The command to suggest */
   command: string;
   /** Description of what the command does */
@@ -28,26 +30,27 @@ export const AICommandSuggestion = forwardRef<HTMLDivElement, AICommandSuggestio
         {...rest}
       >
         <div className={styles.Command}>
+          <LuCornerDownRight size={14} className={styles.CommandIcon} />
           <code className={styles.Code}>{command}</code>
-          <div className={styles.Actions}>
-            {onCopy && (
-              <button type="button" className={styles.Button} onClick={onCopy} aria-label="Copy command">
-                ⎘
-              </button>
-            )}
-            {onApply && (
-              <button
-                type="button"
-                className={styles.ApplyButton}
-                data-ov-destructive={destructive ? 'true' : undefined}
-                onClick={onApply}
-              >
-                Apply
-              </button>
-            )}
-          </div>
+          {onCopy && (
+            <IconButton size="sm" variant="ghost" color="neutral" aria-label="Copy command" onClick={onCopy}>
+              <LuCopy size={14} />
+            </IconButton>
+          )}
         </div>
         {description && <p className={styles.Description}>{description}</p>}
+        {onApply && (
+          <div className={styles.Actions}>
+            <Button
+              size="sm"
+              variant="soft"
+              color={destructive ? 'danger' : 'brand'}
+              onClick={onApply}
+            >
+              {destructive ? 'Run' : 'Apply'}
+            </Button>
+          </div>
+        )}
       </div>
     );
   },

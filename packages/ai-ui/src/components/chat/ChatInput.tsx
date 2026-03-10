@@ -21,10 +21,10 @@ export interface ChatInputProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   placeholder?: string;
   /** Disable input */
   disabled?: boolean;
-  /** Max character length */
-  maxLength?: number;
-  /** Slot for action buttons (attachments, etc.) */
-  actions?: ReactNode;
+  /** Left-aligned toolbar items (e.g. attachment button, model selector, capability chips) */
+  startActions?: ReactNode;
+  /** Right-aligned toolbar items (e.g. token counter, send/stop button) */
+  endActions?: ReactNode;
 }
 
 export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
@@ -33,10 +33,10 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
       value,
       onChange,
       onSubmit,
-      placeholder = 'Type a message...',
+      placeholder = 'Send a message...',
       disabled = false,
-      maxLength,
-      actions,
+      startActions,
+      endActions,
       className,
       ...rest
     },
@@ -70,13 +70,12 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const next = maxLength ? e.target.value.slice(0, maxLength) : e.target.value;
-        onChange(next);
+        onChange(e.target.value);
       },
-      [onChange, maxLength],
+      [onChange],
     );
 
-    const nearLimit = maxLength && value.length >= maxLength * 0.9;
+    const hasToolbar = startActions != null || endActions != null;
 
     return (
       <div
@@ -96,17 +95,12 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
           rows={1}
           aria-label="Chat message input"
         />
-        <div className={styles.Footer}>
-          {actions && <div className={styles.Actions}>{actions}</div>}
-          {maxLength && (
-            <span
-              className={styles.Counter}
-              data-ov-near-limit={nearLimit ? 'true' : undefined}
-            >
-              {value.length}/{maxLength}
-            </span>
-          )}
-        </div>
+        {hasToolbar && (
+          <div className={styles.Toolbar}>
+            {startActions && <div className={styles.ToolbarStart}>{startActions}</div>}
+            {endActions && <div className={styles.ToolbarEnd}>{endActions}</div>}
+          </div>
+        )}
       </div>
     );
   },

@@ -1,10 +1,4 @@
-export { AIResourceCard } from './AIResourceCard';
-export type { AIResourceCardProps, ResourceHealthStatus } from './AIResourceCard';
 export { AICommandSuggestion } from './AICommandSuggestion';
 export type { AICommandSuggestionProps } from './AICommandSuggestion';
 export { AIActionConfirmation } from './AIActionConfirmation';
 export type { AIActionConfirmationProps } from './AIActionConfirmation';
-export { AIHealthSummary } from './AIHealthSummary';
-export type { AIHealthSummaryProps, HealthCount } from './AIHealthSummary';
-export { AIMetricSnapshot } from './AIMetricSnapshot';
-export type { AIMetricSnapshotProps } from './AIMetricSnapshot';

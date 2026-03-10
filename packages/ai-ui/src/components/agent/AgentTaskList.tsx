@@ -1,4 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { List } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import type { AgentStatus } from '../../system/types';
 import { AgentStatusItem } from './AgentStatusItem';
@@ -11,7 +12,7 @@ export interface AgentTask {
   detail?: string;
 }
 
-export interface AgentTaskListProps extends HTMLAttributes<HTMLDivElement> {
+export interface AgentTaskListProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   /** List of agent tasks */
   tasks: AgentTask[];
 }
@@ -21,17 +22,23 @@ export const AgentTaskList = forwardRef<HTMLDivElement, AgentTaskListProps>(
     if (tasks.length === 0) return null;
 
     return (
-      <div ref={ref} className={cn(styles.Root, className)} role="list" {...rest}>
+      <List
+        ref={ref}
+        className={cn(styles.Root, className)}
+        selectionMode="none"
+        density="compact"
+        {...rest}
+      >
         {tasks.map((task) => (
-          <AgentStatusItem
-            key={task.id}
-            label={task.label}
-            status={task.status}
-            detail={task.detail}
-            role="listitem"
-          />
+          <List.Item key={task.id} itemKey={task.id} textValue={task.label}>
+            <AgentStatusItem
+              label={task.label}
+              status={task.status}
+              detail={task.detail}
+            />
+          </List.Item>
         ))}
-      </div>
+      </List>
     );
   },
 );

@@ -1,5 +1,7 @@
 import { forwardRef, type HTMLAttributes } from 'react';
+import { Avatar } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
+import { CHAT_ROLE_ICONS } from '../../system/icons';
 import type { ChatRole } from '../../system/types';
 import styles from './ChatAvatar.module.css';
 
@@ -12,24 +14,15 @@ export interface ChatAvatarProps extends HTMLAttributes<HTMLDivElement> {
   name?: string;
 }
 
-function getInitials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase();
-}
-
-const ROLE_ICONS: Record<ChatRole, string> = {
-  user: '👤',
-  assistant: '✦',
-  system: '⚙',
+const ROLE_COLORS: Record<ChatRole, 'brand' | 'neutral' | 'info'> = {
+  user: 'brand',
+  assistant: 'info',
+  system: 'neutral',
 };
 
 export const ChatAvatar = forwardRef<HTMLDivElement, ChatAvatarProps>(
   function ChatAvatar({ role, src, name, className, ...rest }, ref) {
-    const fallback = name ? getInitials(name) : ROLE_ICONS[role];
+    const RoleIcon = CHAT_ROLE_ICONS[role];
 
     return (
       <div
@@ -39,11 +32,16 @@ export const ChatAvatar = forwardRef<HTMLDivElement, ChatAvatarProps>(
         aria-label={name ?? role}
         {...rest}
       >
-        {src ? (
-          <img className={styles.Image} src={src} alt={name ?? role} />
-        ) : (
-          <span className={styles.Fallback}>{fallback}</span>
-        )}
+        <Avatar
+          src={src}
+          name={name}
+          alt={name ?? role}
+          fallbackIcon={!name ? <RoleIcon size={16} /> : undefined}
+          size="sm"
+          color={ROLE_COLORS[role]}
+          shape="circle"
+          deterministic
+        />
       </div>
     );
   },

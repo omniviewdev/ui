@@ -8,7 +8,7 @@ import { ChatInput } from './ChatInput';
 describe('ChatInput', () => {
   it('renders textarea with placeholder', () => {
     renderAI(<ChatInput value="" onChange={vi.fn()} onSubmit={vi.fn()} />);
-    expect(screen.getByPlaceholderText('Type a message...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Send a message...')).toBeInTheDocument();
   });
 
   it('calls onChange when typing', async () => {
@@ -39,25 +39,6 @@ describe('ChatInput', () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it('renders actions slot', () => {
-    renderAI(
-      <ChatInput
-        value=""
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        actions={<button data-testid="action">Attach</button>}
-      />,
-    );
-    expect(screen.getByTestId('action')).toBeInTheDocument();
-  });
-
-  it('shows character counter with maxLength', () => {
-    renderAI(
-      <ChatInput value="hello" onChange={vi.fn()} onSubmit={vi.fn()} maxLength={100} />,
-    );
-    expect(screen.getByText('5/100')).toBeInTheDocument();
-  });
-
   it('disables input', () => {
     renderAI(<ChatInput value="" onChange={vi.fn()} onSubmit={vi.fn()} disabled />);
     expect(screen.getByRole('textbox')).toBeDisabled();
@@ -80,5 +61,57 @@ describe('ChatInput', () => {
       />,
     );
     expect(screen.getByTestId('ci').className).toContain('custom');
+  });
+
+  it('renders startActions slot', () => {
+    renderAI(
+      <ChatInput
+        value=""
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        startActions={<button data-testid="start-action">Attach</button>}
+      />,
+    );
+    expect(screen.getByTestId('start-action')).toBeInTheDocument();
+  });
+
+  it('renders endActions slot', () => {
+    renderAI(
+      <ChatInput
+        value=""
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        endActions={<button data-testid="end-action">Send</button>}
+      />,
+    );
+    expect(screen.getByTestId('end-action')).toBeInTheDocument();
+  });
+
+  it('renders both startActions and endActions together', () => {
+    renderAI(
+      <ChatInput
+        value=""
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        startActions={<span data-testid="start">Left</span>}
+        endActions={<span data-testid="end">Right</span>}
+      />,
+    );
+    expect(screen.getByTestId('start')).toBeInTheDocument();
+    expect(screen.getByTestId('end')).toBeInTheDocument();
+  });
+
+  it('does not render toolbar when no actions provided', () => {
+    renderAI(
+      <ChatInput
+        value=""
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        data-testid="ci"
+      />,
+    );
+    const root = screen.getByTestId('ci');
+    // Only the textarea should be a child — no toolbar div
+    expect(root.children).toHaveLength(1);
   });
 });

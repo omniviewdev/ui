@@ -2,129 +2,102 @@ import { forwardRef, useCallback, useEffect, useRef, type HTMLAttributes } from 
 import { cn } from '../../system/classnames';
 import styles from './StreamingText.module.css';
 
-export interface StreamingTextProps extends HTMLAttributes<HTMLSpanElement> {
-  /** Full text content to stream through */
-  content: string;
-  /** Characters per second (default: 30) */
-  speed?: number;
-  /** Show blinking cursor (default: true) */
+export interface StreamingTextProps extends HTMLAttributes<HTMLDivElement> {
+  /** Async iterable that yields text chunks (e.g., from an LLM API) */
+  stream?: AsyncIterable<string>;
+  /** Static content to display (no streaming animation) */
+  content?: string;
+  /** Show blinking cursor while streaming (default: true) */
   cursor?: boolean;
-  /** Callback when all text is revealed */
+  /** Callback when streaming completes */
   onComplete?: () => void;
-  /** Skip animation, show all text immediately (default: false) */
-  immediate?: boolean;
+  /** Callback with accumulated text on each chunk */
+  onChunk?: (accumulated: string) => void;
 }
 
-export const StreamingText = forwardRef<HTMLSpanElement, StreamingTextProps>(
+export const StreamingText = forwardRef<HTMLDivElement, StreamingTextProps>(
   function StreamingText(
     {
+      stream,
       content,
-      speed = 30,
       cursor = true,
       onComplete,
-      immediate = false,
+      onChunk,
       className,
       ...rest
     },
     ref,
   ) {
-    const textRef = useRef<HTMLSpanElement>(null);
-    const indexRef = useRef(0);
-    const rafRef = useRef<number>(0);
-    const lastTimeRef = useRef(0);
-    const completeRef = useRef(false);
+    const elRef = useRef<HTMLDivElement>(null);
 
     const onCompleteRef = useRef(onComplete);
     onCompleteRef.current = onComplete;
 
+    const onChunkRef = useRef(onChunk);
+    onChunkRef.current = onChunk;
+
     const setRef = useCallback(
-      (node: HTMLSpanElement | null) => {
-        (textRef as { current: HTMLSpanElement | null }).current = node;
+      (node: HTMLDivElement | null) => {
+        (elRef as { current: HTMLDivElement | null }).current = node;
         if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
-          (ref as { current: HTMLSpanElement | null }).current = node;
+          (ref as { current: HTMLDivElement | null }).current = node;
         }
       },
       [ref],
     );
 
-    // Check if reduced motion is preferred
-    const shouldAnimate = useCallback(() => {
-      if (immediate) return false;
-      if (typeof document === 'undefined') return false;
-      const root = document.documentElement;
-      if (root.getAttribute('data-ov-motion') === 'reduced') return false;
-      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-      return true;
-    }, [immediate]);
-
+    // Stream mode: iterate over async iterable and update DOM directly
     useEffect(() => {
-      const el = textRef.current;
+      if (!stream) return;
+
+      const el = elRef.current;
       if (!el) return;
 
-      // Reset on content change
-      indexRef.current = 0;
-      completeRef.current = false;
-      lastTimeRef.current = 0;
-
-      if (!shouldAnimate()) {
-        el.textContent = content;
-        completeRef.current = true;
-        onCompleteRef.current?.();
-        return;
-      }
+      let cancelled = false;
+      let accumulated = '';
 
       el.textContent = '';
-      const interval = 1000 / speed;
+      el.setAttribute('data-ov-streaming', 'true');
 
-      const tick = (time: number) => {
-        if (completeRef.current) return;
-
-        if (!lastTimeRef.current) {
-          lastTimeRef.current = time;
-        }
-
-        const elapsed = time - lastTimeRef.current;
-
-        if (elapsed >= interval) {
-          // Variable chunk size for natural feel
-          const chunks = Math.min(
-            Math.floor(elapsed / interval),
-            3,
-          );
-          const nextIndex = Math.min(indexRef.current + chunks, content.length);
-          el.textContent = content.slice(0, nextIndex);
-          indexRef.current = nextIndex;
-          lastTimeRef.current = time;
-
-          if (nextIndex >= content.length) {
-            completeRef.current = true;
+      (async () => {
+        try {
+          for await (const chunk of stream) {
+            if (cancelled) break;
+            accumulated += chunk;
+            el.textContent = accumulated;
+            onChunkRef.current?.(accumulated);
+          }
+        } catch {
+          // Stream errored — treat as complete with whatever we have
+        } finally {
+          if (!cancelled) {
+            el.setAttribute('data-ov-streaming', 'false');
             onCompleteRef.current?.();
-            return;
           }
         }
-
-        rafRef.current = requestAnimationFrame(tick);
-      };
-
-      rafRef.current = requestAnimationFrame(tick);
+      })();
 
       return () => {
-        if (rafRef.current) {
-          cancelAnimationFrame(rafRef.current);
-        }
+        cancelled = true;
+        el.setAttribute('data-ov-streaming', 'false');
       };
-    }, [content, speed, shouldAnimate]);
+    }, [stream]);
+
+    // Static content mode
+    const isStatic = !stream;
 
     return (
-      <span
+      <div
         ref={setRef}
         className={cn(styles.Root, className)}
         data-ov-cursor={cursor ? 'true' : 'false'}
-        data-ov-complete={completeRef.current ? 'true' : 'false'}
+        data-ov-streaming={isStatic ? 'false' : 'true'}
         {...rest}
-      />
+      >
+        {isStatic ? content : null}
+      </div>
     );
   },
 );

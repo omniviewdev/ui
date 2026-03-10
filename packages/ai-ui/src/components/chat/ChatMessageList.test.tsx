@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderAI } from '../../test/render';
 import { ChatMessageList } from './ChatMessageList';
+import type { ChatMessageListHandle } from './ChatMessageList';
 
 const messages = Array.from({ length: 20 }, (_, i) => `Message ${i}`);
 
@@ -24,8 +25,8 @@ describe('ChatMessageList', () => {
     expect(inner).toHaveStyle({ height: '1600px' });
   });
 
-  it('forwards ref to scroll container', () => {
-    const ref = createRef<HTMLDivElement>();
+  it('exposes imperative handle with scrollToBottom, scrollToIndex, and getScrollElement', () => {
+    const ref = createRef<ChatMessageListHandle>();
     renderAI(
       <ChatMessageList
         ref={ref}
@@ -34,7 +35,11 @@ describe('ChatMessageList', () => {
         style={{ height: 300 }}
       />,
     );
-    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+    expect(ref.current).not.toBeNull();
+    expect(typeof ref.current!.scrollToBottom).toBe('function');
+    expect(typeof ref.current!.scrollToIndex).toBe('function');
+    expect(typeof ref.current!.getScrollElement).toBe('function');
+    expect(ref.current!.getScrollElement()).toBeInstanceOf(HTMLDivElement);
   });
 
   it('merges className on wrapper', () => {

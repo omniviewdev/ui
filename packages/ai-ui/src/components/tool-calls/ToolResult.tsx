@@ -1,8 +1,9 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { Button, Card } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './ToolResult.module.css';
 
-export interface ToolResultProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'> {
+export interface ToolResultProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content' | 'color'> {
   /** Result content */
   content: ReactNode;
   /** Result status */
@@ -19,19 +20,22 @@ export const ToolResult = forwardRef<HTMLDivElement, ToolResultProps>(
     ref,
   ) {
     return (
-      <div
-        ref={ref}
+      <Card
+        ref={ref as React.Ref<HTMLElement>}
+        as="div"
         className={cn(styles.Root, className)}
         data-ov-status={status}
         {...rest}
       >
-        <div className={styles.Content}>{content}</div>
+        <Card.Body>{content}</Card.Body>
         {truncated && onExpand && (
-          <button type="button" className={styles.ExpandButton} onClick={onExpand}>
-            Show more
-          </button>
+          <Card.Footer>
+            <Button variant="ghost" onClick={onExpand}>
+              Show more
+            </Button>
+          </Card.Footer>
         )}
-      </div>
+      </Card>
     );
   },
 );

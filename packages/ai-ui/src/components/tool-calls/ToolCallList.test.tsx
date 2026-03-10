@@ -7,7 +7,7 @@ import { ToolCallList, type ToolCallListItem } from './ToolCallList';
 const calls: ToolCallListItem[] = [
   { id: '1', name: 'read_file', status: 'success', duration: 120 },
   { id: '2', name: 'write_file', status: 'running' },
-  { id: '3', name: 'search', status: 'error', result: 'Timeout', resultStatus: 'error' },
+  { id: '3', name: 'search', status: 'error' },
 ];
 
 describe('ToolCallList', () => {
@@ -23,9 +23,20 @@ describe('ToolCallList', () => {
     expect(screen.getByText('120ms')).toBeInTheDocument();
   });
 
-  it('shows result content', () => {
-    renderAI(<ToolCallList calls={calls} />);
-    expect(screen.getByText('Timeout')).toBeInTheDocument();
+  it('shows result content when expanded', () => {
+    const callsWithResult: ToolCallListItem[] = [
+      {
+        id: '1',
+        name: 'kubectl get pods',
+        status: 'success',
+        duration: 200,
+        result: 'pod-abc Running',
+        resultStatus: 'success',
+        expanded: true,
+      },
+    ];
+    renderAI(<ToolCallList calls={callsWithResult} />);
+    expect(screen.getByText('pod-abc Running')).toBeInTheDocument();
   });
 
   it('returns null for empty calls', () => {
@@ -47,5 +58,10 @@ describe('ToolCallList', () => {
   it('merges className', () => {
     renderAI(<ToolCallList calls={calls} className="custom" data-testid="tcl" />);
     expect(screen.getByTestId('tcl').className).toContain('custom');
+  });
+
+  it('renders spinner for running items', () => {
+    renderAI(<ToolCallList calls={[{ id: '1', name: 'test', status: 'running' }]} />);
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 });

@@ -321,16 +321,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
       monaco.editor.setTheme(OV_MONACO_THEME);
 
-      // TypeScript / JavaScript diagnostics & compiler options
-      const diagOpts = diagnostics
-        ? {}
-        : {
-            noSemanticValidation: true,
-            noSyntaxValidation: true,
-            noSuggestionDiagnostics: true,
-          };
-      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(diagOpts);
-      monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(diagOpts);
+      // TypeScript / JavaScript compiler options (global — JSX & target config)
       monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         jsx: 2, // JsxEmit.React
         jsxFactory: 'React.createElement',
@@ -361,6 +352,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
         fontSize: 13,
         fontFamily: 'var(--ov-font-family-mono, monospace)',
         tabSize,
+        renderValidationDecorations: diagnostics ? 'on' : 'off',
       });
 
       editorRef.current = editor;
@@ -432,8 +424,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
           ? { other: true, strings: true, comments: false }
           : false,
         tabSize,
+        renderValidationDecorations: diagnostics ? 'on' : 'off',
       });
-    }, [readOnly, lineNumbers, minimap, wordWrap, quickSuggestions, tabSize, isReady]);
+    }, [readOnly, lineNumbers, minimap, wordWrap, quickSuggestions, tabSize, diagnostics, isReady]);
 
     // Language (including syntax highlighting toggle)
     useEffect(() => {
@@ -460,10 +453,10 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       // Detach model before disposing to avoid WordHighlighter "Canceled" errors
       editor.setModel(null);
       currentModel?.dispose();
-      const newModel = getOrCreateModel(currentValue, resolvedLanguage, filename);
+      const newModel = getOrCreateModel(currentValue, syntaxHighlighting ? resolvedLanguage : 'plaintext', filename);
       editor.setModel(newModel);
       log('  new model set — uri:', newModel.uri.toString());
-    }, [filename, isReady, resolvedLanguage, displayValue]);
+    }, [filename, isReady, resolvedLanguage, syntaxHighlighting, displayValue]);
 
     // Theme
     useEffect(() => {

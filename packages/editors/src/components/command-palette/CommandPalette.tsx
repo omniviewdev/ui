@@ -43,8 +43,8 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
     if (!open) return null;
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
+        role="presentation"
         className={styles.Overlay}
         onClick={onClose}
         onKeyDown={(e) => {

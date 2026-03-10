@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { CodeEditor, type CodeEditorProps, type EditorDiagnostic, type CursorPosition } from './CodeEditor';
 import { editorSchemas, type EditorSchema } from '../../schemas';
@@ -31,7 +31,7 @@ const meta: Meta<typeof CodeEditor> = {
   argTypes: {
     language: {
       control: 'select',
-      options: ['typescript', 'javascript', 'python', 'json', 'css', 'html', 'yaml', 'go', 'rust'],
+      options: ['auto', 'typescript', 'javascript', 'python', 'json', 'css', 'html', 'yaml', 'go', 'rust', 'markdown'],
     },
     readOnly: { control: 'boolean' },
     lineNumbers: { control: 'boolean' },
@@ -91,10 +91,14 @@ export const JSONContent: Story = {
 };
 
 export const LanguageDetection: Story = {
+  render: (args) => {
+    const { language, ...rest } = args;
+    return <CodeEditor {...rest} language={language === 'auto' ? undefined : language} />;
+  },
   args: {
     value: 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello")\n}',
     filename: 'main.go',
-    language: undefined,
+    language: 'auto' as unknown as undefined,
   },
 };
 
@@ -380,11 +384,15 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
   const [activeGvr, setActiveGvr] = useState<string>('core::v1::Pod');
   const [diagnosticsList, setDiagnosticsList] = useState<EditorDiagnostic[]>([]);
   const [cursor, setCursor] = useState<CursorPosition>({ lineNumber: 1, column: 1 });
+  const registeredUris = useRef<Set<string>>(new Set());
 
-  // Clean up on unmount
+  // Clean up only URIs registered by this story on unmount
   useEffect(() => {
     return () => {
-      editorSchemas.clear();
+      for (const uri of registeredUris.current) {
+        editorSchemas.unregister(uri);
+      }
+      registeredUris.current.clear();
     };
   }, []);
 
@@ -392,14 +400,16 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
     setLoading((prev) => ({ ...prev, [entry.gvr]: true }));
     try {
       const mod = await entry.load();
+      const uri = `https://omniview.dev/schemas/k8s/${encodeURIComponent(entry.gvr)}`;
       const schema: EditorSchema = {
-        uri: `https://omniview.dev/schemas/k8s/${encodeURIComponent(entry.gvr)}`,
+        uri,
         fileMatch: gvrFileMatch(entry.gvr),
         schema: mod.default,
         name: `${entry.kind} (${entry.apiVersion})`,
         description: `Kubernetes ${entry.kind} resource schema`,
       };
       editorSchemas.register(schema);
+      registeredUris.current.add(uri);
       setLoaded((prev) => ({ ...prev, [entry.gvr]: true }));
     } finally {
       setLoading((prev) => ({ ...prev, [entry.gvr]: false }));
@@ -407,7 +417,10 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
   }, []);
 
   const unloadAll = useCallback(() => {
-    editorSchemas.clear();
+    for (const uri of registeredUris.current) {
+      editorSchemas.unregister(uri);
+    }
+    registeredUris.current.clear();
     setLoaded({});
   }, []);
 
@@ -593,6 +606,15 @@ export const RuntimeSchemaRegistration: Story = {
 function OnMountCallbackStory(args: CodeEditorProps) {
   const [value, setValue] = useState(args.value);
   const [log, setLog] = useState<string[]>([]);
+  const completionDisposable = useRef<{ dispose(): void } | null>(null);
+
+  // Dispose the completion provider on unmount
+  useEffect(() => {
+    return () => {
+      completionDisposable.current?.dispose();
+      completionDisposable.current = null;
+    };
+  }, []);
 
   const handleMount = (_editor: unknown, monaco: unknown) => {
     setLog((prev) => [...prev, 'Editor mounted — Monaco instance available']);
@@ -602,12 +624,12 @@ function OnMountCallbackStory(args: CodeEditorProps) {
         registerCompletionItemProvider: (
           language: string,
           provider: Record<string, unknown>,
-        ) => unknown;
+        ) => { dispose(): void };
         CompletionItemKind: Record<string, number>;
       };
     };
 
-    m.languages.registerCompletionItemProvider('yaml', {
+    completionDisposable.current = m.languages.registerCompletionItemProvider('yaml', {
       provideCompletionItems: () => ({
         suggestions: [
           {

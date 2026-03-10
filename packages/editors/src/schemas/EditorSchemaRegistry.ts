@@ -60,8 +60,34 @@ type SchemaChangeListener = () => void;
  * Used to replicate the fileMatch behavior of monaco-yaml.
  */
 function globMatch(pattern: string, str: string): boolean {
-  const escaped = pattern.replace(/[-[\]{}()+?.\\^$|]/g, '\\$&').replace(/\*/g, '.*');
-  return new RegExp(`^${escaped}$`).test(str);
+  // Simple iterative glob matcher — avoids RegExp to prevent ReDoS.
+  let pi = 0;
+  let si = 0;
+  let starPi = -1;
+  let starSi = -1;
+
+  while (si < str.length) {
+    if (pi < pattern.length && (pattern[pi] === str[si] || pattern[pi] === '?')) {
+      pi++;
+      si++;
+    } else if (pi < pattern.length && pattern[pi] === '*') {
+      starPi = pi;
+      starSi = si;
+      pi++;
+    } else if (starPi >= 0) {
+      pi = starPi + 1;
+      starSi++;
+      si = starSi;
+    } else {
+      return false;
+    }
+  }
+
+  while (pi < pattern.length && pattern[pi] === '*') {
+    pi++;
+  }
+
+  return pi === pattern.length;
 }
 
 type YamlHandle = {

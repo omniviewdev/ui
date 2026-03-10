@@ -50,6 +50,11 @@ function isObjectRef(value: unknown): value is object {
   return value !== null && (typeof value === 'object' || typeof value === 'function');
 }
 
+/** Subset of WeakSet used for ancestor tracking (read-only checks). */
+interface AncestorSet {
+  has(value: object): boolean;
+}
+
 interface TreeNodeProps {
   nodeKey: string;
   value: unknown;
@@ -58,7 +63,7 @@ interface TreeNodeProps {
   searchQuery: string;
   isLast: boolean;
   /** Ancestor object references for circular reference detection. */
-  ancestors: WeakSet<object>;
+  ancestors: AncestorSet;
 }
 
 function TreeNode({
@@ -87,7 +92,7 @@ function TreeNode({
     if (!isExpandable || !isObjectRef(value) || isCircular) return ancestors;
     return {
       has: (v: object) => v === value || ancestors.has(v),
-    } as WeakSet<object>;
+    };
   }, [isExpandable, value, isCircular, ancestors]);
 
   const entries = useMemo(() => {
@@ -160,7 +165,7 @@ function TreeNode({
 }
 
 /** Shared empty WeakSet used as the initial ancestors set. */
-const EMPTY_ANCESTORS = new WeakSet<object>();
+const EMPTY_ANCESTORS: AncestorSet = new WeakSet<object>();
 
 export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
   function ObjectInspector(

@@ -453,7 +453,7 @@ pnpm dev
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.`,
+MIT — see LICENSE for details.`,
     allowHtml: true,
   },
 };

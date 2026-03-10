@@ -35,7 +35,7 @@ const meta: Meta<typeof CommandPalette> = {
     placeholder: 'Type a command…',
   },
   argTypes: {
-    open: { control: 'boolean' },
+    open: { table: { disable: true } },
     placeholder: { control: 'text' },
   },
 };

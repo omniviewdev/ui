@@ -1,4 +1,4 @@
-import { Children, forwardRef, isValidElement, lazy, Suspense, useMemo, type HTMLAttributes } from 'react';
+import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, type HTMLAttributes } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
@@ -34,8 +34,18 @@ function hastText(node: any): string {
   return '';
 }
 
-/** Counter for generating unique IDs for details/summary accordion items. */
-let detailsCounter = 0;
+/** Accordion wrapper for <details>/<summary> that uses useId() for a stable, deterministic ID. */
+function DetailsAccordion({ summaryText, children }: { summaryText: string; children: React.ReactNode[] }) {
+  const id = useId();
+  const itemId = `md-details-${id}`;
+  return (
+    <Accordion animation="fast">
+      <Accordion.Item id={itemId} title={summaryText}>
+        {children}
+      </Accordion.Item>
+    </Accordion>
+  );
+}
 
 /** Stable component overrides for react-markdown */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,15 +119,7 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
       body.push(child);
     });
 
-    const itemId = `md-details-${summaryText.replace(/\s+/g, '-').toLowerCase().slice(0, 32)}-${detailsCounter++}`;
-
-    return (
-      <Accordion animation="fast">
-        <Accordion.Item id={itemId} title={summaryText}>
-          {body}
-        </Accordion.Item>
-      </Accordion>
-    );
+    return <DetailsAccordion summaryText={summaryText}>{body}</DetailsAccordion>;
   },
   // Mark summary so details can filter it out; text is extracted from hast node
   summary: ({ children }: MdProps) => (
@@ -135,7 +137,7 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
         </Checkbox.Root>
       );
     }
-    return <input type={type} />;
+    return null;
   },
 };
 

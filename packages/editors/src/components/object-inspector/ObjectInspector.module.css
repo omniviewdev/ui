@@ -33,6 +33,11 @@
   color: var(--ov-color-input-placeholder, var(--ov-color-fg-muted));
 }
 
+.SearchInput:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus, var(--ov-color-fg-accent, #007fd4));
+  outline-offset: -1px;
+}
+
 .CopyButton {
   padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
   background: var(--ov-color-button-secondary-bg, var(--ov-color-bg-subtle));
@@ -103,20 +108,20 @@
 }
 
 .Value[data-type='string'] {
-  color: var(--ov-syntax-string, var(--ov-color-fg-accent, #ce9178));
+  color: var(--ov-syntax-string, var(--ov-color-fg-accent, currentColor));
 }
 
 .Value[data-type='number'] {
-  color: var(--ov-syntax-number, var(--ov-color-fg-success, #b5cea8));
+  color: var(--ov-syntax-number, var(--ov-color-fg-success, currentColor));
 }
 
 .Value[data-type='boolean'] {
-  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, #569cd6));
+  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, currentColor));
 }
 
 .Value[data-type='null'],
 .Value[data-type='undefined'] {
-  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, #569cd6));
+  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, currentColor));
   font-style: italic;
 }
 

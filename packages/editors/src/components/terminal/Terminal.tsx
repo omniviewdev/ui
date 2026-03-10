@@ -59,11 +59,20 @@ export interface TerminalProps {
   onBinaryData?: (data: string) => void;
   /** Called on terminal resize with new dimensions. Wire to `ExecClient.ResizeSession(sessionId, rows, cols)`. */
   onResize?: (cols: number, rows: number) => void;
-  /** Called when a signal is received (for exec plugin integration). */
+  /**
+   * Called when a signal is received (for exec plugin integration).
+   * Not invoked internally — the consumer's session layer should call
+   * `callbacksRef.current.onSignal?.(signal, payload)` when a signal
+   * arrives over the session transport (e.g., Wails event bus).
+   */
   onSignal?: (signal: TerminalSignal, payload?: unknown) => void;
   /** Called when the terminal init encounters an error (e.g., failed to load xterm). */
   onError?: (error: Error) => void;
-  /** Called when the terminal session closes. */
+  /**
+   * Called when the terminal session closes.
+   * Not invoked internally — wire this from your session transport's
+   * close/disconnect handler.
+   */
   onClose?: (code?: number) => void;
   /**
    * Called once when the terminal is fully initialized and ready to accept writes.

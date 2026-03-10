@@ -44,24 +44,10 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
     monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
     monaco.editor.setTheme(OV_MONACO_THEME);
 
-    // Disable diagnostics — diff viewer is for viewing, not linting
-    const diagOpts = {
-      noSemanticValidation: true,
-      noSyntaxValidation: true,
-      noSuggestionDiagnostics: true,
-    };
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(diagOpts);
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(diagOpts);
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-      jsx: 2,
-      allowNonTsExtensions: true,
-      allowJs: true,
-      target: 99,
-    });
-
     const editor = monaco.editor.createDiffEditor(containerRef.current, {
       readOnly,
       renderSideBySide: mode === 'side-by-side',
+      renderValidationDecorations: 'off',
       scrollBeyondLastLine: false,
       automaticLayout: true,
       fontSize: 13,

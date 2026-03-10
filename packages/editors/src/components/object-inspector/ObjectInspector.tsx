@@ -25,7 +25,7 @@ function getType(value: unknown): string {
 function formatValue(value: unknown): string {
   if (value === null) return 'null';
   if (value === undefined) return 'undefined';
-  if (typeof value === 'string') return `"${value}"`;
+  if (typeof value === 'string') return JSON.stringify(value);
   if (typeof value === 'boolean') return String(value);
   if (typeof value === 'number') return String(value);
   return String(value);
@@ -136,16 +136,19 @@ function TreeNode({
   // Force expand when search finds matches in descendants
   useEffect(() => {
     if (searchQuery && hasDescendantMatch && isExpandable && !isCircular && !expanded) {
-      preSearchExpandedRef.current = expanded;
+      // Only snapshot pre-search state the first time we force-open
+      if (!searchExpandedRef.current) {
+        preSearchExpandedRef.current = expanded;
+      }
       searchExpandedRef.current = true;
       setExpanded(true);
     }
-    // Restore pre-search state only for nodes that were force-expanded
-    if (!searchQuery && searchExpandedRef.current) {
+    // Restore pre-search state when search clears OR node stops matching
+    if (searchExpandedRef.current && (!searchQuery || !hasDescendantMatch)) {
       searchExpandedRef.current = false;
       setExpanded(preSearchExpandedRef.current);
     }
-  }, [searchQuery, hasDescendantMatch, isExpandable, isCircular, expanded, defaultExpanded, depth]);
+  }, [searchQuery, hasDescendantMatch, isExpandable, isCircular, expanded]);
 
   // Create a new ancestors set that includes this value for children.
   // WeakSet doesn't support iteration, so we use a duck-typed wrapper

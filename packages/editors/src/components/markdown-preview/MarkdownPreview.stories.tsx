@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { MarkdownPreview } from './MarkdownPreview';
 
-/** Inline SVG data URIs for offline/deterministic stories. */
-const PLACEHOLDER_IMG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='200' fill='%231a1a2e'%3E%3Crect width='600' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23e0e0e0' font-family='sans-serif' font-size='24' text-anchor='middle' dy='.3em'%3EOmniview Preview%3C/text%3E%3C/svg%3E`;
-const BADGE_BUILD = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='20'%3E%3Crect width='45' height='20' fill='%23555'/%3E%3Crect x='45' width='45' height='20' fill='%234c1'/%3E%3Ctext x='22' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Ebuild%3C/text%3E%3Ctext x='68' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Epass%3C/text%3E%3C/svg%3E`;
-const BADGE_COVERAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='106' height='20'%3E%3Crect width='60' height='20' fill='%23555'/%3E%3Crect x='60' width='46' height='20' fill='%234c1'/%3E%3Ctext x='30' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Ecoverage%3C/text%3E%3Ctext x='83' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3E94%25%3C/text%3E%3C/svg%3E`;
-const BADGE_LICENSE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='82' height='20'%3E%3Crect width='48' height='20' fill='%23555'/%3E%3Crect x='48' width='34' height='20' fill='%23007ec6'/%3E%3Ctext x='24' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Elicense%3C/text%3E%3Ctext x='65' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3EMIT%3C/text%3E%3C/svg%3E`;
-const BADGE_VERSION = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='20'%3E%3Crect width='50' height='20' fill='%23555'/%3E%3Crect x='50' width='48' height='20' fill='%23fe7d37'/%3E%3Ctext x='25' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Eversion%3C/text%3E%3Ctext x='74' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3E0.1.0%3C/text%3E%3C/svg%3E`;
-const BADGE_PRS = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='106' height='20'%3E%3Crect width='36' height='20' fill='%23555'/%3E%3Crect x='36' width='70' height='20' fill='%234c1'/%3E%3Ctext x='18' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3EPRs%3C/text%3E%3Ctext x='71' y='14' fill='%23fff' font-size='11' text-anchor='middle'%3Ewelcome%3C/text%3E%3C/svg%3E`;
+/** Checked-in SVG assets for offline/deterministic stories. */
+import placeholderSvg from './assets/placeholder.svg';
+import badgeBuildSvg from './assets/badge-build.svg';
+import badgeCoverageSvg from './assets/badge-coverage.svg';
+import badgeLicenseSvg from './assets/badge-license.svg';
+import badgeVersionSvg from './assets/badge-version.svg';
+import badgePrsSvg from './assets/badge-prs.svg';
 
 const richMarkdown = `# Omniview Platform Guide
 
@@ -174,7 +174,7 @@ Content below the rule.
 
 ## Images
 
-![Placeholder](${PLACEHOLDER_IMG})
+![Placeholder](${placeholderSvg})
 
 ## Paragraphs & Emphasis
 
@@ -377,10 +377,10 @@ After migration, verify with \`pnpm db:status\`.
 
 ### Badges & Shields
 
-![Build](${BADGE_BUILD})
-![Coverage](${BADGE_COVERAGE})
-![License](${BADGE_LICENSE})
-![Version](${BADGE_VERSION})
+![Build](${badgeBuildSvg})
+![Coverage](${badgeCoverageSvg})
+![License](${badgeLicenseSvg})
+![Version](${badgeVersionSvg})
 
 ### Inline HTML elements
 
@@ -409,10 +409,10 @@ export const GitHubReadme: Story = {
 </p>
 
 <p align="center">
-  <img src="${BADGE_BUILD}" alt="Build" />
-  <img src="${BADGE_COVERAGE}" alt="Coverage" />
-  <img src="${BADGE_LICENSE}" alt="License" />
-  <img src="${BADGE_PRS}" alt="PRs Welcome" />
+  <img src="${badgeBuildSvg}" alt="Build" />
+  <img src="${badgeCoverageSvg}" alt="Coverage" />
+  <img src="${badgeLicenseSvg}" alt="License" />
+  <img src="${badgePrsSvg}" alt="PRs Welcome" />
 </p>
 
 ---

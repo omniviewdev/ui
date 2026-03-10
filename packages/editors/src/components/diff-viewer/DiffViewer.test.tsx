@@ -9,6 +9,9 @@ const mockSetModelLanguage = vi.fn();
 
 let mockDiffEditorInstance: Record<string, unknown>;
 
+/** Shared model instances used by both createModel and getModel. */
+const sharedModels: Array<Record<string, ReturnType<typeof vi.fn>>> = [];
+
 vi.mock('monaco-editor', () => ({
   default: undefined,
   Uri: {
@@ -17,30 +20,31 @@ vi.mock('monaco-editor', () => ({
   editor: {
     createDiffEditor: (...args: unknown[]) => {
       mockCreateDiffEditor(...args);
-      const originalModel = {
-        setValue: vi.fn(),
-        getValue: vi.fn(() => ''),
-        dispose: vi.fn(),
-      };
-      const modifiedModel = {
-        setValue: vi.fn(),
-        getValue: vi.fn(() => ''),
-        dispose: vi.fn(),
-      };
+      // DiffViewer creates original (index 0) then modified (index 1) via createModel,
+      // then calls setModel and later getModel — all must reference the same objects.
       mockDiffEditorInstance = {
         setModel: vi.fn(),
-        getModel: vi.fn(() => ({ original: originalModel, modified: modifiedModel })),
-        getModifiedEditor: vi.fn(() => ({ getValue: vi.fn(() => '') })),
+        getModel: vi.fn(() => ({
+          original: sharedModels[0],
+          modified: sharedModels[1],
+        })),
+        getModifiedEditor: vi.fn(() => ({
+          getValue: () => sharedModels[1]?.getValue?.() ?? '',
+        })),
         updateOptions: vi.fn(),
         dispose: vi.fn(),
       };
       return mockDiffEditorInstance;
     },
-    createModel: vi.fn(() => ({
-      setValue: vi.fn(),
-      getValue: vi.fn(() => ''),
-      dispose: vi.fn(),
-    })),
+    createModel: vi.fn(() => {
+      const model = {
+        setValue: vi.fn(),
+        getValue: vi.fn(() => ''),
+        dispose: vi.fn(),
+      };
+      sharedModels.push(model);
+      return model;
+    }),
     getModel: vi.fn(() => null),
     setModelLanguage: (...args: unknown[]) => mockSetModelLanguage(...args),
     defineTheme: (...args: unknown[]) => mockDefineTheme(...args),
@@ -72,6 +76,7 @@ vi.mock('../../themes/monaco', () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  sharedModels.length = 0;
 });
 
 describe('DiffViewer', () => {

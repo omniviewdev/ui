@@ -96,7 +96,7 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
   blockquote: ({ children }: MdProps) => <Blockquote variant="plain">{children}</Blockquote>,
 
   // Horizontal rules
-  hr: () => <Separator decorative />,
+  hr: () => <Separator />,
 
   // Details/summary → Accordion — extract title from the hast node's summary child
   details: ({ children, node }: MdProps) => {

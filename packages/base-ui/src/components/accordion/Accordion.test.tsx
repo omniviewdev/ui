@@ -177,4 +177,26 @@ describe('Accordion', () => {
     const root = screen.getByText('Class test').closest('[data-ov-component="accordion"]')!;
     expect(root.className).toContain('custom-class');
   });
+
+  it('applies size attribute', () => {
+    renderWithTheme(
+      <Accordion size="sm">
+        <Accordion.Item id="a" title="Small" />
+      </Accordion>,
+    );
+
+    const root = screen.getByText('Small').closest('[data-ov-component="accordion"]')!;
+    expect(root).toHaveAttribute('data-ov-size', 'sm');
+  });
+
+  it('defaults to md size', () => {
+    renderWithTheme(
+      <Accordion>
+        <Accordion.Item id="a" title="Default" />
+      </Accordion>,
+    );
+
+    const root = screen.getByText('Default').closest('[data-ov-component="accordion"]')!;
+    expect(root).toHaveAttribute('data-ov-size', 'md');
+  });
 });

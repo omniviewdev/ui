@@ -4,22 +4,28 @@ import { cn, withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import buttonStyles from '../button/Button.module.css';
+import iconButtonStyles from '../icon-button/IconButton.module.css';
 import styles from './ToggleButton.module.css';
 
 export interface ToggleButtonProps
   extends Omit<BaseToggle.Props<string>, 'color'>, StyledComponentProps {
+  /** Render as a square button (same sizing as IconButton). */
+  square?: boolean;
   startDecorator?: ReactNode;
   endDecorator?: ReactNode;
 }
 
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(function ToggleButton(
-  { className, variant, color, size, startDecorator, endDecorator, children, ...props },
+  { className, variant, color, size, square = false, startDecorator, endDecorator, children, ...props },
   ref,
 ) {
   return (
     <BaseToggle
       ref={ref}
-      className={withBaseClassName<BaseToggle.State>(cn(buttonStyles.Root, styles.Root), className)}
+      className={withBaseClassName<BaseToggle.State>(
+        cn(buttonStyles.Root, square && iconButtonStyles.Root, styles.Root),
+        className,
+      )}
       {...styleDataAttributes({ variant, color, size })}
       {...props}
     >

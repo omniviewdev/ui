@@ -10,7 +10,8 @@
   transition: grid-template-columns var(--ov-duration-slow, 260ms) var(--ov-ease-standard, ease);
 }
 
-/* Sidebar left (default) */
+/* ─── Sidebar left (default) ─────────────────── */
+
 .Root[data-ov-sidebar-position='left'] {
   grid-template-areas:
     'header  header'
@@ -20,7 +21,8 @@
   grid-template-rows: var(--_ov-shell-header-height, 40px) 1fr var(--_ov-shell-footer-height, 24px);
 }
 
-/* Sidebar right */
+/* ─── Sidebar right ──────────────────────────── */
+
 .Root[data-ov-sidebar-position='right'] {
   grid-template-areas:
     'header  header'
@@ -28,6 +30,60 @@
     'footer  footer';
   grid-template-columns: 1fr var(--_ov-shell-sidebar-width, 240px);
   grid-template-rows: var(--_ov-shell-header-height, 40px) 1fr var(--_ov-shell-footer-height, 24px);
+}
+
+/* ─── Nav Rail present ───────────────────────── */
+
+.Root:has(.NavRail)[data-ov-sidebar-position='left'] {
+  grid-template-areas:
+    'rail header  header'
+    'rail sidebar content'
+    'rail footer  footer';
+  grid-template-columns: var(--_ov-shell-nav-rail-width, 48px) var(--_ov-shell-sidebar-width, 240px) 1fr;
+}
+
+.Root:has(.NavRail)[data-ov-sidebar-position='right'] {
+  grid-template-areas:
+    'rail header  header'
+    'rail content sidebar'
+    'rail footer  footer';
+  grid-template-columns: var(--_ov-shell-nav-rail-width, 48px) 1fr var(--_ov-shell-sidebar-width, 240px);
+}
+
+/* ─── Secondary sidebar present ──────────────── */
+
+.Root:has(.SecondarySidebar)[data-ov-sidebar-position='left'] {
+  grid-template-areas:
+    'header    header  header'
+    'sidebar   content secondary'
+    'footer    footer  footer';
+  grid-template-columns: var(--_ov-shell-sidebar-width, 240px) 1fr var(--_ov-shell-secondary-sidebar-width, 300px);
+}
+
+.Root:has(.SecondarySidebar)[data-ov-sidebar-position='right'] {
+  grid-template-areas:
+    'header    header  header'
+    'content   sidebar secondary'
+    'footer    footer  footer';
+  grid-template-columns: 1fr var(--_ov-shell-sidebar-width, 240px) var(--_ov-shell-secondary-sidebar-width, 300px);
+}
+
+/* ─── Nav Rail + Secondary sidebar ───────────── */
+
+.Root:has(.NavRail):has(.SecondarySidebar)[data-ov-sidebar-position='left'] {
+  grid-template-areas:
+    'rail header    header  header'
+    'rail sidebar   content secondary'
+    'rail footer    footer  footer';
+  grid-template-columns: var(--_ov-shell-nav-rail-width, 48px) var(--_ov-shell-sidebar-width, 240px) 1fr var(--_ov-shell-secondary-sidebar-width, 300px);
+}
+
+.Root:has(.NavRail):has(.SecondarySidebar)[data-ov-sidebar-position='right'] {
+  grid-template-areas:
+    'rail header    header  header'
+    'rail content   sidebar secondary'
+    'rail footer    footer  footer';
+  grid-template-columns: var(--_ov-shell-nav-rail-width, 48px) 1fr var(--_ov-shell-sidebar-width, 240px) var(--_ov-shell-secondary-sidebar-width, 300px);
 }
 
 /* ─── Header ────────────────────────────────── */
@@ -61,6 +117,42 @@
 
 /* Collapsed state: hide overflow */
 .Root[data-ov-sidebar-collapsed] .Sidebar {
+  overflow: hidden;
+}
+
+/* ─── Nav Rail ──────────────────────────────── */
+
+.NavRail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ov-space-0-5, 2px);
+  /*
+   * Top padding clears macOS/Windows window controls (traffic lights / caption buttons).
+   * env(titlebar-area-height) resolves in Electron/PWA; 52px is a safe fallback
+   * for the standard macOS stoplight inset.
+   */
+  padding-top: env(titlebar-area-height, 52px);
+  padding-bottom: var(--ov-space-2, 8px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  background: var(--ov-color-bg-surface);
+  border-right: 1px solid var(--ov-color-border-muted);
+}
+
+/* ─── Secondary Sidebar ─────────────────────── */
+
+.SecondarySidebar {
+  grid-area: secondary;
+  overflow: auto;
+  min-width: 0;
+  background: var(--ov-color-bg-surface);
+  border-left: 1px solid var(--ov-color-border-muted);
+}
+
+.Root[data-ov-secondary-sidebar-collapsed] .SecondarySidebar {
   overflow: hidden;
 }
 

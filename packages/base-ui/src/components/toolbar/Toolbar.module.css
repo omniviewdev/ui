@@ -28,16 +28,11 @@
   gap: var(--ov-primitive-space-1);
 }
 
-.Group[data-ov-separator='true'] {
-  padding-inline-start: var(--ov-space-stack-sm);
-}
-
 .Separator {
   display: block;
   width: 1px;
   height: calc(var(--_ov-toolbar-height, 2.25rem) * 0.6);
   margin-block: auto;
   background-color: var(--ov-color-border-muted);
-  margin-inline-end: var(--ov-primitive-space-1);
   flex-shrink: 0;
 }

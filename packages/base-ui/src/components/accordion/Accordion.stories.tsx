@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { LuFile, LuFolder, LuGitBranch, LuSearch, LuSettings, LuTerminal } from 'react-icons/lu';
 import type { AccordionProps } from './Accordion';
 import { Accordion } from './Accordion';
 
@@ -9,11 +10,13 @@ const meta = {
   args: {
     exclusive: false,
     animation: 'default',
+    size: 'md',
   },
   argTypes: {
     exclusive: { control: 'boolean' },
     defaultExpanded: { control: 'object' },
     animation: { control: 'inline-radio', options: ['default', 'fast', 'none'] },
+    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
   },
 } satisfies Meta<AccordionProps>;
 
@@ -33,6 +36,158 @@ export const Playground: Story = {
         <p>Advanced configuration options and settings live here.</p>
       </Accordion.Item>
     </Accordion>
+  ),
+};
+
+export const Small: Story = {
+  name: 'Size: sm',
+  render: () => (
+    <Accordion size="sm" defaultExpanded={['files']}>
+      <Accordion.Item id="files" title="Open Editors" icon={<LuFile />} count={3}>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ov-color-fg-muted)' }}>
+          <div>index.tsx</div>
+          <div>App.module.css</div>
+          <div>utils.ts</div>
+        </div>
+      </Accordion.Item>
+      <Accordion.Item id="explorer" title="Explorer" icon={<LuFolder />}>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ov-color-fg-muted)' }}>
+          <div>src/</div>
+          <div>public/</div>
+          <div>package.json</div>
+        </div>
+      </Accordion.Item>
+      <Accordion.Item id="outline" title="Outline" icon={<LuSearch />}>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ov-color-fg-muted)' }}>
+          No symbols found in the current file.
+        </div>
+      </Accordion.Item>
+      <Accordion.Item id="timeline" title="Timeline" icon={<LuGitBranch />}>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ov-color-fg-muted)' }}>
+          No timeline entries.
+        </div>
+      </Accordion.Item>
+    </Accordion>
+  ),
+};
+
+export const Medium: Story = {
+  name: 'Size: md (default)',
+  render: () => (
+    <Accordion size="md" defaultExpanded={['general']}>
+      <Accordion.Item id="general" title="General" icon={<LuSettings />}>
+        <p>General application settings and preferences.</p>
+      </Accordion.Item>
+      <Accordion.Item id="terminal" title="Terminal" icon={<LuTerminal />}>
+        <p>Terminal configuration and shell settings.</p>
+      </Accordion.Item>
+      <Accordion.Item id="source-control" title="Source Control" icon={<LuGitBranch />} count={5}>
+        <p>Git and version control settings.</p>
+      </Accordion.Item>
+    </Accordion>
+  ),
+};
+
+export const Large: Story = {
+  name: 'Size: lg',
+  render: () => (
+    <Accordion size="lg" defaultExpanded={['faq-1']}>
+      <Accordion.Item id="faq-1" title="What is your return policy?">
+        <p>
+          We offer a 30-day return policy on all items. Items must be in their original packaging
+          and condition. Contact our support team to initiate a return.
+        </p>
+      </Accordion.Item>
+      <Accordion.Item id="faq-2" title="How long does shipping take?">
+        <p>
+          Standard shipping takes 5-7 business days. Express shipping is available for 2-3 business
+          day delivery. International orders may take longer.
+        </p>
+      </Accordion.Item>
+      <Accordion.Item id="faq-3" title="Do you offer international shipping?">
+        <p>
+          Yes, we ship to over 40 countries worldwide. Shipping costs and delivery times vary by
+          destination. Check our shipping page for details.
+        </p>
+      </Accordion.Item>
+    </Accordion>
+  ),
+};
+
+export const SizeComparison: Story = {
+  name: 'Size comparison',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <div key={size}>
+          <p
+            style={{
+              margin: '0 0 8px',
+              fontFamily: 'var(--ov-font-sans)',
+              fontSize: 'var(--ov-font-size-caption)',
+              color: 'var(--ov-color-fg-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {size}
+          </p>
+          <Accordion size={size} defaultExpanded={['item']}>
+            <Accordion.Item id="item" title="Expanded item" icon={<LuFolder />} count={7}>
+              <p>Content at {size} size.</p>
+            </Accordion.Item>
+            <Accordion.Item id="collapsed" title="Collapsed item" icon={<LuFile />}>
+              <p>Hidden content.</p>
+            </Accordion.Item>
+          </Accordion>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+export const SidebarPanel: Story = {
+  name: 'Sidebar panel (VSCode-like)',
+  render: () => (
+    <div
+      style={{
+        width: 260,
+        background: 'var(--ov-color-bg-surface)',
+        borderRight: '1px solid var(--ov-color-border-muted)',
+        height: 400,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Accordion size="sm" exclusive defaultExpanded={['explorer']} style={{ flex: 1 }}>
+        <Accordion.Item id="editors" title="Open Editors" icon={<LuFile />} count={2} disableContentPadding>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)', lineHeight: 1.8, padding: '0 8px 6px' }}>
+            <div>Welcome.tsx</div>
+            <div>package.json</div>
+          </div>
+        </Accordion.Item>
+        <Accordion.Item id="explorer" title="Explorer" icon={<LuFolder />} disableContentPadding>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)', lineHeight: 1.8, padding: '0 8px 6px' }}>
+            <div>src/</div>
+            <div>public/</div>
+            <div>node_modules/</div>
+            <div>package.json</div>
+            <div>tsconfig.json</div>
+            <div>README.md</div>
+          </div>
+        </Accordion.Item>
+        <Accordion.Item id="outline" title="Outline" icon={<LuSearch />}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)' }}>
+            The active editor cannot provide outline information.
+          </div>
+        </Accordion.Item>
+        <Accordion.Item id="timeline" title="Timeline" icon={<LuGitBranch />}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)' }}>
+            No timeline entries.
+          </div>
+        </Accordion.Item>
+      </Accordion>
+    </div>
   ),
 };
 
@@ -67,65 +222,6 @@ export const ExclusiveMode: Story = {
         <p>Opening this closes whichever is currently open.</p>
       </Accordion.Item>
     </Accordion>
-  ),
-};
-
-export const AnimationSpeed: Story = {
-  name: 'Animation speed',
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-      <div>
-        <p
-          style={{
-            margin: '0 0 8px',
-            fontFamily: 'var(--ov-font-sans)',
-            fontSize: 'var(--ov-font-size-caption)',
-            color: 'var(--ov-color-fg-muted)',
-          }}
-        >
-          Default (150ms)
-        </p>
-        <Accordion animation="default">
-          <Accordion.Item id="d1" title="Default speed">
-            <p>Standard animation timing.</p>
-          </Accordion.Item>
-        </Accordion>
-      </div>
-      <div>
-        <p
-          style={{
-            margin: '0 0 8px',
-            fontFamily: 'var(--ov-font-sans)',
-            fontSize: 'var(--ov-font-size-caption)',
-            color: 'var(--ov-color-fg-muted)',
-          }}
-        >
-          Fast (100ms)
-        </p>
-        <Accordion animation="fast">
-          <Accordion.Item id="f1" title="Fast speed">
-            <p>Snappier animation timing.</p>
-          </Accordion.Item>
-        </Accordion>
-      </div>
-      <div>
-        <p
-          style={{
-            margin: '0 0 8px',
-            fontFamily: 'var(--ov-font-sans)',
-            fontSize: 'var(--ov-font-size-caption)',
-            color: 'var(--ov-color-fg-muted)',
-          }}
-        >
-          None (instant)
-        </p>
-        <Accordion animation="none">
-          <Accordion.Item id="n1" title="No animation">
-            <p>Instant expand/collapse with no transition.</p>
-          </Accordion.Item>
-        </Accordion>
-      </div>
-    </div>
   ),
 };
 

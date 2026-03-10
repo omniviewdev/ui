@@ -182,6 +182,9 @@
   --ov-size-icon-button-icon-lg: 18px;
   --ov-size-button-group-gap: 8px;
   --ov-size-chip-radius: var(--ov-radius-control);
+  --ov-size-chip-radius-sm: var(--ov-primitive-radius-sm);
+  --ov-size-chip-radius-md: var(--ov-radius-control);
+  --ov-size-chip-radius-lg: var(--ov-radius-control);
   --ov-size-chip-group-gap: 6px;
   --ov-size-chip-height-sm: 20px;
   --ov-size-chip-height-md: 24px;
@@ -861,6 +864,9 @@
   --ov-size-icon-button-icon-lg: 16px;
   --ov-size-button-group-gap: 6px;
   --ov-size-chip-radius: var(--ov-radius-control);
+  --ov-size-chip-radius-sm: var(--ov-primitive-radius-sm);
+  --ov-size-chip-radius-md: var(--ov-radius-control);
+  --ov-size-chip-radius-lg: var(--ov-radius-control);
   --ov-size-chip-group-gap: 5px;
   --ov-size-chip-height-sm: 18px;
   --ov-size-chip-height-md: 22px;
@@ -1029,6 +1035,9 @@
   --ov-size-icon-button-icon-lg: 18px;
   --ov-size-button-group-gap: 8px;
   --ov-size-chip-radius: var(--ov-radius-control);
+  --ov-size-chip-radius-sm: var(--ov-primitive-radius-sm);
+  --ov-size-chip-radius-md: var(--ov-radius-control);
+  --ov-size-chip-radius-lg: var(--ov-radius-control);
   --ov-size-chip-group-gap: 6px;
   --ov-size-chip-height-sm: 20px;
   --ov-size-chip-height-md: 24px;

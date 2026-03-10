@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo, useState, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, type HTMLAttributes } from 'react';
 import styles from './ObjectInspector.module.css';
 
 export type InspectorFormat = 'json' | 'yaml';
@@ -55,6 +55,22 @@ interface AncestorSet {
   has(value: object): boolean;
 }
 
+function subtreeMatches(value: unknown, query: string, ancestors: AncestorSet): boolean {
+  if (!query) return false;
+  const type = getType(value);
+  if (type !== 'object' && type !== 'array') return false;
+  if (value === null || value === undefined) return false;
+  if (isObjectRef(value) && ancestors.has(value)) return false;
+  const childAncestors: AncestorSet = {
+    has: (v: object) => v === value || ancestors.has(v),
+  };
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (matchesSearch(k, v, query)) return true;
+    if (subtreeMatches(v, query, childAncestors)) return true;
+  }
+  return false;
+}
+
 interface TreeNodeProps {
   nodeKey: string;
   value: unknown;
@@ -84,6 +100,31 @@ function TreeNode({
   const [expanded, setExpanded] = useState(
     () => isExpandable && !isCircular && shouldExpand(defaultExpanded, depth),
   );
+
+  // Track whether the node was force-expanded by search so we can collapse
+  // it back when the search is cleared without disturbing user-toggled state.
+  const searchExpandedRef = useRef(false);
+
+  // Auto-expand when search matches a descendant
+  const hasDescendantMatch = useMemo(
+    () => searchQuery ? subtreeMatches(value, searchQuery, ancestors) : false,
+    [searchQuery, value, ancestors],
+  );
+
+  // Force expand when search finds matches in descendants
+  useEffect(() => {
+    if (searchQuery && hasDescendantMatch && isExpandable && !isCircular && !expanded) {
+      setExpanded(true);
+      searchExpandedRef.current = true;
+    }
+    // Collapse back only nodes that were force-expanded by search
+    if (!searchQuery && searchExpandedRef.current) {
+      searchExpandedRef.current = false;
+      if (!shouldExpand(defaultExpanded, depth)) {
+        setExpanded(false);
+      }
+    }
+  }, [searchQuery, hasDescendantMatch, isExpandable, isCircular, expanded, defaultExpanded, depth]);
 
   // Create a new ancestors set that includes this value for children.
   // WeakSet doesn't support iteration, so we use a duck-typed wrapper
@@ -251,43 +292,79 @@ export const ObjectInspector = forwardRef<HTMLDivElement, ObjectInspectorProps>(
 
 ObjectInspector.displayName = 'ObjectInspector';
 
-/** JSON.stringify with circular reference safety. */
+/** JSON.stringify with circular reference safety (ancestor-stack approach). */
 function safeJsonStringify(value: unknown): string {
-  const seen = new WeakSet<object>();
+  // Use an ancestor stack so shared (but non-cyclic) references serialize fully.
+  // JSON.stringify calls the replacer with `this` bound to the object that
+  // contains the current key. We track ancestors by pushing on enter and
+  // popping when we leave.
+  const stack: object[] = [];
   return JSON.stringify(
     value,
-    (_key, val) => {
-      if (typeof val === 'object' && val !== null) {
-        if (seen.has(val)) return '[Circular]';
-        seen.add(val);
+    function (this: unknown, _key: string, val: unknown) {
+      if (typeof val !== 'object' || val === null) return val;
+
+      // Trim the stack: `this` is the parent container. Pop until the
+      // top of the stack IS the parent (or the stack is empty).
+      while (stack.length > 0 && stack[stack.length - 1] !== this) {
+        stack.pop();
       }
+
+      if (stack.includes(val as object)) return '[Circular]';
+      stack.push(val as object);
       return val;
     },
     2,
   );
 }
 
-/** Simple YAML serializer (no dependency) */
-function toYaml(value: unknown, indent: number = 0, seen?: WeakSet<object>): string {
+/** Check if a YAML scalar needs quoting. */
+function needsYamlQuoting(s: string): boolean {
+  if (s === '') return true;
+  if (/^[\s]/.test(s) || /[\s]$/.test(s)) return true;
+  // Starts with indicator characters or reserved values
+  if (/^[-?:,\[\]{}#&*!|>'"%@`]/.test(s)) return true;
+  // Contains colon+space, hash+space, or other flow indicators
+  if (/[:\s]#|:\s|[{}\[\],]/.test(s)) return true;
+  // YAML boolean/null literals (case-insensitive)
+  if (/^(true|false|yes|no|on|off|null|~)$/i.test(s)) return true;
+  // Looks like a number
+  if (/^[+-]?(\d+\.?\d*|\.inf|\.nan)$/i.test(s)) return true;
+  return false;
+}
+
+/** Quote a YAML scalar with double quotes, escaping special chars. */
+function quoteYaml(s: string): string {
+  return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/\r/g, '\\r') + '"';
+}
+
+/** Safely serialize a string as a YAML scalar. */
+function yamlScalar(s: string, indent: number): string {
+  const prefix = '  '.repeat(indent);
+  // Multi-line strings use block scalar
+  if (s.includes('\n')) {
+    return `|\n${prefix}  ${s.split('\n').join(`\n${prefix}  `)}`;
+  }
+  return needsYamlQuoting(s) ? quoteYaml(s) : s;
+}
+
+/** Simple YAML serializer (no dependency, ancestor-stack approach) */
+function toYaml(value: unknown, indent: number = 0, ancestors?: object[]): string {
   const prefix = '  '.repeat(indent);
   if (value === null) return 'null';
   if (value === undefined) return 'null';
-  if (typeof value === 'string')
-    return value.includes('\n')
-      ? `|\n${prefix}  ${value.split('\n').join(`\n${prefix}  `)}`
-      : value;
+  if (typeof value === 'string') return yamlScalar(value, indent);
   if (typeof value === 'number' || typeof value === 'boolean') return String(value);
 
-  // Circular reference guard for objects/arrays
   if (typeof value === 'object') {
-    const tracking = seen ?? new WeakSet<object>();
-    if (tracking.has(value as object)) return '[Circular]';
-    tracking.add(value as object);
+    const stack = ancestors ?? [];
+    if (stack.includes(value)) return '"[Circular]"';
+    const childStack = [...stack, value];
 
     if (Array.isArray(value)) {
       if (value.length === 0) return '[]';
       return value
-        .map((item) => `${prefix}- ${toYaml(item, indent + 1, tracking).trimStart()}`)
+        .map((item) => `${prefix}- ${toYaml(item, indent + 1, childStack).trimStart()}`)
         .join('\n');
     }
 
@@ -295,15 +372,16 @@ function toYaml(value: unknown, indent: number = 0, seen?: WeakSet<object>): str
     if (entries.length === 0) return '{}';
     return entries
       .map(([k, v]) => {
-        const serialized = toYaml(v, indent + 1, tracking);
+        const safeKey = needsYamlQuoting(k) ? quoteYaml(k) : k;
+        const serialized = toYaml(v, indent + 1, childStack);
         if (
           typeof v === 'object' &&
           v !== null &&
           (Array.isArray(v) ? v.length > 0 : Object.keys(v).length > 0)
         ) {
-          return `${prefix}${k}:\n${serialized}`;
+          return `${prefix}${safeKey}:\n${serialized}`;
         }
-        return `${prefix}${k}: ${serialized}`;
+        return `${prefix}${safeKey}: ${serialized}`;
       })
       .join('\n');
   }

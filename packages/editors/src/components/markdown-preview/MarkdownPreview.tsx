@@ -55,11 +55,13 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
   // Code blocks & inline code
   pre: ({ children }: MdProps) => <>{children}</>,
   code: ({ className, children }: MdProps) => {
-    const match = /language-(\w+)/.exec(className ?? '');
-    if (match) {
+    const match = /language-([^\s]+)/.exec(className ?? '');
+    const text = String(children).replace(/\n$/, '');
+    // Fenced blocks: has language class OR contains newlines (multiline = block)
+    if (match || text.includes('\n')) {
       return (
-        <CodeBlock language={match[1]} copyable>
-          {String(children).replace(/\n$/, '')}
+        <CodeBlock language={match?.[1]} copyable>
+          {text}
         </CodeBlock>
       );
     }
@@ -83,8 +85,8 @@ const markdownComponents: Record<string, React.ComponentType<MdProps>> = {
   ),
 
   // Links
-  a: ({ children, href }: MdProps) => (
-    <Link href={href} target="_blank" rel="noopener noreferrer" underline="hover">
+  a: ({ children, href, node: _node, ...rest }: MdProps) => (
+    <Link {...rest} href={href} target="_blank" rel="noopener noreferrer" underline="hover">
       {children}
     </Link>
   ),

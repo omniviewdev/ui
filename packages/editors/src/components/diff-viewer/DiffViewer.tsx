@@ -74,7 +74,10 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
   // Update original content
   useEffect(() => {
     if (!editorRef.current || !isReady) return;
-    editorRef.current.getModel()?.original?.setValue(original);
+    const origModel = editorRef.current.getModel()?.original;
+    if (origModel && original !== origModel.getValue()) {
+      origModel.setValue(original);
+    }
   }, [original, isReady]);
 
   // Update modified content

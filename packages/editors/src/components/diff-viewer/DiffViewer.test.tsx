@@ -19,6 +19,7 @@ vi.mock('monaco-editor', () => ({
       mockCreateDiffEditor(...args);
       const originalModel = {
         setValue: vi.fn(),
+        getValue: vi.fn(() => ''),
         dispose: vi.fn(),
       };
       const modifiedModel = {

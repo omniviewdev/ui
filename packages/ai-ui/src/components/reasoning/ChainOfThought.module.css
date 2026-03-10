@@ -1,0 +1,237 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2, 8px);
+  max-width: 65ch;
+}
+
+/* ---------------------------------------------------------------------------
+   Header — clickable toggle with brain icon and chevron
+   --------------------------------------------------------------------------- */
+
+.Header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-1, 4px) 0;
+  background: transparent;
+  border: none;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.Header:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.Header:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm, 3px);
+}
+
+.HeaderIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.HeaderLabel {
+  flex: 1;
+  font-weight: var(--ov-font-weight-regular, 400);
+}
+
+.HeaderChevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.HeaderChevron[data-ov-open='true'] {
+  transform: rotate(180deg);
+}
+
+.HeaderChevron[data-ov-open='false'] {
+  transform: rotate(0deg);
+}
+
+.CollapseContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  padding: var(--ov-space-1, 4px) 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Step — icon + vertical line + body
+   --------------------------------------------------------------------------- */
+
+.Step {
+  display: flex;
+  gap: var(--ov-space-2, 8px);
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  min-height: 0;
+}
+
+.StepIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 20px;
+  padding-top: 1px;
+}
+
+.StepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Status colors */
+.StepIcon[data-ov-status='pending'] {
+  color: var(--ov-color-fg-subtle);
+}
+
+.StepIcon[data-ov-status='active'] {
+  color: var(--ov-color-fg-brand, var(--ov-color-info-default));
+}
+
+.StepIcon[data-ov-status='complete'] {
+  color: var(--ov-color-fg-muted);
+}
+
+.StepIcon[data-ov-status='error'] {
+  color: var(--ov-color-danger-default);
+}
+
+/* Vertical connecting line */
+.StepLine {
+  flex: 1;
+  width: 1px;
+  min-height: 8px;
+  background: var(--ov-color-border-default);
+  margin: var(--ov-space-1, 4px) 0;
+}
+
+.Step:last-child .StepLine {
+  display: none;
+}
+
+/* Step body */
+.StepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  padding-bottom: var(--ov-space-2, 8px);
+  min-width: 0;
+  flex: 1;
+}
+
+.StepLabel {
+  font-weight: var(--ov-font-weight-medium, 500);
+  color: var(--ov-color-fg-default);
+  line-height: 16px;
+}
+
+.Step[data-ov-status='active'] .StepLabel {
+  font-weight: var(--ov-font-weight-semibold, 600);
+}
+
+.Step[data-ov-status='pending'] .StepLabel {
+  color: var(--ov-color-fg-subtle);
+}
+
+.StepDescription {
+  color: var(--ov-color-fg-muted);
+  line-height: var(--ov-line-height-normal, 1.5);
+}
+
+/* ---------------------------------------------------------------------------
+   Tags / search result chips
+   --------------------------------------------------------------------------- */
+
+.StepTags {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  flex-wrap: wrap;
+}
+
+.StepTag {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   File badge within a step
+   --------------------------------------------------------------------------- */
+
+.StepFile {
+  cursor: default;
+  max-width: 200px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  overflow: hidden;
+}
+
+.StepFileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Image within a step
+   --------------------------------------------------------------------------- */
+
+.StepImage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  margin-top: var(--ov-space-1, 4px);
+}
+
+.StepImageContent {
+  position: relative;
+  display: flex;
+  max-height: 22rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-bg-inset);
+  padding: var(--ov-space-3, 12px);
+}
+
+.StepImageCaption {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .Header,
+  .HeaderChevron {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Header,
+:root[data-ov-motion='reduced'] .HeaderChevron {
+  transition: none;
+}

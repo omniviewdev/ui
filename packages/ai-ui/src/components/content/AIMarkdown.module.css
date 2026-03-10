@@ -1,0 +1,126 @@
+.Root {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  color: var(--ov-color-fg-default);
+  word-break: break-word;
+}
+
+.Root > *:first-child {
+  margin-top: 0;
+}
+
+.Root > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Streaming cursor */
+.Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--ov-color-fg-default);
+  animation: cursor-blink var(--ov-duration-slow, 1s) step-end infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+    animation: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Root[data-ov-streaming='true'][data-ov-cursor='true']::after {
+  animation: none;
+}
+
+/* Headings */
+.Root h1,
+.Root h2,
+.Root h3,
+.Root h4,
+.Root h5,
+.Root h6 {
+  margin: var(--ov-space-3, 12px) 0 var(--ov-space-2, 8px);
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-default);
+  line-height: 1.3;
+}
+
+.Root h1 { font-size: var(--ov-font-size-xl, 1.25rem); }
+.Root h2 { font-size: var(--ov-font-size-lg, 1.0625rem); }
+.Root h3 { font-size: var(--ov-font-size-md, 0.9375rem); }
+.Root h4,
+.Root h5,
+.Root h6 { font-size: var(--ov-font-size-sm, 0.8125rem); }
+
+/* Paragraphs */
+.Root p {
+  margin: var(--ov-space-2, 8px) 0;
+}
+
+/* Lists */
+.Root ul,
+.Root ol {
+  margin: var(--ov-space-2, 8px) 0;
+  padding-left: var(--ov-space-5, 20px);
+}
+
+.Root li {
+  margin: var(--ov-space-1, 4px) 0;
+}
+
+/* Blockquotes — spacing when using Blockquote component */
+.Root blockquote {
+  margin: var(--ov-space-2, 8px) 0;
+}
+
+/* Strip bottom margin from last paragraph inside blockquotes */
+.Root blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code blocks */
+.CodeBlockWrapper {
+  margin: var(--ov-space-3, 12px) 0;
+}
+
+/* Inline code */
+.InlineCode {
+  font-size: 0.9em;
+}
+
+/* Links */
+.Root a {
+  color: var(--ov-color-markdown-link, var(--ov-color-fg-brand));
+}
+
+/* Horizontal rules */
+.Root hr {
+  margin: var(--ov-space-3, 12px) 0;
+}
+
+/* Task list checkboxes — keep inline with text */
+.Root :global(.ov-md-checkbox) {
+  display: inline-grid;
+  width: auto;
+  vertical-align: middle;
+  margin-right: var(--ov-space-1, 4px);
+}
+
+/* Task list items should not show bullet */
+.Root li:has(> :global(.ov-md-checkbox)) {
+  list-style: none;
+}
+
+/* Table spacing */
+.Root table {
+  margin: var(--ov-space-2, 8px) 0;
+}

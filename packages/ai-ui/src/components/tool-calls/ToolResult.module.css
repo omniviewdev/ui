@@ -1,0 +1,49 @@
+.Root {
+  border-radius: var(--ov-radius-md, 6px);
+  overflow: hidden;
+}
+
+.Root[data-ov-status='success'] {
+  background: var(--ov-color-bg-inset);
+  border: 1px solid var(--ov-color-border-default);
+}
+
+.Root[data-ov-status='error'] {
+  background: var(--ov-color-diagnostic-error-bg, var(--ov-color-bg-inset));
+  border: 1px solid var(--ov-color-diagnostic-error, var(--ov-color-danger-default));
+}
+
+.Content {
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  line-height: var(--ov-line-height-normal, 1.5);
+  color: var(--ov-color-fg-default);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.Root[data-ov-status='error'] .Content {
+  color: var(--ov-color-diagnostic-error, var(--ov-color-danger-default));
+}
+
+.ExpandButton {
+  display: block;
+  width: 100%;
+  padding: var(--ov-space-1, 4px);
+  border: none;
+  border-top: 1px solid var(--ov-color-border-default);
+  background: transparent;
+  color: var(--ov-color-fg-brand, var(--ov-color-brand-default));
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  cursor: pointer;
+  text-align: center;
+}
+
+.ExpandButton:hover {
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.ExpandButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}

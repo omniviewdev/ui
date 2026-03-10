@@ -1,0 +1,6 @@
+.Root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-primitive-space-2);
+}

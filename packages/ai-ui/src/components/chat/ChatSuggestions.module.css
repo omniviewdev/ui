@@ -1,0 +1,38 @@
+.Root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+}
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-full, 9999px);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  cursor: pointer;
+  transition: background var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Item:hover {
+  background: var(--ov-color-bg-surface-overlay, var(--ov-color-list-hover-bg));
+}
+
+.Item:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Item {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Item {
+  transition: none;
+}

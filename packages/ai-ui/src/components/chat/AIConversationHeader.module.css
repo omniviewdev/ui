@@ -1,0 +1,28 @@
+.Root {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-3, 12px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  border-bottom: 1px solid var(--ov-color-border, #e0e0e0);
+}
+
+.Title {
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Model {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted, #666);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  flex-shrink: 0;
+}

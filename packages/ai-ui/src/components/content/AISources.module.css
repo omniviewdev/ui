@@ -1,0 +1,80 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Title {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-medium, 500);
+  color: var(--ov-color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+}
+
+.Item {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm, 3px);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Item:hover {
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.Item:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
+.Index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--ov-radius-full, 9999px);
+  background: var(--ov-color-chat-citation, var(--ov-color-fg-brand));
+  color: var(--ov-color-fg-on-solid, #fff);
+  font-size: 10px;
+  font-weight: var(--ov-font-weight-medium, 500);
+  flex-shrink: 0;
+}
+
+.Label {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  color: var(--ov-color-fg-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Detail {
+  margin-left: auto;
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Item {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Item {
+  transition: none;
+}

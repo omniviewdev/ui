@@ -13,7 +13,9 @@
     "test": "pnpm -r --filter \"./packages/*\" test",
     "typecheck": "pnpm -r --filter \"./packages/*\" typecheck",
     "storybook": "pnpm --filter @omniview/base-ui storybook",
+    "storybook:ai": "pnpm --filter @omniview/ai-ui storybook",
     "build-storybook": "pnpm --filter @omniview/base-ui build-storybook",
+    "build-storybook:ai": "pnpm --filter @omniview/ai-ui build-storybook",
     "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test"
   },
   "devDependencies": {

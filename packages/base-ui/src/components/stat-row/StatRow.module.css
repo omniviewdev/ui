@@ -1,0 +1,95 @@
+/* ───────────────────────────────────────────────
+   StatRow — inline row of icon+label stat items
+   separated by dot dividers
+   ─────────────────────────────────────────────── */
+
+.Root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_ov-stat-gap, 8px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ─── Size variants ─────────────────────────── */
+
+.Root[data-ov-size='sm'] {
+  --_ov-stat-gap: 6px;
+  --_ov-stat-icon-size: 0.6875rem;
+  --_ov-stat-font-size: var(--ov-font-size-xs, 0.6875rem);
+}
+
+.Root[data-ov-size='md'] {
+  --_ov-stat-gap: 8px;
+  --_ov-stat-icon-size: 0.8125rem;
+  --_ov-stat-font-size: var(--ov-font-size-sm, 0.8125rem);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-stat-gap: 10px;
+  --_ov-stat-icon-size: 0.9375rem;
+  --_ov-stat-font-size: var(--ov-font-size-md, 0.9375rem);
+}
+
+/* ─── Item ──────────────────────────────────── */
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
+  color: var(--_ov-stat-item-color, var(--ov-color-fg-muted));
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ─── Item icon slot ────────────────────────── */
+
+.ItemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--_ov-stat-icon-color, var(--ov-color-fg-subtle));
+  line-height: 0;
+}
+
+.ItemIcon :where(svg) {
+  width: var(--_ov-stat-icon-size, 0.6875rem);
+  height: var(--_ov-stat-icon-size, 0.6875rem);
+}
+
+/* ─── Divider (dot separator) ───────────────── */
+
+.Divider {
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
+  line-height: 1;
+  user-select: none;
+}
+
+/* ─── Color variants on Item ────────────────── */
+
+.Item[data-ov-color='neutral'] {
+  --_ov-stat-item-color: var(--ov-color-fg-muted);
+}
+
+.Item[data-ov-color='brand'] {
+  --_ov-stat-item-color: var(--ov-color-brand-default);
+}
+
+.Item[data-ov-color='success'] {
+  --_ov-stat-item-color: var(--ov-color-success);
+}
+
+.Item[data-ov-color='warning'] {
+  --_ov-stat-item-color: var(--ov-color-warning);
+}
+
+.Item[data-ov-color='danger'] {
+  --_ov-stat-item-color: var(--ov-color-danger);
+}
+
+.Item[data-ov-color='info'] {
+  --_ov-stat-item-color: var(--ov-color-info);
+}

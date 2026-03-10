@@ -1,0 +1,80 @@
+.Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.Root[data-ov-variant='embedded'] {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md);
+}
+
+.Root[data-ov-variant='panel'] {
+  height: 100%;
+  border-left: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-subtle);
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+}
+
+.TitleGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.Title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ov-color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Description {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ov-color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Close {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  flex-shrink: 0;
+}
+
+.Action {
+  flex-shrink: 0;
+}
+
+.Action[data-destructive='true'] {
+  color: var(--ov-color-text-danger);
+}
+
+.Content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}

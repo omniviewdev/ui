@@ -179,4 +179,73 @@ describe('AppShell', () => {
     expect(screen.getByTestId('content')).toHaveClass('c-cls');
     expect(screen.getByTestId('footer')).toHaveClass('f-cls');
   });
+
+  it('renders NavRail as a nav element', () => {
+    renderWithTheme(
+      <AppShell>
+        <AppShell.NavRail data-testid="rail">Rail</AppShell.NavRail>
+        <AppShell.Content>Content</AppShell.Content>
+      </AppShell>,
+    );
+
+    const rail = screen.getByTestId('rail');
+    expect(rail.tagName).toBe('NAV');
+    expect(rail).toHaveTextContent('Rail');
+  });
+
+  it('renders SecondarySidebar as an aside element', () => {
+    renderWithTheme(
+      <AppShell>
+        <AppShell.Content>Content</AppShell.Content>
+        <AppShell.SecondarySidebar data-testid="secondary">Detail</AppShell.SecondarySidebar>
+      </AppShell>,
+    );
+
+    const secondary = screen.getByTestId('secondary');
+    expect(secondary.tagName).toBe('ASIDE');
+    expect(secondary).toHaveTextContent('Detail');
+  });
+
+  it('applies secondary sidebar collapsed state', () => {
+    renderWithTheme(
+      <AppShell secondarySidebarCollapsed data-testid="shell">
+        <AppShell.Content>Content</AppShell.Content>
+        <AppShell.SecondarySidebar data-testid="secondary">Detail</AppShell.SecondarySidebar>
+      </AppShell>,
+    );
+
+    const shell = screen.getByTestId('shell');
+    expect(shell).toHaveAttribute('data-ov-secondary-sidebar-collapsed');
+    expect(shell.style.getPropertyValue('--_ov-shell-secondary-sidebar-width')).toBe('0px');
+  });
+
+  it('applies custom nav rail and secondary sidebar dimensions', () => {
+    renderWithTheme(
+      <AppShell navRailWidth={56} secondarySidebarWidth={350} data-testid="shell">
+        <AppShell.NavRail>Rail</AppShell.NavRail>
+        <AppShell.Content>Content</AppShell.Content>
+        <AppShell.SecondarySidebar>Detail</AppShell.SecondarySidebar>
+      </AppShell>,
+    );
+
+    const el = screen.getByTestId('shell');
+    expect(el.style.getPropertyValue('--_ov-shell-nav-rail-width')).toBe('56px');
+    expect(el.style.getPropertyValue('--_ov-shell-secondary-sidebar-width')).toBe('350px');
+  });
+
+  it('forwards ref on NavRail and SecondarySidebar', () => {
+    const railRef = createRef<HTMLElement>();
+    const secondaryRef = createRef<HTMLElement>();
+
+    renderWithTheme(
+      <AppShell>
+        <AppShell.NavRail ref={railRef}>Rail</AppShell.NavRail>
+        <AppShell.Content>C</AppShell.Content>
+        <AppShell.SecondarySidebar ref={secondaryRef}>S</AppShell.SecondarySidebar>
+      </AppShell>,
+    );
+
+    expect(railRef.current).toBeInstanceOf(HTMLElement);
+    expect(secondaryRef.current).toBeInstanceOf(HTMLElement);
+  });
 });

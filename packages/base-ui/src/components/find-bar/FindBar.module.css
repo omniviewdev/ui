@@ -1,0 +1,29 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-primitive-space-1);
+  padding: var(--ov-primitive-space-2);
+  background: var(--ov-color-bg-default);
+  border: 1px solid var(--ov-color-border-muted);
+  border-radius: var(--ov-radius-surface);
+  box-shadow: var(--ov-shadow-md);
+}
+
+.Row {
+  gap: var(--ov-primitive-space-1);
+}
+
+.SearchInput {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.MatchCount {
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+  white-space: nowrap;
+}
+
+.ToggleBtn {
+  font-family: var(--ov-font-mono);
+}

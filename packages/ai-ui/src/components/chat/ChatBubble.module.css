@@ -1,0 +1,93 @@
+.Root {
+  display: flex;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-2, 8px) 0;
+  width: 100%;
+}
+
+.Root[data-ov-role='user'] {
+  flex-direction: row-reverse;
+}
+
+.Root[data-ov-role='system'] {
+  justify-content: center;
+}
+
+.Avatar {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  min-width: 0;
+  flex: 1;
+}
+
+.Bubble {
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  word-break: break-word;
+  color: var(--ov-color-fg-default);
+}
+
+/* User messages get a subtle inset background */
+.Root[data-ov-role='user'] .Bubble {
+  background: var(--ov-color-bg-surface-raised, rgba(255, 255, 255, 0.04));
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  border-radius: var(--ov-radius-lg, 8px);
+}
+
+/* Assistant messages: clean, no background */
+.Root[data-ov-role='assistant'] .Bubble {
+  /* no background, no padding - clean text */
+}
+
+/* System messages: small, muted */
+.Root[data-ov-role='system'] .Bubble {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  text-align: center;
+}
+
+.Meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Root[data-ov-role='user'] .Meta {
+  justify-content: flex-end;
+}
+
+.Timestamp {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  opacity: 0;
+  transition: opacity var(--ov-duration-fast, 150ms);
+}
+
+.Root:hover .Timestamp {
+  opacity: 1;
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  opacity: 0;
+  transition: opacity var(--ov-duration-fast, 150ms);
+}
+
+.Root:hover .Actions {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Actions,
+  .Timestamp {
+    transition: none;
+  }
+}

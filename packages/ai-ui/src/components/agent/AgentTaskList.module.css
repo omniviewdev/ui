@@ -1,0 +1,9 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-inset);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+}

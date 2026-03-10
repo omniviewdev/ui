@@ -20,6 +20,7 @@ interface AccordionContextValue {
   expandedIds: Set<string>;
   toggle: (id: string) => void;
   registerDefault: (id: string) => void;
+  size: AccordionSize;
 }
 
 const AccordionContext = createContext<AccordionContextValue | null>(null);
@@ -27,6 +28,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 // ─── Public types ───────────────────────────────────────────────────────────
 
 export type AccordionAnimation = 'default' | 'fast' | 'none';
+export type AccordionSize = 'sm' | 'md' | 'lg';
 
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time. */
@@ -35,6 +37,8 @@ export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   defaultExpanded?: string[];
   /** Animation speed for expand/collapse. */
   animation?: AccordionAnimation;
+  /** Size preset — controls header density and font size. */
+  size?: AccordionSize;
 }
 
 export interface AccordionItemProps extends HTMLAttributes<HTMLDivElement> {
@@ -52,6 +56,8 @@ export interface AccordionItemProps extends HTMLAttributes<HTMLDivElement> {
   defaultExpanded?: boolean;
   /** Prevents toggling. */
   disabled?: boolean;
+  /** Remove default padding from the content area. */
+  disableContentPadding?: boolean;
 }
 
 // ─── AccordionItem ──────────────────────────────────────────────────────────
@@ -65,6 +71,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
     endDecorator,
     defaultExpanded = false,
     disabled = false,
+    disableContentPadding = false,
     className,
     children,
     ...props
@@ -76,7 +83,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
     throw new Error('Accordion.Item must be used within an Accordion');
   }
 
-  const { expandedIds, toggle, registerDefault } = ctx;
+  const { expandedIds, toggle, registerDefault, size } = ctx;
   const expanded = expandedIds.has(id);
 
   // Register per-item default on mount (runs once).
@@ -91,6 +98,8 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
   const uid = useId();
   const panelId = `ov-accordion-panel-${uid}`;
   const headerId = `ov-accordion-header-${uid}`;
+
+  const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 18 : 16;
 
   return (
     <div
@@ -127,13 +136,13 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
             {endDecorator}
           </span>
         ) : null}
-        <LuChevronRight aria-hidden className={styles.Chevron} size={16} />
+        <LuChevronRight aria-hidden className={styles.Chevron} size={chevronSize} />
       </button>
 
       {/* Collapsible content */}
       <div id={panelId} role="region" aria-labelledby={headerId} className={styles.ContentWrapper}>
         <div className={styles.Content}>
-          <div className={styles.ContentInner}>{children}</div>
+          <div className={cn(styles.ContentInner, disableContentPadding && styles.ContentNoPad)}>{children}</div>
         </div>
       </div>
     </div>
@@ -143,7 +152,15 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
 // ─── AccordionRoot ──────────────────────────────────────────────────────────
 
 const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function AccordionRoot(
-  { exclusive = false, defaultExpanded, animation = 'default', className, children, ...props },
+  {
+    exclusive = false,
+    defaultExpanded,
+    animation = 'default',
+    size = 'md',
+    className,
+    children,
+    ...props
+  },
   ref,
 ) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(defaultExpanded ?? []));
@@ -180,12 +197,13 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
   );
 
   return (
-    <AccordionContext.Provider value={{ expandedIds, toggle, registerDefault }}>
+    <AccordionContext.Provider value={{ expandedIds, toggle, registerDefault, size }}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}
         data-ov-component="accordion"
         data-ov-animation={animation}
+        data-ov-size={size}
         {...props}
       >
         {children}

@@ -1,0 +1,38 @@
+.Root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ov-radius-full, 9999px);
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-medium, 500);
+  user-select: none;
+}
+
+.Root[data-ov-role='user'] {
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+}
+
+.Root[data-ov-role='assistant'] {
+  background: var(--ov-color-brand-soft-bg, var(--ov-color-bg-surface));
+  color: var(--ov-color-brand-soft-fg, var(--ov-color-fg-brand));
+}
+
+.Root[data-ov-role='system'] {
+  background: var(--ov-color-bg-inset);
+  color: var(--ov-color-fg-muted);
+}
+
+.Image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.Fallback {
+  line-height: 1;
+}

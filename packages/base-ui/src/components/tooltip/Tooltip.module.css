@@ -148,19 +148,7 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
-.Popup[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 82%, var(--_ov-accent-soft) 18%);
-}
 
-.Popup[data-ov-variant='outline'] {
-  --_ov-bg: transparent;
-}
-
-.Popup[data-ov-variant='ghost'] {
-  --_ov-bg: transparent;
-  --_ov-border: transparent;
-  box-shadow: none;
-}
 
 .Arrow {
   --_ov-bg: var(--ov-color-bg-surface-overlay);

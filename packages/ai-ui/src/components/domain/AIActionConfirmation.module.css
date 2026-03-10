@@ -1,0 +1,21 @@
+.Root {
+  /* Banner handles layout — just tighten for inline chat use */
+}
+
+.Description {
+  margin: 0;
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  color: var(--ov-color-fg-muted);
+  line-height: 1.4;
+}
+
+.Resource {
+  display: inline-block;
+  margin-top: var(--ov-space-1, 4px);
+  padding: 1px var(--ov-space-1-5, 6px);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  background: var(--ov-color-bg-inset);
+  border-radius: var(--ov-radius-sm, 3px);
+  color: var(--ov-color-fg-default);
+}

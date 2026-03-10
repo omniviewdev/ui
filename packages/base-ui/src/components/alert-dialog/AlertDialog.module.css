@@ -53,25 +53,6 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
-.Popup[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 85%, var(--_ov-accent-soft) 15%);
-  --_ov-border: color-mix(
-    in srgb,
-    var(--ov-color-border-default) 70%,
-    var(--ov-color-border-strong) 30%
-  );
-}
-
-.Popup[data-ov-variant='outline'] {
-  --_ov-bg: transparent;
-}
-
-.Popup[data-ov-variant='ghost'] {
-  --_ov-bg: transparent;
-  --_ov-border: transparent;
-  box-shadow: none;
-}
-
 .Title {
   margin: 0;
   color: var(--_ov-title);

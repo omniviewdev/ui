@@ -1,0 +1,78 @@
+.Root {
+  /* Structural only — no visual styling */
+}
+
+/* ---------------------------------------------------------------------------
+   Trigger — unstyled by default (consumers add their own styling)
+   --------------------------------------------------------------------------- */
+
+.Trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+
+.Trigger:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.Trigger:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring, var(--ov-color-border-focus));
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm, 3px);
+}
+
+/* ---------------------------------------------------------------------------
+   Content — CSS Grid collapse animation
+   --------------------------------------------------------------------------- */
+
+.Content {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--_ov-collapsible-duration, 200ms) var(--ov-ease-standard, ease);
+}
+
+.Root[data-ov-open='true'] .Content {
+  grid-template-rows: 1fr;
+}
+
+.ContentInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Animation variants
+   --------------------------------------------------------------------------- */
+
+.Root[data-ov-animation='fast'] {
+  --_ov-collapsible-duration: 100ms;
+}
+
+.Root[data-ov-animation='none'] .Content {
+  transition: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .Content {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Content {
+  transition: none;
+}

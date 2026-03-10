@@ -1,0 +1,91 @@
+.Root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--ov-radius-md);
+  background: var(--ov-color-bg-inset);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-sc-height: 1.5rem;
+  font-size: var(--ov-font-size-caption);
+}
+
+.Root[data-ov-size='md'] {
+  --_ov-sc-height: 2rem;
+  font-size: var(--ov-font-size-body);
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-sc-height: 2.5rem;
+  font-size: var(--ov-font-size-body);
+}
+
+.Root[data-ov-disabled='true'] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.Item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--_ov-sc-height, 2rem);
+  padding-inline: var(--ov-primitive-space-3);
+  border-radius: calc(var(--ov-radius-md) - 2px);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item[data-ov-active='true'] {
+  background: var(--ov-color-bg-default);
+  box-shadow: var(--ov-shadow-sm);
+}
+
+.Item:not([data-ov-active='true']):hover:not([data-ov-disabled='true']) {
+  background: color-mix(in srgb, var(--ov-color-bg-default) 50%, transparent 50%);
+}
+
+.Item[data-ov-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.Input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.Input:focus-visible + .Label {
+  outline: 2px solid var(--ov-color-brand-500);
+  outline-offset: 2px;
+  border-radius: calc(var(--ov-radius-md) - 2px);
+}
+
+.Label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-primitive-space-1);
+  color: var(--ov-color-fg-default);
+  font-weight: var(--ov-font-weight-medium);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Item {
+    transition: none;
+  }
+}

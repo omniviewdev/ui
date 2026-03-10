@@ -1,0 +1,102 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Trigger button — clean, borderless design */
+.Trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  width: 100%;
+  padding: var(--ov-space-1, 4px) 0;
+  background: transparent;
+  border: none;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.Trigger:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.Trigger:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--ov-radius-sm, 3px);
+}
+
+/* Brain icon — subtle animation while streaming */
+.BrainIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.Root[data-ov-streaming='true'] .BrainIcon {
+  animation: brain-pulse 2s ease-in-out infinite;
+}
+
+@keyframes brain-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Label */
+.Label {
+  flex: 1;
+  font-weight: var(--ov-font-weight-regular, 400);
+}
+
+/* Chevron with rotation transition */
+.Chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.Chevron[data-ov-open='true'] {
+  transform: rotate(180deg);
+}
+
+.Chevron[data-ov-open='false'] {
+  transform: rotate(0deg);
+}
+
+/* Content area */
+.Content {
+  padding: var(--ov-space-2, 8px) 0 var(--ov-space-1, 4px);
+}
+
+.Text {
+  margin: 0;
+  font-size: var(--ov-font-size-sm, 0.875rem);
+  line-height: var(--ov-line-height-relaxed, 1.625);
+  color: var(--ov-color-fg-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .Root[data-ov-streaming='true'] .BrainIcon {
+    animation: none;
+  }
+  .Chevron {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Root[data-ov-streaming='true'] .BrainIcon {
+  animation: none;
+}
+
+:root[data-ov-motion='reduced'] .Chevron {
+  transition: none;
+}

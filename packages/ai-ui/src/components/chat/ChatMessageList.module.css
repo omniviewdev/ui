@@ -1,0 +1,56 @@
+.Wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.Root {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  contain: strict;
+}
+
+.Inner {
+  position: relative;
+  width: 100%;
+}
+
+.Item {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--ov-space-3, 12px);
+}
+
+.NewMessages {
+  position: absolute;
+  bottom: var(--ov-space-3, 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-full, 9999px);
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  cursor: pointer;
+  box-shadow: var(--ov-shadow-md, 0 2px 8px rgba(0, 0, 0, 0.15));
+  z-index: var(--ov-z-sticky, 10);
+  transition: opacity var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.NewMessages:hover {
+  background: var(--ov-color-bg-surface-overlay, var(--ov-color-bg-surface));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .NewMessages {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .NewMessages {
+  transition: none;
+}

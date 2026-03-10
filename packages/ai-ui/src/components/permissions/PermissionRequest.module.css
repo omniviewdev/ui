@@ -1,0 +1,139 @@
+.Root {
+  --_ov-border: var(--ov-color-warning);
+  min-width: 0;
+}
+
+/* ── Icon badge ── */
+
+.IconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-warning-soft);
+  color: var(--ov-color-warning);
+}
+
+/* ── Content ── */
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-0-5, 2px);
+  min-width: 0;
+  flex: 1;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+}
+
+.Label {
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-weight: var(--ov-font-weight-label, 500);
+  color: var(--ov-color-warning);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.Tool {
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  font-weight: var(--ov-font-weight-title, 600);
+  color: var(--ov-color-fg-default);
+  line-height: 1.3;
+}
+
+.Description {
+  margin: 0;
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  line-height: 1.4;
+  color: var(--ov-color-fg-muted);
+}
+
+/* ── Code block for commands/scripts ── */
+
+.CodeBlock {
+  margin-top: var(--ov-space-1, 4px);
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-bg-inset);
+  overflow: hidden;
+}
+
+.Code {
+  margin: 0;
+  padding: var(--ov-space-1-5, 6px) var(--ov-space-2, 8px);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  line-height: 1.5;
+  color: var(--ov-color-fg-muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.CodeCollapsed {
+  max-height: calc(1.5em * 6 + 12px); /* 6 lines + padding */
+  overflow-y: hidden;
+}
+
+.ShowMore {
+  display: block;
+  width: 100%;
+  padding: var(--ov-space-0-5, 2px) var(--ov-space-2, 8px) var(--ov-space-1, 4px);
+  border: none;
+  background: none;
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ShowMore:hover {
+  color: var(--ov-color-fg-muted);
+}
+
+/* ── Scope ── */
+
+.Scope {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1, 4px);
+  margin-top: var(--ov-space-0-5, 2px);
+  font-size: var(--ov-font-size-xs, 0.75rem);
+}
+
+.ScopeLabel {
+  color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
+}
+
+.ScopeValue {
+  font-family: var(--ov-font-mono);
+  color: var(--ov-color-fg-muted);
+  background: var(--ov-color-bg-inset);
+  padding: 1px var(--ov-space-1, 4px);
+  border-radius: var(--ov-radius-sm, 3px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Footer actions ── */
+
+.AllowGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+  margin-left: auto;
+}

@@ -165,26 +165,6 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
-.Popup[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 84%, var(--_ov-accent-soft) 16%);
-  --_ov-border: color-mix(
-    in srgb,
-    var(--ov-color-border-default) 72%,
-    var(--ov-color-border-strong) 28%
-  );
-}
-
-.Popup[data-ov-variant='outline'] {
-  --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-strong);
-}
-
-.Popup[data-ov-variant='ghost'] {
-  --_ov-bg: transparent;
-  --_ov-border: transparent;
-  box-shadow: none;
-}
-
 .Arrow {
   --_ov-bg: var(--ov-color-bg-surface);
   --_ov-border: var(--ov-color-border-default);

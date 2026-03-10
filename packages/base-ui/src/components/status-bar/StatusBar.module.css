@@ -1,0 +1,184 @@
+.Root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  background: var(--ov-color-bg-inset);
+  border-top: 1px solid var(--ov-color-border-muted);
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-sb-height: 1.375rem;
+  --_ov-sb-icon-size: 0.75rem;
+}
+
+.Root[data-ov-size='md'] {
+  --_ov-sb-height: 1.75rem;
+  --_ov-sb-icon-size: 0.875rem;
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-sb-height: 2.125rem;
+  --_ov-sb-icon-size: 1rem;
+}
+
+.Section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ov-primitive-space-1);
+  height: var(--_ov-sb-height, 1.375rem);
+  padding-inline: var(--ov-primitive-space-2);
+}
+
+.Section[data-ov-align='start'] {
+  margin-inline-end: auto;
+}
+
+.Section[data-ov-align='center'] {
+  justify-content: center;
+}
+
+.Section[data-ov-align='end'] {
+  margin-inline-start: auto;
+}
+
+.Item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-primitive-space-1);
+  padding-inline: var(--ov-primitive-space-1);
+  height: 100%;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.Item[data-ov-clickable='true'] {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding-inline: var(--ov-primitive-space-1);
+  border-radius: var(--ov-primitive-radius-sm);
+  transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Item[data-ov-clickable='true']:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.Item[data-ov-active='true'] {
+  color: var(--ov-color-brand-500);
+}
+
+.Separator {
+  height: 60%;
+  align-self: center;
+}
+
+/* ---------------------------------------------------------------------------
+   Indicator — thin wrapper around StatusDot, just adds bar-specific layout
+   --------------------------------------------------------------------------- */
+
+.Indicator {
+  padding-inline: var(--ov-primitive-space-1);
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   Progress — wrapper around Progress primitive, constrains width for bar
+   --------------------------------------------------------------------------- */
+
+.Progress {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-primitive-space-1);
+  padding-inline: var(--ov-primitive-space-1);
+  height: 100%;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.ProgressLabel {
+  line-height: 1;
+}
+
+/* Constrain the Progress primitive to a compact inline width */
+.Progress > [role='progressbar'] {
+  width: 4rem;
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   IconItem — icon + text with context-driven sizing
+   --------------------------------------------------------------------------- */
+
+.IconItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-primitive-space-1);
+  padding-inline: var(--ov-primitive-space-1);
+  height: 100%;
+  white-space: nowrap;
+  line-height: 1;
+  color: var(--_ov-sb-icon-item-color, inherit);
+}
+
+.IconItem[data-ov-clickable='true'] {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--_ov-sb-icon-item-color, inherit);
+  font: inherit;
+  padding-inline: var(--ov-primitive-space-1);
+  border-radius: var(--ov-primitive-radius-sm);
+  transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.IconItem[data-ov-clickable='true']:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.IconItem[data-ov-active='true'] {
+  color: var(--ov-color-brand-500);
+}
+
+.IconItemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.IconItemIcon :where(svg) {
+  width: var(--_ov-sb-icon-size, 0.75rem);
+  height: var(--_ov-sb-icon-size, 0.75rem);
+}
+
+/* IconItem color variants */
+.IconItem[data-ov-color='neutral'] {
+  --_ov-sb-icon-item-color: var(--ov-color-fg-muted);
+}
+
+.IconItem[data-ov-color='brand'] {
+  --_ov-sb-icon-item-color: var(--ov-color-brand-500);
+}
+
+.IconItem[data-ov-color='success'] {
+  --_ov-sb-icon-item-color: var(--ov-color-success);
+}
+
+.IconItem[data-ov-color='warning'] {
+  --_ov-sb-icon-item-color: var(--ov-color-warning);
+}
+
+.IconItem[data-ov-color='danger'] {
+  --_ov-sb-icon-item-color: var(--ov-color-danger);
+}
+
+.IconItem[data-ov-color='info'] {
+  --_ov-sb-icon-item-color: var(--ov-color-info);
+}

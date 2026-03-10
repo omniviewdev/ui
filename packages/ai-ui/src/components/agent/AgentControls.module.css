@@ -1,0 +1,100 @@
+.Root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ov-space-3, 12px);
+  padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+}
+
+.Status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  font-weight: var(--ov-font-weight-medium, 500);
+  color: var(--ov-color-fg-default);
+}
+
+.StatusDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--ov-radius-full, 9999px);
+}
+
+.Status[data-ov-status='idle'] .StatusDot {
+  background: var(--ov-color-fg-muted);
+}
+
+.Status[data-ov-status='running'] .StatusDot {
+  background: var(--ov-color-success-default);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.Status[data-ov-status='paused'] .StatusDot {
+  background: var(--ov-color-warning-default);
+}
+
+.Status[data-ov-status='complete'] .StatusDot {
+  background: var(--ov-color-success-default);
+}
+
+.Status[data-ov-status='error'] .StatusDot {
+  background: var(--ov-color-danger-default);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Button {
+  padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+  cursor: pointer;
+  transition: background var(--ov-duration-fast, 150ms) var(--ov-ease-standard, ease);
+}
+
+.Button:hover {
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.Button:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.Button[data-ov-action='stop'] {
+  color: var(--ov-color-danger-default);
+  border-color: var(--ov-color-danger-default);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Status[data-ov-status='running'] .StatusDot {
+    animation: none;
+  }
+  .Button {
+    transition: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Status[data-ov-status='running'] .StatusDot {
+  animation: none;
+}
+
+:root[data-ov-motion='reduced'] .Button {
+  transition: none;
+}

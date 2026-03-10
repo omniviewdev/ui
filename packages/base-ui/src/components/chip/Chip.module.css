@@ -40,27 +40,37 @@
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
 
+  /* Decorator-side padding: ~half of text-side padding.
+     Follows Material 3 / Apple HIG chip convention — the icon provides
+     visual mass so it needs less padding, but not zero. */
+  --_ov-decorator-inset: 5px;
+
   display: inline-flex;
   align-items: center;
   gap: var(--_ov-gap);
   min-height: var(--_ov-height);
   padding: 0 var(--_ov-padding-inline);
-  border-radius: var(--ov-size-chip-radius);
+  border-radius: var(--_ov-radius, var(--ov-size-chip-radius));
   border: 1px solid var(--_ov-border);
   background: var(--_ov-bg);
   color: var(--_ov-fg);
   font-family: var(--ov-font-sans);
   font-size: var(--_ov-font-size);
   font-weight: var(--ov-font-weight-label);
-  line-height: 1;
+  line-height: 1.2;
   white-space: nowrap;
   vertical-align: middle;
   user-select: none;
 }
 
-.Root:has([data-ov-slot='start-decorator']),
+/* When decorators are present, collapse padding on that side to a tight inset
+   and keep the gap between label and decorator compact. */
+.Root:has([data-ov-slot='start-decorator']) {
+  padding-inline-start: var(--_ov-decorator-inset);
+}
+
 .Root:has([data-ov-slot='end-decorator']) {
-  --_ov-gap: var(--_ov-padding-inline);
+  padding-inline-end: var(--_ov-decorator-inset);
 }
 
 .Root[data-ov-size='sm'] {
@@ -69,6 +79,8 @@
   --_ov-font-size: var(--ov-size-chip-font-size-sm);
   --_ov-gap: var(--ov-size-chip-gap-sm);
   --_ov-icon-size: var(--ov-size-chip-icon-size-sm);
+  --_ov-radius: var(--ov-size-chip-radius-sm);
+  --_ov-decorator-inset: 4px; /* half of 8px text-side padding */
 }
 
 .Root[data-ov-size='lg'] {
@@ -77,6 +89,8 @@
   --_ov-font-size: var(--ov-size-chip-font-size-lg);
   --_ov-gap: var(--ov-size-chip-gap-lg);
   --_ov-icon-size: var(--ov-size-chip-icon-size-lg);
+  --_ov-radius: var(--ov-size-chip-radius-lg);
+  --_ov-decorator-inset: 6px; /* half of 12px text-side padding */
 }
 
 .Root[data-ov-color='neutral'] {

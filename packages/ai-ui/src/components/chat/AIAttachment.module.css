@@ -1,0 +1,39 @@
+.Root {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 280px;
+  width: auto;
+}
+
+.Preview {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+}
+
+.Info {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-1-5, 6px);
+  min-width: 0;
+}
+
+.Info > svg {
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+}
+
+.Name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  line-height: 1;
+}
+
+.Size {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
+  line-height: 1;
+}

@@ -1,0 +1,20 @@
+.Root {
+  display: flex;
+  gap: var(--ov-space-2, 8px);
+}
+
+.Root[data-ov-role='user'] {
+  flex-direction: row-reverse;
+}
+
+.Avatar {
+  flex-shrink: 0;
+}
+
+.Messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  min-width: 0;
+  flex: 1;
+}

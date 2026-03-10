@@ -124,19 +124,6 @@
   --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
 }
 
-.Popup[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 84%, var(--_ov-selected-bg) 16%);
-}
-
-.Popup[data-ov-variant='outline'] {
-  --_ov-bg: transparent;
-}
-
-.Popup[data-ov-variant='ghost'] {
-  --_ov-bg: transparent;
-  --_ov-border: transparent;
-}
-
 .Popup[data-ov-color='brand'] {
   --_ov-selected-bg: var(--ov-color-accent-soft);
 }

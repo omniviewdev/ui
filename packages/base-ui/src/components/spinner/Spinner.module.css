@@ -49,7 +49,10 @@
   height: 28%;
   top: 0;
   left: 50%;
-  transform-origin: 50% calc(var(--_ov-size) / 2);
+  /* 50/28 * 100% ≈ 178.57% — positions the rotation origin at the parent's
+     vertical center relative to the bar's own height (28% of parent).
+     Percentage-based so it stays correct even if the element is externally resized. */
+  transform-origin: 50% 178.57%;
   border-radius: 999px;
   background: var(--_ov-color);
   opacity: 0.15;

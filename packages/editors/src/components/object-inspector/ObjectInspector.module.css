@@ -1,0 +1,135 @@
+.Root {
+  font-family: var(--ov-font-family-mono, monospace);
+  font-size: var(--ov-font-size-sm, 13px);
+  line-height: 1.5;
+  color: var(--ov-color-editor-fg, var(--ov-color-fg-default));
+  background: var(--ov-color-editor-bg, var(--ov-color-bg-surface));
+  border: 1px solid var(--ov-color-editor-border, var(--ov-color-border-default));
+  border-radius: var(--ov-radius-sm, 4px);
+  overflow: auto;
+}
+
+.Toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2, 8px);
+  padding: var(--ov-space-2, 8px);
+  border-bottom: 1px solid var(--ov-color-border-default);
+}
+
+.SearchInput {
+  flex: 1;
+  padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
+  background: var(--ov-color-input-bg, transparent);
+  color: var(--ov-color-input-fg, var(--ov-color-fg-default));
+  border: 1px solid var(--ov-color-input-border, var(--ov-color-border-default));
+  border-radius: var(--ov-radius-sm, 4px);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.SearchInput::placeholder {
+  color: var(--ov-color-input-placeholder, var(--ov-color-fg-muted));
+}
+
+.SearchInput:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus, var(--ov-color-fg-accent, #007fd4));
+  outline-offset: -1px;
+}
+
+.CopyButton {
+  padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
+  background: var(--ov-color-button-secondary-bg, var(--ov-color-bg-subtle));
+  color: var(--ov-color-button-secondary-fg, var(--ov-color-fg-default));
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm, 4px);
+  font-size: var(--ov-font-size-xs, 11px);
+  cursor: pointer;
+}
+
+.CopyButton:hover {
+  background: var(--ov-color-button-secondary-hover-bg, var(--ov-color-bg-subtle));
+}
+
+.Tree {
+  padding: var(--ov-space-2, 8px);
+}
+
+.Node {
+  /* container for tree node */
+}
+
+.Row {
+  display: flex;
+  align-items: center;
+  padding: 1px 0;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.Row:hover {
+  background: var(--ov-color-list-hover-bg, var(--ov-color-bg-subtle));
+}
+
+.RowHighlight {
+  background: var(--ov-color-editor-find-match-bg, rgba(255, 255, 0, 0.15));
+}
+
+.Chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--ov-color-fg-muted);
+  transition: transform var(--ov-duration-fast, 100ms) var(--ov-ease-standard, ease);
+  cursor: pointer;
+}
+
+.ChevronExpanded {
+  transform: rotate(90deg);
+}
+
+.ChevronSpacer {
+  display: inline-block;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.Key {
+  color: var(--ov-syntax-property, var(--ov-color-fg-default));
+}
+
+.Colon {
+  color: var(--ov-syntax-punctuation, var(--ov-color-fg-muted));
+}
+
+.Value[data-type='string'] {
+  color: var(--ov-syntax-string, var(--ov-color-fg-accent, currentColor));
+}
+
+.Value[data-type='number'] {
+  color: var(--ov-syntax-number, var(--ov-color-fg-success, currentColor));
+}
+
+.Value[data-type='boolean'] {
+  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, currentColor));
+}
+
+.Value[data-type='null'],
+.Value[data-type='undefined'] {
+  color: var(--ov-syntax-keyword, var(--ov-color-fg-info, currentColor));
+  font-style: italic;
+}
+
+.Preview {
+  color: var(--ov-color-fg-muted);
+  font-style: italic;
+}
+
+.Comma {
+  color: var(--ov-syntax-punctuation, var(--ov-color-fg-muted));
+}

@@ -1,0 +1,31 @@
+.Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ov-z-modal, 1000);
+  display: flex;
+  justify-content: center;
+  padding-top: 20vh;
+  background: var(--ov-color-overlay-bg, rgba(0, 0, 0, 0.4));
+}
+
+.Root {
+  width: min(600px, 90vw);
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ov-color-quickpick-bg, var(--ov-color-bg-surface));
+  border: 1px solid var(--ov-color-quickpick-border, var(--ov-color-border-default));
+  border-radius: var(--ov-radius-md, 8px);
+  box-shadow: var(--ov-color-quickpick-shadow, 0 8px 32px rgba(0, 0, 0, 0.4));
+  overflow: hidden;
+}
+
+/* CommandList fills the palette; its results scroll within the palette's max-height. */
+.CommandList {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.Results {
+  max-block-size: none;
+}

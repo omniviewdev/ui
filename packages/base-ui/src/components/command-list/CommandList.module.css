@@ -45,6 +45,7 @@
  * --------------------------------------------------------------------------- */
 
 .Input {
+  padding: var(--ov-space-inline-xs, 2px);
   border-bottom: 1px solid var(--ov-color-border-muted);
 }
 

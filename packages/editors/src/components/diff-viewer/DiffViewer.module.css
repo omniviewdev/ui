@@ -1,0 +1,18 @@
+.Root {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ov-radius-sm, 4px);
+  border: 1px solid var(--ov-color-editor-border, var(--ov-color-border-default));
+  background: var(--ov-color-editor-bg, var(--ov-color-bg-surface));
+}
+
+.Loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  color: var(--ov-color-fg-muted);
+  font-family: var(--ov-font-family-sans, sans-serif);
+  font-size: var(--ov-font-size-sm, 13px);
+}

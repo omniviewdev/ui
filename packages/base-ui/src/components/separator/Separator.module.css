@@ -1,5 +1,5 @@
 .Root {
-  --_ov-separator-color: color-mix(in srgb, var(--ov-color-fg-muted) 56%, transparent 44%);
+  --_ov-separator-color: var(--ov-color-border-default);
   --_ov-separator-thickness: var(--ov-size-separator-thickness-md, 2px);
   --_ov-separator-inset: var(--ov-size-separator-inset-md, 12px);
   --_ov-separator-label-color: var(--ov-color-fg-muted);

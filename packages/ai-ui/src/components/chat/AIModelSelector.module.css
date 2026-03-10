@@ -1,0 +1,8 @@
+.Root {
+  display: inline-flex;
+}
+
+.ItemDescription {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-muted, #666);
+}

@@ -1,0 +1,22 @@
+.Root {
+  position: relative;
+}
+
+.Selector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.Selector[data-align='end'] {
+  justify-content: flex-end;
+}
+
+.Indicator {
+  font-size: 0.75rem;
+  color: var(--ov-palette-text-secondary, #6b7280);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  white-space: nowrap;
+}

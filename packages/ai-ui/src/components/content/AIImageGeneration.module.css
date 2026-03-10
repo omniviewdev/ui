@@ -1,0 +1,55 @@
+.Root {
+  max-width: 400px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.Frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--ov-color-bg-inset);
+}
+
+.Placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.PlaceholderIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ov-space-2, 8px);
+  color: var(--ov-color-fg-subtle);
+  pointer-events: none;
+}
+
+.PlaceholderLabel {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  font-family: var(--ov-font-sans);
+}
+
+.Image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s var(--ov-ease-standard, ease);
+}
+
+.ImageLoaded {
+  opacity: 1;
+}
+
+.Prompt {
+  margin: 0;
+  font-size: var(--ov-font-size-caption, 0.8125rem);
+  color: var(--ov-color-fg-muted);
+  font-style: italic;
+}

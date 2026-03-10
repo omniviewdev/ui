@@ -1,0 +1,33 @@
+.Root {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-spacing-2, 8px);
+  width: 100%;
+  padding: var(--ov-spacing-1, 4px) 0;
+}
+
+.Line {
+  flex: 1;
+  height: 1px;
+  background: var(--ov-color-border-default, #e0e0e0);
+}
+
+.Label {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle, #888);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.Timestamp {
+  font-size: var(--ov-font-size-xs, 0.75rem);
+  color: var(--ov-color-fg-subtle, #888);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Pill variant: center the chip on the line */
+.Root[data-ov-variant='pill'] .Label {
+  font-size: inherit;
+  color: inherit;
+}

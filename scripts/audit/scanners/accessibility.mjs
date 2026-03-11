@@ -59,11 +59,15 @@ export async function scanAccessibility() {
             const hasKeyboardHandler = /onKeyDown|onKeyUp/.test(ctx);
             const hasRoleButton = /role\s*=\s*["']button["']/.test(ctx);
             const hasTabIndex = /tabIndex|tabindex/.test(ctx);
-            // Sufficient if: explicit keyboard handler, or role=button + tabIndex
-            const isSufficient = hasKeyboardHandler || (hasRoleButton && hasTabIndex);
-            if (!isSufficient) {
-              results.push(finding('Medium', 'Accessibility', 'Missing keyboard handler', file, tagStartNum, tagStartLine,
-                'Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex'));
+            // A keyboard handler is always required for clickable non-button elements
+            if (!hasKeyboardHandler) {
+              if (hasRoleButton && hasTabIndex) {
+                results.push(finding('Medium', 'Accessibility', 'Missing keyboard handler', file, tagStartNum, tagStartLine,
+                  'Element has role="button" + tabIndex but no onKeyDown/onKeyUp — add Enter/Space handler'));
+              } else {
+                results.push(finding('Medium', 'Accessibility', 'Missing keyboard handler', file, tagStartNum, tagStartLine,
+                  'Clickable non-button element without onKeyDown/onKeyUp'));
+              }
             }
           }
 

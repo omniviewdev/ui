@@ -5,37 +5,35 @@ import { findFiles, readLines, finding } from '../utils.mjs';
 const INLINE_STYLE = /style\s*=\s*\{\s*\{/;
 
 /**
- * Returns true when a line's inline style object contains ONLY CSS custom properties
+ * Returns true when an inline style object contains ONLY CSS custom properties
  * (keys starting with --). This allows the prescribed CSS-variable pass-through pattern:
  *   style={{ '--_dynamic-value': value }}
+ *
+ * Accepts the full file text starting from the style={{ match so multiline
+ * objects are handled correctly.
  */
-function isCssVarOnlyStyle(line) {
-  // Detect the start of style={{ on this line
-  if (!INLINE_STYLE.test(line)) return false;
+function isCssVarOnlyStyle(fullText, startIdx) {
+  // Extract from `style={{` to the matching `}}` (or `} as CSSProperties}`)
+  const fromStyle = fullText.slice(startIdx);
+  const stripped = fromStyle.replace(/\}\s*as\s+(?:React\.)?CSSProperties/g, '}');
 
-  // If the closing }} is NOT on the same line, we can't reliably parse the
-  // multiline object with regex — treat as non-CSS-var (flag for review).
-  // Strip an optional `as CSSProperties` / `as React.CSSProperties` cast first.
-  const stripped = line.replace(/\}\s*as\s+(?:React\.)?CSSProperties/g, '}');
-
-  const styleMatch = stripped.match(/style\s*=\s*\{\s*\{([\s\S]*?)\}\s*\}/);
-  if (!styleMatch) return false; // closing }} not found on same line — multiline
+  const styleMatch = stripped.match(/style\s*=\s*\{\s*\{([\s\S]*?)\}\s*\}/m);
+  if (!styleMatch) return false;
 
   const body = styleMatch[1];
 
   // If the body contains a spread operator, we can't guarantee CSS-var-only.
   if (/\.\.\./.test(body)) return false;
 
-  // Scan for all property keys using a global regex instead of splitting on commas
-  // (comma splitting breaks when values contain commas, e.g. rgb() or nested expressions).
+  // Check for any non-CSS-custom-property keys (keys that don't start with --)
+  const NON_VAR_KEY = /['"]?(?!--)([A-Za-z_][\w-]*)['"]?\s*:/g;
+  const hasNonVarKey = NON_VAR_KEY.test(body);
+
+  // Check that at least one CSS var key exists
   const CSS_VAR_KEY = /['"]?(--[A-Za-z0-9\-_]+)['"]?\s*:/g;
-  const ALL_KEYS = /['"]?([A-Za-z\-_][\w\-]*)['"]?\s*:/g;
+  const hasVarKey = CSS_VAR_KEY.test(body);
 
-  const varKeyCount = (body.match(CSS_VAR_KEY) || []).length;
-  const allKeyCount = (body.match(ALL_KEYS) || []).length;
-
-  // All keys must be CSS custom properties
-  return allKeyCount > 0 && varKeyCount === allKeyCount;
+  return hasVarKey && !hasNonVarKey;
 }
 
 export async function scanConventionViolations() {
@@ -46,10 +44,15 @@ export async function scanConventionViolations() {
 
   for (const file of tsxFiles) {
     const lines = readLines(file);
+    const fullText = lines.map(l => l.line).join('\n');
     for (const { line, num } of lines) {
-      if (INLINE_STYLE.test(line) && !isCssVarOnlyStyle(line)) {
-        results.push(finding('High', 'Convention', 'Inline style', file, num, line,
-          'style={{}} found — use CSS Modules + data attributes'));
+      if (INLINE_STYLE.test(line)) {
+        // Find this line's position in the full text to support multiline style objects
+        const lineIdx = fullText.indexOf(line, fullText.split('\n').slice(0, num - 1).join('\n').length);
+        if (!isCssVarOnlyStyle(fullText, lineIdx)) {
+          results.push(finding('High', 'Convention', 'Inline style', file, num, line,
+            'style={{}} found — use CSS Modules + data attributes'));
+        }
       }
     }
   }

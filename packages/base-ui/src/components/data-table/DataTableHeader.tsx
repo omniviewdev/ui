@@ -37,7 +37,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                 (meta?.sortAriaLabel as string) ??
                 (typeof header.column.columnDef.header === 'string'
                   ? header.column.columnDef.header
-                  : header.column.id);
+                  : undefined);
 
               return (
                 <th
@@ -57,7 +57,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       type="button"
                       className={styles.SortButton}
                       onClick={header.column.getToggleSortingHandler()}
-                      aria-label={`Sort by ${sortAriaLabel}`}
+                      aria-label={sortAriaLabel ? `Sort by ${sortAriaLabel}` : undefined}
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
 

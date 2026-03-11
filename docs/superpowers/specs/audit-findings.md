@@ -1,8 +1,8 @@
 # UI Audit Findings Report
 
 **Date:** 2026-03-11
-**Total findings:** 1025
-**High:** 60 | **Medium:** 779 | **Low:** 186
+**Total findings:** 1029
+**High:** 64 | **Medium:** 779 | **Low:** 186
 
 ---
 
@@ -12,7 +12,7 @@
 |----------|----------|-------|-------|
 | High | Token/Styling | Hardcoded color | 37 |
 | High | Token/Styling | Primitive token leakage | 5 |
-| High | Convention | Inline style | 18 |
+| High | Convention | Inline style | 22 |
 | Medium | Token/Styling | Hardcoded transition | 78 |
 | Medium | Token/Styling | Hardcoded spacing | 142 |
 | Medium | Token/Styling | Hardcoded radius | 19 |
@@ -214,7 +214,7 @@
 
 ### High: Inline style (Convention)
 
-**18 finding(s)**
+**22 finding(s)**
 
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:130` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -223,6 +223,10 @@
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:138` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
+  ```
+- `packages/ai-ui/src/components/content/AIImageGeneration.tsx:37` — style={{}} found — use CSS Modules + data attributes
+  ```
+  style={{ '--_image-aspect-ratio': aspectRatio } as CSSProperties}
   ```
 - `packages/base-ui/src/components/aspect-ratio/AspectRatio.tsx:17` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -272,9 +276,17 @@
   ```
   style={{ '--_ov-size': `${clampedDefaultSize}px`, ...style } as React.CSSProperties}
   ```
+- `packages/base-ui/src/components/editor-tabs/EditorTabsViewport.tsx:63` — style={{}} found — use CSS Modules + data attributes
+  ```
+  style={{ '--_tab-drop-indicator-left': `${indicatorLeft}px` } as CSSProperties}
+  ```
 - `packages/base-ui/src/components/editor-tabs/context/TabDragBroker.tsx:236` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
+  ```
+- `packages/base-ui/src/components/meter/Meter.tsx:91` — style={{}} found — use CSS Modules + data attributes
+  ```
+  style={{ '--_meter-fill-width': `${percentage}%` } as CSSProperties}
   ```
 - `packages/base-ui/src/components/text-area/TextArea.tsx:107` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -287,6 +299,10 @@
 - `packages/base-ui/src/components/tree-list/TreeList.tsx:318` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
+  ```
+- `packages/editors/src/components/object-inspector/ObjectInspector.tsx:186` — style={{}} found — use CSS Modules + data attributes
+  ```
+  style={{ '--_inspector-depth-indent': `${depth * 16}px` } as CSSProperties}
   ```
 
 ### Medium: Hardcoded transition (Token/Styling)
@@ -2216,39 +2232,39 @@
 
 **9 finding(s)**
 
-- `packages/ai-ui/src/components/chat/AIAttachment.tsx:50` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/ai-ui/src/components/chat/AIAttachment.tsx:50` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   {size != null && <span className={styles.Size}>{formatSize(size)}</span>}
   ```
-- `packages/base-ui/src/components/command-list/CommandList.tsx:442` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/command-list/CommandList.tsx:442` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/dialog/Dialog.tsx:73` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/dialog/Dialog.tsx:73` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/drawer/Drawer.tsx:258` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/drawer/Drawer.tsx:258` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/list/List.tsx:227` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/list/List.tsx:227` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/nav-list/NavList.tsx:148` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/nav-list/NavList.tsx:148` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/row-list/RowList.tsx:101` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/row-list/RowList.tsx:101` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/tag-input/TagInput.tsx:170` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/tag-input/TagInput.tsx:170` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.tsx:398` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+- `packages/base-ui/src/components/tree-list/TreeList.tsx:398` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```

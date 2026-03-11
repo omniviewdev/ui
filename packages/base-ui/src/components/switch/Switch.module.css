@@ -17,7 +17,7 @@
   --_ov-track-bg-on: var(--ov-color-brand-500);
   --_ov-track-border-on: color-mix(in srgb, var(--ov-color-brand-500) 82%, black 18%);
   --_ov-track-bg-on-hover: color-mix(in srgb, var(--ov-color-brand-500) 84%, white 16%);
-  --_ov-thumb-bg: #ffffff;
+  --_ov-thumb-bg: var(--ov-color-fg-inverse);
   --_ov-focus-border: var(--ov-color-border-focus);
 
   position: relative;
@@ -139,6 +139,7 @@
   block-size: var(--_ov-thumb-size);
   border-radius: 999px;
   background: var(--_ov-thumb-bg);
+  /* elevation shadow — no semantic token maps to raw alpha-black shadow values */
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 0.06),
     0 1px 2px rgb(0 0 0 / 0.28);

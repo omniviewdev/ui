@@ -23,6 +23,7 @@
   --_ov-dt-sort-indicator: var(--ov-color-fg-muted);
   --_ov-dt-sort-indicator-active: var(--ov-color-brand-400);
   --_ov-dt-pinned-bg: var(--ov-color-bg-surface);
+  /* elevation shadow color — no semantic token maps to raw alpha-black shadow values */
   --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-md);
   --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-md);

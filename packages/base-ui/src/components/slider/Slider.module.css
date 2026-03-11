@@ -188,6 +188,7 @@
   border-radius: 999px;
   border: 1px solid var(--_ov-thumb-border);
   background: var(--_ov-thumb-bg);
+  /* elevation shadow — no semantic token maps to raw alpha-black shadow values */
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 0.08),
     0 1px 3px rgb(0 0 0 / 0.24);

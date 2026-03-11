@@ -54,7 +54,7 @@
   --_ov-gap: 0;
 }
 .Root[data-ov-gap='1'] {
-  --_ov-gap: var(--ov-primitive-space-1, 4px); /* TODO: replace with --ov-space-stack-xs when semantic token is available */
+  --_ov-gap: var(--ov-space-stack-xs, 4px); /* semantic token doesn't exist yet; fallback to 4px */
 }
 .Root[data-ov-gap='2'] {
   --_ov-gap: var(--ov-space-stack-sm);

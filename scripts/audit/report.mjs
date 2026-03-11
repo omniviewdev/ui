@@ -18,10 +18,13 @@ export function generateReport(findings) {
     return (severityOrder[sa] ?? 3) - (severityOrder[sb] ?? 3);
   });
 
-  // Summary
-  const highCount = findings.filter(f => f.severity === 'High').length;
-  const medCount = findings.filter(f => f.severity === 'Medium').length;
-  const lowCount = findings.filter(f => f.severity === 'Low').length;
+  // Summary — single-pass accumulation
+  let highCount = 0, medCount = 0, lowCount = 0;
+  for (const f of findings) {
+    if (f.severity === 'High') highCount++;
+    else if (f.severity === 'Medium') medCount++;
+    else if (f.severity === 'Low') lowCount++;
+  }
 
   let md = `# UI Audit Findings Report\n\n`;
   md += `**Date:** ${new Date().toISOString().split('T')[0]}\n`;
@@ -49,8 +52,7 @@ export function generateReport(findings) {
     for (const item of items) {
       md += `- \`${item.file}:${item.line}\` — ${item.message}\n`;
       if (item.snippet) {
-        const escapedSnippet = item.snippet.replace(/`/g, '\\`');
-        md += `  \`\`\`\n  ${escapedSnippet}\n  \`\`\`\n`;
+        md += `  \`\`\`\n  ${item.snippet}\n  \`\`\`\n`;
       }
     }
     md += `\n`;

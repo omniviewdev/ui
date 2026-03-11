@@ -1,8 +1,8 @@
 # UI Audit Findings Report
 
 **Date:** 2026-03-11
-**Total findings:** 1027
-**High:** 61 | **Medium:** 780 | **Low:** 186
+**Total findings:** 1025
+**High:** 60 | **Medium:** 779 | **Low:** 186
 
 ---
 
@@ -11,10 +11,10 @@
 | Severity | Category | Check | Count |
 |----------|----------|-------|-------|
 | High | Token/Styling | Hardcoded color | 37 |
-| High | Token/Styling | Primitive token leakage | 6 |
+| High | Token/Styling | Primitive token leakage | 5 |
 | High | Convention | Inline style | 18 |
 | Medium | Token/Styling | Hardcoded transition | 78 |
-| Medium | Token/Styling | Hardcoded spacing | 143 |
+| Medium | Token/Styling | Hardcoded spacing | 142 |
 | Medium | Token/Styling | Hardcoded radius | 19 |
 | Medium | Token/Styling | Hardcoded box-shadow | 26 |
 | Medium | Token/Styling | Missing theme coverage | 315 |
@@ -189,7 +189,7 @@
 
 ### High: Primitive token leakage (Token/Styling)
 
-**6 finding(s)**
+**5 finding(s)**
 
 - `packages/base-ui/src/components/grid/Grid.module.css:60` — Primitive token used directly — use a semantic token instead
   ```
@@ -202,10 +202,6 @@
 - `packages/base-ui/src/components/grid/Grid.module.css:96` — Primitive token used directly — use a semantic token instead
   ```
   column-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
-  ```
-- `packages/base-ui/src/components/image-list/ImageList.module.css:57` — Primitive token used directly — use a semantic token instead
-  ```
-  --_ov-gap: var(--ov-primitive-space-1, 4px); /* TODO: replace with --ov-space-stack-xs when semantic token is available 
   ```
 - `packages/base-ui/src/components/image/Image.module.css:36` — Primitive token used directly — use a semantic token instead
   ```
@@ -222,7 +218,7 @@
 
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:130` — style={{}} found — use CSS Modules + data attributes
   ```
-  style={{ height: \`${virtualizer.getTotalSize()}px\` }} // eslint-disable-line react/forbid-component-props -- required by
+  style={{ height: `${virtualizer.getTotalSize()}px` }} // eslint-disable-line react/forbid-component-props -- required by
   ```
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:138` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -252,7 +248,7 @@
   ```
   style={{
   ```
-- `packages/base-ui/src/components/data-table/DataTableHeader.tsx:40` — style={{}} found — use CSS Modules + data attributes
+- `packages/base-ui/src/components/data-table/DataTableHeader.tsx:46` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
   ```
@@ -274,7 +270,7 @@
   ```
 - `packages/base-ui/src/components/drawer/Drawer.tsx:276` — style={{}} found — use CSS Modules + data attributes
   ```
-  style={{ '--_ov-size': \`${clampedDefaultSize}px\`, ...style } as React.CSSProperties}
+  style={{ '--_ov-size': `${clampedDefaultSize}px`, ...style } as React.CSSProperties}
   ```
 - `packages/base-ui/src/components/editor-tabs/context/TabDragBroker.tsx:236` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -612,7 +608,7 @@
 
 ### Medium: Hardcoded spacing (Token/Styling)
 
-**143 finding(s)**
+**142 finding(s)**
 
 - `packages/ai-ui/src/components/artifact/AIArtifact.module.css:22` — Raw spacing value — use --ov-space-* token
   ```
@@ -921,10 +917,6 @@
 - `packages/base-ui/src/components/form-field/FormField.module.css:47` — Raw spacing value — use --ov-space-* token
   ```
   gap: calc(var(--_space-stack-xs) - 1px); /* derived from local alias */
-  ```
-- `packages/base-ui/src/components/form-field/FormField.module.css:78` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing; not derived from --_space-stack-xs as .Section/.Sec
   ```
 - `packages/base-ui/src/components/grid/Grid.module.css:78` — Raw spacing value — use --ov-space-* token
   ```

@@ -1,4 +1,5 @@
 // scripts/audit/scanners/convention-violations.mjs
+import { dirname, join } from 'path';
 import { findFiles, readLines, finding } from '../utils.mjs';
 
 const INLINE_STYLE = /style\s*=\s*\{\s*\{/;
@@ -25,20 +26,16 @@ function isCssVarOnlyStyle(line) {
   // If the body contains a spread operator, we can't guarantee CSS-var-only.
   if (/\.\.\./.test(body)) return false;
 
-  // Split on commas to get individual key-value pairs (simplified parse).
-  // Each pair should be: ['--key']: value  or  '--key': value  or  "--key": value
-  const pairs = body.split(',');
-  if (pairs.length === 0) return false;
+  // Scan for all property keys using a global regex instead of splitting on commas
+  // (comma splitting breaks when values contain commas, e.g. rgb() or nested expressions).
+  const CSS_VAR_KEY = /['"]?(--[A-Za-z0-9\-_]+)['"]?\s*:/g;
+  const ALL_KEYS = /['"]?([A-Za-z\-_][\w\-]*)['"]?\s*:/g;
 
-  const CSS_VAR_KEY = /^\s*['"]?(--[A-Za-z0-9\-_]+)['"]?\s*:/;
+  const varKeyCount = (body.match(CSS_VAR_KEY) || []).length;
+  const allKeyCount = (body.match(ALL_KEYS) || []).length;
 
-  for (const pair of pairs) {
-    const trimmed = pair.trim();
-    if (!trimmed) continue; // skip trailing empty splits
-    if (!CSS_VAR_KEY.test(trimmed)) return false;
-  }
-
-  return true;
+  // All keys must be CSS custom properties
+  return allKeyCount > 0 && varKeyCount === allKeyCount;
 }
 
 export async function scanConventionViolations() {
@@ -57,35 +54,25 @@ export async function scanConventionViolations() {
     }
   }
 
-  // --- CSS class naming convention (Low) ---
+  // --- CSS class naming convention (Low) + Missing data attributes (Medium) ---
   const cssFiles = await findFiles('packages/*/src/**/*.module.css');
 
   for (const file of cssFiles) {
     const lines = readLines(file);
     for (const { line, num } of lines) {
-      // Match CSS class selectors
+      // CSS class naming: flag kebab-case as a violation
       const classMatch = line.match(/\.([a-zA-Z_][\w-]*)/g);
-      if (!classMatch) continue;
-      for (const cls of classMatch) {
-        const name = cls.slice(1); // remove leading dot
-        // Root slots should be PascalCase
-        // Modifiers should be camelCase
-        // Flag kebab-case as a violation
-        if (name.includes('-') && !name.startsWith('ov-')) {
-          results.push(finding('Low', 'Convention', 'CSS class naming', file, num, line,
-            `Class ".${name}" uses kebab-case — use PascalCase (slots) or camelCase (modifiers)`));
+      if (classMatch) {
+        for (const cls of classMatch) {
+          const name = cls.slice(1);
+          if (name.includes('-') && !name.startsWith('ov-')) {
+            results.push(finding('Low', 'Convention', 'CSS class naming', file, num, line,
+              `Class ".${name}" uses kebab-case — use PascalCase (slots) or camelCase (modifiers)`));
+          }
         }
       }
-    }
-  }
 
-  // --- Missing data attributes (Medium) ---
-  // Components using CSS classes for interactive state instead of data-ov-* / data-* attributes
-  for (const file of cssFiles) {
-    const lines = readLines(file);
-    for (const { line, num } of lines) {
-      // Flag CSS that uses class-based state selectors instead of data attributes
-      // e.g. .Root.active, .Root.selected, .Root.disabled, .Root.focused
+      // Missing data attributes: flag class-based state selectors
       if (/\.(active|selected|disabled|focused|hover|pressed|open|closed|expanded|collapsed)\b/.test(line) &&
           !line.includes('data-') && !line.includes(':hover') && !line.includes(':focus') &&
           !line.includes(':active') && !line.includes(':disabled')) {
@@ -101,9 +88,9 @@ export async function scanConventionViolations() {
   const allComponentDirs = await findFiles('packages/*/src/components/*/*.tsx');
 
   // Get unique component directories
-  const dirSet = new Set(allComponentDirs.map(f => f.replace(/\/[^/]+$/, '')));
+  const dirSet = new Set(allComponentDirs.map(f => dirname(f)));
   for (const dir of dirSet) {
-    const hasIndex = existsSync(`${dir}/index.ts`) || existsSync(`${dir}/index.tsx`);
+    const hasIndex = existsSync(join(dir, 'index.ts')) || existsSync(join(dir, 'index.tsx'));
     if (!hasIndex) {
       results.push(finding('Medium', 'Convention', 'Inconsistent exports', dir, 0, '',
         'Component directory missing barrel export (index.ts)'));
@@ -111,8 +98,7 @@ export async function scanConventionViolations() {
   }
 
   // --- Large component files (Low) ---
-  const tsxFilesAll = await findFiles('packages/*/src/**/*.tsx');
-  for (const file of tsxFilesAll) {
+  for (const file of tsxFiles) {
     const lines = readLines(file);
     if (lines.length > 300) {
       results.push(finding('Low', 'Convention', 'Large component file', file, 1, '',

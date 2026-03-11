@@ -33,6 +33,12 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                     ? ('descending' as const)
                     : undefined;
 
+              const sortAriaLabel =
+                (meta?.sortAriaLabel as string) ??
+                (typeof header.column.columnDef.header === 'string'
+                  ? header.column.columnDef.header
+                  : header.column.id);
+
               return (
                 <th
                   key={header.id}
@@ -46,16 +52,14 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                   data-ov-pinned={header.column.getIsPinned() || undefined}
                   data-ov-align={align}
                 >
-                  {canSort ? (
+                  {header.isPlaceholder ? null : canSort ? (
                     <button
                       type="button"
                       className={styles.SortButton}
                       onClick={header.column.getToggleSortingHandler()}
-                      aria-label={`Sort by ${typeof header.column.columnDef.header === 'string' ? header.column.columnDef.header : header.column.id}`}
+                      aria-label={`Sort by ${sortAriaLabel}`}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
 
                       {/* Intentional: only render the sort indicator when actively sorted.
                           Sortable-but-unsorted columns rely on the cursor/hover style
@@ -68,9 +72,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       )}
                     </button>
                   ) : (
-                    header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())
+                    flexRender(header.column.columnDef.header, header.getContext())
                   )}
 
                   {canResize && (

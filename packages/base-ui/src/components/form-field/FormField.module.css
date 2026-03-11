@@ -73,9 +73,10 @@
 }
 
 .SectionHeader {
+  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
   display: flex;
   flex-direction: column;
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing; not derived from --_space-stack-xs as .Section/.SectionHeader are independent of .Root */
+  gap: var(--_space-stack-xs);
 }
 
 .SectionTitle {

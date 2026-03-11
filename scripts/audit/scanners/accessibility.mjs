@@ -20,9 +20,11 @@ export async function scanAccessibility() {
       if (line.trim().startsWith('//') || line.trim().startsWith('*') ||
           line.trim().startsWith('import') || line.trim().startsWith('type') ||
           line.trim().startsWith('interface')) {
-        // If we were buffering, reset (shouldn't normally happen mid-tag)
-        inTag = false;
-        tagBuffer = '';
+        // Only reset buffer if we were actively buffering a tag
+        if (inTag) {
+          inTag = false;
+          tagBuffer = '';
+        }
         continue;
       }
 
@@ -50,6 +52,10 @@ export async function scanAccessibility() {
 
           // Clickable non-button elements without keyboard handler (Medium)
           if (/onClick/.test(ctx) && /<(?:div|span|li|td|tr|img|a)\b/.test(ctx)) {
+            // Anchor tags with href are natively keyboard-accessible — skip them
+            const isAnchorWithHref = /<a\b/.test(ctx) && /href\s*=/.test(ctx);
+            if (isAnchorWithHref) { tagBuffer = ''; continue; }
+
             const hasKeyboardHandler = /onKeyDown|onKeyUp/.test(ctx);
             const hasRoleButton = /role\s*=\s*["']button["']/.test(ctx);
             const hasTabIndex = /tabIndex|tabindex/.test(ctx);

@@ -91,8 +91,8 @@ export async function scanTokenConsistency() {
         // Extract the value portion (everything after the colon)
         const colonIdx = declSpan.indexOf(':');
         const declValue = colonIdx !== -1 ? declSpan.slice(colonIdx + 1).replace(/[;{}]/g, '').trim() : '';
-        // Skip `transition: none` / `animation: none` — used intentionally in reduced-motion blocks
-        if (declValue === 'none') continue;
+        // Skip `transition: none` / `animation: none` (with optional !important) — used intentionally in reduced-motion blocks
+        if (/^none(\s*!important)?$/i.test(declValue)) continue;
         if (!declSpan.includes('var(--ov')) {
           results.push(finding('Medium', 'Token/Styling', 'Hardcoded transition', file, num, line,
             'Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)'));

@@ -20,7 +20,7 @@
 }
 
 .Root[data-ov-size='md'] {
-  --_ov-stat-gap: var(--ov-space-stack-sm);
+  --_ov-stat-gap: var(--ov-space-stack-sm, 8px);
   --_ov-stat-icon-size: 0.8125rem;
   --_ov-stat-font-size: var(--ov-font-size-sm, 0.8125rem);
 }

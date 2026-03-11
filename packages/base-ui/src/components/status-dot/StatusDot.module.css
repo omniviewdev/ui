@@ -15,7 +15,7 @@
   --_ov-dot-color: var(--ov-color-fg-muted);
   /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
   --_duration-pulse: 1.5s;
-  --_ease-pulse: ease-in-out;
+  --_ease-pulse: var(--ov-ease-pulse, ease-in-out);
   --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 60%, transparent 40%);
   --_ov-pulse-spread: 6px;
   --_ov-label-font-size: var(--ov-font-size-sm);

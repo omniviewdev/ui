@@ -1,7 +1,7 @@
 .Root {
   --_ov-font-size-label: var(--ov-font-size-xs);
   --_ov-font-size-value: var(--ov-font-size-sm);
-  --_ov-gap: 10px;
+  --_ov-gap: var(--ov-space-stack-md, 10px);
   --_ov-item-gap: var(--ov-space-stack-xs, 4px);
 
   display: flex;
@@ -52,7 +52,7 @@
   display: grid;
   grid-template-columns: 35% 65%;
   align-items: baseline;
-  gap: var(--ov-space-stack-sm);
+  gap: var(--_ov-item-gap);
 }
 
 /* Vertical layout: label above, value below */

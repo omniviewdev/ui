@@ -547,3 +547,15 @@
 .Root[data-ov-depth='2'] .Cell {
   border-bottom-color: color-mix(in srgb, var(--ov-color-border-default) 50%, transparent 50%);
 }
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .SkeletonBar {
+    animation: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .SkeletonBar {
+  animation: none;
+}

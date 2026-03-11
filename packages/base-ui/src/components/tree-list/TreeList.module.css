@@ -272,12 +272,26 @@
   animation: spin var(--_ov-duration-spin) linear infinite;
 }
 
+/* When loading AND expanded, start spin from 90deg to avoid clobbering the expanded rotation */
+.ItemToggle[data-ov-loading='true'][data-ov-expanded='true'] {
+  animation-name: spin-expanded;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-expanded {
+  from {
+    transform: rotate(90deg);
+  }
+  to {
+    transform: rotate(450deg);
   }
 }
 

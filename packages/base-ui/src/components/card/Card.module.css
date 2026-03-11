@@ -22,6 +22,9 @@
   --_card-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
   --_card-shadow-md: var(--ov-shadow-surface);
   --_card-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 2s;
+  --_easing-pulse: var(--ov-ease-pulse, ease-in-out);
 
   position: relative;
   display: flex;
@@ -346,7 +349,7 @@
 }
 
 .Indicator[data-ov-pulse='true']::before {
-  animation: indicator-pulse 2s ease-in-out infinite;
+  animation: indicator-pulse var(--_duration-pulse) var(--_easing-pulse) infinite;
 }
 
 @keyframes indicator-pulse {
@@ -363,6 +366,10 @@
   .Indicator[data-ov-pulse='true']::before {
     animation: none;
   }
+}
+
+:root[data-ov-motion='reduced'] .Indicator[data-ov-pulse='true']::before {
+  animation: none;
 }
 
 /* ─── Body ─── */

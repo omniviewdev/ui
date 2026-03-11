@@ -56,6 +56,8 @@ export const AIMessageEditor = forwardRef<HTMLDivElement, AIMessageEditorProps>(
       }
     }
 
+    const handleSave = () => onSave(value);
+
     return (
       <div ref={ref} className={cn(styles.Root, className)} {...rest}>
         <textarea
@@ -82,7 +84,7 @@ export const AIMessageEditor = forwardRef<HTMLDivElement, AIMessageEditorProps>(
             variant="solid"
             color="brand"
             size="sm"
-            onClick={() => onSave(value)}
+            onClick={handleSave}
             disabled={saveDisabled}
             startDecorator={saving ? <Spinner size="sm" /> : undefined}
           >

@@ -6,7 +6,7 @@
 .Root {
   display: inline-flex;
   align-items: center;
-  gap: var(--_ov-stat-gap, 8px);
+  gap: var(--_ov-stat-gap, var(--ov-space-stack-sm));
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -14,19 +14,19 @@
 /* ─── Size variants ─────────────────────────── */
 
 .Root[data-ov-size='sm'] {
-  --_ov-stat-gap: 6px;
+  --_ov-stat-gap: var(--ov-space-stack-xs, 6px);
   --_ov-stat-icon-size: 0.6875rem;
   --_ov-stat-font-size: var(--ov-font-size-xs, 0.6875rem);
 }
 
 .Root[data-ov-size='md'] {
-  --_ov-stat-gap: 8px;
+  --_ov-stat-gap: var(--ov-space-stack-sm, 8px);
   --_ov-stat-icon-size: 0.8125rem;
   --_ov-stat-font-size: var(--ov-font-size-sm, 0.8125rem);
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-stat-gap: 10px;
+  --_ov-stat-gap: var(--ov-space-stack-md, 10px);
   --_ov-stat-icon-size: 0.9375rem;
   --_ov-stat-font-size: var(--ov-font-size-md, 0.9375rem);
 }
@@ -36,7 +36,7 @@
 .Item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--ov-space-stack-xs, 4px);
   font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
   color: var(--_ov-stat-item-color, var(--ov-color-fg-muted));
   line-height: 1;

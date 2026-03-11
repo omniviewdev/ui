@@ -54,7 +54,7 @@
 }
 
 .RadioIndicator .IndicatorControl {
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
 }
 
 /* Checked state */
@@ -96,7 +96,7 @@
 .RadioDot {
   inline-size: calc(var(--_ov-indicator-size) * 0.5);
   block-size: calc(var(--_ov-indicator-size) * 0.5);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: currentcolor;
 }
 
@@ -109,7 +109,7 @@
   align-items: center;
   gap: var(--ov-space-inline-control);
   min-height: var(--_ov-item-height, 32px);
-  padding-inline: var(--_ov-item-padding-inline, 8px);
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-inline-control));
   cursor: pointer;
   user-select: none;
   border-bottom: 1px solid var(--ov-color-border-muted);
@@ -137,7 +137,7 @@
 .SelectionSummary {
   font-size: var(--ov-font-size-caption);
   color: var(--ov-color-fg-subtle);
-  padding-inline: var(--_ov-item-padding-inline, 8px);
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-inline-control));
   padding-block: var(--ov-space-stack-xs, 4px);
   border-top: 1px solid var(--ov-color-border-muted);
 }
@@ -150,15 +150,15 @@
   display: flex;
   align-items: center;
   gap: var(--ov-space-inline-control);
-  padding-inline: var(--_ov-item-padding-inline, 8px);
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-inline-control));
   cursor: pointer;
   user-select: none;
   color: var(--ov-color-fg-muted);
   font-size: var(--_ov-group-label-font-size, var(--ov-font-size-caption));
   font-weight: var(--ov-font-weight-label);
   line-height: 1.2;
-  margin-block-start: var(--_ov-group-label-gap-top, 8px);
-  margin-block-end: var(--_ov-group-label-gap-after, 4px);
+  margin-block-start: var(--_ov-group-label-gap-top, var(--ov-space-stack-sm));
+  margin-block-end: var(--_ov-group-label-gap-after, var(--ov-space-stack-xs, 4px));
 }
 
 .GroupSelectAll:hover

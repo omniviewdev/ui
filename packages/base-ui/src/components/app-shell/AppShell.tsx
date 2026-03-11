@@ -2,6 +2,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
@@ -163,8 +164,13 @@ const AppShellRoot = forwardRef<HTMLDivElement, AppShellProps>(
       ...style,
     } as CSSProperties;
 
+    const contextValue = useMemo(
+      () => ({ sidebarCollapsed, secondarySidebarCollapsed }),
+      [sidebarCollapsed, secondarySidebarCollapsed],
+    );
+
     return (
-      <AppShellContext.Provider value={{ sidebarCollapsed, secondarySidebarCollapsed }}>
+      <AppShellContext.Provider value={contextValue}>
         <div
           ref={ref}
           className={cn(styles.Root, className)}

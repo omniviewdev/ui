@@ -22,7 +22,7 @@
   font-family: inherit;
   cursor: pointer;
   text-align: left;
-  transition: color 0.2s;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .Header:hover {
@@ -51,7 +51,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease;
+  transition: transform var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .HeaderChevron[data-ov-open='true'] {

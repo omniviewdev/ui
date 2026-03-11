@@ -1,6 +1,8 @@
 import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+
+const REMARK_PLUGINS = [remarkGfm] as const;
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import {
   Accordion,
@@ -188,7 +190,7 @@ function MarkdownContent({ content, allowHtml }: { content: string; allowHtml: b
   return (
     <ReactMarkdown
       skipHtml={!allowHtml}
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={REMARK_PLUGINS}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rehypePlugins={rehypePlugins as any}
       components={markdownComponents}

@@ -3,6 +3,14 @@ import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { ROOT } from './utils.mjs';
 
+const EXT_LANG = { '.css': 'css', '.ts': 'ts', '.tsx': 'tsx', '.js': 'js', '.jsx': 'jsx', '.mjs': 'js' };
+
+function langFromFile(filePath) {
+  const dot = filePath.lastIndexOf('.');
+  if (dot === -1) return '';
+  return EXT_LANG[filePath.slice(dot)] ?? '';
+}
+
 export function generateReport(findings) {
   const grouped = {};
   for (const f of findings) {
@@ -52,7 +60,8 @@ export function generateReport(findings) {
     for (const item of items) {
       md += `- \`${item.file}:${item.line}\` — ${item.message}\n`;
       if (item.snippet) {
-        md += `  \`\`\`\n  ${item.snippet}\n  \`\`\`\n`;
+        const lang = item.language ?? langFromFile(item.file);
+        md += `  \`\`\`${lang}\n  ${item.snippet}\n  \`\`\`\n`;
       }
     }
     md += `\n`;

@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useContext, type HTMLAttributes, type ReactNode } from 'react';
+import { createContext, forwardRef, useContext, useMemo, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import { List } from '../list';
 import type { ListRootProps, ListItemProps, ListGroupProps } from '../list';
@@ -88,6 +88,8 @@ const NavListGroup = forwardRef<HTMLDivElement, NavListGroupProps>(function NavL
     onExpandedChange,
   });
 
+  const toggleContextValue = useMemo(() => ({ expanded, toggle }), [expanded, toggle]);
+
   if (!collapsible) {
     return (
       <List.Group ref={ref} className={cn(styles.Group, className)} {...props}>
@@ -97,7 +99,7 @@ const NavListGroup = forwardRef<HTMLDivElement, NavListGroupProps>(function NavL
   }
 
   return (
-    <NavListGroupToggleContext.Provider value={{ expanded, toggle }}>
+    <NavListGroupToggleContext.Provider value={toggleContextValue}>
       <div
         ref={ref}
         role="group"

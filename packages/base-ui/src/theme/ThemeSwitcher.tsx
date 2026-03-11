@@ -1,4 +1,5 @@
-import { useId } from 'react';
+import { memo, useId } from 'react';
+import { cn } from '../system/classnames';
 import { useTheme } from './useTheme';
 import styles from './ThemeSwitcher.module.css';
 
@@ -6,14 +7,14 @@ export interface ThemeSwitcherProps {
   className?: string;
 }
 
-export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
+export const ThemeSwitcher = memo(function ThemeSwitcher({ className }: ThemeSwitcherProps) {
   const { theme, density, motion, setTheme, setDensity, setMotion } = useTheme();
   const themeId = useId();
   const densityId = useId();
   const motionId = useId();
 
   return (
-    <div className={[styles.Root, className].filter(Boolean).join(' ')}>
+    <div className={cn(styles.Root, className)}>
       <label className={styles.Field} htmlFor={themeId}>
         Theme
         <select
@@ -53,4 +54,4 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
       </label>
     </div>
   );
-}
+});

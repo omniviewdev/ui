@@ -32,6 +32,8 @@ const LINE_NUMBER_STYLE: CSSProperties = {
   userSelect: 'none',
 };
 
+const CODE_TAG_PROPS = { className: styles.Code };
+
 function getSyntaxStyle(theme: ReturnType<typeof useTheme>['theme']): SyntaxHighlighterStyle {
   if (theme === 'light' || theme === 'high-contrast-light') {
     return oneLight as SyntaxHighlighterStyle;
@@ -70,6 +72,16 @@ export function CodeBlock({
   const syntaxStyle = useMemo(() => getSyntaxStyle(theme), [theme]);
   const resolvedLanguage = language?.trim().toLowerCase();
   const maxHeightCss = toCssMaxHeight(maxHeight);
+  const customStyle = useMemo<CSSProperties>(
+    () => ({
+      maxHeight: maxHeightCss,
+      margin: 0,
+      padding: 'var(--_ov-padding-block) var(--_ov-padding-inline)',
+      background: 'transparent',
+      overflow: 'auto',
+    }),
+    [maxHeightCss],
+  );
 
   const handleCopy = useCallback(async () => {
     if (navigator.clipboard?.writeText) {
@@ -107,15 +119,9 @@ export function CodeBlock({
           showLineNumbers={lineNumbers}
           wrapLongLines={wrap}
           className={styles.Pre}
-          codeTagProps={{ className: styles.Code }}
+          codeTagProps={CODE_TAG_PROPS}
           lineNumberStyle={LINE_NUMBER_STYLE}
-          customStyle={{
-            maxHeight: maxHeightCss,
-            margin: 0,
-            padding: 'var(--_ov-padding-block) var(--_ov-padding-inline)',
-            background: 'transparent',
-            overflow: 'auto',
-          }}
+          customStyle={customStyle}
         >
           {value}
         </SyntaxHighlighter>

@@ -1,6 +1,6 @@
 .Root {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 4px 0;
+  gap: var(--ov-space-stack-sm);
+  padding-block: var(--ov-space-stack-xs, 4px);
 }

@@ -1,6 +1,11 @@
 .Root {
   --_ov-size: var(--ov-size-spinner-md);
   --_ov-color: var(--ov-color-fg-default);
+  /* Component-local animation duration — no --ov-duration-spin semantic token yet.
+     WARNING: animation-delay values on .Bar:nth-child() selectors below are derived
+     from this duration (each step = duration / 8). Update those delays if you change
+     this value. */
+  --_duration-spin: 0.8s;
 
   position: relative;
   display: inline-flex;
@@ -53,10 +58,10 @@
      vertical center relative to the bar's own height (28% of parent).
      Percentage-based so it stays correct even if the element is externally resized. */
   transform-origin: 50% 178.57%;
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: var(--_ov-color);
   opacity: 0.15;
-  animation: ov-spinner-fade 0.8s linear infinite;
+  animation: ov-spinner-fade var(--_duration-spin) linear infinite;
 }
 
 .Bar:nth-child(1) {

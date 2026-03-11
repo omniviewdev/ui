@@ -3,6 +3,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useSyncExternalStore,
   type KeyboardEvent,
@@ -47,8 +48,9 @@ const SelectableListRoot = forwardRef<HTMLDivElement, SelectableListRootProps>(
     const resolved: CheckBehavior =
       checkBehavior ?? (selectionMode === 'single' ? 'radio' : 'checkbox');
 
+    const contextValue = useMemo(() => ({ checkBehavior: resolved }), [resolved]);
     return (
-      <SelectableListContext.Provider value={{ checkBehavior: resolved }}>
+      <SelectableListContext.Provider value={contextValue}>
         <List.Root
           ref={ref}
           className={cn(styles.Root, className)}

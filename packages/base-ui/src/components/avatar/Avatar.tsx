@@ -3,6 +3,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type ReactNode,
@@ -87,9 +88,14 @@ const AvatarRoot = forwardRef<ElementRef<typeof BaseAvatar.Root>, AvatarRootProp
     },
     ref,
   ) {
+    const contextValue = useMemo(
+      () => ({ variant, color, size, shape, deterministic, paletteIndex }),
+      [variant, color, size, shape, deterministic, paletteIndex],
+    );
+
     return (
       <AvatarStyleContext.Provider
-        value={{ variant, color, size, shape, deterministic, paletteIndex }}
+        value={contextValue}
       >
         <BaseAvatar.Root
           ref={ref}

@@ -2,6 +2,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type ComponentPropsWithoutRef,
   type HTMLAttributes,
   type ReactNode,
@@ -122,8 +123,12 @@ const ChipGroup = forwardRef<HTMLDivElement, ChipGroupProps>(function ChipGroup(
   },
   ref,
 ) {
+  const contextValue = useMemo(
+    () => ({ variant, color, size, mono, clickable }),
+    [variant, color, size, mono, clickable],
+  );
   return (
-    <ChipContext.Provider value={{ variant, color, size, mono, clickable }}>
+    <ChipContext.Provider value={contextValue}>
       <div
         ref={ref}
         {...props}

@@ -1,7 +1,9 @@
 import {
   createContext,
   forwardRef,
+  useCallback,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type MouseEvent,
   type ReactNode,
@@ -35,8 +37,9 @@ const FilterBarRoot = forwardRef<HTMLDivElement, FilterBarProps>(function Filter
   { className, size = 'md', children, ...props },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ size }), [size]);
   return (
-    <FilterBarContext.Provider value={{ size }}>
+    <FilterBarContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}
@@ -64,12 +67,13 @@ const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(
   function FilterBarChip({ onRemove, children, ...props }, ref) {
     const { size } = useFilterBar();
 
-    const handleRemoveClick = onRemove
-      ? (e: MouseEvent) => {
-          e.stopPropagation();
-          onRemove();
-        }
-      : undefined;
+    const handleRemoveClick = useCallback(
+      (e: MouseEvent) => {
+        e.stopPropagation();
+        onRemove?.();
+      },
+      [onRemove],
+    );
 
     return (
       <Chip

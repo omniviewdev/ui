@@ -303,6 +303,16 @@ function DockLeafContainer({ leaf, onTabClick, onTabClose }: DockLeafContainerPr
   const activeContent = leaf.tabs.find((t) => t.id === activeTabId)?.content;
   const panelId = `dock-panel-${leaf.id}`;
   const activeTabElId = `dock-tab-${leaf.id}-${activeTabId}`;
+  const leafId = leaf.id;
+
+  const handleTabClick = useCallback(
+    (tabId: string) => onTabClick(leafId, tabId),
+    [leafId, onTabClick],
+  );
+  const handleTabClose = useCallback(
+    (tabId: string) => onTabClose(leafId, tabId),
+    [leafId, onTabClose],
+  );
 
   return (
     <div className={styles.Leaf} data-ov-leaf-id={leaf.id}>
@@ -310,8 +320,8 @@ function DockLeafContainer({ leaf, onTabClick, onTabClose }: DockLeafContainerPr
         tabs={leaf.tabs}
         activeTab={activeTabId}
         leafId={leaf.id}
-        onTabClick={(tabId) => onTabClick(leaf.id, tabId)}
-        onTabClose={(tabId) => onTabClose(leaf.id, tabId)}
+        onTabClick={handleTabClick}
+        onTabClose={handleTabClose}
       />
       <div
         id={panelId}

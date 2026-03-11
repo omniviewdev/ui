@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ComponentPropsWithoutRef,
   type ElementRef,
@@ -90,8 +91,14 @@ function TooltipRoot<Payload>({
     [hasOpened, onOpenChange],
   );
 
+  const contextValue = useMemo(
+    () => ({ ...resolved, lazy, hasOpened }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [resolved.variant, resolved.color, resolved.size, lazy, hasOpened],
+  );
+
   return (
-    <TooltipStyleContext.Provider value={{ ...resolved, lazy, hasOpened }}>
+    <TooltipStyleContext.Provider value={contextValue}>
       <BaseTooltip.Root<Payload>
         defaultOpen={defaultOpen}
         open={open}

@@ -8,8 +8,10 @@
 .Root {
   --_ov-list-gap: 0;
   --_ov-item-height: var(--ov-size-list-item-height-md);
-  --_ov-item-padding-inline: 4px;
-  --_ov-item-gap: 4px;
+  --_ov-item-padding-inline: var(--ov-space-stack-xs, 4px);
+  --_ov-item-gap: var(--ov-space-stack-xs, 4px);
+  /* Component-local animation duration — no --ov-duration-spin semantic token yet */
+  --_ov-duration-spin: 0.8s;
   --_ov-item-radius: var(--ov-size-list-item-radius);
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-selected-bg: var(--ov-color-state-selected);
@@ -267,7 +269,12 @@
 }
 
 .ItemToggle[data-ov-loading='true'] {
-  animation: spin 0.8s linear infinite;
+  animation: spin var(--_ov-duration-spin) linear infinite;
+}
+
+/* When loading AND expanded, start spin from 90deg to avoid clobbering the expanded rotation */
+.ItemToggle[data-ov-loading='true'][data-ov-expanded='true'] {
+  animation-name: spin-expanded;
 }
 
 @keyframes spin {
@@ -277,6 +284,25 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes spin-expanded {
+  from {
+    transform: rotate(90deg);
+  }
+  to {
+    transform: rotate(450deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ItemToggle[data-ov-loading='true'] {
+    animation: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .ItemToggle[data-ov-loading='true'] {
+  animation: none;
 }
 
 /* ---------------------------------------------------------------------------

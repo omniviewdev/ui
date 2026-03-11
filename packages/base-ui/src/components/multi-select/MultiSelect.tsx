@@ -1,6 +1,6 @@
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
 import { LuCheck, LuChevronDown, LuSearch, LuX } from 'react-icons/lu';
-import { useMemo, useRef, type PointerEvent, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, type PointerEvent, type ReactNode } from 'react';
 import { Chip } from '../chip';
 import { IconButton } from '../icon-button';
 import { cn, withBaseClassName } from '../../system/classnames';
@@ -163,6 +163,46 @@ export function MultiSelect<Item = string>({
     ? Math.max(0, Math.floor(maxVisibleChips))
     : Number.MAX_SAFE_INTEGER;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderClearButton = useCallback(
+    (clearProps: any) => (
+      <IconButton
+        {...clearProps}
+        dense
+        variant="ghost"
+        color={color}
+        size={size}
+        className={cn(
+          styles.Clear,
+          typeof clearProps.className === 'string' ? clearProps.className : undefined,
+        )}
+      >
+        {clearDecorator ?? <LuX aria-hidden />}
+      </IconButton>
+    ),
+    [color, size, clearDecorator],
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderTriggerButton = useCallback(
+    (triggerProps: any) => (
+      <IconButton
+        {...triggerProps}
+        dense
+        variant="ghost"
+        color={color}
+        size={size}
+        className={cn(
+          styles.Trigger,
+          typeof triggerProps.className === 'string' ? triggerProps.className : undefined,
+        )}
+      >
+        <LuChevronDown aria-hidden />
+      </IconButton>
+    ),
+    [color, size],
+  );
+
   const handleControlPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) {
       return;
@@ -287,42 +327,14 @@ export function MultiSelect<Item = string>({
           {clearable ? (
             <BaseCombobox.Clear
               aria-label={clearButtonLabel}
-              render={(clearProps) => (
-                <IconButton
-                  {...clearProps}
-                  dense
-                  variant="ghost"
-                  color={color}
-                  size={size}
-                  className={cn(
-                    styles.Clear,
-                    typeof clearProps.className === 'string' ? clearProps.className : undefined,
-                  )}
-                >
-                  {clearDecorator ?? <LuX aria-hidden />}
-                </IconButton>
-              )}
+              render={renderClearButton}
             />
           ) : null}
 
           <BaseCombobox.Trigger
             ref={triggerRef}
             aria-label={triggerLabel}
-            render={(triggerProps) => (
-              <IconButton
-                {...triggerProps}
-                dense
-                variant="ghost"
-                color={color}
-                size={size}
-                className={cn(
-                  styles.Trigger,
-                  typeof triggerProps.className === 'string' ? triggerProps.className : undefined,
-                )}
-              >
-                <LuChevronDown aria-hidden />
-              </IconButton>
-            )}
+            render={renderTriggerButton}
           />
         </div>
       </div>

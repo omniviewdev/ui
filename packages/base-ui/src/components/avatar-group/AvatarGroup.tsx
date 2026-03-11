@@ -3,6 +3,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type ElementRef,
   type HTMLAttributes,
 } from 'react';
@@ -70,8 +71,13 @@ const AvatarGroupRoot = forwardRef<HTMLDivElement, AvatarGroupProps>(function Av
   const overflowCount =
     clampedMax === undefined ? 0 : Math.max(resolvedTotal - visibleChildren.length, 0);
 
+  const contextValue = useMemo(
+    () => ({ variant, color, size, shape, deterministic }),
+    [variant, color, size, shape, deterministic],
+  );
+
   return (
-    <AvatarGroupContext.Provider value={{ variant, color, size, shape, deterministic }}>
+    <AvatarGroupContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}

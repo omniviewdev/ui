@@ -162,7 +162,7 @@
   inline-size: 100%;
   block-size: var(--_ov-track-thickness);
   background: var(--_ov-track-bg);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   box-shadow: inset 0 0 0 1px var(--_ov-track-border);
   user-select: none;
   overflow: visible;
@@ -177,7 +177,7 @@
 }
 
 .Indicator {
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: var(--_ov-indicator-bg);
   user-select: none;
 }
@@ -185,7 +185,7 @@
 .Thumb {
   inline-size: var(--_ov-thumb-size);
   block-size: var(--_ov-thumb-size);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   border: 1px solid var(--_ov-thumb-border);
   background: var(--_ov-thumb-bg);
   /* elevation shadow — no semantic token maps to raw alpha-black shadow values */

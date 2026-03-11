@@ -1,6 +1,9 @@
 .Root {
   --_ov-tab-height: var(--ov-size-tab-height);
   --_ov-tab-bg: var(--ov-color-tab-bg);
+  /* Component-local shadow aliases — no matching --ov-shadow-* tier for dragging/ghost elevations */
+  --_shadow-drag: 0 2px 8px rgb(0 0 0 / 0.25);
+  --_shadow-ghost: 0 4px 16px rgb(0 0 0 / 0.3);
   --_ov-tab-fg: var(--ov-color-tab-fg);
   --_ov-tab-active-bg: var(--ov-color-tab-active-bg);
   --_ov-tab-active-fg: var(--ov-color-tab-active-fg);
@@ -149,7 +152,7 @@
   min-width: 14px;
   height: 14px;
   padding: 0 3px;
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: var(--ov-color-state-hover);
   font-size: var(--ov-font-size-caption); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
   line-height: 1;
@@ -212,7 +215,7 @@
 }
 
 .Tab[data-pinned] {
-  padding: 0 8px;
+  padding: 0 var(--ov-space-stack-sm);
 }
 
 /* Chrome-style vertical divider between tabs */
@@ -391,10 +394,9 @@
    --------------------------------------------------------------------------- */
 
 /* Tab being dragged — elevated with shadow, hide divider */
-/* elevation shadow — no semantic token maps to raw alpha-black shadow values */
 .Tab[data-dragging] {
   z-index: 1;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  box-shadow: var(--_shadow-drag);
   cursor: grabbing;
 }
 
@@ -408,10 +410,9 @@
 }
 
 /* Detach ghost: elevated, slightly transparent */
-/* elevation shadow — no semantic token maps to raw alpha-black shadow values */
 .DetachGhost {
   opacity: 0.85;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
+  box-shadow: var(--_shadow-ghost);
   border-radius: var(--ov-radius-control);
   cursor: grabbing;
   pointer-events: none;

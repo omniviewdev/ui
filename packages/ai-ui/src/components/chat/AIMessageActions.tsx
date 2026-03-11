@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, type HTMLAttributes } from 'react';
 import { IconButton } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import { LuCopy, LuRefreshCw, LuPencil, LuThumbsUp, LuThumbsDown, LuShare2, LuGitBranch, LuTrash2 } from '../../system/icons';
@@ -28,6 +28,15 @@ export const AIMessageActions = forwardRef<HTMLDivElement, AIMessageActionsProps
     { onCopy, onRegenerate, onEdit, onShare, onBranch, onDelete, feedback, onFeedback, className, ...rest },
     ref,
   ) {
+    const handlePositiveFeedback = useCallback(
+      () => onFeedback?.('positive'),
+      [onFeedback],
+    );
+    const handleNegativeFeedback = useCallback(
+      () => onFeedback?.('negative'),
+      [onFeedback],
+    );
+
     return (
       <div ref={ref} className={cn(styles.Root, className)} {...rest}>
         {onCopy && (
@@ -66,7 +75,7 @@ export const AIMessageActions = forwardRef<HTMLDivElement, AIMessageActionsProps
             variant="ghost"
             color={feedback === 'positive' ? 'brand' : 'neutral'}
             aria-label="Positive feedback"
-            onClick={() => onFeedback('positive')}
+            onClick={handlePositiveFeedback}
           >
             <LuThumbsUp size={14} />
           </IconButton>
@@ -77,7 +86,7 @@ export const AIMessageActions = forwardRef<HTMLDivElement, AIMessageActionsProps
             variant="ghost"
             color={feedback === 'negative' ? 'brand' : 'neutral'}
             aria-label="Negative feedback"
-            onClick={() => onFeedback('negative')}
+            onClick={handleNegativeFeedback}
           >
             <LuThumbsDown size={14} />
           </IconButton>

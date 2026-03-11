@@ -1,4 +1,8 @@
 .Root {
+  /* Component-local animation durations — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 1.5s;
+  --_duration-wave: 1.6s;
+
   display: block;
   background: var(--ov-color-bg-surface-raised);
   /* --_sk-width and --_sk-height are set via inline style for non-text variants */
@@ -44,7 +48,7 @@
 /* ---------- Pulse animation ---------- */
 
 .Root[data-ov-animation='pulse'] {
-  animation: ov-skeleton-pulse 1.5s ease-in-out infinite;
+  animation: ov-skeleton-pulse var(--_duration-pulse) ease-in-out infinite;
 }
 
 @keyframes ov-skeleton-pulse {
@@ -72,7 +76,7 @@
   inset: 0;
   background: linear-gradient(90deg, transparent, var(--ov-color-bg-elevated), transparent);
   background-size: 200% 100%;
-  animation: ov-skeleton-wave 1.6s linear infinite;
+  animation: ov-skeleton-wave var(--_duration-wave) linear infinite;
 }
 
 @keyframes ov-skeleton-wave {

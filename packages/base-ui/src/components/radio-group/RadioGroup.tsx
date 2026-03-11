@@ -1,5 +1,5 @@
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
-import { createContext, useContext, type ComponentPropsWithoutRef } from 'react';
+import { createContext, useContext, useMemo, type ComponentPropsWithoutRef } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import {
@@ -35,8 +35,9 @@ export function RadioGroupRoot({
   orientation = 'vertical',
   ...props
 }: RadioGroupProps) {
+  const contextValue = useMemo(() => ({ variant, color, size }), [variant, color, size]);
   return (
-    <RadioGroupContext.Provider value={{ variant, color, size }}>
+    <RadioGroupContext.Provider value={contextValue}>
       <BaseRadioGroup
         className={withBaseClassName<BaseRadioGroup.State>(styles.Root, className)}
         data-ov-orientation={orientation}

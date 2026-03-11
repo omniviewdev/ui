@@ -3,6 +3,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useMemo,
   useState,
   type HTMLAttributes,
   type MouseEvent,
@@ -36,8 +37,9 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineProps>(function Timeline
   { size = 'md', className, ...props },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ size }), [size]);
   return (
-    <TimelineContext.Provider value={{ size }}>
+    <TimelineContext.Provider value={contextValue}>
       <div ref={ref} className={cn(styles.Root, className)} data-ov-size={size} {...props} />
     </TimelineContext.Provider>
   );

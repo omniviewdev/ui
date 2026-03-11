@@ -6,6 +6,7 @@ import {
   forwardRef,
   isValidElement,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -97,8 +98,13 @@ const StepperRoot = forwardRef<HTMLDivElement, StepperProps>(function StepperRoo
 
   const steps = processChildren(children);
 
+  const contextValue = useMemo(
+    () => ({ activeStep, orientation }),
+    [activeStep, orientation],
+  );
+
   return (
-    <StepperContext.Provider value={{ activeStep, orientation }}>
+    <StepperContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}

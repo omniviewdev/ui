@@ -1,8 +1,8 @@
 # UI Audit Findings Report
 
 **Date:** 2026-03-11
-**Total findings:** 1029
-**High:** 64 | **Medium:** 779 | **Low:** 186
+**Total findings:** 913
+**High:** 64 | **Medium:** 663 | **Low:** 186
 
 ---
 
@@ -13,16 +13,15 @@
 | High | Token/Styling | Hardcoded color | 37 |
 | High | Token/Styling | Primitive token leakage | 5 |
 | High | Convention | Inline style | 22 |
-| Medium | Token/Styling | Hardcoded transition | 78 |
-| Medium | Token/Styling | Hardcoded spacing | 142 |
-| Medium | Token/Styling | Hardcoded radius | 19 |
+| Medium | Token/Styling | Hardcoded transition | 71 |
+| Medium | Token/Styling | Hardcoded spacing | 98 |
 | Medium | Token/Styling | Hardcoded box-shadow | 26 |
+| Medium | Token/Styling | Hardcoded radius | 3 |
 | Medium | Token/Styling | Missing theme coverage | 315 |
 | Medium | Token/Styling | Missing IDE alias | 33 |
-| Medium | Performance | Inline object prop | 24 |
-| Medium | Performance | Inline function prop | 43 |
-| Medium | Performance | Inline array prop | 3 |
-| Medium | Performance | Missing memo | 86 |
+| Medium | Performance | Inline function prop | 25 |
+| Medium | Performance | Missing memo | 81 |
+| Medium | Performance | Inline array prop | 1 |
 | Medium | Accessibility | Missing keyboard handler | 9 |
 | Medium | Accessibility | Missing ARIA | 1 |
 | Low | Token/Styling | Hardcoded opacity | 114 |
@@ -146,13 +145,13 @@
   ```
   --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:397` — rgb/hsl color found — use a semantic token (--ov-color-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:5` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  --_shadow-drag: 0 2px 8px rgb(0 0 0 / 0.25);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:414` — rgb/hsl color found — use a semantic token (--ov-color-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:6` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
+  --_shadow-ghost: 0 4px 16px rgb(0 0 0 / 0.3);
   ```
 - `packages/base-ui/src/components/sheet/Sheet.module.css:9` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
@@ -178,11 +177,11 @@
   ```
   0 1px 2px rgb(0 0 0 / 0.28);
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:57` — rgb/hsl color found — use a semantic token (--ov-color-*)
+- `packages/base-ui/src/components/toast/Toast.module.css:59` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
   --_toast-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:59` — rgb/hsl color found — use a semantic token (--ov-color-*)
+- `packages/base-ui/src/components/toast/Toast.module.css:61` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
   --_toast-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
   ```
@@ -307,25 +306,25 @@
 
 ### Medium: Hardcoded transition (Token/Styling)
 
-**78 finding(s)**
+**71 finding(s)**
 
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:34` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:38` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: pulse-dot 1.5s ease-in-out infinite;
+  animation: pulse-dot var(--_duration-pulse) var(--_ease-pulse) infinite;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:87` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:91` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:90` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:94` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:95` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:99` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:99` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:103` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
@@ -369,14 +368,6 @@
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ChainOfThought.module.css:25` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  transition: color 0.2s;
-  ```
-- `packages/ai-ui/src/components/reasoning/ChainOfThought.module.css:54` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  transition: transform 0.2s ease;
-  ```
 - `packages/ai-ui/src/components/reasoning/ChainOfThought.module.css:230` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
@@ -385,31 +376,23 @@
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:20` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:46` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  transition: color 0.2s;
+  animation: brain-pulse var(--_duration-pulse) var(--_ease-pulse) infinite;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:42` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: brain-pulse 2s ease-in-out infinite;
-  ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:61` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  transition: transform 0.2s ease;
-  ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:89` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:93` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:92` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:96` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:97` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:101` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:101` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:105` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
@@ -441,35 +424,35 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:31` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/badge/Badge.module.css:166` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  transition:
+  animation: ov-badge-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:164` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: ov-badge-pulse 1.5s ease-in-out infinite;
-  ```
-- `packages/base-ui/src/components/badge/Badge.module.css:168` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/badge/Badge.module.css:170` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:173` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/badge/Badge.module.css:175` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:205` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/card/Card.module.css:207` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:210` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/card/Card.module.css:212` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:349` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/card/Card.module.css:351` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: indicator-pulse 2s ease-in-out infinite;
+  animation: indicator-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:364` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/card/Card.module.css:366` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+  ```
+  animation: none;
+  ```
+- `packages/base-ui/src/components/card/Card.module.css:371` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
@@ -489,21 +472,9 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:229` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/data-table/DataTable.module.css:498` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  transition: opacity 0.15s ease;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:325` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  transition:
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:336` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  transition: transform 0.15s ease;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:494` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  animation: skeleton-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
 - `packages/base-ui/src/components/dialog/Dialog.module.css:23` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
@@ -529,7 +500,7 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:459` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:460` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
@@ -553,47 +524,47 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:47` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:51` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: ov-skeleton-pulse 1.5s ease-in-out infinite;
+  animation: ov-skeleton-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:75` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:79` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: ov-skeleton-wave 1.6s linear infinite;
-  ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:90` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: none;
+  animation: ov-skeleton-wave var(--_duration-wave) linear infinite;
   ```
 - `packages/base-ui/src/components/skeleton/Skeleton.module.css:94` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:108` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:98` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:117` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:112` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:59` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: ov-spinner-fade 0.8s linear infinite;
-  ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:106` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:121` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:81` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/spinner/Spinner.module.css:64` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: ov-pulse 1.5s ease-in-out infinite;
+  animation: ov-spinner-fade var(--_duration-spin) linear infinite;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:101` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/spinner/Spinner.module.css:111` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:118` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:85` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+  ```
+  animation: ov-pulse var(--_duration-pulse) var(--_ease-pulse) infinite;
+  ```
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:105` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+  ```
+  animation: none;
+  ```
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:122` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
@@ -605,47 +576,27 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:191` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/toast/Toast.module.css:193` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: ov-toast-pulse 2s ease-in-out infinite;
+  animation: ov-toast-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:384` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
-  ```
-  animation: none;
-  ```
-- `packages/base-ui/src/components/toast/Toast.module.css:390` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/toast/Toast.module.css:387` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:270` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/toast/Toast.module.css:394` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: spin 0.8s linear infinite;
+  animation: none;
+  ```
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:272` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+  ```
+  animation: spin var(--_duration-spin) linear infinite;
   ```
 
 ### Medium: Hardcoded spacing (Token/Styling)
 
-**142 finding(s)**
+**98 finding(s)**
 
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:22` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:23` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 8px 12px;
-  ```
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:63` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:64` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 4px 12px;
-  ```
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:83` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 12px;
-  ```
 - `packages/ai-ui/src/components/branching/AIBranch.module.css:9` — Raw spacing value — use --ov-space-* token
   ```
   gap: 4px;
@@ -653,14 +604,6 @@
 - `packages/ai-ui/src/components/chat/AIContextIndicator.module.css:5` — Raw spacing value — use --ov-space-* token
   ```
   gap: 4px;
-  ```
-- `packages/ai-ui/src/components/chat/AIFollowUp.module.css:4` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/ai-ui/src/components/chat/AIFollowUp.module.css:5` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 4px 0;
   ```
 - `packages/ai-ui/src/components/chat/AIMessageActions.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
@@ -685,10 +628,6 @@
 - `packages/ai-ui/src/components/streaming/TypingIndicator.module.css:15` — Raw spacing value — use --ov-space-* token
   ```
   gap: 3px;
-  ```
-- `packages/base-ui/src/components/accordion/Accordion.module.css:7` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-header-gap: 8px;
   ```
 - `packages/base-ui/src/components/accordion/Accordion.module.css:24` — Raw spacing value — use --ov-space-* token
   ```
@@ -738,15 +677,15 @@
   ```
   margin-block-start: -1px;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:318` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/card/Card.module.css:320` — Raw spacing value — use --ov-space-* token
   ```
   gap: 6px;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:466` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/card/Card.module.css:472` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 2px;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:513` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/card/Card.module.css:519` — Raw spacing value — use --ov-space-* token
   ```
   gap: 2px;
   ```
@@ -762,10 +701,6 @@
   ```
   gap: var(--_ov-group-spacing, 4px); /* fallback: --ov-space-stack-xs; no semantic token for 4px */
   ```
-- `packages/base-ui/src/components/clipboard-text/ClipboardText.module.css:4` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
 - `packages/base-ui/src/components/code-block/CodeBlock.module.css:163` — Raw spacing value — use --ov-space-* token
   ```
   padding-inline-end: 10px;
@@ -778,10 +713,6 @@
   ```
   margin-block-start: 2px;
   ```
-- `packages/base-ui/src/components/command-list/CommandList.module.css:109` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-block-start: 8px;
-  ```
 - `packages/base-ui/src/components/command-list/CommandList.module.css:192` — Raw spacing value — use --ov-space-* token
   ```
   gap: 3px;
@@ -790,77 +721,25 @@
   ```
   margin-block: 2px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:206` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-inline-start: 4px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:382` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:384` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:388` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 6px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:409` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 2px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:410` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-block: 4px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:419` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:421` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:425` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 6px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:432` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:438` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:448` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:449` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 32px 16px;
   ```
 - `packages/base-ui/src/components/description-list/DescriptionList.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-gap: 10px;
   ```
-- `packages/base-ui/src/components/description-list/DescriptionList.module.css:5` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-gap: 4px;
-  ```
-- `packages/base-ui/src/components/description-list/DescriptionList.module.css:18` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-gap: 8px;
-  ```
 - `packages/base-ui/src/components/description-list/DescriptionList.module.css:19` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 2px;
   ```
-- `packages/base-ui/src/components/description-list/DescriptionList.module.css:25` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-gap: 12px;
-  ```
 - `packages/base-ui/src/components/description-list/DescriptionList.module.css:26` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 6px;
-  ```
-- `packages/base-ui/src/components/description-list/DescriptionList.module.css:55` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
   ```
 - `packages/base-ui/src/components/drawer/Drawer.module.css:132` — Raw spacing value — use --ov-space-* token
   ```
@@ -878,25 +757,17 @@
   ```
   gap: 4px;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:151` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:154` — Raw spacing value — use --ov-space-* token
   ```
   padding: 0 3px;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:162` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:165` — Raw spacing value — use --ov-space-* token
   ```
   gap: 6px;
-  ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:215` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 0 8px;
   ```
 - `packages/base-ui/src/components/empty-state/EmptyState.module.css:2` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-padding: 32px;
-  ```
-- `packages/base-ui/src/components/empty-state/EmptyState.module.css:3` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-gap: 8px;
   ```
 - `packages/base-ui/src/components/empty-state/EmptyState.module.css:19` — Raw spacing value — use --ov-space-* token
   ```
@@ -909,18 +780,6 @@
 - `packages/base-ui/src/components/empty-state/EmptyState.module.css:27` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-padding: 48px;
-  ```
-- `packages/base-ui/src/components/empty-state/EmptyState.module.css:28` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-gap: 12px;
-  ```
-- `packages/base-ui/src/components/empty-state/EmptyState.module.css:67` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/empty-state/EmptyState.module.css:68` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-top: 4px;
   ```
 - `packages/base-ui/src/components/find-bar/FindBar.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
@@ -1034,61 +893,21 @@
   ```
   margin: 2px 0;
   ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:112` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-inline: var(--_ov-item-padding-inline, 8px);
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:140` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-inline: var(--_ov-item-padding-inline, 8px);
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:153` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-inline: var(--_ov-item-padding-inline, 8px);
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:160` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-block-start: var(--_ov-group-label-gap-top, 8px);
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:161` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-block-end: var(--_ov-group-label-gap-after, 4px);
-  ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:102` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:106` — Raw spacing value — use --ov-space-* token
   ```
   gap: 0.5em;
-  ```
-- `packages/base-ui/src/components/stat-row/StatRow.module.css:9` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: var(--_ov-stat-gap, 8px);
   ```
 - `packages/base-ui/src/components/stat-row/StatRow.module.css:17` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-stat-gap: 6px;
   ```
-- `packages/base-ui/src/components/stat-row/StatRow.module.css:23` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-stat-gap: 8px;
-  ```
 - `packages/base-ui/src/components/stat-row/StatRow.module.css:29` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-stat-gap: 10px;
   ```
-- `packages/base-ui/src/components/stat-row/StatRow.module.css:39` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:22` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:25` — Raw spacing value — use --ov-space-* token
   ```
   gap: 6px;
-  ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:31` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px;
-  ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:38` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
   ```
 - `packages/base-ui/src/components/switch/Switch.module.css:184` — Raw spacing value — use --ov-space-* token
   ```
@@ -1114,23 +933,7 @@
   ```
   padding-inline-start: calc(4.5rem + var(--_ov-timeline-gap) + var(--_ov-timeline-icon-size) + var(--_ov-timeline-gap));
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:10` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/toast/Toast.module.css:12` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 16px;
-  ```
-- `packages/base-ui/src/components/toast/Toast.module.css:63` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 8px;
-  ```
-- `packages/base-ui/src/components/toast/Toast.module.css:66` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 12px 16px;
-  ```
-- `packages/base-ui/src/components/toast/Toast.module.css:153` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/toast/Toast.module.css:155` — Raw spacing value — use --ov-space-* token
   ```
   gap: 2px;
   ```
@@ -1146,47 +949,39 @@
   ```
   gap: var(--_ov-toolbar-group-gap, 4px); /* --ov-space-stack-xs; no semantic token for 4px spacing */
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:11` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-padding-inline: 4px;
-  ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:12` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-gap: 4px;
-  ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:35` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:37` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-padding-inline: 2px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:36` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:38` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 3px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:42` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:44` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-padding-inline: 6px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:43` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:45` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 6px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:51` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:53` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-padding-inline: 2px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:52` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:54` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 3px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:58` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:60` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-padding-inline: 6px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:59` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:61` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-item-gap: 6px;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:338` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:340` — Raw spacing value — use --ov-space-* token
   ```
   padding-inline: 4px;
   ```
@@ -1195,136 +990,55 @@
   padding: 1px 0;
   ```
 
-### Medium: Hardcoded radius (Token/Styling)
-
-**19 finding(s)**
-
-- `packages/base-ui/src/components/accordion/Accordion.module.css:138` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 10px;
-  ```
-- `packages/base-ui/src/components/avatar/Avatar.module.css:23` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/avatar/Avatar.module.css:188` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/basic-list/BasicList.module.css:26` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 10px;
-  ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:152` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:438` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 1px;
-  ```
-- `packages/base-ui/src/components/popover/Popover.module.css:178` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 2px;
-  ```
-- `packages/base-ui/src/components/radio/Radio.module.css:133` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/radio/Radio.module.css:178` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:57` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:99` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/slider/Slider.module.css:165` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/slider/Slider.module.css:180` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/slider/Slider.module.css:188` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:56` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/switch/Switch.module.css:28` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/switch/Switch.module.css:140` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/tabs/Tabs.module.css:134` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 999px;
-  ```
-- `packages/base-ui/src/components/tooltip/Tooltip.module.css:163` — Raw border-radius — use --ov-radius-* token
-  ```
-  border-radius: 2px;
-  ```
-
 ### Medium: Hardcoded box-shadow (Token/Styling)
 
 **26 finding(s)**
 
-- `packages/base-ui/src/components/badge/Badge.module.css:152` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/badge/Badge.module.css:154` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: 0 0 0 0 var(--_ov-pulse-color);
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:155` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/badge/Badge.module.css:157` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: 0 0 0 4px transparent;
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:158` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/badge/Badge.module.css:160` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: 0 0 0 0 transparent;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:34` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:36` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: none;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:101` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:103` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: var(--_card-shadow-sm);
   ```
-- `packages/base-ui/src/components/card/Card.module.css:104` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:106` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: var(--_card-shadow-md);
   ```
-- `packages/base-ui/src/components/card/Card.module.css:107` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:109` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: var(--_card-shadow-lg);
   ```
-- `packages/base-ui/src/components/card/Card.module.css:355` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:357` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--_ov-indicator-color) 40%, transparent 60%);
   ```
-- `packages/base-ui/src/components/card/Card.module.css:358` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/card/Card.module.css:360` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--_ov-indicator-color) 0%, transparent 100%);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:397` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:399` — Raw box-shadow — use --ov-shadow-* token
   ```
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  box-shadow: var(--_shadow-drag);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:414` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:415` — Raw box-shadow — use --ov-shadow-* token
   ```
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
+  box-shadow: var(--_shadow-ghost);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:426` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:427` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: inset 0 0 0 1px var(--_ov-tab-active-border);
   ```
@@ -1376,13 +1090,30 @@
   ```
   box-shadow: 0 0 0 1px var(--_ov-focus-ring);
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:71` — Raw box-shadow — use --ov-shadow-* token
+- `packages/base-ui/src/components/toast/Toast.module.css:73` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: var(--_ov-surface-shadow);
   ```
 - `packages/base-ui/src/components/toggle-button/ToggleButton.module.css:7` — Raw box-shadow — use --ov-shadow-* token
   ```
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_ov-accent-border) 64%, transparent 36%);
+  ```
+
+### Medium: Hardcoded radius (Token/Styling)
+
+**3 finding(s)**
+
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:439` — Raw border-radius — use --ov-radius-* token
+  ```
+  border-radius: 1px;
+  ```
+- `packages/base-ui/src/components/popover/Popover.module.css:178` — Raw border-radius — use --ov-radius-* token
+  ```
+  border-radius: 2px;
+  ```
+- `packages/base-ui/src/components/tooltip/Tooltip.module.css:163` — Raw border-radius — use --ov-radius-* token
+  ```
+  border-radius: 2px;
   ```
 
 ### Medium: Missing theme coverage (Token/Styling)
@@ -1809,31 +1540,31 @@
   ```
   outline: 2px solid var(--ov-color-border-focus);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:12` — Component in "editor-tabs" uses --ov-color-border-default — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:15` — Component in "editor-tabs" uses --ov-color-border-default — consider IDE alias (--ov-color-editor-*)
   ```
   --_ov-tab-divider: var(--ov-color-border-default);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:36` — Component in "editor-tabs" uses --ov-color-bg-surface — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:39` — Component in "editor-tabs" uses --ov-color-bg-surface — consider IDE alias (--ov-color-editor-*)
   ```
   --_ov-tab-active-bg: var(--ov-color-bg-surface);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:38` — Component in "editor-tabs" uses --ov-color-bg-surface-raised — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:41` — Component in "editor-tabs" uses --ov-color-bg-surface-raised — consider IDE alias (--ov-color-editor-*)
   ```
   --_ov-group-header-bg: var(--ov-color-bg-surface-raised);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:49` — Component in "editor-tabs" uses --ov-color-bg-surface-raised — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:52` — Component in "editor-tabs" uses --ov-color-bg-surface-raised — consider IDE alias (--ov-color-editor-*)
   ```
   var(--ov-color-bg-surface-raised) 92%,
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:58` — Component in "editor-tabs" uses --ov-color-border-strong — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:61` — Component in "editor-tabs" uses --ov-color-border-strong — consider IDE alias (--ov-color-editor-*)
   ```
   --_ov-tab-divider: var(--ov-color-border-strong);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:61` — Component in "editor-tabs" uses --ov-color-border-default — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:64` — Component in "editor-tabs" uses --ov-color-border-default — consider IDE alias (--ov-color-editor-*)
   ```
   border-bottom-color: var(--ov-color-border-default);
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:79` — Component in "editor-tabs" uses --ov-color-border-strong — consider IDE alias (--ov-color-editor-*)
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:82` — Component in "editor-tabs" uses --ov-color-border-strong — consider IDE alias (--ov-color-editor-*)
   ```
   --_ov-tab-active-border: var(--ov-color-border-strong);
   ```
@@ -1842,130 +1573,13 @@
   color: var(--ov-color-fg-muted);
   ```
 
-### Medium: Inline object prop (Performance)
-
-**24 finding(s)**
-
-- `packages/ai-ui/src/components/branching/AIBranch.tsx:46` — Object literal as prop — creates new reference each render
-  ```
-  <BranchContext.Provider value={{ count, active, onChange }}>
-  ```
-- `packages/base-ui/src/components/accordion/Accordion.tsx:200` — Object literal as prop — creates new reference each render
-  ```
-  <AccordionContext.Provider value={{ expandedIds, toggle, registerDefault, size }}>
-  ```
-- `packages/base-ui/src/components/action-list/ActionList.tsx:51` — Object literal as prop — creates new reference each render
-  ```
-  <ActionListContext.Provider value={{ color, size, itemVariant }}>
-  ```
-- `packages/base-ui/src/components/app-shell/AppShell.tsx:167` — Object literal as prop — creates new reference each render
-  ```
-  <AppShellContext.Provider value={{ sidebarCollapsed, secondarySidebarCollapsed }}>
-  ```
-- `packages/base-ui/src/components/avatar-group/AvatarGroup.tsx:74` — Object literal as prop — creates new reference each render
-  ```
-  <AvatarGroupContext.Provider value={{ variant, color, size, shape, deterministic }}>
-  ```
-- `packages/base-ui/src/components/avatar/Avatar.tsx:92` — Object literal as prop — creates new reference each render
-  ```
-  value={{ variant, color, size, shape, deterministic, paletteIndex }}
-  ```
-- `packages/base-ui/src/components/button-group/ButtonGroup.tsx:42` — Object literal as prop — creates new reference each render
-  ```
-  <ButtonGroupContext.Provider value={{ variant, color, size }}>
-  ```
-- `packages/base-ui/src/components/checkbox-group/CheckboxGroup.tsx:40` — Object literal as prop — creates new reference each render
-  ```
-  <CheckboxGroupContext.Provider value={{ variant, color, size }}>
-  ```
-- `packages/base-ui/src/components/chip/Chip.tsx:126` — Object literal as prop — creates new reference each render
-  ```
-  <ChipContext.Provider value={{ variant, color, size, mono, clickable }}>
-  ```
-- `packages/base-ui/src/components/code-block/CodeBlock.tsx:110` — Object literal as prop — creates new reference each render
-  ```
-  codeTagProps={{ className: styles.Code }}
-  ```
-- `packages/base-ui/src/components/code-block/CodeBlock.tsx:112` — Object literal as prop — creates new reference each render
-  ```
-  customStyle={{
-  ```
-- `packages/base-ui/src/components/dialog/Dialog.tsx:71` — Object literal as prop — creates new reference each render
-  ```
-  <DialogContext.Provider value={{ onClose, titleId }}>
-  ```
-- `packages/base-ui/src/components/filter-bar/FilterBar.tsx:39` — Object literal as prop — creates new reference each render
-  ```
-  <FilterBarContext.Provider value={{ size }}>
-  ```
-- `packages/base-ui/src/components/nav-list/NavList.tsx:100` — Object literal as prop — creates new reference each render
-  ```
-  <NavListGroupToggleContext.Provider value={{ expanded, toggle }}>
-  ```
-- `packages/base-ui/src/components/radio-group/RadioGroup.tsx:39` — Object literal as prop — creates new reference each render
-  ```
-  <RadioGroupContext.Provider value={{ variant, color, size }}>
-  ```
-- `packages/base-ui/src/components/segmented-control/SegmentedControl.tsx:78` — Object literal as prop — creates new reference each render
-  ```
-  <SegmentedControlContext.Provider value={{ value, onSelect, name, size, disabled }}>
-  ```
-- `packages/base-ui/src/components/select/Select.tsx:112` — Object literal as prop — creates new reference each render
-  ```
-  <SelectStyleContext.Provider value={{ ...resolved, showSelectionIndicator }}>
-  ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.tsx:51` — Object literal as prop — creates new reference each render
-  ```
-  <SelectableListContext.Provider value={{ checkBehavior: resolved }}>
-  ```
-- `packages/base-ui/src/components/split-button/SplitButton.tsx:55` — Object literal as prop — creates new reference each render
-  ```
-  <SplitButtonContext.Provider value={{ variant, color, size, disabled }}>
-  ```
-- `packages/base-ui/src/components/status-bar/StatusBar.tsx:38` — Object literal as prop — creates new reference each render
-  ```
-  <StatusBarContext.Provider value={{ size }}>
-  ```
-- `packages/base-ui/src/components/stepper/Stepper.tsx:101` — Object literal as prop — creates new reference each render
-  ```
-  <StepperContext.Provider value={{ activeStep, orientation }}>
-  ```
-- `packages/base-ui/src/components/timeline/Timeline.tsx:40` — Object literal as prop — creates new reference each render
-  ```
-  <TimelineContext.Provider value={{ size }}>
-  ```
-- `packages/base-ui/src/components/toggle-button-group/ToggleButtonGroup.tsx:37` — Object literal as prop — creates new reference each render
-  ```
-  <ToggleButtonGroupContext.Provider value={{ variant, color, size }}>
-  ```
-- `packages/base-ui/src/components/tooltip/Tooltip.tsx:94` — Object literal as prop — creates new reference each render
-  ```
-  <TooltipStyleContext.Provider value={{ ...resolved, lazy, hasOpened }}>
-  ```
-
 ### Medium: Inline function prop (Performance)
 
-**43 finding(s)**
+**25 finding(s)**
 
-- `packages/ai-ui/src/components/chat/AIMessageActions.tsx:69` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => onFeedback('positive')}
-  ```
-- `packages/ai-ui/src/components/chat/AIMessageActions.tsx:80` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => onFeedback('negative')}
-  ```
-- `packages/ai-ui/src/components/chat/AIMessageEditor.tsx:65` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/ai-ui/src/components/chat/AIMessageEditor.tsx:67` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onChange={(e) => setValue(e.target.value)}
-  ```
-- `packages/ai-ui/src/components/chat/AIMessageEditor.tsx:85` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => onSave(value)}
-  ```
-- `packages/ai-ui/src/components/chat/AIModelSelector.tsx:40` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onValueChange={(val) => { if (val != null && onChange) onChange(val); }}
   ```
 - `packages/ai-ui/src/components/content/AIImageGeneration.tsx:58` — Arrow function as prop — causes child re-renders, use useCallback
   ```
@@ -1987,26 +1601,6 @@
   ```
   onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
   ```
-- `packages/base-ui/src/components/data-table/DataTablePagination.tsx:32` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => table.firstPage()}
-  ```
-- `packages/base-ui/src/components/data-table/DataTablePagination.tsx:43` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => table.previousPage()}
-  ```
-- `packages/base-ui/src/components/data-table/DataTablePagination.tsx:54` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => table.nextPage()}
-  ```
-- `packages/base-ui/src/components/data-table/DataTablePagination.tsx:65` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => table.lastPage()}
-  ```
-- `packages/base-ui/src/components/data-table/DataTableToolbar.tsx:24` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onValueChange={(value) => table.setGlobalFilter(value)}
-  ```
 - `packages/base-ui/src/components/data-table/DataTableVirtualBody.tsx:74` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   ref={(node) => {
@@ -2014,10 +1608,6 @@
 - `packages/base-ui/src/components/dock-layout/DockLayout.tsx:280` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onClick={(e) => {
-  ```
-- `packages/base-ui/src/components/dock-layout/DockLayout.tsx:313` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onTabClick={(tabId) => onTabClick(leaf.id, tabId)}
   ```
 - `packages/base-ui/src/components/drawer/Drawer.tsx:262` — Arrow function as prop — causes child re-renders, use useCallback
   ```
@@ -2027,47 +1617,15 @@
   ```
   ref={(node) => {
   ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:114` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onChange={(e) => onQueryChange?.(e.target.value)}
-  ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:131` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onPressedChange={() => onCaseSensitiveChange(!caseSensitive)}
-  ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:145` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onPressedChange={() => onWholeWordChange(!wholeWord)}
-  ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:159` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onPressedChange={() => onRegexChange(!regex)}
-  ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:193` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onClick={() => onOpenChange?.(false)}
-  ```
-- `packages/base-ui/src/components/find-bar/FindBar.tsx:208` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  onChange={(e) => onReplaceTextChange?.(e.target.value)}
-  ```
 - `packages/base-ui/src/components/list/List.tsx:170` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   ref={(node) => {
   ```
-- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:244` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:284` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   render={(removeProps) => (
   ```
-- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:290` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  render={(clearProps) => (
-  ```
-- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:311` — Arrow function as prop — causes child re-renders, use useCallback
-  ```
-  render={(triggerProps) => (
-  ```
-- `packages/base-ui/src/components/nav-list/NavList.tsx:134` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/base-ui/src/components/nav-list/NavList.tsx:136` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onClick={(event) => {
   ```
@@ -2099,17 +1657,17 @@
   ```
   onChange={(event) => setMotion(event.target.value as typeof motion)}
   ```
-- `packages/editors/src/components/command-palette/CommandPalette.tsx:50` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/editors/src/components/command-palette/CommandPalette.tsx:54` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onKeyDown={(e) => {
   ```
-- `packages/editors/src/components/command-palette/CommandPalette.tsx:58` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/editors/src/components/command-palette/CommandPalette.tsx:62` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onClick={(e) => e.stopPropagation()}
   ```
-- `packages/editors/src/components/command-palette/CommandPalette.tsx:68` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/editors/src/components/command-palette/CommandPalette.tsx:73` — Arrow function as prop — causes child re-renders, use useCallback
   ```
-  itemKey={(cmd) => cmd.id}
+  renderItem={(cmd, meta) => (
   ```
 - `packages/editors/src/components/object-inspector/ObjectInspector.tsx:188` — Arrow function as prop — causes child re-renders, use useCallback
   ```
@@ -2120,29 +1678,10 @@
   onChange={(e) => setSearchQuery(e.target.value)}
   ```
 
-### Medium: Inline array prop (Performance)
-
-**3 finding(s)**
-
-- `packages/ai-ui/src/components/content/AIMarkdown.tsx:188` — Array literal as prop — creates new reference each render
-  ```
-  remarkPlugins={[remarkGfm]}
-  ```
-- `packages/base-ui/src/theme/ThemeSwitcher.tsx:16` — Array literal as prop — creates new reference each render
-  ```
-  <div className={[styles.Root, className].filter(Boolean).join(' ')}>
-  ```
-- `packages/editors/src/components/markdown-preview/MarkdownPreview.tsx:191` — Array literal as prop — creates new reference each render
-  ```
-  remarkPlugins={[remarkGfm]}
-  ```
-
 ### Medium: Missing memo (Performance)
 
-**86 finding(s)**
+**81 finding(s)**
 
-- `packages/ai-ui/src/components/reasoning/BrainIcon.tsx:1` — Exported leaf component "BrainIcon" without React.memo — consider wrapping
-- `packages/ai-ui/src/components/reasoning/ChainOfThought.tsx:1` — Exported leaf component "ChainOfThoughtFile" without React.memo — consider wrapping
 - `packages/base-ui/src/components/accordion/Accordion.tsx:1` — Exported leaf component "Accordion" without React.memo — consider wrapping
 - `packages/base-ui/src/components/action-list/ActionList.tsx:1` — Exported leaf component "ActionList" without React.memo — consider wrapping
 - `packages/base-ui/src/components/alert-dialog/AlertDialog.tsx:1` — Exported leaf component "AlertDialog" without React.memo — consider wrapping
@@ -2171,12 +1710,10 @@
 - `packages/base-ui/src/components/dock-layout/DockLayout.tsx:1` — Exported leaf component "DockLayout" without React.memo — consider wrapping
 - `packages/base-ui/src/components/drawer/Drawer.tsx:1` — Exported leaf component "Drawer" without React.memo — consider wrapping
 - `packages/base-ui/src/components/editable-list/EditableList.tsx:1` — Exported leaf component "EditableList" without React.memo — consider wrapping
-- `packages/base-ui/src/components/editor-tabs/DetachGhostTab.tsx:1` — Exported leaf component "DetachGhostTab" without React.memo — consider wrapping
 - `packages/base-ui/src/components/editor-tabs/EditorTabs.tsx:1` — Exported leaf component "EditorTabs" without React.memo — consider wrapping
 - `packages/base-ui/src/components/filter-bar/FilterBar.tsx:1` — Exported leaf component "FilterBar" without React.memo — consider wrapping
 - `packages/base-ui/src/components/grid/Grid.tsx:1` — Exported leaf component "Grid" without React.memo — consider wrapping
 - `packages/base-ui/src/components/image-list/ImageList.tsx:1` — Exported leaf component "ImageList" without React.memo — consider wrapping
-- `packages/base-ui/src/components/image/Image.tsx:1` — Exported leaf component "Image" without React.memo — consider wrapping
 - `packages/base-ui/src/components/input/Input.tsx:1` — Exported leaf component "Input" without React.memo — consider wrapping
 - `packages/base-ui/src/components/list/List.tsx:1` — Exported leaf component "List" without React.memo — consider wrapping
 - `packages/base-ui/src/components/list/context/ListContext.tsx:1` — Exported leaf component "ListConfigContext" without React.memo — consider wrapping
@@ -2226,7 +1763,15 @@
 - `packages/base-ui/src/components/typography/Strong.tsx:1` — Exported leaf component "Strong" without React.memo — consider wrapping
 - `packages/base-ui/src/components/typography/Typography.tsx:1` — Exported leaf component "Typography" without React.memo — consider wrapping
 - `packages/base-ui/src/components/typography/Underline.tsx:1` — Exported leaf component "Underline" without React.memo — consider wrapping
-- `packages/base-ui/src/theme/ThemeSwitcher.tsx:1` — Exported leaf component "ThemeSwitcher" without React.memo — consider wrapping
+
+### Medium: Inline array prop (Performance)
+
+**1 finding(s)**
+
+- `packages/base-ui/src/theme/ThemeSwitcher.tsx:16` — Array literal as prop — creates new reference each render
+  ```
+  <div className={[styles.Root, className].filter(Boolean).join(' ')}>
+  ```
 
 ### Medium: Missing keyboard handler (Accessibility)
 
@@ -2240,7 +1785,7 @@
   ```
   <div
   ```
-- `packages/base-ui/src/components/dialog/Dialog.tsx:73` — Clickable non-button element without onKeyDown/onKeyUp
+- `packages/base-ui/src/components/dialog/Dialog.tsx:76` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
@@ -2252,7 +1797,7 @@
   ```
   <div
   ```
-- `packages/base-ui/src/components/nav-list/NavList.tsx:148` — Clickable non-button element without onKeyDown/onKeyUp
+- `packages/base-ui/src/components/nav-list/NavList.tsx:150` — Clickable non-button element without onKeyDown/onKeyUp
   ```
   <div
   ```
@@ -2282,11 +1827,11 @@
 
 **114 finding(s)**
 
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:81` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:85` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   0%, 100% { opacity: 1; }
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:82` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:86` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   50% { opacity: 0.5; }
   ```
@@ -2318,11 +1863,11 @@
   ```
   opacity: 0;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:46` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:50` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   0%, 100% { opacity: 0.6; }
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:47` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:51` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   50% { opacity: 1; }
   ```
@@ -2334,7 +1879,7 @@
   ```
   opacity: 0.45;
   ```
-- `packages/base-ui/src/components/badge/Badge.module.css:145` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/badge/Badge.module.css:147` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
@@ -2350,7 +1895,7 @@
   ```
   opacity: 0.45;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:199` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/card/Card.module.css:201` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.5;
   ```
@@ -2406,19 +1951,19 @@
   ```
   opacity: 0.5;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:227` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:231` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:234` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:238` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:500` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:504` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.4;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:503` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:507` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.8;
   ```
@@ -2446,47 +1991,47 @@
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:204` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:207` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.45;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:237` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:240` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:300` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:303` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:309` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:312` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:315` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:318` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:322` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:325` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:345` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:348` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:351` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:354` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:370` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:373` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:376` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:379` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:413` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:414` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.85;
   ```
@@ -2582,15 +2127,15 @@
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:52` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:56` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:55` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:59` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.4;
   ```
-- `packages/base-ui/src/components/skeleton/Skeleton.module.css:58` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/skeleton/Skeleton.module.css:62` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
@@ -2598,19 +2143,19 @@
   ```
   opacity: 0.52;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:58` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:63` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.15;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:97` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:102` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:100` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:105` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.15;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:107` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:112` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.4;
   ```
@@ -2642,87 +2187,87 @@
   ```
   opacity: 0.45;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:183` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:185` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:186` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:188` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.6;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:214` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:216` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.8;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:239` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:241` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.5;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:245` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:247` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:259` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:261` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:263` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:265` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:275` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:277` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:279` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:281` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:297` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:299` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:301` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:303` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:308` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:310` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:312` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:314` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:336` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:338` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:340` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:342` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:347` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:349` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:351` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:353` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:358` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:360` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:362` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:364` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:369` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:371` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:373` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/toast/Toast.module.css:375` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
@@ -2730,11 +2275,11 @@
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:382` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:384` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:389` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:391` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
@@ -2795,11 +2340,11 @@
   ```
   --_ov-font-size: 1rem; /* restores original 16px — body token resolves to 14px which removes the size progression */
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:208` — Raw font-size — use --ov-font-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:212` — Raw font-size — use --ov-font-* token
   ```
   font-size: 10px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:455` — Raw font-size — use --ov-font-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:459` — Raw font-size — use --ov-font-* token
   ```
   font-size: 32px;
   ```
@@ -2819,7 +2364,7 @@
   ```
   --_ov-font-size: 0.6875rem; /* restores original 11px — caption token resolves to 12px which removes the size progressio
   ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:340` — Raw font-size — use --ov-font-* token
+- `packages/base-ui/src/components/tree-list/TreeList.module.css:342` — Raw font-size — use --ov-font-* token
   ```
   font-size: 10px;
   ```
@@ -2848,11 +2393,11 @@
   ```
   z-index: 120;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:217` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/card/Card.module.css:219` — Raw z-index — use --ov-z-* token
   ```
   z-index: 1;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:401` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/card/Card.module.css:407` — Raw z-index — use --ov-z-* token
   ```
   z-index: 0;
   ```
@@ -2864,11 +2409,11 @@
   ```
   z-index: 120;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:159` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:163` — Raw z-index — use --ov-z-* token
   ```
   z-index: 2;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:514` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:518` — Raw z-index — use --ov-z-* token
   ```
   z-index: 3;
   ```
@@ -2884,15 +2429,15 @@
   ```
   z-index: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:372` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:375` — Raw z-index — use --ov-z-* token
   ```
   z-index: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:396` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:398` — Raw z-index — use --ov-z-* token
   ```
   z-index: 1;
   ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:440` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:441` — Raw z-index — use --ov-z-* token
   ```
   z-index: 2;
   ```
@@ -2965,20 +2510,20 @@
 
 **19 finding(s)**
 
-- `packages/ai-ui/src/components/reasoning/ChainOfThought.tsx:1` — File has 412 lines (threshold: 300) — consider splitting
+- `packages/ai-ui/src/components/reasoning/ChainOfThought.tsx:1` — File has 413 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/card/Card.tsx:1` — File has 353 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/combobox/Combobox.tsx:1` — File has 379 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/command-list/CommandList.tsx:1` — File has 725 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/context-menu/ContextMenu.tsx:1` — File has 391 lines (threshold: 300) — consider splitting
-- `packages/base-ui/src/components/dock-layout/DockLayout.tsx:1` — File has 510 lines (threshold: 300) — consider splitting
+- `packages/base-ui/src/components/dock-layout/DockLayout.tsx:1` — File has 520 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/drawer/Drawer.tsx:1` — File has 304 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/editable-list/EditableList.tsx:1` — File has 689 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/editor-tabs/EditorTabs.tsx:1` — File has 381 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/list/List.tsx:1` — File has 385 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/menu/Menu.tsx:1` — File has 382 lines (threshold: 300) — consider splitting
-- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:1` — File has 395 lines (threshold: 300) — consider splitting
-- `packages/base-ui/src/components/select/Select.tsx:1` — File has 431 lines (threshold: 300) — consider splitting
-- `packages/base-ui/src/components/selectable-list/SelectableList.tsx:1` — File has 477 lines (threshold: 300) — consider splitting
+- `packages/base-ui/src/components/multi-select/MultiSelect.tsx:1` — File has 407 lines (threshold: 300) — consider splitting
+- `packages/base-ui/src/components/select/Select.tsx:1` — File has 438 lines (threshold: 300) — consider splitting
+- `packages/base-ui/src/components/selectable-list/SelectableList.tsx:1` — File has 479 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/toast/Toast.tsx:1` — File has 326 lines (threshold: 300) — consider splitting
 - `packages/base-ui/src/components/tree-list/TreeList.tsx:1` — File has 705 lines (threshold: 300) — consider splitting
 - `packages/editors/src/components/code-editor/CodeEditor.tsx:1` — File has 617 lines (threshold: 300) — consider splitting

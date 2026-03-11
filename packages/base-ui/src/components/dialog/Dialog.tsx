@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useId,
+  useMemo,
   useRef,
   type HTMLAttributes,
   type ReactNode,
@@ -65,10 +66,12 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
     }
   }, [open, dialogRef]);
 
+  const contextValue = useMemo(() => ({ onClose, titleId }), [onClose, titleId]);
+
   if (!open) return null;
 
   return createPortal(
-    <DialogContext.Provider value={{ onClose, titleId }}>
+    <DialogContext.Provider value={contextValue}>
       <div className={styles.Overlay} data-ov-component="dialog">
         <div
           className={styles.Backdrop}

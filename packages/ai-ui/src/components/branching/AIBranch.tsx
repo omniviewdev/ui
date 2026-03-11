@@ -1,7 +1,9 @@
 import {
   createContext,
   forwardRef,
+  useCallback,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -42,8 +44,9 @@ export interface AIBranchProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onC
 
 export const AIBranch = forwardRef<HTMLDivElement, AIBranchProps>(
   function AIBranch({ count, active, onChange, className, children, ...rest }, ref) {
+    const contextValue = useMemo(() => ({ count, active, onChange }), [count, active, onChange]);
     return (
-      <BranchContext.Provider value={{ count, active, onChange }}>
+      <BranchContext.Provider value={contextValue}>
         <div ref={ref} className={cn(styles.Root, className)} {...rest}>
           {children}
         </div>
@@ -108,6 +111,7 @@ export const AIBranchPrevious = forwardRef<HTMLElement, AIBranchPreviousProps>(
   function AIBranchPrevious(props, ref) {
     const { active, onChange } = useBranch();
     const disabled = active === 0;
+    const handleClick = useCallback(() => onChange?.(active - 1), [active, onChange]);
     return (
       <IconButton
         ref={ref}
@@ -116,7 +120,7 @@ export const AIBranchPrevious = forwardRef<HTMLElement, AIBranchPreviousProps>(
         color="neutral"
         aria-label="Previous branch"
         disabled={disabled}
-        onClick={() => onChange?.(active - 1)}
+        onClick={handleClick}
         {...props}
       >
         <LuChevronLeft size={14} />
@@ -133,6 +137,7 @@ export const AIBranchNext = forwardRef<HTMLElement, AIBranchNextProps>(
   function AIBranchNext(props, ref) {
     const { count, active, onChange } = useBranch();
     const disabled = active === count - 1;
+    const handleClick = useCallback(() => onChange?.(active + 1), [active, onChange]);
     return (
       <IconButton
         ref={ref}
@@ -141,7 +146,7 @@ export const AIBranchNext = forwardRef<HTMLElement, AIBranchNextProps>(
         color="neutral"
         aria-label="Next branch"
         disabled={disabled}
-        onClick={() => onChange?.(active + 1)}
+        onClick={handleClick}
         {...props}
       >
         <LuChevronRight size={14} />

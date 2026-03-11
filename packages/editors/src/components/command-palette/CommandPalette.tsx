@@ -20,6 +20,10 @@ export interface CommandPaletteProps {
   placeholder?: string;
 }
 
+function getCommandKey(cmd: CommandItem): string {
+  return cmd.id;
+}
+
 function fuzzyMatch(text: string, query: string): boolean {
   const lower = text.toLowerCase();
   const q = query.toLowerCase();
@@ -65,7 +69,7 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
           <CommandList.Root
             className={styles.CommandList}
             items={enabledCommands}
-            itemKey={(cmd) => cmd.id}
+            itemKey={getCommandKey}
             renderItem={(cmd, meta) => (
               <CommandList.Item
                 itemKey={meta.key}

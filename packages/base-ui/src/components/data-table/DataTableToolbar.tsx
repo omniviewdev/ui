@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
 import { SearchInput } from '../search-input';
@@ -14,6 +14,10 @@ export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps
     ref,
   ) {
     const { table, features } = useDataTableContext();
+    const handleGlobalFilter = useCallback(
+      (value: string) => table.setGlobalFilter(value),
+      [table],
+    );
 
     return (
       <div ref={ref} className={cn(styles.Toolbar, className)} {...props}>
@@ -21,7 +25,7 @@ export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps
           <SearchInput
             className={styles.ToolbarSearch}
             value={(table.getState().globalFilter as string) ?? ''}
-            onValueChange={(value) => table.setGlobalFilter(value)}
+            onValueChange={handleGlobalFilter}
             placeholder={searchPlaceholder}
             variant="ghost"
             size="sm"

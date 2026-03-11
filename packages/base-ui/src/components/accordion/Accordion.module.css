@@ -4,7 +4,7 @@
   --_ov-accordion-duration: 150ms;
   --_ov-header-py: 10px;
   --_ov-header-px: 12px;
-  --_ov-header-gap: 8px;
+  --_ov-header-gap: var(--ov-space-stack-sm);
   --_ov-header-font: var(--ov-font-size-body);
   --_ov-content-pb: 12px;
   --_ov-icon-size: 16px;
@@ -135,7 +135,7 @@
   min-width: var(--_ov-count-height);
   height: var(--_ov-count-height);
   padding: 0 6px;
-  border-radius: 10px;
+  border-radius: var(--ov-radius-surface, 8px);
   background: var(--ov-color-bg-surface-raised);
   color: var(--ov-color-fg-muted);
   font-size: var(--_ov-count-font);

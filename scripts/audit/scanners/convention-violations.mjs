@@ -1,4 +1,5 @@
 // scripts/audit/scanners/convention-violations.mjs
+import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { findFiles, readLines, finding } from '../utils.mjs';
 
@@ -41,19 +42,21 @@ export async function scanConventionViolations() {
 
   // --- Inline styles in JSX (High) ---
   const tsxFiles = await findFiles('packages/*/src/**/*.tsx');
+  const fileLineCounts = new Map();
 
   for (const file of tsxFiles) {
     const lines = readLines(file);
+    fileLineCounts.set(file, lines.length);
     const fullText = lines.map(l => l.line).join('\n');
+    let cumulativeOffset = 0;
     for (const { line, num } of lines) {
       if (INLINE_STYLE.test(line)) {
-        // Find this line's position in the full text to support multiline style objects
-        const lineIdx = fullText.indexOf(line, fullText.split('\n').slice(0, num - 1).join('\n').length);
-        if (!isCssVarOnlyStyle(fullText, lineIdx)) {
+        if (!isCssVarOnlyStyle(fullText, cumulativeOffset)) {
           results.push(finding('High', 'Convention', 'Inline style', file, num, line,
             'style={{}} found — use CSS Modules + data attributes'));
         }
       }
+      cumulativeOffset += line.length + 1; // +1 for newline
     }
   }
 
@@ -87,7 +90,6 @@ export async function scanConventionViolations() {
 
   // --- Inconsistent exports (Medium) ---
   // Check that each component directory has a proper barrel export
-  const { existsSync } = await import('fs');
   const allComponentDirs = await findFiles('packages/*/src/components/*/*.tsx');
 
   // Get unique component directories
@@ -102,10 +104,10 @@ export async function scanConventionViolations() {
 
   // --- Large component files (Low) ---
   for (const file of tsxFiles) {
-    const lines = readLines(file);
-    if (lines.length > 300) {
+    const lineCount = fileLineCounts.get(file) ?? readLines(file).length;
+    if (lineCount > 300) {
       results.push(finding('Low', 'Convention', 'Large component file', file, 1, '',
-        `File has ${lines.length} lines (threshold: 300) — consider splitting`));
+        `File has ${lineCount} lines (threshold: 300) — consider splitting`));
     }
   }
 

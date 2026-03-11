@@ -39,6 +39,13 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                   ? header.column.columnDef.header
                   : undefined);
 
+              if (process.env.NODE_ENV !== 'production' && canSort && !sortAriaLabel) {
+                console.warn(
+                  `DataTable: sortable column "${header.column.id}" has a non-string header ` +
+                  `but no meta.sortAriaLabel — the sort button will lack an accessible name.`,
+                );
+              }
+
               return (
                 <th
                   key={header.id}

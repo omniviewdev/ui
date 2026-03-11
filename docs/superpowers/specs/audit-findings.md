@@ -252,7 +252,7 @@
   ```
   style={{
   ```
-- `packages/base-ui/src/components/data-table/DataTableHeader.tsx:46` — style={{}} found — use CSS Modules + data attributes
+- `packages/base-ui/src/components/data-table/DataTableHeader.tsx:53` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
   ```

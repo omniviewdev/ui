@@ -75,15 +75,22 @@ export interface TreeStore {
   getNodeMeta: (key: Key) => TreeNodeMeta | undefined;
   getFlatNodes: () => readonly FlatNode[];
 
-  // Mutations
-  setSelectedKeys: (keys: Set<Key>) => void;
-  setActiveKey: (key: Key | null) => void;
-  setExpandedKeys: (keys: Set<Key>) => void;
-  setLoadingKey: (key: Key, loading: boolean) => void;
-  setFlatNodes: (nodes: FlatNode[]) => void;
+  // Mutations — pass `silent: true` during render to update refs only (no
+  // snapshot rebuild, no listener notification). This avoids the React warning
+  // "Cannot update a component while rendering a different component".
+  // After commit, call `emit()` from a useEffect to rebuild the snapshot and
+  // notify subscribers in a single consistent pass.
+  setSelectedKeys: (keys: Set<Key>, silent?: boolean) => void;
+  setActiveKey: (key: Key | null, silent?: boolean) => void;
+  setExpandedKeys: (keys: Set<Key>, silent?: boolean) => void;
+  setLoadingKey: (key: Key, loading: boolean, silent?: boolean) => void;
+  setFlatNodes: (nodes: FlatNode[], silent?: boolean) => void;
   registerTextValue: (key: Key, textValue: string) => void;
   getTextValue: (key: Key) => string | undefined;
   getRegisteredKeys: () => Key[];
+
+  /** Rebuild snapshot and notify listeners. Call from useEffect after silent updates. */
+  emit: () => void;
 }
 
 // ---------------------------------------------------------------------------

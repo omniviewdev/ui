@@ -85,11 +85,16 @@ export interface CommandListStore {
 
   setActiveIndex: (index: number) => void;
   setActiveKey: (key: Key | null) => void;
-  setQuery: (query: string) => void;
-  setItems: (items: ProcessedItem[]) => void;
-  setLoading: (loading: boolean) => void;
+  // Mutations — pass `silent: true` during render to update refs + snapshot
+  // without notifying listeners (avoids "Cannot update a component while rendering").
+  setQuery: (query: string, silent?: boolean) => void;
+  setItems: (items: ProcessedItem[], silent?: boolean) => void;
+  setLoading: (loading: boolean, silent?: boolean) => void;
   getItems: () => readonly ProcessedItem[];
   getItemByIndex: (index: number) => ProcessedItem | undefined;
+
+  /** Rebuild snapshot and notify listeners. Call from useEffect after silent updates. */
+  emit: () => void;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Key,
   TreeConfigContextValue,
@@ -131,14 +131,23 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
   const prevSelectedKeysRef = useRef<typeof selectedKeys | null>(null);
   const prevActiveKeyRef = useRef<typeof activeKey | undefined>(undefined);
 
+  // Render-time syncs use `silent: true` to update refs + snapshot without
+  // notifying listeners. This avoids the React warning "Cannot update a
+  // component while rendering a different component". After commit, the
+  // useEffect below flushes a notification so useSyncExternalStore consumers
+  // (Viewport, Item, ItemToggle) pick up the new snapshot.
+  const needsNotifyRef = useRef(false);
+
   if (prevExpandedKeysRef.current !== expandedKeys) {
     prevExpandedKeysRef.current = expandedKeys;
-    store.setExpandedKeys(expandedKeys);
+    store.setExpandedKeys(expandedKeys, true);
+    needsNotifyRef.current = true;
   }
 
   if (prevFlatNodesRef.current !== flatNodes) {
     prevFlatNodesRef.current = flatNodes;
-    store.setFlatNodes(flatNodes);
+    store.setFlatNodes(flatNodes, true);
+    needsNotifyRef.current = true;
     if (getTextValue) {
       for (const node of flatNodes) {
         const text = getTextValue(node.item as TItem);
@@ -149,13 +158,25 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
   if (prevSelectedKeysRef.current !== selectedKeys) {
     prevSelectedKeysRef.current = selectedKeys;
-    store.setSelectedKeys(selectedKeys);
+    store.setSelectedKeys(selectedKeys, true);
+    needsNotifyRef.current = true;
   }
 
   if (prevActiveKeyRef.current !== activeKey) {
     prevActiveKeyRef.current = activeKey;
-    store.setActiveKey(activeKey);
+    store.setActiveKey(activeKey, true);
+    needsNotifyRef.current = true;
   }
+
+  // Flush deferred snapshot rebuild + listener notification after DOM mutations.
+  // useLayoutEffect fires synchronously after commit but before paint, avoiding
+  // both the "Cannot update while rendering" warning and act() warnings in tests.
+  useLayoutEffect(() => {
+    if (needsNotifyRef.current) {
+      needsNotifyRef.current = false;
+      store.emit();
+    }
+  });
 
   // Anchor for range selection
   const anchorKeyRef = useRef<Key | null>(null);
@@ -272,7 +293,10 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         store.setLoadingKey(key, true);
         loadChildren(key, item).then(
           () => {
-            store.setLoadingKey(key, false);
+            // Use silent mode — the setExpandedKeys below triggers a React
+            // re-render which picks up the loading state change, and the
+            // useEffect notification flushes any remaining subscribers.
+            store.setLoadingKey(key, false, true);
             setExpandedKeys((prev) => {
               const next = new Set(prev);
               next.add(key);

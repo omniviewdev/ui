@@ -45,7 +45,8 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     versionRef.current += 1;
   }
 
-  const emit = useCallback(() => {
+  // Internal: rebuild the snapshot object from current refs.
+  const rebuildSnapshot = useCallback(() => {
     versionRef.current += 1;
     const flatNodes = flatNodesRef.current;
     snapshotRef.current = {
@@ -57,8 +58,16 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
       flattenedKeys: flatNodes.map((n) => n.key),
       visibleCount: flatNodes.length,
     };
+  }, []);
+
+  const notifyListeners = useCallback(() => {
     for (const l of listenersRef.current) l();
   }, []);
+
+  const emit = useCallback(() => {
+    rebuildSnapshot();
+    notifyListeners();
+  }, [rebuildSnapshot, notifyListeners]);
 
   const subscribe = useCallback((listener: () => void) => {
     listenersRef.current.add(listener);
@@ -100,43 +109,43 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   }, []);
 
   const setSelectedKeys = useCallback(
-    (keys: Set<Key>) => {
+    (keys: Set<Key>, silent?: boolean) => {
       selectedKeysRef.current = keys;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setActiveKey = useCallback(
-    (key: Key | null) => {
+    (key: Key | null, silent?: boolean) => {
       activeKeyRef.current = key;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setExpandedKeys = useCallback(
-    (keys: Set<Key>) => {
+    (keys: Set<Key>, silent?: boolean) => {
       expandedKeysRef.current = keys;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setLoadingKey = useCallback(
-    (key: Key, loading: boolean) => {
+    (key: Key, loading: boolean, silent?: boolean) => {
       if (loading) {
         loadingKeysRef.current.add(key);
       } else {
         loadingKeysRef.current.delete(key);
       }
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setFlatNodes = useCallback(
-    (nodes: FlatNode[]) => {
+    (nodes: FlatNode[], silent?: boolean) => {
       flatNodesRef.current = nodes;
       // Rebuild node meta map
       const metaMap = new Map<Key, TreeNodeMeta>();
@@ -153,7 +162,7 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
         });
       }
       nodeMetaMapRef.current = metaMap;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
@@ -192,6 +201,7 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     registerTextValue,
     getTextValue,
     getRegisteredKeys,
+    emit,
   });
 
   return storeRef.current;

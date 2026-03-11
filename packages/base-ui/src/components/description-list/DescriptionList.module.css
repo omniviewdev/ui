@@ -15,14 +15,14 @@
 .Root[data-ov-size='sm'] {
   --_ov-font-size-label: var(--ov-font-size-xxs, 0.625rem);
   --_ov-font-size-value: var(--ov-font-size-xs);
-  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-gap: var(--ov-space-stack-sm, 8px);
   --_ov-item-gap: var(--ov-space-stack-xxs, 2px);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-font-size-label: var(--ov-font-size-sm);
   --_ov-font-size-value: var(--ov-font-size-md);
-  --_ov-gap: var(--ov-space-stack-md);
+  --_ov-gap: var(--ov-space-stack-md, 12px);
   --_ov-item-gap: var(--ov-space-stack-sm, 6px);
 }
 

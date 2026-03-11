@@ -386,7 +386,7 @@
 .Toolbar {
   display: flex;
   align-items: center;
-  gap: var(--ov-space-stack-sm);
+  gap: var(--ov-space-stack-sm, 8px);
   padding-inline: var(--_ov-cell-padding-inline);
   padding-block: var(--ov-space-stack-sm, 8px);
   border-bottom: 1px solid var(--_ov-dt-divider);
@@ -423,7 +423,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ov-space-stack-sm);
+  gap: var(--ov-space-stack-sm, 8px);
   padding-inline: var(--_ov-cell-padding-inline);
   padding-block: var(--ov-space-stack-sm, 8px);
   border-top: 1px solid var(--_ov-dt-divider);

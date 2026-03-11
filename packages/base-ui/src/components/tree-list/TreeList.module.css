@@ -295,6 +295,16 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .ItemToggle[data-ov-loading='true'] {
+    animation: none;
+  }
+}
+
+:root[data-ov-motion='reduced'] .ItemToggle[data-ov-loading='true'] {
+  animation: none;
+}
+
 /* ---------------------------------------------------------------------------
  * Shared item slots (mirrors List)
  * --------------------------------------------------------------------------- */

@@ -3,7 +3,7 @@ import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { ROOT } from './utils.mjs';
 
-const EXT_LANG = { '.css': 'css', '.ts': 'tsx', '.tsx': 'tsx', '.js': 'js', '.jsx': 'jsx', '.mjs': 'js' };
+const EXT_LANG = { '.css': 'css', '.ts': 'ts', '.tsx': 'tsx', '.js': 'js', '.jsx': 'jsx', '.mjs': 'js' };
 
 function langFromFile(filePath) {
   const dot = filePath.lastIndexOf('.');

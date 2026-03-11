@@ -22,7 +22,7 @@
     "bench:browser": "pnpm --filter @omniview/benchmarks exec vitest bench --config vitest.config.browser.ts --run",
     "bench:trace": "TRACE=true pnpm bench:browser",
     "bench:deterministic": "DETERMINISTIC=true pnpm bench",
-    "bench:json": "mkdir -p packages/benchmarks/results && pnpm --filter @omniview/benchmarks exec vitest bench --run --reporter=json > packages/benchmarks/results/latest.json"
+    "bench:json": "mkdir -p packages/benchmarks/results && pnpm --filter @omniview/benchmarks exec vitest bench --run --outputJson=results/latest.json"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",

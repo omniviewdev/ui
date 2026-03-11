@@ -3,6 +3,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type ReactNode,
@@ -108,8 +109,14 @@ function SelectRoot<Value, Multiple extends boolean | undefined = false>({
         ? false
         : Boolean(multiple);
 
+  const contextValue = useMemo(
+    () => ({ ...resolved, showSelectionIndicator }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [resolved.variant, resolved.color, resolved.size, showSelectionIndicator],
+  );
+
   return (
-    <SelectStyleContext.Provider value={{ ...resolved, showSelectionIndicator }}>
+    <SelectStyleContext.Provider value={contextValue}>
       <BaseSelect.Root<Value, Multiple> multiple={multiple} {...props} />
     </SelectStyleContext.Provider>
   );

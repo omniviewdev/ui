@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, type HTMLAttributes } from 'react';
 import { LuChevronsLeft, LuChevronLeft, LuChevronRight, LuChevronsRight } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -13,6 +13,11 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
     const pageIndex = table.getState().pagination.pageIndex;
     const pageCount = table.getPageCount();
     const totalRows = table.getRowCount();
+
+    const handleFirstPage = useCallback(() => table.firstPage(), [table]);
+    const handlePreviousPage = useCallback(() => table.previousPage(), [table]);
+    const handleNextPage = useCallback(() => table.nextPage(), [table]);
+    const handleLastPage = useCallback(() => table.lastPage(), [table]);
 
     return (
       <div ref={ref} className={cn(styles.Pagination, className)} {...props}>
@@ -29,7 +34,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             variant="ghost"
             color="neutral"
             size="sm"
-            onClick={() => table.firstPage()}
+            onClick={handleFirstPage}
             disabled={!table.getCanPreviousPage()}
             aria-label="First page"
           >
@@ -40,7 +45,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             variant="ghost"
             color="neutral"
             size="sm"
-            onClick={() => table.previousPage()}
+            onClick={handlePreviousPage}
             disabled={!table.getCanPreviousPage()}
             aria-label="Previous page"
           >
@@ -51,7 +56,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             variant="ghost"
             color="neutral"
             size="sm"
-            onClick={() => table.nextPage()}
+            onClick={handleNextPage}
             disabled={!table.getCanNextPage()}
             aria-label="Next page"
           >
@@ -62,7 +67,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             variant="ghost"
             color="neutral"
             size="sm"
-            onClick={() => table.lastPage()}
+            onClick={handleLastPage}
             disabled={!table.getCanNextPage()}
             aria-label="Last page"
           >

@@ -1,5 +1,5 @@
 import { ToggleGroup as BaseToggleGroup } from '@base-ui/react/toggle-group';
-import { createContext, forwardRef, useContext } from 'react';
+import { createContext, forwardRef, useContext, useMemo } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import type { StyledComponentProps } from '../../system/types';
 import { styleDataAttributes } from '../../system/styleProps';
@@ -33,8 +33,9 @@ const ToggleButtonGroupRoot = forwardRef<HTMLDivElement, ToggleButtonGroupProps>
     },
     ref,
   ) {
+    const contextValue = useMemo(() => ({ variant, color, size }), [variant, color, size]);
     return (
-      <ToggleButtonGroupContext.Provider value={{ variant, color, size }}>
+      <ToggleButtonGroupContext.Provider value={contextValue}>
         <BaseToggleGroup
           ref={ref}
           orientation={orientation}

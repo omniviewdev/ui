@@ -2,6 +2,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -51,8 +52,12 @@ const SplitButtonRoot = forwardRef<HTMLDivElement, SplitButtonProps>(function Sp
   { className, variant = 'soft', color = 'neutral', size = 'md', disabled = false, ...props },
   ref,
 ) {
+  const contextValue = useMemo(
+    () => ({ variant, color, size, disabled }),
+    [variant, color, size, disabled],
+  );
   return (
-    <SplitButtonContext.Provider value={{ variant, color, size, disabled }}>
+    <SplitButtonContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}

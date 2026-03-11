@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useContext, type HTMLAttributes, type ReactNode } from 'react';
+import { createContext, forwardRef, useContext, useMemo, type HTMLAttributes, type ReactNode } from 'react';
 import { cn, withBaseClassName } from '../../system/classnames';
 import type {
   ComponentColor,
@@ -47,8 +47,9 @@ const ActionListRoot = forwardRef<HTMLDivElement, ActionListProps>(function Acti
   { className, color = 'neutral', size = 'md', itemVariant = 'ghost', ...props },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ color, size, itemVariant }), [color, size, itemVariant]);
   return (
-    <ActionListContext.Provider value={{ color, size, itemVariant }}>
+    <ActionListContext.Provider value={contextValue}>
       <div
         ref={ref}
         data-ov-size={size}

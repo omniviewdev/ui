@@ -2,6 +2,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -42,8 +43,9 @@ export interface AIBranchProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onC
 
 export const AIBranch = forwardRef<HTMLDivElement, AIBranchProps>(
   function AIBranch({ count, active, onChange, className, children, ...rest }, ref) {
+    const contextValue = useMemo(() => ({ count, active, onChange }), [count, active, onChange]);
     return (
-      <BranchContext.Provider value={{ count, active, onChange }}>
+      <BranchContext.Provider value={contextValue}>
         <div ref={ref} className={cn(styles.Root, className)} {...rest}>
           {children}
         </div>

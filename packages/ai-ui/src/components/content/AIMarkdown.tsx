@@ -8,6 +8,8 @@ import {
 } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+const REMARK_PLUGINS = [remarkGfm] as const;
 import {
   Blockquote,
   Checkbox,
@@ -185,7 +187,7 @@ export const AIMarkdown = forwardRef<HTMLDivElement, AIMarkdownProps>(
         {...rest}
       >
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={REMARK_PLUGINS}
           skipHtml
           components={markdownComponents}
         >

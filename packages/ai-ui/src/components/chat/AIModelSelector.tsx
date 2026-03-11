@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, type HTMLAttributes } from 'react';
 import { Select } from '@omniview/base-ui';
 import type { ComponentSize, ComponentVariant } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
@@ -33,11 +33,18 @@ export const AIModelSelector = forwardRef<HTMLDivElement, AIModelSelectorProps>(
     { models, value, onChange, disabled, size = 'sm', variant = 'outline', showIcon = true, className, ...rest },
     ref,
   ) {
+    const handleValueChange = useCallback(
+      (val: string | null) => {
+        if (val != null && onChange) onChange(val);
+      },
+      [onChange],
+    );
+
     return (
       <div ref={ref} className={cn(styles.Root, className)} {...rest}>
         <Select
           value={value}
-          onValueChange={(val) => { if (val != null && onChange) onChange(val); }}
+          onValueChange={handleValueChange}
           disabled={disabled}
           variant={variant}
           color="neutral"

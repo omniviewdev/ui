@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useContext, type HTMLAttributes } from 'react';
+import { createContext, forwardRef, useContext, useMemo, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import type {
   ComponentColor,
@@ -38,8 +38,9 @@ const ButtonGroupRoot = forwardRef<HTMLDivElement, ButtonGroupProps>(function Bu
   },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ variant, color, size }), [variant, color, size]);
   return (
-    <ButtonGroupContext.Provider value={{ variant, color, size }}>
+    <ButtonGroupContext.Provider value={contextValue}>
       <div
         ref={ref}
         role={role}

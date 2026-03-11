@@ -2,6 +2,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   type HTMLAttributes,
   type MouseEvent,
   type ReactNode,
@@ -35,8 +36,9 @@ const FilterBarRoot = forwardRef<HTMLDivElement, FilterBarProps>(function Filter
   { className, size = 'md', children, ...props },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ size }), [size]);
   return (
-    <FilterBarContext.Provider value={{ size }}>
+    <FilterBarContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}

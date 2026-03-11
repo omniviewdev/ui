@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  type ChangeEvent,
   type HTMLAttributes,
   type KeyboardEvent,
 } from 'react';
@@ -94,6 +95,36 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
     [onOpenChange, onReplace],
   );
 
+  const handleQueryChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => onQueryChange?.(e.target.value),
+    [onQueryChange],
+  );
+
+  const handleCaseSensitiveChange = useCallback(
+    () => onCaseSensitiveChange?.(!caseSensitive),
+    [onCaseSensitiveChange, caseSensitive],
+  );
+
+  const handleWholeWordChange = useCallback(
+    () => onWholeWordChange?.(!wholeWord),
+    [onWholeWordChange, wholeWord],
+  );
+
+  const handleRegexChange = useCallback(
+    () => onRegexChange?.(!regex),
+    [onRegexChange, regex],
+  );
+
+  const handleClose = useCallback(
+    () => onOpenChange?.(false),
+    [onOpenChange],
+  );
+
+  const handleReplaceTextChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => onReplaceTextChange?.(e.target.value),
+    [onReplaceTextChange],
+  );
+
   if (!open) return null;
 
   const matchInfo =
@@ -111,7 +142,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
           size="sm"
           variant="outline"
           value={query}
-          onChange={(e) => onQueryChange?.(e.target.value)}
+          onChange={handleQueryChange}
           onKeyDown={handleSearchKeyDown}
           placeholder="Find"
           aria-label="Find"
@@ -128,7 +159,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
               variant="ghost"
               square
               pressed={caseSensitive}
-              onPressedChange={() => onCaseSensitiveChange(!caseSensitive)}
+              onPressedChange={handleCaseSensitiveChange}
               aria-label="Match case"
               title="Match Case"
               className={styles.ToggleBtn}
@@ -142,7 +173,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
               variant="ghost"
               square
               pressed={wholeWord}
-              onPressedChange={() => onWholeWordChange(!wholeWord)}
+              onPressedChange={handleWholeWordChange}
               aria-label="Match whole word"
               title="Match Whole Word"
               className={styles.ToggleBtn}
@@ -156,7 +187,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
               variant="ghost"
               square
               pressed={regex}
-              onPressedChange={() => onRegexChange(!regex)}
+              onPressedChange={handleRegexChange}
               aria-label="Use regular expression"
               title="Use Regular Expression"
               className={styles.ToggleBtn}
@@ -190,7 +221,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
           <IconButton
             variant="ghost"
             size="sm"
-            onClick={() => onOpenChange?.(false)}
+            onClick={handleClose}
             aria-label="Close"
             title="Close (Escape)"
           >
@@ -205,7 +236,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
             size="sm"
             variant="outline"
             value={replaceText}
-            onChange={(e) => onReplaceTextChange?.(e.target.value)}
+            onChange={handleReplaceTextChange}
             onKeyDown={handleReplaceKeyDown}
             placeholder="Replace"
             aria-label="Replace"

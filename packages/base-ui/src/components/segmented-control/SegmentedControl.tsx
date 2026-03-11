@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useId,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -74,8 +75,13 @@ const SegmentedControlRoot = forwardRef<HTMLDivElement, SegmentedControlProps>(
       [disabled, isControlled, onValueChange],
     );
 
+    const contextValue = useMemo(
+      () => ({ value, onSelect, name, size, disabled }),
+      [value, onSelect, name, size, disabled],
+    );
+
     return (
-      <SegmentedControlContext.Provider value={{ value, onSelect, name, size, disabled }}>
+      <SegmentedControlContext.Provider value={contextValue}>
         <div
           ref={ref}
           role="radiogroup"

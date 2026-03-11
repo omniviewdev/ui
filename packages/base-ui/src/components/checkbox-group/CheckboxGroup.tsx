@@ -1,5 +1,5 @@
 import { CheckboxGroup as BaseCheckboxGroup } from '@base-ui/react/checkbox-group';
-import { createContext, forwardRef, useContext, type ComponentPropsWithoutRef } from 'react';
+import { createContext, forwardRef, useContext, useMemo, type ComponentPropsWithoutRef } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import {
@@ -36,8 +36,9 @@ const CheckboxGroupRoot = forwardRef<HTMLDivElement, CheckboxGroupProps>(functio
   },
   ref,
 ) {
+  const contextValue = useMemo(() => ({ variant, color, size }), [variant, color, size]);
   return (
-    <CheckboxGroupContext.Provider value={{ variant, color, size }}>
+    <CheckboxGroupContext.Provider value={contextValue}>
       <BaseCheckboxGroup
         ref={ref}
         className={withBaseClassName<BaseCheckboxGroup.State>(styles.Root, className)}

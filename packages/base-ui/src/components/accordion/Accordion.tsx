@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -196,8 +197,13 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
     [exclusive],
   );
 
+  const contextValue = useMemo(
+    () => ({ expandedIds, toggle, registerDefault, size }),
+    [expandedIds, toggle, registerDefault, size],
+  );
+
   return (
-    <AccordionContext.Provider value={{ expandedIds, toggle, registerDefault, size }}>
+    <AccordionContext.Provider value={contextValue}>
       <div
         ref={ref}
         className={cn(styles.Root, className)}

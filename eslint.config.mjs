@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import prettierConfig from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
+import { noInlineStyles, preferMemoLeafComponent } from './scripts/eslint/css-audit-rules.mjs';
 
 export default [
   {
@@ -36,6 +37,22 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+  {
+    files: ['packages/*/src/**/*.{tsx,jsx}'],
+    ignores: ['**/*.stories.*', '**/*.test.*'],
+    plugins: {
+      'omniview-audit': {
+        rules: {
+          'no-inline-styles': noInlineStyles,
+          'prefer-memo-leaf-component': preferMemoLeafComponent,
+        },
+      },
+    },
+    rules: {
+      'omniview-audit/no-inline-styles': 'error',
+      'omniview-audit/prefer-memo-leaf-component': 'warn',
     },
   },
   prettierConfig,

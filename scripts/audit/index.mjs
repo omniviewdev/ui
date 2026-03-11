@@ -45,6 +45,13 @@ async function main() {
   console.log(`   🟡 Medium: ${medium}`);
   console.log(`   🔵 Low: ${low}`);
   console.log(`\n📄 Report written to: ${outPath}\n`);
+
+  // Strict mode: fail on High severity findings
+  if (high > 0) {
+    console.error(`❌ ${high} High severity finding(s) — failing audit.`);
+    process.exit(1);
+  }
+  console.log('✅ No High severity findings. Audit passed.\n');
 }
 
 main().catch(err => {

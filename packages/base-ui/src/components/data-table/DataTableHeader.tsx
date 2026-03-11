@@ -34,7 +34,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                     : undefined;
 
               const sortAriaLabel =
-                (meta?.sortAriaLabel as string) ??
+                (typeof meta?.sortAriaLabel === 'string' ? meta.sortAriaLabel : undefined) ??
                 (typeof header.column.columnDef.header === 'string'
                   ? header.column.columnDef.header
                   : undefined);

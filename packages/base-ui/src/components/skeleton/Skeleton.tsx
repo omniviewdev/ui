@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import styles from './Skeleton.module.css';
 
@@ -58,11 +58,15 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
             data-ov-variant={variant}
             data-ov-animation={animation}
             data-ov-size={size}
-            style={{
-              width:
-                i === clampedLines - 1 ? (cssWidth ? `calc(${cssWidth} * 0.8)` : '80%') : cssWidth,
-              height: cssHeight,
-            }}
+            style={
+              {
+                '--_sk-width':
+                  i === clampedLines - 1
+                    ? (cssWidth ? `calc(${cssWidth} * 0.8)` : '80%')
+                    : cssWidth,
+                '--_sk-height': cssHeight,
+              } as CSSProperties
+            }
           />
         ))}
       </div>
@@ -77,7 +81,9 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
       data-ov-variant={variant}
       data-ov-animation={animation}
       data-ov-size={size}
-      style={{ width: cssWidth, height: cssHeight, ...style }}
+      style={
+        { '--_sk-width': cssWidth, '--_sk-height': cssHeight, ...style } as CSSProperties
+      }
       {...props}
     />
   );

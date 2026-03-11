@@ -1,4 +1,4 @@
-import { forwardRef, useState, type HTMLAttributes } from 'react';
+import { forwardRef, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import { Card, Skeleton } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import { LuImage } from '../../system/icons';
@@ -27,7 +27,10 @@ export const AIImageGeneration = forwardRef<HTMLDivElement, AIImageGenerationPro
 
     return (
       <Card ref={ref} className={cn(styles.Root, className)} size="sm" {...rest}>
-        <div className={styles.Frame} style={{ aspectRatio }}>
+        <div
+          className={styles.Frame}
+          style={{ '--_image-aspect-ratio': aspectRatio } as CSSProperties}
+        >
           {showSkeleton && (
             <div className={styles.Placeholder}>
               <Skeleton

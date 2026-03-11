@@ -1,6 +1,8 @@
 .Root {
   display: block;
   background: var(--ov-color-bg-surface-raised);
+  width: var(--_sk-width);
+  height: var(--_sk-height);
 }
 
 /* ---------- Variants ---------- */

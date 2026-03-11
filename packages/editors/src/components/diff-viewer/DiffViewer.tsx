@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState, type CSSProperties } from 'react';
 import * as monaco from 'monaco-editor';
 import { useEditorTheme } from '../../themes/useEditorTheme';
 import { buildMonacoTheme, OV_MONACO_THEME } from '../../themes/monaco';
@@ -114,14 +114,20 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
     monaco.editor.setTheme(OV_MONACO_THEME);
   }, [theme, isReady]);
 
+  const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
+
   return (
     <div
       ref={ref}
       className={cn(styles.Root, className)}
-      style={{ height }}
+      style={
+        {
+          '--_diff-height': toDim(height ?? '100%'),
+        } as CSSProperties
+      }
       data-testid="diff-viewer"
     >
-      <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
+      <div ref={containerRef} className={styles.Inner} />
     </div>
   );
 });

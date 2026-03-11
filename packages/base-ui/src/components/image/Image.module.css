@@ -3,6 +3,8 @@
   overflow: hidden;
   display: inline-block;
   border-radius: var(--_ov-radius, 0);
+  width: var(--_img-width);
+  height: var(--_img-height);
 }
 
 .Img {

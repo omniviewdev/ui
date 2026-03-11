@@ -96,6 +96,7 @@
   font-size: var(--_ov-font-size);
   line-height: 1.45;
   outline: none;
+  resize: var(--_textarea-resize, vertical);
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),
     border-color var(--ov-duration-interactive) var(--ov-ease-standard),

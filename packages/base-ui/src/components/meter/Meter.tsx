@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import type { ComponentColor, ComponentSize } from '../../system/types';
 import styles from './Meter.module.css';
@@ -86,7 +86,10 @@ export const Meter = forwardRef<HTMLDivElement, MeterProps>(function Meter(
     >
       {label && <span className={styles.Label}>{label}</span>}
       <div className={styles.Track}>
-        <div className={styles.Fill} style={{ width: `${percentage}%` }} />
+        <div
+          className={styles.Fill}
+          style={{ '--_meter-fill-width': `${percentage}%` } as CSSProperties}
+        />
       </div>
     </div>
   );

@@ -4,6 +4,13 @@
   border-radius: var(--ov-radius-sm, 4px);
   border: 1px solid var(--ov-color-editor-border, var(--ov-color-border-default));
   background: var(--ov-color-editor-bg, var(--ov-color-bg-surface));
+  height: var(--_editor-height);
+  width: var(--_editor-width);
+}
+
+.Inner {
+  height: 100%;
+  width: 100%;
 }
 
 .Loading {

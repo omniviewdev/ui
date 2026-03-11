@@ -30,7 +30,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                 <th
                   key={header.id}
                   className={styles.HeaderCell}
-                  style={{
+                  style={{ // eslint-disable-line react/forbid-component-props -- TanStack Table column size/pinning CSS variable injection
                     ...sizeStyles,
                     ...pinningStyles,
                   }}

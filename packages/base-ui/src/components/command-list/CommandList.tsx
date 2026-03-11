@@ -312,6 +312,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
           className={cn(styles.Results, className)}
           {...props}
         >
+          {/* eslint-disable-next-line react/forbid-component-props -- required by virtualizer */}
           <div style={{ height: virtualizer.totalSize, position: 'relative' }}>
             {virtualizer.virtualItems.map((virtualItem) => {
               const procItem = allItems[virtualItem.index];
@@ -329,7 +330,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                   key={procItem.key}
                   ref={virtualizer.measureElement}
                   data-index={virtualItem.index}
-                  style={{
+                  style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
                     position: 'absolute',
                     top: 0,
                     left: 0,

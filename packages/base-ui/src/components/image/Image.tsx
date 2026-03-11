@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  type CSSProperties,
   type ImgHTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -91,7 +92,13 @@ const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
       data-ov-status={status}
       data-ov-object-fit={objectFit}
       data-ov-radius={borderRadius}
-      style={{ width, height, ...style }}
+      style={
+        {
+          '--_img-width': typeof width === 'number' ? `${width}px` : width,
+          '--_img-height': typeof height === 'number' ? `${height}px` : height,
+          ...style,
+        } as CSSProperties
+      }
       {...wrapperProps}
     >
       {status !== 'error' ? (

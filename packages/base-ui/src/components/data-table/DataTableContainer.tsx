@@ -33,10 +33,10 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
     );
 
     const containerStyle: CSSProperties = {
+      '--_dt-height': toDimension(height),
+      '--_dt-max-height': toDimension(maxHeight),
       ...style,
-      height: toDimension(height),
-      maxHeight: toDimension(maxHeight),
-    };
+    } as CSSProperties;
 
     return (
       <div
@@ -49,7 +49,7 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
           <table
             role="table"
             className={styles.Table}
-            style={{ ...columnSizeVars } as CSSProperties}
+            style={{ ...columnSizeVars } as CSSProperties} // eslint-disable-line react/forbid-component-props -- TanStack Table column size CSS variable injection
           >
             {children}
           </table>

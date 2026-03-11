@@ -247,7 +247,6 @@ const DrawerRoot = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       aria-valuenow={currentSize}
       tabIndex={0}
       onKeyDown={handleKeyDownOnHandle}
-      style={{ cursor: isVertical ? 'row-resize' : 'col-resize' }}
     >
       {handleVariant === 'bar' && <div className={styles.HandleBar} />}
     </div>

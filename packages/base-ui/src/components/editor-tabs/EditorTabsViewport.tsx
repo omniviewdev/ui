@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, type ReactNode } from 'react';
+import { forwardRef, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import { useEditorTabsContext } from './context/EditorTabsContext';
 import styles from './EditorTabs.module.css';
@@ -58,7 +58,10 @@ export const EditorTabsViewport = forwardRef<HTMLDivElement, EditorTabsViewportP
       >
         {children}
         {isAttachDropTarget && indicatorLeft != null && (
-          <div className={styles.AttachDropIndicator} style={{ left: indicatorLeft }} />
+          <div
+            className={styles.AttachDropIndicator}
+            style={{ '--_tab-drop-indicator-left': `${indicatorLeft}px` } as CSSProperties}
+          />
         )}
       </div>
     );

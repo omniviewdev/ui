@@ -53,7 +53,7 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
       <tbody
         ref={ref}
         className={cn(styles.Body, className)}
-        style={{
+        style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
           display: 'grid',
           height: `${rowVirtualizer.getTotalSize()}px`,
           position: 'relative',
@@ -77,7 +77,7 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
               className={styles.Row}
               data-ov-selected={isSelected ? 'true' : 'false'}
               data-ov-expanded={isExpanded ? 'true' : 'false'}
-              style={{
+              style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
                 display: 'flex',
                 position: 'absolute',
                 transform: `translateY(${virtualRow.start}px)`,
@@ -94,7 +94,7 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
                   <td
                     key={cell.id}
                     className={styles.Cell}
-                    style={{
+                    style={{ // eslint-disable-line react/forbid-component-props -- TanStack Table column size/pinning CSS variable injection
                       ...sizeStyles,
                       ...pinningStyles,
                     }}

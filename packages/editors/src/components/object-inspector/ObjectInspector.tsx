@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import styles from './ObjectInspector.module.css';
 
 export type InspectorFormat = 'json' | 'yaml';
@@ -183,7 +183,7 @@ function TreeNode({
     <div className={styles.Node} data-depth={depth}>
       <div
         className={cn(styles.Row, isHighlighted && styles.RowHighlight)}
-        style={{ paddingLeft: depth * 16 }}
+        style={{ '--_inspector-depth-indent': `${depth * 16}px` } as CSSProperties}
         onClick={toggle}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

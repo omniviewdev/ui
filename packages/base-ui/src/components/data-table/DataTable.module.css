@@ -139,6 +139,8 @@
   overscroll-behavior: contain;
   min-height: 0;
   position: relative;
+  height: var(--_dt-height);
+  max-height: var(--_dt-max-height);
 }
 
 /* --- Table (CSS Grid layout) --- */

@@ -233,7 +233,7 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
       {activeSession &&
         createPortal(
           <div
-            style={{
+            style={{ // eslint-disable-line react/forbid-component-props -- drag ghost portal positioning requires runtime pointer coordinates
               position: 'fixed',
               left: pointerX,
               top: pointerY,

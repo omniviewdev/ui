@@ -127,7 +127,7 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
         >
           <div
             className={styles.Inner}
-            style={{ height: `${virtualizer.getTotalSize()}px` }}
+            style={{ height: `${virtualizer.getTotalSize()}px` }} // eslint-disable-line react/forbid-component-props -- required by virtualizer
           >
             {virtualizer.getVirtualItems().map((item) => (
               <div
@@ -135,7 +135,7 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
                 className={styles.Item}
                 data-index={item.index}
                 ref={virtualizer.measureElement}
-                style={{
+                style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
                   position: 'absolute',
                   top: 0,
                   left: 0,

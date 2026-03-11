@@ -104,7 +104,7 @@ const TextAreaControl = forwardRef<HTMLTextAreaElement, TextAreaControlProps>(
         className={cn(styles.Control, className)}
         data-ov-mono={mono ? 'true' : undefined}
         rows={rows}
-        style={{ ...style, resize }}
+        style={{ '--_textarea-resize': resize, ...style } as CSSProperties}
         {...styleDataAttributes(resolved)}
         {...props}
       />

@@ -75,6 +75,7 @@
 
 .Fill {
   height: 100%;
+  width: var(--_meter-fill-width, 0%);
   border-radius: var(--ov-radius-control);
   background: var(--_ov-meter-fill);
   transition: width var(--ov-duration-interactive) var(--ov-ease-standard);

@@ -64,6 +64,7 @@
   display: flex;
   align-items: center;
   padding: 1px 0;
+  padding-left: var(--_inspector-depth-indent, 0);
   cursor: default;
   white-space: nowrap;
 }

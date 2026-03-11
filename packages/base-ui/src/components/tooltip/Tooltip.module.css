@@ -1,9 +1,9 @@
 .Portal {
-  z-index: 140;
+  z-index: var(--ov-z-tooltip, 140);
 }
 
 .Positioner {
-  z-index: 140;
+  z-index: var(--ov-z-tooltip, 140);
 }
 
 .Trigger {

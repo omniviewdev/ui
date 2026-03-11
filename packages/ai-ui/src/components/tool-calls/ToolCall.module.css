@@ -30,7 +30,7 @@
 
 .StatusIcon {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--ov-font-size-caption);
   line-height: 1;
 }
 

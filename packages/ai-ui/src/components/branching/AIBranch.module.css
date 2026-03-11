@@ -14,7 +14,7 @@
 }
 
 .Indicator {
-  font-size: 0.75rem;
+  font-size: var(--ov-font-size-caption);
   color: var(--ov-palette-text-secondary, #6b7280);
   font-variant-numeric: tabular-nums;
   user-select: none;

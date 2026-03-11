@@ -11,7 +11,7 @@
 }
 
 .Root[data-ov-disabled='true'] {
-  opacity: 0.45;
+  opacity: var(--ov-opacity-disabled);
   pointer-events: none;
 }
 
@@ -67,7 +67,7 @@
 
 .Action:disabled,
 .MenuTrigger:disabled {
-  opacity: 0.45;
+  opacity: var(--ov-opacity-disabled);
   cursor: not-allowed;
 }
 

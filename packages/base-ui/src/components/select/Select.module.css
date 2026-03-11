@@ -89,7 +89,7 @@
 }
 
 .Trigger[data-disabled] {
-  opacity: 0.45;
+  opacity: var(--ov-opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .Positioner {
-  z-index: 120;
+  z-index: var(--ov-z-popup, 120);
 }
 
 .Popup {

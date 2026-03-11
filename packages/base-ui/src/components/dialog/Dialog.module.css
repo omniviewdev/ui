@@ -3,7 +3,7 @@
 .Overlay {
   position: fixed;
   inset: 0;
-  z-index: 9000;
+  z-index: var(--ov-z-modal, 9000);
   display: flex;
   align-items: center;
   justify-content: center;

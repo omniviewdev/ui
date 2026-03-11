@@ -36,7 +36,7 @@
 }
 
 .Root[data-ov-disabled='true'] {
-  opacity: 0.45;
+  opacity: var(--ov-opacity-disabled);
   cursor: not-allowed;
 }
 

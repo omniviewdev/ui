@@ -26,27 +26,47 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
               const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
               const align = meta?.align as string | undefined;
 
+              const ariaSortValue =
+                sorted === 'asc'
+                  ? ('ascending' as const)
+                  : sorted === 'desc'
+                    ? ('descending' as const)
+                    : undefined;
+
               return (
                 <th
                   key={header.id}
                   className={styles.HeaderCell}
-                  style={{ // eslint-disable-line react/forbid-component-props -- TanStack Table column size/pinning CSS variable injection
+                  style={{
                     ...sizeStyles,
                     ...pinningStyles,
                   }}
+                  aria-sort={ariaSortValue}
                   data-ov-sortable={canSort ? 'true' : 'false'}
                   data-ov-pinned={header.column.getIsPinned() || undefined}
                   data-ov-align={align}
-                  onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                  {canSort ? (
+                    <button
+                      type="button"
+                      className={styles.SortButton}
+                      onClick={header.column.getToggleSortingHandler()}
+                      aria-label={`Sort by ${typeof header.column.columnDef.header === 'string' ? header.column.columnDef.header : header.column.id}`}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
 
-                  {canSort && sorted && (
-                    <span className={styles.SortIndicator} data-ov-active="true">
-                      {sorted === 'asc' ? '\u2191' : '\u2193'}
-                    </span>
+                      {sorted && (
+                        <span className={styles.SortIndicator} data-ov-active="true">
+                          {sorted === 'asc' ? '\u2191' : '\u2193'}
+                        </span>
+                      )}
+                    </button>
+                  ) : (
+                    header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())
                   )}
 
                   {canResize && (

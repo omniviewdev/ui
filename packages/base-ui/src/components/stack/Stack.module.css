@@ -17,6 +17,7 @@
 .Root[data-ov-spacing='0'] {
   --_ov-spacing: 0;
 }
+/* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
 .Root[data-ov-spacing='1'] {
   --_ov-spacing: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }

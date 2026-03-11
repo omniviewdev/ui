@@ -49,7 +49,7 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
           <table
             role="table"
             className={styles.Table}
-            style={{ ...columnSizeVars } as CSSProperties} // eslint-disable-line react/forbid-component-props -- TanStack Table column size CSS variable injection
+            style={{ ...columnSizeVars } as CSSProperties}
           >
             {children}
           </table>

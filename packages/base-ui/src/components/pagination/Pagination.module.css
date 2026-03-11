@@ -2,7 +2,8 @@
   --_ov-item-height: var(--ov-size-button-height-sm);
   --_ov-item-min-width: var(--ov-size-button-height-sm);
   --_ov-font-size: var(--ov-size-button-font-size-sm);
-  --_ov-gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  /* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
+  --_ov-gap: 4px; /* local alias for xs gap; no --ov-space-stack-xs semantic token yet */
 
   display: inline-flex;
   align-items: center;

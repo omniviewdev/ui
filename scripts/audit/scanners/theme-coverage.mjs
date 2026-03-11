@@ -9,8 +9,8 @@ const THEME_MODES = ['dark', 'light', 'high-contrast-dark', 'high-contrast-light
  */
 function parseThemeBlocks(cssContent) {
   const blocks = {};
-  // Match [data-ov-theme="<mode>"] { ... } blocks
-  const blockRegex = /\[data-ov-theme="([^"]+)"\]\s*\{([^}]+)\}/g;
+  // Match [data-ov-theme="<mode>"] or [data-ov-theme='<mode>'] { ... } blocks
+  const blockRegex = /\[data-ov-theme=['"]([^'"]+)['"]\]\s*\{([^}]+)\}/g;
   let match;
   while ((match = blockRegex.exec(cssContent))) {
     const mode = match[1];
@@ -73,7 +73,7 @@ export async function scanThemeCoverage() {
     const lines = readLines(file);
     for (const { line, num } of lines) {
       // Check if line uses a raw semantic token where an IDE alias exists
-      const varMatch = line.match(/var\((--ov-color-(?:bg|fg|border)-\w+)\)/);
+      const varMatch = line.match(/var\((--ov-color-(?:bg|fg|border)-[\w-]+)\)/);
       if (!varMatch) continue;
       const token = varMatch[1];
 
@@ -81,6 +81,10 @@ export async function scanThemeCoverage() {
       const dirMatch = file.match(/components\/([^/]+)\//);
       if (!dirMatch) continue;
       const componentDir = dirMatch[1].toLowerCase();
+
+      // Split the component directory name into segments on hyphens and underscores
+      // to avoid substring false positives (e.g. "data-table" matching "tab")
+      const componentSegments = componentDir.split(/[-_]/);
 
       // Map component directories to expected IDE alias prefix
       const IDE_DIR_MAP = {
@@ -94,7 +98,7 @@ export async function scanThemeCoverage() {
       };
 
       for (const [dir, prefix] of Object.entries(IDE_DIR_MAP)) {
-        if (componentDir.includes(dir) && !line.includes(prefix)) {
+        if (componentSegments.includes(dir) && !line.includes(prefix)) {
           results.push(finding('Medium', 'Token/Styling', 'Missing IDE alias',
             file, num, line,
             `Component in "${componentDir}" uses ${token} — consider IDE alias (${prefix}*)`));

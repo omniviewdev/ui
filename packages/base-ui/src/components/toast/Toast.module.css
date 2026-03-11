@@ -54,6 +54,9 @@
   --_ov-border-accent: var(--ov-color-info);
   --_ov-surface-bg: var(--ov-color-bg-surface-raised);
   --_ov-surface-shadow: var(--ov-shadow-surface);
+  --_toast-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --_toast-shadow-md: var(--ov-shadow-surface);
+  --_toast-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
 
   display: flex;
   align-items: center;
@@ -127,15 +130,15 @@
 }
 
 .Container[data-ov-elevation='1'] .Toast {
-  --_ov-surface-shadow: var(--ov-shadow-surface); /* sm elevation; --ov-shadow-surface (md) is closest semantic token */
+  --_ov-surface-shadow: var(--_toast-shadow-sm);
 }
 
 .Container[data-ov-elevation='2'] .Toast {
-  --_ov-surface-shadow: var(--ov-shadow-surface);
+  --_ov-surface-shadow: var(--_toast-shadow-md);
 }
 
 .Container[data-ov-elevation='3'] .Toast {
-  --_ov-surface-shadow: var(--ov-shadow-surface); /* lg elevation; --ov-shadow-surface (md) is closest semantic token */
+  --_ov-surface-shadow: var(--_toast-shadow-lg);
 }
 
 /* ------------------------------------------------------------------ */

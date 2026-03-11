@@ -1,10 +1,11 @@
 .Root {
   --_ov-meter-height: 0.5rem;
   --_ov-meter-fill: var(--ov-color-brand-500);
+  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
 
   display: flex;
   flex-direction: column;
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  gap: var(--_space-stack-xs);
   width: 100%;
 }
 

@@ -1,9 +1,10 @@
 // scripts/audit/utils.mjs
 import { readFileSync } from 'fs';
+import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
 import { relative } from 'path';
 
-const ROOT = new URL('../../', import.meta.url).pathname.replace(/\/$/, '');
+const ROOT = fileURLToPath(new URL('../../', import.meta.url)).replace(/\/$/, '');
 
 /**
  * Find files matching a glob pattern relative to project root.

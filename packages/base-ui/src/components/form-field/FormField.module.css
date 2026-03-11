@@ -3,9 +3,10 @@
  * ------------------------------------------------------------------------- */
 
 .Root {
+  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
   display: flex;
   flex-direction: column;
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  gap: var(--_space-stack-xs);
 }
 
 .Label {
@@ -42,7 +43,7 @@
 /* Size variants */
 
 .Root[data-ov-size='sm'] {
-  gap: 3px; /* calc(4px - 1px); no semantic token for 4px spacing, inlined result */
+  gap: calc(var(--_space-stack-xs) - 1px); /* derived from local alias */
 }
 
 .Root[data-ov-size='sm'] .Label {
@@ -73,7 +74,7 @@
 .SectionHeader {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing; not derived from --_space-stack-xs as .Section/.SectionHeader are independent of .Root */
 }
 
 .SectionTitle {

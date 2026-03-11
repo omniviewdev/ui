@@ -55,6 +55,7 @@
 .Root[data-ov-spacing='0'] {
   --_ov-spacing: 0;
 }
+/* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
 .Root[data-ov-spacing='1'] {
   --_ov-spacing: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }
@@ -72,6 +73,7 @@
 .Root[data-ov-row-spacing='0'] {
   row-gap: 0;
 }
+/* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
 .Root[data-ov-row-spacing='1'] {
   row-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }
@@ -89,6 +91,7 @@
 .Root[data-ov-column-spacing='0'] {
   column-gap: 0;
 }
+/* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
 .Root[data-ov-column-spacing='1'] {
   column-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }

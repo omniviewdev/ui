@@ -6,6 +6,9 @@
   --_ov-border: color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%);
   --_ov-radius: var(--ov-radius-surface);
   --_ov-shadow: none;
+  --_sheet-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --_sheet-shadow-md: var(--ov-shadow-surface);
+  --_sheet-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
 
   padding: var(--_ov-padding);
   border-radius: var(--_ov-radius);
@@ -49,15 +52,15 @@
 }
 
 .Root[data-ov-elevation='1'] {
-  --_ov-shadow: var(--ov-shadow-surface); /* sm elevation; --ov-shadow-surface (md) is closest semantic token */
+  --_ov-shadow: var(--_sheet-shadow-sm);
 }
 
 .Root[data-ov-elevation='2'] {
-  --_ov-shadow: var(--ov-shadow-surface);
+  --_ov-shadow: var(--_sheet-shadow-md);
 }
 
 .Root[data-ov-elevation='3'] {
-  --_ov-shadow: var(--ov-shadow-surface); /* lg elevation; --ov-shadow-surface (md) is closest semantic token */
+  --_ov-shadow: var(--_sheet-shadow-lg);
 }
 
 .Root[data-ov-color='neutral'] {

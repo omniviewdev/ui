@@ -3,6 +3,33 @@ import { findFiles, readLines, finding } from '../utils.mjs';
 
 const INLINE_STYLE = /style\s*=\s*\{\s*\{/;
 
+/**
+ * Returns true when a line's inline style object contains ONLY CSS custom properties
+ * (keys starting with --). This allows the prescribed CSS-variable pass-through pattern:
+ *   style={{ '--_dynamic-value': value }}
+ */
+function isCssVarOnlyStyle(line) {
+  // Extract the content between style={{ and the closing }}
+  const styleMatch = line.match(/style\s*=\s*\{\s*\{([\s\S]*?)\}\s*\}/);
+  if (!styleMatch) return false;
+  const body = styleMatch[1];
+
+  // Split on commas to get individual key-value pairs (simplified parse)
+  // Each pair should be: ['--key']: value or '--key': value or "--key": value
+  const pairs = body.split(',');
+  if (pairs.length === 0) return false;
+
+  const CSS_VAR_KEY = /^\s*['"]?(--[A-Za-z0-9\-_]+)['"]?\s*:/;
+
+  for (const pair of pairs) {
+    const trimmed = pair.trim();
+    if (!trimmed) continue; // skip trailing empty splits
+    if (!CSS_VAR_KEY.test(trimmed)) return false;
+  }
+
+  return true;
+}
+
 export async function scanConventionViolations() {
   const results = [];
 
@@ -12,7 +39,7 @@ export async function scanConventionViolations() {
   for (const file of tsxFiles) {
     const lines = readLines(file);
     for (const { line, num } of lines) {
-      if (INLINE_STYLE.test(line)) {
+      if (INLINE_STYLE.test(line) && !isCssVarOnlyStyle(line)) {
         results.push(finding('High', 'Convention', 'Inline style', file, num, line,
           'style={{}} found — use CSS Modules + data attributes'));
       }

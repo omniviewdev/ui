@@ -203,7 +203,7 @@
 }
 
 .Root[data-ov-size='lg'] .Label {
-  font-size: var(--ov-font-size-body); /* 1rem (16px) original; body (14px) is closest semantic token; consider --ov-font-size-title (18px) if larger text is preferred */
+  font-size: 1rem; /* restores original 16px — body token resolves to 14px which removes the size progression */
 }
 
 .Item {

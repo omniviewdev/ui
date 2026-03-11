@@ -5,11 +5,11 @@ import { findFiles, readLines, finding } from '../utils.mjs';
 const HEX_COLOR = /#(?:[0-9a-fA-F]{3,4}){1,2}\b/;
 const RGB_HSL = /\b(?:rgb|hsl)a?\s*\(/;
 const PRIMITIVE_TOKEN = /--ov-primitive-/;
-const RAW_SPACING = /(?:margin|padding|gap)\s*:\s*(?!.*var\(--ov).*?\d+(?:px|rem|em)/;
-const RAW_RADIUS = /border-radius\s*:\s*(?!.*var\(--ov).*?\d+(?:px|rem|em)/;
+const RAW_SPACING = /(?:margin(?:-top|-right|-bottom|-left|-inline(?:-start|-end)?|-block(?:-start|-end)?)?|padding(?:-top|-right|-bottom|-left|-inline(?:-start|-end)?|-block(?:-start|-end)?)?|gap|row-gap|column-gap)\s*:\s*(?!.*var\(--ov).*?\d+(?:px|rem|em)/;
+const RAW_RADIUS = /border-(?:radius|top-left-radius|top-right-radius|bottom-left-radius|bottom-right-radius)\s*:\s*(?!.*var\(--ov).*?\d+(?:px|rem|em)/;
 const RAW_FONT_SIZE = /font-size\s*:\s*(?!.*var\(--ov).*?\d+(?:px|rem|em)/;
 const RAW_Z_INDEX = /z-index\s*:\s*\d+(?!.*var\(--ov)/;
-const RAW_TRANSITION = /(?:transition|animation)(?:-duration|-timing-function)?\s*:(?!.*var\(--ov)/;
+const RAW_TRANSITION_START = /(?:transition|animation)(?:-duration|-timing-function)?\s*:/;
 const RAW_BOX_SHADOW = /box-shadow\s*:\s*(?!.*var\(--ov)(?!none)/;
 const RAW_OPACITY = /(?<![a-z-])opacity\s*:\s*[\d.]+(?!.*var\(--ov)/;
 const SYNTAX_COLOR_IN_EDITORS = /#(?:[0-9a-fA-F]{3,4}){1,2}|(?:rgb|hsl)a?\s*\(/;
@@ -25,7 +25,9 @@ export async function scanTokenConsistency() {
     const isEditorsPkg = file.includes('packages/editors/');
     let inComment = false;
 
-    for (const { line, num } of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const { line, num } = lines[i];
+
       // Skip lines inside block comments (track state)
       if (inComment) {
         if (line.includes('*/')) inComment = false;
@@ -77,9 +79,19 @@ export async function scanTokenConsistency() {
       }
 
       // Hardcoded transitions/animations (Medium)
-      if (RAW_TRANSITION.test(line)) {
-        results.push(finding('Medium', 'Token/Styling', 'Hardcoded transition', file, num, line,
-          'Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)'));
+      // Collect the full declaration (may span multiple lines) before checking for var(--ov)
+      if (RAW_TRANSITION_START.test(line)) {
+        let declSpan = line;
+        let j = i + 1;
+        // If the declaration doesn't end on this line (no ; or }), join subsequent lines
+        while (!/[;}]/.test(declSpan) && j < lines.length) {
+          declSpan += ' ' + lines[j].line;
+          j++;
+        }
+        if (!declSpan.includes('var(--ov')) {
+          results.push(finding('Medium', 'Token/Styling', 'Hardcoded transition', file, num, line,
+            'Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)'));
+        }
       }
 
       // Hardcoded box-shadow (Medium)

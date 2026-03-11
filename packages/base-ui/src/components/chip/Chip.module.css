@@ -1,4 +1,5 @@
 .Group {
+  --_ov-group-spacing: 4px; /* initialize to prevent inheriting values from ancestor groups */
   display: inline-flex;
   align-items: center;
   gap: var(--_ov-group-spacing, 4px); /* fallback: --ov-space-stack-xs; no semantic token for 4px */

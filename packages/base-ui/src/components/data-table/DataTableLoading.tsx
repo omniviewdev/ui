@@ -20,7 +20,7 @@ export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoa
               <td
                 key={col.id}
                 className={styles.SkeletonCell}
-                style={{ // eslint-disable-line react/forbid-component-props -- TanStack Table column size CSS variable injection
+                style={{
                   flex: `var(--col-${col.id}-size) 0 0px`,
                   width: `calc(var(--col-${col.id}-size) * 1px)`,
                 }}

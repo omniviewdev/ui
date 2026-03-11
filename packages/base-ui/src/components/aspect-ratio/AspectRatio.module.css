@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  aspect-ratio: var(--_aspect-ratio);
+  aspect-ratio: var(--_aspect-ratio, 1);
 }
 
 .Root > * {

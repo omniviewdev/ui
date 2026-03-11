@@ -24,7 +24,7 @@ export const DataTableFooter = forwardRef<HTMLTableSectionElement, DataTableFoot
               <td
                 key={header.id}
                 className={styles.FooterCell}
-                style={{ // eslint-disable-line react/forbid-component-props -- TanStack Table column size CSS variable injection
+                style={{
                   flex: `var(--col-${header.column.id}-size) 0 0px`,
                   width: `calc(var(--col-${header.column.id}-size) * 1px)`,
                 }}

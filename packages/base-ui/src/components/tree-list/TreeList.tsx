@@ -304,7 +304,6 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           className={cn(styles.Viewport, className)}
           {...props}
         >
-          {/* eslint-disable-next-line react/forbid-component-props -- required by virtualizer */}
           <div style={{ height: virtualizer.totalSize, position: 'relative' }}>
             {virtualizer.virtualItems.map((virtualItem) => {
               const node = flatNodes[virtualItem.index];
@@ -316,7 +315,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
                   key={node.key}
                   ref={virtualizer.measureElement}
                   data-index={virtualItem.index}
-                  style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,

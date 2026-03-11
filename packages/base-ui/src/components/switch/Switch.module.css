@@ -17,7 +17,7 @@
   --_ov-track-bg-on: var(--ov-color-brand-500);
   --_ov-track-border-on: color-mix(in srgb, var(--ov-color-brand-500) 82%, black 18%);
   --_ov-track-bg-on-hover: color-mix(in srgb, var(--ov-color-brand-500) 84%, white 16%);
-  --_ov-thumb-bg: var(--ov-color-fg-inverse);
+  --_ov-thumb-bg: var(--ov-color-bg-surface-raised);
   --_ov-focus-border: var(--ov-color-border-focus);
 
   position: relative;

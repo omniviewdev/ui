@@ -1,6 +1,7 @@
 .Root {
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
   border-radius: var(--ov-radius-sm, 4px);
   border: 1px solid var(--ov-color-editor-border, var(--ov-color-border-default));
   background: var(--ov-color-editor-bg, var(--ov-color-bg-surface));

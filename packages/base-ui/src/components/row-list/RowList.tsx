@@ -58,7 +58,7 @@ const RowListRoot = forwardRef<HTMLDivElement, RowListRootProps>(function RowLis
           {
             '--_ov-row-grid-columns': gridTemplate,
             ...style,
-          } as React.CSSProperties
+          } as CSSProperties
         }
         {...props}
       />

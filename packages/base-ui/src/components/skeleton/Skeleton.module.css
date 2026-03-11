@@ -1,6 +1,7 @@
 .Root {
   display: block;
   background: var(--ov-color-bg-surface-raised);
+  /* --_sk-width and --_sk-height are set via inline style for non-text variants */
   width: var(--_sk-width);
   height: var(--_sk-height);
 }
@@ -8,6 +9,7 @@
 /* ---------- Variants ---------- */
 
 .Root[data-ov-variant='text'] {
+  /* text variant overrides the --_sk-* dimensions with its own intrinsic sizing */
   height: 1em;
   width: 100%;
   border-radius: var(--ov-radius-sm);

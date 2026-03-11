@@ -3432,9 +3432,8 @@ Manual deep-dive of 12 key components across all 3 packages.
 - All cells recalculate pinning/sizing styles on parent re-renders
 - **Fix:** Extract to memoized Row component (pattern exists in DataTableVirtualBody)
 
-**4. DataTable — Confusing 'use no memo' Directive** [IMPORTANT]
-- `MemoizedRow.tsx` (line 1): Declares `'use no memo'` but component IS memoized
-- **Fix:** Remove directive or add clarifying comment
+**4. DataTable — 'use no memo' Directive** [NOT AN ISSUE]
+- `MemoizedRow.tsx` (line 1): `'use no memo'` is intentional — prevents React 19 Compiler from auto-memoizing, since the component uses its own `React.memo` with a custom comparator function. The compiler's auto-memo would conflict. Consider adding a comment documenting the reason.
 
 #### Minor Issues
 

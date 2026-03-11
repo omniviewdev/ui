@@ -19,14 +19,15 @@ export const noInlineStyles = {
           node.value?.type === 'JSXExpressionContainer' &&
           node.value.expression.type === 'ObjectExpression'
         ) {
-          // Allow CSS variable assignments: style={{ '--_var': value }}
+          // Allow style objects where every explicit key is a CSS variable.
+          // Spread elements are NOT allowed (they can smuggle arbitrary props).
           const props = node.value.expression.properties;
           const allCssVars = props.every(
             (p) =>
-              p.type === 'SpreadElement' ||
-              (p.key?.type === 'Literal' &&
-                typeof p.key.value === 'string' &&
-                p.key.value.startsWith('--')),
+              p.type !== 'SpreadElement' &&
+              p.key?.type === 'Literal' &&
+              typeof p.key.value === 'string' &&
+              p.key.value.startsWith('--'),
           );
           if (!allCssVars) {
             context.report({ node, messageId: 'noInlineStyle' });
@@ -36,6 +37,54 @@ export const noInlineStyles = {
     };
   },
 };
+
+/** Check if a CallExpression is memo() or React.memo() */
+function isMemoCall(node) {
+  return (
+    node?.type === 'CallExpression' &&
+    (node.callee?.name === 'memo' ||
+      (node.callee?.type === 'MemberExpression' &&
+        node.callee.object?.name === 'React' &&
+        node.callee.property?.name === 'memo'))
+  );
+}
+
+/** Check if a CallExpression is forwardRef() or React.forwardRef() */
+function isForwardRefCall(node) {
+  return (
+    node?.type === 'CallExpression' &&
+    (node.callee?.name === 'forwardRef' ||
+      (node.callee?.type === 'MemberExpression' &&
+        node.callee.object?.name === 'React' &&
+        node.callee.property?.name === 'forwardRef'))
+  );
+}
+
+/** Check if an expression looks like a component (function/arrow or memo/forwardRef call) */
+function isComponentShape(init) {
+  if (!init) return false;
+  // Arrow function or function expression
+  if (init.type === 'ArrowFunctionExpression' || init.type === 'FunctionExpression') return true;
+  // memo(...) or forwardRef(...) call
+  if (isMemoCall(init) || isForwardRefCall(init)) return true;
+  return false;
+}
+
+/** Determine if an init expression is wrapped in memo (directly or memo(forwardRef(...))) */
+function isWrapped(init) {
+  if (!init) return false;
+  if (isMemoCall(init)) return true;
+  if (isForwardRefCall(init)) return true;
+  // memo(forwardRef(...))
+  if (
+    isMemoCall(init) &&
+    init.arguments?.[0] &&
+    isForwardRefCall(init.arguments[0])
+  ) {
+    return true;
+  }
+  return false;
+}
 
 export const preferMemoLeafComponent = {
   meta: {
@@ -50,29 +99,32 @@ export const preferMemoLeafComponent = {
   create(context) {
     const exportedComponents = new Map();
 
-    return {
-      'ExportNamedDeclaration > VariableDeclaration > VariableDeclarator'(node) {
-        if (node.id?.name && /^[A-Z]/.test(node.id.name)) {
-          const init = node.init;
-          const isMemoWrapped =
-            init?.type === 'CallExpression' &&
-            (init.callee?.name === 'memo' ||
-              (init.callee?.object?.name === 'React' &&
-                init.callee?.property?.name === 'memo'));
-          const isForwardRef =
-            init?.type === 'CallExpression' &&
-            (init.callee?.name === 'forwardRef' ||
-              (init.callee?.object?.name === 'React' &&
-                init.callee?.property?.name === 'forwardRef'));
-          const isMemoForwardRef =
-            isMemoWrapped &&
-            init.arguments?.[0]?.type === 'CallExpression' &&
-            init.arguments[0].callee?.name === 'forwardRef';
+    function trackExport(name, node, init) {
+      if (!name || !/^[A-Z]/.test(name)) return;
+      // Only track if it looks like a component (function, arrow, memo/forwardRef call)
+      if (!isComponentShape(init)) return;
+      exportedComponents.set(name, {
+        node,
+        wrapped: isWrapped(init),
+      });
+    }
 
-          exportedComponents.set(node.id.name, {
-            node,
-            wrapped: isMemoWrapped || isForwardRef || isMemoForwardRef,
-          });
+    return {
+      // export const Foo = forwardRef(...) / memo(...) / () => ...
+      'ExportNamedDeclaration > VariableDeclaration > VariableDeclarator'(node) {
+        trackExport(node.id?.name, node, node.init);
+      },
+      // export function Foo() { ... }
+      'ExportNamedDeclaration > FunctionDeclaration'(node) {
+        if (node.id?.name) {
+          exportedComponents.set(node.id.name, { node, wrapped: false });
+        }
+      },
+      // export default function Foo() { ... }
+      'ExportDefaultDeclaration > FunctionDeclaration'(node) {
+        const name = node.id?.name;
+        if (name && /^[A-Z]/.test(name)) {
+          exportedComponents.set(name, { node, wrapped: false });
         }
       },
       'Program:exit'() {

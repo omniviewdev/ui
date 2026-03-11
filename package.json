@@ -16,6 +16,7 @@
     "storybook:ai": "pnpm --filter @omniview/ai-ui storybook",
     "build-storybook": "pnpm --filter @omniview/base-ui build-storybook",
     "build-storybook:ai": "pnpm --filter @omniview/ai-ui build-storybook",
+    "audit:ui": "node scripts/audit/index.mjs",
     "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test"
   },
   "devDependencies": {
@@ -25,6 +26,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "glob": "^13.0.6",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",

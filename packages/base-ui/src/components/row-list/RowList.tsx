@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useCallback, useContext, useMemo } from 'react';
+import { createContext, forwardRef, useCallback, useContext, useMemo, type CSSProperties } from 'react';
 import { LuArrowUp, LuArrowDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { List } from '../list';
@@ -58,7 +58,7 @@ const RowListRoot = forwardRef<HTMLDivElement, RowListRootProps>(function RowLis
           {
             '--_ov-row-grid-columns': gridTemplate,
             ...style,
-          } as React.CSSProperties
+          } as CSSProperties
         }
         {...props}
       />
@@ -104,9 +104,11 @@ const RowListHeader = forwardRef<HTMLDivElement, RowListHeaderProps>(function Ro
             className={styles.HeaderCell}
             data-sortable={col.sortable ? '' : undefined}
             aria-sort={ariaSortValue}
-            style={{
-              justifyContent: col.align ?? undefined,
-            }}
+            style={
+              {
+                '--_row-header-cell-justify': col.align ?? undefined,
+              } as CSSProperties
+            }
             onClick={col.sortable ? () => handleHeaderClick(col) : undefined}
           >
             {col.header}
@@ -145,11 +147,13 @@ const RowListCell = forwardRef<HTMLDivElement, RowListCellProps>(function RowLis
     <div
       ref={ref}
       className={cn(styles.Cell, className)}
-      style={{
-        gridColumn: colIndex != null ? colIndex + 1 : undefined,
-        justifyContent: colDef?.align ?? undefined,
-        ...style,
-      }}
+      style={
+        {
+          '--_row-cell-column': colIndex != null ? colIndex + 1 : undefined,
+          '--_row-cell-justify': colDef?.align ?? undefined,
+          ...style,
+        } as CSSProperties
+      }
       {...props}
     />
   );

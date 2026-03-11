@@ -19,6 +19,9 @@
   --_ov-title-color: var(--ov-color-fg-default);
   --_ov-border: color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%);
   --_ov-muted: var(--ov-color-fg-muted);
+  --_card-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --_card-shadow-md: var(--ov-shadow-surface);
+  --_card-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
 
   position: relative;
   display: flex;
@@ -95,13 +98,13 @@
 /* ─── Elevation (shadow depth) ─── */
 
 .Root[data-ov-elevation='1'] {
-  box-shadow: var(--ov-primitive-shadow-sm);
+  box-shadow: var(--_card-shadow-sm);
 }
 .Root[data-ov-elevation='2'] {
-  box-shadow: var(--ov-primitive-shadow-md);
+  box-shadow: var(--_card-shadow-md);
 }
 .Root[data-ov-elevation='3'] {
-  box-shadow: var(--ov-primitive-shadow-lg);
+  box-shadow: var(--_card-shadow-lg);
 }
 
 /* ─── Color accents ─── */

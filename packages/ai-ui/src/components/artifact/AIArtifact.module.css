@@ -73,6 +73,10 @@
   color: var(--ov-color-text-danger);
 }
 
+.TooltipTrigger {
+  display: inline-flex;
+}
+
 .Content {
   flex: 1;
   overflow-y: auto;

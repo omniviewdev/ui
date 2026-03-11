@@ -26,6 +26,26 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
               const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
               const align = meta?.align as string | undefined;
 
+              const ariaSortValue =
+                sorted === 'asc'
+                  ? ('ascending' as const)
+                  : sorted === 'desc'
+                    ? ('descending' as const)
+                    : undefined;
+
+              const sortAriaLabel =
+                (typeof meta?.sortAriaLabel === 'string' ? meta.sortAriaLabel : undefined) ??
+                (typeof header.column.columnDef.header === 'string'
+                  ? header.column.columnDef.header
+                  : undefined);
+
+              if (process.env.NODE_ENV !== 'production' && canSort && !sortAriaLabel) {
+                console.warn(
+                  `DataTable: sortable column "${header.column.id}" has a non-string header ` +
+                  `but no meta.sortAriaLabel — the sort button will lack an accessible name.`,
+                );
+              }
+
               return (
                 <th
                   key={header.id}
@@ -34,19 +54,32 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                     ...sizeStyles,
                     ...pinningStyles,
                   }}
+                  aria-sort={ariaSortValue}
                   data-ov-sortable={canSort ? 'true' : 'false'}
                   data-ov-pinned={header.column.getIsPinned() || undefined}
                   data-ov-align={align}
-                  onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                  {header.isPlaceholder ? null : canSort ? (
+                    <button
+                      type="button"
+                      className={styles.SortButton}
+                      onClick={header.column.getToggleSortingHandler()}
+                      aria-label={sortAriaLabel ? `Sort by ${sortAriaLabel}` : undefined}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
 
-                  {canSort && sorted && (
-                    <span className={styles.SortIndicator} data-ov-active="true">
-                      {sorted === 'asc' ? '\u2191' : '\u2193'}
-                    </span>
+                      {/* Intentional: only render the sort indicator when actively sorted.
+                          Sortable-but-unsorted columns rely on the cursor/hover style
+                          (via data-ov-sortable) rather than a persistent muted glyph,
+                          keeping the header row visually clean. */}
+                      {sorted && (
+                        <span className={styles.SortIndicator} data-ov-active="true">
+                          {sorted === 'asc' ? '\u2191' : '\u2193'}
+                        </span>
+                      )}
+                    </button>
+                  ) : (
+                    flexRender(header.column.columnDef.header, header.getContext())
                   )}
 
                   {canResize && (

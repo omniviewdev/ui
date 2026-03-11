@@ -30,7 +30,7 @@
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-font-size: var(--ov-primitive-font-size-16);
+  --_ov-font-size: 1rem; /* restores original 16px — body token resolves to 14px which removes the size progression */
   --_ov-padding-inline: calc(var(--ov-space-inline-control) + 2px);
   --_ov-padding-block: var(--ov-space-stack-lg);
 }

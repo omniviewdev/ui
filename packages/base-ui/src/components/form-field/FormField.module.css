@@ -3,9 +3,11 @@
  * ------------------------------------------------------------------------- */
 
 .Root {
+  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
+
   display: flex;
   flex-direction: column;
-  gap: var(--ov-primitive-space-1);
+  gap: var(--_space-stack-xs);
 }
 
 .Label {
@@ -42,7 +44,7 @@
 /* Size variants */
 
 .Root[data-ov-size='sm'] {
-  gap: calc(var(--ov-primitive-space-1) - 1px);
+  gap: calc(var(--_space-stack-xs) - 1px); /* derived from local alias */
 }
 
 .Root[data-ov-size='sm'] .Label {
@@ -71,9 +73,11 @@
 }
 
 .SectionHeader {
+  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
+
   display: flex;
   flex-direction: column;
-  gap: var(--ov-primitive-space-1);
+  gap: var(--_space-stack-xs);
 }
 
 .SectionTitle {

@@ -163,7 +163,7 @@ export const AIArtifactAction = forwardRef<HTMLButtonElement, AIArtifactActionPr
     if (tooltip) {
       return (
         <Tooltip.Root>
-          <Tooltip.Trigger render={<span style={{ display: 'inline-flex' }} />}>
+          <Tooltip.Trigger render={<span className={styles.TooltipTrigger} />}>
             {button}
           </Tooltip.Trigger>
           <Tooltip.Portal>

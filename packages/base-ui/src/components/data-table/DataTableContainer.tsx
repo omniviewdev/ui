@@ -33,10 +33,10 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
     );
 
     const containerStyle: CSSProperties = {
+      '--_dt-height': toDimension(height),
+      '--_dt-max-height': toDimension(maxHeight),
       ...style,
-      height: toDimension(height),
-      maxHeight: toDimension(maxHeight),
-    };
+    } as CSSProperties;
 
     return (
       <div

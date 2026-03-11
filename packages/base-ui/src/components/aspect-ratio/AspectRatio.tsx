@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import styles from './AspectRatio.module.css';
 
@@ -14,7 +14,7 @@ export const AspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(function
     <div
       ref={ref}
       className={cn(styles.Root, className)}
-      style={{ ...style, aspectRatio: ratio }}
+      style={{ '--_aspect-ratio': ratio, ...style } as CSSProperties}
       {...props}
     />
   );

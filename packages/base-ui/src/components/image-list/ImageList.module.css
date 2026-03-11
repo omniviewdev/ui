@@ -51,19 +51,19 @@
 
 /* Gap scale */
 .Root[data-ov-gap='0'] {
-  --_ov-gap: var(--ov-primitive-space-0);
+  --_ov-gap: 0;
 }
 .Root[data-ov-gap='1'] {
-  --_ov-gap: var(--ov-primitive-space-1);
+  --_ov-gap: var(--ov-space-stack-xs, 4px); /* semantic token doesn't exist yet; fallback to 4px */
 }
 .Root[data-ov-gap='2'] {
-  --_ov-gap: var(--ov-primitive-space-2);
+  --_ov-gap: var(--ov-space-stack-sm);
 }
 .Root[data-ov-gap='3'] {
-  --_ov-gap: var(--ov-primitive-space-3);
+  --_ov-gap: var(--ov-space-stack-md);
 }
 .Root[data-ov-gap='4'] {
-  --_ov-gap: var(--ov-primitive-space-4);
+  --_ov-gap: var(--ov-space-stack-lg);
 }
 
 /* Item spans (quilted mode) */

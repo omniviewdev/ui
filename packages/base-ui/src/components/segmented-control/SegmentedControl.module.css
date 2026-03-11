@@ -34,7 +34,7 @@
   align-items: center;
   justify-content: center;
   height: var(--_ov-sc-height, 2rem);
-  padding-inline: var(--ov-primitive-space-3);
+  padding-inline: var(--ov-space-inline-control, var(--ov-space-stack-md)); /* --ov-space-inline-control is semantically correct for horizontal control padding */
   border-radius: calc(var(--ov-radius-md) - 2px);
   cursor: pointer;
   user-select: none;
@@ -78,7 +78,7 @@
 .Label {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
+  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
   color: var(--ov-color-fg-default);
   font-weight: var(--ov-font-weight-medium);
   white-space: nowrap;

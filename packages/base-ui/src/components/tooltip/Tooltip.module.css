@@ -121,7 +121,7 @@
 .Popup[data-ov-size='sm'] {
   --_ov-padding-inline: var(--ov-size-list-item-padding-inline-sm);
   --_ov-padding-block: calc(var(--ov-size-list-item-gap) - 1px);
-  --_ov-font-size: var(--ov-primitive-font-size-11);
+  --_ov-font-size: 0.6875rem; /* restores original 11px — caption token resolves to 12px which removes the size progression */
   --_ov-arrow-size: 8px;
 }
 

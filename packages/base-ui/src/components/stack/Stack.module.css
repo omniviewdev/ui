@@ -1,7 +1,7 @@
 .Root {
   display: flex;
   flex-direction: column;
-  gap: var(--_ov-spacing, var(--ov-primitive-space-2));
+  gap: var(--_ov-spacing, var(--ov-space-stack-sm));
 }
 
 .Root[data-ov-direction='row'] {
@@ -15,19 +15,20 @@
 }
 
 .Root[data-ov-spacing='0'] {
-  --_ov-spacing: var(--ov-primitive-space-0);
+  --_ov-spacing: 0;
 }
+/* TODO: replace 4px with var(--ov-space-stack-xs) when token is available */
 .Root[data-ov-spacing='1'] {
-  --_ov-spacing: var(--ov-primitive-space-1);
+  --_ov-spacing: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }
 .Root[data-ov-spacing='2'] {
-  --_ov-spacing: var(--ov-primitive-space-2);
+  --_ov-spacing: var(--ov-space-stack-sm);
 }
 .Root[data-ov-spacing='3'] {
-  --_ov-spacing: var(--ov-primitive-space-3);
+  --_ov-spacing: var(--ov-space-stack-md);
 }
 .Root[data-ov-spacing='4'] {
-  --_ov-spacing: var(--ov-primitive-space-4);
+  --_ov-spacing: var(--ov-space-stack-lg);
 }
 
 .Root[data-ov-align='start'] {

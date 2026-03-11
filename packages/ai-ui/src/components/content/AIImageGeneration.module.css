@@ -9,6 +9,7 @@
   width: 100%;
   overflow: hidden;
   background: var(--ov-color-bg-inset);
+  aspect-ratio: var(--_image-aspect-ratio, 1);
 }
 
 .Placeholder {

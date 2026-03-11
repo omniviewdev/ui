@@ -1,4 +1,5 @@
 .Root {
+  --_statusbar-space-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -28,9 +29,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
+  gap: var(--_statusbar-space-xs);
   height: var(--_ov-sb-height, 1.375rem);
-  padding-inline: var(--ov-primitive-space-2);
+  padding-inline: var(--ov-space-stack-sm);
 }
 
 .Section[data-ov-align='start'] {
@@ -48,8 +49,8 @@
 .Item {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
-  padding-inline: var(--ov-primitive-space-1);
+  gap: var(--_statusbar-space-xs);
+  padding-inline: var(--_statusbar-space-xs);
   height: 100%;
   white-space: nowrap;
   line-height: 1;
@@ -61,8 +62,8 @@
   border: none;
   color: inherit;
   font: inherit;
-  padding-inline: var(--ov-primitive-space-1);
-  border-radius: var(--ov-primitive-radius-sm);
+  padding-inline: var(--_statusbar-space-xs);
+  border-radius: var(--ov-radius-control);
   transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
@@ -84,7 +85,7 @@
    --------------------------------------------------------------------------- */
 
 .Indicator {
-  padding-inline: var(--ov-primitive-space-1);
+  padding-inline: var(--_statusbar-space-xs);
   height: 100%;
 }
 
@@ -95,8 +96,8 @@
 .Progress {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
-  padding-inline: var(--ov-primitive-space-1);
+  gap: var(--_statusbar-space-xs);
+  padding-inline: var(--_statusbar-space-xs);
   height: 100%;
   white-space: nowrap;
   line-height: 1;
@@ -119,8 +120,8 @@
 .IconItem {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
-  padding-inline: var(--ov-primitive-space-1);
+  gap: var(--_statusbar-space-xs);
+  padding-inline: var(--_statusbar-space-xs);
   height: 100%;
   white-space: nowrap;
   line-height: 1;
@@ -133,8 +134,8 @@
   border: none;
   color: var(--_ov-sb-icon-item-color, inherit);
   font: inherit;
-  padding-inline: var(--ov-primitive-space-1);
-  border-radius: var(--ov-primitive-radius-sm);
+  padding-inline: var(--_statusbar-space-xs);
+  border-radius: var(--ov-radius-control);
   transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 

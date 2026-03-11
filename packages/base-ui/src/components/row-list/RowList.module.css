@@ -22,6 +22,7 @@
 .HeaderCell {
   display: flex;
   align-items: center;
+  justify-content: var(--_row-header-cell-justify);
   gap: var(--ov-space-inline-xs, 4px);
   min-width: 0;
   min-height: var(--_ov-item-height);
@@ -75,6 +76,8 @@
 .Cell {
   display: flex;
   align-items: center;
+  justify-content: var(--_row-cell-justify);
+  grid-column: var(--_row-cell-column);
   min-width: 0;
   padding-inline: var(--_ov-item-padding-inline);
   overflow: hidden;

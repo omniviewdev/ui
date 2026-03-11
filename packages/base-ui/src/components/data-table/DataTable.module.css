@@ -23,6 +23,7 @@
   --_ov-dt-sort-indicator: var(--ov-color-fg-muted);
   --_ov-dt-sort-indicator-active: var(--ov-color-brand-400);
   --_ov-dt-pinned-bg: var(--ov-color-bg-surface);
+  /* elevation shadow color — no semantic token maps to raw alpha-black shadow values */
   --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-md);
   --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-md);
@@ -138,6 +139,8 @@
   overscroll-behavior: contain;
   min-height: 0;
   position: relative;
+  height: var(--_dt-height);
+  max-height: var(--_dt-max-height);
 }
 
 /* --- Table (CSS Grid layout) --- */
@@ -317,7 +320,7 @@
   padding: 0;
   cursor: pointer;
   color: var(--ov-color-fg-muted);
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   flex-shrink: 0;
   transition:
     color 0.1s ease,
@@ -486,7 +489,7 @@
 .SkeletonBar {
   width: 70%;
   height: 10px;
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 60%, transparent 40%);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }

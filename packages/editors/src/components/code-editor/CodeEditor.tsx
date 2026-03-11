@@ -5,6 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
 } from 'react';
 import * as monaco from 'monaco-editor';
 import { useEditorTheme } from '../../themes/useEditorTheme';
@@ -593,13 +594,20 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
     // Render
     // -----------------------------------------------------------------------
 
+    const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
+
     return (
       <div
         className={cn(styles.Root, className)}
-        style={{ height, width }}
+        style={
+          {
+            '--_editor-height': toDim(height),
+            '--_editor-width': toDim(width),
+          } as CSSProperties
+        }
         data-testid="code-editor"
       >
-        <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
+        <div ref={containerRef} className={styles.Inner} />
       </div>
     );
   },

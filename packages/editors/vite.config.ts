@@ -4,7 +4,14 @@ import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [react(), dts({ include: ['src'] })],
+  plugins: [
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', {}]],
+      },
+    }),
+    dts({ include: ['src'] }),
+  ],
   build: {
     lib: {
       entry: 'src/index.ts',

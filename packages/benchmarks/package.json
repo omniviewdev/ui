@@ -9,7 +9,7 @@
     "bench:browser": "vitest bench --config vitest.config.browser.ts --run"
   },
   "devDependencies": {
-    "@codspeed/vitest-plugin": "^4.0.0",
+    "@codspeed/vitest-plugin": "^5.2.0",
     "@omniview/base-ui": "workspace:*",
     "@omniview/editors": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
@@ -23,7 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^5.9.2",
-    "vite": "^5.4.14",
+    "vite": "^7.3.1",
     "vitest": "^4.0.0"
   }
 }

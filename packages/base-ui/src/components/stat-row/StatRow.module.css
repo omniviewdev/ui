@@ -14,7 +14,7 @@
 /* ─── Size variants ─────────────────────────── */
 
 .Root[data-ov-size='sm'] {
-  --_ov-stat-gap: 6px;
+  --_ov-stat-gap: var(--ov-space-stack-sm, 6px);
   --_ov-stat-icon-size: 0.6875rem;
   --_ov-stat-font-size: var(--ov-font-size-xs, 0.6875rem);
 }
@@ -26,7 +26,7 @@
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-stat-gap: 10px;
+  --_ov-stat-gap: var(--ov-space-stack-md, 10px);
   --_ov-stat-icon-size: 0.9375rem;
   --_ov-stat-font-size: var(--ov-font-size-md, 0.9375rem);
 }

@@ -52,7 +52,7 @@ export function generateReport(findings) {
     for (const item of items) {
       md += `- \`${item.file}:${item.line}\` — ${item.message}\n`;
       if (item.snippet) {
-        md += `  \`\`\`\n  ${item.snippet}\n  \`\`\`\n`;
+        md += `  \`\`\`css\n  ${item.snippet}\n  \`\`\`\n`;
       }
     }
     md += `\n`;

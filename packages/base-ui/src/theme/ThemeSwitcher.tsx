@@ -1,4 +1,5 @@
 import { memo, useId } from 'react';
+import { cn } from '../system/classnames';
 import { useTheme } from './useTheme';
 import styles from './ThemeSwitcher.module.css';
 
@@ -13,7 +14,7 @@ export const ThemeSwitcher = memo(function ThemeSwitcher({ className }: ThemeSwi
   const motionId = useId();
 
   return (
-    <div className={[styles.Root, className].filter(Boolean).join(' ')}>
+    <div className={cn(styles.Root, className)}>
       <label className={styles.Field} htmlFor={themeId}>
         Theme
         <select

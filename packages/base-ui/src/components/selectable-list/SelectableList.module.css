@@ -137,7 +137,7 @@
 .SelectionSummary {
   font-size: var(--ov-font-size-caption);
   color: var(--ov-color-fg-subtle);
-  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-stack-sm));
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-inline-control));
   padding-block: var(--ov-space-stack-xs, 4px);
   border-top: 1px solid var(--ov-color-border-muted);
 }
@@ -150,7 +150,7 @@
   display: flex;
   align-items: center;
   gap: var(--ov-space-inline-control);
-  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-stack-sm));
+  padding-inline: var(--_ov-item-padding-inline, var(--ov-space-inline-control));
   cursor: pointer;
   user-select: none;
   color: var(--ov-color-fg-muted);

@@ -21,7 +21,7 @@
   font-family: inherit;
   cursor: pointer;
   text-align: left;
-  transition: color var(--ov-duration-interactive, 90ms) var(--ov-ease-standard, ease);
+  transition: color var(--ov-duration-interactive, 0.2s) var(--ov-ease-standard, ease);
 }
 
 .Trigger:hover {
@@ -62,7 +62,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  transition: transform var(--ov-duration-interactive, 90ms) var(--ov-ease-standard, ease);
+  transition: transform var(--ov-duration-interactive, 0.2s) var(--ov-ease-standard, ease);
 }
 
 .Chevron[data-ov-open='true'] {

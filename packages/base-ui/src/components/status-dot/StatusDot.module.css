@@ -39,6 +39,7 @@
   --_ov-dot-size: 10px;
   --_ov-pulse-spread: 8px;
   --_ov-label-font-size: var(--ov-font-size-md);
+
   gap: var(--ov-space-stack-sm);
 }
 

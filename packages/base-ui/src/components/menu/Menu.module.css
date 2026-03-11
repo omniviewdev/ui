@@ -6,7 +6,7 @@
 }
 
 .Positioner {
-  z-index: 120;
+  z-index: var(--ov-z-popup, 120);
 }
 
 .Popup {

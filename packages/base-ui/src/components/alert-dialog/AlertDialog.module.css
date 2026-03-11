@@ -1,7 +1,7 @@
 .Backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--ov-z-modal, 1000);
   background: color-mix(in srgb, var(--ov-color-bg-base) 38%, transparent 62%);
   backdrop-filter: blur(1px);
 }
@@ -15,7 +15,7 @@
 
   display: grid;
   position: relative;
-  z-index: 1001;
+  z-index: calc(var(--ov-z-modal, 1000) + 1);
   gap: var(--ov-space-stack-md);
   min-inline-size: min(320px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
   max-inline-size: min(92vw, 480px);

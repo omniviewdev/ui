@@ -117,7 +117,7 @@
 }
 
 .Group[data-disabled] {
-  opacity: 0.45;
+  opacity: var(--ov-opacity-disabled, 0.45);
   cursor: not-allowed;
 }
 

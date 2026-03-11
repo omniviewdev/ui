@@ -4,7 +4,7 @@
 
 .Container {
   position: fixed;
-  z-index: 9999;
+  z-index: var(--ov-z-toast, 9999);
   display: flex;
   flex-direction: column;
   gap: var(--ov-space-stack-sm);

@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useCallback, useContext, useMemo, type CSSProperties } from 'react';
+import { createContext, forwardRef, useCallback, useContext, useMemo, type CSSProperties, type KeyboardEvent } from 'react';
 import { LuArrowUp, LuArrowDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { List } from '../list';
@@ -90,6 +90,17 @@ const RowListHeader = forwardRef<HTMLDivElement, RowListHeaderProps>(function Ro
     [sortState, onSortChange],
   );
 
+  const handleHeaderKeyDown = useCallback(
+    (col: ColumnDef, e: KeyboardEvent<HTMLDivElement>) => {
+      if (!col.sortable) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleHeaderClick(col);
+      }
+    },
+    [handleHeaderClick],
+  );
+
   return (
     <div ref={ref} role="row" className={cn(styles.Header, className)} {...props}>
       {columns.map((col) => {
@@ -102,14 +113,16 @@ const RowListHeader = forwardRef<HTMLDivElement, RowListHeaderProps>(function Ro
             key={col.id}
             role="columnheader"
             className={styles.HeaderCell}
-            data-sortable={col.sortable ? '' : undefined}
+            data-sortable={col.sortable && onSortChange ? '' : undefined}
             aria-sort={ariaSortValue}
+            tabIndex={col.sortable && onSortChange ? 0 : undefined}
             style={
               {
                 '--_row-header-cell-justify': col.align ?? undefined,
               } as CSSProperties
             }
-            onClick={col.sortable ? () => handleHeaderClick(col) : undefined}
+            onClick={col.sortable && onSortChange ? () => handleHeaderClick(col) : undefined}
+            onKeyDown={col.sortable && onSortChange ? (e) => handleHeaderKeyDown(col, e) : undefined}
           >
             {col.header}
             {col.sortable && isSorted && <SortIconComponent className={styles.SortIcon} />}

@@ -1,5 +1,5 @@
 .Portal {
-  z-index: 150;
+  z-index: var(--ov-z-popover, 150);
 }
 
 .Backdrop {
@@ -10,7 +10,7 @@
 }
 
 .Positioner {
-  z-index: 151;
+  z-index: calc(var(--ov-z-popover, 150) + 1);
 }
 
 .Trigger,

@@ -1,7 +1,7 @@
 .Root {
   --_ov-min-height: var(--ov-size-button-height-md);
   --_ov-font-size: var(--ov-font-size-body);
-  --_ov-gap: var(--ov-space-stack-xs, 4px); /* fallback: 4px (--ov-primitive-space-1); no --ov-space-stack-xs semantic token yet */
+  --_ov-gap: var(--ov-space-stack-xs, var(--ov-primitive-space-1)); /* no --ov-space-stack-xs semantic token yet */
   --_ov-padding: var(--ov-space-stack-sm);
 
   display: flex;

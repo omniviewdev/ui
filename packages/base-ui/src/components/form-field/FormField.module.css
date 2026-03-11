@@ -4,6 +4,7 @@
 
 .Root {
   --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
+
   display: flex;
   flex-direction: column;
   gap: var(--_space-stack-xs);

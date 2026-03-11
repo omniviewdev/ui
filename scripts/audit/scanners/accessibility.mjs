@@ -28,7 +28,7 @@ export async function scanAccessibility() {
 
       // Detect the start of a JSX opening tag for elements we care about
       if (!inTag) {
-        if (/<(?:div|span|li|td|tr|img|a(?!\s))[\s>]/.test(line) || /<(?:div|span|li|td|tr|img|a(?!\s))\s*$/.test(line)) {
+        if (/<(?:div|span|li|td|tr|img|a)\b[\s>]/.test(line) || /<(?:div|span|li|td|tr|img|a)\b\s*$/.test(line)) {
           inTag = true;
           tagBuffer = line;
           tagStartNum = num;
@@ -39,14 +39,17 @@ export async function scanAccessibility() {
       }
 
       if (inTag) {
-        // Check if the tag has closed (> or />)
-        // We look for > that's not inside a string — simplified: just check if > appears
-        if (/\/?>/.test(tagBuffer)) {
+        // Check if the tag has closed (> or />) on the current line.
+        // We inspect only the current line (trimmed) to avoid matching `=>` inside
+        // arrow function handlers (e.g. onClick={() => ...}) which would prematurely
+        // close the buffer before role/tabIndex are accumulated.
+        const closesTag = /\/>\s*$/.test(line.trim()) || /(?<!=>)>\s*$/.test(line.trim());
+        if (closesTag) {
           inTag = false;
           const ctx = tagBuffer;
 
           // Clickable non-button elements without keyboard handler (Medium)
-          if (/onClick/.test(ctx) && /<(?:div|span|li|td|tr|img|a(?!\s))/.test(ctx)) {
+          if (/onClick/.test(ctx) && /<(?:div|span|li|td|tr|img|a)\b/.test(ctx)) {
             const hasKeyboardHandler = /onKeyDown|onKeyUp/.test(ctx);
             const hasRoleButton = /role\s*=\s*["']button["']/.test(ctx);
             const hasTabIndex = /tabIndex|tabindex/.test(ctx);

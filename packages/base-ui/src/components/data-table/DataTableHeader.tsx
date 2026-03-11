@@ -57,6 +57,10 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
 
+                      {/* Intentional: only render the sort indicator when actively sorted.
+                          Sortable-but-unsorted columns rely on the cursor/hover style
+                          (via data-ov-sortable) rather than a persistent muted glyph,
+                          keeping the header row visually clean. */}
                       {sorted && (
                         <span className={styles.SortIndicator} data-ov-active="true">
                           {sorted === 'asc' ? '\u2191' : '\u2193'}

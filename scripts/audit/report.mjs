@@ -48,7 +48,10 @@ export function generateReport(findings) {
     md += `**${items.length} finding(s)**\n\n`;
     for (const item of items) {
       md += `- \`${item.file}:${item.line}\` — ${item.message}\n`;
-      if (item.snippet) md += `  \`\`\`\n  ${item.snippet}\n  \`\`\`\n`;
+      if (item.snippet) {
+        const escapedSnippet = item.snippet.replace(/`/g, '\\`');
+        md += `  \`\`\`\n  ${escapedSnippet}\n  \`\`\`\n`;
+      }
     }
     md += `\n`;
   }

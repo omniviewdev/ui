@@ -1,8 +1,8 @@
 # UI Audit Findings Report
 
 **Date:** 2026-03-11
-**Total findings:** 1034
-**High:** 64 | **Medium:** 784 | **Low:** 186
+**Total findings:** 1027
+**High:** 61 | **Medium:** 780 | **Low:** 186
 
 ---
 
@@ -11,10 +11,10 @@
 | Severity | Category | Check | Count |
 |----------|----------|-------|-------|
 | High | Token/Styling | Hardcoded color | 37 |
-| High | Token/Styling | Primitive token leakage | 5 |
-| High | Convention | Inline style | 22 |
+| High | Token/Styling | Primitive token leakage | 6 |
+| High | Convention | Inline style | 18 |
 | Medium | Token/Styling | Hardcoded transition | 78 |
-| Medium | Token/Styling | Hardcoded spacing | 144 |
+| Medium | Token/Styling | Hardcoded spacing | 143 |
 | Medium | Token/Styling | Hardcoded radius | 19 |
 | Medium | Token/Styling | Hardcoded box-shadow | 26 |
 | Medium | Token/Styling | Missing theme coverage | 315 |
@@ -23,8 +23,8 @@
 | Medium | Performance | Inline function prop | 43 |
 | Medium | Performance | Inline array prop | 3 |
 | Medium | Performance | Missing memo | 86 |
-| Medium | Accessibility | Missing keyboard handler | 10 |
-| Medium | Accessibility | Missing ARIA | 3 |
+| Medium | Accessibility | Missing keyboard handler | 9 |
+| Medium | Accessibility | Missing ARIA | 1 |
 | Low | Token/Styling | Hardcoded opacity | 114 |
 | Low | Token/Styling | Hardcoded font-size | 21 |
 | Low | Token/Styling | Hardcoded z-index | 32 |
@@ -156,11 +156,11 @@
   ```
 - `packages/base-ui/src/components/sheet/Sheet.module.css:9` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
-  --_sheet-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --_sheet-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06); /* TODO: replace with --ov-shadow-surface-
   ```
 - `packages/base-ui/src/components/sheet/Sheet.module.css:11` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
-  --_sheet-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
+  --_sheet-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10); /* TODO: replace with --ov-shadow-surface
   ```
 - `packages/base-ui/src/components/slider/Slider.module.css:193` — rgb/hsl color found — use a semantic token (--ov-color-*)
   ```
@@ -189,7 +189,7 @@
 
 ### High: Primitive token leakage (Token/Styling)
 
-**5 finding(s)**
+**6 finding(s)**
 
 - `packages/base-ui/src/components/grid/Grid.module.css:60` — Primitive token used directly — use a semantic token instead
   ```
@@ -203,30 +203,30 @@
   ```
   column-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
   ```
+- `packages/base-ui/src/components/image-list/ImageList.module.css:57` — Primitive token used directly — use a semantic token instead
+  ```
+  --_ov-gap: var(--ov-primitive-space-1, 4px); /* TODO: replace with --ov-space-stack-xs when semantic token is available 
+  ```
 - `packages/base-ui/src/components/image/Image.module.css:36` — Primitive token used directly — use a semantic token instead
   ```
   --_ov-radius: 4px; /* --ov-primitive-radius-sm; no --ov-radius-sm semantic token (closest: --ov-radius-control at 6px) *
   ```
 - `packages/base-ui/src/components/tag-input/TagInput.module.css:4` — Primitive token used directly — use a semantic token instead
   ```
-  --_ov-gap: var(--ov-space-stack-xs, 4px); /* fallback: 4px (--ov-primitive-space-1); no --ov-space-stack-xs semantic tok
+  --_ov-gap: var(--ov-space-stack-xs, var(--ov-primitive-space-1)); /* no --ov-space-stack-xs semantic token yet */
   ```
 
 ### High: Inline style (Convention)
 
-**22 finding(s)**
+**18 finding(s)**
 
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:130` — style={{}} found — use CSS Modules + data attributes
   ```
-  style={{ height: `${virtualizer.getTotalSize()}px` }} // eslint-disable-line react/forbid-component-props -- required by
+  style={{ height: \`${virtualizer.getTotalSize()}px\` }} // eslint-disable-line react/forbid-component-props -- required by
   ```
 - `packages/ai-ui/src/components/chat/ChatMessageList.tsx:138` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
-  ```
-- `packages/ai-ui/src/components/content/AIImageGeneration.tsx:32` — style={{}} found — use CSS Modules + data attributes
-  ```
-  style={{ '--_image-aspect-ratio': aspectRatio } as CSSProperties}
   ```
 - `packages/base-ui/src/components/aspect-ratio/AspectRatio.tsx:17` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -274,19 +274,11 @@
   ```
 - `packages/base-ui/src/components/drawer/Drawer.tsx:276` — style={{}} found — use CSS Modules + data attributes
   ```
-  style={{ '--_ov-size': `${clampedDefaultSize}px`, ...style } as React.CSSProperties}
-  ```
-- `packages/base-ui/src/components/editor-tabs/EditorTabsViewport.tsx:63` — style={{}} found — use CSS Modules + data attributes
-  ```
-  style={{ '--_tab-drop-indicator-left': `${indicatorLeft}px` } as CSSProperties}
+  style={{ '--_ov-size': \`${clampedDefaultSize}px\`, ...style } as React.CSSProperties}
   ```
 - `packages/base-ui/src/components/editor-tabs/context/TabDragBroker.tsx:236` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
-  ```
-- `packages/base-ui/src/components/meter/Meter.tsx:91` — style={{}} found — use CSS Modules + data attributes
-  ```
-  style={{ '--_meter-fill-width': `${percentage}%` } as CSSProperties}
   ```
 - `packages/base-ui/src/components/text-area/TextArea.tsx:107` — style={{}} found — use CSS Modules + data attributes
   ```
@@ -299,10 +291,6 @@
 - `packages/base-ui/src/components/tree-list/TreeList.tsx:318` — style={{}} found — use CSS Modules + data attributes
   ```
   style={{
-  ```
-- `packages/editors/src/components/object-inspector/ObjectInspector.tsx:186` — style={{}} found — use CSS Modules + data attributes
-  ```
-  style={{ '--_inspector-depth-indent': `${depth * 16}px` } as CSSProperties}
   ```
 
 ### Medium: Hardcoded transition (Token/Styling)
@@ -624,7 +612,7 @@
 
 ### Medium: Hardcoded spacing (Token/Styling)
 
-**144 finding(s)**
+**143 finding(s)**
 
 - `packages/ai-ui/src/components/artifact/AIArtifact.module.css:22` — Raw spacing value — use --ov-space-* token
   ```
@@ -930,11 +918,11 @@
   ```
   gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
   ```
-- `packages/base-ui/src/components/form-field/FormField.module.css:46` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/form-field/FormField.module.css:47` — Raw spacing value — use --ov-space-* token
   ```
   gap: calc(var(--_space-stack-xs) - 1px); /* derived from local alias */
   ```
-- `packages/base-ui/src/components/form-field/FormField.module.css:77` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/form-field/FormField.module.css:78` — Raw spacing value — use --ov-space-* token
   ```
   gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing; not derived from --_space-stack-xs as .Section/.Sec
   ```
@@ -945,10 +933,6 @@
 - `packages/base-ui/src/components/grid/Grid.module.css:96` — Raw spacing value — use --ov-space-* token
   ```
   column-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
-  ```
-- `packages/base-ui/src/components/image-list/ImageList.module.css:57` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
   ```
 - `packages/base-ui/src/components/list/List.module.css:238` — Raw spacing value — use --ov-space-* token
   ```
@@ -1152,7 +1136,7 @@
   ```
 - `packages/base-ui/src/components/toolbar/Toolbar.module.css:28` — Raw spacing value — use --ov-space-* token
   ```
-  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  gap: var(--_ov-toolbar-group-gap, 4px); /* --ov-space-stack-xs; no semantic token for 4px spacing */
   ```
 - `packages/base-ui/src/components/tree-list/TreeList.module.css:11` — Raw spacing value — use --ov-space-* token
   ```
@@ -1975,7 +1959,7 @@
   ```
   onValueChange={(val) => { if (val != null && onChange) onChange(val); }}
   ```
-- `packages/ai-ui/src/components/content/AIImageGeneration.tsx:53` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/ai-ui/src/components/content/AIImageGeneration.tsx:58` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onLoad={() => setImageLoaded(true)}
   ```
@@ -2238,17 +2222,17 @@
 
 ### Medium: Missing keyboard handler (Accessibility)
 
-**10 finding(s)**
+**9 finding(s)**
 
+- `packages/ai-ui/src/components/chat/AIAttachment.tsx:50` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
+  ```
+  {size != null && <span className={styles.Size}>{formatSize(size)}</span>}
+  ```
 - `packages/base-ui/src/components/command-list/CommandList.tsx:442` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
   ```
   <div
   ```
 - `packages/base-ui/src/components/dialog/Dialog.tsx:73` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
-  ```
-  <div
-  ```
-- `packages/base-ui/src/components/dock-layout/DockLayout.tsx:253` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
   ```
   <div
   ```
@@ -2276,24 +2260,12 @@
   ```
   <div
   ```
-- `packages/editors/src/components/command-palette/CommandPalette.tsx:55` — Clickable non-button element without onKeyDown/onKeyUp or role="button"+tabIndex
-  ```
-  <div
-  ```
 
 ### Medium: Missing ARIA (Accessibility)
 
-**3 finding(s)**
+**1 finding(s)**
 
 - `packages/base-ui/src/components/drawer/Drawer.tsx:258` — Interactive div/span without role or aria-* attribute
-  ```
-  <div
-  ```
-- `packages/editors/src/components/command-palette/CommandPalette.tsx:55` — Interactive div/span without role or aria-* attribute
-  ```
-  <div
-  ```
-- `packages/editors/src/components/object-inspector/ObjectInspector.tsx:184` — Interactive div/span without role or aria-* attribute
   ```
   <div
   ```

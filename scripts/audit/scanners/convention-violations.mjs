@@ -9,13 +9,24 @@ const INLINE_STYLE = /style\s*=\s*\{\s*\{/;
  *   style={{ '--_dynamic-value': value }}
  */
 function isCssVarOnlyStyle(line) {
-  // Extract the content between style={{ and the closing }}
-  const styleMatch = line.match(/style\s*=\s*\{\s*\{([\s\S]*?)\}\s*\}/);
-  if (!styleMatch) return false;
+  // Detect the start of style={{ on this line
+  if (!INLINE_STYLE.test(line)) return false;
+
+  // If the closing }} is NOT on the same line, we can't reliably parse the
+  // multiline object with regex — treat as non-CSS-var (flag for review).
+  // Strip an optional `as CSSProperties` / `as React.CSSProperties` cast first.
+  const stripped = line.replace(/\}\s*as\s+(?:React\.)?CSSProperties/g, '}');
+
+  const styleMatch = stripped.match(/style\s*=\s*\{\s*\{([\s\S]*?)\}\s*\}/);
+  if (!styleMatch) return false; // closing }} not found on same line — multiline
+
   const body = styleMatch[1];
 
-  // Split on commas to get individual key-value pairs (simplified parse)
-  // Each pair should be: ['--key']: value or '--key': value or "--key": value
+  // If the body contains a spread operator, we can't guarantee CSS-var-only.
+  if (/\.\.\./.test(body)) return false;
+
+  // Split on commas to get individual key-value pairs (simplified parse).
+  // Each pair should be: ['--key']: value  or  '--key': value  or  "--key": value
   const pairs = body.split(',');
   if (pairs.length === 0) return false;
 

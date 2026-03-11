@@ -34,7 +34,7 @@
   align-items: center;
   justify-content: center;
   height: var(--_ov-sc-height, 2rem);
-  padding-inline: var(--ov-space-stack-md);
+  padding-inline: var(--ov-space-inline-control, var(--ov-space-stack-md)); /* --ov-space-inline-control is semantically correct for horizontal control padding */
   border-radius: calc(var(--ov-radius-md) - 2px);
   cursor: pointer;
   user-select: none;

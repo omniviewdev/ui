@@ -9,7 +9,7 @@
 }
 
 .Inner {
-  height: 100%;
+  height: var(--_diff-height, 100%);
   width: 100%;
 }
 

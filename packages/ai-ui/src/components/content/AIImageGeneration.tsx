@@ -1,4 +1,4 @@
-import { forwardRef, useState, type CSSProperties, type HTMLAttributes } from 'react';
+import { forwardRef, useEffect, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import { Card, Skeleton } from '@omniview/base-ui';
 import { cn } from '../../system/classnames';
 import { LuImage } from '../../system/icons';
@@ -23,6 +23,11 @@ export const AIImageGeneration = forwardRef<HTMLDivElement, AIImageGenerationPro
     ref,
   ) {
     const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+      setImageLoaded(false);
+    }, [src]);
+
     const showSkeleton = loading || (src != null && !imageLoaded);
 
     return (

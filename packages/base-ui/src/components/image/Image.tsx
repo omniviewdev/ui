@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  memo,
   useState,
   useEffect,
   useCallback,
@@ -123,4 +124,5 @@ const ImageRoot = forwardRef<HTMLImageElement, ImageProps>(function Image(
 
 ImageRoot.displayName = 'Image';
 
-export const Image = ImageRoot;
+export const Image = memo(ImageRoot);
+Image.displayName = 'Image';

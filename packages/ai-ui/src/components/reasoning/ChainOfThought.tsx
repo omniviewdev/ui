@@ -1,6 +1,7 @@
 import {
   createContext,
   forwardRef,
+  memo,
   useCallback,
   useContext,
   useEffect,
@@ -341,7 +342,7 @@ export interface ChainOfThoughtFileProps {
   style?: React.CSSProperties;
 }
 
-export function ChainOfThoughtFile({
+export const ChainOfThoughtFile = memo(function ChainOfThoughtFile({
   name,
   type = 'file',
   path,
@@ -379,7 +380,7 @@ export function ChainOfThoughtFile({
   }
 
   return chip;
-}
+});
 
 // ---------------------------------------------------------------------------
 // Default step dot (small circle for steps without custom icon)

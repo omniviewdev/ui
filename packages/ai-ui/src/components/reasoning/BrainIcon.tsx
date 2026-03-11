@@ -1,8 +1,10 @@
+import { memo } from 'react';
+
 /**
  * Brain icon used by ThinkingBlock and ChainOfThought for visual consistency.
  * Inline SVG to avoid dependency on a specific icon library for the "thinking" look.
  */
-export function BrainIcon({ size = 16 }: { size?: number }) {
+export const BrainIcon = memo(function BrainIcon({ size = 16 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -26,4 +28,4 @@ export function BrainIcon({ size = 16 }: { size?: number }) {
       <path d="M19.967 17.484A4 4 0 0 1 18 18" />
     </svg>
   );
-}
+});

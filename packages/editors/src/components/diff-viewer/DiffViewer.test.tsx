@@ -141,7 +141,7 @@ describe('DiffViewer', () => {
   it('applies height prop as style', () => {
     render(<DiffViewer original="" modified="" height={500} />);
     const container = screen.getByTestId('diff-viewer');
-    expect(container).toHaveStyle({ height: '500px' });
+    expect(container.style.getPropertyValue('--_diff-height')).toBe('500px');
   });
 
   it('forwards ref', () => {

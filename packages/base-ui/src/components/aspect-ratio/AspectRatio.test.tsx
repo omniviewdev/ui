@@ -12,7 +12,7 @@ describe('AspectRatio', () => {
     );
     const el = screen.getByTestId('aspect');
     expect(el).toBeVisible();
-    expect(el.style.aspectRatio).toBe(String(16 / 9));
+    expect(el.style.getPropertyValue('--_aspect-ratio')).toBe(String(16 / 9));
   });
 
   it('accepts a custom ratio', () => {
@@ -22,6 +22,6 @@ describe('AspectRatio', () => {
       </AspectRatio>,
     );
     const el = screen.getByTestId('aspect');
-    expect(el.style.aspectRatio).toBe(String(4 / 3));
+    expect(el.style.getPropertyValue('--_aspect-ratio')).toBe(String(4 / 3));
   });
 });

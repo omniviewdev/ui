@@ -128,9 +128,9 @@ describe('RowList', () => {
   it('cell alignment applies correct style', () => {
     renderWithTheme(<ThreeRowList />);
 
-    // "Source" column has align: 'end' — cells in that column should have justifyContent: 'end'
+    // "Source" column has align: 'end' — cells in that column get the CSS custom property
     const sourceCell = screen.getByText('parser.ts');
-    expect(sourceCell.style.justifyContent).toBe('end');
+    expect(sourceCell.style.getPropertyValue('--_row-cell-justify')).toBe('end');
   });
 
   it('row selection works with selectionMode="single"', async () => {

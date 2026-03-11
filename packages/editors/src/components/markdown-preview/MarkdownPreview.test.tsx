@@ -106,9 +106,9 @@ describe('MarkdownPreview', () => {
     expect(screen.getByTestId('markdown-preview')).toBeInTheDocument();
   });
 
-  it('passes content to the markdown renderer', () => {
+  it('passes content to the markdown renderer', async () => {
     render(<MarkdownPreview content="# Title" />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveTextContent('# Title');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveTextContent('# Title');
   });
 
   it('merges className', () => {
@@ -127,43 +127,43 @@ describe('MarkdownPreview', () => {
     expect(screen.getByTestId('markdown-preview')).toHaveAttribute('aria-label', 'Preview');
   });
 
-  it('sets skipHtml=true by default (allowHtml=false)', () => {
+  it('sets skipHtml=true by default (allowHtml=false)', async () => {
     render(<MarkdownPreview content="<div>html</div>" />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'true');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'true');
   });
 
-  it('sets skipHtml=false when allowHtml=true', () => {
+  it('sets skipHtml=false when allowHtml=true', async () => {
     render(<MarkdownPreview content="<div>html</div>" allowHtml />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'false');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'false');
   });
 
-  it('adds rehype plugins when allowHtml=true', () => {
+  it('adds rehype plugins when allowHtml=true', async () => {
     render(<MarkdownPreview content="<div>html</div>" allowHtml />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveAttribute(
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute(
       'data-has-rehype-plugins',
       'true',
     );
   });
 
-  it('does not add rehype plugins when allowHtml=false', () => {
+  it('does not add rehype plugins when allowHtml=false', async () => {
     render(<MarkdownPreview content="test" />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveAttribute(
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute(
       'data-has-rehype-plugins',
       'false',
     );
   });
 
-  it('passes remarkPlugins to the renderer', () => {
+  it('passes remarkPlugins to the renderer', async () => {
     render(<MarkdownPreview content="test" />);
-    expect(screen.getByTestId('react-markdown-mock')).toHaveAttribute(
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute(
       'data-has-remark-plugins',
       'true',
     );
   });
 
-  it('provides component overrides for all mapped elements', () => {
+  it('provides component overrides for all mapped elements', async () => {
     render(<MarkdownPreview content="test" />);
-    const md = screen.getByTestId('react-markdown-mock');
+    const md = await screen.findByTestId('react-markdown-mock');
     const keys = md.getAttribute('data-component-keys');
     expect(keys).toContain('code');
     expect(keys).toContain('pre');
@@ -181,10 +181,10 @@ describe('MarkdownPreview', () => {
     expect(keys).toContain('input');
   });
 
-  it('renders with empty content', () => {
+  it('renders with empty content', async () => {
     render(<MarkdownPreview content="" />);
     expect(screen.getByTestId('markdown-preview')).toBeInTheDocument();
-    expect(screen.getByTestId('react-markdown-mock')).toHaveTextContent('');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveTextContent('');
   });
 
   it('passes style prop through', () => {

@@ -100,32 +100,33 @@ const mockWebLinksAddon = {
   dispose: vi.fn(),
 };
 
+// Vitest 4.x requires function expressions (not arrows) for mocks used with `new`
 vi.mock('@xterm/xterm', () => ({
-  Terminal: vi.fn(() => mockTerminal),
+  Terminal: vi.fn(function () { return mockTerminal; }),
 }));
 
 vi.mock('@xterm/addon-fit', () => ({
-  FitAddon: vi.fn(() => mockFitAddon),
+  FitAddon: vi.fn(function () { return mockFitAddon; }),
 }));
 
 vi.mock('@xterm/addon-search', () => ({
-  SearchAddon: vi.fn(() => mockSearchAddon),
+  SearchAddon: vi.fn(function () { return mockSearchAddon; }),
 }));
 
 vi.mock('@xterm/addon-serialize', () => ({
-  SerializeAddon: vi.fn(() => mockSerializeAddon),
+  SerializeAddon: vi.fn(function () { return mockSerializeAddon; }),
 }));
 
 vi.mock('@xterm/addon-unicode11', () => ({
-  Unicode11Addon: vi.fn(() => mockUnicode11Addon),
+  Unicode11Addon: vi.fn(function () { return mockUnicode11Addon; }),
 }));
 
 vi.mock('@xterm/addon-webgl', () => ({
-  WebglAddon: vi.fn(() => mockWebglAddon),
+  WebglAddon: vi.fn(function () { return mockWebglAddon; }),
 }));
 
 vi.mock('@xterm/addon-web-links', () => ({
-  WebLinksAddon: vi.fn(() => mockWebLinksAddon),
+  WebLinksAddon: vi.fn(function () { return mockWebLinksAddon; }),
 }));
 
 // Mock document.fonts.ready
@@ -139,28 +140,49 @@ let resizeCallback: (() => void) | null = null;
 const mockObserve = vi.fn();
 const mockDisconnect = vi.fn();
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.clearAllMocks();
   resizeCallback = null;
   mockTerminal.unicode.activeVersion = '6';
-  global.ResizeObserver = vi.fn().mockImplementation((cb) => {
+  mockTerminal.options = {} as Record<string, unknown>;
+  global.ResizeObserver = vi.fn().mockImplementation(function (cb) {
     resizeCallback = cb;
     return {
       observe: mockObserve,
       unobserve: vi.fn(),
       disconnect: mockDisconnect,
     };
-  });
+  }) as unknown as typeof ResizeObserver;
+
+  // Re-establish mock constructor implementations cleared by clearAllMocks
+  const { Terminal: TerminalCtor } = await import('@xterm/xterm');
+  (TerminalCtor as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockTerminal; });
+  const { FitAddon } = await import('@xterm/addon-fit');
+  (FitAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockFitAddon; });
+  const { SearchAddon } = await import('@xterm/addon-search');
+  (SearchAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockSearchAddon; });
+  const { SerializeAddon } = await import('@xterm/addon-serialize');
+  (SerializeAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockSerializeAddon; });
+  const { Unicode11Addon } = await import('@xterm/addon-unicode11');
+  (Unicode11Addon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockUnicode11Addon; });
+  const { WebglAddon } = await import('@xterm/addon-webgl');
+  (WebglAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockWebglAddon; });
+  const { WebLinksAddon } = await import('@xterm/addon-web-links');
+  (WebLinksAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockWebLinksAddon; });
 });
 
 afterEach(() => {
-  vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 async function waitForInit() {
-  await act(async () => {
-    await new Promise((r) => setTimeout(r, 10));
-  });
+  // Terminal init has 4+ async import() steps; each needs microtask flushing.
+  // Multiple act() calls ensure React processes all intermediate state updates.
+  for (let i = 0; i < 5; i++) {
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 0));
+    });
+  }
 }
 
 describe('Terminal', () => {
@@ -827,13 +849,14 @@ describe('Terminal', () => {
 
     it('disposes addons before terminal', async () => {
       const disposeOrder: string[] = [];
-      mockFitAddon.dispose.mockImplementation(() => disposeOrder.push('fitAddon'));
-      mockSearchAddon.dispose.mockImplementation(() => disposeOrder.push('searchAddon'));
-      mockSerializeAddon.dispose.mockImplementation(() => disposeOrder.push('serializeAddon'));
-      mockUnicode11Addon.dispose.mockImplementation(() => disposeOrder.push('unicode11Addon'));
-      mockWebLinksAddon.dispose.mockImplementation(() => disposeOrder.push('webLinksAddon'));
-      mockWebglAddon.dispose.mockImplementation(() => disposeOrder.push('webglAddon'));
-      mockTerminal.dispose.mockImplementation(() => disposeOrder.push('terminal'));
+      // Re-create dispose mocks in case restoreAllMocks cleared them
+      mockFitAddon.dispose = vi.fn(() => disposeOrder.push('fitAddon'));
+      mockSearchAddon.dispose = vi.fn(() => disposeOrder.push('searchAddon'));
+      mockSerializeAddon.dispose = vi.fn(() => disposeOrder.push('serializeAddon'));
+      mockUnicode11Addon.dispose = vi.fn(() => disposeOrder.push('unicode11Addon'));
+      mockWebLinksAddon.dispose = vi.fn(() => disposeOrder.push('webLinksAddon'));
+      mockWebglAddon.dispose = vi.fn(() => disposeOrder.push('webglAddon'));
+      mockTerminal.dispose = vi.fn(() => disposeOrder.push('terminal'));
 
       const { unmount } = render(<Terminal />);
       await waitForInit();

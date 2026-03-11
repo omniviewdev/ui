@@ -183,7 +183,8 @@ describe('CodeEditor', () => {
   it('applies height and width styles', () => {
     render(<CodeEditor value="" height={400} width={600} />);
     const container = screen.getByTestId('code-editor');
-    expect(container).toHaveStyle({ height: '400px', width: '600px' });
+    expect(container.style.getPropertyValue('--_editor-height')).toBe('400px');
+    expect(container.style.getPropertyValue('--_editor-width')).toBe('600px');
   });
 
   it('exposes imperative handle via ref', async () => {

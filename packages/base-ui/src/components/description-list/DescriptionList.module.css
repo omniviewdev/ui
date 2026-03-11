@@ -2,7 +2,7 @@
   --_ov-font-size-label: var(--ov-font-size-xs);
   --_ov-font-size-value: var(--ov-font-size-sm);
   --_ov-gap: 10px;
-  --_ov-item-gap: 4px;
+  --_ov-item-gap: var(--ov-space-stack-xs, 4px);
 
   display: flex;
   flex-direction: column;

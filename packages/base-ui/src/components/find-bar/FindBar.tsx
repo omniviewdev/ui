@@ -101,18 +101,18 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
   );
 
   const handleCaseSensitiveChange = useCallback(
-    () => onCaseSensitiveChange?.(!caseSensitive),
-    [onCaseSensitiveChange, caseSensitive],
+    (pressed: boolean) => onCaseSensitiveChange?.(pressed),
+    [onCaseSensitiveChange],
   );
 
   const handleWholeWordChange = useCallback(
-    () => onWholeWordChange?.(!wholeWord),
-    [onWholeWordChange, wholeWord],
+    (pressed: boolean) => onWholeWordChange?.(pressed),
+    [onWholeWordChange],
   );
 
   const handleRegexChange = useCallback(
-    () => onRegexChange?.(!regex),
-    [onRegexChange, regex],
+    (pressed: boolean) => onRegexChange?.(pressed),
+    [onRegexChange],
   );
 
   const handleClose = useCallback(

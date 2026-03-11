@@ -135,7 +135,7 @@
   min-width: var(--_ov-count-height);
   height: var(--_ov-count-height);
   padding: 0 6px;
-  border-radius: var(--ov-radius-surface);
+  border-radius: var(--ov-radius-surface, 8px);
   background: var(--ov-color-bg-surface-raised);
   color: var(--ov-color-fg-muted);
   font-size: var(--_ov-count-font);

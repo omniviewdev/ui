@@ -27,6 +27,8 @@
   --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
   /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
   --_duration-pulse: 1.5s;
+  /* Component-local 2px micro-spacing — sits below the design system's xs token */
+  --_dt-space-xs: 2px;
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-md);
   --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-md);
   --_ov-cell-font-size: var(--ov-size-table-cell-font-size-md);
@@ -205,7 +207,7 @@
 .SortIndicator {
   display: inline-flex;
   align-items: center;
-  margin-inline-start: 4px; /* TODO: --ov-space-stack-xs */
+  margin-inline-start: var(--ov-space-stack-xs, 4px);
   color: var(--_ov-dt-sort-indicator);
   font-size: 10px;
   flex-shrink: 0;
@@ -408,8 +410,8 @@
 .ColumnVisibilityList {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-block: 4px; /* TODO: --ov-space-stack-xs */
+  gap: var(--_dt-space-xs);
+  padding-block: var(--ov-space-stack-xs, 4px);
 }
 
 /* --- Pagination --- */
@@ -431,13 +433,13 @@
 .PaginationInfo {
   display: flex;
   align-items: center;
-  gap: 4px; /* TODO: --ov-space-stack-xs */
+  gap: var(--ov-space-stack-xs, 4px);
 }
 
 .PaginationControls {
   display: flex;
   align-items: center;
-  gap: 4px; /* TODO: --ov-space-stack-xs */
+  gap: var(--ov-space-stack-xs, 4px);
 }
 
 /* --- Empty state --- */

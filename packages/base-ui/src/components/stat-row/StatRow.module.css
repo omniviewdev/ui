@@ -36,7 +36,7 @@
 .Item {
   display: inline-flex;
   align-items: center;
-  gap: 4px; /* TODO: --ov-space-stack-xs */
+  gap: var(--ov-space-stack-xs, 4px);
   font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
   color: var(--_ov-stat-item-color, var(--ov-color-fg-muted));
   line-height: 1;

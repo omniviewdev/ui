@@ -1,7 +1,7 @@
 .Root {
   display: inline-flex;
   align-items: center;
-  gap: 4px; /* TODO: --ov-space-stack-xs */
+  gap: var(--ov-space-stack-xs, 4px);
   position: relative;
   font-family: var(--ov-font-sans);
   font-size: inherit;

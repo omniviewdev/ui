@@ -1,7 +1,10 @@
 .Root {
   --_ov-size: var(--ov-size-spinner-md);
   --_ov-color: var(--ov-color-fg-default);
-  /* Component-local animation duration — no --ov-duration-spin semantic token yet */
+  /* Component-local animation duration — no --ov-duration-spin semantic token yet.
+     WARNING: animation-delay values on .Bar:nth-child() selectors below are derived
+     from this duration (each step = duration / 8). Update those delays if you change
+     this value. */
   --_duration-spin: 0.8s;
 
   position: relative;

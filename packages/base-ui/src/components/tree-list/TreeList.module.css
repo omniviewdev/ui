@@ -8,8 +8,8 @@
 .Root {
   --_ov-list-gap: 0;
   --_ov-item-height: var(--ov-size-list-item-height-md);
-  --_ov-item-padding-inline: 4px; /* TODO: --ov-space-stack-xs */
-  --_ov-item-gap: 4px; /* TODO: --ov-space-stack-xs */
+  --_ov-item-padding-inline: var(--ov-space-stack-xs, 4px);
+  --_ov-item-gap: var(--ov-space-stack-xs, 4px);
   /* Component-local animation duration — no --ov-duration-spin semantic token yet */
   --_duration-spin: 0.8s;
   --_ov-item-radius: var(--ov-size-list-item-radius);

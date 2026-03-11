@@ -1,8 +1,8 @@
 # UI Audit Findings Report
 
 **Date:** 2026-03-11
-**Total findings:** 927
-**High:** 64 | **Medium:** 677 | **Low:** 186
+**Total findings:** 913
+**High:** 64 | **Medium:** 663 | **Low:** 186
 
 ---
 
@@ -13,8 +13,8 @@
 | High | Token/Styling | Hardcoded color | 37 |
 | High | Token/Styling | Primitive token leakage | 5 |
 | High | Convention | Inline style | 22 |
-| Medium | Token/Styling | Hardcoded transition | 70 |
-| Medium | Token/Styling | Hardcoded spacing | 113 |
+| Medium | Token/Styling | Hardcoded transition | 71 |
+| Medium | Token/Styling | Hardcoded spacing | 98 |
 | Medium | Token/Styling | Hardcoded box-shadow | 26 |
 | Medium | Token/Styling | Hardcoded radius | 3 |
 | Medium | Token/Styling | Missing theme coverage | 315 |
@@ -306,25 +306,25 @@
 
 ### Medium: Hardcoded transition (Token/Styling)
 
-**70 finding(s)**
+**71 finding(s)**
 
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:37` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:38` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: pulse-dot var(--_duration-pulse) ease-in-out infinite;
+  animation: pulse-dot var(--_duration-pulse) var(--_ease-pulse) infinite;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:90` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:91` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:93` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:94` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:98` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:99` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:102` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:103` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
@@ -376,23 +376,23 @@
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:45` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:46` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: brain-pulse var(--_duration-pulse) ease-in-out infinite;
+  animation: brain-pulse var(--_duration-pulse) var(--_ease-pulse) infinite;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:92` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:93` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:95` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:96` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:100` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:101` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:104` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:105` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
   ```
@@ -452,6 +452,10 @@
   ```
   animation: none;
   ```
+- `packages/base-ui/src/components/card/Card.module.css:371` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+  ```
+  animation: none;
+  ```
 - `packages/base-ui/src/components/clipboard-text/ClipboardText.module.css:69` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   transition: none;
@@ -468,7 +472,7 @@
   ```
   transition: none;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:496` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/data-table/DataTable.module.css:498` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: skeleton-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
@@ -544,23 +548,23 @@
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:61` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/spinner/Spinner.module.css:64` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: ov-spinner-fade var(--_duration-spin) linear infinite;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:108` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/spinner/Spinner.module.css:111` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:83` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:85` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
-  animation: ov-pulse var(--_duration-pulse) ease-in-out infinite;
+  animation: ov-pulse var(--_duration-pulse) var(--_ease-pulse) infinite;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:103` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:105` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:120` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:122` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
@@ -576,11 +580,11 @@
   ```
   animation: ov-toast-pulse var(--_duration-pulse) ease-in-out infinite;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:386` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/toast/Toast.module.css:387` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
-- `packages/base-ui/src/components/toast/Toast.module.css:392` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
+- `packages/base-ui/src/components/toast/Toast.module.css:394` — Raw transition/animation — use --ov-duration-*/--ov-ease-* tokens (breaks reduced motion)
   ```
   animation: none;
   ```
@@ -591,12 +595,8 @@
 
 ### Medium: Hardcoded spacing (Token/Styling)
 
-**113 finding(s)**
+**98 finding(s)**
 
-- `packages/ai-ui/src/components/artifact/AIArtifact.module.css:63` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
-  ```
 - `packages/ai-ui/src/components/branching/AIBranch.module.css:9` — Raw spacing value — use --ov-space-* token
   ```
   gap: 4px;
@@ -604,10 +604,6 @@
 - `packages/ai-ui/src/components/chat/AIContextIndicator.module.css:5` — Raw spacing value — use --ov-space-* token
   ```
   gap: 4px;
-  ```
-- `packages/ai-ui/src/components/chat/AIFollowUp.module.css:5` — Raw spacing value — use --ov-space-* token
-  ```
-  padding: 4px 0; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/ai-ui/src/components/chat/AIMessageActions.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
@@ -685,11 +681,11 @@
   ```
   gap: 6px;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:468` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/card/Card.module.css:472` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 2px;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:515` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/card/Card.module.css:519` — Raw spacing value — use --ov-space-* token
   ```
   gap: 2px;
   ```
@@ -704,10 +700,6 @@
 - `packages/base-ui/src/components/chip/Chip.module.css:5` — Raw spacing value — use --ov-space-* token
   ```
   gap: var(--_ov-group-spacing, 4px); /* fallback: --ov-space-stack-xs; no semantic token for 4px */
-  ```
-- `packages/base-ui/src/components/clipboard-text/ClipboardText.module.css:4` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/base-ui/src/components/code-block/CodeBlock.module.css:163` — Raw spacing value — use --ov-space-* token
   ```
@@ -729,41 +721,17 @@
   ```
   margin-block: 2px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:208` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-inline-start: 4px; /* TODO: --ov-space-stack-xs */
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:386` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:388` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 6px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:411` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 2px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:412` — Raw spacing value — use --ov-space-* token
-  ```
-  padding-block: 4px; /* TODO: --ov-space-stack-xs */
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:423` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:425` — Raw spacing value — use --ov-space-* token
   ```
   padding-block: 6px;
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:434` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
-  ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:440` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/base-ui/src/components/description-list/DescriptionList.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-gap: 10px;
-  ```
-- `packages/base-ui/src/components/description-list/DescriptionList.module.css:5` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-gap: 4px;
   ```
 - `packages/base-ui/src/components/description-list/DescriptionList.module.css:19` — Raw spacing value — use --ov-space-* token
   ```
@@ -812,10 +780,6 @@
 - `packages/base-ui/src/components/empty-state/EmptyState.module.css:27` — Raw spacing value — use --ov-space-* token
   ```
   --_ov-padding: 48px;
-  ```
-- `packages/base-ui/src/components/empty-state/EmptyState.module.css:68` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-top: 4px; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/base-ui/src/components/find-bar/FindBar.module.css:4` — Raw spacing value — use --ov-space-* token
   ```
@@ -929,10 +893,6 @@
   ```
   margin: 2px 0;
   ```
-- `packages/base-ui/src/components/selectable-list/SelectableList.module.css:161` — Raw spacing value — use --ov-space-* token
-  ```
-  margin-block-end: var(--_ov-group-label-gap-after, 4px); /* TODO: --ov-space-stack-xs */
-  ```
 - `packages/base-ui/src/components/skeleton/Skeleton.module.css:106` — Raw spacing value — use --ov-space-* token
   ```
   gap: 0.5em;
@@ -945,17 +905,9 @@
   ```
   --_ov-stat-gap: 10px;
   ```
-- `packages/base-ui/src/components/stat-row/StatRow.module.css:39` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
-  ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:24` — Raw spacing value — use --ov-space-* token
+- `packages/base-ui/src/components/status-dot/StatusDot.module.css:25` — Raw spacing value — use --ov-space-* token
   ```
   gap: 6px;
-  ```
-- `packages/base-ui/src/components/status-dot/StatusDot.module.css:33` — Raw spacing value — use --ov-space-* token
-  ```
-  gap: 4px; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/base-ui/src/components/switch/Switch.module.css:184` — Raw spacing value — use --ov-space-* token
   ```
@@ -996,14 +948,6 @@
 - `packages/base-ui/src/components/toolbar/Toolbar.module.css:28` — Raw spacing value — use --ov-space-* token
   ```
   gap: var(--_ov-toolbar-group-gap, 4px); /* --ov-space-stack-xs; no semantic token for 4px spacing */
-  ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:11` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-padding-inline: 4px; /* TODO: --ov-space-stack-xs */
-  ```
-- `packages/base-ui/src/components/tree-list/TreeList.module.css:12` — Raw spacing value — use --ov-space-* token
-  ```
-  --_ov-item-gap: 4px; /* TODO: --ov-space-stack-xs */
   ```
 - `packages/base-ui/src/components/tree-list/TreeList.module.css:37` — Raw spacing value — use --ov-space-* token
   ```
@@ -1633,7 +1577,7 @@
 
 **25 finding(s)**
 
-- `packages/ai-ui/src/components/chat/AIMessageEditor.tsx:68` — Arrow function as prop — causes child re-renders, use useCallback
+- `packages/ai-ui/src/components/chat/AIMessageEditor.tsx:67` — Arrow function as prop — causes child re-renders, use useCallback
   ```
   onChange={(e) => setValue(e.target.value)}
   ```
@@ -1883,11 +1827,11 @@
 
 **114 finding(s)**
 
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:84` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:85` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   0%, 100% { opacity: 1; }
   ```
-- `packages/ai-ui/src/components/agent/AgentControls.module.css:85` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/agent/AgentControls.module.css:86` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   50% { opacity: 0.5; }
   ```
@@ -1919,11 +1863,11 @@
   ```
   opacity: 0;
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:49` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:50` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   0%, 100% { opacity: 0.6; }
   ```
-- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:50` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/ai-ui/src/components/reasoning/ThinkingBlock.module.css:51` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   50% { opacity: 1; }
   ```
@@ -2007,19 +1951,19 @@
   ```
   opacity: 0.5;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:229` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:231` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:236` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:238` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 1;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:502` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:504` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.4;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:505` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/data-table/DataTable.module.css:507` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.8;
   ```
@@ -2199,19 +2143,19 @@
   ```
   opacity: 0.52;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:60` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:63` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.15;
-  ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:99` — Raw opacity — use --ov-opacity-* token if applicable
-  ```
-  opacity: 1;
   ```
 - `packages/base-ui/src/components/spinner/Spinner.module.css:102` — Raw opacity — use --ov-opacity-* token if applicable
   ```
+  opacity: 1;
+  ```
+- `packages/base-ui/src/components/spinner/Spinner.module.css:105` — Raw opacity — use --ov-opacity-* token if applicable
+  ```
   opacity: 0.15;
   ```
-- `packages/base-ui/src/components/spinner/Spinner.module.css:109` — Raw opacity — use --ov-opacity-* token if applicable
+- `packages/base-ui/src/components/spinner/Spinner.module.css:112` — Raw opacity — use --ov-opacity-* token if applicable
   ```
   opacity: 0.4;
   ```
@@ -2396,11 +2340,11 @@
   ```
   --_ov-font-size: 1rem; /* restores original 16px — body token resolves to 14px which removes the size progression */
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:210` — Raw font-size — use --ov-font-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:212` — Raw font-size — use --ov-font-* token
   ```
   font-size: 10px;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:457` — Raw font-size — use --ov-font-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:459` — Raw font-size — use --ov-font-* token
   ```
   font-size: 32px;
   ```
@@ -2453,7 +2397,7 @@
   ```
   z-index: 1;
   ```
-- `packages/base-ui/src/components/card/Card.module.css:403` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/card/Card.module.css:407` — Raw z-index — use --ov-z-* token
   ```
   z-index: 0;
   ```
@@ -2465,11 +2409,11 @@
   ```
   z-index: 120;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:161` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:163` — Raw z-index — use --ov-z-* token
   ```
   z-index: 2;
   ```
-- `packages/base-ui/src/components/data-table/DataTable.module.css:516` — Raw z-index — use --ov-z-* token
+- `packages/base-ui/src/components/data-table/DataTable.module.css:518` — Raw z-index — use --ov-z-* token
   ```
   z-index: 3;
   ```

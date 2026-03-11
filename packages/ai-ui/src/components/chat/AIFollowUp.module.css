@@ -2,5 +2,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--ov-space-stack-sm);
-  padding: 4px 0; /* TODO: --ov-space-stack-xs */
+  padding-block: var(--ov-space-stack-xs, 4px);
 }

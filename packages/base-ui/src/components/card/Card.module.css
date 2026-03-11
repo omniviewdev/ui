@@ -367,6 +367,10 @@
   }
 }
 
+:root[data-ov-motion='reduced'] .Indicator[data-ov-pulse='true']::before {
+  animation: none;
+}
+
 /* ─── Body ─── */
 
 .Body {

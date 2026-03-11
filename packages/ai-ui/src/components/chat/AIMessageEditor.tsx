@@ -1,6 +1,5 @@
 import {
   forwardRef,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -57,7 +56,7 @@ export const AIMessageEditor = forwardRef<HTMLDivElement, AIMessageEditorProps>(
       }
     }
 
-    const handleSave = useCallback(() => onSave(value), [onSave, value]);
+    const handleSave = () => onSave(value);
 
     return (
       <div ref={ref} className={cn(styles.Root, className)} {...rest}>

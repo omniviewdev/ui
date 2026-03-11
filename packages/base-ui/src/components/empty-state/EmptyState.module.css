@@ -65,5 +65,5 @@
   display: flex;
   align-items: center;
   gap: var(--ov-space-stack-sm);
-  margin-top: 4px; /* TODO: --ov-space-stack-xs */
+  margin-top: var(--ov-space-stack-xs, 4px);
 }

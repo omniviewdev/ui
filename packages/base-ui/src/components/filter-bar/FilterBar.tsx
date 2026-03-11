@@ -1,6 +1,7 @@
 import {
   createContext,
   forwardRef,
+  useCallback,
   useContext,
   useMemo,
   type HTMLAttributes,
@@ -66,12 +67,13 @@ const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(
   function FilterBarChip({ onRemove, children, ...props }, ref) {
     const { size } = useFilterBar();
 
-    const handleRemoveClick = onRemove
-      ? (e: MouseEvent) => {
-          e.stopPropagation();
-          onRemove();
-        }
-      : undefined;
+    const handleRemoveClick = useCallback(
+      (e: MouseEvent) => {
+        e.stopPropagation();
+        onRemove?.();
+      },
+      [onRemove],
+    );
 
     return (
       <Chip

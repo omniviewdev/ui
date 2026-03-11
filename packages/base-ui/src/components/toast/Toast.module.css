@@ -382,13 +382,15 @@
 /* ------------------------------------------------------------------ */
 
 :root[data-ov-motion='reduced'] .Toast,
-:root[data-ov-motion='reduced'] .ToastExiting {
+:root[data-ov-motion='reduced'] .ToastExiting,
+:root[data-ov-motion='reduced'] .ToastLoading .MessageGroup {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .Toast,
-  .ToastExiting {
+  .ToastExiting,
+  .ToastLoading .MessageGroup {
     animation: none;
   }
 }

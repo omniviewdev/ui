@@ -60,8 +60,8 @@
 .Actions {
   display: flex;
   align-items: center;
-  gap: 4px; /* TODO: --ov-space-stack-xs */
-  padding: 4px var(--ov-space-stack-md); /* TODO: --ov-space-stack-xs */
+  gap: var(--ov-space-stack-xs, 4px);
+  padding: var(--ov-space-stack-xs, 4px) var(--ov-space-stack-md);
   flex-shrink: 0;
 }
 

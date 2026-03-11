@@ -1,6 +1,7 @@
 .Root {
   /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
   --_duration-pulse: 2s;
+  --_ease-pulse: ease-in-out;
 
   display: flex;
   flex-direction: column;
@@ -20,7 +21,7 @@
   font-family: inherit;
   cursor: pointer;
   text-align: left;
-  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+  transition: color var(--ov-duration-interactive, 90ms) var(--ov-ease-standard, ease);
 }
 
 .Trigger:hover {
@@ -42,7 +43,7 @@
 }
 
 .Root[data-ov-streaming='true'] .BrainIcon {
-  animation: brain-pulse var(--_duration-pulse) ease-in-out infinite;
+  animation: brain-pulse var(--_duration-pulse) var(--_ease-pulse) infinite;
 }
 
 @keyframes brain-pulse {
@@ -61,7 +62,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  transition: transform var(--ov-duration-interactive) var(--ov-ease-standard);
+  transition: transform var(--ov-duration-interactive, 90ms) var(--ov-ease-standard, ease);
 }
 
 .Chevron[data-ov-open='true'] {

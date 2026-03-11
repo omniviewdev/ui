@@ -106,7 +106,7 @@
 .Group + .Group > .GroupHeader {
   border-block-start: 1px solid var(--ov-color-border-muted);
   margin-block-start: 2px;
-  padding-block-start: 8px;
+  padding-block-start: var(--ov-space-stack-sm);
 }
 
 /* ---------------------------------------------------------------------------

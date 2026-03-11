@@ -13,6 +13,8 @@
 .Root {
   --_ov-dot-size: 8px;
   --_ov-dot-color: var(--ov-color-fg-muted);
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 1.5s;
   --_ov-pulse-color: color-mix(in srgb, var(--_ov-dot-color) 60%, transparent 40%);
   --_ov-pulse-spread: 6px;
   --_ov-label-font-size: var(--ov-font-size-sm);
@@ -28,14 +30,14 @@
   --_ov-dot-size: 6px;
   --_ov-pulse-spread: 4px;
   --_ov-label-font-size: var(--ov-font-size-xs);
-  gap: 4px;
+  gap: 4px; /* TODO: --ov-space-stack-xs */
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-dot-size: 10px;
   --_ov-pulse-spread: 8px;
   --_ov-label-font-size: var(--ov-font-size-md);
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
 }
 
 /* ---- Status colors ---- */
@@ -78,7 +80,7 @@
 /* ---- Pulse ---- */
 
 .Root[data-ov-pulse='true'] .Dot {
-  animation: ov-pulse 1.5s ease-in-out infinite;
+  animation: ov-pulse var(--_duration-pulse) ease-in-out infinite;
 }
 
 /* ---- Pulse intensity ---- */

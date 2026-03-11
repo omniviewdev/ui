@@ -15,14 +15,14 @@
 .Root[data-ov-size='sm'] {
   --_ov-font-size-label: var(--ov-font-size-xxs, 0.625rem);
   --_ov-font-size-value: var(--ov-font-size-xs);
-  --_ov-gap: 8px;
+  --_ov-gap: var(--ov-space-stack-sm);
   --_ov-item-gap: 2px;
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-font-size-label: var(--ov-font-size-sm);
   --_ov-font-size-value: var(--ov-font-size-md);
-  --_ov-gap: 12px;
+  --_ov-gap: var(--ov-space-stack-md);
   --_ov-item-gap: 6px;
 }
 
@@ -52,7 +52,7 @@
   display: grid;
   grid-template-columns: 35% 65%;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
 }
 
 /* Vertical layout: label above, value below */

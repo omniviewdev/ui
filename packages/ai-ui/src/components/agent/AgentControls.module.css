@@ -1,4 +1,7 @@
 .Root {
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 1.5s;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,7 +34,7 @@
 
 .Status[data-ov-status='running'] .StatusDot {
   background: var(--ov-color-success-default);
-  animation: pulse-dot 1.5s ease-in-out infinite;
+  animation: pulse-dot var(--_duration-pulse) ease-in-out infinite;
 }
 
 .Status[data-ov-status='paused'] .StatusDot {

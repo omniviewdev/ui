@@ -25,6 +25,8 @@
   --_ov-dt-pinned-bg: var(--ov-color-bg-surface);
   /* elevation shadow color — no semantic token maps to raw alpha-black shadow values */
   --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 1.5s;
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-md);
   --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-md);
   --_ov-cell-font-size: var(--ov-size-table-cell-font-size-md);
@@ -203,7 +205,7 @@
 .SortIndicator {
   display: inline-flex;
   align-items: center;
-  margin-inline-start: 4px;
+  margin-inline-start: 4px; /* TODO: --ov-space-stack-xs */
   color: var(--_ov-dt-sort-indicator);
   font-size: 10px;
   flex-shrink: 0;
@@ -226,7 +228,7 @@
   user-select: none;
   opacity: 0;
   background: var(--_ov-dt-resize-handle);
-  transition: opacity 0.15s ease;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .HeaderCell:hover .ResizeHandle,
@@ -323,8 +325,8 @@
   border-radius: var(--ov-radius-control);
   flex-shrink: 0;
   transition:
-    color 0.1s ease,
-    background 0.1s ease;
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    background var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .ExpandToggle:hover {
@@ -333,7 +335,7 @@
 }
 
 .ExpandToggle svg {
-  transition: transform 0.15s ease;
+  transition: transform var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .ExpandToggle[data-ov-expanded='true'] svg {
@@ -379,7 +381,7 @@
 .Toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
   padding-inline: var(--_ov-cell-padding-inline);
   padding-block: 6px;
   border-bottom: 1px solid var(--_ov-dt-divider);
@@ -407,7 +409,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding-block: 4px;
+  padding-block: 4px; /* TODO: --ov-space-stack-xs */
 }
 
 /* --- Pagination --- */
@@ -416,7 +418,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
   padding-inline: var(--_ov-cell-padding-inline);
   padding-block: 6px;
   border-top: 1px solid var(--_ov-dt-divider);
@@ -429,13 +431,13 @@
 .PaginationInfo {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 4px; /* TODO: --ov-space-stack-xs */
 }
 
 .PaginationControls {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 4px; /* TODO: --ov-space-stack-xs */
 }
 
 /* --- Empty state --- */
@@ -445,8 +447,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 32px 16px;
+  gap: var(--ov-space-stack-sm);
+  padding: 32px var(--ov-space-stack-lg);
   color: var(--ov-color-fg-muted);
   text-align: center;
 }
@@ -491,7 +493,7 @@
   height: 10px;
   border-radius: var(--ov-radius-control);
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 60%, transparent 40%);
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  animation: skeleton-pulse var(--_duration-pulse) ease-in-out infinite;
 }
 
 @keyframes skeleton-pulse {

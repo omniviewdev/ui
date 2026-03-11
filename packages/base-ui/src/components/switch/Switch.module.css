@@ -25,7 +25,7 @@
   align-items: center;
   inline-size: var(--_ov-track-width);
   block-size: var(--_ov-track-height);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   border: 1px solid var(--_ov-track-border-off);
   background: var(--_ov-track-bg-off);
   padding: var(--_ov-track-padding);
@@ -137,7 +137,7 @@
 .Thumb {
   inline-size: var(--_ov-thumb-size);
   block-size: var(--_ov-thumb-size);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: var(--_ov-thumb-bg);
   /* elevation shadow — no semantic token maps to raw alpha-black shadow values */
   box-shadow:

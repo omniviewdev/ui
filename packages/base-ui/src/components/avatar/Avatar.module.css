@@ -20,7 +20,7 @@
 }
 
 .Root[data-ov-shape='circle'] {
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
 }
 
 .Root[data-ov-shape='rounded'] {
@@ -185,7 +185,7 @@
 }
 
 .Fallback[data-ov-shape='circle'] {
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
 }
 
 .Fallback[data-ov-shape='rounded'] {

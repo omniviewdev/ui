@@ -131,7 +131,7 @@
   bottom: 0;
   height: 2px;
   background: var(--_ov-indicator);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   transition: transform var(--ov-duration-panel) var(--ov-ease-standard);
 }
 

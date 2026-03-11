@@ -1,6 +1,6 @@
 .Root {
   --_ov-padding: 32px;
-  --_ov-gap: 8px;
+  --_ov-gap: var(--ov-space-stack-sm);
   --_ov-icon-size: 48px;
   --_ov-title-font-size: var(--ov-font-size-lg);
   --_ov-description-font-size: var(--ov-font-size-md);
@@ -25,7 +25,7 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-padding: 48px;
-  --_ov-gap: 12px;
+  --_ov-gap: var(--ov-space-stack-md);
   --_ov-icon-size: 64px;
   --_ov-title-font-size: var(--ov-font-size-xl);
   --_ov-description-font-size: var(--ov-font-size-lg);
@@ -64,6 +64,6 @@
 .Action {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: var(--ov-space-stack-sm);
+  margin-top: 4px; /* TODO: --ov-space-stack-xs */
 }

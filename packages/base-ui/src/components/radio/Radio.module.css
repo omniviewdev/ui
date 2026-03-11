@@ -130,7 +130,7 @@
   justify-content: center;
   inline-size: var(--_ov-control-size);
   block-size: var(--_ov-control-size);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   border: 1px solid var(--_ov-control-border);
   background: var(--_ov-control-bg);
   transition:
@@ -175,7 +175,7 @@
 .DefaultDot {
   inline-size: var(--_ov-indicator-size);
   block-size: var(--_ov-indicator-size);
-  border-radius: 999px;
+  border-radius: var(--ov-radius-pill, 999px);
   background: var(--_ov-dot-color);
 }
 

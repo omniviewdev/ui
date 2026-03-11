@@ -7,9 +7,9 @@
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
   pointer-events: none;
-  padding: 16px;
+  padding: var(--ov-space-stack-lg);
   box-sizing: border-box;
 }
 
@@ -54,16 +54,18 @@
   --_ov-border-accent: var(--ov-color-info);
   --_ov-surface-bg: var(--ov-color-bg-surface-raised);
   --_ov-surface-shadow: var(--ov-shadow-surface);
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 2s;
   --_toast-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
   --_toast-shadow-md: var(--ov-shadow-surface);
   --_toast-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.10);
 
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--ov-space-stack-sm);
   min-width: min(300px, 100vw - 32px);
   max-width: 420px;
-  padding: 12px 16px;
+  padding: var(--ov-space-stack-md) var(--ov-space-stack-lg);
   border-radius: var(--ov-radius-surface);
   border: 1px solid var(--ov-color-border-default);
   border-left: 3px solid var(--_ov-border-accent);
@@ -188,7 +190,7 @@
 }
 
 .ToastLoading .MessageGroup {
-  animation: ov-toast-pulse 2s ease-in-out infinite;
+  animation: ov-toast-pulse var(--_duration-pulse) ease-in-out infinite;
 }
 
 /* ------------------------------------------------------------------ */

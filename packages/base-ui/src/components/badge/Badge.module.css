@@ -8,6 +8,8 @@
 .Badge {
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-inverse);
+  /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
+  --_duration-pulse: 1.5s;
   --_ov-badge-min-w: 18px;
   --_ov-badge-h: 18px;
   --_ov-badge-pad: 0 5px;
@@ -29,8 +31,8 @@
   white-space: nowrap;
   pointer-events: none;
   transition:
-    opacity 200ms ease,
-    transform 200ms ease;
+    opacity var(--ov-duration-interactive) var(--ov-ease-standard),
+    transform var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 /* ── Standard variant (default) ── */
@@ -161,7 +163,7 @@
 
 .Badge[data-ov-pulse='true'] {
   --_ov-pulse-color: color-mix(in srgb, var(--_ov-bg) 50%, transparent 50%);
-  animation: ov-badge-pulse 1.5s ease-in-out infinite;
+  animation: ov-badge-pulse var(--_duration-pulse) ease-in-out infinite;
 }
 
 :root[data-ov-motion='reduced'] .Badge[data-ov-pulse='true'] {

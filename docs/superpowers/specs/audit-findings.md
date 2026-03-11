@@ -3361,3 +3361,91 @@
 - `packages/editors/src/components/object-inspector/ObjectInspector.tsx:1` — File has 421 lines (threshold: 300) — consider splitting
 - `packages/editors/src/components/terminal/Terminal.tsx:1` — File has 771 lines (threshold: 300) — consider splitting
 
+---
+
+## Triage Notes
+
+### False Positives & Adjustments
+
+1. **Avatar hardcoded colors (24 findings):** These are intentional per-initial color palettes (e.g., green for "A", blue for "B"). The avatar component uses a deterministic color mapping system. **Exclude from High severity fixes** — these should be moved to a token family (`--ov-color-avatar-*`) as a separate design task, not a bug fix.
+
+2. **Missing theme coverage (397 findings):** All 397 are the same pattern — tokens defined in `:root` (dark) but missing from `light`, `high-contrast-dark`, and `high-contrast-light` modes. This is a **systemic theme authoring gap**, not a per-component issue. Should be addressed as a theme-level task.
+
+3. **Inline styles — many are legitimate:** Several inline styles are necessary for dynamic values:
+   - Virtualization heights (`DataTableVirtualBody`, `TreeList`, `RowList`) — required by `@tanstack/react-virtual`
+   - Dynamic dimensions (`AspectRatio`, `Meter`, `Skeleton`) — CSS variable pass-through recommended but not a bug
+   - Cursor styles (`Drawer` resize handle) — state-dependent
+   - **Recommendation:** Convert static inline styles to CSS Modules; for dynamic ones, use CSS variable pass-through pattern (`style={{ '--_var': value }}`)
+
+4. **Hardcoded opacity (114 findings):** Many are legitimate CSS values (`opacity: 0`, `opacity: 1`) for transitions/animations. Only flag opacity values between 0 and 1 exclusive that could use tokens.
+
+5. **CSS class naming (kebab-case):** Some kebab-case class names are from CSS pseudo-selectors and selector combinators, not actual class definitions. Scanner may overcount.
+
+### Systemic Patterns
+
+| Pattern | Count | Type |
+|---------|-------|------|
+| Theme gaps (dark-only tokens) | 397 | Systemic — needs theme authoring sprint |
+| Primitive token leakage | 99 | Systemic — concentrated in 26 files, mostly base-ui |
+| Hardcoded transitions | 130 | Systemic — most components lack motion token adoption |
+| Hardcoded spacing | 85 | Systemic — varies from intentional 1px borders to large gaps |
+| Missing IDE alias | 91 | Low impact — only relevant for IDE-surface components |
+
+### Top 10 Worst Offending Components (by finding density)
+
+1. **DataTable** (43 findings) — spacing, transitions, primitive tokens
+2. **EditorTabs** (42 findings) — transitions, primitive tokens, colors
+3. **Toast** (35 findings) — transitions, colors, primitive tokens
+4. **Avatar** (26 findings) — hardcoded color palette (see false positive note)
+5. **Card** (16 findings) — spacing, primitive tokens
+6. **Grid** (16 findings) — primitive tokens (16 uses)
+7. **Timeline** (14 findings) — primitive tokens, transitions
+8. **Select** (14 findings) — spacing, transitions
+9. **SelectableList** (14 findings) — transitions, spacing
+10. **Table** (14 findings) — spacing, transitions
+
+---
+
+## Manual Review Notes
+
+### Performance Review of Complex Components
+
+Manual deep-dive of 12 key components across all 3 packages.
+
+#### Critical Issues
+
+**1. CommandList — Meta Object Allocation in Render Loop** [CRITICAL]
+- `packages/base-ui/src/components/command-list/CommandList.tsx` (lines 319-326, 378-385)
+- New `CommandItemMeta` objects created on every render in map functions
+- Triggers unnecessary `renderItem` invocations for large lists
+- **Fix:** Memoize meta computation or move to store layer
+
+#### Important Issues
+
+**2. CommandList — Mouse Move Handler Closure Churn** [IMPORTANT]
+- Lines 435-439: `handleMouseMove` depends on reactive `itemState.isActive`
+- Creates new closures during rapid navigation
+- **Fix:** Memoize `store.setActiveKey` invocation separately
+
+**3. DataTable — Non-Virtualized Row Rendering** [IMPORTANT]
+- `DataTableBody.tsx` (lines 21-65): Rows rendered inline without memoization
+- All cells recalculate pinning/sizing styles on parent re-renders
+- **Fix:** Extract to memoized Row component (pattern exists in DataTableVirtualBody)
+
+**4. DataTable — Confusing 'use no memo' Directive** [IMPORTANT]
+- `MemoizedRow.tsx` (line 1): Declares `'use no memo'` but component IS memoized
+- **Fix:** Remove directive or add clarifying comment
+
+#### Minor Issues
+
+- **CodeEditor:** 11 separate useEffect hooks — cognitive burden, consider grouping
+- **DiffViewer:** Language prop not memoized — document requirement for consumers
+- **ToolCall:** Re-renders on status changes even when visibility unchanged
+
+#### Components with Excellent Performance
+
+- **TreeList:** Three-context split, useSyncExternalStore, flat node caching — exemplary
+- **Terminal:** Callback refs, debouncing, comprehensive cleanup — excellent
+- **ChatMessageList:** Virtualized with sophisticated auto-scroll — excellent
+- **StreamingText:** Direct DOM updates during streaming — efficient
+- **ChatInput, TypingIndicator, ToolCallList:** Appropriately simple, no issues

@@ -12,6 +12,7 @@
     "@codspeed/vitest-plugin": "^4.0.0",
     "@omniview/base-ui": "workspace:*",
     "@omniview/editors": "workspace:*",
+    "@tanstack/react-table": "^8.21.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19.0.10",

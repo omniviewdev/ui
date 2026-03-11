@@ -204,7 +204,7 @@
 }
 
 .Tab[data-disabled] {
-  opacity: var(--ov-opacity-disabled);
+  opacity: var(--ov-opacity-disabled, 0.45);
   pointer-events: none;
   cursor: default;
 }

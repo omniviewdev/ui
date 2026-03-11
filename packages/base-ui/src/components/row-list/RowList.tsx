@@ -115,14 +115,14 @@ const RowListHeader = forwardRef<HTMLDivElement, RowListHeaderProps>(function Ro
             className={styles.HeaderCell}
             data-sortable={col.sortable ? '' : undefined}
             aria-sort={ariaSortValue}
-            tabIndex={col.sortable ? 0 : undefined}
+            tabIndex={col.sortable && onSortChange ? 0 : undefined}
             style={
               {
                 '--_row-header-cell-justify': col.align ?? undefined,
               } as CSSProperties
             }
-            onClick={col.sortable ? () => handleHeaderClick(col) : undefined}
-            onKeyDown={col.sortable ? (e) => handleHeaderKeyDown(col, e) : undefined}
+            onClick={col.sortable && onSortChange ? () => handleHeaderClick(col) : undefined}
+            onKeyDown={col.sortable && onSortChange ? (e) => handleHeaderKeyDown(col, e) : undefined}
           >
             {col.header}
             {col.sortable && isSorted && <SortIconComponent className={styles.SortIcon} />}

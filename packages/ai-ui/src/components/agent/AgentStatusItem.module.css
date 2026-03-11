@@ -9,7 +9,7 @@
   flex-shrink: 0;
   width: 16px;
   text-align: center;
-  font-size: var(--ov-font-size-caption);
+  font-size: var(--ov-font-size-caption, 0.75rem);
   line-height: 1;
 }
 

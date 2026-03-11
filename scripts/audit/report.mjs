@@ -61,7 +61,7 @@ export function generateReport(findings) {
       md += `- \`${item.file}:${item.line}\` — ${item.message}\n`;
       if (item.snippet) {
         const lang = item.language ?? langFromFile(item.file);
-        md += `  \`\`\`${lang}\n  ${item.snippet}\n  \`\`\`\n`;
+        md += `\n  \`\`\`${lang}\n  ${item.snippet}\n  \`\`\`\n\n`;
       }
     }
     md += `\n`;

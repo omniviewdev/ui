@@ -54,10 +54,8 @@ export default defineConfig(async () => {
       setupFiles: ['./src/setup.ts'],
       pool: 'forks',
       fileParallelism: false,
-      poolOptions: {
-        forks: {
-          execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
-        },
+      forks: {
+        execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
       },
     },
   };

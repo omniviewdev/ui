@@ -31,13 +31,13 @@
   --_ov-radius: 0;
 }
 .Root[data-ov-radius='sm'] {
-  --_ov-radius: var(--ov-primitive-radius-sm);
+  --_ov-radius: 4px; /* --ov-primitive-radius-sm; no --ov-radius-sm semantic token (closest: --ov-radius-control at 6px) */
 }
 .Root[data-ov-radius='md'] {
-  --_ov-radius: var(--ov-primitive-radius-md);
+  --_ov-radius: var(--ov-radius-control);
 }
 .Root[data-ov-radius='lg'] {
-  --_ov-radius: var(--ov-primitive-radius-lg);
+  --_ov-radius: var(--ov-radius-surface);
 }
 .Root[data-ov-radius='full'] {
   --_ov-radius: 9999px;

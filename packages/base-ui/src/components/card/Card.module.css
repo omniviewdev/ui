@@ -95,13 +95,13 @@
 /* ─── Elevation (shadow depth) ─── */
 
 .Root[data-ov-elevation='1'] {
-  box-shadow: var(--ov-primitive-shadow-sm);
+  box-shadow: var(--ov-shadow-surface); /* sm elevation; --ov-shadow-surface (md) is closest semantic token */
 }
 .Root[data-ov-elevation='2'] {
-  box-shadow: var(--ov-primitive-shadow-md);
+  box-shadow: var(--ov-shadow-surface);
 }
 .Root[data-ov-elevation='3'] {
-  box-shadow: var(--ov-primitive-shadow-lg);
+  box-shadow: var(--ov-shadow-surface); /* lg elevation; --ov-shadow-surface (md) is closest semantic token */
 }
 
 /* ─── Color accents ─── */

@@ -10,7 +10,7 @@
   --_ov-tab-modified-border: var(--ov-color-tab-modified-border);
   --_ov-tab-border: var(--ov-color-tab-border);
   --_ov-tab-divider: var(--ov-color-border-default);
-  --_ov-tab-font-size: var(--ov-primitive-font-size-13);
+  --_ov-tab-font-size: var(--ov-font-size-caption); /* 0.8125rem (13px) original; caption (12px) is closest compact semantic token */
   --_ov-tab-padding-x: 10px;
   --_ov-tab-padding-trailing: 6px;
   --_ov-tab-close-size: 16px;
@@ -105,7 +105,7 @@
 
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: 28px;
-  --_ov-tab-font-size: var(--ov-primitive-font-size-11);
+  --_ov-tab-font-size: var(--ov-font-size-caption); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
   --_ov-tab-padding-x: 8px;
   --_ov-tab-padding-trailing: 4px;
 }
@@ -151,7 +151,7 @@
   padding: 0 3px;
   border-radius: 999px;
   background: var(--ov-color-state-hover);
-  font-size: var(--ov-primitive-font-size-11);
+  font-size: var(--ov-font-size-caption); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
   line-height: 1;
 }
 
@@ -293,7 +293,7 @@
   height: var(--_ov-tab-close-size);
   padding: 0;
   border: none;
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   background: transparent;
   color: var(--_ov-tab-fg);
   cursor: pointer;
@@ -412,7 +412,7 @@
 .DetachGhost {
   opacity: 0.85;
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   cursor: grabbing;
   pointer-events: none;
 }

@@ -244,7 +244,7 @@
 }
 
 .Root[data-ov-size='lg'] .Label {
-  font-size: var(--ov-primitive-font-size-16);
+  font-size: var(--ov-font-size-body); /* 1rem (16px) original; body (14px) is closest semantic token; consider --ov-font-size-title (18px) if larger text is preferred */
 }
 
 .Item {

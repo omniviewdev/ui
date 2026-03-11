@@ -1,6 +1,6 @@
 .Root {
   display: grid;
-  gap: var(--_ov-spacing, var(--ov-primitive-space-2));
+  gap: var(--_ov-spacing, var(--ov-space-stack-sm));
 }
 
 /* Fixed columns mode */
@@ -53,53 +53,53 @@
 
 /* Spacing scale */
 .Root[data-ov-spacing='0'] {
-  --_ov-spacing: var(--ov-primitive-space-0);
+  --_ov-spacing: 0;
 }
 .Root[data-ov-spacing='1'] {
-  --_ov-spacing: var(--ov-primitive-space-1);
+  --_ov-spacing: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }
 .Root[data-ov-spacing='2'] {
-  --_ov-spacing: var(--ov-primitive-space-2);
+  --_ov-spacing: var(--ov-space-stack-sm);
 }
 .Root[data-ov-spacing='3'] {
-  --_ov-spacing: var(--ov-primitive-space-3);
+  --_ov-spacing: var(--ov-space-stack-md);
 }
 .Root[data-ov-spacing='4'] {
-  --_ov-spacing: var(--ov-primitive-space-4);
+  --_ov-spacing: var(--ov-space-stack-lg);
 }
 
 /* Row spacing overrides */
 .Root[data-ov-row-spacing='0'] {
-  row-gap: var(--ov-primitive-space-0);
+  row-gap: 0;
 }
 .Root[data-ov-row-spacing='1'] {
-  row-gap: var(--ov-primitive-space-1);
+  row-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }
 .Root[data-ov-row-spacing='2'] {
-  row-gap: var(--ov-primitive-space-2);
+  row-gap: var(--ov-space-stack-sm);
 }
 .Root[data-ov-row-spacing='3'] {
-  row-gap: var(--ov-primitive-space-3);
+  row-gap: var(--ov-space-stack-md);
 }
 .Root[data-ov-row-spacing='4'] {
-  row-gap: var(--ov-primitive-space-4);
+  row-gap: var(--ov-space-stack-lg);
 }
 
 /* Column spacing overrides */
 .Root[data-ov-column-spacing='0'] {
-  column-gap: var(--ov-primitive-space-0);
+  column-gap: 0;
 }
 .Root[data-ov-column-spacing='1'] {
-  column-gap: var(--ov-primitive-space-1);
+  column-gap: 4px; /* --ov-primitive-space-1; no --ov-space-stack-xs semantic token */
 }
 .Root[data-ov-column-spacing='2'] {
-  column-gap: var(--ov-primitive-space-2);
+  column-gap: var(--ov-space-stack-sm);
 }
 .Root[data-ov-column-spacing='3'] {
-  column-gap: var(--ov-primitive-space-3);
+  column-gap: var(--ov-space-stack-md);
 }
 .Root[data-ov-column-spacing='4'] {
-  column-gap: var(--ov-primitive-space-4);
+  column-gap: var(--ov-space-stack-lg);
 }
 
 /* ───────────────────────────────────────────────

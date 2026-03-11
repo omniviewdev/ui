@@ -49,15 +49,15 @@
 }
 
 .Root[data-ov-elevation='1'] {
-  --_ov-shadow: var(--ov-primitive-shadow-sm);
+  --_ov-shadow: var(--ov-shadow-surface); /* sm elevation; --ov-shadow-surface (md) is closest semantic token */
 }
 
 .Root[data-ov-elevation='2'] {
-  --_ov-shadow: var(--ov-primitive-shadow-md);
+  --_ov-shadow: var(--ov-shadow-surface);
 }
 
 .Root[data-ov-elevation='3'] {
-  --_ov-shadow: var(--ov-primitive-shadow-lg);
+  --_ov-shadow: var(--ov-shadow-surface); /* lg elevation; --ov-shadow-surface (md) is closest semantic token */
 }
 
 .Root[data-ov-color='neutral'] {

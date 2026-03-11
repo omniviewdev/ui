@@ -4,8 +4,8 @@
   --_ov-timeline-row-height: 1.5rem;
   --_ov-timeline-font-size: var(--ov-font-size-body);
   --_ov-timeline-ts-font-size: var(--ov-font-size-caption);
-  --_ov-timeline-gap: var(--ov-primitive-space-3);
-  --_ov-timeline-item-gap: var(--ov-primitive-space-3);
+  --_ov-timeline-gap: var(--ov-space-stack-md);
+  --_ov-timeline-item-gap: var(--ov-space-stack-md);
   --_ov-timeline-connector-width: 2px;
 
   display: flex;
@@ -19,8 +19,8 @@
   --_ov-timeline-row-height: 1.25rem;
   --_ov-timeline-font-size: var(--ov-font-size-caption);
   --_ov-timeline-ts-font-size: var(--ov-font-size-xs, 0.625rem);
-  --_ov-timeline-gap: var(--ov-primitive-space-2);
-  --_ov-timeline-item-gap: var(--ov-primitive-space-2);
+  --_ov-timeline-gap: var(--ov-space-stack-sm);
+  --_ov-timeline-item-gap: var(--ov-space-stack-sm);
 }
 
 .Root[data-ov-size='lg'] {
@@ -29,8 +29,8 @@
   --_ov-timeline-row-height: 1.75rem;
   --_ov-timeline-font-size: var(--ov-font-size-body-lg, 1rem);
   --_ov-timeline-ts-font-size: var(--ov-font-size-body);
-  --_ov-timeline-gap: var(--ov-primitive-space-4);
-  --_ov-timeline-item-gap: var(--ov-primitive-space-4);
+  --_ov-timeline-gap: var(--ov-space-stack-lg);
+  --_ov-timeline-item-gap: var(--ov-space-stack-lg);
 }
 
 /* ---------------------------------------------------------------------------
@@ -170,7 +170,7 @@
 .ExpandTrigger {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-primitive-space-1);
+  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
   height: var(--_ov-timeline-row-height);
   line-height: var(--_ov-timeline-row-height);
   padding: 0;
@@ -182,7 +182,7 @@
   font-size: var(--_ov-timeline-font-size);
   cursor: pointer;
   text-align: start;
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
 }
 
 .ExpandTrigger:hover {
@@ -221,12 +221,12 @@
 .DetailsInner {
   overflow: hidden;
   min-height: 0;
-  padding-top: var(--ov-primitive-space-1);
+  padding-top: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }
 
 /* Nested timelines inside details get tighter spacing */
 .DetailsInner .Root {
-  padding-top: var(--ov-primitive-space-1);
+  padding-top: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -282,7 +282,7 @@
   color: var(--ov-color-fg-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding-block: var(--ov-primitive-space-2);
+  padding-block: var(--ov-space-stack-sm);
   /* Align with content column — skip timestamp + gap + indicator + gap */
   padding-inline-start: calc(4.5rem + var(--_ov-timeline-gap) + var(--_ov-timeline-icon-size) + var(--_ov-timeline-gap));
 }

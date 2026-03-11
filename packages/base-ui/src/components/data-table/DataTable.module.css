@@ -318,7 +318,7 @@
   padding: 0;
   cursor: pointer;
   color: var(--ov-color-fg-muted);
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   flex-shrink: 0;
   transition:
     color 0.1s ease,
@@ -487,7 +487,7 @@
 .SkeletonBar {
   width: 70%;
   height: 10px;
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-control);
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 60%, transparent 40%);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }

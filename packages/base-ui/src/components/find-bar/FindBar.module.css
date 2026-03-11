@@ -1,8 +1,8 @@
 .Root {
   display: flex;
   flex-direction: column;
-  gap: var(--ov-primitive-space-1);
-  padding: var(--ov-primitive-space-2);
+  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  padding: var(--ov-space-stack-sm);
   background: var(--ov-color-bg-default);
   border: 1px solid var(--ov-color-border-muted);
   border-radius: var(--ov-radius-surface);
@@ -10,7 +10,7 @@
 }
 
 .Row {
-  gap: var(--ov-primitive-space-1);
+  gap: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }
 
 .SearchInput {

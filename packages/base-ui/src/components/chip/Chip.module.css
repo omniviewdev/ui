@@ -1,7 +1,7 @@
 .Group {
   display: inline-flex;
   align-items: center;
-  gap: var(--_ov-group-spacing, var(--ov-primitive-space-1));
+  gap: var(--_ov-group-spacing, 4px); /* fallback: --ov-space-stack-xs; no semantic token for 4px */
 }
 
 .Group[data-ov-wrap='true'] {
@@ -13,19 +13,19 @@
 }
 
 .Group[data-ov-spacing='0'] {
-  --_ov-group-spacing: var(--ov-primitive-space-0);
+  --_ov-group-spacing: 0;
 }
 .Group[data-ov-spacing='1'] {
-  --_ov-group-spacing: var(--ov-primitive-space-1);
+  --_ov-group-spacing: 4px; /* --ov-space-stack-xs; no semantic token for 4px spacing */
 }
 .Group[data-ov-spacing='2'] {
-  --_ov-group-spacing: var(--ov-primitive-space-2);
+  --_ov-group-spacing: var(--ov-space-stack-sm);
 }
 .Group[data-ov-spacing='3'] {
-  --_ov-group-spacing: var(--ov-primitive-space-3);
+  --_ov-group-spacing: var(--ov-space-stack-md);
 }
 .Group[data-ov-spacing='4'] {
-  --_ov-group-spacing: var(--ov-primitive-space-4);
+  --_ov-group-spacing: var(--ov-space-stack-lg);
 }
 
 .Root {

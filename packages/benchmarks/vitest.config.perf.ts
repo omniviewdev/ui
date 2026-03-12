@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Vitest config for Reassure performance tests.
@@ -10,8 +14,10 @@ import path from 'node:path';
  * to .reassure/current.perf (or baseline.perf) for cross-branch comparison.
  *
  * V8 flags match Reassure's recommendations: disable JIT for stable measurements.
+ *
+ * Note: async factory + cast mirrors vitest.config.ts — needed because Vitest's
+ * InlineConfig type doesn't include `forks` even though the runtime supports it.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineConfig(async () => {
   return {
     plugins: [

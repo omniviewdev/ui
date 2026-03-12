@@ -60,6 +60,7 @@ test('Select: open dropdown', async () => {
       scenario: async () => {
         const trigger = screen.getByRole('combobox');
         fireEvent.click(trigger);
+        await screen.findByRole('listbox');
       },
     },
   );

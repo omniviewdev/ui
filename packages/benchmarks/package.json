@@ -12,6 +12,7 @@
     "perf:compare": "node scripts/perf-compare.mjs"
   },
   "devDependencies": {
+    "@callstack/reassure-compare": "^1.4.1",
     "@codspeed/vitest-plugin": "^5.2.0",
     "@omniview/base-ui": "workspace:*",
     "@omniview/editors": "workspace:*",

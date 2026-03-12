@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { TreeList } from '@omniview/base-ui';
 import type { TreeNodeMeta } from '@omniview/base-ui';
-import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 
 // ---------------------------------------------------------------------------
@@ -49,8 +49,6 @@ const flat500 = makeFlatItems(500);
 const nested50x2 = makeNestedItems(50, 2);
 const flat100 = makeFlatItems(100);
 const flat150 = makeFlatItems(150);
-const flat25 = makeFlatItems(25);
-
 // ---------------------------------------------------------------------------
 // Wrapper
 // ---------------------------------------------------------------------------
@@ -90,10 +88,4 @@ describe('TreeList', () => {
     TIER_1_OPTIONS,
   );
 
-  benchMountMany(
-    'mount 20 instances (25 nodes each)',
-    20,
-    (i) => <TreeListBench key={i} items={flat25} />,
-    TIER_1_OPTIONS,
-  );
 });

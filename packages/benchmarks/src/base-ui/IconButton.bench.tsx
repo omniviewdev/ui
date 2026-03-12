@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { IconButton } from '@omniview/base-ui';
 
@@ -19,4 +19,6 @@ describe('IconButton', () => {
     (props) => <IconButton {...props}><span>E</span></IconButton>,
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 200', 200, (i) => <IconButton key={i} aria-label={`Action ${i}`}><span>E</span></IconButton>, TIER_2_OPTIONS);
 });

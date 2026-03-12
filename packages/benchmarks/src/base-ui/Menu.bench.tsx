@@ -5,7 +5,7 @@ import { Menu } from '@omniview/base-ui';
 
 describe('Menu', () => {
   benchRender(
-    'mount',
+    'mount (closed)',
     () => (
       <Menu>
         <Menu.Trigger>Open</Menu.Trigger>
@@ -26,8 +26,8 @@ describe('Menu', () => {
   benchRerender(
     'open toggle',
     {
-      initialProps: { open: false as boolean },
-      updatedProps: { open: true as boolean },
+      initialProps: { open: false },
+      updatedProps: { open: true },
     },
     (props) => (
       <Menu open={props.open}>

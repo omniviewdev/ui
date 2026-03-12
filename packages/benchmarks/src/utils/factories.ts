@@ -30,14 +30,39 @@ export interface TreeNode {
 }
 
 export function makeTreeNodes(count: number, depth: number = 2): TreeNode[] {
-  function build(prefix: string, remaining: number): TreeNode[] {
-    return Array.from({ length: count }, (_, i) => ({
-      id: `${prefix}-${i}`,
-      label: `Node ${prefix}-${i}`,
-      children: remaining > 0 ? build(`${prefix}-${i}`, remaining - 1) : undefined,
-    }));
+  let created = 0;
+  const roots: TreeNode[] = [];
+  const queue: { node: TreeNode; depth: number }[] = [];
+
+  // Create root-level nodes
+  while (created < count) {
+    const node: TreeNode = {
+      id: `node-${created}`,
+      label: `Node ${created}`,
+    };
+    created++;
+    roots.push(node);
+    if (depth > 0) queue.push({ node, depth: 1 });
   }
-  return build('root', depth);
+
+  // Breadth-first: attach children until budget exhausted
+  while (queue.length > 0 && created < count) {
+    const { node, depth: d } = queue.shift()!;
+    const children: TreeNode[] = [];
+    const childCount = Math.min(2, count - created);
+    for (let i = 0; i < childCount; i++) {
+      const child: TreeNode = {
+        id: `node-${created}`,
+        label: `Node ${created}`,
+      };
+      created++;
+      children.push(child);
+      if (d < depth) queue.push({ node: child, depth: d + 1 });
+    }
+    node.children = children;
+  }
+
+  return roots;
 }
 
 // ── Option data (Select, Autocomplete, Combobox, MultiSelect) ──
@@ -108,6 +133,20 @@ export function makeTabs(count: number): TabItem[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `tab-${i}`,
     label: `Tab ${i}`,
+    closable: true,
+  }));
+}
+
+export interface EditorTabItem {
+  id: string;
+  title: string;
+  closable?: boolean;
+}
+
+export function makeEditorTabs(count: number, prefix = ''): EditorTabItem[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `${prefix}tab-${i}`,
+    title: `File ${prefix}${i}.ts`,
     closable: true,
   }));
 }

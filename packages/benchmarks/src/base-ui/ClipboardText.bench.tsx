@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { ClipboardText } from '@omniview/base-ui';
 
@@ -19,4 +19,6 @@ describe('ClipboardText', () => {
     (props) => <ClipboardText {...props} />,
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 100', 100, (i) => <ClipboardText key={i} value={`command-${i}`} />, TIER_2_OPTIONS);
 });

@@ -25,8 +25,8 @@ describe('NavList', () => {
   benchRerender(
     'active item change',
     {
-      initialProps: { activeKey: 'home' as string },
-      updatedProps: { activeKey: 'settings' as string },
+      initialProps: { activeKey: 'home' },
+      updatedProps: { activeKey: 'settings' },
     },
     (props) => (
       <NavList activeKey={props.activeKey}>

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { CommandList } from '@omniview/base-ui';
 import type { CommandItemMeta } from '@omniview/base-ui';
-import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeCommandItems, type CommandItem } from '../utils/factories';
 
@@ -18,9 +18,8 @@ const renderItem = (item: CommandItem, meta: CommandItemMeta) => (
 );
 
 // Pre-generate data
-const items500 = makeCommandItems(500);
-const items600 = makeCommandItems(600);
-const items25 = makeCommandItems(25);
+const items200 = makeCommandItems(200);
+const items300 = makeCommandItems(300);
 
 // ---------------------------------------------------------------------------
 // Wrapper
@@ -44,19 +43,12 @@ function CommandListBench({ items }: { items: CommandItem[] }) {
 // ---------------------------------------------------------------------------
 
 describe('CommandList', () => {
-  benchRender('mount 500 items', () => <CommandListBench items={items500} />, TIER_1_OPTIONS);
+  benchRender('mount 200 items', () => <CommandListBench items={items200} />, TIER_1_OPTIONS);
 
   benchRerender(
-    'data change (500 -> 600 items)',
-    { initialProps: { items: items500 }, updatedProps: { items: items600 } },
+    'data change (200 -> 300 items)',
+    { initialProps: { items: items200 }, updatedProps: { items: items300 } },
     (props) => <CommandListBench {...props} />,
-    TIER_1_OPTIONS,
-  );
-
-  benchMountMany(
-    'mount 20 instances (25 items each)',
-    20,
-    (i) => <CommandListBench key={i} items={items25} />,
     TIER_1_OPTIONS,
   );
 });

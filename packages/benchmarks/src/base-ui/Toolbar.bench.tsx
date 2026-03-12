@@ -21,8 +21,8 @@ describe('Toolbar', () => {
   benchRerender(
     'disabled toggle',
     {
-      initialProps: { 'aria-disabled': undefined as undefined },
-      updatedProps: { 'aria-disabled': 'true' as const },
+      initialProps: { 'aria-disabled': undefined },
+      updatedProps: { 'aria-disabled': 'true' },
     },
     (props) => (
       <Toolbar {...props}>

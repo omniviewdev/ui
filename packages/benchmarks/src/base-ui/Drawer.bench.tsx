@@ -19,11 +19,11 @@ describe('Drawer', () => {
   benchRerender(
     'open/close toggle',
     {
-      initialProps: { open: true as boolean },
-      updatedProps: { open: false as boolean },
+      initialProps: { open: true },
+      updatedProps: { open: false },
     },
     (props) => (
-      <Drawer open={props.open} onOpenChange={noop} anchor="bottom" defaultSize={320}>
+      <Drawer open={props.open} onOpenChange={noop} anchor="bottom" defaultSize={320} animate={false}>
         <Drawer.Content>Drawer content</Drawer.Content>
       </Drawer>
     ),

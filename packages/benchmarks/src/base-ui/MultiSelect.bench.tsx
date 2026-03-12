@@ -1,11 +1,10 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeOptions, type Option } from '../utils/factories';
 import { MultiSelect } from '@omniview/base-ui';
 
 const options100 = makeOptions(100);
-const options10 = makeOptions(10);
 const noSelection: Option[] = [];
 const selected20 = options100.slice(0, 20);
 
@@ -38,10 +37,4 @@ describe('MultiSelect', () => {
     TIER_1_OPTIONS,
   );
 
-  benchMountMany(
-    'mount 100 instances (10 options each)',
-    100,
-    (i) => <MultiSelectBench key={i} options={options10} />,
-    TIER_1_OPTIONS,
-  );
 });

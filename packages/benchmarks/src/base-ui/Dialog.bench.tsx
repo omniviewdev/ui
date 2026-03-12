@@ -24,8 +24,8 @@ describe('Dialog', () => {
   benchRerender(
     'open/close toggle',
     {
-      initialProps: { open: true as boolean },
-      updatedProps: { open: false as boolean },
+      initialProps: { open: true },
+      updatedProps: { open: false },
     },
     (props) => (
       <Dialog open={props.open} onClose={noop} size="md">

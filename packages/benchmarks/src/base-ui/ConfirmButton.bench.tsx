@@ -15,8 +15,8 @@ describe('ConfirmButton', () => {
   benchRerender(
     'disabled toggle',
     {
-      initialProps: { disabled: false as boolean, onConfirm: noop, children: 'Delete' as const },
-      updatedProps: { disabled: true as boolean, onConfirm: noop, children: 'Delete' as const },
+      initialProps: { disabled: false, onConfirm: noop, children: 'Delete' },
+      updatedProps: { disabled: true, onConfirm: noop, children: 'Delete' },
     },
     (props) => <ConfirmButton {...props} />,
     TIER_2_OPTIONS,

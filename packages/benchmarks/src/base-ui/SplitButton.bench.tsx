@@ -20,8 +20,8 @@ describe('SplitButton', () => {
   benchRerender(
     'disabled toggle',
     {
-      initialProps: { disabled: false as boolean },
-      updatedProps: { disabled: true as boolean },
+      initialProps: { disabled: false },
+      updatedProps: { disabled: true },
     },
     (props) => (
       <SplitButton {...props}>

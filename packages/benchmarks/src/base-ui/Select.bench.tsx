@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { makeOptions } from '../utils/factories';
 import { Select } from '@omniview/base-ui';
@@ -53,4 +53,23 @@ describe('Select', () => {
     ),
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 50', 50, (i) => (
+    <Select key={i} defaultValue="option-0">
+      <Select.Trigger>
+        <Select.Value placeholder="Choose..." />
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Positioner>
+          <Select.Popup>
+            <Select.List>
+              <Select.Item value="a">A</Select.Item>
+              <Select.Item value="b">B</Select.Item>
+              <Select.Item value="c">C</Select.Item>
+            </Select.List>
+          </Select.Popup>
+        </Select.Positioner>
+      </Select.Portal>
+    </Select>
+  ), TIER_2_OPTIONS);
 });

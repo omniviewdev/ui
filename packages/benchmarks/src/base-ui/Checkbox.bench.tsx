@@ -11,5 +11,5 @@ describe('Checkbox', () => {
     (props) => <Checkbox {...props} />,
     TIER_2_OPTIONS,
   );
-  benchMountMany('mount 1000', 1000, (i) => <Checkbox key={i} />, TIER_2_OPTIONS);
+  benchMountMany('mount 200', 200, (i) => <Checkbox key={i} />, TIER_2_OPTIONS);
 });

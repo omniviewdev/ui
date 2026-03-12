@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Card } from '@omniview/base-ui';
 
@@ -33,4 +33,11 @@ describe('Card', () => {
     ),
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 100', 100, (i) => (
+    <Card key={i}>
+      <Card.Header><Card.Title>Card {i}</Card.Title></Card.Header>
+      <Card.Body>Content {i}</Card.Body>
+    </Card>
+  ), TIER_2_OPTIONS);
 });

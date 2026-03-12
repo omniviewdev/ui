@@ -1,13 +1,12 @@
 import { describe } from 'vitest';
 import { BasicList } from '@omniview/base-ui';
-import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeRows, type Row } from '../utils/factories';
 
 // Pre-generate data
-const rows500 = makeRows(500);
-const rows600 = makeRows(600);
-const rows25 = makeRows(25);
+const rows200 = makeRows(200);
+const rows300 = makeRows(300);
 
 // ---------------------------------------------------------------------------
 // Wrapper
@@ -33,19 +32,12 @@ function BasicListBench({ data }: { data: Row[] }) {
 // ---------------------------------------------------------------------------
 
 describe('BasicList', () => {
-  benchRender('mount 500 items', () => <BasicListBench data={rows500} />, TIER_1_OPTIONS);
+  benchRender('mount 200 items', () => <BasicListBench data={rows200} />, TIER_1_OPTIONS);
 
   benchRerender(
-    'data change (500 -> 600 items)',
-    { initialProps: { data: rows500 }, updatedProps: { data: rows600 } },
+    'data change (200 -> 300 items)',
+    { initialProps: { data: rows200 }, updatedProps: { data: rows300 } },
     (props) => <BasicListBench {...props} />,
-    TIER_1_OPTIONS,
-  );
-
-  benchMountMany(
-    'mount 20 instances (25 items each)',
-    20,
-    (i) => <BasicListBench key={i} data={rows25} />,
     TIER_1_OPTIONS,
   );
 });

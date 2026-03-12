@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@omniview/base-ui';
 
@@ -18,8 +18,8 @@ describe('Collapsible', () => {
   benchRerender(
     'open toggle',
     {
-      initialProps: { open: false as boolean },
-      updatedProps: { open: true as boolean },
+      initialProps: { open: false },
+      updatedProps: { open: true },
     },
     (props) => (
       <Collapsible open={props.open}>
@@ -29,4 +29,11 @@ describe('Collapsible', () => {
     ),
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 100', 100, (i) => (
+    <Collapsible key={i}>
+      <CollapsibleTrigger>Section {i}</CollapsibleTrigger>
+      <CollapsibleContent>Content {i}</CollapsibleContent>
+    </Collapsible>
+  ), TIER_2_OPTIONS);
 });

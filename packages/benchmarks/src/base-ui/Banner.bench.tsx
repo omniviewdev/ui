@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Banner } from '@omniview/base-ui';
 
@@ -29,4 +29,11 @@ describe('Banner', () => {
     ),
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 50', 50, (i) => (
+    <Banner key={i}>
+      <Banner.Title>Notice {i}</Banner.Title>
+      <Banner.Content>Message {i}</Banner.Content>
+    </Banner>
+  ), TIER_2_OPTIONS);
 });

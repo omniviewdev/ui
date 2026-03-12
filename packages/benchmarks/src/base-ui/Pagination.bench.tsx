@@ -15,8 +15,8 @@ describe('Pagination', () => {
   benchRerender(
     'page change',
     {
-      initialProps: { page: 1 as number },
-      updatedProps: { page: 5 as number },
+      initialProps: { page: 1 },
+      updatedProps: { page: 5 },
     },
     (props) => <Pagination count={10} page={props.page} onChange={noop} />,
     TIER_2_OPTIONS,

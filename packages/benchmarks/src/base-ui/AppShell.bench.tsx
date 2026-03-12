@@ -19,8 +19,8 @@ describe('AppShell', () => {
   benchRerender(
     'sidebar visibility toggle',
     {
-      initialProps: { sidebarCollapsed: false as boolean },
-      updatedProps: { sidebarCollapsed: true as boolean },
+      initialProps: { sidebarCollapsed: false },
+      updatedProps: { sidebarCollapsed: true },
     },
     (props) => (
       <AppShell {...props}>

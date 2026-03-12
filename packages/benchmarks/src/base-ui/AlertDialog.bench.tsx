@@ -24,8 +24,8 @@ describe('AlertDialog', () => {
   benchRerender(
     'open toggle',
     {
-      initialProps: { open: true as boolean },
-      updatedProps: { open: false as boolean },
+      initialProps: { open: true  },
+      updatedProps: { open: false  },
     },
     (props) => (
       <AlertDialog {...props}>

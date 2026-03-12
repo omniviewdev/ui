@@ -6,7 +6,7 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table';
 import { DataTable } from '@omniview/base-ui';
-import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeRows, type Row } from '../utils/factories';
 
@@ -20,8 +20,7 @@ const columns: ColumnDef<Row, unknown>[] = [
 ];
 
 const rows100 = makeRows(100);
-const rows500 = makeRows(500);
-const rows600 = makeRows(600);
+const rows200 = makeRows(200);
 
 function DataTableBench({ data }: { data: Row[] }) {
   const table = useReactTable({
@@ -42,19 +41,11 @@ function DataTableBench({ data }: { data: Row[] }) {
 
 describe('DataTable', () => {
   benchRender('mount 100 rows', () => <DataTableBench data={rows100} />, TIER_1_OPTIONS);
-  benchRender('mount 500 rows', () => <DataTableBench data={rows500} />, TIER_1_OPTIONS);
 
   benchRerender(
-    'data change (500 → 600 rows)',
-    { initialProps: { data: rows500 }, updatedProps: { data: rows600 } },
+    'data change (100 → 200 rows)',
+    { initialProps: { data: rows100 }, updatedProps: { data: rows200 } },
     (props) => <DataTableBench {...props} />,
-    TIER_1_OPTIONS,
-  );
-
-  benchMountMany(
-    'mount 50 tables (10 rows each)',
-    50,
-    (i) => <DataTableBench key={i} data={rows100.slice(0, 10)} />,
     TIER_1_OPTIONS,
   );
 });

@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { StatRow } from '@omniview/base-ui';
 import type { ReactNode } from 'react';
@@ -36,4 +36,11 @@ describe('StatRow', () => {
     (props) => <StatRow {...props} />,
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 100', 100, (i) => (
+    <StatRow key={i}>
+      <StatRow.Item>CPU: {i}%</StatRow.Item>
+      <StatRow.Item>Mem: {i} GB</StatRow.Item>
+    </StatRow>
+  ), TIER_2_OPTIONS);
 });

@@ -14,6 +14,7 @@ function ComboboxBench({ options }: { options: Option[] }) {
       items={options}
       itemToStringLabel={(item: Option) => item.label}
       itemToStringValue={(item: Option) => item.value}
+      defaultOpen
     >
       <Combobox.Input placeholder="Select..." />
       <Combobox.Trigger aria-label="Open" />

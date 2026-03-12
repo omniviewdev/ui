@@ -5,29 +5,37 @@ import { EditableList } from '@omniview/base-ui';
 
 const noop = () => {};
 
+function threeItems() {
+  return (
+    <>
+      <EditableList.Item itemKey="a">
+        <EditableList.ItemView>Item A</EditableList.ItemView>
+        <EditableList.ItemEditor>
+          <EditableList.ItemField name="value" defaultValue="A" />
+        </EditableList.ItemEditor>
+      </EditableList.Item>
+      <EditableList.Item itemKey="b">
+        <EditableList.ItemView>Item B</EditableList.ItemView>
+        <EditableList.ItemEditor>
+          <EditableList.ItemField name="value" defaultValue="B" />
+        </EditableList.ItemEditor>
+      </EditableList.Item>
+      <EditableList.Item itemKey="c">
+        <EditableList.ItemView>Item C</EditableList.ItemView>
+        <EditableList.ItemEditor>
+          <EditableList.ItemField name="value" defaultValue="C" />
+        </EditableList.ItemEditor>
+      </EditableList.Item>
+    </>
+  );
+}
+
 describe('EditableList', () => {
   benchRender(
     'mount with items',
     () => (
       <EditableList onCommit={noop}>
-        <EditableList.Item itemKey="a">
-          <EditableList.ItemView>Item A</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="A" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
-        <EditableList.Item itemKey="b">
-          <EditableList.ItemView>Item B</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="B" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
-        <EditableList.Item itemKey="c">
-          <EditableList.ItemView>Item C</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="C" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
+        {threeItems()}
       </EditableList>
     ),
     TIER_2_OPTIONS,
@@ -36,29 +44,12 @@ describe('EditableList', () => {
   benchRerender(
     'editable toggle',
     {
-      initialProps: { editable: true as boolean },
-      updatedProps: { editable: false as boolean },
+      initialProps: { editable: true },
+      updatedProps: { editable: false },
     },
     (props) => (
       <EditableList onCommit={noop} editable={props.editable}>
-        <EditableList.Item itemKey="a">
-          <EditableList.ItemView>Item A</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="A" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
-        <EditableList.Item itemKey="b">
-          <EditableList.ItemView>Item B</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="B" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
-        <EditableList.Item itemKey="c">
-          <EditableList.ItemView>Item C</EditableList.ItemView>
-          <EditableList.ItemEditor>
-            <EditableList.ItemField name="value" defaultValue="C" />
-          </EditableList.ItemEditor>
-        </EditableList.Item>
+        {threeItems()}
       </EditableList>
     ),
     TIER_2_OPTIONS,

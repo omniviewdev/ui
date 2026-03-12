@@ -1,18 +1,11 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { EditorTabs, type TabDescriptor } from '@omniview/base-ui';
+import { EditorTabs } from '@omniview/base-ui';
+import { makeEditorTabs } from '../utils/factories';
 
-function makeTabs(count: number, prefix = ''): TabDescriptor[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `${prefix}tab-${i}`,
-    title: `File ${prefix}${i}.ts`,
-    closable: true,
-  }));
-}
-
-const tabs20 = makeTabs(20);
-const tabs40 = makeTabs(40);
+const tabs20 = makeEditorTabs(20);
+const tabs40 = makeEditorTabs(40);
 
 describe('EditorTabs', () => {
   benchRender(
@@ -35,7 +28,7 @@ describe('EditorTabs', () => {
     'mount 30 tab bars (5 tabs each)',
     30,
     (i) => {
-      const tabs = makeTabs(5, `bar${i}-`);
+      const tabs = makeEditorTabs(5, `bar${i}-`);
       return <EditorTabs key={i} tabs={tabs} activeId={tabs[0]!.id} />;
     },
     TIER_1_OPTIONS,

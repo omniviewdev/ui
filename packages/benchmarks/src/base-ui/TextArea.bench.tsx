@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { benchRender, benchRerender } from '../utils/bench-render';
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { TextArea } from '@omniview/base-ui';
 
@@ -22,4 +22,11 @@ describe('TextArea', () => {
     ),
     TIER_2_OPTIONS,
   );
+
+  benchMountMany('mount 50', 50, (i) => (
+    <TextArea key={i}>
+      <TextArea.Label>Field {i}</TextArea.Label>
+      <TextArea.Control placeholder={`Enter text ${i}`} rows={3} />
+    </TextArea>
+  ), TIER_2_OPTIONS);
 });

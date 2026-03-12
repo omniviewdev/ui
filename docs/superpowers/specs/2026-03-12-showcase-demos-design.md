@@ -259,8 +259,8 @@ After the pre-built messages, ChatSuggestions appear. Clicking one or typing a m
 | AISources | Source reference list |
 | AIFollowUp | Follow-up question chips |
 | AIContextIndicator | Attached context sources |
-| AIArtifact (compound) | Side panel artifact with header, actions, content |
-| AIBranch (compound) | Branch navigation (prev/next/indicator) |
+| AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose | Side panel artifact (separate named exports, NOT dot-notation) |
+| AIBranch, AIBranchContent, AIBranchSelector, AIBranchPrevious, AIBranchNext, AIBranchIndicator | Branch navigation (separate named exports, NOT dot-notation) |
 | ThinkingBlock | Collapsible thinking/reasoning display |
 | ToolCall | Tool invocation with status and duration |
 | ToolResult | Tool output card |
@@ -304,7 +304,7 @@ Docker Desktop-style container dashboard with a data table list view and a full-
 │  ☐ │ ● postgres-db │ postgres:16  │ Running │ ▰▱▱ │ 256M │
 │  ☐ │ ○ redis-cache │ redis:7      │ Stopped │ --- │ ---  │
 │  ☐ │ ● nginx-proxy │ nginx:latest │ Running │ ▰▱▱ │ 64M  │
-│    │ ... (15-20 rows, virtual scrolling)                  │
+│    │ ... (50 rows, virtual scrolling)                     │
 ├──────────────────────────────────────────────────────────┤
 │  Bulk: [▶ Start] [■ Stop] [🗑 Delete]  (when selected)  │
 ├──────────────────────────────────────────────────────────┤
@@ -349,7 +349,7 @@ Full page replacement with breadcrumb navigation back to list.
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Detail header:** Back button (IconButton), container name (`Typography.Heading`), ID + image (use `Typography` with `tone="muted"` wrapping `<code>` elements — Typography is compound: `Typography` for body text, `Typography.Heading` for headings, `Typography.Caption` for captions; there is no `.Code` sub-component), port links, StatusDot + status text, action buttons (stop, restart, play, delete).
+**Detail header:** Back button (IconButton), container name (`Typography.Heading`), ID + image (`Typography.Code` for inline code elements like IDs, image names, ports), port links, StatusDot + status text, action buttons (stop, restart, play, delete).
 
 **Tabs:**
 
@@ -377,17 +377,21 @@ Full page replacement with breadcrumb navigation back to list.
 | StatusDot | Status color indicators |
 | Breadcrumbs | List ↔ detail navigation |
 | IconButton, Button | Action buttons |
-| Typography, Typography.Heading | Container name heading, muted text with `<code>` for IDs/images/ports |
+| Typography.Heading, Typography.Code | Container name heading, inline code for IDs/images/ports |
 | StatusBar | Resource summary |
 | Toolbar | Bulk actions |
 | Toast | Action feedback |
 
 ### Mock Data
 
-- 15-20 containers with realistic, unique names (`api-server`, `postgres-db`, `redis-cache`, `nginx-proxy`, `worker-1`, `grafana`, `prometheus`, `kafka`, `zookeeper`, etc.) — each with full detail data rather than padded duplicates
+- 50 containers: 15-20 with unique, realistic names and full detail data (`api-server`, `postgres-db`, `redis-cache`, `nginx-proxy`, `grafana`, `prometheus`, `kafka`, `zookeeper`, etc.) plus ~30 generated variants (`worker-1` through `worker-30`) with randomized stats to exercise virtual scrolling
 - Realistic images (`node:20-slim`, `postgres:16`, `redis:7`, `nginx:latest`, `python:3.12`, etc.)
 - Randomized CPU/memory/status values
 - Each container has: mock logs (50 lines), config JSON (nested object), stats data, and a small filesystem tree
+
+### Editor Package Note
+
+This demo uses `Terminal` and `ObjectInspector` from `@omniview/editors`. Terminal uses xterm.js (not Monaco), so `setupMonacoWorkers()` is NOT needed for this demo. However, `@omniview/editors/styles.css` must be imported. Add `import '@omniview/editors/styles.css'` at the demo entry level.
 
 ### Gaps to Surface
 
@@ -411,7 +415,8 @@ Full page replacement with breadcrumb navigation back to list.
 | base-ui | ContextMenu | ✓ | | | |
 | base-ui | StatusBar | ✓ | | | ✓ |
 | base-ui | FilterBar | | | | ✓ |
-| base-ui | NavList/List | | ✓ | | |
+| base-ui | NavList | | ✓ | | |
+| base-ui | List | | ✓ | | |
 | base-ui | SearchInput | ✓ | ✓ | | |
 | base-ui | DescriptionList | ✓ | | | ✓ |
 | base-ui | Card (compound) | | | | ✓ |
@@ -442,8 +447,8 @@ Full page replacement with breadcrumb navigation back to list.
 | ai-ui | AISources | | | ✓ | |
 | ai-ui | AIFollowUp | | | ✓ | |
 | ai-ui | AIContextIndicator | | | ✓ | |
-| ai-ui | AIArtifact (compound) | | | ✓ | |
-| ai-ui | AIBranch (compound) | | | ✓ | |
+| ai-ui | AIArtifact (named exports) | | | ✓ | |
+| ai-ui | AIBranch (named exports) | | | ✓ | |
 | ai-ui | ThinkingBlock | | | ✓ | |
 | ai-ui | ToolCall | | | ✓ | |
 | ai-ui | ToolResult | | | ✓ | |
@@ -451,12 +456,18 @@ Full page replacement with breadcrumb navigation back to list.
 | ai-ui | TypingIndicator | | | ✓ | |
 | ai-ui | AIStopButton | | | ✓ | |
 
+### Coverage Notes
+
+- **base-ui:** These 4 demos cover ~26 of 87 components. The remaining 3 deferred demos (Web Browser, Notes, Chat) should target: Select, Chip, Dialog, AlertDialog, Progress, Collapsible, ScrollArea, Pagination, and others.
+- **ai-ui:** ~20 ai-ui components have zero coverage in these demos: AIErrorMessage, AIMessageGroup, AIAttachment, AIRetryButton, AIMessageEditor, AITokenUsage, AIImageGeneration, AICostIndicator, AIInferenceStats, AICommandSuggestion, AIActionConfirmation, AgentControls, AgentStatusItem, AgentTaskList, PermissionRequest, ChainOfThought, AIStepDivider, ToolCallList. Some (AIErrorMessage, AIRetryButton, AIAttachment, AIMessageEditor) are natural fits for the AI Chat demo; the rest are candidates for a future Agent demo.
+- **editors:** All 6 editor components are covered across IDE Editor and Container Management.
+
 ## Known Gaps to Investigate
 
 | Gap | Demo | Description |
 |-----|------|-------------|
 | TreeList + dnd-kit | File Explorer | No cross-pane drag-and-drop support for file transfer |
-| DockLayout sidebar pattern | IDE Editor | May not support VS Code-style icon strip + switchable panels |
+| DockLayout sidebar pattern | IDE Editor | May not support VS Code-style icon strip + switchable panels. Fallback: flex layout with IconButton column + conditional panel rendering + ResizableSplitPane |
 | EditorTabs mixed content | IDE Editor | Tabs rendering different component types (code, diff, preview) |
 | ChatMessageList variable heights | AI Chat | Virtualizer handling of mixed-height messages |
 | Artifact panel layout | AI Chat | May need a dedicated component for chat + side panel pattern |
@@ -475,3 +486,4 @@ Full page replacement with breadcrumb navigation back to list.
 - All styling via CSS Modules with `--ov-*` tokens
 - Demos with internal navigation (Container Management list→detail) manage their own view state via `useState` — the showcase shell's `activeApp` only controls which demo is mounted
 - Always read component source and CSS before using base-ui/ai-ui components — use compound APIs (`Component.Sub`) and correct prop names (`variant`, `color`, `tone`, `level`)
+- DataTable's MemoizedRow uses `'use no memo'` intentionally for React 19 Compiler — do not remove

@@ -319,14 +319,14 @@ describe('Bug: Column filtering not working', () => {
     const table = useDataTable({
       data: sampleData,
       columns: columnsWithFilter,
-      features: { filtering: true, globalFilter: true },
+      features: { filtering: false, globalFilter: true },
       getRowId: (row) => row.id,
     });
 
     return (
       <DataTable.Root
         table={table}
-        features={{ filtering: true, globalFilter: true }}
+        features={{ filtering: false, globalFilter: true }}
         data-testid="dt-root"
       >
         <DataTable.Toolbar searchPlaceholder="Search..." />

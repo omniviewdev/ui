@@ -43,10 +43,18 @@ export default defineConfig(async () => {
   return {
     plugins,
     resolve: {
-      alias: {
-        '@omniview/base-ui': path.resolve(__dirname, '../base-ui/src/index.ts'),
-        '@omniview/editors': path.resolve(__dirname, '../editors/src/index.ts'),
-      },
+      alias: [
+        { find: '@omniview/base-ui', replacement: path.resolve(__dirname, '../base-ui/src/index.ts') },
+        { find: '@omniview/editors', replacement: path.resolve(__dirname, '../editors/src/index.ts') },
+        // Stub out react-syntax-highlighter and all sub-path imports (e.g.
+        // react-syntax-highlighter/dist/esm/styles/prism). Imported transitively
+        // via CodeBlock barrel but unused by benchmarks. The real package fails
+        // in CodSpeed's forked CJS process because refractor is ESM-only.
+        {
+          find: /^react-syntax-highlighter(\/.*)?$/,
+          replacement: path.resolve(__dirname, 'src/stubs/react-syntax-highlighter.ts'),
+        },
+      ],
     },
     test: {
       benchmark: {

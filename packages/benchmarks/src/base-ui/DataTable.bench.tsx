@@ -50,8 +50,10 @@ function DataTableBench({ data }: { data: Row[] }) {
 
   return (
     <DataTable table={table}>
-      <DataTable.Header />
-      <DataTable.Body />
+      <DataTable.Container>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
     </DataTable>
   );
 }

@@ -59,13 +59,12 @@ export default defineConfig(async () => {
       forks: {
         execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
       },
-      deps: {
-        // react-syntax-highlighter (via CodeBlock) imports refractor which is ESM-only.
-        // Without inlining, the forked CJS process in CI fails with require() of ESM.
-        optimizer: {
-          web: {
-            include: ['react-syntax-highlighter', 'refractor'],
-          },
+      // react-syntax-highlighter (via CodeBlock barrel) imports refractor which
+      // is ESM-only. On the CodSpeed ARM64 runner the forked process uses CJS
+      // require() and fails. Force-inline so Vite transforms them first.
+      server: {
+        deps: {
+          inline: ['react-syntax-highlighter', 'refractor'],
         },
       },
     },

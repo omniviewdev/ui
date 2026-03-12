@@ -17,17 +17,19 @@ function ComboboxBench({ options }: { options: Option[] }) {
     >
       <Combobox.Input placeholder="Select..." />
       <Combobox.Trigger aria-label="Open" />
-      <Combobox.Positioner>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(item: Option) => (
-              <Combobox.Item key={item.value} value={item}>
-                {item.label}
-              </Combobox.Item>
-            )}
-          </Combobox.List>
-        </Combobox.Popup>
-      </Combobox.Positioner>
+      <Combobox.Portal>
+        <Combobox.Positioner>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(item: Option) => (
+                <Combobox.Item key={item.value} value={item}>
+                  {item.label}
+                </Combobox.Item>
+              )}
+            </Combobox.List>
+          </Combobox.Popup>
+        </Combobox.Positioner>
+      </Combobox.Portal>
     </Combobox.Root>
   );
 }

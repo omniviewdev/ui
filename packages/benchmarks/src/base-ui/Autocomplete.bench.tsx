@@ -13,17 +13,19 @@ function AutocompleteBench({ options }: { options: Option[] }) {
     <Autocomplete.Root items={options}>
       <Autocomplete.Input placeholder="Search..." />
       <Autocomplete.Trigger aria-label="Open" />
-      <Autocomplete.Positioner>
-        <Autocomplete.Popup>
-          <Autocomplete.List>
-            {(item: Option) => (
-              <Autocomplete.Item key={item.value} value={item}>
-                {item.label}
-              </Autocomplete.Item>
-            )}
-          </Autocomplete.List>
-        </Autocomplete.Popup>
-      </Autocomplete.Positioner>
+      <Autocomplete.Portal>
+        <Autocomplete.Positioner>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(item: Option) => (
+                <Autocomplete.Item key={item.value} value={item}>
+                  {item.label}
+                </Autocomplete.Item>
+              )}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Positioner>
+      </Autocomplete.Portal>
     </Autocomplete.Root>
   );
 }

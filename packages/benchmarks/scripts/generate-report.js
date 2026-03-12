@@ -9,10 +9,15 @@ const resultsDir = join(__dirname, '..', 'results');
 
 function loadJSON(filepath) {
   if (!existsSync(filepath)) return null;
-  return JSON.parse(readFileSync(filepath, 'utf-8'));
+  try {
+    return JSON.parse(readFileSync(filepath, 'utf-8'));
+  } catch (err) {
+    throw new Error(`Failed to parse JSON in ${filepath}: ${err.message}`);
+  }
 }
 
 function formatHz(hz) {
+  if (!Number.isFinite(hz)) return 'N/A';
   if (hz >= 1000) return `${(hz / 1000).toFixed(1)}k`;
   return hz.toFixed(0);
 }

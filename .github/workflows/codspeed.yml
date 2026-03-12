@@ -9,6 +9,7 @@ on:
       - 'packages/editors/**'
       - 'packages/benchmarks/**'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/codspeed.yml'
 
 concurrency:
   group: benchmarks-${{ github.ref }}

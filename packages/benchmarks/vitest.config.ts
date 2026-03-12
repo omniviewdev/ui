@@ -59,6 +59,15 @@ export default defineConfig(async () => {
       forks: {
         execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
       },
+      deps: {
+        // react-syntax-highlighter (via CodeBlock) imports refractor which is ESM-only.
+        // Without inlining, the forked CJS process in CI fails with require() of ESM.
+        optimizer: {
+          web: {
+            include: ['react-syntax-highlighter', 'refractor'],
+          },
+        },
+      },
     },
   };
 }) as ReturnType<typeof defineConfig>;

@@ -59,14 +59,6 @@ export default defineConfig(async () => {
       forks: {
         execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
       },
-      // react-syntax-highlighter (via CodeBlock barrel) imports refractor which
-      // is ESM-only. On the CodSpeed ARM64 runner the forked process uses CJS
-      // require() and fails. Force-inline so Vite transforms them first.
-      server: {
-        deps: {
-          inline: ['react-syntax-highlighter', 'refractor'],
-        },
-      },
     },
   };
 }) as ReturnType<typeof defineConfig>;

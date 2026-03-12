@@ -6,7 +6,6 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { LuCheck, LuMinus } from 'react-icons/lu';
 import { cn, withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
@@ -98,6 +97,7 @@ const CheckboxItem = forwardRef<ElementRef<typeof BaseCheckbox.Root>, CheckboxIt
     ref,
   ) {
     const hasContent = Boolean(children) || Boolean(description);
+    const useFlattened = indicator === undefined && keepIndicatorMounted;
 
     return (
       <CheckboxRoot
@@ -110,16 +110,18 @@ const CheckboxItem = forwardRef<ElementRef<typeof BaseCheckbox.Root>, CheckboxIt
         data-ov-layout={layout}
         {...props}
       >
-        <CheckboxControl>
-          <CheckboxIndicator keepMounted={keepIndicatorMounted}>
-            {indicator ?? (
-              <>
-                <LuCheck aria-hidden className={styles.DefaultCheckIcon} />
-                <LuMinus aria-hidden className={styles.DefaultMinusIcon} />
-              </>
-            )}
-          </CheckboxIndicator>
-        </CheckboxControl>
+        {useFlattened ? (
+          <BaseCheckbox.Indicator
+            keepMounted
+            className={styles.ControlIndicator}
+          />
+        ) : (
+          <CheckboxControl>
+            <CheckboxIndicator keepMounted={keepIndicatorMounted}>
+              {indicator}
+            </CheckboxIndicator>
+          </CheckboxControl>
+        )}
         {hasContent ? (
           <span className={styles.Content}>
             {children ? <CheckboxLabel>{children}</CheckboxLabel> : null}

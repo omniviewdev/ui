@@ -13,3 +13,15 @@ const DEFAULT_OPTIONS: BenchRenderOptions = {
 export function resolveOptions(options?: BenchRenderOptions): BenchRenderOptions {
   return { ...DEFAULT_OPTIONS, ...options };
 }
+
+/** Tier 1: deep benchmarks (mount + rerender + mountMany). */
+export const TIER_1_OPTIONS: BenchRenderOptions = {
+  iterations: 100,
+  warmupIterations: 5,
+};
+
+/** Tier 2: light benchmarks (mount + rerender only). */
+export const TIER_2_OPTIONS: BenchRenderOptions = {
+  iterations: 50,
+  warmupIterations: 3,
+};

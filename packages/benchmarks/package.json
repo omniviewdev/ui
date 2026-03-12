@@ -1,0 +1,29 @@
+{
+  "name": "@omniview/benchmarks",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Performance benchmarks for Omniview UI components.",
+  "type": "module",
+  "scripts": {
+    "bench": "vitest bench --run",
+    "bench:browser": "vitest bench --config vitest.config.browser.ts --run"
+  },
+  "devDependencies": {
+    "@codspeed/vitest-plugin": "^5.2.0",
+    "@omniview/base-ui": "workspace:*",
+    "@omniview/editors": "workspace:*",
+    "@tanstack/react-table": "^8.21.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.0"
+  }
+}

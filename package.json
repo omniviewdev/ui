@@ -17,11 +17,17 @@
     "build-storybook": "pnpm --filter @omniview/base-ui build-storybook",
     "build-storybook:ai": "pnpm --filter @omniview/ai-ui build-storybook",
     "audit:ui": "node scripts/audit/index.mjs",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm audit:ui && pnpm test"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm audit:ui && pnpm test",
+    "bench": "pnpm --filter @omniview/benchmarks exec vitest bench --run",
+    "bench:browser": "pnpm --filter @omniview/benchmarks exec vitest bench --config vitest.config.browser.ts --run",
+    "bench:trace": "TRACE=true pnpm bench:browser",
+    "bench:deterministic": "DETERMINISTIC=true pnpm bench",
+    "bench:json": "mkdir -p packages/benchmarks/results && pnpm --filter @omniview/benchmarks exec vitest bench --run --outputJson=results/latest.json"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@types/node": "^22.0.0",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",

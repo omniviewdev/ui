@@ -41,7 +41,7 @@ describe('Skeleton', () => {
     renderWithTheme(<Skeleton lines={2} data-testid="skeleton" />);
     const wrapper = screen.getByTestId('skeleton');
     const lastLine = wrapper.children[1] as HTMLElement;
-    expect(lastLine.style.width).toBe('80%');
+    expect(lastLine.style.getPropertyValue('--_sk-width')).toBe('80%');
   });
 
   it('applies animation prop', () => {
@@ -59,15 +59,15 @@ describe('Skeleton', () => {
   it('applies custom width and height as inline styles (number)', () => {
     renderWithTheme(<Skeleton width={200} height={40} data-testid="skeleton" />);
     const el = screen.getByTestId('skeleton');
-    expect(el.style.width).toBe('200px');
-    expect(el.style.height).toBe('40px');
+    expect(el.style.getPropertyValue('--_sk-width')).toBe('200px');
+    expect(el.style.getPropertyValue('--_sk-height')).toBe('40px');
   });
 
   it('applies custom width and height as inline styles (string)', () => {
     renderWithTheme(<Skeleton width="50%" height="2rem" data-testid="skeleton" />);
     const el = screen.getByTestId('skeleton');
-    expect(el.style.width).toBe('50%');
-    expect(el.style.height).toBe('2rem');
+    expect(el.style.getPropertyValue('--_sk-width')).toBe('50%');
+    expect(el.style.getPropertyValue('--_sk-height')).toBe('2rem');
   });
 
   it('forwards ref', () => {

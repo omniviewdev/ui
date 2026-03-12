@@ -45,6 +45,6 @@ describe('TextArea', () => {
     );
 
     const textarea = screen.getByPlaceholderText('Resizable');
-    expect(textarea).toHaveStyle({ resize: 'none' });
+    expect(textarea.style.getPropertyValue('--_textarea-resize')).toBe('none');
   });
 });

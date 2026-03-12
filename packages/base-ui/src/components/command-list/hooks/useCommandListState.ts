@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Key,
   CommandListConfigContextValue,
@@ -141,25 +141,43 @@ export function useCommandListState<TItem>(
     return result;
   }, [groups]);
 
-  // Sync to store during render (same pattern as TreeList)
+  // Render-time syncs use `silent: true` to update refs + snapshot without
+  // notifying listeners. This avoids the React warning "Cannot update a
+  // component while rendering a different component". After commit, the
+  // useEffect below flushes a notification so useSyncExternalStore consumers
+  // (Results, Item) pick up the new snapshot.
+  const needsNotifyRef = useRef(false);
   const prevItemsRef = useRef<typeof flatItems | null>(null);
   const prevQueryRef = useRef<typeof query | null>(null);
   const prevLoadingRef = useRef<typeof loading | null>(null);
 
   if (prevItemsRef.current !== flatItems) {
     prevItemsRef.current = flatItems;
-    store.setItems(flatItems);
+    store.setItems(flatItems, true);
+    needsNotifyRef.current = true;
   }
 
   if (prevQueryRef.current !== query) {
     prevQueryRef.current = query;
-    store.setQuery(query);
+    store.setQuery(query, true);
+    needsNotifyRef.current = true;
   }
 
   if (prevLoadingRef.current !== loading) {
     prevLoadingRef.current = loading;
-    store.setLoading(loading);
+    store.setLoading(loading, true);
+    needsNotifyRef.current = true;
   }
+
+  // Flush deferred snapshot rebuild + listener notification after DOM mutations.
+  // useLayoutEffect fires synchronously after commit but before paint, avoiding
+  // both the "Cannot update while rendering" warning and act() warnings in tests.
+  useLayoutEffect(() => {
+    if (needsNotifyRef.current) {
+      needsNotifyRef.current = false;
+      store.emit();
+    }
+  });
 
   // Stable ref for items lookup in actions
   const itemsMap = useMemo(() => {

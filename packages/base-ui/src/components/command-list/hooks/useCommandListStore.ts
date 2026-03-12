@@ -30,7 +30,8 @@ export function useCommandListStore(): CommandListStore {
     loading: false,
   });
 
-  const emit = useCallback(() => {
+  // Internal: rebuild the snapshot object from current refs.
+  const rebuildSnapshot = useCallback(() => {
     versionRef.current += 1;
     snapshotRef.current = {
       activeIndex: activeIndexRef.current,
@@ -39,8 +40,16 @@ export function useCommandListStore(): CommandListStore {
       visibleCount: itemsRef.current.length,
       loading: loadingRef.current,
     };
+  }, []);
+
+  const notifyListeners = useCallback(() => {
     for (const l of listenersRef.current) l();
   }, []);
+
+  const emit = useCallback(() => {
+    rebuildSnapshot();
+    notifyListeners();
+  }, [rebuildSnapshot, notifyListeners]);
 
   const subscribe = useCallback((listener: () => void) => {
     listenersRef.current.add(listener);
@@ -85,15 +94,15 @@ export function useCommandListStore(): CommandListStore {
   );
 
   const setQuery = useCallback(
-    (query: string) => {
+    (query: string, silent?: boolean) => {
       queryRef.current = query;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setItems = useCallback(
-    (items: ProcessedItem[]) => {
+    (items: ProcessedItem[], silent?: boolean) => {
       itemsRef.current = items;
       // Rebuild key→item map for O(1) lookups in getItemState
       const map = new Map<Key, ProcessedItem>();
@@ -103,15 +112,15 @@ export function useCommandListStore(): CommandListStore {
       const firstEnabled = items.findIndex((i) => !i.disabled);
       activeIndexRef.current = firstEnabled >= 0 ? firstEnabled : 0;
       activeKeyRef.current = firstEnabled >= 0 ? items[firstEnabled]!.key : null;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
 
   const setLoading = useCallback(
-    (loading: boolean) => {
+    (loading: boolean, silent?: boolean) => {
       loadingRef.current = loading;
-      emit();
+      if (!silent) emit();
     },
     [emit],
   );
@@ -139,6 +148,7 @@ export function useCommandListStore(): CommandListStore {
     setLoading,
     getItems,
     getItemByIndex,
+    emit,
   });
 
   return storeRef.current;

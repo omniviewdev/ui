@@ -1,0 +1,62 @@
+version: '3'
+
+tasks:
+  bench:setup:
+    desc: Install deps and build packages needed for benchmarks
+    cmds:
+      - pnpm install
+      - pnpm --filter @omniview/base-ui build
+      - pnpm --filter @omniview/editors build
+    status:
+      - test -d packages/base-ui/dist
+      - test -d packages/editors/dist
+
+  bench:
+    desc: Run all benchmarks (JSDOM)
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench {{.CLI_ARGS}}
+
+  bench:filter:
+    desc: Run benchmarks for a specific component (COMPONENT=Name)
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench -- --filter "{{.COMPONENT}}"
+
+  bench:browser:
+    desc: Run all benchmarks in Chromium
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:browser {{.CLI_ARGS}}
+
+  bench:trace:
+    desc: Deep profile a component with CDP tracing (COMPONENT=Name)
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:trace -- --filter "{{.COMPONENT}}"
+
+  bench:deterministic:
+    desc: Run with full deterministic V8 flags for reproducible comparison
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:deterministic {{.CLI_ARGS}}
+
+  bench:json:
+    desc: Run benchmarks with structured JSON output
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:json {{.CLI_ARGS}}
+
+  bench:report:
+    desc: Generate comparison report from latest vs baseline results
+    cmds:
+      - node packages/benchmarks/scripts/generate-report.js
+
+  bench:baseline:
+    desc: Save current results as baseline for future comparisons
+    preconditions:
+      - sh: test -f packages/benchmarks/results/latest.json
+        msg: "No results/latest.json found. Run 'task bench:json' first."
+    cmds:
+      - cp packages/benchmarks/results/latest.json packages/benchmarks/results/baseline.json
+      - echo "Baseline saved from latest.json"

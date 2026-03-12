@@ -70,6 +70,19 @@ For AI agents running optimization sprints:
 4. `task bench:json` → read `results/comparison.json`
 5. `task bench:report` → generate PR summary
 
+## Competitive Benchmarks
+
+Compare @omniview/base-ui against MUI and raw HTML:
+
+```bash
+task bench:competitive                      # Run all competitive benchmarks
+task bench:competitive:json                 # JSON output
+task bench:competitive:report               # Generate comparison report
+pnpm bench:competitive -- --filter "Button" # Single component
+```
+
+Results are written to `results/competitive/report.md` with per-component overhead multipliers vs raw HTML.
+
 ## CI
 
 CodSpeed runs automatically on PRs that touch component or benchmark code. It comments on PRs with performance diffs and flags regressions > 5%.

@@ -1,6 +1,6 @@
 import { useCallback, type KeyboardEvent } from 'react';
-import { IconButton, Tooltip, ThemeSwitcher, Separator } from '@omniview/base-ui';
-import { LuLayoutGrid } from 'react-icons/lu';
+import { IconButton, Tooltip, Separator, useTheme } from '@omniview/base-ui';
+import { LuLayoutGrid, LuSun, LuMoon } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';
 
@@ -10,6 +10,9 @@ interface DockProps {
 }
 
 export function Dock({ activeApp, onSelectApp }: DockProps) {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === 'dark' || theme === 'high-contrast-dark';
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLElement>) => {
       if (e.key === 'Escape') {
@@ -91,7 +94,26 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
 
       <div className={styles.bottom}>
         <Separator />
-        <ThemeSwitcher />
+        <Tooltip.Root>
+          <Tooltip.Trigger
+            render={
+              <IconButton
+                variant="ghost"
+                color="neutral"
+                size="md"
+                aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+                onClick={() => setTheme(isDark ? 'light' : 'dark')}
+              >
+                {isDark ? <LuSun /> : <LuMoon />}
+              </IconButton>
+            }
+          />
+          <Tooltip.Portal>
+            <Tooltip.Positioner side="right" sideOffset={8}>
+              <Tooltip.Popup>{isDark ? 'Light mode' : 'Dark mode'}</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>
       </div>
     </nav>
   );

@@ -16,25 +16,25 @@ export function Home({ onSelectApp }: HomeProps) {
         </Typography>
       </div>
 
-      <div className={styles.grid}>
+      <Card.Group columns={3} className={styles.grid}>
         {apps.map((app) => (
-          <Card
-            key={app.id}
-            className={styles.card}
-            onClick={() => onSelectApp(app.id)}
-          >
-            <div className={styles.cardContent}>
-              <div className={styles.iconBox}>
-                <app.icon />
-              </div>
-              <div className={styles.cardText}>
-                <Typography weight="semibold">{app.name}</Typography>
-                <Typography.Caption>{app.description}</Typography.Caption>
-              </div>
-            </div>
+          <Card key={app.id} size="sm">
+            <Card.ActionArea onClick={() => onSelectApp(app.id)}>
+              <Card.Header>
+                <div className={styles.cardRow}>
+                  <div className={styles.iconBox}>
+                    <app.icon />
+                  </div>
+                  <div>
+                    <Card.Title>{app.name}</Card.Title>
+                    <Card.Description>{app.description}</Card.Description>
+                  </div>
+                </div>
+              </Card.Header>
+            </Card.ActionArea>
           </Card>
         ))}
-      </div>
+      </Card.Group>
     </div>
   );
 }

@@ -6,10 +6,15 @@
   "type": "module",
   "scripts": {
     "bench": "vitest bench --run",
-    "bench:browser": "vitest bench --config vitest.config.browser.ts --run"
+    "bench:browser": "vitest bench --config vitest.config.browser.ts --run",
+    "bench:competitive": "vitest bench --config vitest.config.competitive.ts --run"
   },
   "devDependencies": {
     "@codspeed/vitest-plugin": "^5.2.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.3.0",
+    "@mui/material": "^7.3.0",
     "@omniview/base-ui": "workspace:*",
     "@omniview/editors": "workspace:*",
     "@tanstack/react-table": "^8.21.3",

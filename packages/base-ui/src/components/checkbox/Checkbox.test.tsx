@@ -35,6 +35,32 @@ describe('Checkbox', () => {
     expect(screen.getByTestId('indicator')).toBeInTheDocument();
   });
 
+  it('renders default checkbox without icon child elements', () => {
+    const { container } = renderWithTheme(<Checkbox.Item defaultChecked />);
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toHaveAttribute('data-checked');
+
+    // Flattened path: no LuCheck/LuMinus SVGs
+    const svgs = container.querySelectorAll('svg');
+    expect(svgs).toHaveLength(0);
+  });
+
+  it('falls back to nested structure when keepIndicatorMounted is false', () => {
+    renderWithTheme(
+      <Checkbox.Item keepIndicatorMounted={false} defaultChecked>
+        Nested path
+      </Checkbox.Item>,
+    );
+    const checkbox = screen.getByRole('checkbox', { name: 'Nested path' });
+    expect(checkbox).toHaveAttribute('data-checked');
+  });
+
+  it('renders indeterminate state in flattened path', () => {
+    renderWithTheme(<Checkbox.Item indeterminate />);
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toHaveAttribute('data-indeterminate');
+  });
+
   it('applies label position and spread layout attributes', () => {
     renderWithTheme(
       <Checkbox.Item labelPosition="start" layout="spread" defaultChecked>

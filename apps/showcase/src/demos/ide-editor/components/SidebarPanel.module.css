@@ -1,0 +1,119 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ov-color-surface-primary);
+}
+
+.panelHeader {
+  padding: 6px 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ov-color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.searchBox {
+  padding: 4px 8px 6px;
+  flex-shrink: 0;
+}
+
+.treeContainer {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.searchResults {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.resultItem {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 10px;
+  cursor: pointer;
+  gap: 1px;
+}
+
+.resultItem:hover {
+  background: var(--ov-color-surface-secondary);
+}
+
+.resultFile {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ov-color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultMatch {
+  font-size: 12px;
+  color: var(--ov-color-text-primary);
+  font-family: var(--ov-font-family-mono, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultLocation {
+  font-size: 11px;
+  color: var(--ov-color-text-tertiary);
+}
+
+.gitList {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gitItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.gitFile {
+  flex: 1;
+  font-family: var(--ov-font-family-mono, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ov-color-text-primary);
+}
+
+.gitBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--ov-radius-sm);
+  letter-spacing: 0.03em;
+}
+
+.gitBadge[data-status='modified'] {
+  background: var(--ov-color-warning-subtle);
+  color: var(--ov-color-warning-fg);
+}
+
+.gitBadge[data-status='staged'] {
+  background: var(--ov-color-success-subtle);
+  color: var(--ov-color-success-fg);
+}
+
+.gitBadge[data-status='untracked'] {
+  background: var(--ov-color-neutral-subtle);
+  color: var(--ov-color-neutral-fg);
+}

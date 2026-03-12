@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-12
 **Status:** Draft
-**Scope:** Four interactive demos (File Explorer, IDE Editor, AI Chat, Container Management) for the `@omniview/showcase` app.
+**Scope:** Four interactive demos (File Explorer, IDE Editor, AI Chat, Container Management) for the `@omniview/showcase` app. The remaining three demos (Web Browser, Notes, Chat App) are deferred to a future spec.
 
 ## Purpose
 
@@ -12,6 +12,15 @@ Build four interactive demos that serve two goals:
 2. **Identify gaps** — surface missing components, composability problems, and missing patterns in the library
 
 Each demo operates on mock data with no backend. All interactions (expand, click, sort, filter) work against in-memory fake data.
+
+### CSS Imports
+
+Each demo must import the CSS for any workspace package it uses. The showcase shell already imports `@omniview/base-ui/styles.css` in `main.tsx`. Demos using `@omniview/ai-ui` or `@omniview/editors` must import their CSS at the demo level:
+
+```tsx
+import '@omniview/ai-ui/styles.css';    // AI Chat demo
+import '@omniview/editors/styles.css';   // IDE Editor, Container Management (Terminal)
+```
 
 ---
 
@@ -154,7 +163,7 @@ Selecting a command triggers the corresponding action.
 | ResizableSplitPane | Sidebar/editor and editor/terminal splits |
 | IconButton, Tooltip | Sidebar icon strip |
 | Separator | Visual dividers |
-| AppShell or DockLayout | Overall IDE frame |
+| DockLayout | Overall IDE frame (icon strip + switchable panels) |
 
 ### Mock Data
 
@@ -163,6 +172,10 @@ Selecting a command triggers the corresponding action.
 - Terminal pre-loaded with mock `npm run build` output
 - 10 mock search results
 - 8 mock git status entries
+
+### Monaco Worker Setup
+
+The IDE Editor demo uses `CodeEditor`, `DiffViewer`, `Terminal`, `CommandPalette`, and `MarkdownPreview` from `@omniview/editors`. Monaco-based components require worker setup. Call `setupMonacoWorkers()` from the editors package at module level in the demo entry file before any editor mounts. See `packages/editors/docs/MONACO_YAML_COMPAT.md` and `packages/editors/src/setupMonacoWorkers.ts` for details.
 
 ### Gaps to Surface
 
@@ -225,6 +238,8 @@ After the pre-built messages, ChatSuggestions appear. Clicking one or typing a m
 5. Artifact panel opens with AIArtifact (code with header and actions)
 6. AIFollowUp suggestions appear below the response
 7. AIStopButton is visible during the streaming phase
+
+**Timing guidance:** Use `setTimeout` chains with realistic delays: ~500ms for typing indicator, ~2s for thinking block, ~1s for tool call execution, ~50ms per character for streaming text. Encapsulate the sequence in a `useScriptedReplay` hook that manages the state machine and cleanup on unmount.
 
 ### Components
 
@@ -289,7 +304,7 @@ Docker Desktop-style container dashboard with a data table list view and a full-
 │  ☐ │ ● postgres-db │ postgres:16  │ Running │ ▰▱▱ │ 256M │
 │  ☐ │ ○ redis-cache │ redis:7      │ Stopped │ --- │ ---  │
 │  ☐ │ ● nginx-proxy │ nginx:latest │ Running │ ▰▱▱ │ 64M  │
-│    │ ... (50+ rows, virtual scrolling)                   │
+│    │ ... (15-20 rows, virtual scrolling)                  │
 ├──────────────────────────────────────────────────────────┤
 │  Bulk: [▶ Start] [■ Stop] [🗑 Delete]  (when selected)  │
 ├──────────────────────────────────────────────────────────┤
@@ -334,7 +349,7 @@ Full page replacement with breadcrumb navigation back to list.
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Detail header:** Back button (IconButton), container name (Typography.Heading), ID + image (Typography.Code), port links, StatusDot + status text, action buttons (stop, restart, play, delete).
+**Detail header:** Back button (IconButton), container name (`Typography.Heading`), ID + image (use `Typography` with `tone="muted"` wrapping `<code>` elements — Typography is compound: `Typography` for body text, `Typography.Heading` for headings, `Typography.Caption` for captions; there is no `.Code` sub-component), port links, StatusDot + status text, action buttons (stop, restart, play, delete).
 
 **Tabs:**
 
@@ -362,21 +377,21 @@ Full page replacement with breadcrumb navigation back to list.
 | StatusDot | Status color indicators |
 | Breadcrumbs | List ↔ detail navigation |
 | IconButton, Button | Action buttons |
-| Typography.Code | IDs, images, ports |
+| Typography, Typography.Heading | Container name heading, muted text with `<code>` for IDs/images/ports |
 | StatusBar | Resource summary |
 | Toolbar | Bulk actions |
 | Toast | Action feedback |
 
 ### Mock Data
 
-- 50 containers with realistic names (`api-server`, `postgres-db`, `redis-cache`, `nginx-proxy`, `worker-1` through `worker-45`, etc.)
+- 15-20 containers with realistic, unique names (`api-server`, `postgres-db`, `redis-cache`, `nginx-proxy`, `worker-1`, `grafana`, `prometheus`, `kafka`, `zookeeper`, etc.) — each with full detail data rather than padded duplicates
 - Realistic images (`node:20-slim`, `postgres:16`, `redis:7`, `nginx:latest`, `python:3.12`, etc.)
 - Randomized CPU/memory/status values
 - Each container has: mock logs (50 lines), config JSON (nested object), stats data, and a small filesystem tree
 
 ### Gaps to Surface
 
-- **DataTable + FilterBar composability:** Do these components integrate naturally, or is glue code needed?
+- **DataTable + FilterBar composability:** Do these components integrate naturally, or is glue code needed? If FilterBar doesn't exist as an exported component, build a simple filter row using SearchInput + Select within a Toolbar as a fallback.
 - **Meter at small inline sizes:** Does Meter render well inside a DataTable cell, or does it need a compact/inline variant?
 - **Bulk action pattern:** Is there a standard pattern for "toolbar appears when rows selected" or does this need a new component?
 
@@ -404,9 +419,8 @@ Full page replacement with breadcrumb navigation back to list.
 | base-ui | StatusDot | | ✓ | | ✓ |
 | base-ui | Meter | | | | ✓ |
 | base-ui | Toast | ✓ | | | ✓ |
-| base-ui | Dialog/Drawer | | | | |
+| base-ui | Separator | | ✓ | | |
 | base-ui | DockLayout | | ✓ | | |
-| base-ui | AppShell | | ✓ | | |
 | base-ui | CodeBlock | ✓ | | | |
 | editors | CodeEditor | | ✓ | | |
 | editors | DiffViewer | | ✓ | | |
@@ -416,6 +430,7 @@ Full page replacement with breadcrumb navigation back to list.
 | editors | ObjectInspector | | | | ✓ |
 | ai-ui | ChatMessageList | | | ✓ | |
 | ai-ui | ChatBubble | | | ✓ | |
+| ai-ui | ChatAvatar | | | ✓ | |
 | ai-ui | ChatInput | | | ✓ | |
 | ai-ui | ChatSuggestions | | | ✓ | |
 | ai-ui | AIMessageActions | | | ✓ | |
@@ -458,3 +473,5 @@ Full page replacement with breadcrumb navigation back to list.
 - No cross-demo imports
 - Default export is the top-level component
 - All styling via CSS Modules with `--ov-*` tokens
+- Demos with internal navigation (Container Management list→detail) manage their own view state via `useState` — the showcase shell's `activeApp` only controls which demo is mounted
+- Always read component source and CSS before using base-ui/ai-ui components — use compound APIs (`Component.Sub`) and correct prop names (`variant`, `color`, `tone`, `level`)

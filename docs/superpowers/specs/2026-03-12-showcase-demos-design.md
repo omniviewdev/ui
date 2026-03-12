@@ -156,6 +156,7 @@ Selecting a command triggers the corresponding action.
 | MarkdownPreview | README rendering |
 | EditorTabs | Tab management for mixed content types |
 | TreeList | File tree sidebar |
+| NavList | Sidebar icon strip navigation |
 | List | Search results, git status |
 | SearchInput | Find-in-files |
 | StatusDot | Git file status indicators |
@@ -259,7 +260,7 @@ After the pre-built messages, ChatSuggestions appear. Clicking one or typing a m
 | AISources | Source reference list |
 | AIFollowUp | Follow-up question chips |
 | AIContextIndicator | Attached context sources |
-| AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose | Side panel artifact (separate named exports, NOT dot-notation) |
+| AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactDescription, AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose | Side panel artifact (separate named exports, NOT dot-notation) |
 | AIBranch, AIBranchContent, AIBranchSelector, AIBranchPrevious, AIBranchNext, AIBranchIndicator | Branch navigation (separate named exports, NOT dot-notation) |
 | ThinkingBlock | Collapsible thinking/reasoning display |
 | ToolCall | Tool invocation with status and duration |

@@ -1,0 +1,13 @@
+.toolbar {
+  border-bottom: 1px solid var(--ov-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.searchGroup {
+  flex: 1;
+  min-width: 0;
+}
+
+.searchGroup > * {
+  width: 100%;
+}

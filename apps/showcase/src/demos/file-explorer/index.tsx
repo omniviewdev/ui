@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
-import { ResizableSplitPane } from '@omniview/base-ui';
+import { ResizableSplitPane, StatusBar } from '@omniview/base-ui';
 import { TreePane } from './components/TreePane';
-import { localFiles, remoteFiles } from './data';
+import { DetailPanel } from './components/DetailPanel';
+import { ExplorerToolbar } from './components/ExplorerToolbar';
+import { localFiles, remoteFiles, countNodes, formatBytes } from './data';
 import type { FileNode, FileSelection } from './types';
 import styles from './index.module.css';
 
@@ -17,12 +19,21 @@ export default function FileExplorer() {
     [],
   );
 
-  // Suppress unused warning — searchQuery will be wired to toolbar in Task 3
-  void setSearchQuery;
+  // Compute status bar counts from both roots combined
+  const localCounts = countNodes(localFiles);
+  const remoteCounts = countNodes(remoteFiles);
+  const totalItems = localCounts.files + localCounts.folders + remoteCounts.files + remoteCounts.folders;
+  const totalFolders = localCounts.folders + remoteCounts.folders;
+  const totalFiles = localCounts.files + remoteCounts.files;
+  const totalSize = localCounts.totalSize + remoteCounts.totalSize;
 
   return (
     <div className={styles.explorer}>
-      {/* Toolbar placeholder for Task 3 */}
+      <ExplorerToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        hasSelection={selected != null}
+      />
       <div className={styles.content}>
         <ResizableSplitPane direction="horizontal" defaultSize={600} minSize={200}>
           <ResizableSplitPane direction="horizontal" defaultSize={300} minSize={120}>
@@ -39,12 +50,23 @@ export default function FileExplorer() {
               searchQuery={searchQuery}
             />
           </ResizableSplitPane>
-          <div className={styles.detailPlaceholder}>
-            {selected ? <p>Selected: {selected.node.name}</p> : <p>Select a file</p>}
-          </div>
+          <DetailPanel node={selected?.node ?? null} />
         </ResizableSplitPane>
       </div>
-      {/* StatusBar placeholder for Task 3 */}
+      <StatusBar>
+        <StatusBar.Section>
+          <StatusBar.Item>
+            {totalItems} items • {totalFolders} folders, {totalFiles} files • {formatBytes(totalSize)}
+          </StatusBar.Item>
+        </StatusBar.Section>
+        {selected && (
+          <StatusBar.Section align="end">
+            <StatusBar.Item>
+              {selected.pane === 'local' ? 'Local' : 'Remote'}: {selected.node.name}
+            </StatusBar.Item>
+          </StatusBar.Section>
+        )}
+      </StatusBar>
     </div>
   );
 }

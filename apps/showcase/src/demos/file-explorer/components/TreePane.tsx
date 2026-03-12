@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import { LuFolder, LuFolderOpen, LuFile } from 'react-icons/lu';
-import { TreeList, Breadcrumbs } from '@omniview/base-ui';
+import { LuFolder, LuFolderOpen, LuFile, LuCopy, LuMove, LuPencil, LuTrash2, LuFolderPlus } from 'react-icons/lu';
+import { TreeList, Breadcrumbs, ContextMenu, useToast } from '@omniview/base-ui';
 import type { Key } from '@omniview/base-ui';
 import type { FileNode } from '../types';
 import styles from './TreePane.module.css';
@@ -45,6 +45,7 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
   const [expandedKeys, setExpandedKeys] = useState<ReadonlySet<Key>>(
     new Set([root.id]),
   );
+  const { toast } = useToast();
 
   // Build path map once per root change
   const pathMap = useMemo(() => buildPathMap(root), [root]);
@@ -73,8 +74,12 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
     return item.name.toLowerCase().includes(text.toLowerCase());
   }, []);
 
+  const handleContextAction = useCallback((action: string, item: FileNode) => {
+    toast(`${action}: ${item.name}`, { severity: 'success' });
+  }, [toast]);
+
   return (
-    <div className={styles.pane}>
+    <div className={styles.pane} aria-label={label}>
       <div className={styles.header}>
         <span className={styles.label}>{label}</span>
         {selectedPath.length > 0 && (
@@ -102,22 +107,65 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
           filterText={searchQuery}
           filterFn={filterFn}
           renderItem={(item, node) => (
-            <TreeList.Item itemKey={node.key} textValue={item.name}>
-              <TreeList.ItemIndent
-                depth={node.depth}
-                ancestorIsLast={node.ancestorIsLast}
-                isLastChild={node.isLastChild}
-              />
-              <TreeList.ItemToggle itemKey={node.key} />
-              <TreeList.ItemIcon>
-                {item.type === 'folder'
-                  ? node.isExpanded
-                    ? <LuFolderOpen />
-                    : <LuFolder />
-                  : <LuFile />}
-              </TreeList.ItemIcon>
-              <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
-            </TreeList.Item>
+            <ContextMenu.Root>
+              <ContextMenu.Trigger>
+                <TreeList.Item itemKey={node.key} textValue={item.name}>
+                  <TreeList.ItemIndent
+                    depth={node.depth}
+                    ancestorIsLast={node.ancestorIsLast}
+                    isLastChild={node.isLastChild}
+                  />
+                  <TreeList.ItemToggle itemKey={node.key} />
+                  <TreeList.ItemIcon>
+                    {item.type === 'folder'
+                      ? node.isExpanded
+                        ? <LuFolderOpen />
+                        : <LuFolder />
+                      : <LuFile />}
+                  </TreeList.ItemIcon>
+                  <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+                </TreeList.Item>
+              </ContextMenu.Trigger>
+              <ContextMenu.Portal>
+                <ContextMenu.Positioner>
+                  <ContextMenu.Popup>
+                    <ContextMenu.Item
+                      startDecorator={<LuCopy aria-hidden />}
+                      onClick={() => handleContextAction('Copy', item)}
+                    >
+                      Copy
+                    </ContextMenu.Item>
+                    <ContextMenu.Item
+                      startDecorator={<LuMove aria-hidden />}
+                      onClick={() => handleContextAction('Move', item)}
+                    >
+                      Move
+                    </ContextMenu.Item>
+                    <ContextMenu.Item
+                      startDecorator={<LuPencil aria-hidden />}
+                      onClick={() => handleContextAction('Rename', item)}
+                    >
+                      Rename
+                    </ContextMenu.Item>
+                    <ContextMenu.Separator />
+                    <ContextMenu.Item
+                      color="danger"
+                      startDecorator={<LuTrash2 aria-hidden />}
+                      onClick={() => handleContextAction('Delete', item)}
+                    >
+                      Delete
+                    </ContextMenu.Item>
+                    <ContextMenu.Separator />
+                    <ContextMenu.Item
+                      startDecorator={<LuFolderPlus aria-hidden />}
+                      onClick={() => handleContextAction('New Folder', item)}
+                    >
+                      New Folder
+                    </ContextMenu.Item>
+                  </ContextMenu.Popup>
+                </ContextMenu.Positioner>
+              </ContextMenu.Portal>
+            </ContextMenu.Root>
           )}
         >
           <TreeList.Viewport />

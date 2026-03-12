@@ -1,0 +1,16 @@
+.explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+}
+
+.detailPlaceholder {
+  padding: var(--ov-space-stack-md);
+  color: var(--ov-color-fg-secondary);
+}

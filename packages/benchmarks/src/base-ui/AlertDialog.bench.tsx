@@ -1,0 +1,40 @@
+import { describe } from 'vitest';
+import { benchRender, benchRerender } from '../utils/bench-render';
+import { TIER_2_OPTIONS } from '../utils/bench-options';
+import { AlertDialog } from '@omniview/base-ui';
+
+describe('AlertDialog', () => {
+  benchRender(
+    'mount (open)',
+    () => (
+      <AlertDialog open>
+        <AlertDialog.Backdrop />
+        <AlertDialog.Popup>
+          <AlertDialog.Title>Confirm</AlertDialog.Title>
+          <AlertDialog.Description>Are you sure?</AlertDialog.Description>
+          <AlertDialog.Close>Cancel</AlertDialog.Close>
+        </AlertDialog.Popup>
+      </AlertDialog>
+    ),
+    TIER_2_OPTIONS,
+  );
+
+  benchRerender(
+    'open toggle',
+    {
+      initialProps: { open: true as boolean },
+      updatedProps: { open: false as boolean },
+    },
+    (props) => (
+      <AlertDialog {...props}>
+        <AlertDialog.Backdrop />
+        <AlertDialog.Popup>
+          <AlertDialog.Title>Confirm</AlertDialog.Title>
+          <AlertDialog.Description>Are you sure?</AlertDialog.Description>
+          <AlertDialog.Close>Cancel</AlertDialog.Close>
+        </AlertDialog.Popup>
+      </AlertDialog>
+    ),
+    TIER_2_OPTIONS,
+  );
+});

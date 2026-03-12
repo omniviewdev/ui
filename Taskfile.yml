@@ -60,3 +60,23 @@ tasks:
     cmds:
       - cp packages/benchmarks/results/latest.json packages/benchmarks/results/baseline.json
       - echo "Baseline saved from latest.json"
+
+  bench:competitive:
+    desc: Run competitive benchmarks (vs MUI)
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:competitive {{.CLI_ARGS}}
+
+  bench:competitive:json:
+    desc: Run competitive benchmarks with JSON output
+    deps: [bench:setup]
+    cmds:
+      - pnpm bench:competitive:json {{.CLI_ARGS}}
+
+  bench:competitive:report:
+    desc: Generate competitive comparison report
+    preconditions:
+      - sh: test -f packages/benchmarks/results/competitive/latest.json
+        msg: "No results/competitive/latest.json found. Run 'task bench:competitive:json' first."
+    cmds:
+      - node packages/benchmarks/scripts/generate-competitive-report.js

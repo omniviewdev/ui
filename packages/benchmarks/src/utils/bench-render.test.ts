@@ -16,7 +16,7 @@ describe('bench-render utilities integration', () => {
       createElement('button', { 'data-testid': 'btn' }, 'Click'),
     );
     render(element);
-    expect(screen.getByTestId('btn')).toBeDefined();
+    expect(screen.getByTestId('btn')).toBeInTheDocument();
     cleanup();
     expect(screen.queryByTestId('btn')).toBeNull();
   });

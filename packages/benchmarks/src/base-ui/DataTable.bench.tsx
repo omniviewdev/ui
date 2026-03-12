@@ -1,5 +1,4 @@
-import { describe } from 'vitest';
-import { bench } from 'vitest';
+import { describe, bench } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { createElement } from 'react';
 import {
@@ -31,7 +30,7 @@ function generateRows(count: number): Row[] {
     id: i,
     name: `Row ${i}`,
     status: i % 3 === 0 ? 'active' : i % 3 === 1 ? 'pending' : 'inactive',
-    value: Math.round(Math.random() * 1000),
+    value: (i * 7 + 13) % 1000,
   }));
 }
 
@@ -63,6 +62,8 @@ function wrapWithTheme(element: React.ReactElement) {
 }
 
 describe('DataTable', () => {
+  // Raw bench() used here because DataTable requires useReactTable() internally,
+  // so the generic benchRender/benchRerender helpers don't apply.
   bench('mount 100 rows', () => {
     render(wrapWithTheme(<DataTableBench data={rows100} />));
     cleanup();

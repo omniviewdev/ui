@@ -35,6 +35,8 @@ export default defineConfig(async () => {
 
   if (isCI) {
     const { default: codspeed } = await import('@codspeed/vitest-plugin');
+    // `as never` — codspeed returns its own Plugin type which doesn't match Vite 7's
+    // stricter PluginOption. The cast is safe; the plugin works at runtime.
     plugins.push(codspeed() as never);
   }
 

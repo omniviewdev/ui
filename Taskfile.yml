@@ -54,6 +54,9 @@ tasks:
 
   bench:baseline:
     desc: Save current results as baseline for future comparisons
+    preconditions:
+      - sh: test -f packages/benchmarks/results/latest.json
+        msg: "No results/latest.json found. Run 'task bench:json' first."
     cmds:
       - cp packages/benchmarks/results/latest.json packages/benchmarks/results/baseline.json
       - echo "Baseline saved from latest.json"

@@ -69,7 +69,8 @@ function generateComparison(baseline, current) {
 
     const baseHz = b.hz;
     const currHz = c.hz;
-    const changePct = ((currHz - baseHz) / baseHz) * 100;
+    if (baseHz === 0 && currHz === 0) continue;
+    const changePct = baseHz === 0 ? Infinity : ((currHz - baseHz) / baseHz) * 100;
 
     const entry = {
       suite: c.suite,

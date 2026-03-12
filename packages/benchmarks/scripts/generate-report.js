@@ -35,8 +35,12 @@ function extractBenchmarks(data) {
       const parts = (group.fullName ?? '').split(' > ');
       const suite = parts[parts.length - 1] || group.fullName || 'unknown';
 
+      // Use fullName as a stable key for baseline matching (suite is display-only)
+      const matchKey = group.fullName || suite;
+
       for (const bench of group.benchmarks ?? []) {
         results.push({
+          matchKey,
           suite,
           name: bench.name,
           hz: bench.hz,
@@ -60,7 +64,7 @@ function generateComparison(baseline, current) {
 
   const baselineMap = new Map();
   for (const b of baselineBenchmarks) {
-    baselineMap.set(`${b.suite}::${b.name}`, b);
+    baselineMap.set(`${b.matchKey}::${b.name}`, b);
   }
 
   const regressions = [];
@@ -68,7 +72,7 @@ function generateComparison(baseline, current) {
   const unchanged = [];
 
   for (const c of currentBenchmarks) {
-    const key = `${c.suite}::${c.name}`;
+    const key = `${c.matchKey}::${c.name}`;
     const b = baselineMap.get(key);
     if (!b) continue;
 

@@ -1,0 +1,28 @@
+{
+  "name": "@omniview/showcase",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Demo showcase app built entirely from Omniview UI packages.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@omniview/base-ui": "workspace:*",
+    "@omniview/ai-ui": "workspace:*",
+    "@omniview/editors": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.3.1"
+  }
+}

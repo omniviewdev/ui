@@ -9,7 +9,7 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler', {}]],
       },
     }),
-    dts({ include: ['src'] }),
+    dts({ include: ['src'], rollupTypes: true }),
   ],
   build: {
     lib: {

@@ -1,3 +1,5 @@
+'use no memo'; // TanStack Table uses a stable ref — Compiler can't track internal state changes
+
 import { useMemo } from 'react';
 import type { Table } from '@tanstack/react-table';
 

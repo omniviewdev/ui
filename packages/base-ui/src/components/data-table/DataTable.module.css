@@ -205,6 +205,20 @@
   color: var(--ov-color-fg-default);
 }
 
+/* --- Sort button (reset inside header cell) --- */
+
+.SortButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--_dt-space-xs);
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
 /* --- Sort indicator --- */
 
 .SortIndicator {

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+'use no memo'; // TanStack Table returns a stable ref — Compiler can't track internal state changes
+
+import { useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -114,7 +116,7 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
     },
 
     // Filtering
-    enableFilters: !!features.filtering,
+    enableFilters: !!(features.filtering || features.globalFilter),
     manualFiltering,
     enableGlobalFilter: !!features.globalFilter,
     globalFilterFn,
@@ -197,5 +199,26 @@ export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): 
     getExpandedRowModel: features.rowExpansion ? getExpandedRowModel() : undefined,
   });
 
-  return table;
+  // useReactTable returns a stable reference that mutates internally.
+  // React Compiler in consumer components memoizes JSX based on reference
+  // identity, so a stable ref means children never re-render on state changes.
+  // Spreading into a new object gives consumers a fresh identity whenever
+  // any managed state changes, while preserving the full Table<TData> API.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(
+    () => ({ ...table }) as Table<TData>,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      table,
+      sorting,
+      globalFilter,
+      columnVisibility,
+      columnOrder,
+      columnSizing,
+      columnPinning,
+      rowSelection,
+      expanded,
+      pagination,
+    ],
+  );
 }

@@ -31,7 +31,8 @@
   grid-template-columns: minmax(0, 1fr) var(--_ov-control-size);
 }
 
-.Root[data-ov-label-position='start'] .Control {
+.Root[data-ov-label-position='start'] .Control,
+.Root[data-ov-label-position='start'] .ControlIndicator {
   grid-column: 2;
 }
 
@@ -168,24 +169,28 @@
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.Root:not([data-disabled], [disabled]):hover .Control {
+.Root:not([data-disabled], [disabled]):hover .Control,
+.Root:not([data-disabled], [disabled]):hover .ControlIndicator {
   background: var(--_ov-control-bg-hover);
   border-color: var(--_ov-control-border-hover);
 }
 
-.Root:is([data-checked], [data-indeterminate]) .Control {
+.Root:is([data-checked], [data-indeterminate]) .Control,
+.Root:is([data-checked], [data-indeterminate]) .ControlIndicator {
   background: var(--_ov-control-bg-checked);
   border-color: var(--_ov-control-border-checked);
   color: var(--_ov-control-fg-checked);
 }
 
-.Root:focus-visible .Control {
+.Root:focus-visible .Control,
+.Root:focus-visible .ControlIndicator {
   border-color: var(--_ov-focus-border);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 
 .Indicator {
   display: inline-flex;
+  position: relative;
   align-items: center;
   justify-content: center;
   inline-size: 100%;
@@ -202,22 +207,96 @@
   transform: scale(1);
 }
 
-.DefaultCheckIcon,
-.DefaultMinusIcon {
-  inline-size: var(--_ov-indicator-size);
-  block-size: var(--_ov-indicator-size);
-}
+/* ── Fallback pseudo-elements for compound-part consumers using .Indicator with no children ── */
 
-.DefaultMinusIcon {
+.Indicator:empty::before {
+  content: '';
   display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 35%;
+  height: 60%;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: translate(-50%, -60%) rotate(45deg);
 }
 
-.Root[data-indeterminate] .DefaultCheckIcon {
+.Root[data-checked]:not([data-indeterminate]) .Indicator:empty::before {
+  display: block;
+}
+
+.Indicator:empty::after {
+  content: '';
   display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
 }
 
-.Root[data-indeterminate] .DefaultMinusIcon {
-  display: inline;
+.Root[data-indeterminate] .Indicator:empty::after {
+  display: block;
+}
+
+/* ── Combined Control + Indicator (flattened path: no custom indicator, keepMounted=true) ── */
+
+.ControlIndicator {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--_ov-control-size);
+  block-size: var(--_ov-control-size);
+  border-radius: var(--ov-size-choice-radius);
+  border: 1px solid var(--_ov-control-border);
+  background: var(--_ov-control-bg);
+  color: var(--_ov-control-fg);
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+/* ── Pseudo-element indicators on .ControlIndicator ── */
+
+.ControlIndicator::before {
+  content: '';
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 35%;
+  height: 60%;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+
+.Root[data-checked]:not([data-indeterminate]) .ControlIndicator::before {
+  display: block;
+}
+
+.ControlIndicator::after {
+  content: '';
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.Root[data-indeterminate] .ControlIndicator::after {
+  display: block;
 }
 
 .Content {

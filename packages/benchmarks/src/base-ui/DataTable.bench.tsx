@@ -6,14 +6,9 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table';
 import { DataTable } from '@omniview/base-ui';
-import { benchRender } from '../utils/bench-render';
-
-interface Row {
-  id: number;
-  name: string;
-  status: string;
-  value: number;
-}
+import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
+import { TIER_1_OPTIONS } from '../utils/bench-options';
+import { makeRows, type Row } from '../utils/factories';
 
 const columnHelper = createColumnHelper<Row>();
 
@@ -24,23 +19,10 @@ const columns: ColumnDef<Row, unknown>[] = [
   columnHelper.accessor('value', { header: 'Value' }),
 ];
 
-function generateRows(count: number): Row[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    name: `Row ${i}`,
-    status: i % 3 === 0 ? 'active' : i % 3 === 1 ? 'pending' : 'inactive',
-    value: (i * 7 + 13) % 1000,
-  }));
-}
+const rows100 = makeRows(100);
+const rows500 = makeRows(500);
+const rows600 = makeRows(600);
 
-// Pre-generate data so row construction isn't measured
-const rows100 = generateRows(100);
-const rows1000 = generateRows(1000);
-
-/**
- * Wrapper component that calls useReactTable internally and renders
- * DataTable with its compound children.
- */
 function DataTableBench({ data }: { data: Row[] }) {
   const table = useReactTable({
     data,
@@ -59,6 +41,20 @@ function DataTableBench({ data }: { data: Row[] }) {
 }
 
 describe('DataTable', () => {
-  benchRender('mount 100 rows', () => <DataTableBench data={rows100} />);
-  benchRender('mount 1000 rows', () => <DataTableBench data={rows1000} />);
+  benchRender('mount 100 rows', () => <DataTableBench data={rows100} />, TIER_1_OPTIONS);
+  benchRender('mount 500 rows', () => <DataTableBench data={rows500} />, TIER_1_OPTIONS);
+
+  benchRerender(
+    'data change (500 → 600 rows)',
+    { initialProps: { data: rows500 }, updatedProps: { data: rows600 } },
+    (props) => <DataTableBench {...props} />,
+    TIER_1_OPTIONS,
+  );
+
+  benchMountMany(
+    'mount 50 tables (10 rows each)',
+    50,
+    (i) => <DataTableBench key={i} data={rows100.slice(0, 10)} />,
+    TIER_1_OPTIONS,
+  );
 });

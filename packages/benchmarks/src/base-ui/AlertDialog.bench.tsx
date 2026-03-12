@@ -8,12 +8,14 @@ describe('AlertDialog', () => {
     'mount (open)',
     () => (
       <AlertDialog open>
-        <AlertDialog.Backdrop />
-        <AlertDialog.Popup>
-          <AlertDialog.Title>Confirm</AlertDialog.Title>
-          <AlertDialog.Description>Are you sure?</AlertDialog.Description>
-          <AlertDialog.Close>Cancel</AlertDialog.Close>
-        </AlertDialog.Popup>
+        <AlertDialog.Portal>
+          <AlertDialog.Backdrop />
+          <AlertDialog.Popup>
+            <AlertDialog.Title>Confirm</AlertDialog.Title>
+            <AlertDialog.Description>Are you sure?</AlertDialog.Description>
+            <AlertDialog.Close>Cancel</AlertDialog.Close>
+          </AlertDialog.Popup>
+        </AlertDialog.Portal>
       </AlertDialog>
     ),
     TIER_2_OPTIONS,
@@ -27,12 +29,14 @@ describe('AlertDialog', () => {
     },
     (props) => (
       <AlertDialog {...props}>
-        <AlertDialog.Backdrop />
-        <AlertDialog.Popup>
-          <AlertDialog.Title>Confirm</AlertDialog.Title>
-          <AlertDialog.Description>Are you sure?</AlertDialog.Description>
-          <AlertDialog.Close>Cancel</AlertDialog.Close>
-        </AlertDialog.Popup>
+        <AlertDialog.Portal>
+          <AlertDialog.Backdrop />
+          <AlertDialog.Popup>
+            <AlertDialog.Title>Confirm</AlertDialog.Title>
+            <AlertDialog.Description>Are you sure?</AlertDialog.Description>
+            <AlertDialog.Close>Cancel</AlertDialog.Close>
+          </AlertDialog.Popup>
+        </AlertDialog.Portal>
       </AlertDialog>
     ),
     TIER_2_OPTIONS,

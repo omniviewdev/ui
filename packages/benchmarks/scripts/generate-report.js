@@ -74,7 +74,8 @@ function generateComparison(baseline, current) {
 
     const baseHz = b.hz;
     const currHz = c.hz;
-    if (baseHz === 0) continue; // skip entries with no baseline measurement
+    if (!Number.isFinite(baseHz) || !Number.isFinite(currHz)) continue;
+    if (baseHz === 0) continue;
     const changePct = ((currHz - baseHz) / baseHz) * 100;
 
     const entry = {

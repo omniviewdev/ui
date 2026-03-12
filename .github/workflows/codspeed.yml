@@ -3,6 +3,12 @@ name: Performance Benchmarks
 on:
   push:
     branches: [main]
+    paths:
+      - 'packages/base-ui/**'
+      - 'packages/editors/**'
+      - 'packages/benchmarks/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/codspeed.yml'
   pull_request:
     paths:
       - 'packages/base-ui/**'

@@ -33,12 +33,13 @@ export default defineConfig({
     sourcemap: true,
   },
   resolve: {
-    alias: {
-      '@omniview/base-ui': fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)),
-      // monaco-editor@0.52 only has "module" (no "main"/"exports"), which
-      // Vite 5's resolver can't find. Point directly to the ESM entry.
-      'monaco-editor': 'monaco-editor/esm/vs/editor/editor.main.js',
-    },
+    alias: [
+      { find: '@omniview/base-ui', replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)) },
+      // monaco-editor@0.52 only has "module" (no "exports"), which Vite 7
+      // can't resolve. Exact-match alias avoids clobbering subpath imports
+      // like monaco-editor/esm/vs/language/json/json.worker.js.
+      { find: /^monaco-editor$/, replacement: 'monaco-editor/esm/vs/editor/editor.main.js' },
+    ],
   },
   test: {
     environment: 'jsdom',

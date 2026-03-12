@@ -1,13 +1,12 @@
-import { describe, bench } from 'vitest';
-import { render, cleanup } from '@testing-library/react';
-import { createElement } from 'react';
+import { describe } from 'vitest';
 import {
   useReactTable,
   getCoreRowModel,
   createColumnHelper,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { DataTable, ThemeProvider } from '@omniview/base-ui';
+import { DataTable } from '@omniview/base-ui';
+import { benchRender } from '../utils/bench-render';
 
 interface Row {
   id: number;
@@ -57,20 +56,7 @@ function DataTableBench({ data }: { data: Row[] }) {
   );
 }
 
-function wrapWithTheme(element: React.ReactElement) {
-  return createElement(ThemeProvider, { persist: false }, element);
-}
-
 describe('DataTable', () => {
-  // Raw bench() used here because DataTable requires useReactTable() internally,
-  // so the generic benchRender/benchRerender helpers don't apply.
-  bench('mount 100 rows', () => {
-    render(wrapWithTheme(<DataTableBench data={rows100} />));
-    cleanup();
-  });
-
-  bench('mount 1000 rows', () => {
-    render(wrapWithTheme(<DataTableBench data={rows1000} />));
-    cleanup();
-  });
+  benchRender('mount 100 rows', () => <DataTableBench data={rows100} />);
+  benchRender('mount 1000 rows', () => <DataTableBench data={rows1000} />);
 });

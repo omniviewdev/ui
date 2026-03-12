@@ -33,6 +33,8 @@
 - **`statusToColor(status)`:** Maps status strings to component colors. Does NOT map `paused`, `restarting`, or `exited` — add a local wrapper for container-specific statuses.
 - **CSS tokens:** `--ov-space-stack-xs` does NOT exist yet. Use `4px` literal with `/* TODO: --ov-space-stack-xs */` comment.
 
+**Icons:** ALL icons must come from `react-icons/lu` (Lucide). NO text emojis anywhere. Use `LuFolder`, `LuFile`, `LuFileText`, `LuFileCode`, `LuImage`, etc. for file type indicators.
+
 **Before writing ANY component:** Read the source files for every component you're about to use. Check exports, props, compound sub-components. Do NOT guess APIs. The notes above were verified from source but APIs can change — always double-check.
 
 ---
@@ -209,6 +211,7 @@ TreePane wraps a TreeList with a Breadcrumbs header. It receives the file tree d
 // apps/showcase/src/demos/file-explorer/components/TreePane.tsx
 import { useState } from 'react';
 import { TreeList, Breadcrumbs } from '@omniview/base-ui';
+import { LuFolder, LuFile } from 'react-icons/lu';
 import type { FileNode } from '../types';
 import styles from './TreePane.module.css';
 
@@ -257,7 +260,7 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
               <TreeList.ItemIndent />
               <TreeList.ItemToggle />
               <TreeList.ItemIcon>
-                {item.type === 'folder' ? '📁' : '📄'}
+                {item.type === 'folder' ? <LuFolder /> : <LuFile />}
               </TreeList.ItemIcon>
               <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
             </TreeList.Item>
@@ -505,7 +508,7 @@ Wrap tree items with ContextMenu. Read ContextMenu source to verify API — it m
 // In TreePane.tsx renderItem, wrap with ContextMenu
 <ContextMenu.Root>
   <ContextMenu.Trigger>
-    <span>{item.type === 'folder' ? '📁' : '📄'} {item.name}</span>
+    <span>{item.type === 'folder' ? <LuFolder /> : <LuFile />} {item.name}</span>
   </ContextMenu.Trigger>
   <ContextMenu.Portal>
     <ContextMenu.Positioner>
@@ -2335,6 +2338,7 @@ export function StatsTab({ stats, container }: StatsTabProps) {
 ```tsx
 // apps/showcase/src/demos/container-management/components/tabs/FilesTab.tsx
 import { TreeList } from '@omniview/base-ui';
+import { LuFolder, LuFile } from 'react-icons/lu';
 import type { FileSystemNode } from '../../types';
 
 interface FilesTabProps {
@@ -2349,7 +2353,7 @@ export function FilesTab({ filesystem }: FilesTabProps) {
       getChildren={(item) => item.children}
       renderItem={(item) => (
         <span>
-          {item.type === 'directory' ? '📁' : '📄'} {item.name}
+          {item.type === 'directory' ? <LuFolder /> : <LuFile />} {item.name}
           {item.size != null && <span style={{ opacity: 0.5, marginLeft: 8 }}>{item.size} B</span>}
         </span>
       )}

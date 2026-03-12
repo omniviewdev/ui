@@ -1,5 +1,7 @@
 # Omniview Base UI Platform
 
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/omniviewdev/ui?utm_source=badge)
+
 This repository defines standards, token contracts, and the in-progress Base UI component package for Omniview.
 
 ## What is included now

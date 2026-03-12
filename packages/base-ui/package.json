@@ -27,7 +27,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "bench": "vitest bench --config vitest.bench.config.ts --run"
   },
   "peerDependencies": {
     "react": "^19.0.0",
@@ -44,6 +45,7 @@
     "react-syntax-highlighter": "^16.1.1"
   },
   "devDependencies": {
+    "@codspeed/vitest-plugin": "^5.2.0",
     "@storybook/addon-a11y": "^10.2.15",
     "@storybook/addon-docs": "^10.2.15",
     "@storybook/react": "^10.2.15",
@@ -61,6 +63,6 @@
     "typescript": "^5.9.2",
     "vite": "^5.4.14",
     "vite-plugin-dts": "^4.5.1",
-    "vitest": "^2.1.8"
+    "vitest": "^4.0.18"
   }
 }

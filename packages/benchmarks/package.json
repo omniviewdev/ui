@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "bench": "vitest bench --run",
-    "bench:browser": "vitest bench --config vitest.config.browser.ts --run"
+    "bench:browser": "vitest bench --config vitest.config.browser.ts --run",
+    "perf": "rm -f .reassure/current.perf && vitest --run --config vitest.config.perf.ts",
+    "perf:baseline": "rm -f .reassure/baseline.perf && REASSURE_OUTPUT_FILE=.reassure/baseline.perf vitest --run --config vitest.config.perf.ts",
+    "perf:compare": "node scripts/perf-compare.mjs"
   },
   "devDependencies": {
     "@codspeed/vitest-plugin": "^5.2.0",
@@ -22,6 +25,7 @@
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "reassure": "^1.4.1",
     "typescript": "^5.9.2",
     "vite": "^7.3.1",
     "vitest": "^4.0.0"

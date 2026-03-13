@@ -293,14 +293,26 @@ export const FileTableRoot = forwardRef<HTMLDivElement, FileTableRootProps>(
       [items, sortedItems, sort, onSort, selectedId, onSelect, onNavigate, showParent, onNavigateUp, extraColumns],
     );
 
+    // Separate table children (Header, Body) from non-table children (Status)
+    const tableChildren: ReactNode[] = [];
+    const nonTableChildren: ReactNode[] = [];
+    Children.forEach(children, (child) => {
+      if (isValidElement(child) && (child.type === FileTableStatus)) {
+        nonTableChildren.push(child);
+      } else {
+        tableChildren.push(child);
+      }
+    });
+
     return (
       <FileTableProvider value={ctxValue}>
         <div ref={ref} className={`${styles.Root}${className ? ` ${className}` : ''}`} {...rest}>
           <div className={styles.TableWrap}>
             <table className={styles.Table}>
-              {children}
+              {tableChildren}
             </table>
           </div>
+          {nonTableChildren}
         </div>
       </FileTableProvider>
     );

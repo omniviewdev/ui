@@ -1,0 +1,119 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ov-color-bg-surface);
+  border-top: 1px solid var(--ov-color-border-default);
+}
+
+.tabList {
+  padding: 0 12px;
+}
+
+.tabPanel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.tableWrap {
+  height: 100%;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: var(--ov-font-sans);
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  background: var(--ov-color-bg-surface-raised);
+  text-align: left;
+  padding: 4px 8px;
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-muted);
+  border-bottom: 1px solid var(--ov-color-border-subtle);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--ov-color-border-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.table tr:hover td {
+  background: var(--ov-color-state-hover);
+}
+
+.directionIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.directionIcon[data-dir='upload'] {
+  color: var(--ov-color-info, #5b9bd5);
+}
+
+.directionIcon[data-dir='download'] {
+  color: var(--ov-color-success, #6abf69);
+}
+
+.progressCell {
+  min-width: 100px;
+}
+
+.statusLabel {
+  font-size: 11px;
+}
+
+.statusLabel[data-status='processing'] { color: var(--ov-color-info, #5b9bd5); }
+.statusLabel[data-status='completed'] { color: var(--ov-color-success, #6abf69); }
+.statusLabel[data-status='failed'] { color: var(--ov-color-danger, #dc5050); }
+.statusLabel[data-status='queued'] { color: var(--ov-color-fg-muted); }
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--ov-radius-pill, 999px);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tabBadge[data-color='queued'] {
+  background: var(--ov-color-info-soft, rgba(91, 155, 213, 0.15));
+  color: var(--ov-color-info, #5b9bd5);
+}
+
+.tabBadge[data-color='failed'] {
+  background: var(--ov-color-danger-soft, rgba(220, 80, 80, 0.15));
+  color: var(--ov-color-danger, #dc5050);
+}
+
+.tabBadge[data-color='completed'] {
+  background: var(--ov-color-success-soft, rgba(106, 191, 105, 0.15));
+  color: var(--ov-color-success, #6abf69);
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--ov-color-fg-subtle);
+  font-size: var(--ov-font-size-sm, 12px);
+}

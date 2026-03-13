@@ -1,0 +1,33 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: var(--ov-font-size-sm);
+  font-weight: var(--ov-font-weight-semibold);
+  color: var(--ov-color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.inspector {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md);
+  padding: 8px;
+  background: var(--ov-color-surface-sunken);
+  min-height: 200px;
+  max-height: 400px;
+  overflow: auto;
+}

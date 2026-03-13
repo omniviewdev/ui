@@ -1,0 +1,75 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.containerMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--ov-font-size-sm);
+  color: var(--ov-color-text-secondary);
+}
+
+.metaChip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--ov-color-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm);
+  padding: 2px 6px;
+  font-size: var(--ov-font-size-xs);
+  font-family: var(--ov-font-mono);
+}
+
+.tabsRoot {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabsList {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  padding: 0 12px;
+}
+
+.tabPanel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tabPanelInner {
+  height: 100%;
+  overflow: hidden;
+}

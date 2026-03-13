@@ -8,7 +8,7 @@
 .header {
   padding: 4px /* TODO: --ov-space-stack-xs */ var(--ov-space-stack-sm);
   border-bottom: 1px solid var(--ov-color-border-default);
-  background: var(--ov-color-bg-secondary);
+  background: var(--ov-color-bg-surface-raised);
 }
 
 .label {

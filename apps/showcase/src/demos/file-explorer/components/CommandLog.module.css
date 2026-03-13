@@ -1,0 +1,118 @@
+.root {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface);
+}
+
+/* ─── Toggle bar ─── */
+
+.toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  padding: 4px 12px;
+  border: none;
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+.toggle:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.toggleLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  font-weight: var(--ov-font-weight-semibold, 600);
+  font-size: 11px;
+}
+
+.togglePreview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ov-font-mono, monospace);
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.togglePreview[data-type='command'] {
+  color: var(--ov-color-info, #5b9bd5);
+}
+
+.togglePreview[data-type='response'] {
+  color: var(--ov-color-success, #6abf69);
+}
+
+.toggleCount {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--ov-color-fg-subtle);
+}
+
+/* ─── Log entries ─── */
+
+.scroll {
+  max-height: 90px;
+  overflow-y: auto;
+  padding: 4px 12px;
+  font-family: var(--ov-font-mono, monospace);
+  font-size: 11px;
+  line-height: 1.6;
+  border-top: 1px solid var(--ov-color-border-subtle);
+}
+
+.entry {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.timestamp {
+  color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
+  min-width: 52px;
+  text-align: right;
+  font-size: 10px;
+}
+
+.label {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.entry[data-type='command'] .label {
+  color: var(--ov-color-info, #5b9bd5);
+}
+
+.entry[data-type='response'] .label {
+  color: var(--ov-color-success, #6abf69);
+}
+
+.message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry[data-type='command'] .message {
+  color: var(--ov-color-info, #5b9bd5);
+}
+
+.entry[data-type='response'] .message {
+  color: var(--ov-color-success, #6abf69);
+}

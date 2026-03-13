@@ -1,6 +1,8 @@
 // apps/showcase/src/demos/file-explorer/data.ts
 
-import type { FileNode } from './types';
+import type { FileNode, Transfer, LogEntry } from './types';
+
+export { formatBytes, formatDate, fileTypeLabel } from '@omniview/base-ui';
 
 // ---------------------------------------------------------------------------
 // Local files — a typical TypeScript/React project tree (~30 nodes)
@@ -773,13 +775,6 @@ export function countNodes(node: FileNode): { files: number; folders: number; to
   return counts;
 }
 
-/** Format bytes to human-readable string */
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 /** Get relative time string */
 export function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -789,3 +784,79 @@ export function timeAgo(iso: string): string {
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
 }
+
+// ---------------------------------------------------------------------------
+// Mock transfers
+// ---------------------------------------------------------------------------
+
+export const mockTransfers: Transfer[] = [
+  {
+    id: 'transfer-1',
+    source: '/home/sftpclient/web/public_html/app/bundle.min.js',
+    direction: 'upload',
+    destination: 's3://my-bucket/assets/js/bundle.min.js',
+    size: 77_104_128,
+    priority: 2,
+    status: 'processing',
+    remaining: '32 secs',
+    speed: '13.60 Mbit/s',
+    progress: 24.6,
+  },
+  {
+    id: 'transfer-2',
+    source: '/local/src/styles/globals.css',
+    direction: 'upload',
+    destination: 's3://my-bucket/assets/css/globals.css',
+    size: 1_420,
+    priority: 3,
+    status: 'queued',
+    progress: 0,
+  },
+  {
+    id: 'transfer-3',
+    source: 's3://my-bucket/backups/db-2026-03-11.sql.gz',
+    direction: 'download',
+    destination: '/local/backups/db-2026-03-11.sql.gz',
+    size: 5_242_880,
+    priority: 1,
+    status: 'completed',
+    progress: 100,
+    speed: '8.42 Mbit/s',
+  },
+  {
+    id: 'transfer-4',
+    source: '/local/config.yaml',
+    direction: 'upload',
+    destination: 's3://my-bucket/config.yaml',
+    size: 744,
+    priority: 4,
+    status: 'failed',
+    progress: 43,
+  },
+  {
+    id: 'transfer-5',
+    source: 's3://my-bucket/assets/images/hero.webp',
+    direction: 'download',
+    destination: '/local/public/hero.webp',
+    size: 189_432,
+    priority: 2,
+    status: 'completed',
+    progress: 100,
+    speed: '11.20 Mbit/s',
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Mock command log entries
+// ---------------------------------------------------------------------------
+
+export const mockLogEntries: LogEntry[] = [
+  { id: 'log-1', type: 'command', message: 'Connecting to s3://my-bucket (us-east-1)', timestamp: '14:42:01' },
+  { id: 'log-2', type: 'response', message: 'Connection established — bucket versioning: enabled', timestamp: '14:42:02' },
+  { id: 'log-3', type: 'command', message: 'Getting remote directory listing for s3://my-bucket/', timestamp: '14:42:03' },
+  { id: 'log-4', type: 'response', message: 'listing retrieved for s3://my-bucket/ — 5 items', timestamp: '14:42:03' },
+  { id: 'log-5', type: 'command', message: 'Getting remote directory listing for s3://my-bucket/assets/', timestamp: '14:43:15' },
+  { id: 'log-6', type: 'response', message: 'listing retrieved for s3://my-bucket/assets/ — 2 items', timestamp: '14:43:16' },
+  { id: 'log-7', type: 'command', message: 'Starting upload: bundle.min.js → s3://my-bucket/assets/js/bundle.min.js', timestamp: '14:44:23' },
+  { id: 'log-8', type: 'response', message: 'Upload in progress — 24.6% complete, 13.60 Mbit/s', timestamp: '14:44:26' },
+];

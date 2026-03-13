@@ -84,3 +84,4 @@ export * from './segmented-control';
 export * from './stat-row';
 export * from './status-bar';
 export * from './timeline';
+export * from './sortable-table';

@@ -24,6 +24,24 @@ describe('Tabs', () => {
     expect(screen.getByText('Connections content')).toBeVisible();
   });
 
+  it('renders endDecorator in a tab', () => {
+    renderWithTheme(
+      <Tabs.Root defaultValue="a">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Tab value="a" endDecorator={<span data-testid="badge">3</span>}>
+            Queued
+          </Tabs.Tab>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Panel value="a">Content</Tabs.Panel>
+      </Tabs.Root>,
+    );
+
+    expect(screen.getByTestId('badge')).toBeVisible();
+    expect(screen.getByTestId('badge')).toHaveTextContent('3');
+    expect(screen.getByRole('tab', { name: /Queued/ })).toContainElement(screen.getByTestId('badge'));
+  });
+
   it('applies style data attributes', () => {
     renderWithTheme(
       <Tabs.Root defaultValue="overview" variant="outline" color="success" size="lg">

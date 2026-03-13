@@ -1,13 +1,20 @@
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
-import { forwardRef } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import styles from './Tabs.module.css';
 
-export interface TabsRootProps extends BaseTabs.Root.Props, StyledComponentProps {}
+export type TabsVariant = 'solid' | 'soft' | 'outline' | 'ghost' | 'flat';
+
+export interface TabsRootProps extends BaseTabs.Root.Props, Omit<StyledComponentProps, 'variant'> {
+  variant?: TabsVariant;
+}
 export type TabsListProps = BaseTabs.List.Props;
-export type TabsTabProps = BaseTabs.Tab.Props;
+export type TabsTabProps = BaseTabs.Tab.Props & {
+  /** Slot rendered after the tab label (e.g. Badge, icon, count) */
+  endDecorator?: ReactNode;
+};
 export type TabsPanelProps = BaseTabs.Panel.Props;
 export type TabsIndicatorProps = BaseTabs.Indicator.Props;
 
@@ -19,7 +26,7 @@ const TabsRoot = forwardRef<HTMLDivElement, TabsRootProps>(function TabsRoot(
     <BaseTabs.Root
       ref={ref}
       className={withBaseClassName<BaseTabs.Root.State>(styles.Root, className)}
-      {...styleDataAttributes({ variant, color, size })}
+      {...styleDataAttributes({ variant: variant as StyledComponentProps['variant'], color, size })}
       {...props}
     />
   );
@@ -39,7 +46,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
 });
 
 const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function TabsTab(
-  { className, ...props },
+  { className, endDecorator, children, ...props },
   ref,
 ) {
   return (
@@ -47,7 +54,10 @@ const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function TabsTab(
       ref={ref}
       className={withBaseClassName<BaseTabs.Tab.State>(styles.Tab, className)}
       {...props}
-    />
+    >
+      {children}
+      {endDecorator != null && <span className={styles.TabDecorator}>{endDecorator}</span>}
+    </BaseTabs.Tab>
   );
 });
 

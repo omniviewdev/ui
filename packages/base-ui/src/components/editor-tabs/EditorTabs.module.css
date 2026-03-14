@@ -79,12 +79,13 @@
   border-bottom-color: transparent;
 }
 
-/* Pill tabs: rounded top, no bottom border indicator */
+/* Pill tabs: JetBrains-style capsule with all-corner rounding */
 .Root[data-ov-variant='pill'] .Tab {
   border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  margin-top: 4px;
-  padding: 0 14px;
+  border-radius: 6px;
+  margin: 4px 2px;
+  padding: 0 12px;
+  height: calc(100% - 8px);
 }
 
 .Root[data-ov-variant='pill'] .Tab[data-active] {

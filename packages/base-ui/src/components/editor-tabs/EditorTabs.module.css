@@ -70,11 +70,11 @@
 
 .Root[data-ov-variant='pill'] {
   --_ov-tab-bg: transparent;
-  --_ov-tab-active-bg: var(--ov-color-surface-base);
+  --_ov-tab-active-bg: var(--ov-color-bg-surface-raised);
   --_ov-tab-active-border: transparent;
-  --_ov-tab-hover-bg: color-mix(in srgb, var(--ov-color-surface-base) 50%, transparent);
+  --_ov-tab-hover-bg: var(--ov-color-bg-surface);
   --_ov-tab-divider: transparent;
-  --_ov-group-header-bg: var(--ov-color-surface-sunken, var(--ov-color-surface-overlay));
+  --_ov-group-header-bg: var(--ov-color-bg-base);
 
   border-bottom-color: transparent;
 }
@@ -84,7 +84,7 @@
   border-bottom: none;
   border-radius: 8px 8px 0 0;
   margin-top: 4px;
-  padding: 0 12px;
+  padding: 0 14px;
 }
 
 .Root[data-ov-variant='pill'] .Tab[data-active] {

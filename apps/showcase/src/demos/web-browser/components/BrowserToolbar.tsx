@@ -51,7 +51,7 @@ export function BrowserToolbar({
       <IconButton
         variant="ghost"
         size="sm"
-        dense
+
         aria-label="Back"
         disabled={!canGoBack}
         onClick={onBack}
@@ -61,7 +61,7 @@ export function BrowserToolbar({
       <IconButton
         variant="ghost"
         size="sm"
-        dense
+
         aria-label="Forward"
         disabled={!canGoForward}
         onClick={onForward}
@@ -71,7 +71,7 @@ export function BrowserToolbar({
       <IconButton
         variant="ghost"
         size="sm"
-        dense
+
         aria-label="Refresh"
         onClick={onRefresh}
       >

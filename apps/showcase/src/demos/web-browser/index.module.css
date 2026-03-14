@@ -1,0 +1,175 @@
+/* ---------------------------------------------------------------------------
+   Web Browser Demo — layout & component styles
+   --------------------------------------------------------------------------- */
+
+.browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ov-color-surface-base);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Tab bar: EditorTabs + new tab button */
+.tabBar {
+  display: flex;
+  align-items: stretch;
+  background: var(--ov-color-surface-sunken, var(--ov-color-surface-overlay));
+}
+
+.tabStrip {
+  flex: 1;
+  min-width: 0;
+}
+
+.newTabButton {
+  flex-shrink: 0;
+  align-self: center;
+  margin-right: 4px;
+}
+
+/* Toolbar: nav buttons + address bar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--ov-color-surface-overlay);
+}
+
+.addressBar {
+  flex: 1;
+}
+
+/* Bookmarks bar */
+.bookmarksBar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: var(--ov-color-surface-overlay);
+  border-bottom: 1px solid var(--ov-color-border-default);
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+}
+
+/* Loading bar */
+.loadingBar {
+  height: 2px;
+  flex-shrink: 0;
+}
+
+/* Content viewport */
+.viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--ov-color-surface-base);
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* New Tab Page */
+.newTabPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 32px;
+  padding: 48px;
+}
+
+.newTabSearch {
+  width: 100%;
+  max-width: 480px;
+}
+
+.speedDial {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 16px;
+  justify-content: center;
+}
+
+.speedDialCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-surface-overlay);
+  cursor: pointer;
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+  font-family: inherit;
+  color: inherit;
+}
+
+.speedDialCard:hover {
+  background: var(--ov-color-surface-raised);
+}
+
+.speedDialIcon {
+  font-size: 24px;
+}
+
+.speedDialLabel {
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+/* Error Page */
+.errorPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: var(--ov-color-fg-muted);
+}
+
+.errorIcon {
+  color: var(--ov-color-warning-400);
+  margin-bottom: 8px;
+}
+
+.errorTitle {
+  font-size: var(--ov-primitive-font-size-16, 1rem);
+  font-weight: var(--ov-font-weight-heading, 600);
+  color: var(--ov-color-fg-default);
+  margin: 0;
+}
+
+.errorUrl {
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+  color: var(--ov-color-fg-subtle);
+  margin: 0;
+}
+
+.errorButton {
+  margin-top: 8px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-surface-overlay);
+  color: var(--ov-color-fg-default);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+}
+
+.errorButton:hover {
+  background: var(--ov-color-surface-raised);
+}

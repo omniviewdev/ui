@@ -13,7 +13,7 @@
   --_ov-tab-modified-border: var(--ov-color-tab-modified-border);
   --_ov-tab-border: var(--ov-color-tab-border);
   --_ov-tab-divider: var(--ov-color-border-default);
-  --_ov-tab-font-size: var(--ov-font-size-caption); /* 0.8125rem (13px) original; caption (12px) is closest compact semantic token */
+  --_ov-tab-font-size: var(--ov-primitive-font-size-13, 0.8125rem);
   --_ov-tab-padding-x: 10px;
   --_ov-tab-padding-trailing: 6px;
   --_ov-tab-close-size: 16px;
@@ -36,22 +36,16 @@
 
 .Root[data-ov-variant='solid'] {
   --_ov-tab-bg: transparent;
-  --_ov-tab-active-bg: var(--ov-color-bg-surface);
+  --_ov-tab-active-bg: var(--ov-color-tab-active-bg);
   --_ov-tab-active-border: var(--ov-color-brand-400);
-  --_ov-group-header-bg: var(--ov-color-bg-surface-raised);
 
   border-bottom-color: var(--_ov-tab-border);
 }
 
 .Root[data-ov-variant='soft'] {
   --_ov-tab-bg: transparent;
-  --_ov-tab-active-bg: var(--ov-color-state-selected);
+  --_ov-tab-active-bg: var(--ov-color-tab-active-bg);
   --_ov-tab-active-border: var(--ov-color-brand-400);
-  --_ov-group-header-bg: color-mix(
-    in srgb,
-    var(--ov-color-bg-surface-raised) 92%,
-    var(--ov-color-state-selected) 8%
-  );
 }
 
 .Root[data-ov-variant='outline'] {
@@ -72,6 +66,42 @@
   --_ov-group-header-bg: transparent;
 
   border-bottom-color: transparent;
+}
+
+.Root[data-ov-variant='pill'] {
+  --_ov-tab-bg: transparent;
+  --_ov-tab-active-bg: var(--ov-color-surface-base);
+  --_ov-tab-active-border: transparent;
+  --_ov-tab-hover-bg: color-mix(in srgb, var(--ov-color-surface-base) 50%, transparent);
+  --_ov-tab-divider: transparent;
+  --_ov-group-header-bg: var(--ov-color-surface-sunken, var(--ov-color-surface-overlay));
+
+  border-bottom-color: transparent;
+}
+
+/* Pill tabs: rounded top, no bottom border indicator */
+.Root[data-ov-variant='pill'] .Tab {
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  margin-top: 4px;
+  padding: 0 12px;
+}
+
+.Root[data-ov-variant='pill'] .Tab[data-active] {
+  border-bottom: none;
+}
+
+.Root[data-ov-variant='pill'] .Tab[data-dirty]:not([data-active]) {
+  border-bottom: none;
+}
+
+.Root[data-ov-variant='pill'] .Tab[data-active][data-dirty] {
+  border-bottom: none;
+}
+
+/* Hide vertical dividers in pill mode */
+.Root[data-ov-variant='pill'] .Tab::after {
+  display: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -335,7 +365,7 @@
 }
 
 .ScrollButton {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 24px;
@@ -345,14 +375,11 @@
   color: var(--_ov-tab-fg);
   cursor: pointer;
   padding: 0;
-  opacity: 0;
-  pointer-events: none;
   transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .ScrollButton[data-visible] {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex;
 }
 
 .ScrollButton:hover {
@@ -380,12 +407,12 @@
 }
 
 .ScrollShadow[data-side='left'] {
-  left: 24px;
+  left: 0;
   background: linear-gradient(to right, var(--_ov-group-header-bg), transparent);
 }
 
 .ScrollShadow[data-side='right'] {
-  right: 24px;
+  right: 0;
   background: linear-gradient(to left, var(--_ov-group-header-bg), transparent);
 }
 

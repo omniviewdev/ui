@@ -239,6 +239,16 @@ describe('EditorTabs', () => {
     expect(dropTarget).not.toBeInTheDocument();
   });
 
+  it('applies pill variant data attribute', () => {
+    const tabs: TabDescriptor[] = [
+      { id: '1', title: 'Tab 1' },
+      { id: '2', title: 'Tab 2' },
+    ];
+    renderWithTheme(<EditorTabs tabs={tabs} variant="pill" />);
+    const root = screen.getByRole('tablist');
+    expect(root).toHaveAttribute('data-ov-variant', 'pill');
+  });
+
   it('detachable tab wires onDetachCommit through without crashing', () => {
     // Full pointer drag simulation is not feasible in jsdom (dnd-kit requires
     // setPointerCapture, getBoundingClientRect, etc.). The useTabDetach hook

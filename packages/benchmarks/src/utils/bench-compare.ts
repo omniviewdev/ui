@@ -48,6 +48,9 @@ export function benchCompareMany(
   const opts = resolveOptions(options);
 
   for (const [label, factory] of Object.entries(implementations)) {
+    // Element creation is intentionally outside the bench callback so we
+    // measure only React mount/reconciliation cost, not JS array/createElement
+    // overhead. This mirrors benchMountMany's design.
     const children = Array.from({ length: count }, (_, i) => factory(i));
     const wrap = wrappers[label] ?? ((el: ReactElement) => el);
     const wrapped = wrap(createElement('div', null, ...children));

@@ -5,7 +5,6 @@ import path from 'node:path';
 // Competitive benchmarks: cross-library comparisons (vs MUI, raw HTML).
 // Separate config so `pnpm bench` (regression) never pulls in MUI.
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineConfig(async () => {
   const plugins = [
     react({
@@ -41,4 +40,4 @@ export default defineConfig(async () => {
       },
     },
   };
-}) as ReturnType<typeof defineConfig>;
+});

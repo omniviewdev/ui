@@ -6,7 +6,7 @@ import { wrapOv, wrapMui, wrapRaw } from './implementations/wrappers';
 
 describe('Switch competitive', () => {
   benchCompare('mount', {
-    'raw': () => wrapRaw(<input type="checkbox" role="switch" />),
+    'raw': () => wrapRaw(<input type="checkbox" role="switch" aria-checked="false" />),
     '@omniview/base-ui': () => wrapOv(<OvSwitch />),
     '@mui/material': () => wrapMui(<MuiSwitch />),
   });

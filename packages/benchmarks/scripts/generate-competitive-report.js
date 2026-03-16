@@ -79,9 +79,9 @@ function generateReport(data) {
   const overheadValues = { ov: [], mui: [] };
 
   for (const [, g] of groups) {
-    const rawHz = g.impls['raw'] ?? 0;
-    const ovHz = g.impls['@omniview/base-ui'] ?? 0;
-    const muiHz = g.impls['@mui/material'] ?? 0;
+    const rawHz = g.impls['raw'] ?? NaN;
+    const ovHz = g.impls['@omniview/base-ui'] ?? NaN;
+    const muiHz = g.impls['@mui/material'] ?? NaN;
 
     const ovOverhead = rawHz / ovHz;
     const muiOverhead = rawHz / muiHz;

@@ -10,6 +10,8 @@ import { toggleButtonClasses } from '@mui/material/ToggleButton';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { gray as defaultGray, brand as defaultBrand } from '../primitives';
 
 type ColorScale = Record<number, string>;
@@ -343,7 +345,7 @@ export function createInputsCustomizations(palettes?: Partial<InputPalettes>): C
         borderColor: alpha(gray[300], 0.8),
         boxShadow: '0 0 0 1.5px hsla(210, 0%, 0%, 0.04) inset',
         backgroundColor: alpha(gray[100], 0.4),
-        transition: 'border-color, background-color, 120ms ease-in',
+        transition: 'border-color 120ms ease-in, background-color 120ms ease-in',
         '&:hover': { borderColor: brand[300] },
         '&.Mui-checked': {
           color: 'white',
@@ -362,9 +364,13 @@ export function createInputsCustomizations(palettes?: Partial<InputPalettes>): C
     },
   },
   MuiSelect: {
+    defaultProps: {
+      IconComponent: React.forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => (
+        <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />
+      )),
+    },
     styleOverrides: {
       select: {
-        // Prevent chips from wrapping to multiple lines.
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',

@@ -2,14 +2,11 @@
  * Navigation Component Customizations
  * Menu, Link, Drawer, Tabs, etc.
  */
-import * as React from 'react';
 import { alpha, type Components, type Theme } from '@mui/material/styles';
-import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { buttonBaseClasses } from '@mui/material/ButtonBase';
 import { dividerClasses } from '@mui/material/Divider';
 import { menuItemClasses } from '@mui/material/MenuItem';
 import { tabClasses } from '@mui/material/Tab';
-import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import { gray as defaultGray, brand as defaultBrand } from '../primitives';
 
 type ColorScale = Record<number, string>;
@@ -43,7 +40,7 @@ export function createNavigationCustomizations(palettes?: Partial<NavigationPale
       list: {
         gap: '0px',
         padding: '4px',
-        [`&.${dividerClasses.root}`]: { margin: '0 -8px' },
+        [`& .${dividerClasses.root}`]: { margin: '0 -8px' },
       },
       paper: ({ theme }) => ({
         marginTop: '4px',
@@ -60,16 +57,6 @@ export function createNavigationCustomizations(palettes?: Partial<NavigationPale
           boxShadow: 'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px',
         }),
       }),
-    },
-  },
-  MuiSelect: {
-    defaultProps: {
-      IconComponent: React.forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => (
-        <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />
-      )),
-    },
-    styleOverrides: {
-      select: { display: 'flex', alignItems: 'center' },
     },
   },
   MuiLink: {

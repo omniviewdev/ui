@@ -6,8 +6,7 @@ import { createNavigationCustomizations } from './customizations/navigation';
 import { createFeedbackCustomizations } from './customizations/feedback';
 import { createDataDisplayCustomizations } from './customizations/dataDisplay';
 
-// Import type declarations for custom variants (soft, link, xs, xl)
-import './mui.d.ts';
+/// <reference path="./mui.d.ts" />
 
 const muiTheme = createTheme({
   cssVariables: {

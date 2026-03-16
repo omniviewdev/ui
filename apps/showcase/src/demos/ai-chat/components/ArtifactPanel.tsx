@@ -20,7 +20,9 @@ interface ArtifactPanelProps {
 
 export function ArtifactPanel({ artifact, onClose }: ArtifactPanelProps) {
   const handleCopy = useCallback(() => {
-    void navigator.clipboard.writeText(artifact.code);
+    navigator.clipboard.writeText(artifact.code).catch(() => {
+      // Clipboard API can fail in insecure contexts
+    });
   }, [artifact.code]);
 
   return (

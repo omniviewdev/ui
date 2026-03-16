@@ -116,21 +116,19 @@ function SearchPanel({ onOpenFile }: SearchPanelProps) {
       </div>
       <div className={styles.searchResults}>
         {filtered.map((result, i) => (
-          <div
+          <button
+            type="button"
             // eslint-disable-next-line react/no-array-index-key
             key={`${result.file}-${result.line}-${i}`}
             className={styles.resultItem}
-            role="button"
-            tabIndex={0}
             onClick={() => onOpenFile(result.file)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFile(result.file); } }}
           >
             <span className={styles.resultFile}>{result.file}</span>
             <span className={styles.resultMatch}>{result.context.trim()}</span>
             <span className={styles.resultLocation}>
               Ln {result.line}, Col {result.column}
             </span>
-          </div>
+          </button>
         ))}
       </div>
     </div>

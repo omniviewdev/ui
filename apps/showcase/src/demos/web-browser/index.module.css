@@ -162,6 +162,8 @@
   font-size: var(--ov-primitive-font-size-13, 0.8125rem);
   color: var(--ov-color-fg-subtle);
   margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .errorButton {

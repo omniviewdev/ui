@@ -29,12 +29,11 @@ export interface UseChatReturn {
   toggleReaction: (messageId: string, emoji: string) => void;
 }
 
-let nextMsgId = 1000;
-function makeMsgId(): string {
-  return `msg-new-${nextMsgId++}`;
-}
-
 export function useChat(): UseChatReturn {
+  const nextMsgIdRef = useRef(1000);
+  function makeMsgId(): string {
+    return `msg-new-${nextMsgIdRef.current++}`;
+  }
   const [workspaces] = useState<Workspace[]>(WORKSPACES);
   const [activeWorkspaceId, setActiveWorkspaceId] = useState('ws-omniview');
   const [activeChannelId, setActiveChannelId] = useState('ch-general');
@@ -83,7 +82,7 @@ export function useChat(): UseChatReturn {
     setActiveWorkspaceId(id);
     const ws = workspaces.find((w) => w.id === id);
     if (ws && ws.channels.length > 0) {
-      setActiveChannelId(ws.channels[0]!.id);
+      setActiveChannelId(ws.channels[0]?.id ?? '');
     }
     setActiveThreadId(null);
   }, [workspaces]);

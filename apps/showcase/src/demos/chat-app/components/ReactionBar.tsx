@@ -25,7 +25,7 @@ export function ReactionBar({ reactions, currentUserId, onToggle }: ReactionBarP
           <span>{r.userIds.length}</span>
         </button>
       ))}
-      <button className={styles.reactionAdd} onClick={() => onToggle('👍')}>
+      <button className={`${styles.reaction} ${styles.reactionAdd}`} onClick={() => onToggle('👍')}>
         <LuSmilePlus size={12} />
       </button>
     </div>

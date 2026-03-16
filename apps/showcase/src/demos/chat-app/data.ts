@@ -336,10 +336,12 @@ export function formatTime(timestamp: number): string {
 export function formatDateSeparator(timestamp: number): string {
   const now = new Date();
   const date = new Date(timestamp);
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const yesterdayStart = todayStart - 24 * 60 * 60 * 1000;
+  const targetStart = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 
-  if (diffDays === 0 && now.getDate() === date.getDate()) return 'Today';
-  if (diffDays <= 1 && now.getDate() - date.getDate() === 1) return 'Yesterday';
+  if (targetStart === todayStart) return 'Today';
+  if (targetStart === yesterdayStart) return 'Yesterday';
   return date.toLocaleDateString([], { month: 'long', day: 'numeric' });
 }
 

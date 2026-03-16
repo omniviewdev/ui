@@ -24,6 +24,7 @@ export function CommandLog({ entries, defaultCollapsed = true }: CommandLogProps
   return (
     <div className={styles.root}>
       <button
+        type="button"
         className={styles.toggle}
         onClick={() => setCollapsed((c) => !c)}
         aria-expanded={!collapsed}

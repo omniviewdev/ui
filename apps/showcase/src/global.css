@@ -18,4 +18,5 @@ body {
   background: var(--ov-color-bg-base);
   color: var(--ov-color-fg-default);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

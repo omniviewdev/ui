@@ -1,4 +1,4 @@
-import type { Container, ContainerDetail, ContainerStats, FileSystemNode } from './types';
+import type { Container, ContainerDetail, ContainerStats, ContainerStatus, FileSystemNode } from './types';
 import type { StatusDotStatus } from '@omniview/base-ui';
 
 // ---------------------------------------------------------------------------
@@ -203,7 +203,7 @@ function generateStats(seed: number): ContainerStats {
 // containerStatusColor — maps all 5 container statuses to StatusDot statuses
 // ---------------------------------------------------------------------------
 
-export function containerStatusColor(status: string): StatusDotStatus {
+export function containerStatusColor(status: ContainerStatus): StatusDotStatus {
   switch (status) {
     case 'running':    return 'success';
     case 'stopped':    return 'neutral';
@@ -568,5 +568,5 @@ export const clusterStats = {
   restarting: containers.filter((c) => c.status === 'restarting').length,
   exited: containers.filter((c) => c.status === 'exited').length,
   totalMemoryMB: containers.reduce((acc, c) => acc + c.memory, 0),
-  avgCpu: containers.reduce((acc, c) => acc + c.cpu, 0) / containers.filter((c) => c.status === 'running').length,
+  avgCpu: (() => { const running = containers.filter((c) => c.status === 'running').length; return running > 0 ? containers.reduce((acc, c) => acc + c.cpu, 0) / running : 0; })(),
 };

@@ -12,7 +12,7 @@ export function ErrorPage({ url, onNewTab }: ErrorPageProps) {
       <LuShieldAlert size={48} className={styles.errorIcon} />
       <h2 className={styles.errorTitle}>This site can't be displayed in a frame</h2>
       <p className={styles.errorUrl}>{url}</p>
-      <button className={styles.errorButton} onClick={onNewTab}>
+      <button type="button" className={styles.errorButton} onClick={onNewTab}>
         New Tab
       </button>
     </div>

@@ -18,7 +18,7 @@ export function domainFromUrl(url: string): string {
 }
 
 export function ensureProtocol(input: string): string {
-  if (/^https?:\/\//i.test(input)) return input;
+  if (/^[a-zA-Z][\w+\-.]*:/.test(input) || input.startsWith('//')) return input;
   return `https://${input}`;
 }
 

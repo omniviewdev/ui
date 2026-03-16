@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import {
   LuFolder,
   LuFolderOpen,
-  LuArrowUp,
+  LuTextCursor,
   LuDownload,
   LuUpload,
   LuPencil,
@@ -198,7 +198,7 @@ export function FilePane({ title, subtitle, root, side, searchQuery }: FilePaneP
             <FileTable.Column
               id="owner"
               header="Owner / Group"
-              accessor={(item: any) => `${item.owner ?? 'sftpclient'} / ${item.group ?? 'sftp'}`}
+              accessor={(item: FileNode) => `${item.owner ?? 'sftpclient'} / ${item.group ?? 'sftp'}`}
               width={100}
             />
           )}
@@ -206,7 +206,7 @@ export function FilePane({ title, subtitle, root, side, searchQuery }: FilePaneP
             <FileTable.Column
               id="permissions"
               header="Permissions"
-              accessor={(item: any) => item.permissions ?? 'rwxr-xr-x'}
+              accessor={(item: FileNode) => item.permissions ?? 'rwxr-xr-x'}
               mono
               width={90}
             />
@@ -240,7 +240,7 @@ export function FilePane({ title, subtitle, root, side, searchQuery }: FilePaneP
           <LuPencil size={13} />
         </IconButton>
         <IconButton variant="ghost" size="sm" dense aria-label="Rename" onClick={() => handleAction('Rename')}>
-          <LuArrowUp size={13} />
+          <LuTextCursor size={13} />
         </IconButton>
         <IconButton variant="ghost" size="sm" dense aria-label="Delete" onClick={() => handleAction('Delete')}>
           <LuTrash2 size={13} />

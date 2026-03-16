@@ -112,14 +112,14 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
         cell: (info) => {
           const row = info.row.original;
           return (
-            <div
+            <button
+              type="button"
               className={styles.nameCell}
-              style={{ cursor: 'pointer' }}
               onClick={() => onSelectRef.current(row)}
             >
               <StatusDot status={containerStatusColor(row.status)} size="sm" />
               <span>{row.name}</span>
-            </div>
+            </button>
           );
         },
       },

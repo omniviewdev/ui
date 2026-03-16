@@ -28,15 +28,15 @@ function TransferTable({ transfers }: { transfers: Transfer[] }) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Source</th>
-            <th>Direction</th>
-            <th>Destination</th>
-            <th>Size</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Remaining</th>
-            <th>Speed</th>
-            <th>Progress</th>
+            <th scope="col">Source</th>
+            <th scope="col">Direction</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Size</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Status</th>
+            <th scope="col">Remaining</th>
+            <th scope="col">Speed</th>
+            <th scope="col">Progress</th>
           </tr>
         </thead>
         <tbody>

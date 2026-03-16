@@ -22,7 +22,7 @@ const PANELS: PanelDef[] = [
 
 export function IconStrip({ activePanel, onPanelChange }: IconStripProps) {
   return (
-    <div className={styles.strip} role="navigation" aria-label="Sidebar panels">
+    <nav className={styles.strip} aria-label="Sidebar panels">
       {PANELS.map((panel) => (
         <Tooltip.Root key={panel.id}>
           <Tooltip.Trigger
@@ -46,6 +46,6 @@ export function IconStrip({ activePanel, onPanelChange }: IconStripProps) {
           </Tooltip.Portal>
         </Tooltip.Root>
       ))}
-    </div>
+    </nav>
   );
 }

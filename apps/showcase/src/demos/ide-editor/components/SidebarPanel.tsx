@@ -90,7 +90,7 @@ interface SearchPanelProps {
   onOpenFile: (fileId: string) => void;
 }
 
-function SearchPanel({ onOpenFile: _onOpenFile }: SearchPanelProps) {
+function SearchPanel({ onOpenFile }: SearchPanelProps) {
   const [query, setQuery] = useState('useState');
 
   const filtered: SearchResult[] = query
@@ -122,8 +122,8 @@ function SearchPanel({ onOpenFile: _onOpenFile }: SearchPanelProps) {
             className={styles.resultItem}
             role="button"
             tabIndex={0}
-            onClick={() => {/* file lookup by path is outside scope of this panel */}}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { /* noop */ } }}
+            onClick={() => onOpenFile(result.file)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFile(result.file); } }}
           >
             <span className={styles.resultFile}>{result.file}</span>
             <span className={styles.resultMatch}>{result.context.trim()}</span>

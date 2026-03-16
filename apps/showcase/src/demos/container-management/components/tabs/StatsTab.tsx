@@ -65,7 +65,7 @@ export function StatsTab({ container }: StatsTabProps) {
             />
             <SparkBar values={stats.cpuHistory} color="var(--ov-color-brand-500)" />
             <Card.KeyValue label="Avg (20s)">
-              {(stats.cpuHistory.reduce((a, b) => a + b, 0) / stats.cpuHistory.length).toFixed(1)}%
+              {(stats.cpuHistory.length > 0 ? stats.cpuHistory.reduce((a, b) => a + b, 0) / stats.cpuHistory.length : 0).toFixed(1)}%
             </Card.KeyValue>
             <Card.KeyValue label="PIDs">
               {stats.pids}

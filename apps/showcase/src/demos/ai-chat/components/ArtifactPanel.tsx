@@ -9,7 +9,7 @@ import {
   AIArtifactContent,
   AICodeBlock,
 } from '@omniview/ai-ui';
-import { LuCopy, LuCheck } from 'react-icons/lu';
+import { LuCopy } from 'react-icons/lu';
 import type { ArtifactData } from '../types';
 import styles from './ArtifactPanel.module.css';
 
@@ -33,11 +33,6 @@ export function ArtifactPanel({ artifact, onClose }: ArtifactPanelProps) {
             tooltip="Copy code"
             icon={LuCopy}
             onClick={handleCopy}
-          />
-          <AIArtifactAction
-            label="Apply to editor"
-            tooltip="Apply to editor"
-            icon={LuCheck}
           />
           <AIArtifactClose onClick={onClose} />
         </AIArtifactActions>

@@ -79,7 +79,7 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
   }, [toast]);
 
   return (
-    <div className={styles.pane} aria-label={label}>
+    <div className={styles.pane} role="region" aria-label={label}>
       <div className={styles.header}>
         <span className={styles.label}>{label}</span>
         {selectedPath.length > 0 && (

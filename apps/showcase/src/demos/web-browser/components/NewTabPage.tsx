@@ -36,6 +36,7 @@ export function NewTabPage({ onNavigate }: NewTabPageProps) {
       <div className={styles.speedDial}>
         {SPEED_DIAL_SITES.map((site) => (
           <button
+            type="button"
             key={site.id}
             className={styles.speedDialCard}
             onClick={() => onNavigate(site.url)}

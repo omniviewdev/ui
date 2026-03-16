@@ -99,10 +99,12 @@ export function useBrowser(): UseBrowserReturn {
   );
 
   const goBack = useCallback(() => {
+    let targetUrl = '';
     updateActiveTab((t) => {
       if (t.historyIndex <= 0) return t;
       const newIndex = t.historyIndex - 1;
       const url = t.history[newIndex]!;
+      targetUrl = url;
       return {
         ...t,
         url,
@@ -112,14 +114,16 @@ export function useBrowser(): UseBrowserReturn {
         error: undefined,
       };
     });
-    startBlockedTimeout();
+    if (targetUrl && targetUrl !== NEW_TAB_URL) startBlockedTimeout();
   }, [updateActiveTab, startBlockedTimeout]);
 
   const goForward = useCallback(() => {
+    let targetUrl = '';
     updateActiveTab((t) => {
       if (t.historyIndex >= t.history.length - 1) return t;
       const newIndex = t.historyIndex + 1;
       const url = t.history[newIndex]!;
+      targetUrl = url;
       return {
         ...t,
         url,
@@ -129,7 +133,7 @@ export function useBrowser(): UseBrowserReturn {
         error: undefined,
       };
     });
-    startBlockedTimeout();
+    if (targetUrl && targetUrl !== NEW_TAB_URL) startBlockedTimeout();
   }, [updateActiveTab, startBlockedTimeout]);
 
   const refresh = useCallback(() => {
@@ -171,7 +175,7 @@ export function useBrowser(): UseBrowserReturn {
   const reorderTabs = useCallback((orderedIds: string[]) => {
     setTabs((prev) => {
       const map = new Map(prev.map((t) => [t.id, t]));
-      return orderedIds.map((id) => map.get(id)!).filter(Boolean);
+      return orderedIds.map((id) => map.get(id)).filter(Boolean) as BrowserTab[];
     });
   }, []);
 

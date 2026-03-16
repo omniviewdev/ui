@@ -6,7 +6,7 @@ import {
   LuLock,
 } from 'react-icons/lu';
 import { IconButton, Input } from '@omniview/base-ui';
-import { ensureProtocol } from '../data';
+import { ensureProtocol, NEW_TAB_URL } from '../data';
 import styles from '../index.module.css';
 
 export interface BrowserToolbarProps {
@@ -28,7 +28,7 @@ export function BrowserToolbar({
   onForward,
   onRefresh,
 }: BrowserToolbarProps) {
-  const displayUrl = url === 'about:newtab' ? '' : url;
+  const displayUrl = url === NEW_TAB_URL ? '' : url;
   const [inputValue, setInputValue] = useState(displayUrl);
 
   // Sync input when URL changes externally (tab switch, bookmark click)

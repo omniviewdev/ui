@@ -40,7 +40,7 @@ export function WorkspaceRail({
 
       <Separator orientation="horizontal" />
 
-      <button className={styles.railAddButton} aria-label="Add workspace">
+      <button type="button" className={styles.railAddButton} aria-label="Add workspace">
         <LuPlus size={16} />
       </button>
 

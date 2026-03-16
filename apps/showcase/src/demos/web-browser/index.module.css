@@ -115,6 +115,12 @@
   background: var(--ov-color-bg-surface-raised);
 }
 
+.speedDialCard:focus-visible {
+  background: var(--ov-color-bg-surface-raised);
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
 .speedDialIcon {
   font-size: 24px;
 }

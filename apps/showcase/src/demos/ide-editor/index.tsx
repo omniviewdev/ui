@@ -60,7 +60,7 @@ export default function IdeEditorDemo() {
   // Keyboard shortcut: Ctrl+K / Cmd+K
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setShowPalette((p) => !p);
       }
@@ -95,18 +95,17 @@ export default function IdeEditorDemo() {
 
   const handleCloseTab = useCallback((tabId: string) => {
     setTabs((prev) => {
+      const idx = prev.findIndex((t) => t.id === tabId);
       const next = prev.filter((t) => t.id !== tabId);
+      setActiveTabId((current) => {
+        if (current !== tabId) return current;
+        if (next.length === 0) return '';
+        const nextIdx = Math.min(idx, next.length - 1);
+        return next[nextIdx]?.id ?? '';
+      });
       return next;
     });
-    setActiveTabId((current) => {
-      if (current !== tabId) return current;
-      const idx = tabs.findIndex((t) => t.id === tabId);
-      const remaining = tabs.filter((t) => t.id !== tabId);
-      if (remaining.length === 0) return '';
-      const nextIdx = Math.min(idx, remaining.length - 1);
-      return remaining[nextIdx]?.id ?? '';
-    });
-  }, [tabs]);
+  }, []);
 
   // ─── Command palette ────────────────────────────────────────────────────────
 

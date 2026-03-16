@@ -23,7 +23,7 @@ function formatHz(hz) {
 }
 
 function formatOverhead(raw, lib) {
-  if (!Number.isFinite(raw) || !Number.isFinite(lib) || lib === 0) return 'N/A';
+  if (!Number.isFinite(raw) || !Number.isFinite(lib) || raw <= 0 || lib <= 0) return 'N/A';
   return `${(raw / lib).toFixed(1)}x`;
 }
 

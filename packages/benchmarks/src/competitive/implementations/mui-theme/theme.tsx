@@ -9,7 +9,7 @@ import { createDataDisplayCustomizations } from './customizations/dataDisplay';
 
 const muiTheme = createTheme({
   cssVariables: {
-    colorSchemeSelector: 'data-mui-color-scheme',
+    colorSchemeSelector: '[data-mui-color-scheme=%s]',
     cssVarPrefix: 'ov-mui',
   },
   colorSchemes: {

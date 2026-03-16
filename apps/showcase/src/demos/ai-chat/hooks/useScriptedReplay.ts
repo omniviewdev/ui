@@ -79,17 +79,19 @@ export function useScriptedReplay(options: UseScriptedReplayOptions) {
       setState((s) => ({ ...s, phase: 'streaming', streamedText: '' }));
     }, streamingStart);
 
-    // Stream characters one by one
-    const charsPerTick = 1;
-    const msPerChar = 30;
-    for (let i = charsPerTick; i <= streamedText.length; i += charsPerTick) {
-      const chunk = streamedText.slice(0, i);
+    // Stream by token-like chunks (~3-5 chars) at realistic LLM speed
+    const charsPerTick = 4;
+    const msPerTick = 18;
+    const totalTicks = Math.ceil(streamedText.length / charsPerTick);
+    for (let t = 1; t <= totalTicks; t++) {
+      const end = Math.min(t * charsPerTick, streamedText.length);
+      const chunk = streamedText.slice(0, end);
       schedule(() => {
         setState((s) => ({ ...s, streamedText: chunk }));
-      }, streamingStart + i * msPerChar);
+      }, streamingStart + t * msPerTick);
     }
 
-    const streamingEnd = streamingStart + streamedText.length * msPerChar;
+    const streamingEnd = streamingStart + totalTicks * msPerTick;
 
     // Phase: artifact — appears after streaming complete
     schedule(() => {

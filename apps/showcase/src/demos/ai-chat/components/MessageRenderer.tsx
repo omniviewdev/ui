@@ -4,7 +4,6 @@ import {
   ChatAvatar,
   AIContextIndicator,
   AIMessageActions,
-  AIFollowUp,
 } from '@omniview/ai-ui';
 import type { ContextItem } from '@omniview/ai-ui';
 import {
@@ -51,7 +50,7 @@ export function MessageRenderer({ message, onCopy }: MessageRendererProps) {
     <div className={styles.Root} data-role={message.role}>
       <ChatBubble
         role={message.role}
-        avatar={<ChatAvatar role={message.role} />}
+        avatar={message.role === 'user' ? <ChatAvatar role={message.role} /> : undefined}
         actions={
           message.role === 'assistant' ? (
             <AIMessageActions

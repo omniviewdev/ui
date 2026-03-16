@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { Terminal, type TerminalHandle } from '@omniview/editors';
 import type { ContainerDetail } from '../../types';
+import styles from './LogsTab.module.css';
 
 export interface LogsTabProps {
   container: ContainerDetail;
@@ -20,12 +21,11 @@ export function LogsTab({ container }: LogsTabProps) {
   return (
     <Terminal
       ref={termRef}
+      className={styles.terminal}
       onReady={handleReady}
       disableStdin
       convertEol={false}
       scrollback={10000}
-      className={undefined}
-      style={{ height: '100%' } as React.CSSProperties}
     />
   );
 }

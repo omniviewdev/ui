@@ -4,7 +4,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background: var(--ov-color-surface-primary);
+  background: var(--ov-color-bg-base);
   position: relative;
 }
 
@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  height: 100%;
   min-width: 0;
   overflow: hidden;
 }
@@ -19,6 +20,7 @@
 .editorContent {
   flex: 1;
   min-height: 0;
+  height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -36,6 +38,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ov-color-text-tertiary);
+  color: var(--ov-color-fg-subtle);
   font-size: 13px;
+}
+
+.panelArea {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.terminalWrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }

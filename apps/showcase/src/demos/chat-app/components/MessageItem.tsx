@@ -130,11 +130,13 @@ function HoverActions({
         <LuBookmark size={14} />
       </IconButton>
       <Menu.Root>
-        <Menu.Trigger>
-          <IconButton variant="ghost" size="sm" aria-label="More actions">
-            <LuEllipsis size={14} />
-          </IconButton>
-        </Menu.Trigger>
+        <Menu.Trigger
+          render={({ color: _, ...props }) => (
+            <IconButton {...props} variant="ghost" size="sm" aria-label="More actions">
+              <LuEllipsis size={14} />
+            </IconButton>
+          )}
+        />
         <Menu.Portal>
           <Menu.Positioner>
             <Menu.Popup>

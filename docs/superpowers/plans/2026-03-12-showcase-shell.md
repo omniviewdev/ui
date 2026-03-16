@@ -54,7 +54,7 @@
 
 - [ ] **Step 2: Run pnpm install from monorepo root**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm install`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm install`
 Expected: Lockfile updates, workspace links resolve.
 
 ---
@@ -174,7 +174,7 @@ export function App() {
 
 - [ ] **Step 2: Run dev server**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm --filter @omniview/showcase dev`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase dev`
 Expected: Vite starts on port 3000, page renders "Showcase" with themed text.
 
 - [ ] **Step 3: Add root scripts**
@@ -701,7 +701,7 @@ export function App() {
 
 - [ ] **Step 3: Run dev server and verify full shell**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm showcase`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm showcase`
 
 Verify:
 - Home screen shows with title "Omniview Showcase" and 7 app cards
@@ -761,12 +761,12 @@ Add `import './global.css';` before the App import in `main.tsx`.
 
 - [ ] **Step 3: Typecheck**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm --filter @omniview/showcase exec tsc --noEmit`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase exec tsc --noEmit`
 Expected: No errors.
 
 - [ ] **Step 4: Run lint**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm lint`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm lint`
 Expected: No new errors from showcase files.
 
 - [ ] **Step 5: Commit**
@@ -782,12 +782,12 @@ git commit -m "feat(showcase): add global reset styles and pass typecheck"
 
 - [ ] **Step 1: Clean build**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm --filter @omniview/showcase build`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase build`
 Expected: Build completes, output in `apps/showcase/dist/`.
 
 - [ ] **Step 2: Preview production build**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/main && pnpm --filter @omniview/showcase preview`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase preview`
 Expected: Same behavior as dev — dock, home screen, placeholder demos all work.
 
 - [ ] **Step 3: Verify all 7 demo routes work**

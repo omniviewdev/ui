@@ -1,6 +1,4 @@
-'use no memo';
-
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useRef, useState } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import {
   DataTable,
@@ -11,6 +9,7 @@ import {
   Button,
   SearchInput,
   useToast,
+  ROW_HEIGHT,
 } from '@omniview/base-ui';
 import { useDataTable, Checkbox } from '@omniview/base-ui';
 import {
@@ -55,6 +54,12 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ContainerStatus | null>(null);
 
+  // Stable refs so columns never recompute on callback identity changes
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
+  const onSelectRef = useRef(onSelectContainer);
+  onSelectRef.current = onSelectContainer;
+
   // Filter data client-side
   const filteredData = useMemo(() => {
     return containers.filter((c) => {
@@ -81,6 +86,8 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                   : false
             }
             onCheckedChange={() => table.toggleAllPageRowsSelected()}
+            variant="outline"
+            size="sm"
             aria-label="Select all"
           />
         ),
@@ -88,10 +95,12 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={() => row.toggleSelected()}
+            variant="outline"
+            size="sm"
             aria-label={`Select ${row.original.name}`}
           />
         ),
-        size: 44,
+        size: 36,
         enableSorting: false,
         enableResizing: false,
         meta: { align: 'center' },
@@ -106,7 +115,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
             <div
               className={styles.nameCell}
               style={{ cursor: 'pointer' }}
-              onClick={() => onSelectContainer(row)}
+              onClick={() => onSelectRef.current(row)}
             >
               <StatusDot status={containerStatusColor(row.status)} size="sm" />
               <span>{row.name}</span>
@@ -201,7 +210,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                 aria-label={isRunning ? `Stop ${row.name}` : `Start ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toast(`${isRunning ? 'Stopping' : 'Starting'} ${row.name}`, { severity: 'info' });
+                  toastRef.current(`${isRunning ? 'Stopping' : 'Starting'} ${row.name}`, { severity: 'info' });
                 }}
               >
                 {isRunning ? <LuSquare /> : <LuPlay />}
@@ -213,7 +222,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                 aria-label={`Restart ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toast(`Restarting ${row.name}`, { severity: 'info' });
+                  toastRef.current(`Restarting ${row.name}`, { severity: 'info' });
                 }}
               >
                 <LuRefreshCw />
@@ -226,7 +235,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                 aria-label={`Delete ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toast(`Deleting ${row.name}`, { severity: 'warning' });
+                  toastRef.current(`Deleting ${row.name}`, { severity: 'warning' });
                 }}
               >
                 <LuTrash2 />
@@ -236,7 +245,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
         },
       },
     ],
-    [onSelectContainer, toast],
+    [],
   );
 
   const table = useDataTable({
@@ -330,11 +339,12 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
         <DataTable.Root
           table={table}
           features={{ sorting: true, rowSelection: 'multi' }}
+          variant="ghost"
           hoverable
         >
           <DataTable.Container height="100%">
             <DataTable.Header />
-            <DataTable.VirtualBody estimateRowSize={44} overscan={5} />
+            <DataTable.VirtualBody estimateRowSize={ROW_HEIGHT.md} overscan={5} fixedRowHeight />
             <DataTable.Empty>No containers match your filters.</DataTable.Empty>
           </DataTable.Container>
         </DataTable.Root>

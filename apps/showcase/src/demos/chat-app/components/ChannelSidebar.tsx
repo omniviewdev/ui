@@ -54,13 +54,15 @@ export function ChannelSidebar({
                     itemKey={dm.id}
                     onClick={() => onSwitchChannel(dm.id)}
                   >
-                    <NavList.ItemIcon>
-                      <div className={styles.dmItemPresence}>
-                        <Avatar name={otherUser?.name ?? dm.name} shape="circle" size="sm" />
-                        {otherUser && (
-                          <StatusDot status={presenceToStatus(otherUser.status)} size="sm" />
-                        )}
-                      </div>
+                    <NavList.ItemIcon className={styles.dmAvatar}>
+                      <Avatar name={otherUser?.name ?? dm.name} shape="rounded" size="sm" />
+                      {otherUser && (
+                        <StatusDot
+                          status={presenceToStatus(otherUser.status)}
+                          size="sm"
+                          className={styles.dmAvatarStatus}
+                        />
+                      )}
                     </NavList.ItemIcon>
                     <NavList.ItemLabel
                       className={dm.unreadCount > 0 ? styles.channelItemUnread : styles.channelItem}

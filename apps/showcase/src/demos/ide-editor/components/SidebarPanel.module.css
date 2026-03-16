@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: var(--ov-color-surface-primary);
+  background: var(--ov-color-bg-base);
 }
 
 .panelHeader {
@@ -12,7 +12,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ov-color-text-tertiary);
+  color: var(--ov-color-fg-subtle);
   flex-shrink: 0;
 }
 
@@ -25,6 +25,12 @@
   flex: 1;
   overflow: auto;
   min-height: 0;
+}
+
+.placeholderSection {
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--ov-color-fg-subtle);
 }
 
 .searchResults {
@@ -44,13 +50,13 @@
 }
 
 .resultItem:hover {
-  background: var(--ov-color-surface-secondary);
+  background: var(--ov-color-state-hover);
 }
 
 .resultFile {
   font-size: 11px;
   font-weight: 600;
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -58,8 +64,8 @@
 
 .resultMatch {
   font-size: 12px;
-  color: var(--ov-color-text-primary);
-  font-family: var(--ov-font-family-mono, monospace);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-mono);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +73,7 @@
 
 .resultLocation {
   font-size: 11px;
-  color: var(--ov-color-text-tertiary);
+  color: var(--ov-color-fg-subtle);
 }
 
 .gitList {
@@ -88,32 +94,32 @@
 
 .gitFile {
   flex: 1;
-  font-family: var(--ov-font-family-mono, monospace);
+  font-family: var(--ov-font-mono);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--ov-color-text-primary);
+  color: var(--ov-color-fg-default);
 }
 
 .gitBadge {
   font-size: 10px;
   font-weight: 600;
   padding: 1px 5px;
-  border-radius: var(--ov-radius-sm);
+  border-radius: var(--ov-primitive-radius-sm);
   letter-spacing: 0.03em;
 }
 
 .gitBadge[data-status='modified'] {
-  background: var(--ov-color-warning-subtle);
-  color: var(--ov-color-warning-fg);
+  background: var(--ov-color-warning-soft);
+  color: var(--ov-color-warning);
 }
 
 .gitBadge[data-status='staged'] {
-  background: var(--ov-color-success-subtle);
-  color: var(--ov-color-success-fg);
+  background: var(--ov-color-success-soft);
+  color: var(--ov-color-success);
 }
 
 .gitBadge[data-status='untracked'] {
-  background: var(--ov-color-neutral-subtle);
-  color: var(--ov-color-neutral-fg);
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-muted);
 }

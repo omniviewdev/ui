@@ -5,7 +5,7 @@
   width: 52px;
   height: 100%;
   padding: var(--ov-space-stack-sm) 0;
-  background: var(--ov-color-bg-secondary);
+  background: var(--ov-color-bg-surface);
   border-right: 1px solid var(--ov-color-border-default);
   gap: var(--ov-space-stack-xs);
   overflow-y: auto;
@@ -31,7 +31,7 @@
   width: 3px;
   height: 20px;
   border-radius: 0 2px 2px 0;
-  background: var(--ov-color-accent-solid);
+  background: var(--ov-color-brand-400);
 }
 
 .iconWrapper {

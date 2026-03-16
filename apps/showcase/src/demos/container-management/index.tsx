@@ -8,7 +8,7 @@ import {
   LuSquare,
   LuPause,
   LuRefreshCw,
-  LuAlertCircle,
+  LuCircleAlert,
 } from 'react-icons/lu';
 import { ContainerList } from './components/ContainerList';
 import { ContainerDetail } from './components/ContainerDetail';
@@ -30,11 +30,15 @@ export default function ContainerManagementDemo() {
   return (
     <div className={styles.root}>
       <div className={styles.content}>
-        {selectedContainer ? (
+        {selectedContainer && (
           <ContainerDetail container={selectedContainer} onBack={handleBack} />
-        ) : (
-          <ContainerList containers={containers} onSelectContainer={handleSelectContainer} />
         )}
+        <div
+          className={styles.listWrapper}
+          style={{ display: selectedContainer ? 'none' : 'contents' }}
+        >
+          <ContainerList containers={containers} onSelectContainer={handleSelectContainer} />
+        </div>
       </div>
 
       <StatusBar>
@@ -69,7 +73,7 @@ export default function ContainerManagementDemo() {
           {clusterStats.exited > 0 && (
             <>
               <StatusBar.Separator />
-              <StatusBar.IconItem icon={<LuAlertCircle aria-hidden />} color="danger">
+              <StatusBar.IconItem icon={<LuCircleAlert aria-hidden />} color="danger">
                 {clusterStats.exited} exited
               </StatusBar.IconItem>
             </>

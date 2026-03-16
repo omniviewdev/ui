@@ -15,7 +15,7 @@ import {
   LuTrash2,
   LuTerminal,
   LuSearch,
-  LuBarChart2,
+  LuChartBar,
   LuFolderOpen,
 } from 'react-icons/lu';
 import { getContainerDetail, containerStatusColor } from '../data';
@@ -112,7 +112,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
       </div>
 
       {/* Tabs */}
-      <Tabs.Root className={styles.tabsRoot} defaultValue="logs">
+      <Tabs.Root className={styles.tabsRoot} defaultValue="logs" variant="flat" size="sm">
         <Tabs.List className={styles.tabsList}>
           <Tabs.Tab value="logs">
             <LuTerminal aria-hidden />
@@ -123,7 +123,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
             Inspect
           </Tabs.Tab>
           <Tabs.Tab value="stats">
-            <LuBarChart2 aria-hidden />
+            <LuChartBar aria-hidden />
             Stats
           </Tabs.Tab>
           <Tabs.Tab value="files">

@@ -15,7 +15,7 @@ body,
 
 body {
   font-family: var(--ov-font-sans);
-  background: var(--ov-color-bg-primary);
-  color: var(--ov-color-fg-primary);
+  background: var(--ov-color-bg-base);
+  color: var(--ov-color-fg-default);
   -webkit-font-smoothing: antialiased;
 }

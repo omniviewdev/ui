@@ -26,6 +26,12 @@
   flex: 1;
 }
 
+/* User bubbles shrink to fit content, capped at 80% width */
+.Root[data-ov-role='user'] .Content {
+  flex: 0 1 auto;
+  max-width: 80%;
+}
+
 .Bubble {
   font-size: var(--ov-font-size-sm, 0.875rem);
   line-height: var(--ov-line-height-relaxed, 1.625);

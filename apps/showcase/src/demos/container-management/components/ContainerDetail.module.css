@@ -35,16 +35,16 @@
   align-items: center;
   gap: 12px;
   font-size: var(--ov-font-size-sm);
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
 }
 
 .metaChip {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--ov-color-surface-raised);
+  background: var(--ov-color-bg-surface-raised);
   border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-sm);
+  border-radius: var(--ov-primitive-radius-sm);
   padding: 2px 6px;
   font-size: var(--ov-font-size-xs);
   font-family: var(--ov-font-mono);
@@ -55,18 +55,21 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  gap: 0;
 }
 
 .tabsList {
   flex-shrink: 0;
   border-bottom: 1px solid var(--ov-color-border-default);
   padding: 0 12px;
+  margin: 0;
 }
 
 .tabPanel {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  padding: 0;
 }
 
 .tabPanelInner {

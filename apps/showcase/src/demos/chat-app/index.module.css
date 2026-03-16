@@ -141,10 +141,16 @@
   color: var(--ov-color-fg-default);
 }
 
-.dmItemPresence {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.dmAvatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.dmAvatarStatus {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
 }
 
 /* ── Main content area ──────────────────────────────────────────────────── */
@@ -271,16 +277,19 @@
 }
 
 .messageCompactTime {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 40px;
   font-size: var(--ov-primitive-font-size-12, 0.75rem);
   color: var(--ov-color-fg-subtle);
   visibility: hidden;
-  min-width: 44px;
   text-align: right;
-  flex-shrink: 0;
 }
 
 .message:hover .messageCompactTime {
   visibility: visible;
+  left: 8px;
 }
 
 .messageContent {
@@ -351,8 +360,21 @@
   z-index: 1;
 }
 
-.message:hover .hoverActions {
+.message:hover .hoverActions,
+.hoverActions:has([data-popup-open]) {
   display: flex;
+}
+
+/* Keep message hover styles while its menu is open */
+.message:has([data-popup-open]) {
+  background: var(--ov-color-state-hover);
+  border-radius: 6px;
+  margin: 0 -8px;
+  padding: 4px 8px;
+}
+
+.messageCompact:has([data-popup-open]) {
+  padding-left: 52px;
 }
 
 /* ── Reactions ──────────────────────────────────────────────────────────── */
@@ -525,8 +547,7 @@
 .threadPanel {
   display: flex;
   flex-direction: column;
-  width: 320px;
-  flex-shrink: 0;
+  min-width: 240px;
   border-left: 1px solid var(--ov-color-border-default);
   background: var(--ov-color-bg-surface-raised);
   height: 100%;

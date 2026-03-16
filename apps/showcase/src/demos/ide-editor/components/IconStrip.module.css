@@ -6,8 +6,8 @@
   padding: 4px 0;
   width: 48px;
   flex-shrink: 0;
-  border-right: 1px solid var(--ov-color-border-primary);
-  background: var(--ov-color-surface-primary);
+  border-right: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-base);
   overflow: hidden;
 }
 
@@ -17,22 +17,22 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--ov-radius-md);
+  border-radius: var(--ov-radius-control);
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
   font-size: 18px;
   transition: background 80ms, color 80ms;
   flex-shrink: 0;
 }
 
 .btn:hover {
-  background: var(--ov-color-surface-secondary);
-  color: var(--ov-color-text-primary);
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-default);
 }
 
 .btn[data-active='true'] {
-  background: var(--ov-color-brand-subtle);
-  color: var(--ov-color-brand-fg);
+  background: var(--ov-color-accent-soft);
+  color: var(--ov-color-brand-400);
 }

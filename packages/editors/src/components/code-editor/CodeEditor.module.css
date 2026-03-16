@@ -9,6 +9,11 @@
   width: var(--_editor-width);
 }
 
+.Root[data-borderless] {
+  border: none;
+  border-radius: 0;
+}
+
 .Inner {
   height: 100%;
   width: 100%;

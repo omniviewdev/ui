@@ -24,7 +24,7 @@ export function IconStrip({ activePanel, onPanelChange }: IconStripProps) {
   return (
     <div className={styles.strip} role="navigation" aria-label="Sidebar panels">
       {PANELS.map((panel) => (
-        <Tooltip.Root key={panel.id} delay={400}>
+        <Tooltip.Root key={panel.id}>
           <Tooltip.Trigger
             render={
               <button

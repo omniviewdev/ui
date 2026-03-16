@@ -3,9 +3,9 @@ import '@omniview/ai-ui/styles.css';
 import { useState, useCallback, useRef } from 'react';
 import {
   ResizableSplitPane,
+  IconButton,
 } from '@omniview/base-ui';
 import {
-  AIConversationHeader,
   AIModelSelector,
   ChatMessageList,
   ChatSuggestions,
@@ -19,6 +19,7 @@ import {
   ToolResult,
 } from '@omniview/ai-ui';
 import type { ChatMessageListHandle } from '@omniview/ai-ui';
+import { LuPaperclip, LuArrowUp } from 'react-icons/lu';
 
 import { MessageRenderer } from './components/MessageRenderer';
 import { ArtifactPanel } from './components/ArtifactPanel';
@@ -55,7 +56,7 @@ function pastPhase(current: string, target: string): boolean {
 
 export default function AiChatDemo() {
   const [messages, setMessages] = useState<ChatMessage[]>(prebuiltMessages);
-  const [selectedModel, setSelectedModel] = useState(modelOptions[0].id);
+  const [selectedModel, setSelectedModel] = useState(modelOptions[0]?.id ?? 'claude-4-sonnet');
   const [inputValue, setInputValue] = useState('');
   const [artifact, setArtifact] = useState<ArtifactData | null>(null);
   const [replayUserMessage, setReplayUserMessage] = useState<ChatMessage | null>(null);
@@ -112,9 +113,6 @@ export default function AiChatDemo() {
     reset();
   }, [reset]);
 
-  const handleCopyArtifact = useCallback((code: string) => {
-    void navigator.clipboard.writeText(code);
-  }, []);
 
   // Build combined item list for the virtual list
   // Static messages + replay items (cumulative, once visible they stay)
@@ -152,10 +150,12 @@ export default function AiChatDemo() {
   const renderItem = useCallback(
     (index: number) => {
       if (index < staticMessages.length) {
+        const msg = staticMessages[index];
+        if (!msg) return null;
         return (
-          <div style={{ padding: '8px 16px' }}>
+          <div className={styles.MessageItem}>
             <MessageRenderer
-              message={staticMessages[index]}
+              message={msg}
               onCopy={(content) => void navigator.clipboard.writeText(content)}
             />
           </div>
@@ -169,7 +169,7 @@ export default function AiChatDemo() {
 
       if (replayItem.type === 'user-replay') {
         return (
-          <div style={{ padding: '8px 16px' }}>
+          <div className={styles.MessageItem}>
             <MessageRenderer message={replayItem.message} />
           </div>
         );
@@ -185,7 +185,7 @@ export default function AiChatDemo() {
 
       if (replayItem.type === 'assistant-replay') {
         return (
-          <div style={{ padding: '8px 16px' }}>
+          <div className={styles.MessageItem}>
             {showThinking && (
               <ThinkingBlock
                 content={state.thinkingText}
@@ -225,19 +225,36 @@ export default function AiChatDemo() {
 
   const isStreaming = state.phase === 'streaming' || state.phase === 'typing' || state.phase === 'thinking' || state.phase === 'tool-call';
 
+  const inputToolbarStart = (
+    <>
+      <IconButton size="sm" variant="ghost" color="neutral" aria-label="Attach file">
+        <LuPaperclip size={16} />
+      </IconButton>
+      <AIModelSelector
+        models={modelOptions}
+        value={selectedModel}
+        onChange={setSelectedModel}
+        variant="ghost"
+        size="sm"
+      />
+    </>
+  );
+
+  const inputToolbarEnd = (
+    <IconButton
+      size="sm"
+      variant="solid"
+      color="brand"
+      aria-label="Send message"
+      disabled={isStreaming || !inputValue.trim()}
+      onClick={() => { const v = inputValue.trim(); if (v) handleSend(v); }}
+    >
+      <LuArrowUp size={16} />
+    </IconButton>
+  );
+
   const chatPane = (
     <div className={styles.ChatPane}>
-      <AIConversationHeader
-        title="AI Chat"
-        actions={
-          <AIModelSelector
-            models={modelOptions}
-            value={selectedModel}
-            onChange={setSelectedModel}
-          />
-        }
-      />
-
       <div className={styles.MessageListWrapper}>
         <ChatMessageList
           ref={listRef}
@@ -247,40 +264,43 @@ export default function AiChatDemo() {
         />
       </div>
 
-      {/* Follow-up suggestions (shown after done) */}
-      {showFollowUp && state.followUps.length > 0 && (
-        <div className={styles.SuggestionsRow}>
-          <AIFollowUp
-            suggestions={state.followUps}
-            onSelect={handleFollowUpSelect}
-          />
-        </div>
-      )}
+      <div className={styles.InputArea}>
+        {/* Follow-up suggestions (shown after done) */}
+        {showFollowUp && state.followUps.length > 0 && (
+          <div className={styles.SuggestionsRow}>
+            <AIFollowUp
+              suggestions={state.followUps}
+              onSelect={handleFollowUpSelect}
+            />
+          </div>
+        )}
 
-      {/* Stop button while streaming */}
-      {isStreaming && (
-        <div className={styles.StopRow}>
-          <AIStopButton onStop={handleStop} />
-        </div>
-      )}
+        {/* Stop button while streaming */}
+        {isStreaming && (
+          <div className={styles.StopRow}>
+            <AIStopButton onStop={handleStop} />
+          </div>
+        )}
 
-      {/* Chat suggestions when idle */}
-      {state.phase === 'idle' && messages.length <= prebuiltMessages.length && (
-        <div className={styles.SuggestionsRow}>
-          <ChatSuggestions
-            suggestions={chatSuggestions.map((s) => ({ label: s, value: s }))}
-            onSelect={handleSuggestionSelect}
-          />
-        </div>
-      )}
+        {/* Chat suggestions when idle */}
+        {state.phase === 'idle' && messages.length <= prebuiltMessages.length && (
+          <div className={styles.SuggestionsRow}>
+            <ChatSuggestions
+              suggestions={chatSuggestions.map((s) => ({ label: s, value: s }))}
+              onSelect={handleSuggestionSelect}
+            />
+          </div>
+        )}
 
-      <div className={styles.InputRow}>
         <ChatInput
           value={inputValue}
           onChange={setInputValue}
           onSubmit={handleSend}
-          placeholder="Ask a question..."
+          placeholder="Ask anything"
           disabled={isStreaming}
+          autoFocus
+          startActions={inputToolbarStart}
+          endActions={inputToolbarEnd}
         />
       </div>
     </div>
@@ -301,70 +321,15 @@ export default function AiChatDemo() {
         <div className={styles.SplitWrapper}>
           <ResizableSplitPane
             direction="horizontal"
-            defaultSize={480}
-            minSize={300}
-            maxSize={700}
+            defaultSize={900}
+            minSize={400}
           >
             {chatPane}
             {artifactPane}
           </ResizableSplitPane>
         </div>
       ) : (
-        <div className={styles.ChatPane} style={{ flex: 1 }}>
-          <AIConversationHeader
-            title="AI Chat"
-            actions={
-              <AIModelSelector
-                models={modelOptions}
-                value={selectedModel}
-                onChange={setSelectedModel}
-              />
-            }
-          />
-
-          <div className={styles.MessageListWrapper}>
-            <ChatMessageList
-              ref={listRef}
-              count={totalCount}
-              estimateSize={120}
-              renderItem={renderItem}
-            />
-          </div>
-
-          {showFollowUp && state.followUps.length > 0 && (
-            <div className={styles.SuggestionsRow}>
-              <AIFollowUp
-                suggestions={state.followUps}
-                onSelect={handleFollowUpSelect}
-              />
-            </div>
-          )}
-
-          {isStreaming && (
-            <div className={styles.StopRow}>
-              <AIStopButton onStop={handleStop} />
-            </div>
-          )}
-
-          {state.phase === 'idle' && messages.length <= prebuiltMessages.length && (
-            <div className={styles.SuggestionsRow}>
-              <ChatSuggestions
-                suggestions={chatSuggestions.map((s) => ({ label: s, value: s }))}
-                onSelect={handleSuggestionSelect}
-              />
-            </div>
-          )}
-
-          <div className={styles.InputRow}>
-            <ChatInput
-              value={inputValue}
-              onChange={setInputValue}
-              onSubmit={handleSend}
-              placeholder="Ask a question..."
-              disabled={isStreaming}
-            />
-          </div>
-        </div>
+        chatPane
       )}
     </div>
   );

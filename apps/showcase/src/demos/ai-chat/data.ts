@@ -92,11 +92,48 @@ if __name__ == "__main__":
     print([fib_memo(i) for i in range(10)])`,
 };
 
-export const replayStreamedText = `Here's a fibonacci function with both a naive recursive and memoized version:
+export const replayStreamedText = `I've created two implementations of the Fibonacci function in \`fibonacci.py\`:
 
-The naive version has O(2^n) time complexity, while the memoized version runs in O(n). For production code, the memoized approach or an iterative solution would be preferred.
+## Naive Recursive
 
-I've also included type hints and a main block for testing.`;
+The basic version uses direct recursion:
+
+\`\`\`python
+def fib(n: int) -> int:
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+\`\`\`
+
+This has **O(2^n)** time complexity — it recomputes the same subproblems over and over. For \`fib(40)\`, this takes several seconds.
+
+## Memoized Version
+
+The optimized version caches results:
+
+\`\`\`python
+def fib_memo(n: int, memo: dict | None = None) -> int:
+    if memo is None:
+        memo = {}
+    if n in memo:
+        return memo[n]
+    if n <= 1:
+        return n
+    memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+    return memo[n]
+\`\`\`
+
+This runs in **O(n)** time and **O(n)** space — each value is computed exactly once.
+
+## When to use which
+
+| Approach | Time | Space | Use case |
+|----------|------|-------|----------|
+| Naive | O(2^n) | O(n) stack | Teaching, small n |
+| Memoized | O(n) | O(n) | Production, large n |
+| Iterative | O(n) | O(1) | Memory-constrained |
+
+For production code, I'd recommend the **memoized** or an **iterative** approach. I've included type hints and a \`__main__\` block so you can test it directly with \`python fibonacci.py\`.`;
 
 export const chatSuggestions = [
   'Write a fibonacci function in Python',

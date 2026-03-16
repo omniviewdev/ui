@@ -45,8 +45,43 @@ export default function ChatAppDemo() {
           onSwitchChannel={chat.switchChannel}
         />
 
-        <div className={styles.main}>
-          {/* Chat area */}
+        {chat.activeThread ? (
+          <ResizableSplitPane
+            direction="horizontal"
+            defaultSize={340}
+            minSize={280}
+            maxSize={500}
+            reverse
+            handleLabel="Resize thread"
+          >
+            <div className={styles.chatArea}>
+              <ChannelHeader channel={chat.activeChannel} />
+              <MessageList
+                messages={chat.messages}
+                users={chat.activeWorkspace.users}
+                currentUserId={chat.currentUser.id}
+                threadReplies={chat.allThreadReplies}
+                onToggleReaction={handleToggleReaction}
+                onOpenThread={chat.openThread}
+              />
+              <TypingIndicator users={chat.typingUsers} />
+              <MessageComposer
+                placeholder={`Message #${chat.activeChannel.name}`}
+                onSend={chat.sendMessage}
+              />
+            </div>
+            <ThreadPanel
+              parentMessage={chat.activeThread}
+              replies={chat.threadMessages}
+              channel={chat.activeChannel}
+              users={chat.activeWorkspace.users}
+              currentUserId={chat.currentUser.id}
+              onClose={chat.closeThread}
+              onSendReply={chat.sendThreadReply}
+              onToggleReaction={handleToggleReaction}
+            />
+          </ResizableSplitPane>
+        ) : (
           <div className={styles.chatArea}>
             <ChannelHeader channel={chat.activeChannel} />
             <MessageList
@@ -63,21 +98,7 @@ export default function ChatAppDemo() {
               onSend={chat.sendMessage}
             />
           </div>
-
-          {/* Thread Panel */}
-          {chat.activeThread && (
-            <ThreadPanel
-              parentMessage={chat.activeThread}
-              replies={chat.threadMessages}
-              channel={chat.activeChannel}
-              users={chat.activeWorkspace.users}
-              currentUserId={chat.currentUser.id}
-              onClose={chat.closeThread}
-              onSendReply={chat.sendThreadReply}
-              onToggleReaction={handleToggleReaction}
-            />
-          )}
-        </div>
+        )}
       </ResizableSplitPane>
     </div>
   );

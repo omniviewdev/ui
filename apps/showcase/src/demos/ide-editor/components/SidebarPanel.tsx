@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { LuFile, LuFolder, LuFolderOpen } from 'react-icons/lu';
-import { TreeList, SearchInput, StatusDot } from '@omniview/base-ui';
+import { Accordion, TreeList, SearchInput, StatusDot } from '@omniview/base-ui';
 import type { Key } from '@omniview/base-ui';
 import type { SidebarPanel as SidebarPanelType, SearchResult, GitStatusEntry } from '../types';
 import {
@@ -35,39 +35,51 @@ function FileTreePanel({ onOpenFile }: FileTreePanelProps) {
   return (
     <div className={styles.panel}>
       <div className={styles.panelHeader}>Explorer</div>
-      <div className={styles.treeContainer}>
-        <TreeList.Root
-          items={fileTree}
-          itemKey={(item: FileTreeNode) => item.id}
-          getChildren={(item: FileTreeNode) => item.children}
-          isBranch={(item: FileTreeNode) => item.type === 'folder'}
-          getTextValue={(item: FileTreeNode) => item.name}
-          selectionMode="single"
-          onSelectedKeysChange={handleSelectedKeysChange}
-          expandedKeys={expandedKeys}
-          onExpandedKeysChange={setExpandedKeys}
-          renderItem={(item: FileTreeNode, node) => (
-            <TreeList.Item itemKey={node.key} textValue={item.name}>
-              <TreeList.ItemIndent
-                depth={node.depth}
-                ancestorIsLast={node.ancestorIsLast}
-                isLastChild={node.isLastChild}
-              />
-              <TreeList.ItemToggle itemKey={node.key} />
-              <TreeList.ItemIcon>
-                {item.type === 'folder'
-                  ? node.isExpanded
-                    ? <LuFolderOpen aria-hidden />
-                    : <LuFolder aria-hidden />
-                  : <LuFile aria-hidden />}
-              </TreeList.ItemIcon>
-              <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
-            </TreeList.Item>
-          )}
-        >
-          <TreeList.Viewport />
-        </TreeList.Root>
-      </div>
+      <Accordion variant="flush" defaultExpanded={['project']} animation="fast">
+        <Accordion.Item id="open-editors" title="Open Editors" disableContentPadding>
+          <div className={styles.placeholderSection}>No open editors</div>
+        </Accordion.Item>
+        <Accordion.Item id="project" title="My-App" disableContentPadding>
+          <TreeList.Root
+            size="sm"
+            items={fileTree}
+            itemKey={(item: FileTreeNode) => item.id}
+            getChildren={(item: FileTreeNode) => item.children}
+            isBranch={(item: FileTreeNode) => item.type === 'folder'}
+            getTextValue={(item: FileTreeNode) => item.name}
+            selectionMode="single"
+            onSelectedKeysChange={handleSelectedKeysChange}
+            expandedKeys={expandedKeys}
+            onExpandedKeysChange={setExpandedKeys}
+            renderItem={(item: FileTreeNode, node) => (
+              <TreeList.Item itemKey={node.key} textValue={item.name}>
+                <TreeList.ItemIndent
+                  depth={node.depth}
+                  ancestorIsLast={node.ancestorIsLast}
+                  isLastChild={node.isLastChild}
+                />
+                <TreeList.ItemToggle itemKey={node.key} />
+                <TreeList.ItemIcon>
+                  {item.type === 'folder'
+                    ? node.isExpanded
+                      ? <LuFolderOpen aria-hidden />
+                      : <LuFolder aria-hidden />
+                    : <LuFile aria-hidden />}
+                </TreeList.ItemIcon>
+                <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+              </TreeList.Item>
+            )}
+          >
+            <TreeList.Viewport />
+          </TreeList.Root>
+        </Accordion.Item>
+        <Accordion.Item id="outline" title="Outline" disableContentPadding>
+          <div className={styles.placeholderSection}>No symbols found</div>
+        </Accordion.Item>
+        <Accordion.Item id="timeline" title="Timeline" disableContentPadding>
+          <div className={styles.placeholderSection}>No timeline entries</div>
+        </Accordion.Item>
+      </Accordion>
     </div>
   );
 }

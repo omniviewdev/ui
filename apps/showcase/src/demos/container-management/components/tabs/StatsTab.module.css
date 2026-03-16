@@ -13,7 +13,7 @@
 .statValue {
   font-size: 2rem;
   font-weight: var(--ov-font-weight-semibold);
-  color: var(--ov-color-text-primary);
+  color: var(--ov-color-fg-default);
   display: block;
   margin-bottom: 8px;
 }

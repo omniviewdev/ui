@@ -33,8 +33,8 @@
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: var(--ov-color-bg-tertiary);
-  color: var(--ov-color-accent-solid);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-brand-400);
   font-size: 20px;
   flex-shrink: 0;
 }

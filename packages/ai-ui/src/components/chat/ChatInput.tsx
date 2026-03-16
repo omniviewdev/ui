@@ -21,6 +21,12 @@ export interface ChatInputProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   placeholder?: string;
   /** Disable input */
   disabled?: boolean;
+  /** Auto-focus textarea on mount (default: false) */
+  autoFocus?: boolean;
+  /** Re-focus textarea when `disabled` transitions from true → false (default: true) */
+  focusOnEnable?: boolean;
+  /** Re-focus textarea when the window regains focus (default: true) */
+  focusOnWindowFocus?: boolean;
   /** Left-aligned toolbar items (e.g. attachment button, model selector, capability chips) */
   startActions?: ReactNode;
   /** Right-aligned toolbar items (e.g. token counter, send/stop button) */
@@ -35,6 +41,9 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
       onSubmit,
       placeholder = 'Send a message...',
       disabled = false,
+      autoFocus = false,
+      focusOnEnable = true,
+      focusOnWindowFocus = true,
       startActions,
       endActions,
       className,
@@ -43,6 +52,7 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
     ref,
   ) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const prevDisabledRef = useRef(disabled);
 
     const resizeTextarea = useCallback(() => {
       const ta = textareaRef.current;
@@ -54,6 +64,34 @@ export const ChatInput = forwardRef<HTMLDivElement, ChatInputProps>(
     useEffect(() => {
       resizeTextarea();
     }, [value, resizeTextarea]);
+
+    // Auto-focus on mount
+    useEffect(() => {
+      if (autoFocus) {
+        textareaRef.current?.focus();
+      }
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Re-focus when disabled transitions from true → false
+    useEffect(() => {
+      if (focusOnEnable && prevDisabledRef.current && !disabled) {
+        requestAnimationFrame(() => {
+          textareaRef.current?.focus();
+        });
+      }
+      prevDisabledRef.current = disabled;
+    }, [disabled, focusOnEnable]);
+
+    // Re-focus on window focus
+    useEffect(() => {
+      if (!focusOnWindowFocus) return;
+      const handleFocus = () => {
+        if (!textareaRef.current || textareaRef.current.disabled) return;
+        textareaRef.current.focus();
+      };
+      window.addEventListener('focus', handleFocus);
+      return () => window.removeEventListener('focus', handleFocus);
+    }, [focusOnWindowFocus]);
 
     const handleKeyDown = useCallback(
       (e: KeyboardEvent<HTMLTextAreaElement>) => {

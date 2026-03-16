@@ -79,12 +79,21 @@
   border-bottom-color: transparent;
 }
 
+/* Pill variant needs a taller container so tabs match control heights */
+.Root[data-ov-variant='pill'][data-ov-size='sm'] {
+  --_ov-tab-height: 36px;
+}
+
+.Root[data-ov-variant='pill'][data-ov-size='lg'] {
+  --_ov-tab-height: 48px;
+}
+
 /* Pill tabs: JetBrains-style capsule with all-corner rounding */
 .Root[data-ov-variant='pill'] .Tab {
   border-bottom: none;
   border-radius: 6px;
   margin: 4px 2px;
-  padding: 0 12px;
+  padding: 0 14px;
   height: calc(100% - 8px);
 }
 

@@ -6,6 +6,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   ResizableSplitPane,
   EditorTabs,
+  Tabs,
 } from '@omniview/base-ui';
 import type { TabDescriptor } from '@omniview/base-ui';
 import {
@@ -166,6 +167,7 @@ export default function IdeEditorDemo() {
                   language={activeTab.file.language}
                   filename={activeTab.file.path}
                   readOnly
+                  bordered={false}
                 />
               )}
               {activeTab?.type === 'diff' && activeTab.originalContent != null && (
@@ -175,6 +177,7 @@ export default function IdeEditorDemo() {
                   modified={activeTab.file.content}
                   language={activeTab.file.language}
                   mode="side-by-side"
+                  bordered={false}
                 />
               )}
               {activeTab?.type === 'markdown' && (
@@ -191,14 +194,26 @@ export default function IdeEditorDemo() {
             </div>
 
             {showTerminal ? (
-              <Terminal
-                ref={terminalRef}
-                disableStdin
-                convertEol
-                onReady={() => {
-                  terminalRef.current?.write(terminalOutput);
-                }}
-              />
+              <div className={styles.panelArea}>
+                <Tabs.Root variant="flat" size="sm" defaultValue="terminal">
+                  <Tabs.List>
+                    <Tabs.Tab value="terminal">Terminal</Tabs.Tab>
+                    <Tabs.Tab value="problems">Problems</Tabs.Tab>
+                    <Tabs.Tab value="output">Output</Tabs.Tab>
+                    <Tabs.Indicator />
+                  </Tabs.List>
+                </Tabs.Root>
+                <div className={styles.terminalWrapper}>
+                  <Terminal
+                    ref={terminalRef}
+                    disableStdin
+                    convertEol
+                    onReady={() => {
+                      terminalRef.current?.write(terminalOutput);
+                    }}
+                  />
+                </div>
+              </div>
             ) : (
               <div />
             )}

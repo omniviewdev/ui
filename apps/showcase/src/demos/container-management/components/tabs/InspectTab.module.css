@@ -1,9 +1,9 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 16px;
-  overflow-y: auto;
+  gap: 12px;
+  padding: 12px;
+  overflow: hidden;
   height: 100%;
 }
 
@@ -11,23 +11,32 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Configuration section fills remaining space */
+.section:last-child {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .sectionTitle {
   font-size: var(--ov-font-size-sm);
   font-weight: var(--ov-font-weight-semibold);
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .inspector {
   border: 1px solid var(--ov-color-border-default);
-  border-radius: var(--ov-radius-md);
+  border-radius: var(--ov-radius-control);
   padding: 8px;
-  background: var(--ov-color-surface-sunken);
-  min-height: 200px;
-  max-height: 400px;
+  background: var(--ov-color-bg-inset);
+  flex: 1;
+  min-height: 0;
   overflow: auto;
 }

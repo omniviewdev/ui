@@ -21,12 +21,12 @@
   padding: 6px 12px;
   border-bottom: 1px solid var(--ov-color-border-default);
   flex-shrink: 0;
-  background: var(--ov-color-surface-raised);
+  background: var(--ov-color-bg-surface-raised);
 }
 
 .bulkLabel {
   font-size: var(--ov-font-size-sm);
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
   margin-right: 4px;
 }
 
@@ -66,5 +66,5 @@
 
 .meterLabel {
   font-size: var(--ov-font-size-xs);
-  color: var(--ov-color-text-secondary);
+  color: var(--ov-color-fg-muted);
 }

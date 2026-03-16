@@ -78,7 +78,11 @@ function generateReport(data) {
 
   const overheadValues = { ov: [], mui: [] };
 
-  for (const [, g] of groups) {
+  const sortedGroups = [...groups.values()].sort((a, b) =>
+    `${a.suite}|${a.benchName}`.localeCompare(`${b.suite}|${b.benchName}`),
+  );
+
+  for (const g of sortedGroups) {
     const rawHz = g.impls['raw'] ?? NaN;
     const ovHz = g.impls['@omniview/base-ui'] ?? NaN;
     const muiHz = g.impls['@mui/material'] ?? NaN;

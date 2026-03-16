@@ -14,6 +14,12 @@ import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { gray as defaultGray, brand as defaultBrand } from '../primitives';
 
+const SelectIcon = React.forwardRef<SVGSVGElement, SvgIconProps>(
+  function SelectIcon(props, ref) {
+    return <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />;
+  },
+);
+
 type ColorScale = Record<number, string>;
 
 interface InputPalettes {
@@ -365,9 +371,7 @@ export function createInputsCustomizations(palettes?: Partial<InputPalettes>): C
   },
   MuiSelect: {
     defaultProps: {
-      IconComponent: React.forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => (
-        <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />
-      )),
+      IconComponent: SelectIcon,
     },
     styleOverrides: {
       select: {
@@ -385,8 +389,8 @@ export function createInputsCustomizations(palettes?: Partial<InputPalettes>): C
     styleOverrides: {
       inputRoot: {
         // Prevent the tag container from wrapping and keep fixed height.
-        flexWrap: 'nowrap !important' as any,
         overflow: 'hidden',
+        '&&': { flexWrap: 'nowrap' },
       },
       tag: {
         // Constrain chip tags to match the input line-height.

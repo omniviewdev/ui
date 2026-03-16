@@ -1,3 +1,4 @@
+/// <reference path="./mui.d.ts" />
 import type { ReactNode } from 'react';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { getDesignTokens, typography, shape, customShadows } from './primitives';
@@ -5,8 +6,6 @@ import { createInputsCustomizations } from './customizations/inputs';
 import { createNavigationCustomizations } from './customizations/navigation';
 import { createFeedbackCustomizations } from './customizations/feedback';
 import { createDataDisplayCustomizations } from './customizations/dataDisplay';
-
-/// <reference path="./mui.d.ts" />
 
 const muiTheme = createTheme({
   cssVariables: {

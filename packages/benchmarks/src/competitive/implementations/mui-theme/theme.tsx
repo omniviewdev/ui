@@ -1,5 +1,5 @@
-/// <reference path="./mui.d.ts" />
 import type { ReactNode } from 'react';
+import type {} from './mui.d';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { getDesignTokens, typography, shape, customShadows } from './primitives';
 import { createInputsCustomizations } from './customizations/inputs';

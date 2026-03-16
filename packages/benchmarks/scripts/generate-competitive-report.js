@@ -90,8 +90,8 @@ function generateReport(data) {
     const ovOverhead = rawHz / ovHz;
     const muiOverhead = rawHz / muiHz;
 
-    if (Number.isFinite(ovOverhead)) overheadValues.ov.push(ovOverhead);
-    if (Number.isFinite(muiOverhead)) overheadValues.mui.push(muiOverhead);
+    if (Number.isFinite(ovOverhead) && ovOverhead > 0) overheadValues.ov.push(ovOverhead);
+    if (Number.isFinite(muiOverhead) && muiOverhead > 0) overheadValues.mui.push(muiOverhead);
 
     lines.push(
       `| ${g.suite} | ${g.benchName} | ${formatHz(rawHz)} | ${formatHz(ovHz)} | ${formatOverhead(rawHz, ovHz)} | ${formatHz(muiHz)} | ${formatOverhead(rawHz, muiHz)} |`,

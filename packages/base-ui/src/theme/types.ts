@@ -1,4 +1,11 @@
-export type ThemeMode = 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light';
+export type ThemeMode =
+  | 'dark'
+  | 'light'
+  | 'high-contrast-dark'
+  | 'high-contrast-light'
+  | 'obsidian'
+  | 'carbon'
+  | 'void';
 export type ThemeDensity = 'compact' | 'comfortable';
 export type ThemeMotion = 'normal' | 'reduced';
 

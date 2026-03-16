@@ -1,8 +1,19 @@
 import { useCallback, type KeyboardEvent } from 'react';
-import { IconButton, Tooltip, Separator, useTheme } from '@omniview/base-ui';
-import { LuLayoutGrid, LuSun, LuMoon } from 'react-icons/lu';
+import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniview/base-ui';
+import type { ThemeMode } from '@omniview/base-ui';
+import { LuLayoutGrid, LuPalette } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';
+
+const THEME_OPTIONS: { id: ThemeMode; label: string }[] = [
+  { id: 'void', label: 'Void' },
+  { id: 'obsidian', label: 'Obsidian' },
+  { id: 'carbon', label: 'Carbon' },
+  { id: 'dark', label: 'Dark (Classic)' },
+  { id: 'light', label: 'Light' },
+  { id: 'high-contrast-dark', label: 'High Contrast Dark' },
+  { id: 'high-contrast-light', label: 'High Contrast Light' },
+];
 
 interface DockProps {
   activeApp: string | null;
@@ -11,7 +22,6 @@ interface DockProps {
 
 export function Dock({ activeApp, onSelectApp }: DockProps) {
   const { theme, setTheme } = useTheme();
-  const isDark = theme === 'dark' || theme === 'high-contrast-dark';
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLElement>) => {
@@ -94,26 +104,37 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
 
       <div className={styles.bottom}>
         <Separator />
-        <Tooltip.Root>
-          <Tooltip.Trigger
+        <Menu.Root>
+          <Menu.Trigger
             render={
               <IconButton
                 variant="ghost"
                 color="neutral"
                 size="md"
-                aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-                onClick={() => setTheme(isDark ? 'light' : 'dark')}
+                aria-label="Switch theme"
               >
-                {isDark ? <LuSun /> : <LuMoon />}
+                <LuPalette />
               </IconButton>
             }
           />
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="right" sideOffset={8}>
-              <Tooltip.Popup>{isDark ? 'Light mode' : 'Dark mode'}</Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
-        </Tooltip.Root>
+          <Menu.Portal>
+            <Menu.Positioner side="right" sideOffset={8} align="end">
+              <Menu.Popup>
+                <Menu.RadioGroup
+                  value={theme}
+                  onValueChange={(value) => setTheme(value as ThemeMode)}
+                >
+                  {THEME_OPTIONS.map((opt) => (
+                    <Menu.RadioItem key={opt.id} value={opt.id}>
+                      {opt.label}
+                      <Menu.RadioItemIndicator />
+                    </Menu.RadioItem>
+                  ))}
+                </Menu.RadioGroup>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
       </div>
     </nav>
   );

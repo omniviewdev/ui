@@ -34,7 +34,10 @@ const isThemeMode = (value: string): value is ThemeMode =>
   value === 'dark' ||
   value === 'light' ||
   value === 'high-contrast-dark' ||
-  value === 'high-contrast-light';
+  value === 'high-contrast-light' ||
+  value === 'obsidian' ||
+  value === 'carbon' ||
+  value === 'void';
 
 const isThemeDensity = (value: string): value is ThemeDensity =>
   value === 'compact' || value === 'comfortable';

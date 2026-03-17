@@ -350,7 +350,7 @@ const podColumns: ColumnDef<Pod, unknown>[] = [
     enableResizing: false,
     meta: { align: 'center' },
     cell: () => (
-      <IconButton dense variant="ghost" color="neutral" size="sm" aria-label="Pod actions">
+      <IconButton variant="ghost" color="neutral" size="sm" aria-label="Pod actions">
         <LuEllipsisVertical />
       </IconButton>
     ),

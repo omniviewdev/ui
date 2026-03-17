@@ -151,6 +151,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--ov-space-stack-xs);
   height: calc(var(--_ov-tab-height) - 4px);
   padding: 0 calc(var(--ov-space-inline-control) + var(--ov-space-stack-sm));
   border: 0;
@@ -166,6 +167,12 @@
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),
     color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Tab :where(svg) {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
 }
 
 .Tab:hover {

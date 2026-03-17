@@ -27,8 +27,8 @@ const columns: ColumnDef<Person, unknown>[] = [
 
 function TestTable(props: {
   variant?: 'solid' | 'soft' | 'outline' | 'ghost';
-  color?: 'neutral' | 'brand' | 'success' | 'warning' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  color?: 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'discovery' | 'secondary';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   hoverable?: boolean;
   stickyHeader?: boolean;
   striped?: boolean;
@@ -64,6 +64,26 @@ describe('DataTable', () => {
     expect(root).toHaveAttribute('data-ov-variant', 'outline');
     expect(root).toHaveAttribute('data-ov-color', 'success');
     expect(root).toHaveAttribute('data-ov-size', 'sm');
+  });
+
+  it('applies xs size data attribute', () => {
+    renderWithTheme(<TestTable size="xs" />);
+    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(<TestTable size="xl" />);
+    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery color data attribute', () => {
+    renderWithTheme(<TestTable color="discovery" />);
+    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('applies secondary color data attribute', () => {
+    renderWithTheme(<TestTable color="secondary" />);
+    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-color', 'secondary');
   });
 
   it('supports hoverable, stickyHeader, and striped flags', () => {

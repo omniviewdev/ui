@@ -87,4 +87,16 @@ describe('Skeleton', () => {
     const el = screen.getByTestId('skeleton');
     expect(el).toHaveAttribute('data-ov-component', 'skeleton');
   });
+
+  it('applies xs size data attribute for text variant', () => {
+    renderWithTheme(<Skeleton variant="text" size="xs" data-testid="skeleton" />);
+    const el = screen.getByTestId('skeleton');
+    expect(el).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute for text variant', () => {
+    renderWithTheme(<Skeleton variant="text" size="xl" data-testid="skeleton" />);
+    const el = screen.getByTestId('skeleton');
+    expect(el).toHaveAttribute('data-ov-size', 'xl');
+  });
 });

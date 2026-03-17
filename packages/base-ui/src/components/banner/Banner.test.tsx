@@ -52,4 +52,44 @@ describe('Banner', () => {
     );
     expect(screen.getByRole('alert')).toHaveAttribute('data-ov-color', 'info');
   });
+
+  it('applies xs and xl size data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <Banner size="xs">
+        <Banner.Content>
+          <Banner.Title>Title</Banner.Title>
+        </Banner.Content>
+      </Banner>,
+    );
+    expect(screen.getByRole('alert')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <Banner size="xl">
+        <Banner.Content>
+          <Banner.Title>Title</Banner.Title>
+        </Banner.Content>
+      </Banner>,
+    );
+    expect(screen.getByRole('alert')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <Banner color="discovery">
+        <Banner.Content>
+          <Banner.Title>Discovery</Banner.Title>
+        </Banner.Content>
+      </Banner>,
+    );
+    expect(screen.getByRole('alert')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <Banner color="secondary">
+        <Banner.Content>
+          <Banner.Title>Secondary</Banner.Title>
+        </Banner.Content>
+      </Banner>,
+    );
+    expect(screen.getByRole('alert')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

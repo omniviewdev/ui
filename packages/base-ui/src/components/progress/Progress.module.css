@@ -12,12 +12,20 @@
   overflow: hidden;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-height: var(--ov-size-progress-height-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-height: var(--ov-size-progress-height-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-height: var(--ov-size-progress-height-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-height: var(--ov-size-progress-height-xl);
 }
 
 /* Color: set the accent fill */
@@ -43,6 +51,14 @@
 
 .Root[data-ov-color='info'] {
   --_ov-accent: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
 }
 
 /* Variant: solid — full-color bar on inset track */

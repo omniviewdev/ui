@@ -1,9 +1,10 @@
 .Root {
   --_ov-tab-height: var(--ov-control-height-md);
   --_ov-tab-font-size: var(--ov-font-size-body);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-list-bg: var(--ov-color-bg-surface-raised);
   --_ov-list-border: var(--ov-color-border-default);
-  --_ov-tab-fg: var(--ov-color-fg-muted);
+  --_ov-tab-fg: var(--ov-color-fg-subtle);
   --_ov-tab-fg-active: var(--ov-color-fg-default);
   --_ov-tab-bg-hover: var(--ov-color-state-hover);
   --_ov-tab-bg-active: var(--ov-color-state-selected);
@@ -18,19 +19,23 @@
 .Root[data-ov-size='xs'] {
   --_ov-tab-height: var(--ov-control-height-xs);
   --_ov-tab-font-size: var(--ov-font-size-caption);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-xs);
 }
 
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: var(--ov-control-height-sm);
   --_ov-tab-font-size: var(--ov-font-size-caption);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-tab-height: var(--ov-control-height-lg);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-lg);
 }
 
 .Root[data-ov-size='xl'] {
   --_ov-tab-height: var(--ov-control-height-xl);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -169,12 +174,6 @@
     color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.Tab :where(svg) {
-  width: 1em;
-  height: 1em;
-  flex-shrink: 0;
-}
-
 .Tab:hover {
   background: var(--_ov-tab-bg-hover);
 }
@@ -191,7 +190,9 @@
 .TabDecorator {
   display: inline-flex;
   align-items: center;
-  margin-left: var(--ov-space-stack-xs, 4px);
+  justify-content: center;
+  width: var(--_ov-tab-icon-size, 16px);
+  height: var(--_ov-tab-icon-size, 16px);
   flex-shrink: 0;
 }
 

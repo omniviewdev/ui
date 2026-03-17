@@ -87,6 +87,11 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Control[data-ov-color='info'] {
+  --_ov-focus: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+}
+
 .Control[data-ov-color='discovery'] {
   --_ov-focus: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);
@@ -247,6 +252,10 @@
 
 .Popup[data-ov-color='danger'] {
   --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
 }
 
 .Popup[data-ov-color='discovery'] {

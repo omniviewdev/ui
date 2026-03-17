@@ -74,6 +74,10 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
+}
+
 .Popup[data-ov-color='discovery'] {
   --_ov-selected-bg: var(--ov-color-discovery-soft);
 }
@@ -237,6 +241,12 @@
 .Trigger[data-ov-color='danger'] {
   --_ov-bg: var(--ov-color-danger);
   --_ov-border: var(--ov-color-danger);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-color='info'] {
+  --_ov-bg: var(--ov-color-info);
+  --_ov-border: var(--ov-color-info);
   --_ov-fg: var(--ov-color-fg-inverse);
 }
 

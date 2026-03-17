@@ -55,6 +55,11 @@
 }
 
 /* ── Color variants ── */
+.Badge[data-ov-color='info'] {
+  --_ov-bg: var(--ov-color-info);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
 .Badge[data-ov-color='discovery'] {
   --_ov-bg: var(--ov-color-discovery);
   --_ov-fg: var(--ov-color-fg-inverse);

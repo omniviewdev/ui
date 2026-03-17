@@ -180,6 +180,16 @@
   --_ov-accent-ghost-fg: var(--ov-color-danger);
 }
 
+.Action[data-ov-color='info'],
+.MenuTrigger[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-accent-soft-fg: var(--ov-color-info);
+  --_ov-accent-ghost-fg: var(--ov-color-info);
+}
+
 .Action[data-ov-color='discovery'],
 .MenuTrigger[data-ov-color='discovery'] {
   --_ov-accent-bg: var(--ov-color-discovery);

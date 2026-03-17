@@ -53,6 +53,10 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='info'] {
+  --_ov-accent-soft: var(--ov-color-info-soft);
+}
+
 .Popup[data-ov-color='discovery'] {
   --_ov-accent-soft: var(--ov-color-discovery-soft);
 }
@@ -134,6 +138,15 @@
   --_ov-fg: var(--ov-color-fg-inverse);
   --_ov-bg-hover: color-mix(in srgb, var(--ov-color-danger) 88%, white 12%);
   --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-danger) 78%, black 22%);
+}
+
+.Trigger[data-ov-color='info'],
+.Close[data-ov-color='info'] {
+  --_ov-bg: var(--ov-color-info);
+  --_ov-border: var(--ov-color-info);
+  --_ov-fg: var(--ov-color-fg-inverse);
+  --_ov-bg-hover: color-mix(in srgb, var(--ov-color-info) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-info) 78%, black 22%);
 }
 
 .Trigger[data-ov-color='discovery'],

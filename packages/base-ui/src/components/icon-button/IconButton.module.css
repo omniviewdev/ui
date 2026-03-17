@@ -4,7 +4,12 @@
   inline-size: var(--_ov-control-height);
   block-size: var(--_ov-control-height);
   min-inline-size: var(--_ov-control-height);
+  min-width: var(--_ov-control-height);
   padding: 0;
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
 }
 
 .Root[data-ov-size='sm'] {
@@ -15,29 +20,8 @@
   --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
 }
 
-.Root[data-ov-dense='true'] {
-  --_ov-icon-pad: 2px;
-  --_ov-control-height: calc(var(--_ov-icon-size) + (var(--_ov-icon-pad) * 2));
-
-  inline-size: var(--_ov-control-height);
-  block-size: var(--_ov-control-height);
-  min-inline-size: var(--_ov-control-height);
-  min-block-size: var(--_ov-control-height);
-  padding: 0;
-  border-radius: calc(var(--ov-radius-control) - 3px);
-  line-height: 1;
-}
-
-.Root[data-ov-dense='true'][data-ov-size='sm'] {
-  --_ov-icon-pad: 2px;
-}
-
-.Root[data-ov-dense='true'][data-ov-size='md'] {
-  --_ov-icon-pad: 2px;
-}
-
-.Root[data-ov-dense='true'][data-ov-size='lg'] {
-  --_ov-icon-pad: 3px;
+.Root[data-ov-size='xl'] {
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Root :where(svg) {

@@ -26,6 +26,12 @@
   user-select: none;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-control-size: var(--ov-size-choice-control-xs);
+  --_ov-indicator-size: var(--ov-size-choice-indicator-xs);
+  --_ov-gap: var(--ov-size-choice-gap-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-control-size: var(--ov-size-choice-control-sm);
   --_ov-indicator-size: var(--ov-size-choice-indicator-sm);
@@ -36,6 +42,12 @@
   --_ov-control-size: var(--ov-size-choice-control-lg);
   --_ov-indicator-size: var(--ov-size-choice-indicator-lg);
   --_ov-gap: var(--ov-size-choice-gap-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-control-size: var(--ov-size-choice-control-xl);
+  --_ov-indicator-size: var(--ov-size-choice-indicator-xl);
+  --_ov-gap: var(--ov-size-choice-gap-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -80,6 +92,24 @@
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-accent-soft-fg: var(--ov-color-danger);
   --_ov-focus-border: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-accent-soft-fg: var(--ov-color-discovery);
+  --_ov-focus-border: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-accent-soft-fg: var(--ov-color-secondary);
+  --_ov-focus-border: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {
@@ -198,12 +228,20 @@
   line-height: 1.4;
 }
 
+.Root[data-ov-size='xs'] .Label {
+  font-size: var(--ov-font-size-caption);
+}
+
 .Root[data-ov-size='sm'] .Label {
   font-size: var(--ov-font-size-caption);
 }
 
 .Root[data-ov-size='lg'] .Label {
-  font-size: 1rem; /* restores original 16px — body token resolves to 14px which removes the size progression */
+  font-size: var(--ov-size-button-font-size-lg);
+}
+
+.Root[data-ov-size='xl'] .Label {
+  font-size: var(--ov-size-button-font-size-lg);
 }
 
 .Item {

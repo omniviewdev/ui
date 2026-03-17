@@ -27,6 +27,22 @@ describe('Sheet', () => {
     expect(el).toHaveAttribute('data-ov-size', 'sm');
     expect(el).toHaveAttribute('data-ov-elevation', '2');
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(<Sheet size="xs">XS</Sheet>);
+    expect(screen.getByText('XS')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<Sheet size="xl">XL</Sheet>);
+    expect(screen.getByText('XL')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<Sheet color="discovery">Discovery</Sheet>);
+    expect(screen.getByText('Discovery')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Sheet color="secondary">Secondary</Sheet>);
+    expect(screen.getByText('Secondary')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });
 
 describe('Paper', () => {

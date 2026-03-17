@@ -53,6 +53,14 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='discovery'] {
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+}
+
+.Popup[data-ov-color='secondary'] {
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+}
+
 .Title {
   margin: 0;
   color: var(--_ov-title);
@@ -126,6 +134,30 @@
   --_ov-fg: var(--ov-color-fg-inverse);
   --_ov-bg-hover: color-mix(in srgb, var(--ov-color-danger) 88%, white 12%);
   --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-danger) 78%, black 22%);
+}
+
+.Trigger[data-ov-color='discovery'],
+.Close[data-ov-color='discovery'] {
+  --_ov-bg: var(--ov-color-discovery);
+  --_ov-border: var(--ov-color-discovery);
+  --_ov-fg: var(--ov-color-fg-inverse);
+  --_ov-bg-hover: color-mix(in srgb, var(--ov-color-discovery) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-discovery) 78%, black 22%);
+}
+
+.Trigger[data-ov-color='secondary'],
+.Close[data-ov-color='secondary'] {
+  --_ov-bg: var(--ov-color-secondary);
+  --_ov-border: var(--ov-color-secondary);
+  --_ov-fg: var(--ov-color-fg-inverse);
+  --_ov-bg-hover: color-mix(in srgb, var(--ov-color-secondary) 88%, white 12%);
+  --_ov-bg-pressed: color-mix(in srgb, var(--ov-color-secondary) 78%, black 22%);
+}
+
+.Trigger[data-ov-variant='solid'],
+.Close[data-ov-variant='solid'] {
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-border: var(--ov-color-border-default);
 }
 
 .Trigger[data-ov-variant='soft'],

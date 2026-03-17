@@ -4,6 +4,40 @@ import { renderWithTheme } from '../../test/render';
 import { Popover } from './Popover';
 
 describe('Popover', () => {
+  it('renders discovery and secondary colors on popup', () => {
+    renderWithTheme(
+      <Popover.Root defaultOpen color="discovery">
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Positioner>
+            <Popover.Popup>
+              <Popover.Title>Title</Popover.Title>
+            </Popover.Popup>
+          </Popover.Positioner>
+        </Popover.Portal>
+      </Popover.Root>,
+    );
+    const popup = screen.getByText('Title').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders secondary color on popup', () => {
+    renderWithTheme(
+      <Popover.Root defaultOpen color="secondary">
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Positioner>
+            <Popover.Popup>
+              <Popover.Title>Title</Popover.Title>
+            </Popover.Popup>
+          </Popover.Positioner>
+        </Popover.Portal>
+      </Popover.Root>,
+    );
+    const popup = screen.getByText('Title').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders themed popup and close action when opened', () => {
     renderWithTheme(
       <Popover.Root defaultOpen color="brand" size="lg" variant="solid">

@@ -290,6 +290,46 @@ describe('Card', () => {
     expect(group).toHaveAttribute('data-ov-gap', 'lg');
   });
 
+  it('renders xs size', () => {
+    renderWithTheme(
+      <Card size="xs">
+        <Card.Body>Content</Card.Body>
+      </Card>,
+    );
+    const card = screen.getByText('Content').closest('section');
+    expect(card).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('renders xl size', () => {
+    renderWithTheme(
+      <Card size="xl">
+        <Card.Body>Content</Card.Body>
+      </Card>,
+    );
+    const card = screen.getByText('Content').closest('section');
+    expect(card).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery color', () => {
+    renderWithTheme(
+      <Card color="discovery">
+        <Card.Body>Content</Card.Body>
+      </Card>,
+    );
+    const card = screen.getByText('Content').closest('section');
+    expect(card).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders secondary color', () => {
+    renderWithTheme(
+      <Card color="secondary">
+        <Card.Body>Content</Card.Body>
+      </Card>,
+    );
+    const card = screen.getByText('Content').closest('section');
+    expect(card).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders Group with auto columns', () => {
     renderWithTheme(
       <Card.Group columns="auto" data-testid="group">

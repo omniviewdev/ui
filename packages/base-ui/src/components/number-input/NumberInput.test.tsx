@@ -47,4 +47,53 @@ describe('NumberInput', () => {
     await user.click(screen.getByRole('button', { name: 'Decrease' }));
     expect(input).toHaveValue('2');
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <NumberInput.Root defaultValue={1} size="xs">
+        <NumberInput.Group>
+          <NumberInput.Decrement aria-label="Decrease" />
+          <NumberInput.Input aria-label="Value" />
+          <NumberInput.Increment aria-label="Increase" />
+        </NumberInput.Group>
+      </NumberInput.Root>,
+    );
+    const input = screen.getByRole('textbox', { name: 'Value' });
+    expect(input.closest('[data-ov-size]')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <NumberInput.Root defaultValue={1} size="xl">
+        <NumberInput.Group>
+          <NumberInput.Decrement aria-label="Decrease" />
+          <NumberInput.Input aria-label="Value" />
+          <NumberInput.Increment aria-label="Increase" />
+        </NumberInput.Group>
+      </NumberInput.Root>,
+    );
+    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-size]')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(
+      <NumberInput.Root defaultValue={1} color="discovery">
+        <NumberInput.Group>
+          <NumberInput.Decrement aria-label="Decrease" />
+          <NumberInput.Input aria-label="Value" />
+          <NumberInput.Increment aria-label="Increase" />
+        </NumberInput.Group>
+      </NumberInput.Root>,
+    );
+    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <NumberInput.Root defaultValue={1} color="secondary">
+        <NumberInput.Group>
+          <NumberInput.Decrement aria-label="Decrease" />
+          <NumberInput.Input aria-label="Value" />
+          <NumberInput.Increment aria-label="Increase" />
+        </NumberInput.Group>
+      </NumberInput.Root>,
+    );
+    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

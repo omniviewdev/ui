@@ -23,6 +23,22 @@ describe('Separator', () => {
     expect(separator).toHaveAttribute('aria-orientation', 'vertical');
   });
 
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(<Separator size="xs" data-testid="sep" />);
+    expect(screen.getByTestId('sep')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<Separator size="xl" data-testid="sep" />);
+    expect(screen.getByTestId('sep')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<Separator color="discovery" data-testid="sep" />);
+    expect(screen.getByTestId('sep')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Separator color="secondary" data-testid="sep" />);
+    expect(screen.getByTestId('sep')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('supports decorative and labeled usage', () => {
     renderWithTheme(
       <>

@@ -39,6 +39,14 @@ describe('List', () => {
     expect(root).toHaveAttribute('data-ov-density', 'default');
   });
 
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<TestList color="discovery" />);
+    expect(screen.getByTestId('list-root')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<TestList color="secondary" />);
+    expect(screen.getByTestId('list-root')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders with custom data attributes', () => {
     renderWithTheme(<TestList variant="outline" color="brand" size="sm" density="compact" />);
     const root = screen.getByTestId('list-root');

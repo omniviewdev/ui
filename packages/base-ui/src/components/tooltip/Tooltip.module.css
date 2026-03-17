@@ -148,7 +148,17 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='neutral'] {
+  --_ov-accent-soft: var(--ov-color-state-selected);
+}
 
+.Popup[data-ov-color='discovery'] {
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+}
+
+.Popup[data-ov-color='secondary'] {
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+}
 
 .Arrow {
   --_ov-bg: var(--ov-color-bg-surface-overlay);
@@ -186,6 +196,18 @@
 
 .Arrow[data-ov-color='danger'] {
   --_ov-accent-soft: var(--ov-color-danger-soft);
+}
+
+.Arrow[data-ov-color='neutral'] {
+  --_ov-accent-soft: var(--ov-color-state-selected);
+}
+
+.Arrow[data-ov-color='discovery'] {
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+}
+
+.Arrow[data-ov-color='secondary'] {
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
 }
 
 .Arrow[data-ov-variant='solid'] {

@@ -15,7 +15,7 @@ import styles from './SplitButton.module.css';
 
 /* ---------------------------------- Types --------------------------------- */
 
-export type SplitButtonColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger';
+export type SplitButtonColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'discovery' | 'secondary';
 
 export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   variant?: ComponentVariant;

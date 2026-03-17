@@ -125,4 +125,48 @@ describe('SplitButton', () => {
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <SplitButton size="xs">
+        <SplitButton.Action data-testid="action">Save</SplitButton.Action>
+        <SplitButton.Menu>
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByTestId('action')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <SplitButton size="xl">
+        <SplitButton.Action data-testid="action">Save</SplitButton.Action>
+        <SplitButton.Menu>
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByTestId('action')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(
+      <SplitButton color="discovery">
+        <SplitButton.Action data-testid="action">Save</SplitButton.Action>
+        <SplitButton.Menu>
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByTestId('action')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <SplitButton color="secondary">
+        <SplitButton.Action data-testid="action">Save</SplitButton.Action>
+        <SplitButton.Menu>
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByTestId('action')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

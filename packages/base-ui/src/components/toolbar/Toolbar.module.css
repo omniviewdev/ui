@@ -7,6 +7,12 @@
   min-height: var(--_ov-toolbar-height, 2.25rem);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-toolbar-height: 1.5rem;
+
+  font-size: var(--ov-font-size-caption);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-toolbar-height: 1.75rem;
 
@@ -19,6 +25,10 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-toolbar-height: 2.75rem;
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-toolbar-height: 3.25rem;
 }
 
 .Group {

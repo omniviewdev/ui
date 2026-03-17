@@ -43,4 +43,20 @@ describe('ToggleButton', () => {
     expect(button.querySelector('[data-ov-slot="end-decorator"]')).toBeTruthy();
     expect(screen.getByTestId('left')).toBeInTheDocument();
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(<ToggleButton size="xs">Tag</ToggleButton>);
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<ToggleButton size="xl">Tag</ToggleButton>);
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<ToggleButton color="discovery">Tag</ToggleButton>);
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<ToggleButton color="secondary">Tag</ToggleButton>);
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

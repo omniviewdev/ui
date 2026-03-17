@@ -47,4 +47,48 @@ describe('TextArea', () => {
     const textarea = screen.getByPlaceholderText('Resizable');
     expect(textarea.style.getPropertyValue('--_textarea-resize')).toBe('none');
   });
+
+  it('renders with xs size', () => {
+    renderWithTheme(
+      <TextArea.Root size="xs">
+        <TextArea.Control placeholder="xs-textarea" />
+      </TextArea.Root>,
+    );
+
+    const textarea = screen.getByPlaceholderText('xs-textarea');
+    expect(textarea).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('renders with xl size', () => {
+    renderWithTheme(
+      <TextArea.Root size="xl">
+        <TextArea.Control placeholder="xl-textarea" />
+      </TextArea.Root>,
+    );
+
+    const textarea = screen.getByPlaceholderText('xl-textarea');
+    expect(textarea).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders with discovery color', () => {
+    renderWithTheme(
+      <TextArea.Root color="discovery">
+        <TextArea.Control placeholder="discovery-textarea" />
+      </TextArea.Root>,
+    );
+
+    const textarea = screen.getByPlaceholderText('discovery-textarea');
+    expect(textarea).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders with secondary color', () => {
+    renderWithTheme(
+      <TextArea.Root color="secondary">
+        <TextArea.Control placeholder="secondary-textarea" />
+      </TextArea.Root>,
+    );
+
+    const textarea = screen.getByPlaceholderText('secondary-textarea');
+    expect(textarea).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

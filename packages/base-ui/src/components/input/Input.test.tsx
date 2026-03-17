@@ -57,4 +57,48 @@ describe('Input', () => {
     const shell = screen.getByPlaceholderText('Required').closest('[data-ov-variant]');
     expect(shell).toBeInTheDocument();
   });
+
+  it('renders with xs size', () => {
+    renderWithTheme(
+      <Input.Root size="xs">
+        <Input.Control placeholder="xs-input" />
+      </Input.Root>,
+    );
+
+    const shell = screen.getByPlaceholderText('xs-input').closest('[data-ov-size]');
+    expect(shell).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('renders with xl size', () => {
+    renderWithTheme(
+      <Input.Root size="xl">
+        <Input.Control placeholder="xl-input" />
+      </Input.Root>,
+    );
+
+    const shell = screen.getByPlaceholderText('xl-input').closest('[data-ov-size]');
+    expect(shell).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders with discovery color', () => {
+    renderWithTheme(
+      <Input.Root color="discovery">
+        <Input.Control placeholder="discovery-input" />
+      </Input.Root>,
+    );
+
+    const shell = screen.getByPlaceholderText('discovery-input').closest('[data-ov-color]');
+    expect(shell).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders with secondary color', () => {
+    renderWithTheme(
+      <Input.Root color="secondary">
+        <Input.Control placeholder="secondary-input" />
+      </Input.Root>,
+    );
+
+    const shell = screen.getByPlaceholderText('secondary-input').closest('[data-ov-color]');
+    expect(shell).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

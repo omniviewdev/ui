@@ -29,9 +29,9 @@ const SIZES: ComponentSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 const SIZE_HEIGHTS: Record<ComponentSize, string> = {
   xs: '18px',
   sm: '22px',
-  md: '28px',
-  lg: '34px',
-  xl: '42px',
+  md: '26px',
+  lg: '32px',
+  xl: '40px',
 };
 
 const COLORS: ComponentColor[] = [
@@ -101,7 +101,7 @@ function SizeConsistencyGrid() {
           paddingLeft: 4,
         }}
       >
-        {['', 'Button', 'IconButton', 'Input', 'Select', 'Chip', 'Checkbox', 'Radio', 'Switch', 'Badge'].map(
+        {['', 'Button', 'IconButton', 'Input', 'Select', 'Chip', 'Checkbox\n(control)', 'Radio\n(control)', 'Switch', 'Badge'].map(
           (label) => (
             <div
               key={label}
@@ -226,17 +226,15 @@ function SizeConsistencyGrid() {
             </Chip>
           </div>
 
-          {/* Checkbox */}
-          <div style={{ display: 'flex', justifyContent: 'center', zIndex: 1 }}>
-            <Checkbox.Item size={size} variant="soft" color="brand" defaultChecked>
-              Check
-            </Checkbox.Item>
+          {/* Checkbox (control only — no label, to measure control height) */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
+            <Checkbox.Item size={size} variant="soft" color="brand" defaultChecked />
           </div>
 
-          {/* Radio */}
-          <div style={{ display: 'flex', justifyContent: 'center', zIndex: 1 }}>
+          {/* Radio (control only — no label) */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
             <RadioGroup defaultValue="yes" color="brand" variant="soft" size={size}>
-              <Radio.Item value="yes">Radio</Radio.Item>
+              <Radio.Item value="yes" />
             </RadioGroup>
           </div>
 

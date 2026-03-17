@@ -25,7 +25,7 @@ function FileTreePanel({ onOpenFile }: FileTreePanelProps) {
 
   const handleSelectedKeysChange = useCallback(
     (keys: ReadonlySet<Key>) => {
-      const id = [...keys][0];
+      const id = keys.values().next().value;
       if (id != null) {
         onOpenFile(String(id));
       }
@@ -185,5 +185,7 @@ export function SidebarPanel({ panel, onOpenFile }: SidebarPanelProps) {
       return <SearchPanel onOpenFile={onOpenFile} />;
     case 'git':
       return <GitPanel />;
+    default:
+      return panel satisfies never;
   }
 }

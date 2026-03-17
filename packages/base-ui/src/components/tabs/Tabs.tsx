@@ -12,7 +12,9 @@ export interface TabsRootProps extends BaseTabs.Root.Props, Omit<StyledComponent
 }
 export type TabsListProps = BaseTabs.List.Props;
 export type TabsTabProps = BaseTabs.Tab.Props & {
-  /** Slot rendered after the tab label (e.g. Badge, icon, count) */
+  /** Slot rendered before the tab label (e.g. icon) */
+  startDecorator?: ReactNode;
+  /** Slot rendered after the tab label (e.g. Badge, count) */
   endDecorator?: ReactNode;
 };
 export type TabsPanelProps = BaseTabs.Panel.Props;
@@ -46,7 +48,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
 });
 
 const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function TabsTab(
-  { className, endDecorator, children, ...props },
+  { className, startDecorator, endDecorator, children, ...props },
   ref,
 ) {
   return (
@@ -55,6 +57,7 @@ const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function TabsTab(
       className={withBaseClassName<BaseTabs.Tab.State>(styles.Tab, className)}
       {...props}
     >
+      {startDecorator != null && <span className={styles.TabDecorator}>{startDecorator}</span>}
       {children}
       {endDecorator != null && <span className={styles.TabDecorator}>{endDecorator}</span>}
     </BaseTabs.Tab>

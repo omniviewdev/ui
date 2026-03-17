@@ -5,6 +5,7 @@ import type { Key } from '@omniview/base-ui';
 import type { SidebarPanel as SidebarPanelType, SearchResult, GitStatusEntry } from '../types';
 import {
   fileTree,
+  projectFiles,
   searchResults,
   gitStatus,
   type FileTreeNode,
@@ -90,6 +91,10 @@ interface SearchPanelProps {
   onOpenFile: (fileId: string) => void;
 }
 
+function resolveFileId(path: string): string | undefined {
+  return projectFiles.find((f) => f.path === path)?.id;
+}
+
 function SearchPanel({ onOpenFile }: SearchPanelProps) {
   const [query, setQuery] = useState('useState');
 
@@ -121,7 +126,7 @@ function SearchPanel({ onOpenFile }: SearchPanelProps) {
             // eslint-disable-next-line react/no-array-index-key
             key={`${result.file}-${result.line}-${i}`}
             className={styles.resultItem}
-            onClick={() => onOpenFile(result.file)}
+            onClick={() => { const id = resolveFileId(result.file); if (id) onOpenFile(id); }}
           >
             <span className={styles.resultFile}>{result.file}</span>
             <span className={styles.resultMatch}>{result.context.trim()}</span>

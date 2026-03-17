@@ -181,3 +181,9 @@
 .errorButton:hover {
   background: var(--ov-color-bg-surface-raised);
 }
+
+.errorButton:focus-visible {
+  background: var(--ov-color-bg-surface-raised);
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}

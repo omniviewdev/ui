@@ -82,7 +82,7 @@ const meta = {
     siblingCount: { control: { type: 'number', min: 0, max: 5 } },
     boundaryCount: { control: { type: 'number', min: 0, max: 5 } },
     showFirstLast: { control: 'boolean' },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     onChange: { action: 'onChange' },
   },
 } satisfies Meta<typeof Pagination>;

@@ -17,7 +17,7 @@ const meta = {
       control: 'select',
       options: ['success', 'warning', 'danger', 'info', 'neutral', 'pending'],
     },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     pulse: { control: 'boolean' },
     pulseIntensity: { control: 'inline-radio', options: ['subtle', 'default', 'strong'] },
     label: { control: 'text' },

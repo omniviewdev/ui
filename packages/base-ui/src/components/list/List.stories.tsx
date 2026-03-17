@@ -27,7 +27,7 @@ const meta: Meta<typeof List> = {
   argTypes: {
     size: {
       control: 'inline-radio',
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
       description: 'Controls the overall size of list items (font size, icon size, spacing).',
       table: { defaultValue: { summary: 'md' } },
     },

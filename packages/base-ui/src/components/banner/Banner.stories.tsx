@@ -31,9 +31,9 @@ const meta = {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
     color: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
     },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
   render: (args) => (
     <Banner {...args} style={{ maxWidth: 480 }}>

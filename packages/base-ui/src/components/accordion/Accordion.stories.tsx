@@ -16,7 +16,7 @@ const meta = {
     exclusive: { control: 'boolean' },
     defaultExpanded: { control: 'object' },
     animation: { control: 'inline-radio', options: ['default', 'fast', 'none'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
 } satisfies Meta<AccordionProps>;
 

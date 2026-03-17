@@ -13,7 +13,7 @@ const meta = {
   },
   argTypes: {
     layout: { control: 'inline-radio', options: ['horizontal', 'vertical', 'grid'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     columns: { control: 'inline-radio', options: [1, 2, 3] },
   },
 } satisfies Meta<DescriptionListProps>;

@@ -14,7 +14,7 @@ const meta: Meta = {
   argTypes: {
     size: {
       control: 'inline-radio',
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
       description: 'Controls the overall size of list items.',
       table: { defaultValue: { summary: 'md' } },
     },

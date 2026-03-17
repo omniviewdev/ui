@@ -21,7 +21,6 @@ export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableCol
           <Popover.Trigger
             render={
               <IconButton
-                dense
                 variant="ghost"
                 color="neutral"
                 size="sm"

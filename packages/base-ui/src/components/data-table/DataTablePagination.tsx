@@ -30,7 +30,6 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
         </div>
         <div className={styles.PaginationControls}>
           <IconButton
-            dense
             variant="ghost"
             color="neutral"
             size="sm"
@@ -41,7 +40,6 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             <LuChevronsLeft />
           </IconButton>
           <IconButton
-            dense
             variant="ghost"
             color="neutral"
             size="sm"
@@ -52,7 +50,6 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             <LuChevronLeft />
           </IconButton>
           <IconButton
-            dense
             variant="ghost"
             color="neutral"
             size="sm"
@@ -63,7 +60,6 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             <LuChevronRight />
           </IconButton>
           <IconButton
-            dense
             variant="ghost"
             color="neutral"
             size="sm"

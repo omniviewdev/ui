@@ -168,7 +168,6 @@ export function MultiSelect<Item = string>({
     (clearProps: any) => (
       <IconButton
         {...clearProps}
-        dense
         variant="ghost"
         color={color}
         size={size}
@@ -188,7 +187,6 @@ export function MultiSelect<Item = string>({
     (triggerProps: any) => (
       <IconButton
         {...triggerProps}
-        dense
         variant="ghost"
         color={color}
         size={size}
@@ -284,7 +282,6 @@ export function MultiSelect<Item = string>({
                                 render={(removeProps) => (
                                   <IconButton
                                     {...removeProps}
-                                    dense
                                     variant="ghost"
                                     color={color}
                                     size={size}

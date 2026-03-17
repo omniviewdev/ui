@@ -152,6 +152,10 @@
   --_ov-accent-soft: var(--ov-color-state-selected);
 }
 
+.Popup[data-ov-color='info'] {
+  --_ov-accent-soft: var(--ov-color-info-soft);
+}
+
 .Popup[data-ov-color='discovery'] {
   --_ov-accent-soft: var(--ov-color-discovery-soft);
 }
@@ -200,6 +204,10 @@
 
 .Arrow[data-ov-color='neutral'] {
   --_ov-accent-soft: var(--ov-color-state-selected);
+}
+
+.Arrow[data-ov-color='info'] {
+  --_ov-accent-soft: var(--ov-color-info-soft);
 }
 
 .Arrow[data-ov-color='discovery'] {

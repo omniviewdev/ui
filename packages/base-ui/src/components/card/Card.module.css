@@ -176,6 +176,12 @@
   --_ov-accent-fg: var(--ov-color-danger);
 }
 
+.Root[data-ov-color='info'] {
+  --_ov-accent: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+  --_ov-accent-fg: var(--ov-color-info);
+}
+
 .Root[data-ov-color='discovery'] {
   --_ov-accent: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);

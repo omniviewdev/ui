@@ -58,6 +58,11 @@
   --_ov-tab-bg-active: var(--ov-color-danger-soft);
 }
 
+.Root[data-ov-color='info'] {
+  --_ov-indicator: var(--ov-color-info);
+  --_ov-tab-bg-active: var(--ov-color-info-soft);
+}
+
 .Root[data-ov-color='discovery'] {
   --_ov-indicator: var(--ov-color-discovery);
   --_ov-tab-bg-active: var(--ov-color-discovery-soft);

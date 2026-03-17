@@ -70,6 +70,14 @@
   );
 }
 
+.Root[data-ov-color='info'] {
+  --_ov-separator-color: color-mix(
+    in srgb,
+    var(--ov-color-info) 66%,
+    var(--ov-color-border-default) 34%
+  );
+}
+
 .Root[data-ov-color='discovery'] {
   --_ov-separator-color: color-mix(
     in srgb,

@@ -77,6 +77,11 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Input[data-ov-color='info'] {
+  --_ov-focus: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+}
+
 .Input[data-ov-color='discovery'] {
   --_ov-focus: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);
@@ -197,6 +202,10 @@
 
 .Popup[data-ov-color='danger'] {
   --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
 }
 
 .Popup[data-ov-color='discovery'] {
@@ -374,6 +383,11 @@
 .Trigger[data-ov-color='danger'],
 .Clear[data-ov-color='danger'] {
   --_ov-fg: var(--ov-color-danger);
+}
+
+.Trigger[data-ov-color='info'],
+.Clear[data-ov-color='info'] {
+  --_ov-fg: var(--ov-color-info);
 }
 
 .Trigger[data-ov-color='discovery'],

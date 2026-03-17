@@ -91,6 +91,14 @@
   --_ov-accent-soft-fg: var(--ov-color-danger);
 }
 
+.Root[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-accent-soft-fg: var(--ov-color-info);
+}
+
 .Root[data-ov-color='discovery'] {
   --_ov-accent-bg: var(--ov-color-discovery);
   --_ov-accent-fg: var(--ov-color-fg-inverse);

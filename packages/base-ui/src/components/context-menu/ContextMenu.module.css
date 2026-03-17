@@ -75,6 +75,10 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
+}
+
 .Popup[data-ov-color='discovery'] {
   --_ov-selected-bg: var(--ov-color-discovery-soft);
 }

@@ -93,3 +93,11 @@
 .Item[data-ov-color='info'] {
   --_ov-stat-item-color: var(--ov-color-info);
 }
+
+.Item[data-ov-color='discovery'] {
+  --_ov-stat-item-color: var(--ov-color-discovery);
+}
+
+.Item[data-ov-color='secondary'] {
+  --_ov-stat-item-color: var(--ov-color-secondary);
+}

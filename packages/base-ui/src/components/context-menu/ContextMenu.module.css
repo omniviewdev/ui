@@ -75,6 +75,31 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='discovery'] {
+  --_ov-selected-bg: var(--ov-color-discovery-soft);
+}
+
+.Popup[data-ov-color='secondary'] {
+  --_ov-selected-bg: var(--ov-color-secondary-soft);
+}
+
+.Popup[data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 86%, var(--_ov-selected-bg) 14%);
+}
+
+.Popup[data-ov-variant='soft'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 90%, var(--_ov-selected-bg) 10%);
+}
+
+.Popup[data-ov-variant='outline'] {
+  --_ov-border: color-mix(in srgb, var(--ov-color-border-default) 50%, var(--_ov-selected-bg) 50%);
+}
+
+.Popup[data-ov-variant='ghost'] {
+  --_ov-bg: var(--ov-color-bg-surface-overlay);
+  --_ov-border: transparent;
+}
+
 .GroupLabel {
   padding-inline: var(--_ov-item-padding-inline);
   margin-block-start: var(--_ov-group-label-gap-top);

@@ -51,6 +51,14 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Root[data-ov-color='discovery'] {
+  --_ov-selected-bg: var(--ov-color-discovery-soft);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-selected-bg: var(--ov-color-secondary-soft);
+}
+
 .Root[data-ov-variant='solid'] {
   --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 84%, var(--_ov-selected-bg) 16%);
 }

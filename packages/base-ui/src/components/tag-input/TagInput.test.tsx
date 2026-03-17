@@ -188,4 +188,14 @@ describe('TagInput', () => {
 
     expect(onChange).toHaveBeenCalledWith(['hello']);
   });
+
+  it('renders xs and xl sizes', () => {
+    const { container, rerender } = renderWithTheme(
+      <TagInput value={[]} onChange={() => {}} size="xs" />,
+    );
+    expect(container.firstChild as HTMLElement).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<TagInput value={[]} onChange={() => {}} size="xl" />);
+    expect(container.firstChild as HTMLElement).toHaveAttribute('data-ov-size', 'xl');
+  });
 });

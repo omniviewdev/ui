@@ -38,6 +38,26 @@ describe('Avatar', () => {
     expect(screen.getByTestId('avatar-icon')).toBeInTheDocument();
   });
 
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(<Avatar name="A B" size="xs" />);
+    let root = screen.getByText('AB').closest('[data-ov-avatar-root="true"]');
+    expect(root).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<Avatar name="A B" size="xl" />);
+    root = screen.getByText('AB').closest('[data-ov-avatar-root="true"]');
+    expect(root).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<Avatar name="C D" color="discovery" />);
+    let root = screen.getByText('CD').closest('[data-ov-avatar-root="true"]');
+    expect(root).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Avatar name="C D" color="secondary" />);
+    root = screen.getByText('CD').closest('[data-ov-avatar-root="true"]');
+    expect(root).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('supports non-deterministic fallback mode', () => {
     renderWithTheme(<Avatar name="Riley Brooks" deterministic={false} />);
 

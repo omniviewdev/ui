@@ -4,6 +4,38 @@ import { renderWithTheme } from '../../test/render';
 import { AlertDialog } from './AlertDialog';
 
 describe('AlertDialog', () => {
+  it('renders discovery color on popup', () => {
+    renderWithTheme(
+      <AlertDialog.Root defaultOpen color="discovery">
+        <AlertDialog.Trigger>Open</AlertDialog.Trigger>
+        <AlertDialog.Portal>
+          <AlertDialog.Backdrop />
+          <AlertDialog.Popup>
+            <AlertDialog.Title>Discovery Dialog</AlertDialog.Title>
+          </AlertDialog.Popup>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>,
+    );
+    const popup = screen.getByText('Discovery Dialog').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders secondary color on popup', () => {
+    renderWithTheme(
+      <AlertDialog.Root defaultOpen color="secondary">
+        <AlertDialog.Trigger>Open</AlertDialog.Trigger>
+        <AlertDialog.Portal>
+          <AlertDialog.Backdrop />
+          <AlertDialog.Popup>
+            <AlertDialog.Title>Secondary Dialog</AlertDialog.Title>
+          </AlertDialog.Popup>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>,
+    );
+    const popup = screen.getByText('Secondary Dialog').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders themed popup when opened', () => {
     renderWithTheme(
       <AlertDialog.Root defaultOpen color="brand" size="lg" variant="outline">

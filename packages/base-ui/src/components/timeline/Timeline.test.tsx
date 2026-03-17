@@ -233,4 +233,20 @@ describe('Timeline', () => {
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(
+      <Timeline>
+        <Timeline.Item color="discovery" data-testid="item">Event</Timeline.Item>
+      </Timeline>,
+    );
+    expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <Timeline>
+        <Timeline.Item color="secondary" data-testid="item">Event</Timeline.Item>
+      </Timeline>,
+    );
+    expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

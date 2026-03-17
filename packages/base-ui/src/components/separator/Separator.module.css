@@ -10,6 +10,12 @@
   flex-shrink: 0;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-separator-thickness: var(--ov-size-separator-thickness-xs, 1px);
+  --_ov-separator-inset: var(--ov-size-separator-inset-xs, 4px);
+  --_ov-separator-label-size: var(--ov-size-separator-label-font-size-xs, 0.625rem);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-separator-thickness: var(--ov-size-separator-thickness-sm, 1px);
   --_ov-separator-inset: var(--ov-size-separator-inset-sm, 8px);
@@ -20,6 +26,12 @@
   --_ov-separator-thickness: var(--ov-size-separator-thickness-lg, 3px);
   --_ov-separator-inset: var(--ov-size-separator-inset-lg, 16px);
   --_ov-separator-label-size: var(--ov-size-separator-label-font-size-lg, 0.8125rem);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-separator-thickness: var(--ov-size-separator-thickness-xl, 4px);
+  --_ov-separator-inset: var(--ov-size-separator-inset-xl, 20px);
+  --_ov-separator-label-size: var(--ov-size-separator-label-font-size-xl, 0.875rem);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -54,6 +66,22 @@
   --_ov-separator-color: color-mix(
     in srgb,
     var(--ov-color-danger) 66%,
+    var(--ov-color-border-default) 34%
+  );
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-separator-color: color-mix(
+    in srgb,
+    var(--ov-color-discovery) 66%,
+    var(--ov-color-border-default) 34%
+  );
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-separator-color: color-mix(
+    in srgb,
+    var(--ov-color-secondary) 66%,
     var(--ov-color-border-default) 34%
   );
 }

@@ -96,6 +96,14 @@
   --_ov-border-accent: var(--ov-color-info);
 }
 
+.Toast[data-ov-severity='discovery'] {
+  --_ov-border-accent: var(--ov-color-discovery);
+}
+
+.Toast[data-ov-severity='secondary'] {
+  --_ov-border-accent: var(--ov-color-secondary);
+}
+
 /* ------------------------------------------------------------------ */
 /* Surface variants                                                    */
 /* ------------------------------------------------------------------ */

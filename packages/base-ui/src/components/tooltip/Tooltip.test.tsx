@@ -5,6 +5,51 @@ import { renderWithTheme } from '../../test/render';
 import { Tooltip } from './Tooltip';
 
 describe('Tooltip', () => {
+  it('renders neutral color on popup', () => {
+    renderWithTheme(
+      <Tooltip.Root defaultOpen color="neutral">
+        <Tooltip.Trigger>Hover</Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner>
+            <Tooltip.Popup>Neutral tip</Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip.Root>,
+    );
+    const popup = screen.getByText('Neutral tip').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'neutral');
+  });
+
+  it('renders discovery color on popup', () => {
+    renderWithTheme(
+      <Tooltip.Root defaultOpen color="discovery">
+        <Tooltip.Trigger>Hover</Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner>
+            <Tooltip.Popup>Discovery tip</Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip.Root>,
+    );
+    const popup = screen.getByText('Discovery tip').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders secondary color on popup', () => {
+    renderWithTheme(
+      <Tooltip.Root defaultOpen color="secondary">
+        <Tooltip.Trigger>Hover</Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner>
+            <Tooltip.Popup>Secondary tip</Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip.Root>,
+    );
+    const popup = screen.getByText('Secondary tip').closest('[data-ov-color]');
+    expect(popup).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders themed popup when opened', () => {
     renderWithTheme(
       <Tooltip.Root defaultOpen color="warning" size="sm" variant="outline">

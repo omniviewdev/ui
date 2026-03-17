@@ -43,12 +43,20 @@
   --_ov-surface-bg: var(--ov-color-bg-elevated);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-padding: var(--ov-size-sheet-padding-xs, var(--ov-size-sheet-padding-sm));
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-padding: var(--ov-size-sheet-padding-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-padding: var(--ov-size-sheet-padding-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-padding: var(--ov-size-sheet-padding-xl, var(--ov-size-sheet-padding-lg));
 }
 
 .Root[data-ov-elevation='1'] {
@@ -97,6 +105,18 @@
   --_ov-accent: var(--ov-color-info);
   --_ov-accent-soft: var(--ov-color-info-soft);
   --_ov-accent-fg: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+  --_ov-accent-fg: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+  --_ov-accent-fg: var(--ov-color-secondary);
 }
 
 /* Variants: tint the surface background, don't replace it */

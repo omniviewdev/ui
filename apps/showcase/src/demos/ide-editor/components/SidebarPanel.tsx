@@ -147,6 +147,7 @@ function statusToStatusDot(status: GitStatusEntry['status']): 'warning' | 'succe
     case 'modified': return 'warning';
     case 'staged': return 'success';
     case 'untracked': return 'neutral';
+    default: return status satisfies never;
   }
 }
 

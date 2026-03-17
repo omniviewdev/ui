@@ -17,7 +17,7 @@ const meta = {
     allowDuplicates: false,
   },
   argTypes: {
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     disabled: { control: 'boolean' },
     allowDuplicates: { control: 'boolean' },
     max: { control: 'number' },

@@ -21,12 +21,12 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['standard', 'dot'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
     position: {
       control: 'select',
       options: ['top-right', 'top-left', 'bottom-right', 'bottom-left'],
     },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     overlap: { control: 'inline-radio', options: ['rectangular', 'circular'] },
     max: { control: 'number' },
     content: { control: 'text' },

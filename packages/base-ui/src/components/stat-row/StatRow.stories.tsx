@@ -21,7 +21,7 @@ const meta = {
   component: StatRow,
   tags: ['autodocs'],
   argTypes: {
-    size: { control: 'radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     separator: { control: 'text' },
   },
 } satisfies Meta<StatRowProps>;

@@ -25,7 +25,7 @@ const meta = {
     required: false,
   },
   argTypes: {
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     required: { control: 'boolean' },
     description: { control: 'text' },
     error: { control: 'text' },

@@ -78,6 +78,58 @@ describe('MultiSelect', () => {
     expect(screen.getByText('+1')).toBeInTheDocument();
   });
 
+  it('applies xs size data attribute to control', () => {
+    renderWithTheme(
+      <MultiSelect
+        items={['default', 'kube-public']}
+        size="xs"
+      />,
+    );
+
+    const control = document.querySelector('[data-ov-slot="control"]');
+    expect(control).not.toBeNull();
+    expect(control).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute to control', () => {
+    renderWithTheme(
+      <MultiSelect
+        items={['default', 'kube-public']}
+        size="xl"
+      />,
+    );
+
+    const control = document.querySelector('[data-ov-slot="control"]');
+    expect(control).not.toBeNull();
+    expect(control).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery color data attribute to control', () => {
+    renderWithTheme(
+      <MultiSelect
+        items={['default', 'kube-public']}
+        color="discovery"
+      />,
+    );
+
+    const control = document.querySelector('[data-ov-slot="control"]');
+    expect(control).not.toBeNull();
+    expect(control).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('applies secondary color data attribute to control', () => {
+    renderWithTheme(
+      <MultiSelect
+        items={['default', 'kube-public']}
+        color="secondary"
+      />,
+    );
+
+    const control = document.querySelector('[data-ov-slot="control"]');
+    expect(control).not.toBeNull();
+    expect(control).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('clears all selected values from the clear action', async () => {
     const user = userEvent.setup();
 

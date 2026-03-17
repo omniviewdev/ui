@@ -15,6 +15,11 @@
   font-family: var(--ov-font-sans);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-tab-height: var(--ov-control-height-xs);
+  --_ov-tab-font-size: var(--ov-font-size-caption);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: var(--ov-control-height-sm);
   --_ov-tab-font-size: var(--ov-font-size-caption);
@@ -22,6 +27,10 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-tab-height: var(--ov-control-height-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-tab-height: var(--ov-control-height-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -47,6 +56,16 @@
 .Root[data-ov-color='danger'] {
   --_ov-indicator: var(--ov-color-danger);
   --_ov-tab-bg-active: var(--ov-color-danger-soft);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-indicator: var(--ov-color-discovery);
+  --_ov-tab-bg-active: var(--ov-color-discovery-soft);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-indicator: var(--ov-color-secondary);
+  --_ov-tab-bg-active: var(--ov-color-secondary-soft);
 }
 
 .Root[data-ov-variant='outline'] {

@@ -74,6 +74,16 @@
   padding-inline-end: var(--_ov-decorator-inset);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-height: var(--ov-size-chip-height-xs);
+  --_ov-padding-inline: var(--ov-size-chip-padding-inline-xs);
+  --_ov-font-size: var(--ov-size-chip-font-size-xs);
+  --_ov-gap: var(--ov-size-chip-gap-xs);
+  --_ov-icon-size: var(--ov-size-chip-icon-size-xs);
+  --_ov-radius: var(--ov-size-chip-radius-xs);
+  --_ov-decorator-inset: 3px;
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-height: var(--ov-size-chip-height-sm);
   --_ov-padding-inline: var(--ov-size-chip-padding-inline-sm);
@@ -92,6 +102,16 @@
   --_ov-icon-size: var(--ov-size-chip-icon-size-lg);
   --_ov-radius: var(--ov-size-chip-radius-lg);
   --_ov-decorator-inset: 6px; /* half of 12px text-side padding */
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-height: var(--ov-size-chip-height-xl);
+  --_ov-padding-inline: var(--ov-size-chip-padding-inline-xl);
+  --_ov-font-size: var(--ov-size-chip-font-size-xl);
+  --_ov-gap: var(--ov-size-chip-gap-xl);
+  --_ov-icon-size: var(--ov-size-chip-icon-size-xl);
+  --_ov-radius: var(--ov-size-chip-radius-xl);
+  --_ov-decorator-inset: 8px;
 }
 
 .Root[data-ov-color='neutral'] {
@@ -137,6 +157,24 @@
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-accent-soft-fg: var(--ov-color-danger);
   --_ov-accent-ghost-fg: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-accent-soft-fg: var(--ov-color-discovery);
+  --_ov-accent-ghost-fg: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-accent-soft-fg: var(--ov-color-secondary);
+  --_ov-accent-ghost-fg: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {

@@ -21,4 +21,22 @@ describe('Spinner', () => {
     expect(el).toHaveAttribute('data-ov-color', 'brand');
     expect(el).toHaveAttribute('aria-label', 'Please wait');
   });
+
+  it('applies xs size data attribute', () => {
+    renderWithTheme(<Spinner size="xs" />);
+    expect(screen.getByRole('status')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(<Spinner size="xl" />);
+    expect(screen.getByRole('status')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(<Spinner color="discovery" />);
+    expect(screen.getByRole('status')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Spinner color="secondary" />);
+    expect(screen.getByRole('status')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

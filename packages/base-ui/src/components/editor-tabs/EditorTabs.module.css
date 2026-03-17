@@ -142,9 +142,24 @@
   --_ov-tab-active-border: var(--ov-color-info);
 }
 
+.Root[data-ov-color='discovery'] {
+  --_ov-tab-active-border: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-tab-active-border: var(--ov-color-secondary);
+}
+
 /* ---------------------------------------------------------------------------
    Size overrides
    --------------------------------------------------------------------------- */
+
+.Root[data-ov-size='xs'] {
+  --_ov-tab-height: 22px;
+  --_ov-tab-font-size: var(--ov-font-size-caption);
+  --_ov-tab-padding-x: 6px;
+  --_ov-tab-padding-trailing: 3px;
+}
 
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: 28px;
@@ -156,6 +171,11 @@
 .Root[data-ov-size='lg'] {
   --_ov-tab-height: 40px;
   --_ov-tab-padding-x: 14px;
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-tab-height: 48px;
+  --_ov-tab-padding-x: 18px;
 }
 
 .Viewport {

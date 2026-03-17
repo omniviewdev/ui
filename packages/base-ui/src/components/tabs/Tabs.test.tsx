@@ -42,6 +42,54 @@ describe('Tabs', () => {
     expect(screen.getByRole('tab', { name: /Queued/ })).toContainElement(screen.getByTestId('badge'));
   });
 
+  it('applies xs and xl size data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <Tabs.Root defaultValue="a" size="xs">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Tab value="a">Tab</Tabs.Tab>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Panel value="a">Content</Tabs.Panel>
+      </Tabs.Root>,
+    );
+    expect(screen.getByRole('tablist').closest('[data-ov-size]')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <Tabs.Root defaultValue="a" size="xl">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Tab value="a">Tab</Tabs.Tab>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Panel value="a">Content</Tabs.Panel>
+      </Tabs.Root>,
+    );
+    expect(screen.getByRole('tablist').closest('[data-ov-size]')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <Tabs.Root defaultValue="a" color="discovery">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Tab value="a">Tab</Tabs.Tab>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Panel value="a">Content</Tabs.Panel>
+      </Tabs.Root>,
+    );
+    expect(screen.getByRole('tablist').closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <Tabs.Root defaultValue="a" color="secondary">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Tab value="a">Tab</Tabs.Tab>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Panel value="a">Content</Tabs.Panel>
+      </Tabs.Root>,
+    );
+    expect(screen.getByRole('tablist').closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('applies style data attributes', () => {
     renderWithTheme(
       <Tabs.Root defaultValue="overview" variant="outline" color="success" size="lg">

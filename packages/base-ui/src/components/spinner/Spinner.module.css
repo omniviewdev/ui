@@ -16,12 +16,20 @@
   flex-shrink: 0;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-size: var(--ov-size-spinner-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-size: var(--ov-size-spinner-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-size: var(--ov-size-spinner-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-size: var(--ov-size-spinner-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -46,6 +54,14 @@
 
 .Root[data-ov-color='info'] {
   --_ov-color: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-color: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-color: var(--ov-color-secondary);
 }
 
 .Bar {

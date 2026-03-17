@@ -60,6 +60,30 @@ describe('Chip', () => {
     expect(chip).toHaveAttribute('data-ov-clickable', 'true');
   });
 
+  it('applies xs size data attribute', () => {
+    renderWithTheme(<Chip size="xs">Tiny</Chip>);
+    const chip = screen.getByText('Tiny').closest('[data-ov-size]');
+    expect(chip).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(<Chip size="xl">Large</Chip>);
+    const chip = screen.getByText('Large').closest('[data-ov-size]');
+    expect(chip).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery color data attribute', () => {
+    renderWithTheme(<Chip color="discovery">Discover</Chip>);
+    const chip = screen.getByText('Discover').closest('[data-ov-color]');
+    expect(chip).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('applies secondary color data attribute', () => {
+    renderWithTheme(<Chip color="secondary">Secondary</Chip>);
+    const chip = screen.getByText('Secondary').closest('[data-ov-color]');
+    expect(chip).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   describe('Chip.Group', () => {
     it('renders children in a wrapping row by default', () => {
       renderWithTheme(

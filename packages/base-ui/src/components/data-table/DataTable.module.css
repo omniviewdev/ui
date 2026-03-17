@@ -52,6 +52,14 @@
 
 /* --- Size variants --- */
 
+.Root[data-ov-size='xs'] {
+  --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-xs);
+  --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-xs);
+  --_ov-cell-font-size: var(--ov-size-table-cell-font-size-xs);
+  --_ov-header-font-size: var(--ov-size-table-header-font-size-xs);
+  --_ov-row-height: var(--ov-size-table-row-height-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-sm);
   --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-sm);
@@ -66,6 +74,14 @@
   --_ov-cell-font-size: var(--ov-size-table-cell-font-size-lg);
   --_ov-header-font-size: var(--ov-size-table-header-font-size-lg);
   --_ov-row-height: var(--ov-size-table-row-height-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-xl);
+  --_ov-cell-padding-block: var(--ov-size-table-cell-padding-block-xl);
+  --_ov-cell-font-size: var(--ov-size-table-cell-font-size-xl);
+  --_ov-header-font-size: var(--ov-size-table-header-font-size-xl);
+  --_ov-row-height: var(--ov-size-table-row-height-xl);
 }
 
 /* --- Color variants --- */
@@ -93,6 +109,16 @@
 .Root[data-ov-color='danger'] {
   --_ov-accent: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
 }
 
 /* --- Visual variants --- */

@@ -124,6 +124,20 @@ describe('Pagination', () => {
     expect(nav).toHaveAttribute('data-ov-size', 'sm');
   });
 
+  it('applies xs size data attribute', () => {
+    const { container } = renderWithTheme(
+      <Pagination count={5} page={1} onChange={() => {}} size="xs" />,
+    );
+    expect(container.querySelector('nav')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    const { container } = renderWithTheme(
+      <Pagination count={5} page={1} onChange={() => {}} size="xl" />,
+    );
+    expect(container.querySelector('nav')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
   it('navigates to previous page on Prev click', () => {
     const onChange = vi.fn();
     renderWithTheme(<Pagination count={5} page={3} onChange={onChange} />);

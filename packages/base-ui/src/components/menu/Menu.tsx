@@ -54,7 +54,10 @@ export interface MenuRootProps
   extends Omit<ComponentPropsWithoutRef<typeof BaseMenu.Root>, 'color'>, StyledComponentProps {}
 
 export interface MenuTriggerProps
-  extends Omit<ComponentPropsWithoutRef<typeof BaseMenu.Trigger>, 'color'>, StyledComponentProps {}
+  extends Omit<ComponentPropsWithoutRef<typeof BaseMenu.Trigger>, 'color'>, StyledComponentProps {
+  /** Custom render element — when provided, the default Trigger styling is skipped. */
+  render?: BaseMenu.Trigger.Props['render'];
+}
 
 export interface MenuPopupProps
   extends Omit<ComponentPropsWithoutRef<typeof BaseMenu.Popup>, 'color'>, StyledComponentProps {}
@@ -101,12 +104,15 @@ const MenuRoot = ({ variant, color, size, ...props }: MenuRootProps) => {
   );
 };
 
-const MenuTrigger = ({ className, variant, color, size, ...props }: MenuTriggerProps) => {
+const MenuTrigger = ({ className, variant, color, size, render, ...props }: MenuTriggerProps) => {
   const resolved = useResolvedStyleProps({ variant, color, size });
+  // When render is provided, the custom element supplies its own styling —
+  // skip the default Trigger class and style data attributes.
   return (
     <BaseMenu.Trigger
-      className={withBaseClassName(styles.Trigger, className)}
-      {...styleDataAttributes(resolved)}
+      className={render ? className : withBaseClassName(styles.Trigger, className)}
+      render={render}
+      {...(render ? {} : styleDataAttributes(resolved))}
       {...props}
     />
   );

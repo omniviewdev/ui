@@ -1,0 +1,40 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--ov-space-stack-xl);
+  gap: var(--ov-space-stack-lg);
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-xs);
+}
+
+.grid {
+  max-width: 960px;
+  width: 100%;
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+}
+
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-brand-400);
+  font-size: 20px;
+  flex-shrink: 0;
+}

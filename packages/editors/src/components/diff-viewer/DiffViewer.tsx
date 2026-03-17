@@ -13,6 +13,12 @@ export interface DiffViewerProps {
   mode?: DiffMode;
   readOnly?: boolean;
   height?: string | number;
+  /**
+   * Show decorative border and border-radius around the viewer.
+   * Set to `false` when embedding in an IDE layout or panel.
+   * @default true
+   */
+  bordered?: boolean;
   className?: string;
 }
 
@@ -28,6 +34,7 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
     mode = 'side-by-side',
     readOnly = true,
     height = '100%',
+    bordered = true,
     className,
   },
   ref,
@@ -126,6 +133,7 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
         } as CSSProperties
       }
       data-testid="diff-viewer"
+      {...(!bordered ? { 'data-borderless': '' } : {})}
     >
       <div ref={containerRef} className={styles.Inner} />
     </div>

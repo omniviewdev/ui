@@ -96,11 +96,13 @@
  * --------------------------------------------------------------------------- */
 
 .Item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--ov-space-inline-control);
   min-height: var(--_ov-item-height);
   padding-inline: var(--_ov-item-padding-inline);
+  padding-block: 2px;
   border-radius: var(--_ov-item-radius);
   cursor: pointer;
   user-select: none;
@@ -123,8 +125,7 @@
 
 .Item[data-ov-active='true'] {
   background: var(--_ov-highlight-bg);
-  outline: 2px solid var(--ov-color-state-focus-ring);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--ov-color-state-focus-ring);
 }
 
 .Item[data-ov-selected='true'] {
@@ -137,8 +138,7 @@
 
 .Item[data-ov-selected='true'][data-ov-active='true'] {
   background: var(--_ov-selected-bg);
-  outline: 2px solid var(--ov-color-state-focus-ring);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--ov-color-state-focus-ring);
 }
 
 .Item[data-ov-disabled='true'] {
@@ -155,9 +155,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 var(--_ov-icon-size);
+  flex: 0 0 auto;
   min-inline-size: var(--_ov-icon-size);
-  block-size: var(--_ov-icon-size);
   color: var(--ov-color-fg-muted);
 }
 

@@ -6,3 +6,5 @@ export * from './agent';
 export * from './permissions';
 export * from './content';
 export * from './domain';
+export * from './branching';
+export * from './artifact';

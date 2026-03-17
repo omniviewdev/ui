@@ -1,0 +1,119 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.TableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  table-layout: fixed;
+}
+
+.Table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--ov-color-bg-surface-raised);
+  text-align: left;
+  padding: 4px 8px;
+  font-weight: var(--ov-font-weight-semibold, 600);
+  color: var(--ov-color-fg-muted);
+  border-bottom: 1px solid var(--ov-color-border-default);
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.Table td {
+  padding: 2px 8px;
+  border-bottom: 1px solid var(--ov-color-border-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Table tbody tr {
+  cursor: pointer;
+}
+
+.Table tbody tr:hover td {
+  background: var(--ov-color-state-hover);
+}
+
+.Table tbody tr[data-ov-selected='true'] td {
+  background: var(--ov-color-state-selected, rgba(99, 102, 241, 0.12));
+}
+
+/* ─── Cells ─── */
+
+.FileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FileIcon[data-ov-filetype='folder'] {
+  color: var(--ov-color-warning, #e0a54a);
+}
+
+.FileIcon[data-ov-filetype='file'] {
+  color: var(--ov-color-fg-subtle);
+}
+
+.SizeCell {
+  text-align: right;
+  color: var(--ov-color-fg-muted);
+  font-family: var(--ov-font-mono, monospace);
+  font-size: 11px;
+}
+
+.TypeCell {
+  color: var(--ov-color-fg-muted);
+}
+
+.DateCell {
+  color: var(--ov-color-fg-muted);
+  font-size: 11px;
+}
+
+.MonoCell {
+  font-family: var(--ov-font-mono, monospace);
+  font-size: 11px;
+}
+
+.ParentRow {
+  color: var(--ov-color-fg-muted);
+}
+
+.RowActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 100ms;
+}
+
+.Table tbody tr:hover .RowActions {
+  opacity: 1;
+}
+
+/* ─── Status ─── */
+
+.Status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+  border-top: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--ov-color-fg-muted);
+}

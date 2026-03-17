@@ -44,6 +44,40 @@
   --_ov-count-font: var(--ov-font-size-body, 0.875rem);
 }
 
+/* ─── Variant: flush ─────────────────────────────────────────────────────── */
+/* Edge-to-edge panel/sidebar accordion — bold uppercase headers, leading
+   chevron, top-border separators, minimal height.  Matches the VSCode
+   explorer sidebar pattern. */
+
+.Root[data-ov-variant='flush'] {
+  --_ov-header-py: 0;
+  --_ov-header-px: 4px;
+  --_ov-header-gap: 2px;
+  --_ov-content-pb: 0;
+}
+
+.Root[data-ov-variant='flush'] .Item {
+  border-bottom: none;
+  border-top: 1px solid var(--ov-color-border-muted);
+}
+
+.Root[data-ov-variant='flush'] .Item:first-child {
+  border-top: none;
+}
+
+.Root[data-ov-variant='flush'] .Header {
+  height: 22px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Move chevron before title via order */
+.Root[data-ov-variant='flush'] .Chevron {
+  order: -1;
+}
+
 /* ─── Animation speed ─────────────────────────────────────────────────────── */
 
 .Root[data-ov-animation='none'] {

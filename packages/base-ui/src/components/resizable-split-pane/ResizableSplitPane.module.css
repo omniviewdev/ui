@@ -15,10 +15,20 @@
   grid-template-rows: 1fr;
 }
 
+/* Horizontal reversed: sized pane on the right */
+.Root[data-ov-direction='horizontal'][data-ov-reverse] {
+  grid-template-columns: 1fr auto var(--_ov-split-size, 200px);
+}
+
 /* Vertical: stacked */
 .Root[data-ov-direction='vertical'] {
   grid-template-columns: 1fr;
   grid-template-rows: var(--_ov-split-size, 200px) auto 1fr;
+}
+
+/* Vertical reversed: sized pane on the bottom */
+.Root[data-ov-direction='vertical'][data-ov-reverse] {
+  grid-template-rows: 1fr auto var(--_ov-split-size, 200px);
 }
 
 /* Disable text selection during drag */
@@ -48,13 +58,13 @@
 
 /* Horizontal handle (vertical bar between side-by-side panes) */
 .Handle[data-ov-direction='horizontal'] {
-  width: 4px;
+  width: 1px;
   cursor: col-resize;
 }
 
 /* Vertical handle (horizontal bar between stacked panes) */
 .Handle[data-ov-direction='vertical'] {
-  height: 4px;
+  height: 1px;
   cursor: row-resize;
 }
 

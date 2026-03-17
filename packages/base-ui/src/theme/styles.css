@@ -67,7 +67,7 @@
   --ov-primitive-ansi-bright-cyan: #8fbcbb;
   --ov-primitive-ansi-bright-white: #eceff4;
 
-  --ov-primitive-font-sans: 'Inter Variable', 'SF Pro Text', 'Segoe UI', -apple-system, sans-serif;
+  --ov-primitive-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', sans-serif;
   --ov-primitive-font-mono: 'JetBrains Mono Variable', 'SF Mono', 'Cascadia Mono', monospace;
   --ov-primitive-font-size-11: 0.6875rem;
   --ov-primitive-font-size-12: 0.75rem;
@@ -102,7 +102,7 @@
   --ov-font-size-body: var(--ov-primitive-font-size-14);
   --ov-font-size-title: var(--ov-primitive-font-size-18);
   --ov-font-weight-body: var(--ov-primitive-font-weight-regular);
-  --ov-font-weight-label: var(--ov-primitive-font-weight-medium);
+  --ov-font-weight-label: var(--ov-primitive-font-weight-regular);
   --ov-font-weight-title: var(--ov-primitive-font-weight-semibold);
 
   --ov-space-inline-control: var(--ov-primitive-space-3);
@@ -233,7 +233,7 @@
   --ov-size-avatar-icon-size-sm: 12px;
   --ov-size-avatar-icon-size-md: 16px;
   --ov-size-avatar-icon-size-lg: 18px;
-  --ov-size-avatar-radius-rounded: var(--ov-radius-surface);
+  --ov-size-avatar-radius-rounded: var(--ov-radius-control);
   --ov-size-avatar-group-overlap-sm: 8px;
   --ov-size-avatar-group-overlap-md: 10px;
   --ov-size-avatar-group-overlap-lg: 12px;
@@ -261,7 +261,7 @@
   --ov-size-switch-gap-lg: 12px;
   --ov-size-list-item-gap: 4px;
   --ov-size-list-item-radius: var(--ov-radius-control);
-  --ov-size-list-item-height-sm: 24px;
+  --ov-size-list-item-height-sm: 22px;
   --ov-size-list-item-height-md: 30px;
   --ov-size-list-item-height-lg: 36px;
   --ov-size-list-item-padding-inline-sm: 7px;
@@ -369,22 +369,22 @@
   --ov-color-drawer-handle: var(--ov-color-border-strong);
   --ov-color-drawer-handle-hover: var(--ov-color-fg-muted);
 
-  --ov-color-bg-base: #131416;
-  --ov-color-bg-surface: #1b1d21;
-  --ov-color-bg-surface-raised: #242730;
-  --ov-color-bg-surface-overlay: #2d313c;
-  --ov-color-bg-inset: #0d0e10;
-  --ov-color-bg-elevated: #363b48;
+  --ov-color-bg-base: #181a1c;
+  --ov-color-bg-surface: #1f2125;
+  --ov-color-bg-surface-raised: #272a30;
+  --ov-color-bg-surface-overlay: #1f2125;
+  --ov-color-bg-inset: #131416;
+  --ov-color-bg-elevated: #2e323a;
 
-  --ov-color-fg-default: #e2e7ee;
-  --ov-color-fg-muted: #a1a9b6;
+  --ov-color-fg-default: #cccccc;
+  --ov-color-fg-muted: #9d9d9d;
   --ov-color-fg-subtle: #7b8494;
   --ov-color-fg-disabled: #5b6472;
   --ov-color-fg-inverse: #0e1013;
 
-  --ov-color-border-default: #333944;
-  --ov-color-border-muted: #2a2f37;
-  --ov-color-border-strong: #4d5665;
+  --ov-color-border-default: #2b2f36;
+  --ov-color-border-muted: #24272d;
+  --ov-color-border-strong: #3a3f49;
   --ov-color-border-focus: #7a96db;
 
   --ov-color-brand-500: #5a7fe2;
@@ -411,7 +411,7 @@
   --ov-color-tab-bg: transparent;
   --ov-color-tab-fg: var(--ov-color-fg-muted);
   --ov-color-tab-border: var(--ov-color-border-muted);
-  --ov-color-tab-active-bg: var(--ov-color-bg-surface);
+  --ov-color-tab-active-bg: var(--ov-color-bg-surface);  /* matches editor content */
   --ov-color-tab-active-fg: var(--ov-color-fg-default);
   --ov-color-tab-active-border: var(--ov-color-brand-400);
   --ov-color-tab-inactive-bg: transparent;
@@ -421,12 +421,12 @@
   --ov-color-tab-modified-border: var(--ov-color-warning);
   --ov-color-editor-group-bg: var(--ov-color-bg-surface);
   --ov-color-editor-group-border: var(--ov-color-border-default);
-  --ov-color-editor-group-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-editor-group-header-bg: var(--ov-color-bg-base);  /* tab bar = chrome level */
   --ov-color-editor-group-drop-border: var(--ov-color-brand-400);
-  --ov-size-tab-height: 34px;
+  --ov-size-tab-height: 35px;
 
   /* Editor tokens */
-  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-bg: var(--ov-color-bg-surface);  /* editor content = surface level */
   --ov-color-editor-fg: var(--ov-color-fg-default);
   --ov-color-editor-cursor: var(--ov-color-accent-strong);
   --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
@@ -814,6 +814,141 @@
   --ov-syntax-punctuation: #000000;
 }
 
+/* ---------------------------------------------------------------------------
+ * Obsidian — near-black neutral, punchy cobalt accent
+ * --------------------------------------------------------------------------- */
+
+:root[data-ov-theme='obsidian'] {
+  --ov-color-bg-base: #12141a;
+  --ov-color-bg-surface: #16181c;
+  --ov-color-bg-surface-raised: #1c1f25;
+  --ov-color-bg-surface-overlay: #1c1f25;
+  --ov-color-bg-inset: #0e1015;
+  --ov-color-bg-elevated: #252830;
+
+  --ov-color-fg-default: #e8eaed;
+  --ov-color-fg-muted: #8b8f9a;
+  --ov-color-fg-subtle: #6b7385;
+  --ov-color-fg-disabled: #4e5566;
+  --ov-color-fg-inverse: #0e1015;
+
+  --ov-color-border-default: #232730;
+  --ov-color-border-muted: #1e2128;
+  --ov-color-border-strong: #2e3340;
+  --ov-color-border-focus: #4d7cff;
+
+  --ov-color-brand-500: #4d7cff;
+  --ov-color-brand-400: #6391ff;
+  --ov-color-brand-300: #82a8ff;
+
+  --ov-color-accent-soft: rgb(77 124 255 / 0.14);
+  --ov-color-accent-strong: #82a8ff;
+
+  --ov-color-success: #34a56f;
+  --ov-color-success-soft: rgb(52 165 111 / 0.15);
+  --ov-color-warning: #d4942e;
+  --ov-color-warning-soft: rgb(212 148 46 / 0.15);
+  --ov-color-danger: #d45555;
+  --ov-color-danger-soft: rgb(212 85 85 / 0.15);
+  --ov-color-info: var(--ov-color-brand-400);
+  --ov-color-info-soft: rgb(99 145 255 / 0.15);
+
+  --ov-color-state-hover: rgb(160 170 185 / 0.09);
+  --ov-color-state-pressed: rgb(160 170 185 / 0.16);
+  --ov-color-state-selected: rgb(77 124 255 / 0.18);
+  --ov-color-state-focus-ring: #4d7cff;
+}
+
+/* ---------------------------------------------------------------------------
+ * Carbon — pure achromatic grays, maximum content clarity
+ * --------------------------------------------------------------------------- */
+
+:root[data-ov-theme='carbon'] {
+  --ov-color-bg-base: #0f0f0f;
+  --ov-color-bg-surface: #161616;
+  --ov-color-bg-surface-raised: #1e1e1e;
+  --ov-color-bg-surface-overlay: #1e1e1e;
+  --ov-color-bg-inset: #0a0a0a;
+  --ov-color-bg-elevated: #282828;
+
+  --ov-color-fg-default: #e5e5e5;
+  --ov-color-fg-muted: #8c8c8c;
+  --ov-color-fg-subtle: #737373;
+  --ov-color-fg-disabled: #555555;
+  --ov-color-fg-inverse: #0a0a0a;
+
+  --ov-color-border-default: #2a2a2a;
+  --ov-color-border-muted: #222222;
+  --ov-color-border-strong: #363636;
+  --ov-color-border-focus: #4b8cff;
+
+  --ov-color-brand-500: #4b8cff;
+  --ov-color-brand-400: #69a0ff;
+  --ov-color-brand-300: #8db5ff;
+
+  --ov-color-accent-soft: rgb(75 140 255 / 0.14);
+  --ov-color-accent-strong: #8db5ff;
+
+  --ov-color-success: #34a56f;
+  --ov-color-success-soft: rgb(52 165 111 / 0.15);
+  --ov-color-warning: #d4942e;
+  --ov-color-warning-soft: rgb(212 148 46 / 0.15);
+  --ov-color-danger: #d45555;
+  --ov-color-danger-soft: rgb(212 85 85 / 0.15);
+  --ov-color-info: var(--ov-color-brand-400);
+  --ov-color-info-soft: rgb(105 160 255 / 0.15);
+
+  --ov-color-state-hover: rgb(160 160 160 / 0.09);
+  --ov-color-state-pressed: rgb(160 160 160 / 0.16);
+  --ov-color-state-selected: rgb(75 140 255 / 0.18);
+  --ov-color-state-focus-ring: #4b8cff;
+}
+
+/* ---------------------------------------------------------------------------
+ * Void — ultra-deep warm-neutral grays, luxury feel
+ * --------------------------------------------------------------------------- */
+
+:root[data-ov-theme='void'] {
+  --ov-color-bg-base: #0e0f11;
+  --ov-color-bg-surface: #141517;
+  --ov-color-bg-surface-raised: #1a1b1e;
+  --ov-color-bg-surface-overlay: #1a1b1e;
+  --ov-color-bg-inset: #09090b;
+  --ov-color-bg-elevated: #232528;
+
+  --ov-color-fg-default: #e6e7ea;
+  --ov-color-fg-muted: #898c94;
+  --ov-color-fg-subtle: #6e7179;
+  --ov-color-fg-disabled: #505359;
+  --ov-color-fg-inverse: #09090b;
+
+  --ov-color-border-default: #232528;
+  --ov-color-border-muted: #1e1f22;
+  --ov-color-border-strong: #2e3033;
+  --ov-color-border-focus: #508aff;
+
+  --ov-color-brand-500: #508aff;
+  --ov-color-brand-400: #6b9bff;
+  --ov-color-brand-300: #8aafff;
+
+  --ov-color-accent-soft: rgb(80 138 255 / 0.12);
+  --ov-color-accent-strong: #8aafff;
+
+  --ov-color-success: #34a56f;
+  --ov-color-success-soft: rgb(52 165 111 / 0.13);
+  --ov-color-warning: #d4942e;
+  --ov-color-warning-soft: rgb(212 148 46 / 0.13);
+  --ov-color-danger: #d45555;
+  --ov-color-danger-soft: rgb(212 85 85 / 0.13);
+  --ov-color-info: var(--ov-color-brand-400);
+  --ov-color-info-soft: rgb(107 155 255 / 0.13);
+
+  --ov-color-state-hover: rgb(160 165 175 / 0.08);
+  --ov-color-state-pressed: rgb(160 165 175 / 0.14);
+  --ov-color-state-selected: rgb(80 138 255 / 0.15);
+  --ov-color-state-focus-ring: #508aff;
+}
+
 :root[data-ov-density='compact'] {
   --ov-control-height-sm: 24px;
   --ov-control-height-md: 30px;
@@ -982,7 +1117,7 @@
   --ov-size-spinner-sm: 14px;
   --ov-size-spinner-md: 18px;
   --ov-size-spinner-lg: 24px;
-  --ov-size-tab-height: 30px;
+  --ov-size-tab-height: 32px;
 }
 
 :root[data-ov-density='comfortable'] {
@@ -1063,7 +1198,7 @@
   --ov-size-avatar-icon-size-sm: 12px;
   --ov-size-avatar-icon-size-md: 16px;
   --ov-size-avatar-icon-size-lg: 18px;
-  --ov-size-avatar-radius-rounded: var(--ov-radius-surface);
+  --ov-size-avatar-radius-rounded: var(--ov-radius-control);
   --ov-size-avatar-group-overlap-sm: 8px;
   --ov-size-avatar-group-overlap-md: 10px;
   --ov-size-avatar-group-overlap-lg: 12px;
@@ -1090,7 +1225,7 @@
   --ov-size-switch-gap-md: 10px;
   --ov-size-switch-gap-lg: 12px;
   --ov-size-list-item-gap: 4px;
-  --ov-size-list-item-height-sm: 24px;
+  --ov-size-list-item-height-sm: 22px;
   --ov-size-list-item-height-md: 30px;
   --ov-size-list-item-height-lg: 36px;
   --ov-size-list-item-padding-inline-sm: 7px;
@@ -1153,7 +1288,7 @@
   --ov-size-spinner-sm: 16px;
   --ov-size-spinner-md: 20px;
   --ov-size-spinner-lg: 28px;
-  --ov-size-tab-height: 34px;
+  --ov-size-tab-height: 35px;
 }
 
 :root[data-ov-motion='reduced'] {
@@ -1168,6 +1303,8 @@ body {
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
   font-size: var(--ov-font-size-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {

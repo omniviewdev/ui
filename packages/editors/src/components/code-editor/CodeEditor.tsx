@@ -129,6 +129,12 @@ export interface CodeEditorProps {
 
   height?: string | number;
   width?: string | number;
+  /**
+   * Show decorative border and border-radius around the editor.
+   * Set to `false` when embedding in an IDE layout or panel.
+   * @default true
+   */
+  bordered?: boolean;
   className?: string;
 }
 
@@ -280,6 +286,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       syntaxHighlighting = true,
       height = '100%',
       width = '100%',
+      bordered = true,
       className,
     },
     ref,
@@ -606,6 +613,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
           } as CSSProperties
         }
         data-testid="code-editor"
+        {...(!bordered ? { 'data-borderless': '' } : {})}
       >
         <div ref={containerRef} className={styles.Inner} />
       </div>

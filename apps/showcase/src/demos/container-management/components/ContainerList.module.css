@@ -1,0 +1,77 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+.bulkToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.bulkLabel {
+  font-size: var(--ov-font-size-sm);
+  color: var(--ov-color-fg-muted);
+  margin-right: 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.tableWrapper {
+  flex: 1;
+  min-height: 0;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.statusCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meterCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.meterLabel {
+  font-size: var(--ov-font-size-xs);
+  color: var(--ov-color-fg-muted);
+}

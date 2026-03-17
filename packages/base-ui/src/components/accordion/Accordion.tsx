@@ -30,6 +30,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 export type AccordionAnimation = 'default' | 'fast' | 'none';
 export type AccordionSize = 'sm' | 'md' | 'lg';
+export type AccordionVariant = 'default' | 'flush';
 
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time. */
@@ -40,6 +41,8 @@ export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   animation?: AccordionAnimation;
   /** Size preset — controls header density and font size. */
   size?: AccordionSize;
+  /** Visual variant. `flush` gives edge-to-edge bold uppercase headers for sidebar/panel use. */
+  variant?: AccordionVariant;
 }
 
 export interface AccordionItemProps extends HTMLAttributes<HTMLDivElement> {
@@ -158,6 +161,7 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
     defaultExpanded,
     animation = 'default',
     size = 'md',
+    variant = 'default',
     className,
     children,
     ...props
@@ -210,6 +214,7 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
         data-ov-component="accordion"
         data-ov-animation={animation}
         data-ov-size={size}
+        data-ov-variant={variant}
         {...props}
       >
         {children}

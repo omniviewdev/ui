@@ -1,0 +1,610 @@
+/* apps/showcase/src/demos/chat-app/index.module.css */
+
+/* ── Main shell ─────────────────────────────────────────────────────────── */
+
+.shell {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--ov-font-sans);
+}
+
+/* ── Workspace Rail ─────────────────────────────────────────────────────── */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 56px;
+  flex-shrink: 0;
+  padding: 8px 0;
+  gap: 4px;
+  background: var(--ov-color-bg-base);
+  border-right: 1px solid var(--ov-color-border-default);
+}
+
+.railWorkspace {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: border-radius var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.railWorkspace:hover {
+  border-radius: 8px;
+}
+
+.railWorkspace[data-active] {
+  border-radius: 8px;
+}
+
+.railIndicator {
+  position: absolute;
+  left: -6px;
+  width: 3px;
+  height: 8px;
+  border-radius: 0 3px 3px 0;
+  background: var(--ov-color-fg-default);
+  transition: height var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.railWorkspace:hover .railIndicator {
+  height: 16px;
+}
+
+.railWorkspace[data-active] .railIndicator {
+  height: 20px;
+}
+
+.railSpacer {
+  flex: 1;
+}
+
+.railAddButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px dashed var(--ov-color-border-default);
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.railAddButton:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.railUserAvatar {
+  position: relative;
+  margin-top: 4px;
+}
+
+.railUserStatus {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+}
+
+/* ── Channel Sidebar ────────────────────────────────────────────────────── */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ov-color-bg-surface);
+  min-width: 180px;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  font-weight: var(--ov-font-weight-heading, 600);
+  font-size: var(--ov-primitive-font-size-14, 0.875rem);
+  color: var(--ov-color-fg-default);
+  border-bottom: 1px solid var(--ov-color-border-default);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sidebarBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.sidebarFooter {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  border-top: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+.channelItem {
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+}
+
+.channelItemUnread {
+  font-weight: var(--ov-font-weight-heading, 600);
+  color: var(--ov-color-fg-default);
+}
+
+.dmAvatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.dmAvatarStatus {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+}
+
+/* ── Main content area ──────────────────────────────────────────────────── */
+
+.main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.chatArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: var(--ov-color-bg-surface-raised);
+}
+
+/* ── Channel Header ─────────────────────────────────────────────────────── */
+
+.channelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+.channelHeaderTitle {
+  font-weight: var(--ov-font-weight-heading, 600);
+  font-size: var(--ov-primitive-font-size-14, 0.875rem);
+  color: var(--ov-color-fg-default);
+}
+
+.channelHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.channelHeaderMeta {
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  margin-right: 8px;
+}
+
+/* ── Message List ───────────────────────────────────────────────────────── */
+
+.messageList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px;
+}
+
+.dateSeparator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+}
+
+.dateSeparator::before,
+.dateSeparator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ov-color-border-default);
+}
+
+/* ── Message Item ───────────────────────────────────────────────────────── */
+
+.message {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.message:hover {
+  background: var(--ov-color-state-hover);
+  border-radius: 6px;
+  margin: 0 -8px;
+  padding: 4px 8px;
+}
+
+.messageCompact {
+  padding-left: 44px; /* avatar width + gap */
+}
+
+.messageCompact:hover {
+  padding-left: 52px; /* 44 + 8px margin adjustment */
+}
+
+.messageAvatar {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.messageBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.messageHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.messageName {
+  font-weight: var(--ov-font-weight-heading, 600);
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+  color: var(--ov-color-fg-default);
+}
+
+.messageTime {
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+}
+
+.messageCompactTime {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 40px;
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-subtle);
+  visibility: hidden;
+  text-align: right;
+}
+
+.message:hover .messageCompactTime {
+  visibility: visible;
+  left: 8px;
+}
+
+.messageContent {
+  font-size: var(--ov-primitive-font-size-14, 0.875rem);
+  color: var(--ov-color-fg-default);
+  line-height: 1.5;
+  margin-top: 2px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.messageContent code {
+  background: var(--ov-color-bg-base);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: var(--ov-font-mono);
+  font-size: 0.85em;
+}
+
+.messageMention {
+  color: var(--ov-color-brand-400);
+  background: color-mix(in srgb, var(--ov-color-brand-400) 10%, transparent);
+  padding: 0 2px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.messageLink {
+  color: var(--ov-color-brand-400);
+}
+
+.messageLink:hover {
+  text-decoration: underline;
+}
+
+/* ── File Attachment ────────────────────────────────────────────────────── */
+
+.fileAttachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-top: 4px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 6px;
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+}
+
+.fileName {
+  color: var(--ov-color-brand-400);
+}
+
+/* ── Hover Actions ──────────────────────────────────────────────────────── */
+
+.hoverActions {
+  position: absolute;
+  top: -12px;
+  right: 8px;
+  display: none;
+  gap: 1px;
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 6px;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  z-index: 1;
+}
+
+.message:hover .hoverActions,
+.hoverActions:has([data-popup-open]) {
+  display: flex;
+}
+
+/* Keep message hover styles while its menu is open */
+.message:has([data-popup-open]) {
+  background: var(--ov-color-state-hover);
+  border-radius: 6px;
+  margin: 0 -8px;
+  padding: 4px 8px;
+}
+
+.messageCompact:has([data-popup-open]) {
+  padding-left: 52px;
+}
+
+/* ── Reactions ──────────────────────────────────────────────────────────── */
+
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface);
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  cursor: pointer;
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+  font-family: inherit;
+  color: var(--ov-color-fg-default);
+}
+
+.reaction:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.reaction[data-active] {
+  border-color: var(--ov-color-brand-400);
+  background: color-mix(in srgb, var(--ov-color-brand-400) 10%, transparent);
+}
+
+.reactionAdd {
+  color: var(--ov-color-fg-muted);
+  border-style: dashed;
+}
+
+/* ── Thread Indicator ───────────────────────────────────────────────────── */
+
+.threadIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 4px 0;
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-brand-400);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+.threadIndicator:hover {
+  text-decoration: underline;
+}
+
+.threadAvatars {
+  display: flex;
+}
+
+.threadAvatars > * {
+  margin-left: -4px;
+}
+
+.threadAvatars > *:first-child {
+  margin-left: 0;
+}
+
+/* ── Message Composer ───────────────────────────────────────────────────── */
+
+.composer {
+  padding: 8px 16px 16px;
+  flex-shrink: 0;
+}
+
+.composerBox {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 8px;
+  background: var(--ov-color-bg-surface);
+  overflow: hidden;
+}
+
+.composerBox:focus-within {
+  border-color: var(--ov-color-brand-400);
+}
+
+.composerTextarea {
+  width: 100%;
+  min-height: 40px;
+  max-height: 200px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-primitive-font-size-14, 0.875rem);
+  resize: none;
+  outline: none;
+}
+
+.composerTextarea::placeholder {
+  color: var(--ov-color-fg-subtle);
+}
+
+.composerToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-top: 1px solid var(--ov-color-border-default);
+}
+
+.composerFormatting {
+  display: flex;
+  gap: 1px;
+}
+
+.composerActions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* ── Typing Indicator ───────────────────────────────────────────────────── */
+
+.typingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 16px;
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  flex-shrink: 0;
+}
+
+.typingDots {
+  display: flex;
+  gap: 2px;
+}
+
+.typingDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ov-color-fg-muted);
+  animation: typingBounce 1.4s infinite;
+}
+
+.typingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ── Thread Panel ───────────────────────────────────────────────────────── */
+
+.threadPanel {
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  border-left: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+  height: 100%;
+}
+
+.threadHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+.threadTitle {
+  font-weight: var(--ov-font-weight-heading, 600);
+  font-size: var(--ov-primitive-font-size-14, 0.875rem);
+  color: var(--ov-color-fg-default);
+}
+
+.threadContext {
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  margin-left: 8px;
+  font-weight: 400;
+}
+
+.threadMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+
+.threadParent {
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--ov-color-border-default);
+}
+
+.threadRepliesLabel {
+  font-size: var(--ov-primitive-font-size-12, 0.75rem);
+  color: var(--ov-color-fg-muted);
+  padding: 4px 0 8px;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .typingDot {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .railWorkspace,
+  .railIndicator,
+  .reaction,
+  .railAddButton,
+  .composerBox {
+    transition: none;
+  }
+}

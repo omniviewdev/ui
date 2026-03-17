@@ -19,3 +19,4 @@ export { useColumnSizeVars } from './hooks/useColumnSizeVars';
 export { useColumnDnd } from './hooks/useColumnDnd';
 export { useDataTablePersistence } from './hooks/useDataTablePersistence';
 export { useDataTableContext } from './context/DataTableContext';
+export { ROW_HEIGHT } from './constants';

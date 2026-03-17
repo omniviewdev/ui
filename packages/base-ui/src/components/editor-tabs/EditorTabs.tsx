@@ -36,7 +36,9 @@ import type {
 } from './types';
 import styles from './EditorTabs.module.css';
 
-export interface EditorTabsProps extends StyledComponentProps {
+export interface EditorTabsProps extends Omit<StyledComponentProps, 'variant'> {
+  /** Tab style variant. `'pill'` gives rounded top corners for browser-style tabs. */
+  variant?: StyledComponentProps['variant'] | 'pill';
   tabs: TabDescriptor[];
   groups?: TabGroupDescriptor[];
   activeId?: TabId;
@@ -308,7 +310,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           className={cn(styles.Root, className)}
           role="tablist"
           aria-orientation="horizontal"
-          {...styleDataAttributes({ variant, color, size })}
+          {...styleDataAttributes({ variant: variant as StyledComponentProps['variant'], color, size })}
         >
           <EditorTabScrollButton direction="left" />
           <EditorTabScrollShadow side="left" />

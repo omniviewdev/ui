@@ -1,0 +1,12 @@
+.Root {
+  width: 100%;
+}
+
+.Root[data-role='user'] {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ToolCallWrapper {
+  margin-bottom: var(--ov-space-2);
+}

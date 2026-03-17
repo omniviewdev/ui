@@ -35,8 +35,11 @@
 .Root[data-ov-size='sm'] {
   --_ov-item-height: var(--ov-size-list-item-height-sm);
   --_ov-item-padding-inline: 2px;
-  --_ov-item-gap: 3px;
+  --_ov-item-gap: 2px;
+  --_ov-item-radius: var(--ov-primitive-radius-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
+  --_ov-tree-indent: 8px;
+  --_ov-tree-toggle-size: 14px;
 }
 
 .Root[data-ov-size='lg'] {
@@ -137,7 +140,7 @@
 }
 
 .Root[data-ov-size='sm'] .Item {
-  font-size: var(--ov-font-size-caption);
+  font-size: var(--ov-primitive-font-size-13, 0.8125rem);
 }
 
 .Item:hover {

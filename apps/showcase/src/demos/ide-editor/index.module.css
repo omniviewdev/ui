@@ -1,0 +1,56 @@
+.ide {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--ov-color-bg-base);
+  position: relative;
+}
+
+.editorArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.editorContent {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.markdownWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 24px;
+  min-height: 0;
+}
+
+.emptyEditor {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ov-color-fg-subtle);
+  font-size: 13px;
+}
+
+.panelArea {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.terminalWrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

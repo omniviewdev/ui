@@ -1,0 +1,131 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ov-color-bg-base);
+}
+
+.panelHeader {
+  padding: 6px 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ov-color-fg-subtle);
+  flex-shrink: 0;
+}
+
+.searchBox {
+  padding: 4px 8px 6px;
+  flex-shrink: 0;
+}
+
+.treeContainer {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.placeholderSection {
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--ov-color-fg-subtle);
+}
+
+.searchResults {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.resultItem {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 10px;
+  cursor: pointer;
+  gap: 1px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+}
+
+.resultItem:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.resultFile {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ov-color-fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultMatch {
+  font-size: 12px;
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultLocation {
+  font-size: 11px;
+  color: var(--ov-color-fg-subtle);
+}
+
+.gitList {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gitItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.gitFile {
+  flex: 1;
+  font-family: var(--ov-font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ov-color-fg-default);
+}
+
+.gitBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--ov-primitive-radius-sm);
+  letter-spacing: 0.03em;
+}
+
+.gitBadge[data-status='modified'] {
+  background: var(--ov-color-warning-soft);
+  color: var(--ov-color-warning);
+}
+
+.gitBadge[data-status='staged'] {
+  background: var(--ov-color-success-soft);
+  color: var(--ov-color-success);
+}
+
+.gitBadge[data-status='untracked'] {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-muted);
+}

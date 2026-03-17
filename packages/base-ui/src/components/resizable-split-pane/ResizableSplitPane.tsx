@@ -17,15 +17,17 @@ export type SplitDirection = 'horizontal' | 'vertical';
 export interface ResizableSplitPaneProps extends HTMLAttributes<HTMLDivElement> {
   /** Split direction. 'horizontal' = side by side, 'vertical' = stacked. */
   direction?: SplitDirection;
-  /** Initial size of the first pane in pixels. */
+  /** Initial size of the sized pane in pixels. */
   defaultSize?: number;
-  /** Minimum size of the first pane in pixels. */
+  /** Minimum size of the sized pane in pixels. */
   minSize?: number;
-  /** Maximum size of the first pane in pixels. */
+  /** Maximum size of the sized pane in pixels. */
   maxSize?: number;
+  /** When true, the second pane is the sized pane instead of the first. */
+  reverse?: boolean;
   /** Accessible label for the resize handle (role="separator"). */
   handleLabel?: string;
-  /** Callback fired during resize with the current first-pane size in px. */
+  /** Callback fired during resize with the current sized-pane size in px. */
   onResize?: (size: number) => void;
   /** The two pane contents. */
   children: [ReactNode, ReactNode];
@@ -81,6 +83,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       defaultSize = 200,
       minSize = 100,
       maxSize,
+      reverse = false,
       handleLabel,
       onResize,
       children,
@@ -165,11 +168,12 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
       (e: React.PointerEvent) => {
         if (!dragging.current) return;
         const currentPos = direction === 'horizontal' ? e.clientX : e.clientY;
-        const delta = currentPos - startPos.current;
+        const rawDelta = currentPos - startPos.current;
+        const delta = reverse ? -rawDelta : rawDelta;
         const newSize = clamp(startSize.current + delta);
         applySize(newSize);
       },
-      [direction, clamp, applySize],
+      [direction, reverse, clamp, applySize],
     );
 
     const handlePointerUp = useCallback(() => {
@@ -188,6 +192,8 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
     const handleKeyDown = useCallback(
       (e: KeyboardEvent) => {
         const isHorizontal = direction === 'horizontal';
+        const grow = reverse ? -KEYBOARD_STEP : KEYBOARD_STEP;
+        const shrink = reverse ? KEYBOARD_STEP : -KEYBOARD_STEP;
         let delta = 0;
         let handled = false;
 
@@ -195,13 +201,13 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
           (isHorizontal && e.key === 'ArrowRight') ||
           (!isHorizontal && e.key === 'ArrowDown')
         ) {
-          delta = KEYBOARD_STEP;
+          delta = grow;
           handled = true;
         } else if (
           (isHorizontal && e.key === 'ArrowLeft') ||
           (!isHorizontal && e.key === 'ArrowUp')
         ) {
-          delta = -KEYBOARD_STEP;
+          delta = shrink;
           handled = true;
         } else if (e.key === 'Home') {
           delta = -(size - minSize);
@@ -220,7 +226,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
           }
         }
       },
-      [direction, size, minSize, maxSize, clamp, applySize],
+      [direction, reverse, size, minSize, maxSize, clamp, applySize],
     );
 
     // Merge external ref with internal ref
@@ -247,6 +253,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
         className={cn(styles.Root, className)}
         style={mergedStyle}
         data-ov-direction={direction}
+        {...(reverse ? { 'data-ov-reverse': '' } : undefined)}
         {...props}
       >
         <Pane>{children[0]}</Pane>

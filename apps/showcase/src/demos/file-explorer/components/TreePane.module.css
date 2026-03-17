@@ -1,0 +1,26 @@
+.pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  padding: 4px /* TODO: --ov-space-stack-xs */ var(--ov-space-stack-sm);
+  border-bottom: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.label {
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.treeContainer {
+  flex: 1;
+  overflow: auto;
+}

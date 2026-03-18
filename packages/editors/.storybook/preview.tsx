@@ -11,7 +11,7 @@ const preview: Preview = {
       defaultValue: 'dark',
       toolbar: {
         icon: 'paintbrush',
-        items: ['dark', 'light', 'high-contrast-dark', 'high-contrast-light'],
+        items: ['dark', 'light', 'high-contrast-dark', 'high-contrast-light', 'obsidian', 'carbon', 'void'],
       },
     },
   },

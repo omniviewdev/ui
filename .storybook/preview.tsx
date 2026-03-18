@@ -1,6 +1,11 @@
 import type { Preview } from '@storybook/react';
-import { ThemeProvider } from '../src/theme/ThemeProvider';
-import '../src/theme/styles.css';
+import { ThemeProvider } from '@omniview/base-ui';
+import '../packages/base-ui/src/theme/styles.css';
+
+// Side-effect import — configures Monaco workers before any editor story mounts.
+// Without this, all editors stories fail with worker initialization errors.
+// The module has an idempotency guard so multiple imports are safe.
+import '../packages/editors/src/setup/setupMonacoWorkers';
 
 const preview: Preview = {
   globalTypes: {

@@ -1,0 +1,79 @@
+name: Storybook PR Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+  schedule:
+    # Weekly safety net — Sunday 3am UTC
+    - cron: '0 3 * * 0'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  # Event-driven cleanup when a PR is closed/merged
+  cleanup-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
+      - name: Delete PR preview from S3
+        run: aws s3 rm s3://${{ vars.STORYBOOK_S3_BUCKET }}/pr-${{ env.PR_NUMBER }}/ --recursive
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.STORYBOOK_PREVIEW_CF_DISTRIBUTION_ID }} \
+            --paths "/pr-${{ env.PR_NUMBER }}/*"
+
+  # Weekly cron to catch any missed cleanups
+  cleanup-stale:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
+      - name: Clean up stale PR previews
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BUCKET: ${{ vars.STORYBOOK_S3_BUCKET }}
+        run: |
+          # List all pr-* prefixes in S3
+          prefixes=$(aws s3api list-objects-v2 \
+            --bucket "$BUCKET" \
+            --prefix "pr-" \
+            --delimiter "/" \
+            --query "CommonPrefixes[].Prefix" \
+            --output text 2>/dev/null || echo "")
+
+          if [ -z "$prefixes" ]; then
+            echo "No PR prefixes found."
+            exit 0
+          fi
+
+          for prefix in $prefixes; do
+            # Extract PR number from prefix (e.g., "pr-42/" -> "42")
+            pr_num=$(echo "$prefix" | sed 's/pr-\([0-9]*\)\//\1/')
+
+            # Check if PR is still open
+            state=$(gh api "repos/$REPO/pulls/$pr_num" --jq '.state' 2>/dev/null || echo "unknown")
+
+            if [ "$state" != "open" ]; then
+              echo "Cleaning up $prefix (PR #$pr_num is $state)"
+              aws s3 rm "s3://$BUCKET/$prefix" --recursive
+            else
+              echo "Keeping $prefix (PR #$pr_num is still open)"
+            fi
+          done

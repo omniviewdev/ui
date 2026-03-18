@@ -1,0 +1,67 @@
+name: Storybook PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'packages/**'
+      - '.storybook/**'
+      - 'pnpm-lock.yaml'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    # Skip for forks — they don't have access to AWS secrets
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook with PR base path
+        run: pnpm build-storybook
+        env:
+          STORYBOOK_BASE: /pr-${{ env.PR_NUMBER }}/
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
+      - name: Sync to S3
+        run: aws s3 sync storybook-static/ s3://${{ vars.STORYBOOK_S3_BUCKET }}/pr-${{ env.PR_NUMBER }}/ --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.STORYBOOK_PREVIEW_CF_DISTRIBUTION_ID }} \
+            --paths "/pr-${{ env.PR_NUMBER }}/*"
+
+      - name: Post or update PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body: |
+            **Storybook Preview**
+            https://storybook-preview.omniview.dev/pr-${{ env.PR_NUMBER }}/
+
+            _Updated: ${{ github.sha }}_
+          comment-tag: storybook-preview

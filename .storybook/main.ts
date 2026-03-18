@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/react-vite';
 import type { Plugin } from 'vite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import react from '@vitejs/plugin-react';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -66,6 +67,19 @@ const config: StorybookConfig = {
     // Strip broken sourcemap reference from monaco's bundled marked.js
     config.plugins ??= [];
     (config.plugins as Plugin[]).push(stripBrokenSourcemaps());
+
+    // Ensure the React plugin is present — @storybook/react-vite should add it,
+    // but in pnpm workspaces the hoisted root config can lose it.
+    const hasReactPlugin = (config.plugins as Plugin[]).some(
+      (p) => p && typeof p === 'object' && 'name' in p && (p as Plugin).name === 'vite:react-babel',
+    );
+    if (!hasReactPlugin) {
+      (config.plugins as Plugin[]).unshift(
+        ...(react({
+          babel: { plugins: [['babel-plugin-react-compiler', {}]] },
+        }) as unknown as Plugin[]),
+      );
+    }
 
     // --- Base path for PR previews ---
     // When STORYBOOK_BASE is set (e.g. /pr-42/), configure Vite's base path

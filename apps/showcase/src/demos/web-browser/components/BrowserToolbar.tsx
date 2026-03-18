@@ -5,7 +5,7 @@ import {
   LuRotateCw,
   LuLock,
 } from 'react-icons/lu';
-import { IconButton, Input } from '@omniview/base-ui';
+import { IconButton, Input, Toolbar } from '@omniview/base-ui';
 import { ensureProtocol, NEW_TAB_URL } from '../data';
 import styles from '../index.module.css';
 
@@ -47,36 +47,35 @@ export function BrowserToolbar({
   );
 
   return (
-    <div className={styles.toolbar}>
-      <IconButton
-        variant="ghost"
-        size="sm"
-
-        aria-label="Back"
-        disabled={!canGoBack}
-        onClick={onBack}
-      >
-        <LuArrowLeft size={14} />
-      </IconButton>
-      <IconButton
-        variant="ghost"
-        size="sm"
-
-        aria-label="Forward"
-        disabled={!canGoForward}
-        onClick={onForward}
-      >
-        <LuArrowRight size={14} />
-      </IconButton>
-      <IconButton
-        variant="ghost"
-        size="sm"
-
-        aria-label="Refresh"
-        onClick={onRefresh}
-      >
-        <LuRotateCw size={14} />
-      </IconButton>
+    <Toolbar size="sm" className={styles.toolbar}>
+      <Toolbar.Group>
+        <IconButton
+          variant="ghost"
+          size="sm"
+          aria-label="Back"
+          disabled={!canGoBack}
+          onClick={onBack}
+        >
+          <LuArrowLeft />
+        </IconButton>
+        <IconButton
+          variant="ghost"
+          size="sm"
+          aria-label="Forward"
+          disabled={!canGoForward}
+          onClick={onForward}
+        >
+          <LuArrowRight />
+        </IconButton>
+        <IconButton
+          variant="ghost"
+          size="sm"
+          aria-label="Refresh"
+          onClick={onRefresh}
+        >
+          <LuRotateCw />
+        </IconButton>
+      </Toolbar.Group>
       <Input.Root size="sm" className={styles.addressBar}>
         <Input.Control
           startDecorator={<LuLock size={12} />}
@@ -87,6 +86,6 @@ export function BrowserToolbar({
           placeholder="Enter a URL…"
         />
       </Input.Root>
-    </div>
+    </Toolbar>
   );
 }

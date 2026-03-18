@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/**'
       - '.storybook/**'
+      - 'package.json'
       - 'pnpm-lock.yaml'
 
 permissions:
@@ -55,13 +56,22 @@ jobs:
             --distribution-id ${{ vars.STORYBOOK_PREVIEW_CF_DISTRIBUTION_ID }} \
             --paths "/pr-${{ env.PR_NUMBER }}/*"
 
+      - name: Find existing preview comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body-includes: '<!-- storybook-preview -->'
+
       - name: Post or update PR comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ env.PR_NUMBER }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
           body: |
+            <!-- storybook-preview -->
             **Storybook Preview**
             https://storybook-preview.omniview.dev/pr-${{ env.PR_NUMBER }}/
 
             _Updated: ${{ github.sha }}_
-          comment-tag: storybook-preview

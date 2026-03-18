@@ -15,7 +15,7 @@ permissions:
 jobs:
   # Event-driven cleanup when a PR is closed/merged
   cleanup-pr:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -70,10 +70,12 @@ jobs:
             # Check if PR is still open
             state=$(gh api "repos/$REPO/pulls/$pr_num" --jq '.state' 2>/dev/null || echo "unknown")
 
-            if [ "$state" != "open" ]; then
-              echo "Cleaning up $prefix (PR #$pr_num is $state)"
+            if [ "$state" = "closed" ]; then
+              echo "Cleaning up $prefix (PR #$pr_num is closed)"
               aws s3 rm "s3://$BUCKET/$prefix" --recursive
-            else
+            elif [ "$state" = "open" ]; then
               echo "Keeping $prefix (PR #$pr_num is still open)"
+            else
+              echo "Skipping $prefix (PR #$pr_num state: $state — could not confirm closed)"
             fi
           done

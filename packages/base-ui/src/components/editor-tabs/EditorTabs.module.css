@@ -250,7 +250,7 @@
 }
 
 .Tab[data-active] {
-  background: var(--_ov-tab-active-bg);
+  background: var(--ov-color-bg-surface-raised);
   color: var(--_ov-tab-active-fg);
   border-bottom-color: var(--_ov-tab-active-border);
 }

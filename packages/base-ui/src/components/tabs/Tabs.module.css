@@ -4,8 +4,9 @@
   --_ov-tab-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-list-bg: var(--ov-color-bg-surface-raised);
   --_ov-list-border: var(--ov-color-border-default);
-  --_ov-tab-fg: var(--ov-color-fg-subtle);
+  --_ov-tab-fg: var(--ov-color-fg-muted);
   --_ov-tab-fg-active: var(--ov-color-fg-default);
+  --_ov-tab-fg-hover: var(--ov-color-fg-default);
   --_ov-tab-bg-hover: var(--ov-color-state-hover);
   --_ov-tab-bg-active: var(--ov-color-state-selected);
   --_ov-indicator: var(--ov-color-brand-400);
@@ -126,13 +127,18 @@
   height: var(--_ov-tab-height);
 }
 
-.Root[data-ov-variant='flat'] .Tab[data-selected] {
-  background: transparent;
+.Root[data-ov-variant='flat'] .Tab[data-active] {
+  background: var(--ov-color-bg-surface-raised);
   color: var(--_ov-tab-fg-active);
+  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
+  box-shadow: inset 0 2px 0 var(--_ov-indicator);
 }
 
 .Root[data-ov-variant='flat'] .Indicator {
-  border-radius: 0;
+  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
+  height: 2px;
+  top: 0;
+  bottom: auto;
 }
 
 .Root[data-ov-variant='flat'] .Panel {
@@ -158,7 +164,7 @@
   justify-content: center;
   gap: var(--ov-space-stack-xs);
   height: calc(var(--_ov-tab-height) - 4px);
-  padding: 0 calc(var(--ov-space-inline-control) + var(--ov-space-stack-sm));
+  padding: 0 var(--ov-space-inline-control);
   border: 0;
   border-radius: calc(var(--ov-radius-control) - 2px);
   background: transparent;
@@ -176,9 +182,10 @@
 
 .Tab:hover {
   background: var(--_ov-tab-bg-hover);
+  color: var(--_ov-tab-fg-hover);
 }
 
-.Tab[data-selected] {
+.Tab[data-active] {
   color: var(--_ov-tab-fg-active);
   background: var(--_ov-tab-bg-active);
 }

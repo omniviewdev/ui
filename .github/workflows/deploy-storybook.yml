@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/**'
       - '.storybook/**'
+      - 'package.json'
       - 'pnpm-lock.yaml'
   workflow_dispatch:
 

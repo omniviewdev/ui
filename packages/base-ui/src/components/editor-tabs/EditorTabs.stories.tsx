@@ -46,12 +46,12 @@ const meta: Meta<typeof EditorTabs> = {
     },
     color: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
       description: 'Active indicator color',
     },
     size: {
       control: 'select',
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
       description: 'Tab size',
     },
     activeId: { control: 'text', description: 'Currently active tab ID (controlled)' },

@@ -72,4 +72,38 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('data-ov-label-position', 'start');
     expect(checkbox).toHaveAttribute('data-ov-layout', 'spread');
   });
+
+  it('applies xs size attribute', () => {
+    renderWithTheme(<Checkbox.Item size="xs">Tiny option</Checkbox.Item>);
+    const checkbox = screen.getByRole('checkbox', { name: 'Tiny option' });
+    expect(checkbox).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size attribute', () => {
+    renderWithTheme(<Checkbox.Item size="xl">Large option</Checkbox.Item>);
+    const checkbox = screen.getByRole('checkbox', { name: 'Large option' });
+    expect(checkbox).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery color attribute', () => {
+    renderWithTheme(
+      <Checkbox.Item color="discovery" defaultChecked>
+        Discovery feature
+      </Checkbox.Item>,
+    );
+    const checkbox = screen.getByRole('checkbox', { name: 'Discovery feature' });
+    expect(checkbox).toHaveAttribute('data-ov-color', 'discovery');
+    expect(checkbox).toHaveAttribute('data-checked');
+  });
+
+  it('applies secondary color attribute', () => {
+    renderWithTheme(
+      <Checkbox.Item color="secondary" defaultChecked>
+        Secondary option
+      </Checkbox.Item>,
+    );
+    const checkbox = screen.getByRole('checkbox', { name: 'Secondary option' });
+    expect(checkbox).toHaveAttribute('data-ov-color', 'secondary');
+    expect(checkbox).toHaveAttribute('data-checked');
+  });
 });

@@ -21,11 +21,11 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     confirmColor: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
     },
     confirmTimeout: { control: { type: 'number', min: 500, max: 10000, step: 500 } },
     onConfirm: { action: 'onConfirm' },

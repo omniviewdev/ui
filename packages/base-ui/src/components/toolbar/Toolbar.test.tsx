@@ -139,4 +139,20 @@ describe('Toolbar', () => {
       expect(screen.getByTestId('g')).toHaveClass('group-custom');
     });
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <Toolbar role="toolbar" aria-label="Actions" size="xs">
+        content
+      </Toolbar>,
+    );
+    expect(screen.getByRole('toolbar')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <Toolbar role="toolbar" aria-label="Actions" size="xl">
+        content
+      </Toolbar>,
+    );
+    expect(screen.getByRole('toolbar')).toHaveAttribute('data-ov-size', 'xl');
+  });
 });

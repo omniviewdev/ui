@@ -19,6 +19,42 @@ describe('ActionList', () => {
     expect(screen.getByText('Open the selected workspace')).toBeVisible();
   });
 
+  it('applies xs size data attribute', () => {
+    renderWithTheme(
+      <ActionList size="xs">
+        <ActionList.Item>Item</ActionList.Item>
+      </ActionList>,
+    );
+    const button = screen.getByRole('button', { name: 'Item' });
+    expect(button).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(
+      <ActionList size="xl">
+        <ActionList.Item>Item</ActionList.Item>
+      </ActionList>,
+    );
+    const button = screen.getByRole('button', { name: 'Item' });
+    expect(button).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <ActionList color="discovery">
+        <ActionList.Item>Item</ActionList.Item>
+      </ActionList>,
+    );
+    expect(screen.getByRole('button', { name: 'Item' })).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <ActionList color="secondary">
+        <ActionList.Item>Item</ActionList.Item>
+      </ActionList>,
+    );
+    expect(screen.getByRole('button', { name: 'Item' })).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders separator and group label', () => {
     renderWithTheme(
       <ActionList>

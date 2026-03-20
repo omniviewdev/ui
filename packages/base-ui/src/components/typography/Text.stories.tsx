@@ -16,7 +16,7 @@ const meta = {
   },
   argTypes: {
     as: { control: 'inline-radio', options: ['span', 'p', 'div', 'label'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     tone: {
       control: 'select',
       options: ['default', 'muted', 'subtle', 'brand', 'success', 'warning', 'danger'],

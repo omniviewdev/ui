@@ -44,7 +44,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
           <IconButton
             variant="ghost"
             size="sm"
-            dense
+
             aria-label="Back to container list"
             onClick={onBack}
           >
@@ -101,7 +101,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
           <IconButton
             variant="ghost"
             size="sm"
-            dense
+
             color="danger"
             aria-label={`Delete ${container.name}`}
             onClick={() => toast(`Deleting ${container.name}`, { severity: 'warning' })}
@@ -114,20 +114,16 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
       {/* Tabs */}
       <Tabs.Root className={styles.tabsRoot} defaultValue="logs" variant="flat" size="sm">
         <Tabs.List className={styles.tabsList}>
-          <Tabs.Tab value="logs">
-            <LuTerminal aria-hidden />
+          <Tabs.Tab value="logs" startDecorator={<LuTerminal aria-hidden />}>
             Logs
           </Tabs.Tab>
-          <Tabs.Tab value="inspect">
-            <LuSearch aria-hidden />
+          <Tabs.Tab value="inspect" startDecorator={<LuSearch aria-hidden />}>
             Inspect
           </Tabs.Tab>
-          <Tabs.Tab value="stats">
-            <LuChartBar aria-hidden />
+          <Tabs.Tab value="stats" startDecorator={<LuChartBar aria-hidden />}>
             Stats
           </Tabs.Tab>
-          <Tabs.Tab value="files">
-            <LuFolderOpen aria-hidden />
+          <Tabs.Tab value="files" startDecorator={<LuFolderOpen aria-hidden />}>
             Files
           </Tabs.Tab>
           <Tabs.Indicator />

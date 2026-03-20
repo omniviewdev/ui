@@ -32,4 +32,22 @@ describe('Progress', () => {
     expect(el).toHaveAttribute('data-ov-color', 'success');
     expect(el).toHaveAttribute('data-ov-size', 'lg');
   });
+
+  it('applies xs size data attribute', () => {
+    renderWithTheme(<Progress value={50} size="xs" aria-label="xs" />);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(<Progress value={50} size="xl" aria-label="xl" />);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(<Progress value={50} color="discovery" aria-label="disc" />);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Progress value={50} color="secondary" aria-label="sec" />);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

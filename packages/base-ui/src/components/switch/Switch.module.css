@@ -37,6 +37,12 @@
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-track-width: var(--ov-size-switch-track-width-xs);
+  --_ov-track-height: var(--ov-size-switch-track-height-xs);
+  --_ov-thumb-size: var(--ov-size-switch-thumb-size-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-track-width: var(--ov-size-switch-track-width-sm);
   --_ov-track-height: var(--ov-size-switch-track-height-sm);
@@ -47,6 +53,12 @@
   --_ov-track-width: var(--ov-size-switch-track-width-lg);
   --_ov-track-height: var(--ov-size-switch-track-height-lg);
   --_ov-thumb-size: var(--ov-size-switch-thumb-size-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-track-width: var(--ov-size-switch-track-width-xl);
+  --_ov-track-height: var(--ov-size-switch-track-height-xl);
+  --_ov-thumb-size: var(--ov-size-switch-thumb-size-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -81,6 +93,27 @@
   --_ov-accent-border: var(--ov-color-danger);
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-focus-border: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-focus-border: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-focus-border: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-focus-border: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {
@@ -165,12 +198,20 @@
   user-select: none;
 }
 
+.Field[data-ov-size='xs'] {
+  gap: var(--ov-size-switch-gap-xs);
+}
+
 .Field[data-ov-size='sm'] {
   gap: var(--ov-size-switch-gap-sm);
 }
 
 .Field[data-ov-size='lg'] {
   gap: var(--ov-size-switch-gap-lg);
+}
+
+.Field[data-ov-size='xl'] {
+  gap: var(--ov-size-switch-gap-xl);
 }
 
 .Field[data-ov-layout='spread'] {

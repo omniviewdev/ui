@@ -68,8 +68,8 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     startIcon: { control: 'select', options: DECORATOR_ICON_OPTIONS },
     endIcon: { control: 'select', options: DECORATOR_ICON_OPTIONS },
     startDecorator: { control: false, table: { disable: true } },

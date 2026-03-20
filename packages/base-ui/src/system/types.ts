@@ -1,6 +1,6 @@
 export type ComponentVariant = 'solid' | 'soft' | 'outline' | 'ghost';
-export type ComponentColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info';
-export type ComponentSize = 'sm' | 'md' | 'lg';
+export type ComponentColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'discovery' | 'secondary';
+export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type Spacing = 0 | 1 | 2 | 3 | 4;
 export type SurfaceElevation = 0 | 1 | 2 | 3;

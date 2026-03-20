@@ -51,7 +51,7 @@ describe('StatusDot', () => {
   });
 
   it('applies correct data attribute for each size', () => {
-    const sizes = ['sm', 'md', 'lg'] as const;
+    const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
     for (const size of sizes) {
       const { container, unmount } = renderWithTheme(<StatusDot size={size} />);
       const root = container.firstElementChild as HTMLElement;

@@ -72,4 +72,56 @@ describe('Slider', () => {
     const thumbs = screen.getAllByRole('slider');
     expect(thumbs).toHaveLength(2);
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <Slider.Root size="xs" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator />
+            <Slider.Thumb />
+          </Slider.Track>
+        </Slider.Control>
+      </Slider.Root>,
+    );
+    expect(screen.getByTestId('slider-root')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <Slider.Root size="xl" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator />
+            <Slider.Thumb />
+          </Slider.Track>
+        </Slider.Control>
+      </Slider.Root>,
+    );
+    expect(screen.getByTestId('slider-root')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(
+      <Slider.Root color="discovery" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator />
+            <Slider.Thumb />
+          </Slider.Track>
+        </Slider.Control>
+      </Slider.Root>,
+    );
+    expect(screen.getByTestId('slider-root')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <Slider.Root color="secondary" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator />
+            <Slider.Thumb />
+          </Slider.Track>
+        </Slider.Control>
+      </Slider.Root>,
+    );
+    expect(screen.getByTestId('slider-root')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

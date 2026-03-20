@@ -267,6 +267,14 @@
   --_ov-timeline-dot-color: var(--ov-color-info);
 }
 
+.Item[data-ov-color='discovery'] {
+  --_ov-timeline-dot-color: var(--ov-color-discovery);
+}
+
+.Item[data-ov-color='secondary'] {
+  --_ov-timeline-dot-color: var(--ov-color-secondary);
+}
+
 /* ---------------------------------------------------------------------------
    Group
    --------------------------------------------------------------------------- */

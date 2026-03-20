@@ -10,10 +10,10 @@ const meta = {
     color: 'neutral',
   },
   argTypes: {
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     color: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info'],
+      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
     },
   },
 } satisfies Meta<typeof Spinner>;

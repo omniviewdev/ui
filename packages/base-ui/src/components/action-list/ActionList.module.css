@@ -8,6 +8,12 @@
   min-inline-size: 220px;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-xs);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-xs);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
   --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
@@ -18,6 +24,12 @@
   --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
   --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
   --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-xl);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-xl);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-xl);
 }
 
 .Item {
@@ -33,6 +45,14 @@
   text-align: left;
 }
 
+.Item[data-ov-size='xs'] {
+  --_ov-item-height: var(--ov-size-action-list-item-height-xs);
+  --_ov-item-padding-inline: var(--ov-size-action-list-item-padding-inline-xs);
+  --_ov-item-icon-size: var(--ov-size-action-list-icon-size-xs);
+  --_ov-item-shortcut-min-width: var(--ov-size-action-list-shortcut-min-width-xs);
+  --_ov-content-gap: var(--ov-space-stack-sm);
+}
+
 .Item[data-ov-size='sm'] {
   --_ov-item-height: var(--ov-size-action-list-item-height-sm);
   --_ov-item-padding-inline: var(--ov-size-action-list-item-padding-inline-sm);
@@ -46,6 +66,14 @@
   --_ov-item-padding-inline: var(--ov-size-action-list-item-padding-inline-lg);
   --_ov-item-icon-size: var(--ov-size-action-list-icon-size-lg);
   --_ov-item-shortcut-min-width: var(--ov-size-action-list-shortcut-min-width-lg);
+  --_ov-content-gap: var(--ov-space-inline-control);
+}
+
+.Item[data-ov-size='xl'] {
+  --_ov-item-height: var(--ov-size-action-list-item-height-xl);
+  --_ov-item-padding-inline: var(--ov-size-action-list-item-padding-inline-xl);
+  --_ov-item-icon-size: var(--ov-size-action-list-icon-size-xl);
+  --_ov-item-shortcut-min-width: var(--ov-size-action-list-shortcut-min-width-xl);
   --_ov-content-gap: var(--ov-space-inline-control);
 }
 
@@ -126,10 +154,18 @@
   margin-block-end: var(--_ov-group-label-gap-after);
 }
 
+.GroupLabel[data-ov-size='xs'] {
+  padding-inline: var(--ov-size-action-list-item-padding-inline-xs);
+}
+
 .GroupLabel[data-ov-size='sm'] {
   padding-inline: var(--ov-size-action-list-item-padding-inline-sm);
 }
 
 .GroupLabel[data-ov-size='lg'] {
   padding-inline: var(--ov-size-action-list-item-padding-inline-lg);
+}
+
+.GroupLabel[data-ov-size='xl'] {
+  padding-inline: var(--ov-size-action-list-item-padding-inline-xl);
 }

@@ -1,12 +1,15 @@
 .Root {
   --_ov-meter-height: 0.5rem;
   --_ov-meter-fill: var(--ov-color-brand-500);
-  --_space-stack-xs: 4px; /* --ov-space-stack-xs; no semantic token for 4px yet */
 
   display: flex;
   flex-direction: column;
-  gap: var(--_space-stack-xs);
+  gap: var(--ov-space-stack-xs);
   width: 100%;
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-meter-height: 0.125rem;
 }
 
 .Root[data-ov-size='sm'] {
@@ -19,6 +22,10 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-meter-height: 0.75rem;
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-meter-height: 1rem;
 }
 
 /* Zone-based colors (auto-derived from value/thresholds) */
@@ -57,6 +64,14 @@
 
 .Root[data-ov-color='info'] {
   --_ov-meter-fill: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-meter-fill: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-meter-fill: var(--ov-color-secondary);
 }
 
 .Label {

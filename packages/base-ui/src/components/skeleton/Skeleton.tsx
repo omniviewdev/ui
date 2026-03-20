@@ -4,7 +4,7 @@ import styles from './Skeleton.module.css';
 
 export type SkeletonVariant = 'text' | 'circular' | 'rectangular' | 'rounded';
 
-export type SkeletonSize = 'sm' | 'md' | 'lg';
+export type SkeletonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   variant?: SkeletonVariant;

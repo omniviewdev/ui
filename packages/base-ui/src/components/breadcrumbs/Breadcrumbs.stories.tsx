@@ -20,7 +20,7 @@ const meta = {
     maxItems: { control: 'number' },
     itemsBeforeCollapse: { control: 'number' },
     itemsAfterCollapse: { control: 'number' },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
 } satisfies Meta<typeof Breadcrumbs>;
 

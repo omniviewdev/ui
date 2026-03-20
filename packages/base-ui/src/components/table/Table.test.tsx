@@ -26,6 +26,56 @@ describe('Table', () => {
     expect(table).toHaveAttribute('data-ov-size', 'sm');
   });
 
+  it('applies xs size data attribute', () => {
+    renderWithTheme(
+      <Table.Root size="xs" data-testid="table-root">
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>Value</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+    expect(screen.getByTestId('table-root')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(
+      <Table.Root size="xl" data-testid="table-root">
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>Value</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+    expect(screen.getByTestId('table-root')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(
+      <Table.Root color="discovery" data-testid="table-root">
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>Value</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+    expect(screen.getByTestId('table-root')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <Table.Root color="secondary" data-testid="table-root">
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>Value</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+    expect(screen.getByTestId('table-root')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('supports sticky headers, striping, and hover flags', () => {
     renderWithTheme(
       <Table.Root stickyHeader striped hoverable data-testid="table-root">

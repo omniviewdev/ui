@@ -20,6 +20,11 @@
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-min-height: var(--ov-size-button-height-xs, var(--ov-size-button-height-sm));
+  --_ov-font-size: var(--ov-font-size-caption);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-min-height: var(--ov-size-button-height-sm);
   --_ov-font-size: var(--ov-font-size-caption);
@@ -27,6 +32,11 @@
 
 .Root[data-ov-size='lg'] {
   --_ov-min-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-font-size-subheading);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-min-height: var(--ov-size-button-height-xl, var(--ov-size-button-height-lg));
   --_ov-font-size: var(--ov-font-size-subheading);
 }
 

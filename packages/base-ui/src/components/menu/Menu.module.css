@@ -74,6 +74,18 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
+}
+
+.Popup[data-ov-color='discovery'] {
+  --_ov-selected-bg: var(--ov-color-discovery-soft);
+}
+
+.Popup[data-ov-color='secondary'] {
+  --_ov-selected-bg: var(--ov-color-secondary-soft);
+}
+
 .GroupLabel {
   padding-inline: var(--_ov-item-padding-inline);
   margin-block-start: var(--_ov-group-label-gap-top);
@@ -230,6 +242,29 @@
   --_ov-bg: var(--ov-color-danger);
   --_ov-border: var(--ov-color-danger);
   --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-color='info'] {
+  --_ov-bg: var(--ov-color-info);
+  --_ov-border: var(--ov-color-info);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-color='discovery'] {
+  --_ov-bg: var(--ov-color-discovery);
+  --_ov-border: var(--ov-color-discovery);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-color='secondary'] {
+  --_ov-bg: var(--ov-color-secondary);
+  --_ov-border: var(--ov-color-secondary);
+  --_ov-fg: var(--ov-color-fg-inverse);
+}
+
+.Trigger[data-ov-variant='solid'] {
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-border: var(--ov-color-border-default);
 }
 
 .Trigger[data-ov-variant='soft'] {

@@ -53,6 +53,14 @@
   cursor: not-allowed;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-control-height: var(--ov-size-button-height-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-content-gap: var(--ov-space-stack-xs);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-control-height: var(--ov-size-button-height-sm);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
@@ -67,6 +75,14 @@
   --_ov-font-size: var(--ov-size-button-font-size-lg);
   --_ov-content-gap: var(--ov-space-inline-control);
   --_ov-decorator-size: var(--ov-size-icon-button-icon-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-control-height: var(--ov-size-button-height-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-content-gap: var(--ov-space-inline-control);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -112,6 +128,33 @@
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-accent-soft-fg: var(--ov-color-danger);
   --_ov-accent-ghost-fg: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-accent-soft-fg: var(--ov-color-info);
+  --_ov-accent-ghost-fg: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-accent-soft-fg: var(--ov-color-discovery);
+  --_ov-accent-ghost-fg: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-accent-soft-fg: var(--ov-color-secondary);
+  --_ov-accent-ghost-fg: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {

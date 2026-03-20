@@ -142,4 +142,20 @@ describe('SegmentedControl', () => {
 
     expect(screen.getByRole('radiogroup')).toHaveClass('custom');
   });
+
+  it('renders xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <SegmentedControl size="xs" aria-label="View">
+        <SegmentedControl.Item value="a">A</SegmentedControl.Item>
+      </SegmentedControl>,
+    );
+    expect(screen.getByRole('radiogroup')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(
+      <SegmentedControl size="xl" aria-label="View">
+        <SegmentedControl.Item value="a">A</SegmentedControl.Item>
+      </SegmentedControl>,
+    );
+    expect(screen.getByRole('radiogroup')).toHaveAttribute('data-ov-size', 'xl');
+  });
 });

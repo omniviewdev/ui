@@ -183,3 +183,11 @@
 .IconItem[data-ov-color='info'] {
   --_ov-sb-icon-item-color: var(--ov-color-info);
 }
+
+.IconItem[data-ov-color='discovery'] {
+  --_ov-sb-icon-item-color: var(--ov-color-discovery);
+}
+
+.IconItem[data-ov-color='secondary'] {
+  --_ov-sb-icon-item-color: var(--ov-color-secondary);
+}

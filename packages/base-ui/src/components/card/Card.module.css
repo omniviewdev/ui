@@ -43,6 +43,23 @@
   overflow: visible;
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-padding-inline: var(--ov-size-card-padding-inline-xs, var(--ov-size-card-padding-inline-sm));
+  --_ov-padding-block: var(--ov-size-card-padding-block-xs, var(--ov-size-card-padding-block-sm));
+  --_ov-gap: var(--ov-size-card-gap-xs, var(--ov-size-card-gap-sm));
+  --_ov-footer-padding-block: var(--ov-size-card-footer-padding-block-xs, var(--ov-size-card-footer-padding-block-sm));
+  --_ov-footer-gap: var(--ov-size-card-footer-gap-xs, var(--ov-size-card-footer-gap-sm));
+  --_ov-action-height: var(--ov-size-card-action-height-xs, var(--ov-size-card-action-height-sm));
+  --_ov-action-padding-inline: var(--ov-size-card-action-padding-inline-xs, var(--ov-size-card-action-padding-inline-sm));
+  --_ov-action-font-size: var(--ov-size-card-action-font-size-xs, var(--ov-size-card-action-font-size-sm));
+  --_ov-title-font-size: var(--ov-size-card-title-font-size-xs, var(--ov-size-card-title-font-size-sm));
+  --_ov-body-font-size: var(--ov-size-card-body-font-size-xs, var(--ov-size-card-body-font-size-sm));
+  --_ov-description-font-size: var(--ov-size-card-description-font-size-xs, var(--ov-size-card-description-font-size-sm));
+  --_ov-stat-font-size: var(--ov-size-card-stat-font-size-xs, var(--ov-size-card-stat-font-size-sm));
+  --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-xs, var(--ov-size-card-eyebrow-font-size-sm));
+  --_ov-indicator-dot: var(--ov-size-card-indicator-dot-xs, var(--ov-size-card-indicator-dot-sm));
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-padding-inline: var(--ov-size-card-padding-inline-sm);
   --_ov-padding-block: var(--ov-size-card-padding-block-sm);
@@ -75,6 +92,23 @@
   --_ov-stat-font-size: var(--ov-size-card-stat-font-size-lg);
   --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-lg);
   --_ov-indicator-dot: var(--ov-size-card-indicator-dot-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-padding-inline: var(--ov-size-card-padding-inline-xl, var(--ov-size-card-padding-inline-lg));
+  --_ov-padding-block: var(--ov-size-card-padding-block-xl, var(--ov-size-card-padding-block-lg));
+  --_ov-gap: var(--ov-size-card-gap-xl, var(--ov-size-card-gap-lg));
+  --_ov-footer-padding-block: var(--ov-size-card-footer-padding-block-xl, var(--ov-size-card-footer-padding-block-lg));
+  --_ov-footer-gap: var(--ov-size-card-footer-gap-xl, var(--ov-size-card-footer-gap-lg));
+  --_ov-action-height: var(--ov-size-card-action-height-xl, var(--ov-size-card-action-height-lg));
+  --_ov-action-padding-inline: var(--ov-size-card-action-padding-inline-xl, var(--ov-size-card-action-padding-inline-lg));
+  --_ov-action-font-size: var(--ov-size-card-action-font-size-xl, var(--ov-size-card-action-font-size-lg));
+  --_ov-title-font-size: var(--ov-size-card-title-font-size-xl, var(--ov-size-card-title-font-size-lg));
+  --_ov-body-font-size: var(--ov-size-card-body-font-size-xl, var(--ov-size-card-body-font-size-lg));
+  --_ov-description-font-size: var(--ov-size-card-description-font-size-xl, var(--ov-size-card-description-font-size-lg));
+  --_ov-stat-font-size: var(--ov-size-card-stat-font-size-xl, var(--ov-size-card-stat-font-size-lg));
+  --_ov-eyebrow-font-size: var(--ov-size-card-eyebrow-font-size-xl, var(--ov-size-card-eyebrow-font-size-lg));
+  --_ov-indicator-dot: var(--ov-size-card-indicator-dot-xl, var(--ov-size-card-indicator-dot-lg));
 }
 
 /* ─── Surface levels ─── */
@@ -140,6 +174,24 @@
   --_ov-accent: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
   --_ov-accent-fg: var(--ov-color-danger);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-accent: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+  --_ov-accent-fg: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+  --_ov-accent-fg: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+  --_ov-accent-fg: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {

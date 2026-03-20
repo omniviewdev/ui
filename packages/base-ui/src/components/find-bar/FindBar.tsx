@@ -246,7 +246,6 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
             <IconButton
               variant="ghost"
               size="sm"
-              dense
               onClick={onReplace}
               disabled={!onReplace}
               aria-label="Replace"
@@ -257,7 +256,6 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
             <IconButton
               variant="ghost"
               size="sm"
-              dense
               onClick={onReplaceAll}
               disabled={!onReplaceAll}
               aria-label="Replace all"

@@ -85,7 +85,6 @@ const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(
             <IconButton
               variant="ghost"
               size={size}
-              dense
               aria-label="Remove filter"
               onClick={handleRemoveClick}
             >
@@ -121,7 +120,6 @@ const FilterBarAdd = forwardRef<HTMLButtonElement, FilterBarAddProps>(
         ref={ref as never}
         variant="ghost"
         size={size}
-        dense
         aria-label="Add filter"
         {...props}
       >
@@ -151,7 +149,6 @@ const FilterBarClear = forwardRef<HTMLButtonElement, FilterBarClearProps>(
         ref={ref as never}
         variant="ghost"
         size={size}
-        dense
         aria-label={typeof children === 'string' ? children : 'Clear all'}
         {...props}
       >

@@ -17,6 +17,16 @@ describe('ScrollArea', () => {
     expect(el).toHaveAttribute('tabindex', '0');
   });
 
+  it('accepts xs and xl sizes', () => {
+    const { rerender } = renderWithTheme(
+      <ScrollArea size="xs" data-testid="scroll"><p>Content</p></ScrollArea>,
+    );
+    expect(screen.getByTestId('scroll')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<ScrollArea size="xl" data-testid="scroll"><p>Content</p></ScrollArea>);
+    expect(screen.getByTestId('scroll')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
   it('accepts custom orientation and size', () => {
     renderWithTheme(
       <ScrollArea orientation="both" size="sm" data-testid="scroll">

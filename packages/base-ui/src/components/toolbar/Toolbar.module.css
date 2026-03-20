@@ -4,28 +4,36 @@
   align-items: center;
   gap: var(--ov-space-stack-sm);
   background: transparent;
-  min-height: var(--_ov-toolbar-height, 2.25rem);
+  min-height: var(--_ov-toolbar-height, var(--ov-control-height-md));
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-toolbar-height: var(--ov-control-height-xs);
+  font-size: var(--ov-size-button-font-size-xs);
 }
 
 .Root[data-ov-size='sm'] {
-  --_ov-toolbar-height: 1.75rem;
-
-  font-size: var(--ov-font-size-caption);
+  --_ov-toolbar-height: var(--ov-control-height-sm);
+  font-size: var(--ov-size-button-font-size-sm);
 }
 
 .Root[data-ov-size='md'] {
-  --_ov-toolbar-height: 2.25rem;
+  --_ov-toolbar-height: var(--ov-control-height-md);
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-toolbar-height: 2.75rem;
+  --_ov-toolbar-height: var(--ov-control-height-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-toolbar-height: var(--ov-control-height-xl);
 }
 
 .Group {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--_ov-toolbar-group-gap, 4px); /* --ov-space-stack-xs; no semantic token for 4px spacing */
+  gap: var(--_ov-toolbar-group-gap, var(--ov-space-stack-xs));
 }
 
 .Separator {

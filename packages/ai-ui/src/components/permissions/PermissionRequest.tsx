@@ -1,5 +1,5 @@
 import { forwardRef, useState, type HTMLAttributes } from 'react';
-import { Button, Card } from '@omniview/base-ui';
+import { Button, Card } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuLock } from '../../system/icons';
 import styles from './PermissionRequest.module.css';

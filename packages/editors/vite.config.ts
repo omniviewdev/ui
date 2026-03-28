@@ -34,7 +34,7 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: '@omniview/base-ui', replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)) },
+      { find: '@omniviewdev/base-ui', replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)) },
       // monaco-editor@0.52 only has "module" (no "exports"), which Vite 7
       // can't resolve. Exact-match alias avoids clobbering subpath imports
       // like monaco-editor/esm/vs/language/json/json.worker.js.

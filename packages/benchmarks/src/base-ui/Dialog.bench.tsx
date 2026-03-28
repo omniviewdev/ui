@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { Dialog } from '@omniview/base-ui';
+import { Dialog } from '@omniviewdev/base-ui';
 
 const noop = () => {};
 

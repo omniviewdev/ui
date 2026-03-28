@@ -8,7 +8,7 @@ import {
   AIArtifactAction,
   AIArtifactContent,
   AICodeBlock,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import { LuCopy } from 'react-icons/lu';
 import type { ArtifactData } from '../types';
 import styles from './ArtifactPanel.module.css';

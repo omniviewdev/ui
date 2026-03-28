@@ -11,7 +11,7 @@ import {
   LuCopy,
   LuFile,
 } from 'react-icons/lu';
-import { Avatar, IconButton, CodeBlock, Menu } from '@omniview/base-ui';
+import { Avatar, IconButton, CodeBlock, Menu } from '@omniviewdev/base-ui';
 import type { Message, User } from '../types';
 import { getUserById, formatTime } from '../data';
 import { ReactionBar } from './ReactionBar';

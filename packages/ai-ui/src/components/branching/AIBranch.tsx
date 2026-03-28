@@ -7,7 +7,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import { LuChevronLeft, LuChevronRight } from '../../system/icons';
 import { cn } from '../../system/classnames';
 import styles from './AIBranch.module.css';

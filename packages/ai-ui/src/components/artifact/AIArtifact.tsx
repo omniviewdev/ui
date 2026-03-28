@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode, type ComponentType } from 'react';
-import { IconButton, Tooltip } from '@omniview/base-ui';
+import { IconButton, Tooltip } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuX } from '../../system/icons';
 import styles from './AIArtifact.module.css';

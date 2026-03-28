@@ -1,7 +1,7 @@
 # UI Library Audit Design
 
 **Date**: 2026-03-10
-**Scope**: `@omniview/base-ui`, `@omniview/editors`, `@omniview/ai-ui`
+**Scope**: `@omniviewdev/base-ui`, `@omniviewdev/editors`, `@omniviewdev/ai-ui`
 **Approach**: Automated scan + targeted manual review + fixes + guardrails
 **Breaking changes**: Allowed (pre-1.0, internal consumers only)
 

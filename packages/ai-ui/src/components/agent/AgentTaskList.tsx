@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { List } from '@omniview/base-ui';
+import { List } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import type { AgentStatus } from '../../system/types';
 import { AgentStatusItem } from './AgentStatusItem';

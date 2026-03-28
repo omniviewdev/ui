@@ -2,7 +2,7 @@
 
 import type { FileNode, Transfer, LogEntry } from './types';
 
-export { formatBytes, formatDate, fileTypeLabel } from '@omniview/base-ui';
+export { formatBytes, formatDate, fileTypeLabel } from '@omniviewdev/base-ui';
 
 // ---------------------------------------------------------------------------
 // Local files — a typical TypeScript/React project tree (~30 nodes)

@@ -428,7 +428,7 @@ export const GitHubReadme: Story = {
 
 \`\`\`bash
 # Install
-pnpm add @omniview/app
+pnpm add @omniviewdev/app
 
 # Run
 pnpm dev

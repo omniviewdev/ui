@@ -1,4 +1,4 @@
-import { Typography, Card } from '@omniview/base-ui';
+import { Typography, Card } from '@omniviewdev/base-ui';
 import { apps } from './registry';
 import styles from './Home.module.css';
 

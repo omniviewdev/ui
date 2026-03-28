@@ -14,8 +14,8 @@ import {
   LuHardDrive,
   LuCloud,
 } from 'react-icons/lu';
-import { TreeList, Breadcrumbs, IconButton, useToast, FileTable } from '@omniview/base-ui';
-import type { Key } from '@omniview/base-ui';
+import { TreeList, Breadcrumbs, IconButton, useToast, FileTable } from '@omniviewdev/base-ui';
+import type { Key } from '@omniviewdev/base-ui';
 import type { FileNode } from '../types';
 import styles from './FilePane.module.css';
 

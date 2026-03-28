@@ -13,7 +13,7 @@ import {
   Link,
   Separator,
   Table,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import styles from './MarkdownPreview.module.css';
 
 const ReactMarkdown = lazy(() => import('react-markdown'));

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { test } from 'vitest';
 import { measureRenders } from 'reassure';
 import { fireEvent, screen } from '@testing-library/react';
-import { Dialog, Button } from '@omniview/base-ui';
+import { Dialog, Button } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 function DialogWithTrigger() {

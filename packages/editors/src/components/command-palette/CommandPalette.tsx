@@ -1,5 +1,5 @@
 import { forwardRef, useMemo, type ReactNode } from 'react';
-import { CommandList } from '@omniview/base-ui';
+import { CommandList } from '@omniviewdev/base-ui';
 import styles from './CommandPalette.module.css';
 
 export interface CommandItem {

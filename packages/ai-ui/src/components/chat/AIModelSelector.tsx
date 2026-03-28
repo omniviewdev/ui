@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, type HTMLAttributes } from 'react';
-import { Select } from '@omniview/base-ui';
-import type { ComponentSize, ComponentVariant } from '@omniview/base-ui';
+import { Select } from '@omniviewdev/base-ui';
+import type { ComponentSize, ComponentVariant } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuBot, LuChevronDown } from '../../system/icons';
 import styles from './AIModelSelector.module.css';

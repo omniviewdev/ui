@@ -6,7 +6,7 @@ import {
   Button,
   StatusDot,
   useToast,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import {
   LuArrowLeft,
   LuPlay,

@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { Banner, Button } from '@omniview/base-ui';
+import { Banner, Button } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuTriangleAlert, LuShieldCheck } from '../../system/icons';
 import styles from './AIActionConfirmation.module.css';

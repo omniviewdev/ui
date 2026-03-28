@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 
 /**
  * Wrapper for Reassure tests — provides the ThemeProvider context

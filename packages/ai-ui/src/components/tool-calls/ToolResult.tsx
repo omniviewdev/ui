@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { Button, Card } from '@omniview/base-ui';
+import { Button, Card } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './ToolResult.module.css';
 

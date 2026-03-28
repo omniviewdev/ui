@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Tooltip } from '@omniview/base-ui';
+import { Tooltip } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AIInlineCitation.module.css';
 

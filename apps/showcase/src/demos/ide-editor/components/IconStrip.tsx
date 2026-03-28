@@ -1,5 +1,5 @@
 import { LuFiles, LuSearch, LuGitBranch } from 'react-icons/lu';
-import { Tooltip } from '@omniview/base-ui';
+import { Tooltip } from '@omniviewdev/base-ui';
 import type { SidebarPanel } from '../types';
 import styles from './IconStrip.module.css';
 

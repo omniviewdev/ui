@@ -8,7 +8,7 @@
  * @example
  * ```ts
  * // In your app's entry point or Storybook preview:
- * import '@omniview/editors/setup';
+ * import '@omniviewdev/editors/setup';
  * ```
  */
 import * as monaco from 'monaco-editor';

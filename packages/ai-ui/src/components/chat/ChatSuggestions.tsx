@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Chip } from '@omniview/base-ui';
+import { Chip } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './ChatSuggestions.module.css';
 

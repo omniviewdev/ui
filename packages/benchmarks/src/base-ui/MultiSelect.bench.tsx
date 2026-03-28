@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeOptions, type Option } from '../utils/factories';
-import { MultiSelect } from '@omniview/base-ui';
+import { MultiSelect } from '@omniviewdev/base-ui';
 
 const options100 = makeOptions(100);
 const noSelection: Option[] = [];

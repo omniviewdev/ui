@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { CodeBlock } from '@omniview/base-ui';
+import { CodeBlock } from '@omniviewdev/base-ui';
 
 const codeA = 'const x = 1;\nconsole.log(x);';
 const codeB = 'const y = 2;\nconsole.log(y);';

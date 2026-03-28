@@ -1,6 +1,6 @@
 // apps/showcase/src/demos/chat-app/components/ChannelSidebar.tsx
 import { LuChevronDown, LuHash, LuPlus } from 'react-icons/lu';
-import { Avatar, Badge, IconButton, NavList, StatusDot } from '@omniview/base-ui';
+import { Avatar, Badge, IconButton, NavList, StatusDot } from '@omniviewdev/base-ui';
 import type { Workspace, Channel } from '../types';
 import { getUserById, presenceToStatus } from '../data';
 import styles from '../index.module.css';

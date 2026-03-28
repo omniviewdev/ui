@@ -31,7 +31,7 @@ function formatOverhead(raw, lib) {
  * Extract benchmarks from Vitest 4.x JSON, parsing the [label] suffix
  * to separate implementation name from benchmark name.
  *
- * Bench names look like: "mount [raw]", "mount [@omniview/base-ui]", "mount [@mui/material]"
+ * Bench names look like: "mount [raw]", "mount [@omniviewdev/base-ui]", "mount [@mui/material]"
  */
 function extractCompetitiveBenchmarks(data) {
   const results = [];
@@ -84,7 +84,7 @@ function generateReport(data) {
 
   for (const g of sortedGroups) {
     const rawHz = g.impls['raw'] ?? NaN;
-    const ovHz = g.impls['@omniview/base-ui'] ?? NaN;
+    const ovHz = g.impls['@omniviewdev/base-ui'] ?? NaN;
     const muiHz = g.impls['@mui/material'] ?? NaN;
 
     const ovOverhead = rawHz / ovHz;

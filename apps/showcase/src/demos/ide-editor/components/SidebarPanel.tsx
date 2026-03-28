@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { LuFile, LuFolder, LuFolderOpen } from 'react-icons/lu';
-import { Accordion, TreeList, SearchInput, StatusDot } from '@omniview/base-ui';
-import type { Key } from '@omniview/base-ui';
+import { Accordion, TreeList, SearchInput, StatusDot } from '@omniviewdev/base-ui';
+import type { Key } from '@omniviewdev/base-ui';
 import type { SidebarPanel as SidebarPanelType, SearchResult, GitStatusEntry } from '../types';
 import {
   fileTree,

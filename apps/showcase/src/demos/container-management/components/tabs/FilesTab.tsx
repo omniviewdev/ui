@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Key } from '@omniview/base-ui';
-import { TreeList } from '@omniview/base-ui';
+import type { Key } from '@omniviewdev/base-ui';
+import { TreeList } from '@omniviewdev/base-ui';
 import { LuFolder, LuFolderOpen, LuFile } from 'react-icons/lu';
 import type { ContainerDetail, FileSystemNode } from '../../types';
 

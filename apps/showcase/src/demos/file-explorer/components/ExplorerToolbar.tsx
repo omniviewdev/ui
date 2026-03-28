@@ -7,7 +7,7 @@ import {
   LuMove,
   LuTrash2,
 } from 'react-icons/lu';
-import { IconButton, SearchInput, Toolbar, useToast } from '@omniview/base-ui';
+import { IconButton, SearchInput, Toolbar, useToast } from '@omniviewdev/base-ui';
 import styles from './ExplorerToolbar.module.css';
 
 export interface ExplorerToolbarProps {

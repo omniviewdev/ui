@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeTags } from '../utils/factories';
-import { FilterBar } from '@omniview/base-ui';
+import { FilterBar } from '@omniviewdev/base-ui';
 
 const filters10 = makeTags(10);
 const filters20 = makeTags(20);

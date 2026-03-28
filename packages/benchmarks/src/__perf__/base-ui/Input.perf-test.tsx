@@ -2,7 +2,7 @@ import { test } from 'vitest';
 import { type ChangeEvent, useState } from 'react';
 import { measureRenders } from 'reassure';
 import { fireEvent, screen } from '@testing-library/react';
-import { Input, TextField } from '@omniview/base-ui';
+import { Input, TextField } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 test('Input: mount', async () => {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ResizableSplitPane } from '@omniview/base-ui';
+import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { FilePane } from './components/FilePane';
 import { TransferPanel } from './components/TransferPanel';
 import { CommandLog } from './components/CommandLog';

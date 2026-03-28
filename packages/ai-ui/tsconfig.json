@@ -7,7 +7,7 @@
     "outDir": "./dist",
     "types": ["vitest/globals", "@testing-library/jest-dom"],
     "paths": {
-      "@omniview/base-ui": ["../base-ui/src/index.ts"]
+      "@omniviewdev/base-ui": ["../base-ui/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"]

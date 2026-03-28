@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Chip, Separator } from '@omniview/base-ui';
+import { Chip, Separator } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AIStepDivider.module.css';
 

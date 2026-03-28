@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { Drawer } from '@omniview/base-ui';
+import { Drawer } from '@omniviewdev/base-ui';
 
 const noop = () => {};
 

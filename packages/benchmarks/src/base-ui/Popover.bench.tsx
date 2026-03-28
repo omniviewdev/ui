@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { Popover } from '@omniview/base-ui';
+import { Popover } from '@omniviewdev/base-ui';
 
 describe('Popover', () => {
   benchRender(

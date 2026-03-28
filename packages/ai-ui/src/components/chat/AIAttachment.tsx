@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Card, IconButton } from '@omniview/base-ui';
+import { Card, IconButton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuFile, LuImage, LuX } from '../../system/icons';
 import styles from './AIAttachment.module.css';

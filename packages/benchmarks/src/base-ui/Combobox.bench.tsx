@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeOptions, type Option } from '../utils/factories';
-import { Combobox } from '@omniview/base-ui';
+import { Combobox } from '@omniviewdev/base-ui';
 
 const options100 = makeOptions(100);
 const options200 = makeOptions(200);

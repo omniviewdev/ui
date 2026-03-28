@@ -16,7 +16,7 @@ const config: StorybookConfig = {
     config.resolve = config.resolve ?? {};
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@omniview/base-ui': path.resolve(__dirname, '../../base-ui/src/index.ts'),
+      '@omniviewdev/base-ui': path.resolve(__dirname, '../../base-ui/src/index.ts'),
     };
     return config;
   },

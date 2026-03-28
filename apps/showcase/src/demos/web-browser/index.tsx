@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { LuPlus } from 'react-icons/lu';
-import { EditorTabs, IconButton, Progress } from '@omniview/base-ui';
-import type { TabDescriptor, ReorderMeta } from '@omniview/base-ui';
+import { EditorTabs, IconButton, Progress } from '@omniviewdev/base-ui';
+import type { TabDescriptor, ReorderMeta } from '@omniviewdev/base-ui';
 import { useBrowser } from './hooks/useBrowser';
 import { BrowserToolbar } from './components/BrowserToolbar';
 import { BookmarksBar } from './components/BookmarksBar';

@@ -8,7 +8,7 @@ import {
   type HTMLAttributes,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Button } from '@omniview/base-ui';
+import { Button } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuArrowDown } from '../../system/icons';
 import styles from './ChatMessageList.module.css';

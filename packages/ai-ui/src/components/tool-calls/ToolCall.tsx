@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState, type HTMLAttributes, type ReactNode } from 'react';
-import { Collapsible, CollapsibleContent, Spinner } from '@omniview/base-ui';
+import { Collapsible, CollapsibleContent, Spinner } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { TOOL_STATUS_ICONS, LuChevronDown } from '../../system/icons';
 import type { ToolCallStatus } from '../../system/types';

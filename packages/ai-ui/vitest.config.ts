@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@omniview/base-ui': path.resolve(__dirname, '../base-ui/src/index.ts'),
+      '@omniviewdev/base-ui': path.resolve(__dirname, '../base-ui/src/index.ts'),
     },
   },
   test: {

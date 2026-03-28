@@ -1,4 +1,4 @@
-import { Chip } from '@omniview/base-ui';
+import { Chip } from '@omniviewdev/base-ui';
 import type { Bookmark } from '../types';
 import styles from '../index.module.css';
 

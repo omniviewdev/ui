@@ -1,6 +1,6 @@
 // apps/showcase/src/demos/chat-app/components/WorkspaceRail.tsx
 import { LuPlus } from 'react-icons/lu';
-import { Avatar, Separator, StatusDot, Tooltip } from '@omniview/base-ui';
+import { Avatar, Separator, StatusDot, Tooltip } from '@omniviewdev/base-ui';
 import type { Workspace, User } from '../types';
 import { presenceToStatus } from '../data';
 import styles from '../index.module.css';

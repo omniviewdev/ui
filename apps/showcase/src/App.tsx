@@ -1,5 +1,5 @@
 import { Suspense, useState } from 'react';
-import { Spinner } from '@omniview/base-ui';
+import { Spinner } from '@omniviewdev/base-ui';
 import { apps } from './registry';
 import { Dock } from './Dock';
 import { Home } from './Home';

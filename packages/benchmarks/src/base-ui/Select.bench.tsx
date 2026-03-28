@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { makeOptions } from '../utils/factories';
-import { Select } from '@omniview/base-ui';
+import { Select } from '@omniviewdev/base-ui';
 
 const options = makeOptions(20);
 

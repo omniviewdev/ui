@@ -4,7 +4,7 @@
 
 **Goal:** Add `endDecorator` to Tabs.Tab, create a `useSortableTable` hook + `SortableHeader`, create a `FileTable` compound component, and refactor the file-explorer demo to consume them.
 
-**Architecture:** Three independent additions to `@omniview/base-ui` (Tabs enhancement, sortable-table primitives, FileTable compound), followed by a demo integration task that validates them in the file-explorer showcase. Tasks 1 and 2 have no dependencies on each other. Task 3 depends on Task 2. Task 4 depends on all three.
+**Architecture:** Three independent additions to `@omniviewdev/base-ui` (Tabs enhancement, sortable-table primitives, FileTable compound), followed by a demo integration task that validates them in the file-explorer showcase. Tasks 1 and 2 have no dependencies on each other. Task 3 depends on Task 2. Task 4 depends on all three.
 
 **Tech Stack:** React 19, CSS Modules, Vitest + @testing-library/react, @base-ui/react (upstream Tabs), react-icons/lu
 
@@ -1583,7 +1583,7 @@ Rewrite `apps/showcase/src/demos/file-explorer/components/TransferPanel.tsx`:
 ```tsx
 import { useMemo } from 'react';
 import { LuArrowUp, LuArrowDown } from 'react-icons/lu';
-import { Tabs, Badge, Progress, formatBytes } from '@omniview/base-ui';
+import { Tabs, Badge, Progress, formatBytes } from '@omniviewdev/base-ui';
 import type { Transfer } from '../types';
 import styles from './TransferPanel.module.css';
 
@@ -1822,7 +1822,7 @@ In `apps/showcase/src/demos/file-explorer/data.ts`, replace the local `formatByt
 At the top of the file, add:
 ```tsx
 // Re-export formatting utilities from base-ui for backward compat
-export { formatBytes, formatDate, fileTypeLabel } from '@omniview/base-ui';
+export { formatBytes, formatDate, fileTypeLabel } from '@omniviewdev/base-ui';
 ```
 
 Remove the local `formatBytes`, `formatDate`, and `fileTypeLabel` function definitions from data.ts (keep `countNodes`, `timeAgo` which are demo-specific).
@@ -1832,7 +1832,7 @@ Remove the local `formatBytes`, `formatDate`, and `fileTypeLabel` function defin
 Replace the inline `<table>` section in `apps/showcase/src/demos/file-explorer/components/FilePane.tsx` with `FileTable`. The tree, breadcrumbs, header, and action bar remain as-is — only the table and status sections change.
 
 Key changes in FilePane.tsx:
-- Import `FileTable` and `IconButton` from `@omniview/base-ui`
+- Import `FileTable` and `IconButton` from `@omniviewdev/base-ui`
 - Remove inline sort state (`sortKey`, `sortAsc`, `handleSort`, `sortItems`, `renderTh`)
 - Remove inline `tableItems` and `counts` computations
 - Replace the `<div className={styles.tableSection}>` block and `<div className={styles.statusBar}>` block with:

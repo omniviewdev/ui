@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { DockLayout, type DockNode } from '@omniview/base-ui';
+import { DockLayout, type DockNode } from '@omniviewdev/base-ui';
 
 function makeTwoPanel(): DockNode {
   return {

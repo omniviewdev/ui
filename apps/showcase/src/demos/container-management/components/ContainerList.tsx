@@ -10,8 +10,8 @@ import {
   SearchInput,
   useToast,
   ROW_HEIGHT,
-} from '@omniview/base-ui';
-import { useDataTable, Checkbox } from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
+import { useDataTable, Checkbox } from '@omniviewdev/base-ui';
 import {
   LuPlay,
   LuSquare,

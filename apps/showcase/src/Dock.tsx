@@ -1,6 +1,6 @@
 import { useCallback, type KeyboardEvent } from 'react';
-import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniview/base-ui';
-import type { ThemeMode } from '@omniview/base-ui';
+import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniviewdev/base-ui';
+import type { ThemeMode } from '@omniviewdev/base-ui';
 import { LuLayoutGrid, LuPalette } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';

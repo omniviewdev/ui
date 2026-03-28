@@ -1,5 +1,5 @@
-import { DescriptionList } from '@omniview/base-ui';
-import { ObjectInspector } from '@omniview/editors';
+import { DescriptionList } from '@omniviewdev/base-ui';
+import { ObjectInspector } from '@omniviewdev/editors';
 import type { ContainerDetail } from '../../types';
 import styles from './InspectTab.module.css';
 

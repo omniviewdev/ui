@@ -1,5 +1,5 @@
 {
-  "name": "@omniview/showcase",
+  "name": "@omniviewdev/showcase",
   "version": "0.0.1",
   "private": true,
   "description": "Demo showcase app built entirely from Omniview UI packages.",
@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@omniview/base-ui": "workspace:*",
-    "@omniview/ai-ui": "workspace:*",
-    "@omniview/editors": "workspace:*",
+    "@omniviewdev/base-ui": "workspace:*",
+    "@omniviewdev/ai-ui": "workspace:*",
+    "@omniviewdev/editors": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@tanstack/react-table": "^8.21.3",

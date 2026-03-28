@@ -1,7 +1,7 @@
-import '@omniview/editors/styles.css';
+import '@omniviewdev/editors/styles.css';
 
 import { useState, useCallback } from 'react';
-import { StatusBar } from '@omniview/base-ui';
+import { StatusBar } from '@omniviewdev/base-ui';
 import {
   LuContainer,
   LuPlay,

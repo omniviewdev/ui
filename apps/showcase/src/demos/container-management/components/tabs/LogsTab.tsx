@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react';
-import { Terminal, type TerminalHandle } from '@omniview/editors';
+import { Terminal, type TerminalHandle } from '@omniviewdev/editors';
 import type { ContainerDetail } from '../../types';
 import styles from './LogsTab.module.css';
 

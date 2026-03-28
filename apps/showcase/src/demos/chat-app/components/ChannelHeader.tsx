@@ -1,6 +1,6 @@
 // apps/showcase/src/demos/chat-app/components/ChannelHeader.tsx
 import { LuHash, LuSearch, LuPin, LuInfo, LuUsers } from 'react-icons/lu';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import type { Channel } from '../types';
 import styles from '../index.module.css';
 

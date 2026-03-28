@@ -1,7 +1,7 @@
 // apps/showcase/src/demos/chat-app/components/ThreadPanel.tsx
 import { useRef, useEffect } from 'react';
 import { LuX } from 'react-icons/lu';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import type { Message, Channel, User } from '../types';
 import { MessageItem } from './MessageItem';
 import { MessageComposer } from './MessageComposer';

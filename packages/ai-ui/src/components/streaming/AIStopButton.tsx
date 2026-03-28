@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Button } from '@omniview/base-ui';
+import { Button } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuSquare } from '../../system/icons';
 import styles from './AIStopButton.module.css';

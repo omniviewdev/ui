@@ -1,6 +1,6 @@
 // apps/showcase/src/demos/chat-app/index.tsx
 import { useCallback } from 'react';
-import { ResizableSplitPane } from '@omniview/base-ui';
+import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { useChat } from './hooks/useChat';
 import { WorkspaceRail } from './components/WorkspaceRail';
 import { ChannelSidebar } from './components/ChannelSidebar';

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { ScrollArea } from '@omniview/base-ui';
+import { ScrollArea } from '@omniviewdev/base-ui';
 import type { ReactNode } from 'react';
 
 const contentA = <div>Scrollable content block A</div>;

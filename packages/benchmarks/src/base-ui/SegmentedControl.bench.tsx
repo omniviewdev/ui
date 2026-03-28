@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { SegmentedControl } from '@omniview/base-ui';
+import { SegmentedControl } from '@omniviewdev/base-ui';
 
 describe('SegmentedControl', () => {
   benchRender(

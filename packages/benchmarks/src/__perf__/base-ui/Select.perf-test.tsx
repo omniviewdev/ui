@@ -1,7 +1,7 @@
 import { test } from 'vitest';
 import { measureRenders } from 'reassure';
 import { fireEvent, screen } from '@testing-library/react';
-import { Select } from '@omniview/base-ui';
+import { Select } from '@omniviewdev/base-ui';
 import { makeOptions } from '../../utils/factories';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 

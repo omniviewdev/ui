@@ -1,4 +1,4 @@
-import { CodeBlock, DescriptionList, Typography } from '@omniview/base-ui';
+import { CodeBlock, DescriptionList, Typography } from '@omniviewdev/base-ui';
 import { formatBytes, timeAgo } from '../data';
 import type { FileNode } from '../types';
 import styles from './DetailPanel.module.css';

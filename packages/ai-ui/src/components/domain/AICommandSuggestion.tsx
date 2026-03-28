@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Button, IconButton } from '@omniview/base-ui';
+import { Button, IconButton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuCopy, LuCornerDownRight } from '../../system/icons';
 import styles from './AICommandSuggestion.module.css';

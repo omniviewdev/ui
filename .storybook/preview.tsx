@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 import '../packages/base-ui/src/theme/styles.css';
 
 // Side-effect import — configures Monaco workers before any editor story mounts.

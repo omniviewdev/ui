@@ -1,7 +1,7 @@
 import { test } from 'vitest';
 import { measureRenders } from 'reassure';
 import { fireEvent, screen } from '@testing-library/react';
-import { Checkbox } from '@omniview/base-ui';
+import { Checkbox } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 test('Checkbox: mount', async () => {

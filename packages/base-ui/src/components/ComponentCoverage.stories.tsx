@@ -63,7 +63,7 @@ export const BaseUiCoverage: Story = {
     >
       <h2 style={{ margin: 0 }}>Base UI Component Coverage</h2>
       <p style={{ margin: 0, color: 'var(--ov-color-fg-muted)' }}>
-        Current approved export set for <code>@omniview/base-ui</code>.
+        Current approved export set for <code>@omniviewdev/base-ui</code>.
       </p>
       <div
         style={{

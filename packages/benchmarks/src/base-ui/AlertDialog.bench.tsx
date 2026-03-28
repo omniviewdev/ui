@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { AlertDialog } from '@omniview/base-ui';
+import { AlertDialog } from '@omniviewdev/base-ui';
 
 describe('AlertDialog', () => {
   benchRender(

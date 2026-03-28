@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, type HTMLAttributes } from 'react';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuCopy, LuRefreshCw, LuPencil, LuThumbsUp, LuThumbsDown, LuShare2, LuGitBranch, LuTrash2 } from '../../system/icons';
 import styles from './AIMessageActions.module.css';

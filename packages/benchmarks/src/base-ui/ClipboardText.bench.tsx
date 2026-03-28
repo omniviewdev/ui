@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { ClipboardText } from '@omniview/base-ui';
+import { ClipboardText } from '@omniviewdev/base-ui';
 
 describe('ClipboardText', () => {
   benchRender(

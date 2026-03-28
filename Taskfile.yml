@@ -5,8 +5,8 @@ tasks:
     desc: Install deps and build packages needed for benchmarks
     cmds:
       - pnpm install
-      - pnpm --filter @omniview/base-ui build
-      - pnpm --filter @omniview/editors build
+      - pnpm --filter @omniviewdev/base-ui build
+      - pnpm --filter @omniviewdev/editors build
     status:
       - test -d packages/base-ui/dist
       - test -d packages/editors/dist

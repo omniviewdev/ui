@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 
 const preview: Preview = {
   globalTypes: {

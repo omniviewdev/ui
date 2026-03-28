@@ -23,8 +23,8 @@ export default defineConfig(async () => {
     plugins,
     resolve: {
       alias: {
-        '@omniview/base-ui': path.resolve(__dirname, '../base-ui/src/index.ts'),
-        '@omniview/editors': path.resolve(__dirname, '../editors/src/index.ts'),
+        '@omniviewdev/base-ui': path.resolve(__dirname, '../base-ui/src/index.ts'),
+        '@omniviewdev/editors': path.resolve(__dirname, '../editors/src/index.ts'),
       },
     },
     test: {

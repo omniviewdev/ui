@@ -25,8 +25,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: '@omniview/base-ui', replacement: path.resolve(__dirname, '../base-ui/src/index.ts') },
-      { find: '@omniview/editors', replacement: path.resolve(__dirname, '../editors/src/index.ts') },
+      { find: '@omniviewdev/base-ui', replacement: path.resolve(__dirname, '../base-ui/src/index.ts') },
+      { find: '@omniviewdev/editors', replacement: path.resolve(__dirname, '../editors/src/index.ts') },
       {
         find: /^react-syntax-highlighter(\/.*)?$/,
         replacement: path.resolve(__dirname, 'src/stubs/react-syntax-highlighter.ts'),

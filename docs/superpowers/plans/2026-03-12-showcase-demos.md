@@ -6,7 +6,7 @@
 
 **Architecture:** Each demo is self-contained in `apps/showcase/src/demos/<name>/` with its own mock data (`data.ts`), internal components (`components/`), and CSS Modules. Demos replace existing placeholder files. No cross-demo imports. All styling uses `--ov-*` CSS tokens.
 
-**Tech Stack:** React 19, TypeScript, CSS Modules, pnpm workspace packages (`@omniview/base-ui`, `@omniview/ai-ui`, `@omniview/editors`), Vite 7 with React Compiler.
+**Tech Stack:** React 19, TypeScript, CSS Modules, pnpm workspace packages (`@omniviewdev/base-ui`, `@omniviewdev/ai-ui`, `@omniviewdev/editors`), Vite 7 with React Compiler.
 
 **Critical API Notes (read before implementing ANY task):**
 - **Tooltip:** Compound — `Tooltip.Root > Tooltip.Trigger (render prop) > Tooltip.Portal > Tooltip.Positioner > Tooltip.Popup`
@@ -89,7 +89,7 @@ export const localFiles: FileNode = {
         {
           id: 'components', name: 'components', type: 'folder', children: [
             { id: 'app-tsx', name: 'App.tsx', type: 'file', size: 2400, modified: '2026-03-12T10:00:00Z', permissions: 'rw-r--r--', extension: 'tsx',
-              content: 'import { useState } from \'react\';\nimport { ThemeProvider } from \'@omniview/base-ui\';\n\nexport function App() {\n  const [count, setCount] = useState(0);\n  return (\n    <ThemeProvider>\n      <main>\n        <h1>Hello World</h1>\n        <button onClick={() => setCount(c => c + 1)}>\n          Count: {count}\n        </button>\n      </main>\n    </ThemeProvider>\n  );\n}' },
+              content: 'import { useState } from \'react\';\nimport { ThemeProvider } from \'@omniviewdev/base-ui\';\n\nexport function App() {\n  const [count, setCount] = useState(0);\n  return (\n    <ThemeProvider>\n      <main>\n        <h1>Hello World</h1>\n        <button onClick={() => setCount(c => c + 1)}>\n          Count: {count}\n        </button>\n      </main>\n    </ThemeProvider>\n  );\n}' },
             // ... ~8 more component files
           ]
         },
@@ -210,7 +210,7 @@ TreePane wraps a TreeList with a Breadcrumbs header. It receives the file tree d
 ```tsx
 // apps/showcase/src/demos/file-explorer/components/TreePane.tsx
 import { useState } from 'react';
-import { TreeList, Breadcrumbs } from '@omniview/base-ui';
+import { TreeList, Breadcrumbs } from '@omniviewdev/base-ui';
 import { LuFolder, LuFile } from 'react-icons/lu';
 import type { FileNode } from '../types';
 import styles from './TreePane.module.css';
@@ -315,7 +315,7 @@ Replace the placeholder `index.tsx` with the full layout using nested ResizableS
 ```tsx
 // apps/showcase/src/demos/file-explorer/index.tsx
 import { useState, useCallback } from 'react';
-import { ResizableSplitPane } from '@omniview/base-ui';
+import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { TreePane } from './components/TreePane';
 import { localFiles, remoteFiles } from './data';
 import type { FileNode, FileSelection } from './types';
@@ -407,7 +407,7 @@ git commit -m "feat(file-explorer): layout shell with dual tree panes"
 
 ```tsx
 // apps/showcase/src/demos/file-explorer/components/DetailPanel.tsx
-import { DescriptionList, CodeBlock, Typography } from '@omniview/base-ui';
+import { DescriptionList, CodeBlock, Typography } from '@omniviewdev/base-ui';
 import type { FileNode } from '../types';
 import { formatBytes, timeAgo } from '../data';
 import styles from './DetailPanel.module.css';
@@ -448,7 +448,7 @@ export function DetailPanel({ node }: DetailPanelProps) {
 
 ```tsx
 // apps/showcase/src/demos/file-explorer/components/ExplorerToolbar.tsx
-import { Toolbar, IconButton, SearchInput, Separator, useToast } from '@omniview/base-ui';
+import { Toolbar, IconButton, SearchInput, Separator, useToast } from '@omniviewdev/base-ui';
 import { LuArrowLeft, LuArrowRight, LuArrowUp, LuCopy, LuFolderPlus, LuMove, LuTrash2 } from 'react-icons/lu';
 import styles from './ExplorerToolbar.module.css';
 
@@ -548,7 +548,7 @@ Update the main `FileExplorer` component to:
 1. Import and render `ExplorerToolbar` at top
 2. Replace detail placeholder with `DetailPanel`
 3. Add `StatusBar` at bottom
-4. Add `ToastProvider` to `apps/showcase/src/main.tsx` wrapping `<App />` (inside `ThemeProvider`). Import from `@omniview/base-ui`. This is REQUIRED — `useToast()` will crash without it
+4. Add `ToastProvider` to `apps/showcase/src/main.tsx` wrapping `<App />` (inside `ThemeProvider`). Import from `@omniviewdev/base-ui`. This is REQUIRED — `useToast()` will crash without it
 
 - [ ] **Step 6: Verify build and visual check**
 
@@ -729,7 +729,7 @@ git commit -m "feat(ide-editor): add mock data and types"
 - Modify: `apps/showcase/src/demos/ide-editor/index.tsx` (replace placeholder)
 - Create: `apps/showcase/src/demos/ide-editor/index.module.css`
 
-**Before starting:** Read `DockLayout` source to determine if it supports icon-strip + panel switching. If not, use the fallback: flex layout + conditional rendering. Also read `EditorTabs` source for exact API. Import `setupMonacoWorkers` and `@omniview/editors/styles.css`.
+**Before starting:** Read `DockLayout` source to determine if it supports icon-strip + panel switching. If not, use the fallback: flex layout + conditional rendering. Also read `EditorTabs` source for exact API. Import `setupMonacoWorkers` and `@omniviewdev/editors/styles.css`.
 
 - [ ] **Step 1: Setup Monaco workers and editor CSS import**
 
@@ -737,8 +737,8 @@ At the top of `index.tsx` (module level, before component):
 
 ```tsx
 // apps/showcase/src/demos/ide-editor/index.tsx
-import '@omniview/editors/styles.css';
-import { setupMonacoWorkers } from '@omniview/editors';
+import '@omniviewdev/editors/styles.css';
+import { setupMonacoWorkers } from '@omniviewdev/editors';
 setupMonacoWorkers();
 ```
 
@@ -750,7 +750,7 @@ Vertical strip of icon buttons that switch sidebar panels. Uses `NavList` from t
 
 ```tsx
 // apps/showcase/src/demos/ide-editor/components/IconStrip.tsx
-import { NavList, IconButton, Tooltip, Separator } from '@omniview/base-ui';
+import { NavList, IconButton, Tooltip, Separator } from '@omniviewdev/base-ui';
 import { LuFiles, LuSearch, LuGitBranch } from 'react-icons/lu';
 import type { SidebarPanel } from '../types';
 import styles from './IconStrip.module.css';
@@ -805,7 +805,7 @@ Renders the correct panel based on `activePanel` state:
 
 ```tsx
 // apps/showcase/src/demos/ide-editor/components/SidebarPanel.tsx
-import { TreeList, SearchInput, List, StatusDot, Badge } from '@omniview/base-ui';
+import { TreeList, SearchInput, List, StatusDot, Badge } from '@omniviewdev/base-ui';
 import type { SidebarPanel as PanelType } from '../types';
 import { fileTree, searchResults, gitStatus } from '../data';
 import styles from './SidebarPanel.module.css';
@@ -848,14 +848,14 @@ function GitPanel() {
 
 ```tsx
 // apps/showcase/src/demos/ide-editor/index.tsx
-import '@omniview/editors/styles.css';
-import { setupMonacoWorkers } from '@omniview/editors';
+import '@omniviewdev/editors/styles.css';
+import { setupMonacoWorkers } from '@omniviewdev/editors';
 setupMonacoWorkers();
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { ResizableSplitPane, EditorTabs } from '@omniview/base-ui';
-import { CodeEditor, DiffViewer, Terminal, CommandPalette, MarkdownPreview } from '@omniview/editors';
-import type { TerminalHandle } from '@omniview/editors';
+import { ResizableSplitPane, EditorTabs } from '@omniviewdev/base-ui';
+import { CodeEditor, DiffViewer, Terminal, CommandPalette, MarkdownPreview } from '@omniviewdev/editors';
+import type { TerminalHandle } from '@omniviewdev/editors';
 import { IconStrip } from './components/IconStrip';
 import { SidebarPanel } from './components/SidebarPanel';
 import { initialTabs, projectFiles, terminalOutput, paletteCommands } from './data';
@@ -1273,7 +1273,7 @@ git commit -m "feat(ai-chat): add mock data, types, and conversation script"
 - `AIContextIndicator` — files prop
 - `AIMessageActions` — what actions are available
 
-Also import CSS: `import '@omniview/ai-ui/styles.css';`
+Also import CSS: `import '@omniviewdev/ai-ui/styles.css';`
 
 - [ ] **Step 1: Create MessageRenderer component**
 
@@ -1287,7 +1287,7 @@ import {
   AIInlineCitation, AISources, AIContextIndicator,
   AIBranch, AIBranchContent, AIBranchSelector,
   AIBranchPrevious, AIBranchNext, AIBranchIndicator,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import { useState } from 'react';
 import type { ChatMessage } from '../types';
 
@@ -1368,7 +1368,7 @@ import {
   AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactDescription,
   AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose,
   AICodeBlock,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import type { ArtifactData } from '../types';
 
 interface ArtifactPanelProps {
@@ -1402,14 +1402,14 @@ export function ArtifactPanel({ artifact, onClose }: ArtifactPanelProps) {
 
 ```tsx
 // apps/showcase/src/demos/ai-chat/index.tsx
-import '@omniview/ai-ui/styles.css';
+import '@omniviewdev/ai-ui/styles.css';
 
 import { useState, useCallback } from 'react';
 import {
   ChatMessageList, ChatInput, ChatSuggestions,
   AIConversationHeader, AIModelSelector, AIFollowUp,
-} from '@omniview/ai-ui';
-import { ResizableSplitPane } from '@omniview/base-ui';
+} from '@omniviewdev/ai-ui';
+import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { MessageRenderer } from './components/MessageRenderer';
 import { ArtifactPanel } from './components/ArtifactPanel';
 import { prebuiltMessages, chatSuggestions, modelOptions } from './data';
@@ -1892,7 +1892,7 @@ git commit -m "feat(container-mgmt): add mock data with 50 containers"
 - Create: `apps/showcase/src/demos/container-management/components/ContainerList.tsx`
 - Create: `apps/showcase/src/demos/container-management/components/ContainerList.module.css`
 
-**Before starting:** Read `DataTable` source thoroughly — understand column definitions (TanStack Table `createColumnHelper`), how to use `DataTable.Root`, `DataTable.Container`, `DataTable.Header`, `DataTable.Body` or `DataTable.VirtualBody`, `DataTable.Toolbar`, `DataTable.Footer`. Read `FilterBar` source for compound API. Read `Meter`, `StatusDot`, `Badge`, `IconButton` for inline cell rendering. Read `Toolbar` for bulk action bar. Import `@omniview/editors/styles.css`.
+**Before starting:** Read `DataTable` source thoroughly — understand column definitions (TanStack Table `createColumnHelper`), how to use `DataTable.Root`, `DataTable.Container`, `DataTable.Header`, `DataTable.Body` or `DataTable.VirtualBody`, `DataTable.Toolbar`, `DataTable.Footer`. Read `FilterBar` source for compound API. Read `Meter`, `StatusDot`, `Badge`, `IconButton` for inline cell rendering. Read `Toolbar` for bulk action bar. Import `@omniviewdev/editors/styles.css`.
 
 - [ ] **Step 1: Create ContainerList with DataTable**
 
@@ -1909,7 +1909,7 @@ import {
 import {
   DataTable, FilterBar, StatusDot, Badge, Meter,
   IconButton, Button, Toolbar, SearchInput, useToast, statusToColor,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import { LuPlay, LuSquare, LuTrash2 } from 'react-icons/lu';
 import type { Container } from '../types';
 import styles from './ContainerList.module.css';
@@ -2065,10 +2065,10 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
 
 ```tsx
 // apps/showcase/src/demos/container-management/index.tsx
-import '@omniview/editors/styles.css';
+import '@omniviewdev/editors/styles.css';
 
 import { useState } from 'react';
-import { StatusBar } from '@omniview/base-ui';
+import { StatusBar } from '@omniviewdev/base-ui';
 import { ContainerList } from './components/ContainerList';
 // import { ContainerDetail } from './components/ContainerDetail'; // Task 12
 import { containers, clusterStats } from './data';
@@ -2148,7 +2148,7 @@ import { useMemo } from 'react';
 import {
   Breadcrumbs, IconButton, Typography, StatusDot, Badge,
   Tabs, Toolbar, useToast, statusToColor,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import { LuArrowLeft, LuPlay, LuSquare, LuRotateCw, LuTrash2 } from 'react-icons/lu';
 import { getContainerDetail } from '../data';
 import type { Container } from '../types';
@@ -2234,8 +2234,8 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
 ```tsx
 // apps/showcase/src/demos/container-management/components/tabs/LogsTab.tsx
 import { useRef } from 'react';
-import { Terminal } from '@omniview/editors';
-import type { TerminalHandle } from '@omniview/editors';
+import { Terminal } from '@omniviewdev/editors';
+import type { TerminalHandle } from '@omniviewdev/editors';
 
 interface LogsTabProps {
   logs: string;
@@ -2258,8 +2258,8 @@ export function LogsTab({ logs }: LogsTabProps) {
 
 ```tsx
 // apps/showcase/src/demos/container-management/components/tabs/InspectTab.tsx
-import { DescriptionList } from '@omniview/base-ui';
-import { ObjectInspector } from '@omniview/editors';
+import { DescriptionList } from '@omniviewdev/base-ui';
+import { ObjectInspector } from '@omniviewdev/editors';
 import type { Container } from '../../types';
 
 interface InspectTabProps {
@@ -2287,7 +2287,7 @@ export function InspectTab({ container, config }: InspectTabProps) {
 
 ```tsx
 // apps/showcase/src/demos/container-management/components/tabs/StatsTab.tsx
-import { Card, Meter } from '@omniview/base-ui';
+import { Card, Meter } from '@omniviewdev/base-ui';
 import type { Container, ContainerStats } from '../../types';
 
 interface StatsTabProps {
@@ -2337,7 +2337,7 @@ export function StatsTab({ stats, container }: StatsTabProps) {
 
 ```tsx
 // apps/showcase/src/demos/container-management/components/tabs/FilesTab.tsx
-import { TreeList } from '@omniview/base-ui';
+import { TreeList } from '@omniviewdev/base-ui';
 import { LuFolder, LuFile } from 'react-icons/lu';
 import type { FileSystemNode } from '../../types';
 

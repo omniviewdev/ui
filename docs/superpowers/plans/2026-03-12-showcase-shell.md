@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Scaffold the `@omniview/showcase` SPA with a left-sidebar dock, home screen, and placeholder demos — a working shell ready for individual demo buildout.
+**Goal:** Scaffold the `@omniviewdev/showcase` SPA with a left-sidebar dock, home screen, and placeholder demos — a working shell ready for individual demo buildout.
 
-**Architecture:** Vite SPA in `main/apps/showcase/`. A single `useState` drives which demo is active. The dock renders from an app registry; the content area lazy-loads the selected demo. All UI comes from `@omniview/base-ui`, `@omniview/ai-ui`, and `@omniview/editors` workspace packages.
+**Architecture:** Vite SPA in `main/apps/showcase/`. A single `useState` drives which demo is active. The dock renders from an app registry; the content area lazy-loads the selected demo. All UI comes from `@omniviewdev/base-ui`, `@omniviewdev/ai-ui`, and `@omniviewdev/editors` workspace packages.
 
-**Tech Stack:** React 19, Vite 7, TypeScript, CSS Modules, `@omniview/base-ui` (ThemeProvider, IconButton, Tooltip, Stack, Separator, Card, Grid, Typography, Spinner, EmptyState, ThemeSwitcher)
+**Tech Stack:** React 19, Vite 7, TypeScript, CSS Modules, `@omniviewdev/base-ui` (ThemeProvider, IconButton, Tooltip, Stack, Separator, Card, Grid, Typography, Spinner, EmptyState, ThemeSwitcher)
 
 **Spec:** `docs/superpowers/specs/2026-03-12-showcase-app-design.md`
 
@@ -23,7 +23,7 @@
 
 ```json
 {
-  "name": "@omniview/showcase",
+  "name": "@omniviewdev/showcase",
   "version": "0.0.1",
   "private": true,
   "description": "Demo showcase app built entirely from Omniview UI packages.",
@@ -34,9 +34,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@omniview/base-ui": "workspace:*",
-    "@omniview/ai-ui": "workspace:*",
-    "@omniview/editors": "workspace:*",
+    "@omniviewdev/base-ui": "workspace:*",
+    "@omniviewdev/ai-ui": "workspace:*",
+    "@omniviewdev/editors": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.6.0"
@@ -142,8 +142,8 @@ Note: This is a SPA config (no `build.lib`), unlike the library packages.
 ```tsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider } from '@omniview/base-ui';
-import '@omniview/base-ui/styles.css';
+import { ThemeProvider } from '@omniviewdev/base-ui';
+import '@omniviewdev/base-ui/styles.css';
 import { App } from './App';
 
 createRoot(document.getElementById('root')!).render(
@@ -165,7 +165,7 @@ createRoot(document.getElementById('root')!).render(
 - [ ] **Step 1: Write minimal App.tsx**
 
 ```tsx
-import { Typography } from '@omniview/base-ui';
+import { Typography } from '@omniviewdev/base-ui';
 
 export function App() {
   return <Typography variant="h1">Showcase</Typography>;
@@ -174,7 +174,7 @@ export function App() {
 
 - [ ] **Step 2: Run dev server**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase dev`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/showcase dev`
 Expected: Vite starts on port 3000, page renders "Showcase" with themed text.
 
 - [ ] **Step 3: Add root scripts**
@@ -182,8 +182,8 @@ Expected: Vite starts on port 3000, page renders "Showcase" with themed text.
 Add to `main/package.json` scripts:
 
 ```json
-"showcase": "pnpm --filter @omniview/showcase dev",
-"showcase:build": "pnpm --filter @omniview/showcase build"
+"showcase": "pnpm --filter @omniviewdev/showcase dev",
+"showcase:build": "pnpm --filter @omniviewdev/showcase build"
 ```
 
 - [ ] **Step 4: Commit**
@@ -295,7 +295,7 @@ export const apps: DemoApp[] = [
 
 `apps/showcase/src/demos/file-explorer/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuFolder } from 'react-icons/lu';
 
 export default function FileExplorerDemo() {
@@ -305,7 +305,7 @@ export default function FileExplorerDemo() {
 
 `apps/showcase/src/demos/web-browser/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuGlobe } from 'react-icons/lu';
 
 export default function WebBrowserDemo() {
@@ -315,7 +315,7 @@ export default function WebBrowserDemo() {
 
 `apps/showcase/src/demos/ide-editor/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuCode } from 'react-icons/lu';
 
 export default function IdeEditorDemo() {
@@ -325,7 +325,7 @@ export default function IdeEditorDemo() {
 
 `apps/showcase/src/demos/ai-chat/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuBot } from 'react-icons/lu';
 
 export default function AiChatDemo() {
@@ -335,7 +335,7 @@ export default function AiChatDemo() {
 
 `apps/showcase/src/demos/notes/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuFileText } from 'react-icons/lu';
 
 export default function NotesDemo() {
@@ -345,7 +345,7 @@ export default function NotesDemo() {
 
 `apps/showcase/src/demos/container-management/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuContainer } from 'react-icons/lu';
 
 export default function ContainerManagementDemo() {
@@ -355,7 +355,7 @@ export default function ContainerManagementDemo() {
 
 `apps/showcase/src/demos/chat-app/index.tsx`:
 ```tsx
-import { EmptyState } from '@omniview/base-ui';
+import { EmptyState } from '@omniviewdev/base-ui';
 import { LuMessageCircle } from 'react-icons/lu';
 
 export default function ChatAppDemo() {
@@ -428,7 +428,7 @@ git commit -m "feat(showcase): add app registry and placeholder demos"
 
 ```tsx
 import { useCallback, type KeyboardEvent } from 'react';
-import { IconButton, Tooltip, ThemeSwitcher, Separator } from '@omniview/base-ui';
+import { IconButton, Tooltip, ThemeSwitcher, Separator } from '@omniviewdev/base-ui';
 import { LuLayoutGrid } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';
@@ -597,7 +597,7 @@ git commit -m "feat(showcase): add Dock component with icon buttons and theme sw
 - [ ] **Step 2: Write Home.tsx**
 
 ```tsx
-import { Typography, Card } from '@omniview/base-ui';
+import { Typography, Card } from '@omniviewdev/base-ui';
 import { apps } from './registry';
 import styles from './Home.module.css';
 
@@ -671,7 +671,7 @@ export function Home({ onSelectApp }: HomeProps) {
 
 ```tsx
 import { Suspense, useState } from 'react';
-import { Spinner } from '@omniview/base-ui';
+import { Spinner } from '@omniviewdev/base-ui';
 import { apps } from './registry';
 import { Dock } from './Dock';
 import { Home } from './Home';
@@ -761,7 +761,7 @@ Add `import './global.css';` before the App import in `main.tsx`.
 
 - [ ] **Step 3: Typecheck**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase exec tsc --noEmit`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/showcase exec tsc --noEmit`
 Expected: No errors.
 
 - [ ] **Step 4: Run lint**
@@ -782,12 +782,12 @@ git commit -m "feat(showcase): add global reset styles and pass typecheck"
 
 - [ ] **Step 1: Clean build**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase build`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/showcase build`
 Expected: Build completes, output in `apps/showcase/dist/`.
 
 - [ ] **Step 2: Preview production build**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/showcase preview`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/showcase preview`
 Expected: Same behavior as dev — dock, home screen, placeholder demos all work.
 
 - [ ] **Step 3: Verify all 7 demo routes work**

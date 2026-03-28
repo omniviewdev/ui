@@ -5,7 +5,7 @@
 
 ## Purpose
 
-A single-page demo application that proves the completeness of the Omniview UI component library by building 7 realistic, interactive applications entirely from `@omniview/base-ui`, `@omniview/ai-ui`, and `@omniview/editors`. The showcase serves two audiences:
+A single-page demo application that proves the completeness of the Omniview UI component library by building 7 realistic, interactive applications entirely from `@omniviewdev/base-ui`, `@omniviewdev/ai-ui`, and `@omniviewdev/editors`. The showcase serves two audiences:
 
 1. **Internal team** — exposes gaps in the component library (components, patterns, and utilities we haven't realized we need yet)
 2. **Plugin authors** — demonstrates what can be built with the UI system
@@ -22,9 +22,9 @@ A Vite SPA (not library mode) within the existing pnpm workspace. The `apps/*` g
 
 ### Dependencies
 
-- `@omniview/base-ui: "workspace:*"`
-- `@omniview/ai-ui: "workspace:*"`
-- `@omniview/editors: "workspace:*"`
+- `@omniviewdev/base-ui: "workspace:*"`
+- `@omniviewdev/ai-ui: "workspace:*"`
+- `@omniviewdev/editors: "workspace:*"`
 - `react` and `react-dom` as dependencies
 - `vite` for build and dev server
 
@@ -195,7 +195,7 @@ Root `package.json` additions:
 
 ```json
 {
-  "showcase": "pnpm --filter @omniview/showcase dev",
-  "showcase:build": "pnpm --filter @omniview/showcase build"
+  "showcase": "pnpm --filter @omniviewdev/showcase dev",
+  "showcase:build": "pnpm --filter @omniviewdev/showcase build"
 }
 ```

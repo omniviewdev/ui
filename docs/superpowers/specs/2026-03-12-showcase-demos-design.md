@@ -2,24 +2,24 @@
 
 **Date:** 2026-03-12
 **Status:** Draft
-**Scope:** Four interactive demos (File Explorer, IDE Editor, AI Chat, Container Management) for the `@omniview/showcase` app. The remaining three demos (Web Browser, Notes, Chat App) are deferred to a future spec.
+**Scope:** Four interactive demos (File Explorer, IDE Editor, AI Chat, Container Management) for the `@omniviewdev/showcase` app. The remaining three demos (Web Browser, Notes, Chat App) are deferred to a future spec.
 
 ## Purpose
 
 Build four interactive demos that serve two goals:
 
-1. **Prove completeness** — demonstrate that realistic applications can be built entirely from `@omniview/base-ui`, `@omniview/ai-ui`, and `@omniview/editors`
+1. **Prove completeness** — demonstrate that realistic applications can be built entirely from `@omniviewdev/base-ui`, `@omniviewdev/ai-ui`, and `@omniviewdev/editors`
 2. **Identify gaps** — surface missing components, composability problems, and missing patterns in the library
 
 Each demo operates on mock data with no backend. All interactions (expand, click, sort, filter) work against in-memory fake data.
 
 ### CSS Imports
 
-Each demo must import the CSS for any workspace package it uses. The showcase shell already imports `@omniview/base-ui/styles.css` in `main.tsx`. Demos using `@omniview/ai-ui` or `@omniview/editors` must import their CSS at the demo level:
+Each demo must import the CSS for any workspace package it uses. The showcase shell already imports `@omniviewdev/base-ui/styles.css` in `main.tsx`. Demos using `@omniviewdev/ai-ui` or `@omniviewdev/editors` must import their CSS at the demo level:
 
 ```tsx
-import '@omniview/ai-ui/styles.css';    // AI Chat demo
-import '@omniview/editors/styles.css';   // IDE Editor, Container Management (Terminal)
+import '@omniviewdev/ai-ui/styles.css';    // AI Chat demo
+import '@omniviewdev/editors/styles.css';   // IDE Editor, Container Management (Terminal)
 ```
 
 ---
@@ -176,7 +176,7 @@ Selecting a command triggers the corresponding action.
 
 ### Monaco Worker Setup
 
-The IDE Editor demo uses `CodeEditor`, `DiffViewer`, `Terminal`, `CommandPalette`, and `MarkdownPreview` from `@omniview/editors`. Monaco-based components require worker setup. Call `setupMonacoWorkers()` from the editors package at module level in the demo entry file before any editor mounts. See `packages/editors/docs/MONACO_YAML_COMPAT.md` and `packages/editors/src/setupMonacoWorkers.ts` for details.
+The IDE Editor demo uses `CodeEditor`, `DiffViewer`, `Terminal`, `CommandPalette`, and `MarkdownPreview` from `@omniviewdev/editors`. Monaco-based components require worker setup. Call `setupMonacoWorkers()` from the editors package at module level in the demo entry file before any editor mounts. See `packages/editors/docs/MONACO_YAML_COMPAT.md` and `packages/editors/src/setupMonacoWorkers.ts` for details.
 
 ### Gaps to Surface
 
@@ -189,7 +189,7 @@ The IDE Editor demo uses `CodeEditor`, `DiffViewer`, `Terminal`, `CommandPalette
 
 ### Overview
 
-Full-featured AI chat interface with streaming responses, thinking blocks, tool calls, artifacts, conversation branching, and follow-up suggestions. First real consumer of the `@omniview/ai-ui` package.
+Full-featured AI chat interface with streaming responses, thinking blocks, tool calls, artifacts, conversation branching, and follow-up suggestions. First real consumer of the `@omniviewdev/ai-ui` package.
 
 ### Layout
 
@@ -392,7 +392,7 @@ Full page replacement with breadcrumb navigation back to list.
 
 ### Editor Package Note
 
-This demo uses `Terminal` and `ObjectInspector` from `@omniview/editors`. Terminal uses xterm.js (not Monaco), so `setupMonacoWorkers()` is NOT needed for this demo. However, `@omniview/editors/styles.css` must be imported. Add `import '@omniview/editors/styles.css'` at the demo entry level.
+This demo uses `Terminal` and `ObjectInspector` from `@omniviewdev/editors`. Terminal uses xterm.js (not Monaco), so `setupMonacoWorkers()` is NOT needed for this demo. However, `@omniviewdev/editors/styles.css` must be imported. Add `import '@omniviewdev/editors/styles.css'` at the demo entry level.
 
 ### Gaps to Surface
 

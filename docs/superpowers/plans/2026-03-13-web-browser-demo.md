@@ -6,7 +6,7 @@
 
 **Architecture:** The demo lives at `apps/showcase/src/demos/web-browser/` and uses a `useBrowser` hook for all state. A new `pill` variant is added to EditorTabs in base-ui (local type extension, CSS-only). The demo wires EditorTabs (pill variant) for tabs, Chip for bookmarks, Input for address bar, and Progress for loading state.
 
-**Tech Stack:** React 19, CSS Modules, @omniview/base-ui, pnpm monorepo
+**Tech Stack:** React 19, CSS Modules, @omniviewdev/base-ui, pnpm monorepo
 
 **Spec:** `docs/superpowers/specs/2026-03-13-web-browser-demo-design.md`
 
@@ -38,7 +38,7 @@ it('applies pill variant data attribute', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui vitest run --testPathPattern editor-tabs/EditorTabs.test`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui vitest run --testPathPattern editor-tabs/EditorTabs.test`
 Expected: TypeScript error — `'pill'` is not assignable to `ComponentVariant`
 
 - [ ] **Step 3: Extend variant type locally in EditorTabsProps**
@@ -59,7 +59,7 @@ export interface EditorTabsProps extends Omit<StyledComponentProps, 'variant'> {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui vitest run --testPathPattern editor-tabs/EditorTabs.test`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui vitest run --testPathPattern editor-tabs/EditorTabs.test`
 Expected: PASS — the data attribute is set by `styleDataAttributes()` which accepts any string.
 
 - [ ] **Step 5: Add pill variant CSS rules**
@@ -106,12 +106,12 @@ In `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css`, after th
 
 - [ ] **Step 6: Verify visually — run showcase dev server**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui build`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui build`
 Expected: Build succeeds with no errors.
 
 - [ ] **Step 7: Run full EditorTabs test suite**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui vitest run --testPathPattern editor-tabs`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui vitest run --testPathPattern editor-tabs`
 Expected: All tests pass, including new pill variant test.
 
 - [ ] **Step 8: Commit**
@@ -631,7 +631,7 @@ import {
   LuRotateCw,
   LuLock,
 } from 'react-icons/lu';
-import { IconButton, Input } from '@omniview/base-ui';
+import { IconButton, Input } from '@omniviewdev/base-ui';
 import { ensureProtocol } from '../data';
 import styles from '../index.module.css';
 
@@ -733,7 +733,7 @@ git commit -m "feat(web-browser): add BrowserToolbar component"
 - [ ] **Step 1: Create BookmarksBar**
 
 ```tsx
-import { Chip } from '@omniview/base-ui';
+import { Chip } from '@omniviewdev/base-ui';
 import type { Bookmark } from '../types';
 import styles from '../index.module.css';
 
@@ -778,7 +778,7 @@ git commit -m "feat(web-browser): add BookmarksBar component"
 
 ```tsx
 import { useState, useCallback, type KeyboardEvent } from 'react';
-import { Input } from '@omniview/base-ui';
+import { Input } from '@omniviewdev/base-ui';
 import { LuSearch } from 'react-icons/lu';
 import { SPEED_DIAL_SITES, ensureProtocol } from '../data';
 import styles from '../index.module.css';
@@ -949,8 +949,8 @@ Replace the entire content of `apps/showcase/src/demos/web-browser/index.tsx`:
 ```tsx
 import { useCallback, useMemo } from 'react';
 import { LuPlus } from 'react-icons/lu';
-import { EditorTabs, IconButton, Progress } from '@omniview/base-ui';
-import type { TabDescriptor, ReorderMeta } from '@omniview/base-ui';
+import { EditorTabs, IconButton, Progress } from '@omniviewdev/base-ui';
+import type { TabDescriptor, ReorderMeta } from '@omniviewdev/base-ui';
 import { useBrowser } from './hooks/useBrowser';
 import { BrowserToolbar } from './components/BrowserToolbar';
 import { BookmarksBar } from './components/BookmarksBar';
@@ -1049,7 +1049,7 @@ export default function WebBrowser() {
 
 - [ ] **Step 2: Rebuild base-ui dist**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui build`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui build`
 Expected: Build succeeds. This ensures the pill variant and type changes are available to the showcase app.
 
 - [ ] **Step 3: Verify showcase dev server starts**
@@ -1066,7 +1066,7 @@ git commit -m "feat(web-browser): wire up browser demo with EditorTabs pill vari
 
 - [ ] **Step 5: Run full base-ui test suite to confirm no regressions**
 
-Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniview/base-ui vitest run`
+Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm --filter @omniviewdev/base-ui vitest run`
 Expected: All tests pass.
 
 - [ ] **Step 6: Final commit if any adjustments needed**

@@ -6,7 +6,7 @@
 
 **Architecture:** Each theme is a CSS custom property override block in `styles.css` keyed by `data-ov-theme` attribute. The `ThemeMode` type and `ThemeProvider` are extended to recognize the new values. The showcase dock's simple toggle is replaced with a Menu-based theme picker.
 
-**Tech Stack:** CSS custom properties, TypeScript, React, `@omniview/base-ui` Menu component
+**Tech Stack:** CSS custom properties, TypeScript, React, `@omniviewdev/base-ui` Menu component
 
 **Spec:** `docs/superpowers/specs/2026-03-16-theme-palettes-design.md`
 
@@ -318,15 +318,15 @@ The current dock has a simple sun/moon toggle button (lines 95-117). Replace it 
 Replace line 2-3:
 
 ```ts
-import { IconButton, Tooltip, Separator, useTheme } from '@omniview/base-ui';
+import { IconButton, Tooltip, Separator, useTheme } from '@omniviewdev/base-ui';
 import { LuLayoutGrid, LuSun, LuMoon } from 'react-icons/lu';
 ```
 
 With:
 
 ```ts
-import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniview/base-ui';
-import type { ThemeMode } from '@omniview/base-ui';
+import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniviewdev/base-ui';
+import type { ThemeMode } from '@omniviewdev/base-ui';
 import { LuLayoutGrid, LuPalette } from 'react-icons/lu';
 ```
 
@@ -410,7 +410,7 @@ git commit -m "feat(showcase): replace theme toggle with theme picker menu"
 - [ ] **Step 1: Rebuild base-ui**
 
 ```bash
-pnpm --filter @omniview/base-ui build
+pnpm --filter @omniviewdev/base-ui build
 ```
 
 Expected: Successful build with no errors.

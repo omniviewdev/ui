@@ -2,7 +2,7 @@
 
 **Driver:** The file-explorer showcase demo built three inline/hand-rolled patterns that should be first-class base-ui components. This spec extracts and formalizes them.
 
-**Package:** `@omniview/base-ui`
+**Package:** `@omniviewdev/base-ui`
 
 **Components:**
 1. `Tabs.Tab` `endDecorator` enhancement (existing component)

@@ -1,7 +1,7 @@
 {
-  "name": "@omniview/editors",
+  "name": "@omniviewdev/editors",
   "version": "0.1.0",
-  "private": true,
+  "publishConfig": { "access": "public" },
   "description": "Omniview editor components — code editor, diff viewer, terminal, markdown preview, command palette, object inspector.",
   "type": "module",
   "main": "./dist/index.js",
@@ -30,7 +30,7 @@
     "build-storybook": "storybook build"
   },
   "peerDependencies": {
-    "@omniview/base-ui": "workspace:*",
+    "@omniviewdev/base-ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

@@ -1,5 +1,5 @@
 {
-  "name": "@omniview/benchmarks",
+  "name": "@omniviewdev/benchmarks",
   "version": "0.0.1",
   "private": true,
   "description": "Performance benchmarks for Omniview UI components.",
@@ -19,8 +19,8 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.3.0",
     "@mui/material": "^7.3.0",
-    "@omniview/base-ui": "workspace:*",
-    "@omniview/editors": "workspace:*",
+    "@omniviewdev/base-ui": "workspace:*",
+    "@omniviewdev/editors": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",

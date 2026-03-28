@@ -22,7 +22,7 @@ export default defineConfig({
       external: [
         'react',
         'react-dom',
-        /^@omniview\/base-ui/,
+        /^@omniviewdev\/base-ui/,
         /^monaco-editor/,
         /^@xterm/,
         /^react-markdown/,

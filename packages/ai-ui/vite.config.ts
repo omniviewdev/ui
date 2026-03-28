@@ -21,8 +21,8 @@ export default defineConfig({
       external: [
         'react',
         'react-dom',
-        /^@omniview\/base-ui/,
-        /^@omniview\/editors/,
+        /^@omniviewdev\/base-ui/,
+        /^@omniviewdev\/editors/,
       ],
     },
     sourcemap: true,

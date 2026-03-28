@@ -29,7 +29,7 @@ export const Playground: Story = {};
 export const InlineUsage: Story = {
   render: (args) => (
     <p style={{ margin: 0, fontFamily: 'var(--ov-font-sans)' }}>
-      Use <Code {...args}>pnpm --filter @omniview/base-ui storybook</Code> to run docs.
+      Use <Code {...args}>pnpm --filter @omniviewdev/base-ui storybook</Code> to run docs.
     </p>
   ),
 };

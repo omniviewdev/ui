@@ -28,9 +28,14 @@
     "bench:competitive": "pnpm --filter @omniviewdev/benchmarks exec vitest bench --config vitest.config.competitive.ts --run",
     "bench:competitive:json": "mkdir -p packages/benchmarks/results/competitive && pnpm --filter @omniviewdev/benchmarks exec vitest bench --config vitest.config.competitive.ts --run --outputJson=results/competitive/latest.json",
     "showcase": "pnpm --filter @omniviewdev/showcase dev",
-    "showcase:build": "pnpm --filter @omniviewdev/showcase build"
+    "showcase:build": "pnpm --filter @omniviewdev/showcase build",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
     "@eslint/js": "^9.35.0",
     "@storybook/addon-a11y": "^10.2.15",
     "@storybook/addon-docs": "^10.2.15",

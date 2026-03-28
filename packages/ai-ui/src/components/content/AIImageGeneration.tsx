@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState, type CSSProperties, type HTMLAttributes } from 'react';
-import { Card, Skeleton } from '@omniview/base-ui';
+import { Card, Skeleton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuImage } from '../../system/icons';
 import styles from './AIImageGeneration.module.css';

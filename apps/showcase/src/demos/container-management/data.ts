@@ -1,5 +1,5 @@
 import type { Container, ContainerDetail, ContainerStats, ContainerStatus, FileSystemNode } from './types';
-import type { StatusDotStatus } from '@omniview/base-ui';
+import type { StatusDotStatus } from '@omniviewdev/base-ui';
 
 // ---------------------------------------------------------------------------
 // Helpers

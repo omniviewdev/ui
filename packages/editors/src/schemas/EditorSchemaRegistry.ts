@@ -8,7 +8,7 @@
  *
  * @example
  * ```ts
- * import { editorSchemas } from '@omniview/editors';
+ * import { editorSchemas } from '@omniviewdev/editors';
  *
  * // Plugin registers a Kubernetes Deployment schema
  * editorSchemas.register({

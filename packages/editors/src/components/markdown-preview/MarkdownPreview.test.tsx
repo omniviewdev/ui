@@ -20,7 +20,7 @@ vi.mock('rehype-sanitize', () => ({
 }));
 
 // Mock base-ui components as simple pass-throughs
-vi.mock('@omniview/base-ui', () => ({
+vi.mock('@omniviewdev/base-ui', () => ({
   CodeBlock: ({ children, language }: { children: string; language?: string }) => (
     <pre data-testid="codeblock" data-language={language}>
       {children}

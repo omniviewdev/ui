@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { CheckboxGroup } from '@omniview/base-ui';
+import { CheckboxGroup } from '@omniviewdev/base-ui';
 
 describe('CheckboxGroup', () => {
   benchRender('mount with 3 items', () => (

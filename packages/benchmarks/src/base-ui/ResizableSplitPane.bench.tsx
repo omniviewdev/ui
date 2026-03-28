@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { ResizableSplitPane, type SplitDirection } from '@omniview/base-ui';
+import { ResizableSplitPane, type SplitDirection } from '@omniviewdev/base-ui';
 
 describe('ResizableSplitPane', () => {
   benchRender(

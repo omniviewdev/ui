@@ -1,7 +1,7 @@
 import { bench } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { createElement, type ReactElement } from 'react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 import { resolveOptions, type BenchRenderOptions } from './bench-options';
 
 /**

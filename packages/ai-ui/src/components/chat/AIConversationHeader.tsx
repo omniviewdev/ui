@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuPlus, LuSettings } from '../../system/icons';
 import styles from './AIConversationHeader.module.css';

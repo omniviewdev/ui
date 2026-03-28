@@ -1,6 +1,6 @@
 import { render, type RenderOptions, type RenderResult } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 
 interface WrapperProps {
   children: ReactNode;

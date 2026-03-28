@@ -1,4 +1,4 @@
-# @omniview/benchmarks
+# @omniviewdev/benchmarks
 
 Performance benchmarks for Omniview UI components. Uses Vitest bench mode with CodSpeed for CI regression tracking.
 
@@ -27,7 +27,7 @@ Create a `.bench.tsx` file in the appropriate directory:
 // src/base-ui/MyComponent.bench.tsx
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
-import { MyComponent } from '@omniview/base-ui';
+import { MyComponent } from '@omniviewdev/base-ui';
 
 describe('MyComponent', () => {
   // Measure mount + unmount cost
@@ -72,7 +72,7 @@ For AI agents running optimization sprints:
 
 ## Competitive Benchmarks
 
-Compare @omniview/base-ui against MUI and raw HTML:
+Compare @omniviewdev/base-ui against MUI and raw HTML:
 
 ```bash
 task bench:competitive                      # Run all competitive benchmarks

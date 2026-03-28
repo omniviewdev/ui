@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { CodeBlock } from '@omniview/base-ui';
+import { CodeBlock } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AICodeBlock.module.css';
 

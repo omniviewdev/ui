@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { TextField as OvTextField } from '@omniview/base-ui';
+import { TextField as OvTextField } from '@omniviewdev/base-ui';
 import MuiTextField from '@mui/material/TextField';
 import { benchCompare, benchCompareMany } from '../utils/bench-compare';
 import { wrapOv, wrapMui, wrapRaw } from './implementations/wrappers';
@@ -12,7 +12,7 @@ describe('TextField competitive', () => {
         <input id="raw-input" type="text" placeholder="Enter name" />
       </div>,
     ),
-    '@omniview/base-ui': () => wrapOv(
+    '@omniviewdev/base-ui': () => wrapOv(
       <OvTextField.Root>
         <OvTextField.Label>Name</OvTextField.Label>
         <OvTextField.Control placeholder="Enter name" />
@@ -25,7 +25,7 @@ describe('TextField competitive', () => {
 
   benchCompareMany('mount 100', 100, {
     'raw': (i) => <input key={i} type="text" placeholder={`Field ${i}`} />,
-    '@omniview/base-ui': (i) => (
+    '@omniviewdev/base-ui': (i) => (
       <OvTextField.Root key={i}>
         <OvTextField.Control placeholder={`Field ${i}`} />
       </OvTextField.Root>
@@ -35,7 +35,7 @@ describe('TextField competitive', () => {
     ),
   }, {
     'raw': wrapRaw,
-    '@omniview/base-ui': wrapOv,
+    '@omniviewdev/base-ui': wrapOv,
     '@mui/material': wrapMui,
   });
 });

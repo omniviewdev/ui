@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconButton, Button, Separator } from '@omniview/base-ui';
+import { IconButton, Button, Separator } from '@omniviewdev/base-ui';
 import { LuPlus, LuArrowUp, LuSquare, LuMic, LuPaperclip, LuChevronDown } from 'react-icons/lu';
 import { ChatInput } from './ChatInput';
 import { AIModelSelector } from './AIModelSelector';

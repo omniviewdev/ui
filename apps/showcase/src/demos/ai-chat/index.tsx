@@ -1,10 +1,10 @@
-import '@omniview/ai-ui/styles.css';
+import '@omniviewdev/ai-ui/styles.css';
 
 import { useState, useCallback, useRef } from 'react';
 import {
   ResizableSplitPane,
   IconButton,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import {
   AIModelSelector,
   ChatMessageList,
@@ -17,8 +17,8 @@ import {
   AIStopButton,
   ToolCall,
   ToolResult,
-} from '@omniview/ai-ui';
-import type { ChatMessageListHandle } from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
+import type { ChatMessageListHandle } from '@omniviewdev/ai-ui';
 import { LuPaperclip, LuArrowUp } from 'react-icons/lu';
 
 import { MessageRenderer } from './components/MessageRenderer';

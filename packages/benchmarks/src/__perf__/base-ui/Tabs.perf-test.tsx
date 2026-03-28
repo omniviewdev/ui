@@ -1,7 +1,7 @@
 import { test } from 'vitest';
 import { measureRenders } from 'reassure';
 import { fireEvent, screen } from '@testing-library/react';
-import { Tabs } from '@omniview/base-ui';
+import { Tabs } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 test('Tabs: mount with 5 tabs', async () => {

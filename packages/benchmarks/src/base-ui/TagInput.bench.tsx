@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeTags } from '../utils/factories';
-import { TagInput } from '@omniview/base-ui';
+import { TagInput } from '@omniviewdev/base-ui';
 
 const tags10 = makeTags(10);
 const tags20 = makeTags(20);

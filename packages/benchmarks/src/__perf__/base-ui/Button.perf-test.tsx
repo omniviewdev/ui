@@ -1,6 +1,6 @@
 import { test } from 'vitest';
 import { measureRenders } from 'reassure';
-import { Button } from '@omniview/base-ui';
+import { Button } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 /**

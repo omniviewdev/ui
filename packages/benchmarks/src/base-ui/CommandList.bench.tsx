@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
-import { CommandList } from '@omniview/base-ui';
-import type { CommandItemMeta } from '@omniview/base-ui';
+import { CommandList } from '@omniviewdev/base-ui';
+import type { CommandItemMeta } from '@omniviewdev/base-ui';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeCommandItems, type CommandItem } from '../utils/factories';

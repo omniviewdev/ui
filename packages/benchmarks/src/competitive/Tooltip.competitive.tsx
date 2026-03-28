@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { Tooltip as OvTooltip } from '@omniview/base-ui';
+import { Tooltip as OvTooltip } from '@omniviewdev/base-ui';
 import MuiTooltip from '@mui/material/Tooltip';
 import { benchCompare } from '../utils/bench-compare';
 import { wrapOv, wrapMui, wrapRaw } from './implementations/wrappers';
@@ -9,7 +9,7 @@ describe('Tooltip competitive', () => {
   // Raw baseline is just the trigger element — no tooltip logic.
   benchCompare('mount (closed)', {
     'raw': () => wrapRaw(<span>Hover me</span>),
-    '@omniview/base-ui': () => wrapOv(
+    '@omniviewdev/base-ui': () => wrapOv(
       <OvTooltip.Root>
         <OvTooltip.Trigger>Hover me</OvTooltip.Trigger>
         <OvTooltip.Portal>

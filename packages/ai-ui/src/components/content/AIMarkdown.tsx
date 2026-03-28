@@ -18,7 +18,7 @@ import {
   Link,
   Separator,
   Table,
-} from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AIMarkdown.module.css';
 

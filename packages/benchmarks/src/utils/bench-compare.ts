@@ -12,7 +12,7 @@ import { resolveOptions, type BenchRenderOptions } from './bench-options';
  *
  * Vitest output will read:
  *   mount [raw]                 45,230 ops/s
- *   mount [@omniview/base-ui]   12,400 ops/s
+ *   mount [@omniviewdev/base-ui]   12,400 ops/s
  *   mount [@mui/material]        3,800 ops/s
  */
 export function benchCompare(

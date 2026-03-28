@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { Chip } from '@omniview/base-ui';
+import { Chip } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuFile, LuWrench, LuDatabase } from '../../system/icons';
 import styles from './AIContextIndicator.module.css';

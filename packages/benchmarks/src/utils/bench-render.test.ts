@@ -6,7 +6,7 @@ import { createElement } from 'react';
 // integration behavior — render/cleanup cycles work correctly.
 
 import { render, cleanup, screen } from '@testing-library/react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 
 describe('bench-render utilities integration', () => {
   it('render + cleanup cycle works for simple component', () => {

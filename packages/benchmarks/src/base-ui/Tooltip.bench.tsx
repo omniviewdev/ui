@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { Tooltip } from '@omniview/base-ui';
+import { Tooltip } from '@omniviewdev/base-ui';
 
 describe('Tooltip', () => {
   benchRender(

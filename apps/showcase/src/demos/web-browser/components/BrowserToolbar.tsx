@@ -5,7 +5,7 @@ import {
   LuRotateCw,
   LuLock,
 } from 'react-icons/lu';
-import { IconButton, Input } from '@omniview/base-ui';
+import { IconButton, Input } from '@omniviewdev/base-ui';
 import { ensureProtocol, NEW_TAB_URL } from '../data';
 import styles from '../index.module.css';
 

@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Button } from '@omniview/base-ui';
+import { Button } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import type { AgentStatus } from '../../system/types';
 import styles from './AgentControls.module.css';

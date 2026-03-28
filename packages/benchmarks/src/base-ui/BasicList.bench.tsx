@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { BasicList } from '@omniview/base-ui';
+import { BasicList } from '@omniviewdev/base-ui';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeRows, type Row } from '../utils/factories';

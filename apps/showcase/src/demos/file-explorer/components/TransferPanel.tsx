@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { LuArrowUp, LuArrowDown } from 'react-icons/lu';
-import { Tabs, Progress } from '@omniview/base-ui';
+import { Tabs, Progress } from '@omniviewdev/base-ui';
 import { formatBytes } from '../data';
 import type { Transfer } from '../types';
 import styles from './TransferPanel.module.css';

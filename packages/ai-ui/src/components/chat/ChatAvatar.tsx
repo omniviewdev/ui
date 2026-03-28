@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Avatar } from '@omniview/base-ui';
+import { Avatar } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { CHAT_ROLE_ICONS } from '../../system/icons';
 import type { ChatRole } from '../../system/types';

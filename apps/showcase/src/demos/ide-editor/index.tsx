@@ -1,5 +1,5 @@
-import '@omniview/editors/styles.css';
-import { setupMonacoWorkers } from '@omniview/editors';
+import '@omniviewdev/editors/styles.css';
+import { setupMonacoWorkers } from '@omniviewdev/editors';
 setupMonacoWorkers();
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -7,16 +7,16 @@ import {
   ResizableSplitPane,
   EditorTabs,
   Tabs,
-} from '@omniview/base-ui';
-import type { TabDescriptor } from '@omniview/base-ui';
+} from '@omniviewdev/base-ui';
+import type { TabDescriptor } from '@omniviewdev/base-ui';
 import {
   CodeEditor,
   DiffViewer,
   MarkdownPreview,
   Terminal,
   CommandPalette,
-} from '@omniview/editors';
-import type { TerminalHandle, CommandItem } from '@omniview/editors';
+} from '@omniviewdev/editors';
+import type { TerminalHandle, CommandItem } from '@omniviewdev/editors';
 
 import { IconStrip } from './components/IconStrip';
 import { SidebarPanel } from './components/SidebarPanel';

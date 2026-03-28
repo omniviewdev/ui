@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { LuFolder, LuFolderOpen, LuFile, LuCopy, LuMove, LuPencil, LuTrash2, LuFolderPlus } from 'react-icons/lu';
-import { TreeList, Breadcrumbs, ContextMenu, useToast } from '@omniview/base-ui';
-import type { Key } from '@omniview/base-ui';
+import { TreeList, Breadcrumbs, ContextMenu, useToast } from '@omniviewdev/base-ui';
+import type { Key } from '@omniviewdev/base-ui';
 import type { FileNode } from '../types';
 import styles from './TreePane.module.css';
 

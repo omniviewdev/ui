@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
-import { TreeList } from '@omniview/base-ui';
-import type { TreeNodeMeta } from '@omniview/base-ui';
+import { TreeList } from '@omniviewdev/base-ui';
+import type { TreeNodeMeta } from '@omniviewdev/base-ui';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 

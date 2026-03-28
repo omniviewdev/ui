@@ -1,9 +1,9 @@
 import { createElement, type ReactElement } from 'react';
-import { ThemeProvider } from '@omniview/base-ui';
+import { ThemeProvider } from '@omniviewdev/base-ui';
 import { MuiThemeWrapper } from './mui-theme/theme';
 
 /**
- * Wrap element in @omniview/base-ui ThemeProvider.
+ * Wrap element in @omniviewdev/base-ui ThemeProvider.
  */
 export function wrapOv(element: ReactElement): ReactElement {
   return createElement(ThemeProvider, { persist: false }, element);

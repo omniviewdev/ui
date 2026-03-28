@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { RadioGroup } from '@omniview/base-ui';
+import { RadioGroup } from '@omniviewdev/base-ui';
 
 describe('RadioGroup', () => {
   benchRender('mount with 3 items', () => (

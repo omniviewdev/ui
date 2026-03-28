@@ -10,7 +10,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { Chip, Collapsible, CollapsibleContent, Tooltip } from '@omniview/base-ui';
+import { Chip, Collapsible, CollapsibleContent, Tooltip } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import {
   LuChevronDown,

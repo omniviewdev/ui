@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { Select as OvSelect } from '@omniview/base-ui';
+import { Select as OvSelect } from '@omniviewdev/base-ui';
 import MuiSelect from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
 import { benchCompare } from '../utils/bench-compare';
@@ -17,7 +17,7 @@ describe('Select competitive', () => {
         {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>,
     ),
-    '@omniview/base-ui': () => wrapOv(
+    '@omniviewdev/base-ui': () => wrapOv(
       <OvSelect.Root defaultValue="option-0">
         <OvSelect.Trigger>
           <OvSelect.Value placeholder="Choose..." />

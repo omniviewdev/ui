@@ -4,10 +4,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { CommandPalette, type CommandItem } from './CommandPalette';
 
 // ---------------------------------------------------------------------------
-// Mock @omniview/base-ui — CommandList compound component
+// Mock @omniviewdev/base-ui — CommandList compound component
 // ---------------------------------------------------------------------------
 
-vi.mock('@omniview/base-ui', async () => {
+vi.mock('@omniviewdev/base-ui', async () => {
   const React = await vi.importActual<typeof import('react')>('react');
 
   // Simple CommandList mock that renders items directly and supports filtering

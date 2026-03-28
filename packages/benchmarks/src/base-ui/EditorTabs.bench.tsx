@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { EditorTabs } from '@omniview/base-ui';
+import { EditorTabs } from '@omniviewdev/base-ui';
 import { makeEditorTabs } from '../utils/factories';
 
 const tabs20 = makeEditorTabs(20);

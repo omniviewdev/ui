@@ -60,7 +60,7 @@ def load_config(path: str) -> dict:
 export const JSON: Story = {
   args: {
     code: `{
-  "name": "@omniview/ai-ui",
+  "name": "@omniviewdev/ai-ui",
   "version": "0.1.0",
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.21"

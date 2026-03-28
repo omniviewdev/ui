@@ -9,7 +9,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { Collapsible, CollapsibleContent } from '@omniview/base-ui';
+import { Collapsible, CollapsibleContent } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import { LuChevronDown } from '../../system/icons';
 import { BrainIcon } from './BrainIcon';

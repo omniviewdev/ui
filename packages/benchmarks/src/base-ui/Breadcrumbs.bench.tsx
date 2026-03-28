@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { Breadcrumbs } from '@omniview/base-ui';
+import { Breadcrumbs } from '@omniviewdev/base-ui';
 
 function threeItems() {
   return (

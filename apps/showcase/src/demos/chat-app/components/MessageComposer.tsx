@@ -12,7 +12,7 @@ import {
   LuPaperclip,
   LuSendHorizontal,
 } from 'react-icons/lu';
-import { IconButton } from '@omniview/base-ui';
+import { IconButton } from '@omniviewdev/base-ui';
 import styles from '../index.module.css';
 
 export interface MessageComposerProps {

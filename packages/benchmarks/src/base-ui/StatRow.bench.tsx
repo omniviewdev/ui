@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { StatRow } from '@omniview/base-ui';
+import { StatRow } from '@omniviewdev/base-ui';
 import type { ReactNode } from 'react';
 
 const itemsA = (

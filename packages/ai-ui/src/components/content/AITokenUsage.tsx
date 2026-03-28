@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { StatRow } from '@omniview/base-ui';
+import { StatRow } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 
 export interface AITokenUsageProps extends HTMLAttributes<HTMLDivElement> {

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { TextArea } from '@omniview/base-ui';
+import { TextArea } from '@omniviewdev/base-ui';
 
 describe('TextArea', () => {
   benchRender('mount', () => (

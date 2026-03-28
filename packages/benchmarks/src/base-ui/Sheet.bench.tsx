@@ -1,8 +1,8 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender, benchMountMany } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
-import { Sheet } from '@omniview/base-ui';
-import type { SurfaceElevation } from '@omniview/base-ui';
+import { Sheet } from '@omniviewdev/base-ui';
+import type { SurfaceElevation } from '@omniviewdev/base-ui';
 
 describe('Sheet', () => {
   benchRender(

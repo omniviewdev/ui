@@ -1,5 +1,5 @@
 import { useState, useCallback, type KeyboardEvent } from 'react';
-import { Input } from '@omniview/base-ui';
+import { Input } from '@omniviewdev/base-ui';
 import { LuSearch } from 'react-icons/lu';
 import { SPEED_DIAL_SITES, ensureProtocol } from '../data';
 import styles from '../index.module.css';

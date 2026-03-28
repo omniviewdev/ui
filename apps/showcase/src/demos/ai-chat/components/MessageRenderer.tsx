@@ -4,26 +4,26 @@ import {
   ChatAvatar,
   AIContextIndicator,
   AIMessageActions,
-} from '@omniview/ai-ui';
-import type { ContextItem } from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
+import type { ContextItem } from '@omniviewdev/ai-ui';
 import {
   AIBranch,
   AIBranchContent,
   AIBranchSelector,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import {
   AISources,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import {
   AIMarkdown,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import {
   ThinkingBlock,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import {
   ToolCall,
   ToolResult,
-} from '@omniview/ai-ui';
+} from '@omniviewdev/ai-ui';
 import type { ChatMessage } from '../types';
 import styles from './MessageRenderer.module.css';
 

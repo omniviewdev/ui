@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_2_OPTIONS } from '../utils/bench-options';
-import { Toolbar, Button } from '@omniview/base-ui';
+import { Toolbar, Button } from '@omniviewdev/base-ui';
 
 describe('Toolbar', () => {
   benchRender(

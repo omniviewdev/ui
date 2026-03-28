@@ -1,4 +1,4 @@
-import { Card, Meter } from '@omniview/base-ui';
+import { Card, Meter } from '@omniviewdev/base-ui';
 import {
   LuCpu,
   LuMemoryStick,

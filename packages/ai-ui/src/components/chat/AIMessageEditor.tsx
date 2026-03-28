@@ -5,7 +5,7 @@ import {
   useState,
   type HTMLAttributes,
 } from 'react';
-import { Button, Spinner } from '@omniview/base-ui';
+import { Button, Spinner } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AIMessageEditor.module.css';
 

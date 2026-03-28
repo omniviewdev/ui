@@ -77,13 +77,13 @@ importers:
 
   apps/showcase:
     dependencies:
-      '@omniview/ai-ui':
+      '@omniviewdev/ai-ui':
         specifier: workspace:*
         version: link:../../packages/ai-ui
-      '@omniview/base-ui':
+      '@omniviewdev/base-ui':
         specifier: workspace:*
         version: link:../../packages/base-ui
-      '@omniview/editors':
+      '@omniviewdev/editors':
         specifier: workspace:*
         version: link:../../packages/editors
       '@tanstack/react-table':
@@ -136,7 +136,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.1
     devDependencies:
-      '@omniview/base-ui':
+      '@omniviewdev/base-ui':
         specifier: workspace:*
         version: link:../base-ui
       '@storybook/addon-a11y':
@@ -299,10 +299,10 @@ importers:
       '@mui/material':
         specifier: ^7.3.0
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@omniview/base-ui':
+      '@omniviewdev/base-ui':
         specifier: workspace:*
         version: link:../base-ui
-      '@omniview/editors':
+      '@omniviewdev/editors':
         specifier: workspace:*
         version: link:../editors
       '@tanstack/react-table':
@@ -350,7 +350,7 @@ importers:
 
   packages/editors:
     dependencies:
-      '@omniview/base-ui':
+      '@omniviewdev/base-ui':
         specifier: workspace:*
         version: link:../base-ui
       '@xterm/addon-fit':

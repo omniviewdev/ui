@@ -72,6 +72,20 @@ describe('themeRegistry — registration', () => {
       { type: 'unregistered', id: 'a' },
     ]);
   });
+
+  it('listeners added during dispatch are not invoked for the current event', () => {
+    const registry2 = createThemeRegistry();
+    const calls: string[] = [];
+    const inner = () => calls.push('inner');
+    registry2.subscribe(() => {
+      calls.push('outer');
+      registry2.subscribe(inner);
+    });
+    registry2.register({ id: 'x', name: 'x', base: 'dark' });
+    expect(calls).toEqual(['outer']); // inner should NOT fire for the triggering event
+    registry2.register({ id: 'y', name: 'y', base: 'dark' });
+    expect(calls).toEqual(['outer', 'outer', 'inner']);
+  });
 });
 
 describe('themeRegistry — apply()', () => {
@@ -141,6 +155,10 @@ describe('themeRegistry — apply()', () => {
     expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('#eee');
   });
 
+  it('active() returns null before any apply()', () => {
+    expect(registry.active()).toBeNull();
+  });
+
   it('updates active() after apply()', () => {
     registry.apply('light');
     expect(registry.active()).toBe('light');
@@ -162,5 +180,13 @@ describe('themeRegistry — apply()', () => {
     registry.register({ id: 'lc', name: 'lc', base: 'high-contrast-light' });
     registry.apply('lc');
     expect(document.documentElement.style.colorScheme).toBe('light');
+  });
+
+  it('idempotent apply() rewrites DOM state, not just events', () => {
+    registry.apply('dark');
+    // Externally corrupt the DOM.
+    document.documentElement.removeAttribute('data-ov-theme');
+    registry.apply('dark');
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
   });
 });

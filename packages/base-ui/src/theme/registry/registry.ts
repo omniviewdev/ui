@@ -39,14 +39,14 @@ export function createThemeRegistry(): ThemeRegistry {
   const themes = new Map<string, ThemeDefinition>();
   const listeners = new Set<ThemeRegistryListener>();
   const injectedProperties = new Set<string>();
-  let activeId = 'dark';
+  let activeId: string | null = null;
 
   for (const def of BUILT_IN_THEME_DEFINITIONS) {
     themes.set(def.id, def);
   }
 
   function emit(event: ThemeRegistryEvent): void {
-    for (const listener of listeners) {
+    for (const listener of [...listeners]) {
       try {
         listener(event);
       } catch (err) {

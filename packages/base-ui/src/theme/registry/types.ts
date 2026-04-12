@@ -69,6 +69,6 @@ export interface ThemeRegistry {
   list(): ThemeInfo[];
   has(id: string): boolean;
   apply(id: string): void;
-  active(): string;
+  active(): string | null;
   subscribe(listener: ThemeRegistryListener): () => void;
 }

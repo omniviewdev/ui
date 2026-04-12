@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { dottedKeyToCssVar, validateKeys } from './keyTransform';
-import {
-  COLOR_TOKEN_KEYS,
-  SYNTAX_TOKEN_KEYS,
-  TERMINAL_TOKEN_KEYS,
-} from '../generated/tokenKeys';
+import { COLOR_TOKEN_KEYS } from '../generated/tokenKeys';
 
 describe('dottedKeyToCssVar', () => {
   it('transforms dotted key to ov-prefixed CSS variable', () => {

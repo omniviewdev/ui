@@ -87,6 +87,10 @@ These are the only components currently in scope and exported:
 - `useDebouncedCallback` — Debounced callback hook with cancel/flush (`hooks/useDebouncedCallback.ts`)
 - `useDebouncedValue` — Debounced value hook (`hooks/useDebouncedValue.ts`)
 
+## Theming
+
+- `ThemeRegistry` + `useThemeRegistry` — runtime custom theme registration with base-theme inheritance
+
 Each approved component must include:
 
 1. A themed wrapper using semantic token-driven CSS modules.

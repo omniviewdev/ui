@@ -190,3 +190,23 @@ describe('themeRegistry — apply()', () => {
     expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
   });
 });
+
+describe('themeRegistry — SSR guard', () => {
+  it('apply() does not throw when document is undefined; still updates active() and emits', () => {
+    const registry = createThemeRegistry();
+    const events: ThemeRegistryEvent[] = [];
+    registry.subscribe((e) => events.push(e));
+    const originalDoc = globalThis.document;
+    // @ts-expect-error — simulate SSR
+    delete globalThis.document;
+    try {
+      expect(() => registry.apply('light')).not.toThrow();
+      expect(registry.active()).toBe('light');
+      expect(events.filter((e) => e.type === 'applied')).toEqual([
+        { type: 'applied', id: 'light' },
+      ]);
+    } finally {
+      globalThis.document = originalDoc;
+    }
+  });
+});

@@ -28,7 +28,8 @@
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "generate:token-keys": "tsx scripts/generate-token-keys.ts"
+    "generate:token-keys": "tsx scripts/generate-token-keys.ts",
+    "test:types": "vitest run --typecheck src/theme/types.test-d.test.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 import styles from './TimePicker.module.css';
 import type { StyledComponentProps } from '../../system/types';
 

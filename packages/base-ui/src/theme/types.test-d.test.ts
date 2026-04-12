@@ -20,19 +20,19 @@ import type {
 
 describe('BuiltInThemeMode', () => {
   it('accepts all 7 known ids', () => {
-    expectTypeOf<'dark'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'light'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'obsidian'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'carbon'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'void'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'high-contrast-dark'>().toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<'high-contrast-light'>().toMatchTypeOf<BuiltInThemeMode>();
+    expectTypeOf<'dark'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'light'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'obsidian'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'carbon'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'void'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'high-contrast-dark'>().toExtend<BuiltInThemeMode>();
+    expectTypeOf<'high-contrast-light'>().toExtend<BuiltInThemeMode>();
   });
 
   it('rejects unknown strings', () => {
-    expectTypeOf<'not-a-theme'>().not.toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<''>().not.toMatchTypeOf<BuiltInThemeMode>();
-    expectTypeOf<string>().not.toMatchTypeOf<BuiltInThemeMode>();
+    expectTypeOf<'not-a-theme'>().not.toExtend<BuiltInThemeMode>();
+    expectTypeOf<''>().not.toExtend<BuiltInThemeMode>();
+    expectTypeOf<string>().not.toExtend<BuiltInThemeMode>();
   });
 });
 
@@ -43,7 +43,7 @@ describe('ThemeDefinition', () => {
       name: 'My Theme',
       base: 'dark',
     };
-    expectTypeOf(valid).toMatchTypeOf<ThemeDefinition>();
+    expectTypeOf(valid).toExtend<ThemeDefinition>();
   });
 
   it('requires id, name, and base (omitting any is a type error)', () => {
@@ -63,7 +63,7 @@ describe('ThemeDefinition', () => {
       colors: { 'color.bg.base': '#fff', 'color.fg.default': '#000' },
       syntax: { 'syntax.keyword': '#569cd6' },
     };
-    expectTypeOf(withColors).toMatchTypeOf<ThemeDefinition>();
+    expectTypeOf(withColors).toExtend<ThemeDefinition>();
   });
 
   it('rejects unknown color override keys', () => {
@@ -74,27 +74,27 @@ describe('ThemeDefinition', () => {
 
 describe('ColorTokenKey', () => {
   it('accepts known color token keys', () => {
-    expectTypeOf<'color.bg.base'>().toMatchTypeOf<ColorTokenKey>();
-    expectTypeOf<'color.fg.default'>().toMatchTypeOf<ColorTokenKey>();
-    expectTypeOf<'color.accent.soft'>().toMatchTypeOf<ColorTokenKey>();
+    expectTypeOf<'color.bg.base'>().toExtend<ColorTokenKey>();
+    expectTypeOf<'color.fg.default'>().toExtend<ColorTokenKey>();
+    expectTypeOf<'color.accent.soft'>().toExtend<ColorTokenKey>();
   });
 
   it('rejects unknown color token keys', () => {
-    expectTypeOf<'not.a.real.key'>().not.toMatchTypeOf<ColorTokenKey>();
-    expectTypeOf<string>().not.toMatchTypeOf<ColorTokenKey>();
+    expectTypeOf<'not.a.real.key'>().not.toExtend<ColorTokenKey>();
+    expectTypeOf<string>().not.toExtend<ColorTokenKey>();
   });
 });
 
 describe('SyntaxTokenKey', () => {
   it('accepts known syntax token keys', () => {
-    expectTypeOf<'syntax.keyword'>().toMatchTypeOf<SyntaxTokenKey>();
-    expectTypeOf<'syntax.string'>().toMatchTypeOf<SyntaxTokenKey>();
-    expectTypeOf<'syntax.comment'>().toMatchTypeOf<SyntaxTokenKey>();
+    expectTypeOf<'syntax.keyword'>().toExtend<SyntaxTokenKey>();
+    expectTypeOf<'syntax.string'>().toExtend<SyntaxTokenKey>();
+    expectTypeOf<'syntax.comment'>().toExtend<SyntaxTokenKey>();
   });
 
   it('rejects unknown syntax token keys', () => {
-    expectTypeOf<'syntax.bogus'>().not.toMatchTypeOf<SyntaxTokenKey>();
-    expectTypeOf<string>().not.toMatchTypeOf<SyntaxTokenKey>();
+    expectTypeOf<'syntax.bogus'>().not.toExtend<SyntaxTokenKey>();
+    expectTypeOf<string>().not.toExtend<SyntaxTokenKey>();
   });
 });
 
@@ -102,6 +102,6 @@ describe('TerminalTokenKey', () => {
   it('is currently never — no string is assignable', () => {
     // TerminalTokenKey = never (no terminal tokens defined yet).
     // string is not assignable to never.
-    expectTypeOf<string>().not.toMatchTypeOf<TerminalTokenKey>();
+    expectTypeOf<string>().not.toExtend<TerminalTokenKey>();
   });
 });

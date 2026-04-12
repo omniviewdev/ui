@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, type PropsWithChildren } from 'react';
+import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { ThemeContext } from './context';
+import { themeRegistry } from './registry';
 import type { ThemeDensity, ThemeMode, ThemeMotion } from './types';
 
-const THEME_ATTR = 'data-ov-theme';
 const DENSITY_ATTR = 'data-ov-density';
 const MOTION_ATTR = 'data-ov-motion';
 
@@ -17,33 +17,13 @@ export interface ThemeProviderProps extends PropsWithChildren {
   persist?: boolean;
 }
 
-function getInitialThemeValue<T extends string>(
-  storageKey: string,
-  fallback: T,
-  isValid: (value: string) => value is T,
-): T {
-  if (typeof window === 'undefined') {
-    return fallback;
-  }
-
-  const value = window.localStorage.getItem(storageKey);
-  return value && isValid(value) ? value : fallback;
+function getStored(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(key);
 }
 
-const isThemeMode = (value: string): value is ThemeMode =>
-  value === 'dark' ||
-  value === 'light' ||
-  value === 'high-contrast-dark' ||
-  value === 'high-contrast-light' ||
-  value === 'obsidian' ||
-  value === 'carbon' ||
-  value === 'void';
-
-const isThemeDensity = (value: string): value is ThemeDensity =>
-  value === 'compact' || value === 'comfortable';
-
-const isThemeMotion = (value: string): value is ThemeMotion =>
-  value === 'normal' || value === 'reduced';
+const isThemeDensity = (v: string): v is ThemeDensity => v === 'compact' || v === 'comfortable';
+const isThemeMotion = (v: string): v is ThemeMotion => v === 'normal' || v === 'reduced';
 
 export function ThemeProvider({
   children,
@@ -52,55 +32,72 @@ export function ThemeProvider({
   initialMotion = 'normal',
   persist = true,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<ThemeMode>(() =>
-    persist ? getInitialThemeValue(THEME_STORAGE_KEY, initialTheme, isThemeMode) : initialTheme,
-  );
-  const [density, setDensity] = useState<ThemeDensity>(() =>
-    persist
-      ? getInitialThemeValue(DENSITY_STORAGE_KEY, initialDensity, isThemeDensity)
-      : initialDensity,
-  );
-  const [motion, setMotion] = useState<ThemeMotion>(() =>
-    persist
-      ? getInitialThemeValue(MOTION_STORAGE_KEY, initialMotion, isThemeMotion)
-      : initialMotion,
-  );
+  // --- THEME ---
+  // Resolve an initial theme id. If localStorage has a registered id, use that;
+  // otherwise fall back to `initialTheme` and remember the pending id (if any)
+  // so we can auto-apply it when a matching `registered` event arrives.
+  const pendingThemeIdRef = useRef<string | null>(null);
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (!persist) return initialTheme;
+    const stored = getStored(THEME_STORAGE_KEY);
+    if (stored && themeRegistry.has(stored)) return stored;
+    if (stored) pendingThemeIdRef.current = stored;
+    return initialTheme;
+  });
 
+  // Apply the initial theme through the registry once on mount and subscribe
+  // to registry events so external applies (e.g. via useThemeRegistry) stay
+  // in sync, and so that a deferred registered theme auto-applies.
   useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute(THEME_ATTR, theme);
+    themeRegistry.apply(theme);
+    const unsubscribe = themeRegistry.subscribe((event) => {
+      if (event.type === 'applied') {
+        setThemeState(event.id);
+        if (persist && typeof window !== 'undefined') {
+          window.localStorage.setItem(THEME_STORAGE_KEY, event.id);
+        }
+      } else if (event.type === 'registered') {
+        if (pendingThemeIdRef.current === event.id) {
+          pendingThemeIdRef.current = null;
+          themeRegistry.apply(event.id);
+        }
+      }
+    });
+    return unsubscribe;
+    // Intentionally only on mount. `theme` state is updated via the subscriber.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    // Allow browser-native controls to align with the active mode.
-    root.style.colorScheme =
-      theme === 'light' || theme === 'high-contrast-light' ? 'light' : 'dark';
+  const setTheme = (next: ThemeMode) => {
+    themeRegistry.apply(next);
+    // State update flows through the `applied` listener above.
+  };
 
-    if (persist) {
-      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-    }
-  }, [persist, theme]);
-
+  // --- DENSITY ---
+  const [density, setDensity] = useState<ThemeDensity>(() => {
+    if (!persist) return initialDensity;
+    const stored = getStored(DENSITY_STORAGE_KEY);
+    return stored && isThemeDensity(stored) ? stored : initialDensity;
+  });
   useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute(DENSITY_ATTR, density);
-
-    if (persist) {
-      window.localStorage.setItem(DENSITY_STORAGE_KEY, density);
-    }
+    document.documentElement.setAttribute(DENSITY_ATTR, density);
+    if (persist) window.localStorage.setItem(DENSITY_STORAGE_KEY, density);
   }, [density, persist]);
 
+  // --- MOTION ---
+  const [motion, setMotion] = useState<ThemeMotion>(() => {
+    if (!persist) return initialMotion;
+    const stored = getStored(MOTION_STORAGE_KEY);
+    return stored && isThemeMotion(stored) ? stored : initialMotion;
+  });
   useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute(MOTION_ATTR, motion);
-
-    if (persist) {
-      window.localStorage.setItem(MOTION_STORAGE_KEY, motion);
-    }
+    document.documentElement.setAttribute(MOTION_ATTR, motion);
+    if (persist) window.localStorage.setItem(MOTION_STORAGE_KEY, motion);
   }, [motion, persist]);
 
   const value = useMemo(
     () => ({ theme, density, motion, setTheme, setDensity, setMotion }),
-    [density, motion, theme],
+    [theme, density, motion],
   );
-
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

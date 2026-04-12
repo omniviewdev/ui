@@ -1,19 +1,9 @@
 import { useCallback, type KeyboardEvent } from 'react';
-import { IconButton, Tooltip, Separator, Menu, useTheme } from '@omniviewdev/base-ui';
+import { IconButton, Tooltip, Separator, Menu, useTheme, useThemeList } from '@omniviewdev/base-ui';
 import type { ThemeMode } from '@omniviewdev/base-ui';
 import { LuLayoutGrid, LuPalette } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';
-
-const THEME_OPTIONS: { id: ThemeMode; label: string }[] = [
-  { id: 'void', label: 'Void' },
-  { id: 'obsidian', label: 'Obsidian' },
-  { id: 'carbon', label: 'Carbon' },
-  { id: 'dark', label: 'Dark (Classic)' },
-  { id: 'light', label: 'Light' },
-  { id: 'high-contrast-dark', label: 'High Contrast Dark' },
-  { id: 'high-contrast-light', label: 'High Contrast Light' },
-];
 
 interface DockProps {
   activeApp: string | null;
@@ -22,6 +12,7 @@ interface DockProps {
 
 export function Dock({ activeApp, onSelectApp }: DockProps) {
   const { theme, setTheme } = useTheme();
+  const themes = useThemeList();
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLElement>) => {
@@ -124,9 +115,9 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
                   value={theme}
                   onValueChange={(value) => setTheme(value as ThemeMode)}
                 >
-                  {THEME_OPTIONS.map((opt) => (
-                    <Menu.RadioItem key={opt.id} value={opt.id}>
-                      {opt.label}
+                  {themes.map((t) => (
+                    <Menu.RadioItem key={t.id} value={t.id}>
+                      {t.name}
                       <Menu.RadioItemIndicator />
                     </Menu.RadioItem>
                   ))}

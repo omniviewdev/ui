@@ -1,0 +1,36 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-inline-xs);
+  font-family: var(--ov-font-mono);
+  color: var(--ov-color-fg-default);
+}
+
+.field {
+  width: 2.5ch;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.field:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.separator { color: var(--ov-color-fg-muted); }
+
+.meridiem {
+  min-width: 3ch;
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  color: var(--ov-color-fg-default);
+  cursor: pointer;
+  padding-inline: var(--ov-space-inline-sm);
+}
+
+.root[data-disabled] { opacity: 0.6; }

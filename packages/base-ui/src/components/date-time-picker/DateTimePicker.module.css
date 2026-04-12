@@ -1,0 +1,13 @@
+.combo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-sm);
+  padding: var(--ov-space-inline-sm);
+}
+
+.timeRow {
+  display: flex;
+  justify-content: center;
+  padding: var(--ov-space-inline-xs);
+  border-top: 1px solid var(--ov-color-border-default);
+}

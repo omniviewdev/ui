@@ -1,0 +1,44 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-inline-sm);
+  min-height: var(--ov-size-button-height-md);
+  padding-inline: var(--ov-size-button-padding-inline-md);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.trigger:hover {
+  background: var(--ov-color-state-hover);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.placeholder {
+  color: var(--ov-color-fg-muted);
+}
+
+.popup {
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  box-shadow: var(--ov-shadow-surface);
+  padding: 0;
+}

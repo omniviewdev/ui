@@ -86,3 +86,4 @@ export * from './status-bar';
 export * from './timeline';
 export * from './sortable-table';
 export * from './file-table';
+export * from './date-picker';

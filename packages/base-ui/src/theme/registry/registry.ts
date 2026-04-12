@@ -4,7 +4,8 @@ import {
   TERMINAL_TOKEN_KEYS,
 } from '../generated/tokenKeys';
 import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
-import { validateKeys } from './keyTransform';
+import { dottedKeyToCssVar, validateKeys } from './keyTransform';
+import { LIGHT_THEME_MODES } from './types';
 import type {
   ThemeDefinition,
   ThemeInfo,
@@ -55,6 +56,38 @@ export function createThemeRegistry(): ThemeRegistry {
     }
   }
 
+  function clearInjectedProperties(): void {
+    if (typeof document === 'undefined') return;
+    const style = document.documentElement.style;
+    for (const prop of injectedProperties) {
+      style.removeProperty(prop);
+    }
+    injectedProperties.clear();
+  }
+
+  function applyOverrides(section: Record<string, string> | undefined): void {
+    if (!section || typeof document === 'undefined') return;
+    const style = document.documentElement.style;
+    for (const [key, value] of Object.entries(section)) {
+      const cssVar = dottedKeyToCssVar(key);
+      style.setProperty(cssVar, value);
+      injectedProperties.add(cssVar);
+    }
+  }
+
+  function setAttributes(def: ThemeDefinition): void {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    root.setAttribute('data-ov-theme', def.base);
+    const isBuiltIn = BUILT_IN_THEME_IDS.has(def.id);
+    if (isBuiltIn) {
+      root.removeAttribute('data-ov-theme-custom');
+    } else {
+      root.setAttribute('data-ov-theme-custom', def.id);
+    }
+    root.style.colorScheme = LIGHT_THEME_MODES.has(def.base) ? 'light' : 'dark';
+  }
+
   const registry: ThemeRegistry = {
     register(theme) {
       if (themes.has(theme.id)) {
@@ -86,8 +119,18 @@ export function createThemeRegistry(): ThemeRegistry {
     has(id) {
       return themes.has(id);
     },
-    apply(_id) {
-      throw new Error('apply() not yet implemented');
+    apply(id) {
+      const def = themes.get(id);
+      if (!def) throw new Error(`Unknown theme '${id}'`);
+      clearInjectedProperties();
+      setAttributes(def);
+      if (!BUILT_IN_THEME_IDS.has(def.id)) {
+        applyOverrides(def.colors as Record<string, string> | undefined);
+        applyOverrides(def.syntax as Record<string, string> | undefined);
+        applyOverrides(def.terminal as Record<string, string> | undefined);
+      }
+      activeId = id;
+      emit({ type: 'applied', id });
     },
     active() {
       return activeId;
@@ -99,10 +142,6 @@ export function createThemeRegistry(): ThemeRegistry {
       };
     },
   };
-
-  // Silence unused-var warnings for fields reserved for apply().
-  void injectedProperties;
-  void activeId;
 
   return registry;
 }

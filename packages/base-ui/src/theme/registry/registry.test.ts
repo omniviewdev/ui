@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createThemeRegistry } from './registry';
 import type { ThemeDefinition, ThemeRegistry, ThemeRegistryEvent } from './types';
 
@@ -71,5 +71,96 @@ describe('themeRegistry — registration', () => {
       { type: 'registered', id: 'a' },
       { type: 'unregistered', id: 'a' },
     ]);
+  });
+});
+
+describe('themeRegistry — apply()', () => {
+  let registry: ThemeRegistry;
+  beforeEach(() => {
+    registry = createThemeRegistry();
+    document.documentElement.removeAttribute('data-ov-theme');
+    document.documentElement.removeAttribute('data-ov-theme-custom');
+    document.documentElement.style.cssText = '';
+  });
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-ov-theme');
+    document.documentElement.removeAttribute('data-ov-theme-custom');
+    document.documentElement.style.cssText = '';
+  });
+
+  it('throws when applying an unknown id', () => {
+    expect(() => registry.apply('ghost')).toThrow(/unknown theme/i);
+  });
+
+  it('sets data-ov-theme and colorScheme for a built-in', () => {
+    registry.apply('light');
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('light');
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe(null);
+    expect(document.documentElement.style.colorScheme).toBe('light');
+    registry.apply('dark');
+    expect(document.documentElement.style.colorScheme).toBe('dark');
+  });
+
+  it('writes CSS variable overrides for a custom theme and sets data-ov-theme-custom', () => {
+    registry.register({
+      id: 'solarized-dark',
+      name: 'Solarized Dark',
+      base: 'dark',
+      colors: { 'color.bg.base': '#002b36' },
+      syntax: { 'syntax.comment': '#586e75' },
+    });
+    registry.apply('solarized-dark');
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('solarized-dark');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
+    expect(document.documentElement.style.getPropertyValue('--ov-syntax-comment')).toBe('#586e75');
+    expect(document.documentElement.style.colorScheme).toBe('dark');
+  });
+
+  it('clears previous overrides when switching to a built-in', () => {
+    registry.register({
+      id: 'sol',
+      name: 'sol',
+      base: 'dark',
+      colors: { 'color.bg.base': '#002b36' },
+    });
+    registry.apply('sol');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
+    registry.apply('light');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe(null);
+  });
+
+  it('clears previous overrides when switching between custom themes with different keys', () => {
+    registry.register({ id: 'a', name: 'a', base: 'dark', colors: { 'color.bg.base': '#111' } });
+    registry.register({ id: 'b', name: 'b', base: 'dark', colors: { 'color.fg.default': '#eee' } });
+    registry.apply('a');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#111');
+    registry.apply('b');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('#eee');
+  });
+
+  it('updates active() after apply()', () => {
+    registry.apply('light');
+    expect(registry.active()).toBe('light');
+  });
+
+  it('is idempotent — reapplies and emits event even if already active', () => {
+    const events: ThemeRegistryEvent[] = [];
+    registry.subscribe((e) => events.push(e));
+    registry.apply('dark');
+    registry.apply('dark');
+    const applied = events.filter((e) => e.type === 'applied');
+    expect(applied).toEqual([
+      { type: 'applied', id: 'dark' },
+      { type: 'applied', id: 'dark' },
+    ]);
+  });
+
+  it('sets colorScheme light for high-contrast-light base', () => {
+    registry.register({ id: 'lc', name: 'lc', base: 'high-contrast-light' });
+    registry.apply('lc');
+    expect(document.documentElement.style.colorScheme).toBe('light');
   });
 });

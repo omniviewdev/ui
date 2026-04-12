@@ -22,7 +22,7 @@ export function extractTokenKeys(css: string): ExtractedKeys {
   for (const match of css.matchAll(VAR_RE)) {
     const prefix = match[1] as Prefix;
     const rest = match[2];
-    if (!PREFIXES.includes(prefix)) continue;
+    if (!PREFIXES.includes(prefix) || rest === undefined) continue;
     // Convert hyphens to dots to produce the dotted token key form.
     buckets[prefix].add(`${prefix}.${rest.replaceAll('-', '.')}`);
   }

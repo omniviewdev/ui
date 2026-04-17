@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { LuClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
+import { DateField } from '../date-field/DateField';
 import styles from './TimePicker.module.css';
 import type { StyledComponentProps } from '../../system/types';
 
@@ -22,8 +23,6 @@ function clampToStep(value: number, step: number, max: number): number {
   const snapped = Math.floor(value / step) * step;
   return Math.max(0, Math.min(max, snapped));
 }
-
-type FieldName = 'hour' | 'minute' | 'second';
 
 // ─── Column component ────────────────────────────────────────────────────────
 
@@ -130,10 +129,10 @@ export function TimePicker(props: TimePickerProps) {
     disabled = false,
     readOnly = false,
     className,
+    'aria-label': ariaLabel,
   } = props;
 
   const current = value ?? new Date();
-  const id = useId();
   const popoverId = useId();
 
   const [open, setOpen] = useState(false);
@@ -142,65 +141,23 @@ export function TimePicker(props: TimePickerProps) {
 
   const h24 = current.getHours();
   const isPM = h24 >= 12;
-  const displayedHour = hourCycle === 12 ? ((h24 + 11) % 12) + 1 : h24;
 
-  // Draft state: tracks what the user is currently typing, null = use canonical value
-  const [draft, setDraft] = useState<Partial<Record<FieldName, string>>>({});
+  // ─── DateField change handler with minuteStep snapping ──────────────────
 
-  const emitHour = useCallback(
-    (text: string) => {
-      if (readOnly) return;
-      const parsed = Number.parseInt(text, 10);
-      if (Number.isNaN(parsed)) return;
-      let hours: number;
-      if (hourCycle === 12) {
-        const clamped = Math.max(1, Math.min(12, parsed));
-        hours = (clamped % 12) + (isPM ? 12 : 0);
+  const handleFieldChange = useCallback(
+    (next: Date | null) => {
+      if (!next) return;
+      if (minuteStep > 1) {
+        const snapped = new Date(next);
+        const m = snapped.getMinutes();
+        snapped.setMinutes(Math.floor(m / minuteStep) * minuteStep);
+        onChange?.(snapped);
       } else {
-        hours = Math.max(0, Math.min(23, parsed));
+        onChange?.(next);
       }
-      const next = new Date(current);
-      next.setHours(hours, current.getMinutes(), current.getSeconds(), 0);
-      onChange?.(next);
     },
-    [readOnly, hourCycle, isPM, current, onChange],
+    [minuteStep, onChange],
   );
-
-  const emitMinute = useCallback(
-    (text: string) => {
-      if (readOnly) return;
-      const parsed = Number.parseInt(text, 10);
-      if (Number.isNaN(parsed)) return;
-      const next = new Date(current);
-      next.setHours(current.getHours(), clampToStep(parsed, minuteStep, 59), current.getSeconds(), 0);
-      onChange?.(next);
-    },
-    [readOnly, current, minuteStep, onChange],
-  );
-
-  const emitSecond = useCallback(
-    (text: string) => {
-      if (readOnly) return;
-      const parsed = Number.parseInt(text, 10);
-      if (Number.isNaN(parsed)) return;
-      const next = new Date(current);
-      next.setHours(current.getHours(), current.getMinutes(), Math.max(0, Math.min(59, parsed)), 0);
-      onChange?.(next);
-    },
-    [readOnly, current, onChange],
-  );
-
-  const toggleMeridiem = () => {
-    if (readOnly) return;
-    const next = isPM ? h24 - 12 : h24 + 12;
-    const d = new Date(current);
-    d.setHours(next, current.getMinutes(), current.getSeconds(), 0);
-    onChange?.(d);
-  };
-
-  const hourDisplay = draft.hour ?? String(displayedHour).padStart(2, '0');
-  const minuteDisplay = draft.minute ?? String(current.getMinutes()).padStart(2, '0');
-  const secondDisplay = draft.second ?? String(current.getSeconds()).padStart(2, '0');
 
   // ─── Column data ────────────────────────────────────────────────────────
 
@@ -229,6 +186,8 @@ export function TimePicker(props: TimePickerProps) {
     { value: 'AM', label: 'AM' },
     { value: 'PM', label: 'PM' },
   ];
+
+  const displayedHour = hourCycle === 12 ? ((h24 + 11) % 12) + 1 : h24;
 
   // Currently selected values for columns
   const selectedHour = hourCycle === 12 ? displayedHour : h24;
@@ -288,14 +247,6 @@ export function TimePicker(props: TimePickerProps) {
     }
   };
 
-  // Alt+Down inside a field opens the popover
-  const handleFieldKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.altKey && e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (!disabled && !readOnly) setOpen(true);
-    }
-  };
-
   return (
     <Popover.Root open={open} onOpenChange={handleOpenChange}>
       <div
@@ -303,79 +254,16 @@ export function TimePicker(props: TimePickerProps) {
         className={[styles.root, className].filter(Boolean).join(' ')}
         data-disabled={disabled || undefined}
       >
-        <div className={styles.fields}>
-          <input
-            id={`${id}-h`}
-            aria-label="Hour"
-            className={styles.field}
-            type="text"
-            inputMode="numeric"
-            disabled={disabled}
-            readOnly={readOnly}
-            value={hourDisplay}
-            onChange={(e) => {
-              setDraft((d) => ({ ...d, hour: e.target.value }));
-            }}
-            onBlur={(e) => {
-              emitHour(e.target.value);
-              setDraft((d) => { const n = { ...d }; delete n.hour; return n; });
-            }}
-            onKeyDown={handleFieldKeyDown}
-          />
-          <span className={styles.separator} aria-hidden="true">:</span>
-          <input
-            id={`${id}-m`}
-            aria-label="Minute"
-            className={styles.field}
-            type="text"
-            inputMode="numeric"
-            disabled={disabled}
-            readOnly={readOnly}
-            value={minuteDisplay}
-            onChange={(e) => {
-              setDraft((d) => ({ ...d, minute: e.target.value }));
-            }}
-            onBlur={(e) => {
-              emitMinute(e.target.value);
-              setDraft((d) => { const n = { ...d }; delete n.minute; return n; });
-            }}
-            onKeyDown={handleFieldKeyDown}
-          />
-          {showSeconds && (
-            <>
-              <span className={styles.separator} aria-hidden="true">:</span>
-              <input
-                id={`${id}-s`}
-                aria-label="Second"
-                className={styles.field}
-                type="text"
-                inputMode="numeric"
-                disabled={disabled}
-                readOnly={readOnly}
-                value={secondDisplay}
-                onChange={(e) => {
-                  setDraft((d) => ({ ...d, second: e.target.value }));
-                }}
-                onBlur={(e) => {
-                  emitSecond(e.target.value);
-                  setDraft((d) => { const n = { ...d }; delete n.second; return n; });
-                }}
-                onKeyDown={handleFieldKeyDown}
-              />
-            </>
-          )}
-          {hourCycle === 12 && (
-            <button
-              type="button"
-              className={styles.meridiem}
-              disabled={disabled}
-              onClick={toggleMeridiem}
-              aria-pressed={isPM}
-            >
-              {isPM ? 'PM' : 'AM'}
-            </button>
-          )}
-        </div>
+        <DateField
+          value={current}
+          onChange={handleFieldChange}
+          mode="time"
+          hourCycle={hourCycle}
+          showSeconds={showSeconds}
+          disabled={disabled}
+          readOnly={readOnly}
+          aria-label={ariaLabel ?? 'Time'}
+        />
         <button
           ref={iconButtonRef}
           type="button"

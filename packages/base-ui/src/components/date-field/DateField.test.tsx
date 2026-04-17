@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, within, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DateField } from './DateField';
 
@@ -12,10 +12,6 @@ function getSection(container: HTMLElement, type: string): HTMLElement {
   const el = container.querySelector(`[data-section-type="${type}"]:not([data-literal])`);
   if (!el) throw new Error(`No section with type="${type}"`);
   return el as HTMLElement;
-}
-
-function getRoot(): HTMLElement {
-  return screen.getByRole('group');
 }
 
 describe('DateField — rendering', () => {

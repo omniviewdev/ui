@@ -60,7 +60,7 @@ export interface SectionDomProps {
   onFocus?: (e: FocusEvent<HTMLElement>) => void;
   onBlur?: (e: FocusEvent<HTMLElement>) => void;
   onKeyDown?: (e: KeyboardEvent<HTMLElement>) => void;
-  onBeforeInput?: (e: React.FormEvent<HTMLElement>) => void;
+  onBeforeInput?: (e: React.SyntheticEvent<HTMLElement>) => void;
 }
 
 export interface UseDateFieldReturn {

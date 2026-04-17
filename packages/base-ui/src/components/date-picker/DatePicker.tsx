@@ -109,7 +109,4 @@ export function DatePicker(props: DatePickerProps) {
   );
 }
 
-DatePicker.Root = Popover.Root;
-DatePicker.Trigger = Popover.Trigger;
-DatePicker.Popup = Popover.Popup;
 DatePicker.Calendar = Calendar;

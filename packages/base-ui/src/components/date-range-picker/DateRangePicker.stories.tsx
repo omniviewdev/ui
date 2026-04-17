@@ -8,12 +8,10 @@ const meta = {
   component: DateRangePicker,
   tags: ['autodocs'],
   args: {
-    placeholder: 'Select a range',
     disabled: false,
   },
   argTypes: {
     disabled: { control: 'boolean' },
-    placeholder: { control: 'text' },
     rangeSeparator: { control: 'text' },
   },
 } satisfies Meta<typeof DateRangePicker>;
@@ -29,7 +27,6 @@ export const Default: Story = {
         {...args}
         value={value}
         onChange={setValue}
-        placeholder="Select a range"
       />
     );
   },
@@ -60,7 +57,6 @@ export const WithMinMax: Story = {
         onChange={setValue}
         min={min}
         max={max}
-        placeholder="Within ±30 days"
       />
     );
   },
@@ -91,7 +87,7 @@ export const CustomSeparator: Story = {
   },
 };
 
-export const LongFormat: Story = {
+export const LocaleGB: Story = {
   render: (args) => {
     const today = new Date();
     const end = new Date(today);
@@ -102,7 +98,7 @@ export const LongFormat: Story = {
         {...args}
         value={value}
         onChange={setValue}
-        format={{ month: 'long', day: 'numeric' }}
+        locale="en-GB"
       />
     );
   },

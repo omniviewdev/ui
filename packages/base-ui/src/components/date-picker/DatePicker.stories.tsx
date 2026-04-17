@@ -7,12 +7,10 @@ const meta = {
   component: DatePicker,
   tags: ['autodocs'],
   args: {
-    placeholder: 'Pick a date',
     disabled: false,
   },
   argTypes: {
     disabled: { control: 'boolean' },
-    placeholder: { control: 'text' },
   },
 } satisfies Meta<typeof DatePicker>;
 
@@ -22,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => {
     const [value, setValue] = useState<Date | null>(null);
-    return <DatePicker {...args} value={value} onChange={setValue} placeholder="Pick a date" />;
+    return <DatePicker {...args} value={value} onChange={setValue} />;
   },
 };
 
@@ -48,13 +46,12 @@ export const WithMinMax: Story = {
         onChange={setValue}
         min={min}
         max={max}
-        placeholder="Within ±7 days"
       />
     );
   },
 };
 
-export const LongFormat: Story = {
+export const LocaleGB: Story = {
   render: (args) => {
     const [value, setValue] = useState<Date | null>(new Date());
     return (
@@ -62,7 +59,7 @@ export const LongFormat: Story = {
         {...args}
         value={value}
         onChange={setValue}
-        format={{ weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }}
+        locale="en-GB"
       />
     );
   },

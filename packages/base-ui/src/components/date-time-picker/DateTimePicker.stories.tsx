@@ -7,7 +7,6 @@ const meta = {
   component: DateTimePicker,
   tags: ['autodocs'],
   args: {
-    placeholder: 'Select date and time',
     disabled: false,
     showSeconds: false,
     hourCycle: 24,
@@ -16,7 +15,6 @@ const meta = {
     disabled: { control: 'boolean' },
     showSeconds: { control: 'boolean' },
     hourCycle: { control: 'inline-radio', options: [12, 24] },
-    placeholder: { control: 'text' },
   },
 } satisfies Meta<typeof DateTimePicker>;
 

@@ -1,5 +1,6 @@
-import { Popover } from '@base-ui/react/popover';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { LuCalendarClock } from 'react-icons/lu';
+import { Popover } from '../popover/Popover';
 import { Calendar } from '../date-picker/Calendar';
 import { formatDate, type DateFormat } from '../date-picker/formatters';
 import type { WeekStart } from '../date-picker/dateUtils';
@@ -92,14 +93,18 @@ export function DateTimePicker(props: DateTimePickerProps) {
         aria-readonly={readOnly || undefined}
         className={[pickerStyles.trigger, className].filter(Boolean).join(' ')}
       >
-        {label ?? (
-          <span className={pickerStyles.placeholder}>
-            {placeholder ?? 'Select date and time'}
-          </span>
-        )}
+        <span
+          className={pickerStyles.triggerValue}
+          data-placeholder={!label || undefined}
+        >
+          {label ?? (placeholder ?? 'Select date and time')}
+        </span>
+        <span className={pickerStyles.triggerIcon} aria-hidden="true">
+          <LuCalendarClock />
+        </span>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner sideOffset={4}>
+        <Popover.Positioner sideOffset={4} align="start">
           <Popover.Popup className={pickerStyles.popup}>
             <div className={styles.combo}>
               <Calendar

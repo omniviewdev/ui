@@ -1,44 +1,91 @@
+/* ─── Trigger — looks like a form input ─────────────────────────────────── */
+
 .trigger {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+  --_ov-placeholder: var(--ov-color-fg-subtle);
+
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-space-inline-sm);
-  min-height: var(--ov-size-button-height-md);
-  padding-inline: var(--ov-size-button-padding-inline-md);
-  background: var(--ov-color-bg-surface-raised);
-  color: var(--ov-color-fg-default);
-  border: 1px solid var(--ov-color-border-default);
+  justify-content: flex-start;
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-control-height);
+  padding-inline: var(--_ov-padding-inline);
+  border: 1px solid var(--_ov-border);
   border-radius: var(--ov-radius-control);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: var(--_ov-font-size);
+  font-weight: var(--ov-font-weight-body, 400);
+  line-height: 1.2;
+  text-align: left;
   cursor: pointer;
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),
-    border-color var(--ov-duration-interactive) var(--ov-ease-standard);
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .trigger:hover {
-  background: var(--ov-color-state-hover);
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
 }
 
 .trigger:focus-visible {
   outline: none;
-  border-color: var(--ov-color-border-focus);
+  border-color: var(--_ov-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 
 .trigger:disabled {
+  opacity: var(--ov-opacity-disabled, 0.45);
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
-.placeholder {
+/* ─── Trigger internals ──────────────────────────────────────────────────── */
+
+.triggerValue {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerValue[data-placeholder] {
+  color: var(--_ov-placeholder);
+}
+
+.triggerIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-inline-start: auto;
   color: var(--ov-color-fg-muted);
 }
 
+.triggerIcon :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+/* ─── Popup — solid surface, no bleed-through ────────────────────────────── */
+
 .popup {
-  background: var(--ov-color-bg-surface);
+  background: var(--ov-color-bg-surface-raised);
   border: 1px solid var(--ov-color-border-default);
   border-radius: var(--ov-radius-surface);
   box-shadow: var(--ov-shadow-surface);
   padding: 0;
+  /* Override the default Popover.Popup min/max sizing for compact calendar */
+  min-inline-size: unset;
+  max-inline-size: unset;
 }

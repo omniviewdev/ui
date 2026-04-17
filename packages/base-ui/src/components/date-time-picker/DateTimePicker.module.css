@@ -1,13 +1,23 @@
 .combo {
   display: flex;
   flex-direction: column;
-  gap: var(--ov-space-stack-sm);
-  padding: var(--ov-space-inline-sm);
+  gap: 0;
 }
 
 .timeRow {
   display: flex;
   justify-content: center;
-  padding: var(--ov-space-inline-xs);
+  align-items: center;
+  padding: var(--ov-space-inline-sm);
   border-top: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+}
+
+/* Strip the TimePicker's outer input-shell when embedded inside the popup */
+.timeRow > * {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding-inline: 0;
+  min-height: unset;
 }

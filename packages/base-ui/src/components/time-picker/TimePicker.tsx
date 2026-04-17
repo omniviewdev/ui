@@ -1,4 +1,5 @@
 import { useCallback, useId, useState } from 'react';
+import { LuClock } from 'react-icons/lu';
 import styles from './TimePicker.module.css';
 import type { StyledComponentProps } from '../../system/types';
 
@@ -105,74 +106,79 @@ export function TimePicker(props: TimePickerProps) {
       className={[styles.root, className].filter(Boolean).join(' ')}
       data-disabled={disabled || undefined}
     >
-      <input
-        id={`${id}-h`}
-        aria-label="Hour"
-        className={styles.field}
-        type="text"
-        inputMode="numeric"
-        disabled={disabled}
-        readOnly={readOnly}
-        value={hourDisplay}
-        onChange={(e) => {
-          setDraft((d) => ({ ...d, hour: e.target.value }));
-        }}
-        onBlur={(e) => {
-          emitHour(e.target.value);
-          setDraft((d) => { const n = { ...d }; delete n.hour; return n; });
-        }}
-      />
-      <span className={styles.separator} aria-hidden="true">:</span>
-      <input
-        id={`${id}-m`}
-        aria-label="Minute"
-        className={styles.field}
-        type="text"
-        inputMode="numeric"
-        disabled={disabled}
-        readOnly={readOnly}
-        value={minuteDisplay}
-        onChange={(e) => {
-          setDraft((d) => ({ ...d, minute: e.target.value }));
-        }}
-        onBlur={(e) => {
-          emitMinute(e.target.value);
-          setDraft((d) => { const n = { ...d }; delete n.minute; return n; });
-        }}
-      />
-      {showSeconds && (
-        <>
-          <span className={styles.separator} aria-hidden="true">:</span>
-          <input
-            id={`${id}-s`}
-            aria-label="Second"
-            className={styles.field}
-            type="text"
-            inputMode="numeric"
-            disabled={disabled}
-            readOnly={readOnly}
-            value={secondDisplay}
-            onChange={(e) => {
-              setDraft((d) => ({ ...d, second: e.target.value }));
-            }}
-            onBlur={(e) => {
-              emitSecond(e.target.value);
-              setDraft((d) => { const n = { ...d }; delete n.second; return n; });
-            }}
-          />
-        </>
-      )}
-      {hourCycle === 12 && (
-        <button
-          type="button"
-          className={styles.meridiem}
+      <div className={styles.fields}>
+        <input
+          id={`${id}-h`}
+          aria-label="Hour"
+          className={styles.field}
+          type="text"
+          inputMode="numeric"
           disabled={disabled}
-          onClick={toggleMeridiem}
-          aria-pressed={isPM}
-        >
-          {isPM ? 'PM' : 'AM'}
-        </button>
-      )}
+          readOnly={readOnly}
+          value={hourDisplay}
+          onChange={(e) => {
+            setDraft((d) => ({ ...d, hour: e.target.value }));
+          }}
+          onBlur={(e) => {
+            emitHour(e.target.value);
+            setDraft((d) => { const n = { ...d }; delete n.hour; return n; });
+          }}
+        />
+        <span className={styles.separator} aria-hidden="true">:</span>
+        <input
+          id={`${id}-m`}
+          aria-label="Minute"
+          className={styles.field}
+          type="text"
+          inputMode="numeric"
+          disabled={disabled}
+          readOnly={readOnly}
+          value={minuteDisplay}
+          onChange={(e) => {
+            setDraft((d) => ({ ...d, minute: e.target.value }));
+          }}
+          onBlur={(e) => {
+            emitMinute(e.target.value);
+            setDraft((d) => { const n = { ...d }; delete n.minute; return n; });
+          }}
+        />
+        {showSeconds && (
+          <>
+            <span className={styles.separator} aria-hidden="true">:</span>
+            <input
+              id={`${id}-s`}
+              aria-label="Second"
+              className={styles.field}
+              type="text"
+              inputMode="numeric"
+              disabled={disabled}
+              readOnly={readOnly}
+              value={secondDisplay}
+              onChange={(e) => {
+                setDraft((d) => ({ ...d, second: e.target.value }));
+              }}
+              onBlur={(e) => {
+                emitSecond(e.target.value);
+                setDraft((d) => { const n = { ...d }; delete n.second; return n; });
+              }}
+            />
+          </>
+        )}
+        {hourCycle === 12 && (
+          <button
+            type="button"
+            className={styles.meridiem}
+            disabled={disabled}
+            onClick={toggleMeridiem}
+            aria-pressed={isPM}
+          >
+            {isPM ? 'PM' : 'AM'}
+          </button>
+        )}
+      </div>
+      <span className={styles.endIcon} aria-hidden="true">
+        <LuClock />
+      </span>
     </div>
   );
 }

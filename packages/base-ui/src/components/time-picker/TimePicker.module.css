@@ -1,9 +1,54 @@
+/* ─── Root — input-like shell ─────────────────────────────────────────────── */
+
 .root {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-space-inline-xs);
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-control-height);
+  padding-inline: var(--_ov-padding-inline);
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-control);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
   font-family: var(--ov-font-mono);
-  color: var(--ov-color-fg-default);
+  font-size: var(--_ov-font-size);
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.root:hover {
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
+}
+
+.root:focus-within {
+  border-color: var(--_ov-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.root[data-disabled] {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: not-allowed;
+}
+
+/* ─── Inner fields row ────────────────────────────────────────────────────── */
+
+.fields {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex: 1;
 }
 
 .field {
@@ -13,6 +58,8 @@
   color: inherit;
   font: inherit;
   text-align: center;
+  padding: 0;
+  outline: none;
 }
 
 .field:focus-visible {
@@ -21,16 +68,43 @@
   border-radius: 2px;
 }
 
-.separator { color: var(--ov-color-fg-muted); }
+.separator {
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+}
 
 .meridiem {
-  min-width: 3ch;
+  min-width: 3.5ch;
+  margin-inline-start: var(--ov-space-inline-xs);
   background: var(--ov-color-bg-surface-raised);
   border: 1px solid var(--ov-color-border-default);
   border-radius: var(--ov-radius-control);
   color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
   cursor: pointer;
   padding-inline: var(--ov-space-inline-sm);
+  padding-block: 1px;
+  line-height: 1.4;
 }
 
-.root[data-disabled] { opacity: 0.6; }
+.meridiem:hover {
+  background: var(--ov-color-state-hover);
+}
+
+/* ─── Right-side clock icon ───────────────────────────────────────────────── */
+
+.endIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  color: var(--ov-color-fg-muted);
+}
+
+.endIcon :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}

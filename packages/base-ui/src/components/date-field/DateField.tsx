@@ -4,7 +4,7 @@ import { useDateField, type UseDateFieldOptions } from './useDateField';
 import type { Section } from './sections';
 
 export interface DateFieldProps {
-  value: Date | null;
+  value?: Date | null;
   onChange?: (value: Date | null) => void;
   mode?: 'date' | 'time' | 'datetime';
   locale?: string;
@@ -47,7 +47,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
   } = props;
 
   const options: UseDateFieldOptions = {
-    value,
+    value: value ?? null,
     onChange,
     mode,
     locale,

@@ -1,0 +1,87 @@
+/* ─── DateField: sectioned input primitive ──────────────────────────────── */
+
+.root {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+  --_ov-placeholder: var(--ov-color-fg-subtle);
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--_ov-control-height);
+  padding-inline: var(--_ov-padding-inline);
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-control);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-font-size);
+  line-height: 1.2;
+  /* Tabular numerals so sections align cleanly as values change */
+  font-variant-numeric: tabular-nums;
+  cursor: text;
+  outline: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.root:hover:not([data-disabled]) {
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
+}
+
+.root:focus-within:not([data-disabled]) {
+  border-color: var(--_ov-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.root[data-disabled] {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: not-allowed;
+}
+
+/* ─── Section span (editable) ────────────────────────────────────────────── */
+
+.section {
+  display: inline-block;
+  padding: 0 1px;
+  border-radius: 2px;
+  min-width: 1ch;
+  text-align: center;
+  outline: none;
+  caret-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: text;
+}
+
+.section[data-focused] {
+  background: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse, var(--ov-color-fg-default));
+}
+
+.section[data-placeholder] {
+  color: var(--ov-color-fg-muted);
+}
+
+/* When focused and also placeholder, preserve readable contrast on brand bg */
+.section[data-focused][data-placeholder] {
+  color: var(--ov-color-fg-inverse, var(--ov-color-fg-default));
+  opacity: 0.85;
+}
+
+/* ─── Literal separators ─────────────────────────────────────────────────── */
+
+.literal {
+  display: inline-block;
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  white-space: pre;
+}

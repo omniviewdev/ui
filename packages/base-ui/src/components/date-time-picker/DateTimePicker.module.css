@@ -118,7 +118,13 @@
 
 .timeColumns {
   display: flex;
+  flex-direction: column;
   border-left: 1px solid var(--ov-color-border-default);
+  /* Critical: clip inner columns' content so they can't push our height past
+   * the Calendar's. Combined with `.combo { align-items: stretch }`, this
+   * sizes us to match the Calendar and lets inner columns scroll. */
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */

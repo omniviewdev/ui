@@ -113,3 +113,123 @@ describe('Calendar', () => {
     expect(todayCell).toHaveAttribute('aria-current', 'date');
   });
 });
+
+describe('Calendar range mode', () => {
+  const START = new Date(2026, 3, 10); // April 10
+  const END = new Date(2026, 3, 15);   // April 15
+
+  it('renders both start and end with aria-selected=true', () => {
+    render(
+      <Calendar
+        mode="range"
+        startDate={START}
+        endDate={END}
+        onRangeChange={() => {}}
+        locale="en-US"
+      />,
+    );
+    const selected = screen.getAllByRole('gridcell', { selected: true });
+    const texts = selected.map((el) => el.textContent?.trim());
+    expect(texts).toContain('10');
+    expect(texts).toContain('15');
+  });
+
+  it('clicking a date when no start is set emits { start, end: null }', async () => {
+    const user = userEvent.setup();
+    const onRangeChange = vi.fn();
+    render(
+      <Calendar
+        mode="range"
+        startDate={null}
+        endDate={null}
+        onRangeChange={onRangeChange}
+        locale="en-US"
+      />,
+    );
+    await user.click(screen.getByRole('gridcell', { name: /^10/ }));
+    expect(onRangeChange).toHaveBeenCalledWith(
+      expect.objectContaining({ start: expect.any(Date), end: null }),
+    );
+    expect((onRangeChange.mock.calls[0]?.[0] as { start: Date }).start.getDate()).toBe(10);
+  });
+
+  it('clicking a date after start is set emits { start, end }', async () => {
+    const user = userEvent.setup();
+    const onRangeChange = vi.fn();
+    render(
+      <Calendar
+        mode="range"
+        startDate={START}
+        endDate={null}
+        onRangeChange={onRangeChange}
+        locale="en-US"
+      />,
+    );
+    await user.click(screen.getByRole('gridcell', { name: /^20/ }));
+    expect(onRangeChange).toHaveBeenCalledWith(
+      expect.objectContaining({ start: START, end: expect.any(Date) }),
+    );
+    expect((onRangeChange.mock.calls[0]?.[0] as { end: Date }).end.getDate()).toBe(20);
+  });
+
+  it('clicking a date before start resets the range', async () => {
+    const user = userEvent.setup();
+    const onRangeChange = vi.fn();
+    render(
+      <Calendar
+        mode="range"
+        startDate={START}
+        endDate={null}
+        onRangeChange={onRangeChange}
+        locale="en-US"
+      />,
+    );
+    // Click April 5, which is before START (April 10)
+    await user.click(screen.getByRole('gridcell', { name: /^5/ }));
+    const call = onRangeChange.mock.calls[0]?.[0] as { start: Date; end: Date | null };
+    expect(call.start.getDate()).toBe(5);
+    expect(call.end).toBeNull();
+  });
+
+  it('cells between start and end get the in-range class', () => {
+    render(
+      <Calendar
+        mode="range"
+        startDate={START}
+        endDate={END}
+        onRangeChange={() => {}}
+        locale="en-US"
+      />,
+    );
+    // April 12 and 13 are strictly between April 10 and April 15
+    const cell12 = screen.getByRole('gridcell', { name: /^12/ });
+    const cell13 = screen.getByRole('gridcell', { name: /^13/ });
+    expect(cell12.className).toMatch(/cellInRange/);
+    expect(cell13.className).toMatch(/cellInRange/);
+    // Start and end cells should NOT have the in-range class
+    const cell10 = screen.getByRole('gridcell', { name: /^10/ });
+    const cell15 = screen.getByRole('gridcell', { name: /^15/ });
+    expect(cell10.className).not.toMatch(/cellInRange/);
+    expect(cell15.className).not.toMatch(/cellInRange/);
+  });
+
+  it('disabled dates are not selectable in range mode', async () => {
+    const user = userEvent.setup();
+    const onRangeChange = vi.fn();
+    const isDateDisabled = (d: Date) => d.getDate() === 14;
+    render(
+      <Calendar
+        mode="range"
+        startDate={null}
+        endDate={null}
+        onRangeChange={onRangeChange}
+        locale="en-US"
+        isDateDisabled={isDateDisabled}
+      />,
+    );
+    const disabledCell = screen.getByRole('gridcell', { name: /^14/ });
+    expect(disabledCell).toHaveAttribute('aria-disabled', 'true');
+    await user.click(disabledCell);
+    expect(onRangeChange).not.toHaveBeenCalled();
+  });
+});

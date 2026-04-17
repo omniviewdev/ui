@@ -3,9 +3,9 @@ import { LuCalendarClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
 import { Calendar } from '../date-picker/Calendar';
+import { TimeColumns } from '../time-picker/TimeColumns';
 import type { DateFormat } from '../date-picker/formatters';
 import type { WeekStart } from '../date-picker/dateUtils';
-import { TimePicker } from '../time-picker/TimePicker';
 import pickerStyles from '../date-picker/DatePicker.module.css';
 import styles from './DateTimePicker.module.css';
 import type { StyledComponentProps } from '../../system/types';
@@ -170,16 +170,16 @@ export function DateTimePicker(props: DateTimePickerProps) {
                 weekStartsOn={weekStartsOn}
                 autoFocus
               />
-              <div className={styles.timeRow}>
-                <span className={styles.timeRowLabel}>Time</span>
-                <TimePicker
+              <div className={styles.timeColumns}>
+                <TimeColumns
                   value={current ?? new Date()}
                   onChange={onTimeChange}
-                  showSeconds={showSeconds}
                   hourCycle={hourCycle}
+                  showSeconds={showSeconds}
+                  minuteStep={minuteStep}
                   disabled={disabled}
                   readOnly={readOnly}
-                  {...(minuteStep !== undefined ? { minuteStep } : {})}
+                  autoScroll
                 />
               </div>
             </div>

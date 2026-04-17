@@ -109,31 +109,8 @@
   gap: 0;
 }
 
-.timeRow {
+.timeColumns {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: var(--ov-space-inline-md);
-  border-top: none;
+  align-items: stretch;
   border-left: 1px solid var(--ov-color-border-default);
-  background: var(--ov-color-bg-surface-raised);
-  min-width: 160px;
-}
-
-/* ─── "Time" label above the embedded TimePicker ─────────────────────────── */
-
-.timeRowLabel {
-  color: var(--ov-color-fg-muted);
-  font-size: var(--ov-font-size-caption);
-  margin-bottom: var(--ov-space-stack-xs);
-  user-select: none;
-}
-
-/* Strip the TimePicker's outer input-shell when embedded inside the popup */
-.timeRow > * {
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  padding-inline: 0;
-  min-height: unset;
 }

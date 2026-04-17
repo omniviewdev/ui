@@ -1,16 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DateTimePicker } from './DateTimePicker';
 
 describe('DateTimePicker', () => {
-  it('opens popover and renders both Calendar and TimePicker', async () => {
+  it('opens popover and renders both Calendar and time columns', async () => {
     const user = userEvent.setup();
     render(<DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
     expect(screen.getByRole('grid')).toBeInTheDocument();
-    // Multiple hour spinbuttons: one in the DateField trigger, one in the embedded TimePicker
-    expect(screen.getAllByLabelText(/hour/i).length).toBeGreaterThanOrEqual(1);
+    // Time columns are rendered as listboxes in the popup
+    expect(screen.getByRole('listbox', { name: /hours/i })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: /minutes/i })).toBeInTheDocument();
   });
 
   it('selecting a day preserves the current time-of-day', async () => {
@@ -31,7 +32,7 @@ describe('DateTimePicker', () => {
     expect(last.getMinutes()).toBe(30);
   });
 
-  it('changing the hour in the embedded TimePicker preserves the current date', async () => {
+  it('selecting an hour option in the popup updates value and preserves the current date', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -42,16 +43,13 @@ describe('DateTimePicker', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
-    // The TimePicker inside the popover exposes a spinbutton for hour
-    const hourSpinbuttons = screen.getAllByRole('spinbutton', { name: /hour/i });
-    // The last one belongs to the embedded TimePicker (the DateField trigger also
-    // renders an hour section, so pick the one inside the open popup)
-    const hour = hourSpinbuttons[hourSpinbuttons.length - 1] as HTMLElement;
-    await user.click(hour);
-    await user.keyboard('{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}');
+    // TimeColumns renders a listbox for hours in the popup
+    const hoursColumn = screen.getByRole('listbox', { name: /hours/i });
+    const option14 = within(hoursColumn).getByRole('option', { name: '14' });
+    await user.click(option14);
     const last = onChange.mock.calls.at(-1)?.[0] as Date;
     expect(last.getDate()).toBe(12);
-    expect(last.getHours()).toBeGreaterThan(9);
+    expect(last.getHours()).toBe(14);
   });
 
   it('typing in the DateField hour section updates value with new hour', async () => {

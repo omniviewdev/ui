@@ -4,47 +4,54 @@ import userEvent from '@testing-library/user-event';
 import { DateRangePicker } from './DateRangePicker';
 import type { DateRange } from './DateRangePicker';
 
-const SEP = ' \u2013 '; // default rangeSeparator
+/** Locate a section span by type within a labelled DateField group. */
+function getSectionInGroup(group: HTMLElement, type: string): HTMLElement {
+  const el = group.querySelector(`[data-section-type="${type}"]:not([data-literal])`);
+  if (!el) throw new Error(`No section with type="${type}" in group`);
+  return el as HTMLElement;
+}
 
 describe('DateRangePicker', () => {
-  // 1. Renders placeholder when value is empty
-  it('renders placeholder when value is empty', () => {
-    render(
-      <DateRangePicker
-        value={{ start: null, end: null }}
-        onChange={() => {}}
-        placeholder="Pick a range"
-      />,
+  // 1. DateFields show per-section placeholders when start/end are null
+  it('renders placeholder sections when value is empty', () => {
+    const { container } = render(
+      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />,
     );
-    expect(screen.getByPlaceholderText('Pick a range')).toBeInTheDocument();
-    const input = screen.getByRole('combobox') as HTMLInputElement;
-    expect(input.value).toBe('');
+    const [startGroup, endGroup] = container.querySelectorAll('[role="group"]');
+    if (!startGroup || !endGroup) throw new Error('Expected two DateField groups');
+    // Both fields should show placeholder text in their sections
+    expect(
+      getSectionInGroup(startGroup as HTMLElement, 'month').getAttribute('data-placeholder'),
+    ).toBe('');
+    expect(
+      getSectionInGroup(endGroup as HTMLElement, 'month').getAttribute('data-placeholder'),
+    ).toBe('');
   });
 
   // 2. Renders formatted range when both dates are set
   it('renders formatted range when both dates are set', () => {
-    render(
+    const { container } = render(
       <DateRangePicker
         value={{ start: new Date(2026, 3, 12), end: new Date(2026, 3, 19) }}
         onChange={() => {}}
         locale="en-US"
-        format={{ month: 'short', day: 'numeric' }}
       />,
     );
-    const input = screen.getByRole('combobox') as HTMLInputElement;
-    expect(input.value).toMatch(/Apr 12/);
-    expect(input.value).toMatch(/Apr 19/);
-    expect(input.value).toContain(SEP.trim());
+    const [startGroup, endGroup] = container.querySelectorAll('[role="group"]');
+    if (!startGroup || !endGroup) throw new Error('Expected two DateField groups');
+    // Start field shows April 12
+    expect(getSectionInGroup(startGroup as HTMLElement, 'month').textContent).toBe('04');
+    expect(getSectionInGroup(startGroup as HTMLElement, 'day').textContent).toBe('12');
+    // End field shows April 19
+    expect(getSectionInGroup(endGroup as HTMLElement, 'month').textContent).toBe('04');
+    expect(getSectionInGroup(endGroup as HTMLElement, 'day').textContent).toBe('19');
   });
 
   // 3. Clicking icon button opens the calendar
   it('clicking icon button opens the calendar', async () => {
     const user = userEvent.setup();
     render(
-      <DateRangePicker
-        value={{ start: null, end: null }}
-        onChange={() => {}}
-      />,
+      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />,
     );
     expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Open calendar' }));
@@ -55,7 +62,6 @@ describe('DateRangePicker', () => {
   it('clicking a date sets the start and keeps the popover open', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    // Use uncontrolled so internal state drives re-renders
     render(
       <DateRangePicker
         defaultValue={{ start: null, end: null }}
@@ -64,9 +70,7 @@ describe('DateRangePicker', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Open calendar' }));
-    // Click the "10" day cell (April 10 in current month view)
     await user.click(screen.getByRole('gridcell', { name: /^10/ }));
-    // onChange called with start set and end null
     expect(onChange).toHaveBeenCalled();
     const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
     expect(lastCall.start).toBeInstanceOf(Date);
@@ -79,7 +83,6 @@ describe('DateRangePicker', () => {
   it('clicking a second date after start sets the end and closes the popover', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    // Use uncontrolled to let internal state drive rendering
     render(
       <DateRangePicker
         defaultValue={{ start: null, end: null }}
@@ -95,109 +98,88 @@ describe('DateRangePicker', () => {
     const firstCall = onChange.mock.calls[0]![0] as DateRange;
     expect(firstCall.start).toBeInstanceOf(Date);
     expect(firstCall.end).toBeNull();
-    // Calendar still open (only start is set)
     expect(screen.getByRole('grid')).toBeInTheDocument();
 
     // Click "20" → sets end and closes
     await user.click(screen.getByRole('gridcell', { name: /^20/ }));
-    const allCalls = onChange.mock.calls;
-    const lastCall = allCalls[allCalls.length - 1]![0] as DateRange;
+    const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
     expect(lastCall.start).toBeInstanceOf(Date);
     expect(lastCall.end).toBeInstanceOf(Date);
-    // Popover should now be closed
     expect(screen.queryByRole('grid')).not.toBeInTheDocument();
   });
 
-  // 6. Typing a valid "start – end" string commits on blur
-  it('typing a valid start\u2013end string commits on blur', async () => {
+  // 6. Typing into the start field commits the start date
+  it('typing into start field commits the start date', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
+    const { container } = render(
       <DateRangePicker
         value={{ start: null, end: null }}
         onChange={onChange}
+        locale="en-US"
       />,
     );
-    const input = screen.getByRole('combobox');
-    await user.click(input);
-    await user.clear(input);
-    await user.type(input, `April 12 2026${SEP}April 19 2026`);
-    await user.tab(); // blur
+    const [startGroup] = container.querySelectorAll('[role="group"]');
+    if (!startGroup) throw new Error('No start DateField group found');
+    const monthSection = getSectionInGroup(startGroup as HTMLElement, 'month');
+    await user.click(monthSection);
+    // type 04 12 2026
+    await user.keyboard('04122026');
     expect(onChange).toHaveBeenCalled();
-    const committed = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
-    expect(committed.start).toBeInstanceOf(Date);
-    expect(committed.end).toBeInstanceOf(Date);
-    expect(committed.start!.getFullYear()).toBe(2026);
-    expect(committed.start!.getMonth()).toBe(3); // April = 3
-    expect(committed.start!.getDate()).toBe(12);
-    expect(committed.end!.getMonth()).toBe(3);
-    expect(committed.end!.getDate()).toBe(19);
+    const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
+    expect(lastCall.start).toBeInstanceOf(Date);
+    expect(lastCall.start!.getMonth()).toBe(3); // April
+    expect(lastCall.start!.getDate()).toBe(12);
+    expect(lastCall.start!.getFullYear()).toBe(2026);
   });
 
-  // 7. Typing an invalid range does not commit
-  it('typing an invalid range does not commit', async () => {
+  // 7. When start date is entered after end, end is reset
+  it('typing a start date after the current end resets end to null', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
+    const { container } = render(
       <DateRangePicker
-        value={{ start: null, end: null }}
-        onChange={onChange}
-      />,
-    );
-    const input = screen.getByRole('combobox');
-    await user.click(input);
-    await user.type(input, 'not-a-date – also-not-a-date');
-    await user.tab();
-    expect(onChange).not.toHaveBeenCalled();
-  });
-
-  // 8. Pressing Escape in the input reverts to the committed value
-  it('pressing Escape in the input reverts to the committed value', async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(
-      <DateRangePicker
-        value={{ start: new Date(2026, 3, 12), end: new Date(2026, 3, 19) }}
+        defaultValue={{ start: new Date(2026, 3, 5), end: new Date(2026, 3, 10) }}
         onChange={onChange}
         locale="en-US"
-        format={{ month: 'short', day: 'numeric' }}
       />,
     );
-    const input = screen.getByRole('combobox') as HTMLInputElement;
-    const originalValue = input.value;
-    await user.click(input);
-    await user.clear(input);
-    await user.type(input, 'garbage');
+    const [startGroup] = container.querySelectorAll('[role="group"]');
+    if (!startGroup) throw new Error('No start DateField group found');
+    // Set start to April 20 (after current end April 10)
+    const monthSection = getSectionInGroup(startGroup as HTMLElement, 'month');
+    await user.click(monthSection);
+    await user.keyboard('04202026');
+    expect(onChange).toHaveBeenCalled();
+    const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
+    // start should be the new date
+    expect(lastCall.start).toBeInstanceOf(Date);
+    expect(lastCall.start!.getDate()).toBe(20);
+    // end should have been reset to null since it was before new start
+    expect(lastCall.end).toBeNull();
+  });
+
+  // 8. Escape closes the popover
+  it('Escape closes the popover', async () => {
+    const user = userEvent.setup();
+    render(
+      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
+    expect(screen.getByRole('grid')).toBeInTheDocument();
     await user.keyboard('{Escape}');
-    expect(input.value).toBe(originalValue);
-    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
   });
 
-  // Extra: disabled state
-  it('disables input and button when disabled=true', () => {
-    render(
-      <DateRangePicker
-        value={{ start: null, end: null }}
-        onChange={() => {}}
-        disabled
-      />,
+  // 9. Disabled state applies to both fields and icon button
+  it('disabled state applies to both fields and icon button', () => {
+    const { container } = render(
+      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} disabled />,
     );
-    expect(screen.getByRole('combobox')).toBeDisabled();
+    const [startGroup, endGroup] = container.querySelectorAll('[role="group"]');
+    if (!startGroup || !endGroup) throw new Error('Expected two DateField groups');
+    expect((startGroup as HTMLElement).getAttribute('data-disabled')).toBe('');
+    expect((endGroup as HTMLElement).getAttribute('data-disabled')).toBe('');
     expect(screen.getByRole('button', { name: 'Open calendar' })).toBeDisabled();
-  });
-
-  // Extra: only start date set shows trailing separator
-  it('shows trailing separator when only start is set', () => {
-    render(
-      <DateRangePicker
-        value={{ start: new Date(2026, 3, 12), end: null }}
-        onChange={() => {}}
-        locale="en-US"
-        format={{ month: 'short', day: 'numeric' }}
-      />,
-    );
-    const input = screen.getByRole('combobox') as HTMLInputElement;
-    expect(input.value).toMatch(/Apr 12/);
-    expect(input.value).toContain(SEP.trim());
   });
 });

@@ -58,28 +58,14 @@
   cursor: not-allowed;
 }
 
-/* ─── Text input ──────────────────────────────────────────────────────────── */
+/* ─── Range separator ─────────────────────────────────────────────────────── */
 
-.input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: var(--_ov-font-size);
-  line-height: 1.35;
-  outline: none;
-  padding: 0;
-  cursor: text;
-}
-
-.input::placeholder {
-  color: var(--_ov-placeholder);
-}
-
-.input:disabled {
-  cursor: not-allowed;
+.separator {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+  user-select: none;
 }
 
 /* ─── Calendar icon button ────────────────────────────────────────────────── */

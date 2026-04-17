@@ -141,6 +141,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
           disabled={disabled}
           readOnly={readOnly}
           aria-label="Date and time"
+          bare
         />
         <button
           type="button"
@@ -170,6 +171,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
                 autoFocus
               />
               <div className={styles.timeRow}>
+                <span className={styles.timeRowLabel}>Time</span>
                 <TimePicker
                   value={current ?? new Date()}
                   onChange={onTimeChange}

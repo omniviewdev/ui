@@ -58,6 +58,13 @@
   cursor: not-allowed;
 }
 
+/* ─── DateField inside shell — each field grows to fill available space ──── */
+
+.shell > [role="group"] {
+  flex: 1;
+  min-width: 0;
+}
+
 /* ─── Range separator ─────────────────────────────────────────────────────── */
 
 .separator {

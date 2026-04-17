@@ -124,6 +124,7 @@ export function DatePicker(props: DatePickerProps) {
           disabled={disabled}
           readOnly={readOnly}
           aria-label="Date"
+          bare
         />
         <button
           type="button"

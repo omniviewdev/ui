@@ -18,6 +18,12 @@ export interface DateFieldProps {
   'aria-label'?: string;
   /** Placeholder shown before any editing — currently rendered per-section. */
   placeholder?: string;
+  /**
+   * When true, removes the input-shell styling (border, background, padding,
+   * min-height, hover, focus-within ring) so the field can be embedded inside
+   * an outer shell (e.g. a picker trigger) without doubling the border.
+   */
+  bare?: boolean;
 }
 
 /**
@@ -44,6 +50,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
     readOnly,
     className,
     'aria-label': ariaLabel,
+    bare,
   } = props;
 
   const options: UseDateFieldOptions = {
@@ -67,6 +74,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
       className={[styles.root, className].filter(Boolean).join(' ')}
       data-disabled={disabled ? '' : undefined}
       data-readonly={readOnly ? '' : undefined}
+      data-bare={bare ? '' : undefined}
       aria-label={ariaLabel ?? defaultAriaLabel(mode)}
       {...rootProps}
     >

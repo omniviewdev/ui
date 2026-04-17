@@ -263,6 +263,7 @@ export function TimePicker(props: TimePickerProps) {
           disabled={disabled}
           readOnly={readOnly}
           aria-label={ariaLabel ?? 'Time'}
+          bare
         />
         <button
           ref={iconButtonRef}

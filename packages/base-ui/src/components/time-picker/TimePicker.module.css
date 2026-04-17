@@ -42,6 +42,13 @@
   cursor: not-allowed;
 }
 
+/* ─── DateField inside root shell — grows to fill available space ─────────── */
+
+.root > [role="group"] {
+  flex: 1;
+  min-width: 0;
+}
+
 /* ─── Inner fields row ────────────────────────────────────────────────────── */
 
 .fields {

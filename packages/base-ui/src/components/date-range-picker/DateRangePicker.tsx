@@ -152,6 +152,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
           disabled={disabled}
           readOnly={readOnly}
           aria-label="Start date"
+          bare
         />
         <span className={styles.separator} aria-hidden="true">
           {rangeSeparator}
@@ -166,6 +167,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
           disabled={disabled}
           readOnly={readOnly}
           aria-label="End date"
+          bare
         />
         <button
           type="button"

@@ -45,6 +45,24 @@
   cursor: not-allowed;
 }
 
+/* ─── Bare mode — strip shell styling when embedded inside a picker shell ─── */
+
+.root[data-bare] {
+  border: none;
+  background: transparent;
+  padding-inline: 0;
+  min-height: unset;
+}
+
+.root[data-bare]:hover {
+  background: transparent;
+}
+
+.root[data-bare]:focus-within {
+  border: none;
+  box-shadow: none;
+}
+
 /* ─── Section span (editable) ────────────────────────────────────────────── */
 
 .section {

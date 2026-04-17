@@ -2,7 +2,7 @@ import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { LuCalendar } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import styles from './DatePicker.module.css';
-import { Calendar, type CalendarProps } from './Calendar';
+import { Calendar } from './Calendar';
 import { formatDate, type DateFormat } from './formatters';
 import type { WeekStart } from './dateUtils';
 import type { StyledComponentProps } from '../../system/types';
@@ -156,7 +156,7 @@ export function DatePicker(props: DatePickerProps) {
     }
   };
 
-  const handleCalendarSelect: CalendarProps['onChange'] = (next) => {
+  const handleCalendarSelect = (next: Date) => {
     setCurrent(next);
     setDraft(next ? formatDate(next, format, locale) : '');
     setParseError(false);

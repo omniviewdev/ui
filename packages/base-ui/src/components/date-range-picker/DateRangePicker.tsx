@@ -2,6 +2,7 @@ import { useCallback, useId, useRef, useState } from 'react';
 import { LuCalendarRange } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
+import { Button } from '../button/Button';
 import styles from './DateRangePicker.module.css';
 import { Calendar } from '../date-picker/Calendar';
 import type { DateFormat } from '../date-picker/formatters';
@@ -128,6 +129,15 @@ export function DateRangePicker(props: DateRangePickerProps) {
     }
   };
 
+  const handleClear = () => {
+    setCurrent({ start: null, end: null });
+    setRangeError(false);
+  };
+
+  const handleDone = () => {
+    setOpen(false);
+  };
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <div
@@ -197,6 +207,14 @@ export function DateRangePicker(props: DateRangePickerProps) {
               weekStartsOn={weekStartsOn}
               autoFocus
             />
+            <div className={styles.footer}>
+              <Button variant="ghost" color="neutral" size="sm" onClick={handleClear}>
+                Clear
+              </Button>
+              <Button variant="solid" color="brand" size="sm" onClick={handleDone}>
+                Done
+              </Button>
+            </div>
           </Popover.Popup>
         </Popover.Positioner>
       </Popover.Portal>

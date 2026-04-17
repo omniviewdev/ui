@@ -4,6 +4,7 @@ import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
 import { Calendar } from '../date-picker/Calendar';
 import { TimeColumns } from '../time-picker/TimeColumns';
+import { Button } from '../button/Button';
 import type { DateFormat } from '../date-picker/formatters';
 import type { WeekStart } from '../date-picker/dateUtils';
 import pickerStyles from '../date-picker/DatePicker.module.css';
@@ -113,6 +114,15 @@ export function DateTimePicker(props: DateTimePickerProps) {
     setRangeError(false);
   };
 
+  const handleClear = () => {
+    setCurrent(null);
+    setRangeError(false);
+  };
+
+  const handleDone = () => {
+    setOpen(false);
+  };
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       {/* Shell acts as the visual input container and popover anchor */}
@@ -159,29 +169,39 @@ export function DateTimePicker(props: DateTimePickerProps) {
       <Popover.Portal>
         <Popover.Positioner sideOffset={4} align="start" anchor={shellRef}>
           <Popover.Popup id={popoverId} className={pickerStyles.popup}>
-            <div className={styles.combo}>
-              <Calendar
-                value={current}
-                onChange={onDateChange}
-                min={min}
-                max={max}
-                isDateDisabled={isDateDisabled}
-                locale={locale}
-                weekStartsOn={weekStartsOn}
-                autoFocus
-              />
-              <div className={styles.timeColumns}>
-                <TimeColumns
-                  value={current ?? new Date()}
-                  onChange={onTimeChange}
-                  hourCycle={hourCycle}
-                  showSeconds={showSeconds}
-                  minuteStep={minuteStep}
-                  disabled={disabled}
-                  readOnly={readOnly}
-                  autoScroll
-                  fill
+            <div className={styles.body}>
+              <div className={styles.combo}>
+                <Calendar
+                  value={current}
+                  onChange={onDateChange}
+                  min={min}
+                  max={max}
+                  isDateDisabled={isDateDisabled}
+                  locale={locale}
+                  weekStartsOn={weekStartsOn}
+                  autoFocus
                 />
+                <div className={styles.timeColumns}>
+                  <TimeColumns
+                    value={current ?? new Date()}
+                    onChange={onTimeChange}
+                    hourCycle={hourCycle}
+                    showSeconds={showSeconds}
+                    minuteStep={minuteStep}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    autoScroll
+                    fill
+                  />
+                </div>
+              </div>
+              <div className={styles.footer}>
+                <Button variant="ghost" color="neutral" size="sm" onClick={handleClear}>
+                  Clear
+                </Button>
+                <Button variant="solid" color="brand" size="sm" onClick={handleDone}>
+                  Done
+                </Button>
               </div>
             </div>
           </Popover.Popup>

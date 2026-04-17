@@ -182,4 +182,33 @@ describe('DateRangePicker', () => {
     expect((endGroup as HTMLElement).getAttribute('data-disabled')).toBe('');
     expect(screen.getByRole('button', { name: 'Open calendar' })).toBeDisabled();
   });
+
+  // 10. Clear button resets both start and end to null
+  it('Clear button resets the range', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateRangePicker
+        value={{ start: new Date(2026, 3, 10), end: new Date(2026, 3, 20) }}
+        onChange={onChange}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
+    await user.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(onChange).toHaveBeenCalledWith({ start: null, end: null });
+  });
+
+  // 11. Done button closes the popover
+  it('Done button closes the popover', async () => {
+    const user = userEvent.setup();
+    render(
+      <DateRangePicker
+        value={{ start: new Date(2026, 3, 10), end: new Date(2026, 3, 20) }}
+        onChange={() => {}}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+  });
 });

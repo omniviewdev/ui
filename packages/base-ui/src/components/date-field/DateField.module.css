@@ -23,6 +23,7 @@
   line-height: 1.2;
   /* Tabular numerals so sections align cleanly as values change */
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   cursor: text;
   outline: none;
   transition:
@@ -71,6 +72,7 @@
   border-radius: 2px;
   min-width: 1ch;
   text-align: center;
+  white-space: nowrap;
   outline: none;
   caret-color: transparent;
   user-select: none;

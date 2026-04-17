@@ -81,4 +81,25 @@ describe('DateTimePicker', () => {
     const shell = screen.getByTestId('date-time-picker-shell');
     expect(shell).toHaveAttribute('data-disabled');
   });
+
+  it('Clear button resets the date and time', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} />,
+    );
+    await user.click(screen.getByRole('button', { name: /open calendar/i }));
+    await user.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(onChange).toHaveBeenCalledWith(null);
+  });
+
+  it('Done button closes the popover', async () => {
+    const user = userEvent.setup();
+    render(
+      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />,
+    );
+    await user.click(screen.getByRole('button', { name: /open calendar/i }));
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+  });
 });

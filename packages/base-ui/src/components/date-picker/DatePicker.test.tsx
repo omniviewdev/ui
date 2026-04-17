@@ -84,4 +84,21 @@ describe('DatePicker (convenience)', () => {
     await user.click(screen.getByRole('button', { name: 'Open calendar' }));
     expect(screen.queryByRole('grid')).not.toBeInTheDocument();
   });
+
+  it('Clear button resets the date', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<DatePicker value={new Date(2026, 3, 12)} onChange={onChange} />);
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
+    await user.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(onChange).toHaveBeenCalledWith(null);
+  });
+
+  it('Done button closes the popover', async () => {
+    const user = userEvent.setup();
+    render(<DatePicker value={new Date(2026, 3, 12)} onChange={() => {}} />);
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+  });
 });

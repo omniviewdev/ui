@@ -3,6 +3,7 @@ import { LuClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
 import { TimeColumns } from './TimeColumns';
+import { Button } from '../button/Button';
 import styles from './TimePicker.module.css';
 import type { StyledComponentProps } from '../../system/types';
 
@@ -57,6 +58,16 @@ export function TimePicker(props: TimePickerProps) {
     },
     [minuteStep, onChange],
   );
+
+  const handleClear = () => {
+    const midnight = new Date();
+    midnight.setHours(0, 0, 0, 0);
+    onChange?.(midnight);
+  };
+
+  const handleDone = () => {
+    setOpen(false);
+  };
 
   const handleIconButtonClick = () => {
     if (disabled || readOnly) return;
@@ -116,6 +127,14 @@ export function TimePicker(props: TimePickerProps) {
               readOnly={readOnly}
               autoScroll
             />
+            <div className={styles.footer}>
+              <Button variant="ghost" color="neutral" size="sm" onClick={handleClear}>
+                Clear
+              </Button>
+              <Button variant="solid" color="brand" size="sm" onClick={handleDone}>
+                Done
+              </Button>
+            </div>
           </Popover.Popup>
         </Popover.Positioner>
       </Popover.Portal>

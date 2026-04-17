@@ -100,6 +100,13 @@
   block-size: var(--_ov-icon-size);
 }
 
+/* ─── Popup body wrapper — stacks combo + footer vertically ──────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
 /* ─── Popup combo layout ──────────────────────────────────────────────────── */
 
 .combo {
@@ -113,4 +120,20 @@
   display: flex;
   align-items: stretch;
   border-left: 1px solid var(--ov-color-border-default);
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--ov-space-stack-sm, 8px);
+  padding: var(--ov-space-stack-sm, 8px) var(--ov-space-stack-md, 12px);
+  border-top: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.footer > :first-child {
+  margin-right: auto;
 }

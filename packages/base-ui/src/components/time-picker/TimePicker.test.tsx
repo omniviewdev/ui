@@ -152,4 +152,25 @@ describe('TimePicker', () => {
     expect(screen.queryByRole('listbox', { name: /hours/i })).not.toBeInTheDocument();
     expect(iconButton).toHaveFocus();
   });
+
+  it('Clear button resets the time to midnight', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} />);
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+    await user.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(onChange).toHaveBeenCalled();
+    const called = onChange.mock.calls.at(-1)?.[0] as Date;
+    expect(called.getHours()).toBe(0);
+    expect(called.getMinutes()).toBe(0);
+    expect(called.getSeconds()).toBe(0);
+  });
+
+  it('Done button closes the popover', async () => {
+    const user = userEvent.setup();
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByRole('listbox', { name: /hours/i })).not.toBeInTheDocument();
+  });
 });

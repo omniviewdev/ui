@@ -8,6 +8,7 @@ import {
   LuFileText,
   LuContainer,
   LuMessageCircle,
+  LuCalendarClock,
 } from 'react-icons/lu';
 
 export interface DemoApp {
@@ -67,5 +68,12 @@ export const apps: DemoApp[] = [
     description: 'Team messaging with channels and threads',
     icon: LuMessageCircle,
     component: lazy(() => import('./demos/chat-app')),
+  },
+  {
+    id: 'date-time-pickers',
+    name: 'Date & Time Pickers',
+    description: 'Interactive demo of DatePicker, TimePicker, and DateTimePicker',
+    icon: LuCalendarClock,
+    component: lazy(() => import('./demos/date-time-pickers')),
   },
 ];

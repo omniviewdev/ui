@@ -68,7 +68,7 @@ describe('DatePicker (convenience)', () => {
     await user.type(input, 'April 15 2026');
     await user.tab(); // blur
     expect(onChange).toHaveBeenCalledWith(expect.any(Date));
-    const committed: Date = onChange.mock.calls[0][0];
+    const committed = onChange.mock.calls[0]![0] as Date;
     expect(committed.getFullYear()).toBe(2026);
     expect(committed.getMonth()).toBe(3); // April = 3
     expect(committed.getDate()).toBe(15);
@@ -96,7 +96,7 @@ describe('DatePicker (convenience)', () => {
     await user.type(input, 'June 1 2026');
     await user.keyboard('{Enter}');
     expect(onChange).toHaveBeenCalledWith(expect.any(Date));
-    const committed: Date = onChange.mock.calls[0][0];
+    const committed = onChange.mock.calls[0]![0] as Date;
     expect(committed.getFullYear()).toBe(2026);
     expect(committed.getMonth()).toBe(5); // June = 5
     expect(committed.getDate()).toBe(1);

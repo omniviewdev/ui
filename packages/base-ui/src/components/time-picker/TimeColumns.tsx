@@ -21,11 +21,29 @@ interface TimeColumnProps {
 export function TimeColumn({ label, items, selected, onSelect, disabled }: TimeColumnProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const selectedRef = useRef<HTMLLIElement>(null);
+  const suppressScrollRef = useRef(false);
 
   // Scroll selected item into center when the column mounts or selected changes
+  // from an external source. Skip when the change came from a user click in
+  // this column (the clicked item is already visible; extra scroll causes
+  // a jittery double-jump).
   useEffect(() => {
+    if (suppressScrollRef.current) {
+      suppressScrollRef.current = false;
+      return;
+    }
     const el = selectedRef.current;
-    if (!el) return;
+    const list = listRef.current;
+    if (!el || !list) return;
+
+    // If the selected element is already fully within the list's viewport,
+    // skip the scroll. This avoids re-centering on every click even when the
+    // click handler didn't set the suppress flag (e.g. external mutations).
+    const listRect = list.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const fullyVisible = elRect.top >= listRect.top && elRect.bottom <= listRect.bottom;
+    if (fullyVisible) return;
+
     if (typeof el.scrollIntoView === 'function') {
       el.scrollIntoView({ block: 'center', behavior: 'auto' });
     }
@@ -51,6 +69,8 @@ export function TimeColumn({ label, items, selected, onSelect, disabled }: TimeC
       if (focused && focused.dataset.value !== undefined) {
         const raw = focused.dataset.value;
         const parsed = Number.parseInt(raw, 10);
+        // Keyboard select: the focused item is already visible; don't re-center.
+        suppressScrollRef.current = true;
         onSelect(Number.isNaN(parsed) ? raw : parsed);
       }
     }
@@ -78,7 +98,11 @@ export function TimeColumn({ label, items, selected, onSelect, disabled }: TimeC
               .filter(Boolean)
               .join(' ')}
             onClick={() => {
-              if (!disabled) onSelect(item.value);
+              if (disabled) return;
+              // The clicked item is already visible; don't re-center on the
+              // resulting `selected` change.
+              suppressScrollRef.current = true;
+              onSelect(item.value);
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {

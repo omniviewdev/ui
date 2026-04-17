@@ -171,17 +171,6 @@
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  height: 240px;
-}
-
-/* In fill mode, abandon the fixed height and stretch within the parent flex
- * container. Requires the parent (.timeColumns in DateTimePicker) to use
- * `display: flex; flex-direction: column` so `flex: 1` resolves vertically. */
-.columns[data-fill] {
-  height: auto;
-  min-height: 240px;
-  flex: 1 1 auto;
-  align-self: stretch;
 }
 
 .columnDivider {
@@ -198,8 +187,7 @@
   padding-block: var(--ov-space-stack-sm, 4px);
   padding-inline: 0;
   width: 56px;
-  flex: 1 1 auto;
-  min-height: 0;
+  height: 240px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   overscroll-behavior: contain;

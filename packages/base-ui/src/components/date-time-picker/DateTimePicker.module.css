@@ -118,10 +118,7 @@
 
 .timeColumns {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
   border-left: 1px solid var(--ov-color-border-default);
-  min-height: 0;
 }
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */

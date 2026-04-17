@@ -133,8 +133,6 @@ export interface TimeColumnsProps {
   className?: string;
   /** Auto-scroll columns so selected item is visible on mount. Default true. */
   autoScroll?: boolean;
-  /** When true, columns stretch to fill the available container height instead of using the default fixed height. */
-  fill?: boolean;
 }
 
 function clampToStep(value: number, step: number, max: number): number {
@@ -152,7 +150,6 @@ export function TimeColumns({
   disabled = false,
   readOnly = false,
   className,
-  fill = false,
 }: TimeColumnsProps) {
   const h24 = value.getHours();
   const isPM = h24 >= 12;
@@ -234,10 +231,7 @@ export function TimeColumns({
   const isInteractionDisabled = disabled || readOnly;
 
   return (
-    <div
-      className={[styles.columns, className].filter(Boolean).join(' ')}
-      data-fill={fill ? '' : undefined}
-    >
+    <div className={[styles.columns, className].filter(Boolean).join(' ')}>
       <TimeColumn
         label="Hours"
         items={hourItems}

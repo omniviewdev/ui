@@ -191,7 +191,6 @@ export function DateTimePicker(props: DateTimePickerProps) {
                     disabled={disabled}
                     readOnly={readOnly}
                     autoScroll
-                    fill
                   />
                 </div>
               </div>

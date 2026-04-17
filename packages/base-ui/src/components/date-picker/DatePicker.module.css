@@ -1,6 +1,6 @@
-/* ─── Trigger — looks like a form input ─────────────────────────────────── */
+/* ─── Input shell — mimics Input.module.css ControlShell ─────────────────── */
 
-.trigger {
+.shell {
   --_ov-control-height: var(--ov-control-height-md);
   --_ov-font-size: var(--ov-font-size-body);
   --_ov-padding-inline: var(--ov-space-inline-control);
@@ -14,7 +14,6 @@
 
   display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
   gap: var(--_ov-gap);
   min-height: var(--_ov-control-height);
   padding-inline: var(--_ov-padding-inline);
@@ -26,53 +25,94 @@
   font-size: var(--_ov-font-size);
   font-weight: var(--ov-font-weight-body, 400);
   line-height: 1.2;
-  text-align: left;
-  cursor: pointer;
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),
     border-color var(--ov-duration-interactive) var(--ov-ease-standard),
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.trigger:hover {
+.shell:hover:not(.shellDisabled) {
   background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
 }
 
-.trigger:focus-visible {
-  outline: none;
+.shell:focus-within:not(.shellDisabled) {
   border-color: var(--_ov-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 
-.trigger:disabled {
+/* ─── Error state ─────────────────────────────────────────────────────────── */
+
+.shellError {
+  border-color: var(--ov-color-danger);
+}
+
+.shellError:focus-within {
+  border-color: var(--ov-color-danger);
+  box-shadow: 0 0 0 1px var(--ov-color-danger-soft);
+}
+
+/* ─── Disabled state ──────────────────────────────────────────────────────── */
+
+.shellDisabled {
   opacity: var(--ov-opacity-disabled, 0.45);
   cursor: not-allowed;
 }
 
-/* ─── Trigger internals ──────────────────────────────────────────────────── */
+/* ─── Text input ──────────────────────────────────────────────────────────── */
 
-.triggerValue {
+.input {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--_ov-font-size);
+  line-height: 1.35;
+  outline: none;
+  padding: 0;
+  cursor: text;
 }
 
-.triggerValue[data-placeholder] {
+.input::placeholder {
   color: var(--_ov-placeholder);
 }
 
-.triggerIcon {
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* ─── Calendar icon button ────────────────────────────────────────────────── */
+
+.iconButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control);
+  outline: none;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.triggerIcon :where(svg) {
+.iconButton:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+}
+
+.iconButton :where(svg) {
   inline-size: var(--_ov-icon-size);
   block-size: var(--_ov-icon-size);
 }

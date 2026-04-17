@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TimePicker } from './TimePicker';
 
 describe('TimePicker', () => {
+  // ─── Existing tests (8) ───────────────────────────────────────────────────
+
   it('renders hour and minute inputs; no seconds by default', () => {
     render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
     expect(screen.getByLabelText(/hour/i)).toBeInTheDocument();
@@ -81,5 +83,92 @@ describe('TimePicker', () => {
     );
     expect(screen.getByLabelText(/hour/i)).toBeDisabled();
     expect(screen.getByLabelText(/minute/i)).toBeDisabled();
+  });
+
+  // ─── New tests ────────────────────────────────────────────────────────────
+
+  it('opens the popover when the icon button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
+
+    // Popover should not be visible before click
+    expect(screen.queryByRole('listbox', { name: /hours/i })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+
+    expect(screen.getByRole('listbox', { name: /hours/i })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: /minutes/i })).toBeInTheDocument();
+  });
+
+  it('selecting a column item commits the time', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+
+    const hoursColumn = screen.getByRole('listbox', { name: /hours/i });
+    const item14 = within(hoursColumn).getByRole('option', { name: '14' });
+    await user.click(item14);
+
+    const last = onChange.mock.calls.at(-1)?.[0] as Date;
+    expect(last.getHours()).toBe(14);
+  });
+
+  it('minutes column respects minuteStep (60/step items visible)', async () => {
+    const user = userEvent.setup();
+    render(
+      <TimePicker
+        value={new Date(2026, 3, 12, 9, 0)}
+        onChange={() => {}}
+        minuteStep={15}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+
+    const minutesColumn = screen.getByRole('listbox', { name: /minutes/i });
+    const options = within(minutesColumn).getAllByRole('option');
+    // 0, 15, 30, 45 → 4 items
+    expect(options).toHaveLength(4);
+    expect(options.map((o) => o.textContent)).toEqual(['00', '15', '30', '45']);
+  });
+
+  it('AM/PM column switches meridiem', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value={new Date(2026, 3, 12, 14, 0)}
+        onChange={onChange}
+        hourCycle={12}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /open time picker/i }));
+
+    const ampmColumn = screen.getByRole('listbox', { name: /am\/pm/i });
+    const amOption = within(ampmColumn).getByRole('option', { name: 'AM' });
+    await user.click(amOption);
+
+    const last = onChange.mock.calls.at(-1)?.[0] as Date;
+    expect(last.getHours()).toBe(2); // 14 - 12
+  });
+
+  it('popover closes on Escape and returns focus to icon button', async () => {
+    const user = userEvent.setup();
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
+
+    const iconButton = screen.getByRole('button', { name: /open time picker/i });
+    await user.click(iconButton);
+
+    expect(screen.getByRole('listbox', { name: /hours/i })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('listbox', { name: /hours/i })).not.toBeInTheDocument();
+    expect(iconButton).toHaveFocus();
   });
 });

@@ -93,18 +93,127 @@
   background: var(--ov-color-state-hover);
 }
 
-/* ─── Right-side clock icon ───────────────────────────────────────────────── */
+/* ─── Right-side clock icon button ───────────────────────────────────────── */
 
-.endIcon {
+.iconButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control);
+  outline: none;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.endIcon :where(svg) {
+.iconButton:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+}
+
+.iconButton :where(svg) {
   inline-size: var(--_ov-icon-size);
   block-size: var(--_ov-icon-size);
+}
+
+/* ─── Popup ───────────────────────────────────────────────────────────────── */
+
+.popup {
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  box-shadow: var(--ov-shadow-surface);
+  padding: 0;
+  min-inline-size: unset;
+  max-inline-size: unset;
+  overflow: hidden;
+}
+
+/* ─── Column layout ───────────────────────────────────────────────────────── */
+
+.columns {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.columnDivider {
+  width: 1px;
+  background: var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+/* ─── Individual column (scrollable list) ────────────────────────────────── */
+
+.column {
+  list-style: none;
+  margin: 0;
+  padding-block: var(--ov-space-stack-sm, 4px);
+  padding-inline: 0;
+  width: 56px;
+  height: 200px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+
+  /* Hide scrollbar visually while keeping it functional */
+  scrollbar-width: none;
+}
+
+.column::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Column item ─────────────────────────────────────────────────────────── */
+
+.columnItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding-inline: var(--ov-space-inline-sm, 6px);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-body);
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control, 4px);
+  scroll-snap-align: center;
+  user-select: none;
+  outline: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.columnItem:hover {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-default);
+}
+
+.columnItem:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
+.columnItemSelected {
+  background: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
+}
+
+.columnItemSelected:hover {
+  background: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
 }

@@ -113,7 +113,7 @@ describe('useTabDetach', () => {
 
     // Simulate pointer move above threshold (100 - 18 - 1 = 81)
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
     expect(pointerMoveHandler).toBeDefined();
 
@@ -138,7 +138,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     act(() => {
@@ -163,7 +163,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     act(() => {
@@ -214,7 +214,7 @@ describe('useTabDetach', () => {
       result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
     });
 
-    const pointerMoveHandler = addSpy.mock.calls.find((call) => call[0] === 'pointermove')?.[1];
+    const pointerMoveHandler = addSpy.mock.calls.find((call: unknown[]) => call[0] === 'pointermove')?.[1];
 
     act(() => {
       result.current.handleDetachDragCancel();
@@ -235,7 +235,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     act(() => {
@@ -259,7 +259,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     act(() => {
@@ -283,7 +283,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     act(() => {
@@ -307,7 +307,7 @@ describe('useTabDetach', () => {
     });
 
     const pointerMoveHandler = addSpy.mock.calls.find(
-      (call) => call[0] === 'pointermove',
+      (call: unknown[]) => call[0] === 'pointermove',
     )?.[1] as EventListener;
 
     // Move above threshold (clientX within viewport bounds so only Y triggers)

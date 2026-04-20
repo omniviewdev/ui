@@ -20,6 +20,7 @@ These are the only components currently in scope and exported:
 - `Breadcrumbs`
 - `Button`
 - `ButtonGroup`
+- `Calendar` (Beta) — calendar grid with full keyboard nav, min/max bounds, and custom disabled-cell support (internal to `DatePicker`; also exported standalone)
 - `Card`
 - `Checkbox`
 - `CheckboxGroup`
@@ -30,6 +31,10 @@ These are the only components currently in scope and exported:
 - `ConfirmButton`
 - `Container`
 - `ContextMenu`
+- `DateField` (Beta) — sectioned guided date/time input primitive with per-section validation, paste-to-fill, and locale-aware section ordering
+- `DatePicker` (Beta) — calendar popover input with full keyboard navigation, min/max constraints, and custom disabled-cell callback
+- `DateRangePicker` (Beta) — dual `DateField` trigger with range-selecting calendar popover; min/max and custom separators
+- `DateTimePicker` (Beta) — composition of `DatePicker` + `TimePicker` producing a combined date-and-time value
 - `DescriptionList`
 - `Dialog`
 - `DockLayout`
@@ -69,6 +74,7 @@ These are the only components currently in scope and exported:
 - `TagInput`
 - `TextField`
 - `TextArea`
+- `TimePicker` (Beta) — 12/24-hour time input with optional seconds display and configurable minute step
 - `Toast`
 - `Tooltip`
 - `ToggleButton`

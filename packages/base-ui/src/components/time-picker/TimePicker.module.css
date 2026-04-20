@@ -1,0 +1,251 @@
+/* ─── Root — input-like shell ─────────────────────────────────────────────── */
+
+.root {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-control-height);
+  padding-inline: var(--_ov-padding-inline);
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-control);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-mono);
+  font-size: var(--_ov-font-size);
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.root:not([data-disabled]):hover {
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
+}
+
+.root:not([data-disabled]):focus-within {
+  border-color: var(--_ov-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.root[data-disabled] {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: not-allowed;
+}
+
+/* ─── DateField inside root shell — grows to fill available space ─────────── */
+
+.root > [role="group"] {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Inner fields row ────────────────────────────────────────────────────── */
+
+.fields {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex: 1;
+}
+
+.field {
+  width: 2.5ch;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  padding: 0;
+  outline: none;
+}
+
+.field:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.separator {
+  color: var(--ov-color-fg-muted);
+  user-select: none;
+}
+
+.meridiem {
+  min-width: 3.5ch;
+  margin-inline-start: var(--ov-space-inline-xs);
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-caption);
+  font-weight: var(--ov-font-weight-label);
+  cursor: pointer;
+  padding-inline: var(--ov-space-inline-sm);
+  padding-block: 1px;
+  line-height: 1.4;
+}
+
+.meridiem:hover {
+  background: var(--ov-color-state-hover);
+}
+
+/* ─── Right-side clock icon button ───────────────────────────────────────── */
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control);
+  outline: none;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.iconButton:not(:disabled):not([aria-disabled="true"]):hover {
+  color: var(--ov-color-fg-default);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+}
+
+.iconButton :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+/* ─── Popup ───────────────────────────────────────────────────────────────── */
+
+.popup {
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  box-shadow: var(--ov-shadow-surface);
+  padding: 0;
+  min-inline-size: unset;
+  max-inline-size: unset;
+  overflow: hidden;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--ov-space-stack-sm, 8px);
+  padding: var(--ov-space-stack-sm, 8px) var(--ov-space-stack-md, 12px);
+  border-top: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.footer > :first-child {
+  margin-inline-end: auto;
+}
+
+/* ─── Column layout ───────────────────────────────────────────────────────── */
+
+.columns {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  /* When used standalone (TimePicker popover), give a baseline height.
+   * When embedded in a flex-column parent with overflow:hidden
+   * (DateTimePicker popup), `flex: 1` overrides and stretches. */
+  height: 240px;
+  flex: 1 1 240px;
+  min-height: 0;
+  min-width: 0;
+}
+
+.columnDivider {
+  width: 1px;
+  background: var(--ov-color-border-default);
+  flex-shrink: 0;
+}
+
+/* ─── Individual column (scrollable list) ────────────────────────────────── */
+
+.column {
+  list-style: none;
+  margin: 0;
+  padding-block: var(--ov-space-stack-sm, 4px);
+  padding-inline: 0;
+  width: 56px;
+  /* Fill the column container's height; the container caps total height. */
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+
+  /* Hide scrollbar visually while keeping it functional */
+  scrollbar-width: none;
+}
+
+.column::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Column item ─────────────────────────────────────────────────────────── */
+
+.columnItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding-inline: var(--ov-space-inline-sm, 6px);
+  font-family: var(--ov-font-mono);
+  font-size: var(--ov-font-size-body);
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control, 4px);
+  scroll-snap-align: center;
+  user-select: none;
+  outline: none;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.columnItem:hover {
+  background: var(--ov-color-state-hover);
+  color: var(--ov-color-fg-default);
+}
+
+.columnItem:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
+.columnItemSelected {
+  background: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
+}
+
+.columnItemSelected:hover {
+  background: var(--ov-color-brand-500);
+  color: var(--ov-color-fg-inverse);
+}

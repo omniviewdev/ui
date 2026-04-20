@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { TimePicker } from './TimePicker';
+import { TimePicker, type TimePickerProps } from './TimePicker';
 
 const meta = {
   title: 'Components/TimePicker',
@@ -23,42 +23,56 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// ─── Story components (keep hooks legal) ──────────────────────────────────
+
+function TwentyFourHourStory(args: TimePickerProps) {
+  const [value, setValue] = useState<Date>(new Date());
+  return <TimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function TwelveHourStory(args: TimePickerProps) {
+  const [value, setValue] = useState<Date>(new Date());
+  return <TimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function WithSecondsStory(args: TimePickerProps) {
+  const [value, setValue] = useState<Date>(new Date());
+  return <TimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function MinuteStep15Story(args: TimePickerProps) {
+  const [value, setValue] = useState<Date>(new Date());
+  return <TimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function DisabledStory(args: TimePickerProps) {
+  const [value, setValue] = useState<Date>(new Date());
+  return <TimePicker {...args} value={value} onChange={setValue} />;
+}
+
+// ─── Story exports ────────────────────────────────────────────────────────
+
 export const TwentyFourHour: Story = {
   args: { hourCycle: 24 },
-  render: (args) => {
-    const [value, setValue] = useState<Date>(new Date());
-    return <TimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <TwentyFourHourStory {...args} />,
 };
 
 export const TwelveHour: Story = {
   args: { hourCycle: 12 },
-  render: (args) => {
-    const [value, setValue] = useState<Date>(new Date());
-    return <TimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <TwelveHourStory {...args} />,
 };
 
 export const WithSeconds: Story = {
   args: { showSeconds: true },
-  render: (args) => {
-    const [value, setValue] = useState<Date>(new Date());
-    return <TimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <WithSecondsStory {...args} />,
 };
 
 export const MinuteStep15: Story = {
   args: { minuteStep: 15 },
-  render: (args) => {
-    const [value, setValue] = useState<Date>(new Date());
-    return <TimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <MinuteStep15Story {...args} />,
 };
 
 export const Disabled: Story = {
   args: { disabled: true },
-  render: (args) => {
-    const [value, setValue] = useState<Date>(new Date());
-    return <TimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <DisabledStory {...args} />,
 };

@@ -26,8 +26,12 @@ export function addDays(d: Date, n: number): Date {
 }
 
 export function addYears(d: Date, n: number): Date {
-  const out = new Date(d);
-  out.setFullYear(out.getFullYear() + n);
+  const targetYear = d.getFullYear() + n;
+  // Clamp the day to the last day of the target month in the target year —
+  // handles e.g. Feb 29 + 1 year → Feb 28 (not March 1) on non-leap years.
+  const daysInTarget = new Date(targetYear, d.getMonth() + 1, 0).getDate();
+  const out = new Date(targetYear, d.getMonth(), Math.min(d.getDate(), daysInTarget));
+  out.setHours(d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
   return out;
 }
 

@@ -28,6 +28,12 @@ export interface Section {
   /** Inclusive min/max for validation (e.g. month = 1..12). null for literal/meridiem. */
   min: number | null;
   max: number | null;
+  /**
+   * Hour cycle (12 or 24). Set on hour sections only; undefined otherwise.
+   * Validation reads this flag to decide whether meridiem is required, rather
+   * than re-inferring from `max === 12`.
+   */
+  hourCycle?: 12 | 24;
 }
 
 export interface BuildSectionsOptions {
@@ -62,18 +68,16 @@ function getRepresentativeDate(): Date {
   return new Date(2026, 0, 7, 14, 30, 45);
 }
 
-function getDateFormatOptions(mode: 'date' | 'datetime'): Intl.DateTimeFormatOptions {
-  return mode === 'date' || mode === 'datetime'
-    ? { year: 'numeric', month: '2-digit', day: '2-digit' }
-    : {};
+function getDateFormatOptions(): Intl.DateTimeFormatOptions {
+  // Callers only invoke this for `mode === 'date'` or `'datetime'`; the shape
+  // is identical in both cases.
+  return { year: 'numeric', month: '2-digit', day: '2-digit' };
 }
 
 function getTimeFormatOptions(
-  mode: 'time' | 'datetime',
   hourCycle: 12 | 24,
   showSeconds: boolean,
 ): Intl.DateTimeFormatOptions {
-  if (mode !== 'time' && mode !== 'datetime') return {};
   const opts: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
@@ -88,15 +92,15 @@ function buildFormatOptions(opts: BuildSectionsOptions): Intl.DateTimeFormatOpti
   const showSeconds = opts.showSeconds ?? false;
 
   if (opts.mode === 'date') {
-    return getDateFormatOptions('date');
+    return getDateFormatOptions();
   }
   if (opts.mode === 'time') {
-    return getTimeFormatOptions('time', hourCycle, showSeconds);
+    return getTimeFormatOptions(hourCycle, showSeconds);
   }
   // datetime
   return {
-    ...getDateFormatOptions('datetime'),
-    ...getTimeFormatOptions('datetime', hourCycle, showSeconds),
+    ...getDateFormatOptions(),
+    ...getTimeFormatOptions(hourCycle, showSeconds),
   };
 }
 
@@ -257,6 +261,9 @@ export function buildSections(options: BuildSectionsOptions): Section[] {
       maxLength,
       min,
       max,
+      // Only hour sections carry an explicit hour cycle; validateSections
+      // relies on this flag to drive 12h → 24h conversion.
+      ...(type === 'hour' ? { hourCycle } : {}),
     });
   }
 
@@ -363,8 +370,12 @@ export function validateSections(sections: Section[]): ValidateSectionsResult {
       case 'hour':
         hour = n;
         hasHour = true;
-        // If max is 12 (inclusive), we are in 12-hour mode.
-        if (s.max === 12) has12HourHour = true;
+        // Prefer the explicit `hourCycle` stamped on the hour Section; fall
+        // back to max===12 inference only for Section objects constructed
+        // outside of buildSections (e.g. in tests).
+        if (s.hourCycle === 12 || (s.hourCycle === undefined && s.max === 12)) {
+          has12HourHour = true;
+        }
         break;
       case 'minute':
         minute = n;
@@ -647,11 +658,10 @@ export function applyPaste(sections: Section[], text: string): Section[] {
       if (letters === 'AM' || letters === 'PM') {
         result[sectionIdx] = { ...section, value: letters };
         tokenIdx++;
-      } else {
-        // Skip; don't advance the token index — literal digit tokens should go to digit sections
-        // but if there's really no match, just skip the section.
-        tokenIdx++;
       }
+      // Else: the current token is not a meridiem letter pair (likely a stray
+      // digit token). Leave `tokenIdx` where it is so the token remains
+      // available to the next digit section, and skip this meridiem slot.
       continue;
     }
 
@@ -684,10 +694,3 @@ export function applyPaste(sections: Section[], text: string): Section[] {
   return clampDayToMonth(result);
 }
 
-/**
- * Return a fresh set of sections derived from options + a value. Used when the
- * component's inputs change (locale, mode, value) to rebuild the state.
- */
-export function rebuildSectionsFromValue(options: BuildSectionsOptions): Section[] {
-  return buildSections(options);
-}

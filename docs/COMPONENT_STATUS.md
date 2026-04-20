@@ -31,7 +31,9 @@ These are the only components currently in scope and exported:
 - `ConfirmButton`
 - `Container`
 - `ContextMenu`
+- `DateField` — sectioned guided date/time input primitive with per-section validation, paste-to-fill, and locale-aware section ordering
 - `DatePicker` — calendar popover input with full keyboard navigation, min/max constraints, and custom disabled-cell callback
+- `DateRangePicker` — dual `DateField` trigger with range-selecting calendar popover; min/max and custom separators
 - `DateTimePicker` — composition of `DatePicker` + `TimePicker` producing a combined date-and-time value
 - `DescriptionList`
 - `Dialog`

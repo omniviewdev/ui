@@ -6,7 +6,12 @@ export type {
   UseDateFieldReturn,
   SectionDomProps,
 } from './useDateField';
-export type { Section, SectionType } from './sections';
+export type {
+  Section,
+  SectionType,
+  BuildSectionsOptions,
+  ValidateSectionsResult,
+} from './sections';
 export {
   buildSections,
   validateSections,

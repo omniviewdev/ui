@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { DateTimePicker } from './DateTimePicker';
+import { DateTimePicker, type DateTimePickerProps } from './DateTimePicker';
 
 const meta = {
   title: 'Components/DateTimePicker',
@@ -21,25 +21,35 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// ─── Story components (keep hooks legal) ──────────────────────────────────
+
+function DefaultStory(args: DateTimePickerProps) {
+  const [value, setValue] = useState<Date | null>(null);
+  return <DateTimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function WithSecondsStory(args: DateTimePickerProps) {
+  const [value, setValue] = useState<Date | null>(new Date());
+  return <DateTimePicker {...args} value={value} onChange={setValue} />;
+}
+
+function TwelveHourStory(args: DateTimePickerProps) {
+  const [value, setValue] = useState<Date | null>(new Date());
+  return <DateTimePicker {...args} value={value} onChange={setValue} />;
+}
+
+// ─── Story exports ────────────────────────────────────────────────────────
+
 export const Default: Story = {
-  render: (args) => {
-    const [value, setValue] = useState<Date | null>(null);
-    return <DateTimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <DefaultStory {...args} />,
 };
 
 export const WithSeconds: Story = {
   args: { showSeconds: true },
-  render: (args) => {
-    const [value, setValue] = useState<Date | null>(new Date());
-    return <DateTimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <WithSecondsStory {...args} />,
 };
 
 export const TwelveHour: Story = {
   args: { hourCycle: 12 },
-  render: (args) => {
-    const [value, setValue] = useState<Date | null>(new Date());
-    return <DateTimePicker {...args} value={value} onChange={setValue} />;
-  },
+  render: (args) => <TwelveHourStory {...args} />,
 };

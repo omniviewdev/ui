@@ -518,9 +518,11 @@ describe('applyPaste', () => {
     const result = applyPaste(sections, '99/99/2026');
     const month = result.find((s) => s.type === 'month');
     const day = result.find((s) => s.type === 'day');
+    const year = result.find((s) => s.type === 'year');
     // Out-of-range tokens skip; year should still be set.
     expect(month?.value).toBe('');
     expect(day?.value).toBe('');
+    expect(year?.value).toBe('2026');
   });
 });
 
@@ -541,8 +543,10 @@ describe('getNextEditableIndex / getPreviousEditableIndex', () => {
   });
 
   it('returns null at end', () => {
-    // Find last editable
-    let last = getNextEditableIndex(sections, null);
+    // Find last editable — seed from a known-non-null first index.
+    const first = getNextEditableIndex(sections, null);
+    expect(first).not.toBeNull();
+    let last: number = first as number;
     while (true) {
       const next = getNextEditableIndex(sections, last);
       if (next === null) break;

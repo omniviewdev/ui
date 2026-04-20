@@ -6,7 +6,7 @@ import { Button } from '../button/Button';
 import styles from './DatePicker.module.css';
 import { Calendar } from './Calendar';
 import type { DateFormat } from './formatters';
-import type { WeekStart } from './dateUtils';
+import { isDateInRange, type WeekStart } from './dateUtils';
 import type { StyledComponentProps } from '../../system/types';
 
 export interface DatePickerProps extends StyledComponentProps {
@@ -43,12 +43,6 @@ function useControlled<T>(
     [isControlled, onChange],
   );
   return [current, set];
-}
-
-function isDateInRange(date: Date, min?: Date, max?: Date): boolean {
-  if (min && date < min) return false;
-  if (max && date > max) return false;
-  return true;
 }
 
 export function DatePicker(props: DatePickerProps) {
@@ -141,6 +135,7 @@ export function DatePicker(props: DatePickerProps) {
           aria-label="Open calendar"
           className={styles.iconButton}
           disabled={disabled}
+          aria-disabled={readOnly || undefined}
           tabIndex={0}
           onClick={handleIconButtonClick}
         >

@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { LuClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
@@ -25,6 +25,7 @@ export interface TimePickerProps extends StyledComponentProps {
 export function TimePicker(props: TimePickerProps) {
   const {
     value,
+    defaultValue,
     onChange,
     showSeconds = false,
     hourCycle = 24,
@@ -35,7 +36,18 @@ export function TimePicker(props: TimePickerProps) {
     'aria-label': ariaLabel,
   } = props;
 
-  const current = value ?? new Date();
+  // Internal state for uncontrolled usage — tracks the most recent value so
+  // the DateField reflects clears, typed edits, and column selections even
+  // when the parent does not pass `value`.
+  const [internalValue, setInternalValue] = useState<Date | null>(
+    value ?? defaultValue ?? null,
+  );
+  // Prefer the controlled `value` when the parent provides it.
+  const current = value !== undefined ? value : internalValue;
+  // Stable fallback for TimeColumns when current is null — avoids creating
+  // a fresh Date on every render.
+  const fallbackNow = useMemo(() => new Date(), []);
+
   const popoverId = useId();
 
   const [open, setOpen] = useState(false);
@@ -47,21 +59,34 @@ export function TimePicker(props: TimePickerProps) {
   const handleFieldChange = useCallback(
     (next: Date | null) => {
       if (!next) return;
+      let snapped: Date;
       if (minuteStep > 1) {
-        const snapped = new Date(next);
+        snapped = new Date(next);
         const m = snapped.getMinutes();
         snapped.setMinutes(Math.floor(m / minuteStep) * minuteStep);
-        onChange?.(snapped);
       } else {
-        onChange?.(next);
+        snapped = next;
       }
+      setInternalValue(snapped);
+      onChange?.(snapped);
     },
     [minuteStep, onChange],
   );
 
+  const handleColumnsChange = useCallback(
+    (next: Date) => {
+      setInternalValue(next);
+      onChange?.(next);
+    },
+    [onChange],
+  );
+
   const handleClear = () => {
-    const midnight = new Date();
+    // Midnight on the same calendar day as the current value (or today if unset).
+    const base = current ?? new Date();
+    const midnight = new Date(base);
     midnight.setHours(0, 0, 0, 0);
+    setInternalValue(midnight);
     onChange?.(midnight);
   };
 
@@ -118,8 +143,8 @@ export function TimePicker(props: TimePickerProps) {
         <Popover.Positioner sideOffset={4} align="start" anchor={shellRef}>
           <Popover.Popup id={popoverId} className={styles.popup}>
             <TimeColumns
-              value={current}
-              onChange={(next) => onChange?.(next)}
+              value={current ?? fallbackNow}
+              onChange={handleColumnsChange}
               hourCycle={hourCycle}
               showSeconds={showSeconds}
               minuteStep={minuteStep}

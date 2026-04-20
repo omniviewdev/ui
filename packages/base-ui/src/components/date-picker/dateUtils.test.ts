@@ -40,6 +40,22 @@ describe('dateUtils', () => {
     expect(addYears(new Date(2026, 3, 12), -1)).toEqual(new Date(2025, 3, 12));
   });
 
+  it('addYears clamps Feb 29 to Feb 28 on non-leap target years', () => {
+    // Feb 29 2024 (leap) + 1 year → Feb 28 2025 (not March 1)
+    const out = addYears(new Date(2024, 1, 29), 1);
+    expect(out.getFullYear()).toBe(2025);
+    expect(out.getMonth()).toBe(1);
+    expect(out.getDate()).toBe(28);
+  });
+
+  it('addYears preserves Feb 29 when the target year is also a leap year', () => {
+    // Feb 29 2024 + 4 years → Feb 29 2028
+    const out = addYears(new Date(2024, 1, 29), 4);
+    expect(out.getFullYear()).toBe(2028);
+    expect(out.getMonth()).toBe(1);
+    expect(out.getDate()).toBe(29);
+  });
+
   it('isSameDay is strict on year/month/day', () => {
     expect(isSameDay(new Date(2026, 3, 12), new Date(2026, 3, 12, 15, 0))).toBe(true);
     expect(isSameDay(new Date(2026, 3, 12), new Date(2026, 3, 13))).toBe(false);

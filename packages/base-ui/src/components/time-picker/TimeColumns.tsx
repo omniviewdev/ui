@@ -104,13 +104,10 @@ export function TimeColumn({ label, items, selected, onSelect, disabled }: TimeC
               suppressScrollRef.current = true;
               onSelect(item.value);
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!disabled) onSelect(item.value);
-              }
-            }}
+            // Enter/Space are handled at the <ul> level (see `handleKeyDown`
+            // above), which also sets `suppressScrollRef` to avoid a jittery
+            // re-center on keyboard selection. Keeping a duplicate handler
+            // here would either miss the suppress flag or diverge in behavior.
           >
             {item.label}
           </li>

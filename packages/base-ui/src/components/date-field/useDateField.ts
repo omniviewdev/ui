@@ -9,12 +9,14 @@ import {
   type MouseEvent,
   type FocusEvent,
 } from 'react';
+import { flushSync } from 'react-dom';
 import {
   adjustSectionValue,
   applyDigitToSection,
   applyPaste,
   buildSections,
   clampDayToMonth,
+  getEditableIndices,
   getNextEditableIndex,
   getPreviousEditableIndex,
   setSectionValue,
@@ -282,16 +284,20 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
         if (section.type === 'meridiem') return;
 
         const { value: newVal, shouldAdvance } = applyDigitToSection(section, e.key);
-        setSections((prev) => {
-          const updated = setSectionValue(prev, focusedIndex, newVal);
-          if (section.type === 'month' || section.type === 'year') {
-            return clampDayToMonth(updated);
-          }
-          return updated;
+        // Flush synchronously so the subsequent focusNext call reads the
+        // up-to-date `sections` (captured by the useCallback closure) — the
+        // previous queueMicrotask path could capture a stale focusedIndex.
+        flushSync(() => {
+          setSections((prev) => {
+            const updated = setSectionValue(prev, focusedIndex, newVal);
+            if (section.type === 'month' || section.type === 'year') {
+              return clampDayToMonth(updated);
+            }
+            return updated;
+          });
         });
         if (shouldAdvance) {
-          // Defer to next tick so the state update is flushed.
-          queueMicrotask(() => focusNext(focusedIndex));
+          focusNext(focusedIndex);
         }
         return;
       }
@@ -301,8 +307,10 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
         e.preventDefault();
         if (readOnly) return;
         const letter = e.key.toUpperCase() === 'A' ? 'AM' : 'PM';
-        setSections((prev) => setSectionValue(prev, focusedIndex, letter));
-        queueMicrotask(() => focusNext(focusedIndex));
+        flushSync(() => {
+          setSections((prev) => setSectionValue(prev, focusedIndex, letter));
+        });
+        focusNext(focusedIndex);
         return;
       }
 
@@ -366,9 +374,26 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
       e.preventDefault();
       const text = e.clipboardData.getData('text');
       if (!text) return;
-      setSections((prev) => applyPaste(prev, text));
+      let postPaste: Section[] | null = null;
+      flushSync(() => {
+        setSections((prev) => {
+          const next = applyPaste(prev, text);
+          postPaste = next;
+          return next;
+        });
+      });
+      // Advance focus to the first still-empty editable section, so the user
+      // can continue typing where the paste left off. If every editable
+      // section is now filled, focus the last editable one.
+      if (!postPaste) return;
+      const editable = getEditableIndices(postPaste);
+      if (editable.length === 0) return;
+      const pasted: Section[] = postPaste;
+      const firstEmpty = editable.find((idx) => pasted[idx]?.value === '');
+      const target = firstEmpty ?? editable[editable.length - 1];
+      if (target !== undefined) focusSection(target);
     },
-    [disabled, readOnly],
+    [disabled, readOnly, focusSection],
   );
 
   const handleRootBlur = useCallback((e: FocusEvent<HTMLElement>) => {

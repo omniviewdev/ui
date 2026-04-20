@@ -28,11 +28,11 @@
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.root:hover {
+.root:not([data-disabled]):hover {
   background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
 }
 
-.root:focus-within {
+.root:not([data-disabled]):focus-within {
   border-color: var(--_ov-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }

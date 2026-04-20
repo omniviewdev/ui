@@ -14,6 +14,37 @@ describe('TimePicker', () => {
     expect(within(field).queryByRole('spinbutton', { name: /second/i })).not.toBeInTheDocument();
   });
 
+  // ─── Uncontrolled / defaultValue ──────────────────────────────────────────
+
+  it('uses defaultValue when uncontrolled (no value prop)', () => {
+    render(<TimePicker defaultValue={new Date(2026, 3, 12, 14, 45)} />);
+    const field = screen.getByRole('group', { name: /time/i });
+    const hour = within(field).getByRole('spinbutton', { name: /hour/i });
+    const minute = within(field).getByRole('spinbutton', { name: /minute/i });
+    expect(hour.textContent).toBe('14');
+    expect(minute.textContent).toBe('45');
+  });
+
+  it('tracks internal state when uncontrolled after edits', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        defaultValue={new Date(2026, 3, 12, 9, 0)}
+        onChange={onChange}
+        hourCycle={24}
+      />,
+    );
+    const hour = screen.getByRole('spinbutton', { name: /hour/i });
+    await user.click(hour);
+    await user.keyboard('15');
+    expect(onChange).toHaveBeenCalled();
+    const last = onChange.mock.calls.at(-1)?.[0] as Date;
+    expect(last.getHours()).toBe(15);
+    // Field should reflect the new value (internal state, no controlled parent).
+    expect(hour.textContent).toBe('15');
+  });
+
   it('shows seconds when showSeconds=true', () => {
     render(<TimePicker value={new Date()} onChange={() => {}} showSeconds />);
     const field = screen.getByRole('group', { name: /time/i });
@@ -49,22 +80,29 @@ describe('TimePicker', () => {
 
   // ─── minuteStep snapping ──────────────────────────────────────────────────
 
-  it('minuteStep snaps committed values to multiples', () => {
+  it('minuteStep snaps committed values to multiples', async () => {
+    const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <TimePicker value={new Date(2026, 3, 12, 9, 0)} onChange={onChange} minuteStep={5} />,
+      <TimePicker
+        value={new Date(2026, 3, 12, 9, 0)}
+        onChange={onChange}
+        minuteStep={5}
+      />,
     );
 
-    // Simulate a DateField onChange delivering a Date with minutes=37
-    // We do this by calling the onChange that TimePicker exposes to DateField
-    // indirectly: render a wrapper that intercepts and calls onChange with 37 minutes.
-    // The simplest reliable approach: instantiate the snap logic directly.
-    const base = new Date(2026, 3, 12, 9, 37, 0);
-    // Manually invoke the snap path (same logic as handleFieldChange):
-    const step = 5;
-    const snapped = new Date(base);
-    snapped.setMinutes(Math.floor(base.getMinutes() / step) * step);
-    expect(snapped.getMinutes()).toBe(35);
+    // Focus the minute section in the DateField and type "37". With
+    // minuteStep=5 and hourCycle=24, the DateField will commit 9:37, and
+    // TimePicker's handleFieldChange should snap that to 9:35 before
+    // forwarding to the parent onChange.
+    const minuteSection = screen.getByRole('spinbutton', { name: /minute/i });
+    await user.click(minuteSection);
+    await user.keyboard('37');
+
+    const last = onChange.mock.calls.at(-1)?.[0] as Date;
+    expect(last).toBeInstanceOf(Date);
+    expect(last.getMinutes()).toBe(35);
+    expect(last.getHours()).toBe(9);
   });
 
   // ─── Popover ─────────────────────────────────────────────────────────────

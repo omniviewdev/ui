@@ -6,7 +6,7 @@ import { Button } from '../button/Button';
 import styles from './DateRangePicker.module.css';
 import { Calendar } from '../date-picker/Calendar';
 import type { DateFormat } from '../date-picker/formatters';
-import { isDateInRange } from '../date-picker/dateUtils';
+import { isAfter, isBefore, isDateInRange } from '../date-picker/dateUtils';
 import type { WeekStart } from '../date-picker/dateUtils';
 import type { StyledComponentProps } from '../../system/types';
 
@@ -92,7 +92,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
       return;
     }
     setRangeError(false);
-    if (current.end && next > current.end) {
+    if (current.end && isAfter(next, current.end)) {
       // start is after end — reset end so the user can pick a new one
       setCurrent({ start: next, end: null });
     } else {
@@ -112,7 +112,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
       return;
     }
     setRangeError(false);
-    if (current.start && next < current.start) {
+    if (current.start && isBefore(next, current.start)) {
       // end is before start — swap them for a better UX
       setCurrent({ start: next, end: current.start });
     } else {
@@ -158,7 +158,10 @@ export function DateRangePicker(props: DateRangePickerProps) {
           mode="date"
           locale={locale}
           min={min}
-          max={current.end ?? max}
+          // Intentionally use the outer `max` (not `current.end`) so users can
+          // type a start date beyond the current end; `handleStartChange` will
+          // reconcile by resetting the end when start > end.
+          max={max}
           disabled={disabled}
           readOnly={readOnly}
           aria-label="Start date"

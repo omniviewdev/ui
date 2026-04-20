@@ -14,7 +14,7 @@ describe('DateTimePicker', () => {
     expect(screen.getByRole('listbox', { name: /minutes/i })).toBeInTheDocument();
   });
 
-  it('selecting a day preserves the current time-of-day', async () => {
+  it('selecting a day preserves the current time-of-day and keeps the popover open', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -30,6 +30,9 @@ describe('DateTimePicker', () => {
     expect(last.getDate()).toBe(20);
     expect(last.getHours()).toBe(9);
     expect(last.getMinutes()).toBe(30);
+    // Popover should remain open so the user can still pick a time.
+    expect(screen.getByRole('grid')).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: /hours/i })).toBeInTheDocument();
   });
 
   it('selecting an hour option in the popup updates value and preserves the current date', async () => {

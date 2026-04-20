@@ -14,6 +14,7 @@ import {
   getMonthMatrix,
   isDateInRange,
   isSameDay,
+  startOfDay,
   startOfMonth,
   type WeekStart,
 } from './dateUtils';
@@ -55,11 +56,17 @@ function toIsoDay(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-/** Returns true if `d` is strictly between `a` and `b` (order-independent). */
+/**
+ * Returns true if `d` is strictly between `a` and `b` (order-independent),
+ * compared at day granularity. Dates on the same calendar day — even with
+ * different times — are treated as equal.
+ */
 function isStrictlyBetween(d: Date, a: Date, b: Date): boolean {
-  const t = d.getTime();
-  const lo = Math.min(a.getTime(), b.getTime());
-  const hi = Math.max(a.getTime(), b.getTime());
+  const t = startOfDay(d).getTime();
+  const ta = startOfDay(a).getTime();
+  const tb = startOfDay(b).getTime();
+  const lo = Math.min(ta, tb);
+  const hi = Math.max(ta, tb);
   return t > lo && t < hi;
 }
 
@@ -101,6 +108,30 @@ export function Calendar(props: CalendarProps) {
         : startOfMonth(focusedDate),
     );
   }, [focusedDate]);
+
+  // When viewMonth changes independently of focusedDate (e.g. the header
+  // prev/next buttons), clamp focusedDate into the new month so the roving
+  // tabindex always points to a visible cell. Without this, clicking the
+  // header arrows would leave no cell with tabIndex=0.
+  useEffect(() => {
+    if (
+      viewMonth.getMonth() === focusedDate.getMonth() &&
+      viewMonth.getFullYear() === focusedDate.getFullYear()
+    ) {
+      return;
+    }
+    // Preserve the day-of-month when possible; clamp to the last day of the
+    // new month if the original day exceeds it.
+    const daysInTarget = new Date(
+      viewMonth.getFullYear(),
+      viewMonth.getMonth() + 1,
+      0,
+    ).getDate();
+    const clampedDay = Math.min(focusedDate.getDate(), daysInTarget);
+    setFocusedDate(
+      new Date(viewMonth.getFullYear(), viewMonth.getMonth(), clampedDay),
+    );
+  }, [viewMonth, focusedDate]);
 
   const matrix = useMemo(
     () => getMonthMatrix(viewMonth, resolvedWeekStart),
@@ -151,8 +182,10 @@ export function Calendar(props: CalendarProps) {
         // No start yet, or both already set → start a fresh range
         onRangeChange({ start: date, end: null });
       } else {
-        // Start is set, end is null
-        if (date.getTime() >= startDate.getTime()) {
+        // Start is set, end is null — compare at day granularity
+        const dStart = startOfDay(date).getTime();
+        const sStart = startOfDay(startDate).getTime();
+        if (dStart >= sStart) {
           onRangeChange({ start: startDate, end: date });
         } else {
           // Clicked before start → reset with new start
@@ -284,9 +317,11 @@ export function Calendar(props: CalendarProps) {
                   isInRange = isStrictlyBetween(date, selectedStart, previewEnd);
                   // Also update range start/end markers for preview direction
                   if (!selectedEnd) {
-                    // Preview mode: determine visual start/end based on order
-                    const lo = selectedStart.getTime() < previewEnd.getTime() ? selectedStart : previewEnd;
-                    const hi = selectedStart.getTime() < previewEnd.getTime() ? previewEnd : selectedStart;
+                    // Preview mode: determine visual start/end based on day order
+                    const tStart = startOfDay(selectedStart).getTime();
+                    const tPreview = startOfDay(previewEnd).getTime();
+                    const lo = tStart < tPreview ? selectedStart : previewEnd;
+                    const hi = tStart < tPreview ? previewEnd : selectedStart;
                     isRangeStart = isSameDay(date, lo);
                     isRangeEnd = isSameDay(date, hi);
                     selected = isRangeStart || isRangeEnd;

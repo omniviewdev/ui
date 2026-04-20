@@ -32,10 +32,12 @@ describe('formatters', () => {
     expect(getWeekStartsOnForLocale('en-GB')).toBe(1);
   });
 
-  it('getWeekdayLabels returns 7 strings starting from weekStartsOn', () => {
-    const labels = getWeekdayLabels('en-US', 0, 'narrow');
+  it('getWeekdayLabels returns 7 strings starting from weekStartsOn (Sunday-first)', () => {
+    // Use 'short' form so the first-three assertion is unambiguous
+    // ('narrow' renders both Sat and Sun as "S" in en-US).
+    const labels = getWeekdayLabels('en-US', 0, 'short');
     expect(labels).toHaveLength(7);
-    expect(labels[0]!).toMatch(/^S/);
+    expect(labels.slice(0, 3)).toEqual(['Sun', 'Mon', 'Tue']);
   });
 
   it('formatMonthYear uses locale', () => {

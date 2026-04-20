@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { LuCalendarClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
@@ -79,6 +79,9 @@ export function DateTimePicker(props: DateTimePickerProps) {
   const [current, setCurrent] = useControlled<Date | null>(value, defaultValue, onChange);
   const [open, setOpen] = useState(false);
   const [rangeError, setRangeError] = useState(false);
+  // Stable fallback used when `current` is null — avoids creating a fresh
+  // Date every render, which would break downstream memoization.
+  const fallbackNow = useMemo(() => new Date(), []);
 
   const shellRef = useRef<HTMLDivElement>(null);
   const popoverId = useId();
@@ -103,7 +106,8 @@ export function DateTimePicker(props: DateTimePickerProps) {
     next.setHours(base.getHours(), base.getMinutes(), base.getSeconds(), 0);
     setCurrent(next);
     setRangeError(false);
-    setOpen(false);
+    // Keep the popover open so the user can still pick a time after selecting
+    // a day; closing is triggered by the Done button or explicit dismissal.
   };
 
   const onTimeChange = (t: Date) => {
@@ -183,7 +187,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
                 />
                 <div className={styles.timeColumns}>
                   <TimeColumns
-                    value={current ?? new Date()}
+                    value={current ?? fallbackNow}
                     onChange={onTimeChange}
                     hourCycle={hourCycle}
                     showSeconds={showSeconds}

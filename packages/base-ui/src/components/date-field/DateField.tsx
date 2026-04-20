@@ -16,8 +16,6 @@ export interface DateFieldProps {
   readOnly?: boolean;
   className?: string;
   'aria-label'?: string;
-  /** Placeholder shown before any editing — currently rendered per-section. */
-  placeholder?: string;
   /**
    * When true, removes the input-shell styling (border, background, padding,
    * min-height, hover, focus-within ring) so the field can be embedded inside

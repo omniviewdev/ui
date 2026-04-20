@@ -175,7 +175,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
           onChange={handleEndChange}
           mode="date"
           locale={locale}
-          min={current.start ?? min}
+          min={min}
           max={max}
           disabled={disabled}
           readOnly={readOnly}
@@ -187,6 +187,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
           aria-label="Open calendar"
           className={styles.iconButton}
           disabled={disabled}
+          aria-disabled={readOnly || undefined}
           tabIndex={0}
           onClick={() => {
             if (!disabled && !readOnly) setOpen((v) => !v);

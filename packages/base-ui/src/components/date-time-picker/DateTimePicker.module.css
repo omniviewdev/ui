@@ -82,7 +82,7 @@
   transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.iconButton:hover {
+.iconButton:not(:disabled):not([aria-disabled="true"]):hover {
   color: var(--ov-color-fg-default);
 }
 
@@ -140,5 +140,5 @@
 }
 
 .footer > :first-child {
-  margin-right: auto;
+  margin-inline-end: auto;
 }

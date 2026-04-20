@@ -12,10 +12,15 @@ export function formatMonthYear(date: Date, locale?: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
 }
 
+// Locales where the week starts on Saturday (6).
+const SATURDAY_START_LOCALES = new Set(['ar-sa']);
+// Locales where the week starts on Sunday (0), beyond the en-US family.
+const SUNDAY_START_PREFIXES = ['he', 'pt-br', 'zh-cn', 'ja', 'ko', 'th'];
+
 /**
  * Return the first day of week for a given locale using Intl.Locale's
- * weekInfo (modern browsers) or fall back to Sunday for en-US, Monday
- * otherwise.
+ * weekInfo (modern browsers) or fall back to a well-known locale map,
+ * with a final Monday default.
  */
 export function getWeekStartsOnForLocale(locale?: string): WeekStart {
   try {
@@ -33,6 +38,8 @@ export function getWeekStartsOnForLocale(locale?: string): WeekStart {
   }
   const tag = (locale ?? 'en-US').toLowerCase();
   if (tag === 'en-us' || tag.startsWith('en-us-')) return 0;
+  if (SATURDAY_START_LOCALES.has(tag)) return 6;
+  if (SUNDAY_START_PREFIXES.some((p) => tag === p || tag.startsWith(`${p}-`))) return 0;
   return 1;
 }
 

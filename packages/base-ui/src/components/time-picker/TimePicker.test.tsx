@@ -191,7 +191,7 @@ describe('TimePicker', () => {
     expect(iconButton).toHaveFocus();
   });
 
-  it('Clear button resets the time to midnight', async () => {
+  it('Clear button resets the time to midnight while preserving the calendar date', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} />);
@@ -202,6 +202,9 @@ describe('TimePicker', () => {
     expect(called.getHours()).toBe(0);
     expect(called.getMinutes()).toBe(0);
     expect(called.getSeconds()).toBe(0);
+    expect(called.getFullYear()).toBe(2026);
+    expect(called.getMonth()).toBe(3);
+    expect(called.getDate()).toBe(12);
   });
 
   it('Done button closes the popover', async () => {

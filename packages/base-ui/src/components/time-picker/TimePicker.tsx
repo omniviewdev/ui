@@ -132,9 +132,10 @@ export function TimePicker(props: TimePickerProps) {
           aria-expanded={open}
           aria-controls={open ? popoverId : undefined}
           className={styles.iconButton}
-          disabled={disabled}
+          disabled={disabled || readOnly}
+          aria-disabled={readOnly || undefined}
           tabIndex={0}
-          onClick={handleIconButtonClick}
+          onClick={readOnly ? undefined : handleIconButtonClick}
         >
           <LuClock aria-hidden="true" />
         </button>

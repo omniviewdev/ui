@@ -412,6 +412,8 @@ export function validateSections(sections: Section[]): ValidateSectionsResult {
   const h = hasHour ? hour : 0;
 
   const date = new Date(y, m, d, h, minute, second);
+  // `new Date(y, ...)` remaps years 0–99 to 1900–1999; restore the intended year.
+  date.setFullYear(y);
 
   if (Number.isNaN(date.getTime())) {
     return { valid: false, date: null, incomplete: false };

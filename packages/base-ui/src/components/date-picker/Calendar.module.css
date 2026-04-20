@@ -65,6 +65,7 @@
 }
 
 .cell[aria-disabled='true'] {
+  background: var(--ov-color-datepicker-cell-bg);
   color: var(--ov-color-datepicker-cell-fg-disabled);
   cursor: not-allowed;
 }

@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -154,11 +155,14 @@ export function Calendar(props: CalendarProps) {
 
   const moveFocus = useCallback((next: Date) => {
     setFocusedDate(next);
-    queueMicrotask(() => {
-      const selector = `[data-date='${toIsoDay(next)}']`;
-      gridRef.current?.querySelector<HTMLButtonElement>(selector)?.focus();
-    });
   }, []);
+
+  // Focus the cell after the DOM has committed (handles cross-month navigation
+  // where the new cell doesn't exist until the re-render completes).
+  useLayoutEffect(() => {
+    const selector = `[data-date='${toIsoDay(focusedDate)}']`;
+    gridRef.current?.querySelector<HTMLButtonElement>(selector)?.focus();
+  }, [focusedDate]);
 
   /** Handle a cell selection in single mode. */
   const handleSingleSelect = useCallback(

@@ -225,7 +225,9 @@ export function TimeColumns({
     onChange(next);
   };
 
-  const isInteractionDisabled = disabled || readOnly;
+  // readOnly prevents commits (handlers return early) but should not prevent
+  // keyboard focus — so we only disable tabIndex when genuinely disabled.
+  const isInteractionDisabled = disabled;
 
   return (
     <div className={[styles.columns, className].filter(Boolean).join(' ')}>

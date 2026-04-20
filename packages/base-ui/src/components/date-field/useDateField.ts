@@ -23,6 +23,7 @@ import {
   validateSections,
   type Section,
 } from './sections';
+import { isDateInRange } from '../date-picker/dateUtils';
 
 export interface UseDateFieldOptions {
   value: Date | null;
@@ -102,6 +103,8 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
     locale,
     hourCycle,
     showSeconds,
+    min,
+    max,
     disabled,
     readOnly,
   } = options;
@@ -161,8 +164,10 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
 
   useEffect(() => {
     if (!validation.valid || validation.date === null) return;
-    const prev = lastSyncedValue.current;
     const next = validation.date;
+    // Suppress onChange if the parsed date falls outside [min, max].
+    if (!isDateInRange(next, min, max)) return;
+    const prev = lastSyncedValue.current;
     const changed =
       prev === null || prev.getTime() !== next.getTime();
     if (changed) {
@@ -170,7 +175,7 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
       onChangeRef.current?.(next);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validation.valid, validation.date?.getTime()]);
+  }, [validation.valid, validation.date?.getTime(), min, max]);
 
   // Refs map for section DOM elements.
   const sectionRefs = useRef<Map<number, HTMLElement | null>>(new Map());

@@ -150,5 +150,5 @@
 }
 
 .footer > :first-child {
-  margin-right: auto;
+  margin-inline-end: auto;
 }

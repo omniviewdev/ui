@@ -91,7 +91,7 @@ describe('dateUtils', () => {
     expect(matrix[0]).toBeDefined();
     expect(matrix[0]!.length).toBe(7);
     expect(matrix[0]![0]).toEqual(new Date(2026, 2, 29));
-    expect(matrix[5]![6]!.getTime()).toBeGreaterThanOrEqual(new Date(2026, 3, 30).getTime());
+    expect(matrix[5]![6]).toEqual(new Date(2026, 4, 9));
   });
 
   it('getMonthMatrix respects weekStartsOn=1 (Monday)', () => {

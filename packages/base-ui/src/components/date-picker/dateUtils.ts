@@ -52,8 +52,8 @@ export function isAfter(a: Date, b: Date): boolean {
 }
 
 export function clampDate(d: Date, min?: Date, max?: Date): Date {
-  if (min && isBefore(d, min)) return min;
-  if (max && isAfter(d, max)) return max;
+  if (min && isBefore(d, min)) return new Date(min);
+  if (max && isAfter(d, max)) return new Date(max);
   return d;
 }
 

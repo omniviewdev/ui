@@ -50,6 +50,9 @@ function useControlled<T>(
   return [current, set];
 }
 
+// Timestamp-aware range check — intentionally differs from dateUtils.isDateInRange,
+// which operates at day granularity. DateTimePicker needs exact timestamp comparison
+// so that min/max can constrain times within the same calendar day.
 function isDateInRange(date: Date, min?: Date, max?: Date): boolean {
   if (min && date < min) return false;
   if (max && date > max) return false;
@@ -162,6 +165,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
           aria-label="Open calendar"
           className={styles.iconButton}
           disabled={disabled}
+          aria-disabled={readOnly || undefined}
           tabIndex={0}
           onClick={() => {
             if (!disabled && !readOnly) setOpen((v) => !v);

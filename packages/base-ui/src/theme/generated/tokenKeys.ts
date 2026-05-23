@@ -47,6 +47,8 @@ export type ColorTokenKey =
   | 'color.datepicker.header.bg'
   | 'color.diff.insert.bg'
   | 'color.diff.remove.bg'
+  | 'color.discovery'
+  | 'color.discovery.soft'
   | 'color.drawer.handle'
   | 'color.drawer.handle.hover'
   | 'color.editor.bg'
@@ -99,6 +101,8 @@ export type ColorTokenKey =
   | 'color.scrollarea.thumb'
   | 'color.scrollarea.thumb.hover'
   | 'color.scrollarea.track'
+  | 'color.secondary'
+  | 'color.secondary.soft'
   | 'color.state.focus.ring'
   | 'color.state.hover'
   | 'color.state.pressed'
@@ -200,6 +204,8 @@ export const COLOR_TOKEN_KEYS: ReadonlySet<ColorTokenKey> = new Set([
   'color.datepicker.header.bg',
   'color.diff.insert.bg',
   'color.diff.remove.bg',
+  'color.discovery',
+  'color.discovery.soft',
   'color.drawer.handle',
   'color.drawer.handle.hover',
   'color.editor.bg',
@@ -252,6 +258,8 @@ export const COLOR_TOKEN_KEYS: ReadonlySet<ColorTokenKey> = new Set([
   'color.scrollarea.thumb',
   'color.scrollarea.thumb.hover',
   'color.scrollarea.track',
+  'color.secondary',
+  'color.secondary.soft',
   'color.state.focus.ring',
   'color.state.hover',
   'color.state.pressed',

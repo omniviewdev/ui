@@ -1,0 +1,154 @@
+/* ─── Input shell — mimics Input.module.css ControlShell ─────────────────── */
+
+.shell {
+  --_ov-control-height: var(--ov-control-height-md);
+  --_ov-font-size: var(--ov-font-size-body);
+  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-default);
+  --_ov-focus: var(--ov-color-border-focus);
+  --_ov-placeholder: var(--ov-color-fg-subtle);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_ov-gap);
+  min-height: var(--_ov-control-height);
+  padding-inline: var(--_ov-padding-inline);
+  border: 1px solid var(--_ov-border);
+  border-radius: var(--ov-radius-control);
+  background: var(--_ov-bg);
+  color: var(--_ov-fg);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-font-size);
+  font-weight: var(--ov-font-weight-body, 400);
+  line-height: 1.2;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    border-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.shell:hover:not(.shellDisabled) {
+  background: color-mix(in srgb, var(--_ov-bg) 86%, var(--ov-color-state-hover) 14%);
+}
+
+.shell:focus-within:not(.shellDisabled) {
+  border-color: var(--_ov-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+/* ─── Error state ─────────────────────────────────────────────────────────── */
+
+.shellError {
+  border-color: var(--ov-color-danger);
+}
+
+.shellError:focus-within {
+  border-color: var(--ov-color-danger);
+  box-shadow: 0 0 0 1px var(--ov-color-danger-soft);
+}
+
+/* ─── Disabled state ──────────────────────────────────────────────────────── */
+
+.shellDisabled {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: not-allowed;
+}
+
+/* ─── DateField inside shell — grows to fill available space ─────────────── */
+
+.shell > [role="group"] {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Text input ──────────────────────────────────────────────────────────── */
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--_ov-font-size);
+  line-height: 1.35;
+  outline: none;
+  padding: 0;
+  cursor: text;
+}
+
+.input::placeholder {
+  color: var(--_ov-placeholder);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* ─── Calendar icon button ────────────────────────────────────────────────── */
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  cursor: pointer;
+  border-radius: var(--ov-radius-control);
+  outline: none;
+  transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.iconButton:hover {
+  color: var(--ov-color-fg-default);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 1px;
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+}
+
+.iconButton :where(svg) {
+  inline-size: var(--_ov-icon-size);
+  block-size: var(--_ov-icon-size);
+}
+
+/* ─── Popup — solid surface, no bleed-through ────────────────────────────── */
+
+.popup {
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  box-shadow: var(--ov-shadow-surface);
+  padding: 0;
+  /* Override the default Popover.Popup min/max sizing for compact calendar */
+  min-inline-size: unset;
+  max-inline-size: unset;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--ov-space-stack-sm, 8px);
+  padding: var(--ov-space-stack-sm, 8px) var(--ov-space-stack-md, 12px);
+  border-top: 1px solid var(--ov-color-border-default);
+  background: var(--ov-color-bg-surface-raised);
+}
+
+.footer > :first-child {
+  margin-inline-end: auto;
+}

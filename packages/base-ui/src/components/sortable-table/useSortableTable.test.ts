@@ -101,7 +101,7 @@ describe('useSortableTable', () => {
     );
 
     // 'cherry' (6) > 'banana' (6) > 'apple' (5) — custom sort by length
-    expect(result.current.sortedData[2].name).toBe('apple');
+    expect(result.current.sortedData[2]!.name).toBe('apple');
   });
 
   it('sorts undefined values last', () => {
@@ -121,7 +121,7 @@ describe('useSortableTable', () => {
       }),
     );
 
-    expect(result.current.sortedData[result.current.sortedData.length - 1].id).toBe('4');
+    expect(result.current.sortedData[result.current.sortedData.length - 1]!.id).toBe('4');
   });
 
   it('skips sorting for non-sortable columns', () => {

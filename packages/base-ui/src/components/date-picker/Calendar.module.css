@@ -1,0 +1,101 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  padding: var(--ov-primitive-space-2);
+  background: var(--ov-color-bg-surface-raised);
+  border-radius: var(--ov-primitive-radius-md);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-primitive-font-sans);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ov-primitive-space-1);
+  padding: var(--ov-primitive-space-1);
+  background: var(--ov-color-datepicker-header-bg);
+  border-radius: var(--ov-primitive-radius-sm);
+  margin-bottom: var(--ov-primitive-space-2);
+}
+
+.monthLabel {
+  font-weight: var(--ov-primitive-font-weight-medium);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, var(--ov-size-datepicker-cell));
+  gap: var(--ov-size-datepicker-gap);
+}
+
+.weekday {
+  display: grid;
+  place-items: center;
+  height: var(--ov-size-datepicker-cell);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-primitive-font-size-11);
+}
+
+.cell {
+  display: grid;
+  place-items: center;
+  height: var(--ov-size-datepicker-cell);
+  width: var(--ov-size-datepicker-cell);
+  border: none;
+  border-radius: var(--ov-primitive-radius-sm);
+  background: var(--ov-color-datepicker-cell-bg);
+  color: var(--ov-color-datepicker-cell-fg);
+  cursor: pointer;
+  transition: background var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.cell:hover:not([aria-disabled='true']) {
+  background: var(--ov-color-datepicker-cell-bg-hover);
+}
+
+.cell[aria-current='date'] {
+  background: var(--ov-color-datepicker-cell-bg-today);
+  color: var(--ov-color-datepicker-cell-fg-today);
+}
+
+.cell[aria-selected='true'] {
+  background: var(--ov-color-datepicker-cell-bg-selected);
+  color: var(--ov-color-datepicker-cell-fg-selected);
+}
+
+.cell[aria-disabled='true'] {
+  background: var(--ov-color-datepicker-cell-bg);
+  color: var(--ov-color-datepicker-cell-fg-disabled);
+  cursor: not-allowed;
+}
+
+.otherMonth {
+  color: var(--ov-color-datepicker-cell-fg-other-month);
+}
+
+.cell:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: -2px;
+}
+
+/* Range-selection styles */
+.cellInRange {
+  background: var(--ov-color-accent-soft);
+  color: var(--ov-color-fg-default);
+  border-radius: 0;
+}
+
+.cellInRange:hover:not([aria-disabled='true']) {
+  background: var(--ov-color-accent-soft);
+}
+
+.cellRangeStart {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.cellRangeEnd {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

@@ -512,6 +512,18 @@
   --ov-syntax-style-keyword: normal;
   --ov-syntax-style-function: normal;
   --ov-syntax-style-type: normal;
+
+  /* Date picker tokens — dark */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-fg-inverse);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-theme='light'] {
@@ -618,6 +630,18 @@
   --ov-syntax-regexp: #032f62;
   --ov-syntax-operator: #d73a49;
   --ov-syntax-punctuation: #24292e;
+
+  /* Date picker tokens — light */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-fg-inverse);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-theme='high-contrast-dark'] {
@@ -715,6 +739,18 @@
   --ov-syntax-regexp: #a5d6ff;
   --ov-syntax-operator: #ff9f9f;
   --ov-syntax-punctuation: #ffffff;
+
+  /* Date picker tokens — high-contrast-dark */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-bg-base);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-theme='high-contrast-light'] {
@@ -812,6 +848,18 @@
   --ov-syntax-regexp: #032f62;
   --ov-syntax-operator: #8f0000;
   --ov-syntax-punctuation: #000000;
+
+  /* Date picker tokens — high-contrast-light */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-bg-surface);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -857,6 +905,18 @@
   --ov-color-state-pressed: rgb(160 170 185 / 0.16);
   --ov-color-state-selected: rgb(77 124 255 / 0.18);
   --ov-color-state-focus-ring: #4d7cff;
+
+  /* Date picker tokens — obsidian */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-fg-inverse);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -902,6 +962,18 @@
   --ov-color-state-pressed: rgb(160 160 160 / 0.16);
   --ov-color-state-selected: rgb(75 140 255 / 0.18);
   --ov-color-state-focus-ring: #4b8cff;
+
+  /* Date picker tokens — carbon */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-fg-inverse);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -947,6 +1019,18 @@
   --ov-color-state-pressed: rgb(160 165 175 / 0.14);
   --ov-color-state-selected: rgb(80 138 255 / 0.15);
   --ov-color-state-focus-ring: #508aff;
+
+  /* Date picker tokens — void */
+  --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
+  --ov-color-datepicker-cell-bg: transparent;
+  --ov-color-datepicker-cell-bg-today: var(--ov-color-state-selected);
+  --ov-color-datepicker-cell-bg-selected: var(--ov-color-brand-500);
+  --ov-color-datepicker-cell-bg-hover: var(--ov-color-state-hover);
+  --ov-color-datepicker-cell-fg: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-today: var(--ov-color-fg-default);
+  --ov-color-datepicker-cell-fg-selected: var(--ov-color-fg-inverse);
+  --ov-color-datepicker-cell-fg-disabled: var(--ov-color-fg-disabled);
+  --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-density='compact'] {
@@ -1118,6 +1202,8 @@
   --ov-size-spinner-md: 18px;
   --ov-size-spinner-lg: 24px;
   --ov-size-tab-height: 32px;
+  --ov-size-datepicker-cell: 26px;
+  --ov-size-datepicker-gap: 1px;
 }
 
 :root[data-ov-density='comfortable'] {
@@ -1289,6 +1375,8 @@
   --ov-size-spinner-md: 20px;
   --ov-size-spinner-lg: 28px;
   --ov-size-tab-height: 35px;
+  --ov-size-datepicker-cell: 32px;
+  --ov-size-datepicker-gap: 2px;
 }
 
 :root[data-ov-motion='reduced'] {

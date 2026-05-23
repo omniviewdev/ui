@@ -17,7 +17,7 @@ describe('extractTokenKeys', () => {
       }
     `;
     const result = extractTokenKeys(css);
-    expect(result.colors.sort()).toEqual(['color.bg.base', 'color.fg.default']);
+    expect(result.colors).toEqual(['color.bg.base', 'color.fg.default']);
     expect(result.syntax).toEqual(['syntax.comment']);
     expect(result.terminal).toEqual(['terminal.red']);
   });

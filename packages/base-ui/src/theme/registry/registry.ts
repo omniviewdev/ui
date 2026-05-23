@@ -101,9 +101,15 @@ export function createThemeRegistry(): ThemeRegistry {
       if (BUILT_IN_THEME_IDS.has(id)) {
         throw new Error(`Cannot unregister built-in theme '${id}'`);
       }
-      if (!themes.has(id)) return;
+      const removed = themes.get(id);
+      if (!removed) return;
+      const wasActive = activeId === id;
       themes.delete(id);
       emit({ type: 'unregistered', id });
+      if (wasActive) {
+        // Reconcile DOM + activeId by falling back to the removed theme's base.
+        registry.apply(removed.base);
+      }
     },
     get(id) {
       return themes.get(id);

@@ -38,18 +38,21 @@ export function ThemeProvider({
   // so we can auto-apply it when a matching `registered` event arrives.
   const pendingThemeIdRef = useRef<string | null>(null);
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (!persist) return initialTheme;
+    if (!persist) {
+      if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
+      return initialTheme;
+    }
     const stored = getStored(THEME_STORAGE_KEY);
     if (stored && themeRegistry.has(stored)) return stored;
     if (stored) pendingThemeIdRef.current = stored;
+    else if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
     return initialTheme;
   });
 
-  // Apply the initial theme through the registry once on mount and subscribe
-  // to registry events so external applies (e.g. via useThemeRegistry) stay
-  // in sync, and so that a deferred registered theme auto-applies.
+  // Subscribe before apply so the initial `applied` event isn't missed, and
+  // skip apply when the resolved theme isn't registered yet (the `registered`
+  // handler below auto-applies it once it lands).
   useEffect(() => {
-    themeRegistry.apply(theme);
     const unsubscribe = themeRegistry.subscribe((event) => {
       if (event.type === 'applied') {
         setThemeState(event.id);
@@ -63,6 +66,9 @@ export function ThemeProvider({
         }
       }
     });
+    if (themeRegistry.has(theme)) {
+      themeRegistry.apply(theme);
+    }
     return unsubscribe;
     // Intentionally only on mount. `theme` state is updated via the subscriber.
     // eslint-disable-next-line react-hooks/exhaustive-deps

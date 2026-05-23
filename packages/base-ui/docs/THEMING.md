@@ -80,7 +80,7 @@ Any token not listed falls back to the `dark` base — so the theme is forward-c
 
 Valid keys for `colors`, `syntax`, and `terminal` are generated from `styles.css` and live in:
 
-```
+```text
 src/theme/generated/tokenKeys.ts
 ```
 
@@ -88,7 +88,7 @@ The types `ColorTokenKey`, `SyntaxTokenKey`, and `TerminalTokenKey` exported fro
 
 **Dotted notation maps directly to CSS custom properties:**
 
-```
+```text
 color.bg.base  →  --ov-color-bg-base
 syntax.keyword →  --ov-syntax-keyword
 ```
@@ -164,7 +164,7 @@ function ThemePicker() {
 
 The library handles rendering only. Loading theme files from disk, fetching from an API, caching, and bundling are the Go backend's responsibility. The typical flow:
 
-```
+```text
 Go backend                      React frontend
 ┌────────────────────┐          ┌────────────────────────────┐
 │ Read theme files   │          │ @omniviewdev/base-ui       │

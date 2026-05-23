@@ -52,6 +52,19 @@ describe('themeRegistry — registration', () => {
     expect(registry.has('temp')).toBe(false);
   });
 
+  it('reconciles active state when the active custom theme is unregistered', () => {
+    registry.register(makeCustom('temp', 'dark'));
+    registry.apply('temp');
+    expect(registry.active()).toBe('temp');
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('temp');
+
+    registry.unregister('temp');
+
+    expect(registry.active()).toBe('dark');
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
+    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
+  });
+
   it('unregister is a no-op for unknown ids', () => {
     expect(() => registry.unregister('never-existed')).not.toThrow();
   });

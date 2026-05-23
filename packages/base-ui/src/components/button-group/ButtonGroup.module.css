@@ -9,6 +9,14 @@
   align-items: stretch;
 }
 
+/* In a vertical group every child fills the column. IconButton pins itself to
+   a square via inline-size + min-inline-size — override both so a mixed
+   group (Button + IconButton) lines up at a single width. */
+.Root[data-ov-orientation='vertical'] > [data-ov-variant] {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
 .Root[data-ov-attached='true'] {
   gap: 0;
 }

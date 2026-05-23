@@ -49,6 +49,37 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
+export const Sizes: Story = {
+  name: 'All sizes',
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <AlertDialog.Root key={size} size={size}>
+          <AlertDialog.Trigger>Open {size}</AlertDialog.Trigger>
+          <AlertDialog.Portal>
+            <AlertDialog.Backdrop />
+            <AlertDialog.Popup>
+              <AlertDialog.Title>Delete workspace? ({size})</AlertDialog.Title>
+              <AlertDialog.Description>
+                This permanently removes local state, runtime settings, and recent session metadata.
+              </AlertDialog.Description>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                <AlertDialog.Close variant="ghost" color="neutral">
+                  Cancel
+                </AlertDialog.Close>
+                <AlertDialog.Close variant="solid" color="danger">
+                  Delete
+                </AlertDialog.Close>
+              </div>
+            </AlertDialog.Popup>
+          </AlertDialog.Portal>
+        </AlertDialog.Root>
+      ))}
+    </div>
+  ),
+};
+
 export const Open: Story = {
   args: {
     defaultOpen: true,

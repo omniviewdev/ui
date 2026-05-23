@@ -1,8 +1,9 @@
 .Root {
-  --_ov-font-size-label: var(--ov-font-size-xs);
-  --_ov-font-size-value: var(--ov-font-size-sm);
-  --_ov-gap: var(--ov-space-stack-md, 10px);
-  --_ov-item-gap: var(--ov-space-stack-xs, 4px);
+  /* Default = md. Label is muted/smaller, value sits one step larger. */
+  --_ov-font-size-label: var(--ov-primitive-font-size-11);
+  --_ov-font-size-value: var(--ov-primitive-font-size-13);
+  --_ov-gap: 10px;
+  --_ov-item-gap: 4px;
 
   display: flex;
   flex-direction: column;
@@ -12,18 +13,32 @@
 }
 
 /* Size variants */
+.Root[data-ov-size='xs'] {
+  --_ov-font-size-label: var(--ov-primitive-font-size-11);
+  --_ov-font-size-value: var(--ov-primitive-font-size-11);
+  --_ov-gap: 6px;
+  --_ov-item-gap: 2px;
+}
+
 .Root[data-ov-size='sm'] {
-  --_ov-font-size-label: var(--ov-font-size-xxs, 0.625rem);
-  --_ov-font-size-value: var(--ov-font-size-xs);
-  --_ov-gap: var(--ov-space-stack-sm, 8px);
-  --_ov-item-gap: var(--ov-space-stack-xxs, 2px);
+  --_ov-font-size-label: var(--ov-primitive-font-size-11);
+  --_ov-font-size-value: var(--ov-primitive-font-size-12);
+  --_ov-gap: 8px;
+  --_ov-item-gap: 2px;
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-font-size-label: var(--ov-font-size-sm);
-  --_ov-font-size-value: var(--ov-font-size-md);
-  --_ov-gap: var(--ov-space-stack-md, 12px);
-  --_ov-item-gap: var(--ov-space-stack-sm, 6px);
+  --_ov-font-size-label: var(--ov-primitive-font-size-12);
+  --_ov-font-size-value: var(--ov-primitive-font-size-14);
+  --_ov-gap: 12px;
+  --_ov-item-gap: 6px;
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-font-size-label: var(--ov-primitive-font-size-13);
+  --_ov-font-size-value: var(--ov-primitive-font-size-16);
+  --_ov-gap: 16px;
+  --_ov-item-gap: 8px;
 }
 
 /* Grid layout */

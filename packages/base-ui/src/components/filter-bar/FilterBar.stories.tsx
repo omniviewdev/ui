@@ -96,7 +96,7 @@ export const AllSizes: Story = {
   name: 'All sizes',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {(['sm', 'md', 'lg'] as const).map((size) => (
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
         <div key={size}>
           <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>
             size=&quot;{size}&quot;

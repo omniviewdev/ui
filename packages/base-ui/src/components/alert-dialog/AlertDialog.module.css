@@ -13,10 +13,15 @@
   --_ov-description: var(--ov-color-fg-muted);
   --_ov-accent-soft: var(--ov-color-state-selected);
 
+  /* Default = md. Linear +2 step on gap, +4 step on padding across all 5 sizes
+     so each tier is visually distinct from its neighbors. */
+  --_ov-gap: 12px;
+  --_ov-padding: 16px;
+
   display: grid;
   position: relative;
   z-index: calc(var(--ov-z-modal, 1000) + 1);
-  gap: var(--ov-space-stack-md);
+  gap: var(--_ov-gap);
   min-inline-size: min(320px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
   max-inline-size: min(92vw, 480px);
   border-radius: var(--ov-radius-surface);
@@ -24,17 +29,27 @@
   background: var(--_ov-bg);
   color: var(--ov-color-fg-default);
   box-shadow: var(--ov-shadow-surface);
-  padding: var(--ov-panel-padding);
+  padding: var(--_ov-padding);
+}
+
+.Popup[data-ov-size='xs'] {
+  --_ov-gap: 8px;
+  --_ov-padding: 8px;
 }
 
 .Popup[data-ov-size='sm'] {
-  gap: var(--ov-space-stack-sm);
-  padding: var(--ov-space-stack-lg);
+  --_ov-gap: 10px;
+  --_ov-padding: 12px;
 }
 
 .Popup[data-ov-size='lg'] {
-  gap: var(--ov-space-stack-lg);
-  padding: calc(var(--ov-panel-padding) + var(--ov-space-stack-sm));
+  --_ov-gap: 14px;
+  --_ov-padding: 20px;
+}
+
+.Popup[data-ov-size='xl'] {
+  --_ov-gap: 16px;
+  --_ov-padding: 24px;
 }
 
 .Popup[data-ov-color='brand'] {
@@ -82,8 +97,11 @@
 
 .Trigger,
 .Close {
+  /* Default = md. Tracks --ov-size-button-* so dialog buttons align with the
+     rest of the button scale at every tier. */
   --_ov-height: var(--ov-size-button-height-md);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
@@ -100,7 +118,7 @@
   background: var(--_ov-bg);
   color: var(--_ov-fg);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: var(--_ov-font-size);
   font-weight: var(--ov-font-weight-label);
   cursor: pointer;
   transition:
@@ -109,17 +127,32 @@
     color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
+.Trigger[data-ov-size='xs'],
+.Close[data-ov-size='xs'] {
+  --_ov-height: var(--ov-size-button-height-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+}
+
 .Trigger[data-ov-size='sm'],
 .Close[data-ov-size='sm'] {
   --_ov-height: var(--ov-size-button-height-sm);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
-  font-size: var(--ov-font-size-caption);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
 }
 
 .Trigger[data-ov-size='lg'],
 .Close[data-ov-size='lg'] {
   --_ov-height: var(--ov-size-button-height-lg);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+}
+
+.Trigger[data-ov-size='xl'],
+.Close[data-ov-size='xl'] {
+  --_ov-height: var(--ov-size-button-height-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
 }
 
 .Trigger[data-ov-color='brand'],

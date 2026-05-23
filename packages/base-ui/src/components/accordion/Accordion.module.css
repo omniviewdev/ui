@@ -1,47 +1,72 @@
 /* ─── Root ────────────────────────────────────────────────────────────────── */
 
 .Root {
+  /* Default = md. Header height tracks --ov-size-button-height-* so
+     Accordion aligns with Button across the size scale. */
   --_ov-accordion-duration: 150ms;
-  --_ov-header-py: 10px;
-  --_ov-header-px: 12px;
-  --_ov-header-gap: var(--ov-space-stack-sm);
-  --_ov-header-font: var(--ov-font-size-body);
-  --_ov-content-pb: 12px;
-  --_ov-icon-size: 16px;
-  --_ov-chevron-size: 16px;
-  --_ov-count-height: 20px;
-  --_ov-count-font: var(--ov-font-size-caption, 0.75rem);
+  --_ov-header-min-height: var(--ov-size-button-height-md);
+  --_ov-header-px: var(--ov-size-button-padding-inline-md);
+  --_ov-header-gap: var(--ov-space-inline-control);
+  --_ov-header-font: var(--ov-size-button-font-size-md);
+  --_ov-content-pb: 10px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-count-height: 18px;
+  --_ov-count-font: var(--ov-primitive-font-size-11);
 
   display: flex;
   flex-direction: column;
 }
 
+/* ─── Size: xs ───────────────────────────────────────────────────────────── */
+
+.Root[data-ov-size='xs'] {
+  --_ov-header-min-height: var(--ov-size-button-height-xs);
+  --_ov-header-px: var(--ov-size-button-padding-inline-xs);
+  --_ov-header-gap: 4px;
+  --_ov-header-font: var(--ov-size-button-font-size-xs);
+  --_ov-content-pb: 4px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
+  --_ov-count-height: 14px;
+  --_ov-count-font: var(--ov-primitive-font-size-11);
+}
+
 /* ─── Size: sm ───────────────────────────────────────────────────────────── */
 
 .Root[data-ov-size='sm'] {
-  --_ov-header-py: 4px;
-  --_ov-header-px: 8px;
+  --_ov-header-min-height: var(--ov-size-button-height-sm);
+  --_ov-header-px: var(--ov-size-button-padding-inline-sm);
   --_ov-header-gap: 6px;
-  --_ov-header-font: var(--ov-font-size-caption, 0.8125rem);
+  --_ov-header-font: var(--ov-size-button-font-size-sm);
   --_ov-content-pb: 6px;
-  --_ov-icon-size: 14px;
-  --_ov-chevron-size: 12px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
   --_ov-count-height: 16px;
-  --_ov-count-font: var(--ov-font-size-xs, 0.6875rem);
+  --_ov-count-font: var(--ov-primitive-font-size-11);
 }
 
 /* ─── Size: lg ───────────────────────────────────────────────────────────── */
 
 .Root[data-ov-size='lg'] {
-  --_ov-header-py: 14px;
-  --_ov-header-px: 16px;
+  --_ov-header-min-height: var(--ov-size-button-height-lg);
+  --_ov-header-px: var(--ov-size-button-padding-inline-lg);
   --_ov-header-gap: 10px;
-  --_ov-header-font: var(--ov-font-size-body-lg, 1rem);
+  --_ov-header-font: var(--ov-size-button-font-size-lg);
+  --_ov-content-pb: 12px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+  --_ov-count-height: 20px;
+  --_ov-count-font: var(--ov-primitive-font-size-12);
+}
+
+/* ─── Size: xl ───────────────────────────────────────────────────────────── */
+
+.Root[data-ov-size='xl'] {
+  --_ov-header-min-height: var(--ov-size-button-height-xl);
+  --_ov-header-px: var(--ov-size-button-padding-inline-xl);
+  --_ov-header-gap: 12px;
+  --_ov-header-font: var(--ov-size-button-font-size-xl);
   --_ov-content-pb: 16px;
-  --_ov-icon-size: 20px;
-  --_ov-chevron-size: 18px;
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
   --_ov-count-height: 22px;
-  --_ov-count-font: var(--ov-font-size-body, 0.875rem);
+  --_ov-count-font: var(--ov-primitive-font-size-13);
 }
 
 /* ─── Variant: flush ─────────────────────────────────────────────────────── */
@@ -50,7 +75,6 @@
    explorer sidebar pattern. */
 
 .Root[data-ov-variant='flush'] {
-  --_ov-header-py: 0;
   --_ov-header-px: 4px;
   --_ov-header-gap: 2px;
   --_ov-content-pb: 0;
@@ -113,7 +137,8 @@
   align-items: center;
   gap: var(--_ov-header-gap);
   width: 100%;
-  padding: var(--_ov-header-py) var(--_ov-header-px);
+  min-height: var(--_ov-header-min-height);
+  padding: 0 var(--_ov-header-px);
   border: none;
   background: transparent;
   color: var(--ov-color-fg-default);

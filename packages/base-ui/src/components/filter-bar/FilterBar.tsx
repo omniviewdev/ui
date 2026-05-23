@@ -25,6 +25,18 @@ function useFilterBar() {
   return useContext(FilterBarContext);
 }
 
+// IconButton size that fits within / alongside a Chip at the matching FilterBar
+// size. Chip heights (16/18/20/24/28) are shorter than IconButton heights
+// (18/22/26/32/40), so we round down: the buttons stay <= chip height and the
+// bar's vertical rhythm stays chip-driven.
+const ICON_BUTTON_SIZE: Record<ComponentSize, ComponentSize> = {
+  xs: 'xs',
+  sm: 'xs',
+  md: 'xs',
+  lg: 'sm',
+  xl: 'md',
+};
+
 // ---------------------------------------------------------------------------
 // FilterBar (root)
 // ---------------------------------------------------------------------------
@@ -84,7 +96,7 @@ const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(
           onRemove ? (
             <IconButton
               variant="ghost"
-              size={size}
+              size={ICON_BUTTON_SIZE[size]}
               aria-label="Remove filter"
               onClick={handleRemoveClick}
             >
@@ -119,7 +131,7 @@ const FilterBarAdd = forwardRef<HTMLButtonElement, FilterBarAddProps>(
       <IconButton
         ref={ref as never}
         variant="ghost"
-        size={size}
+        size={ICON_BUTTON_SIZE[size]}
         aria-label="Add filter"
         {...props}
       >
@@ -148,7 +160,7 @@ const FilterBarClear = forwardRef<HTMLButtonElement, FilterBarClearProps>(
       <IconButton
         ref={ref as never}
         variant="ghost"
-        size={size}
+        size={ICON_BUTTON_SIZE[size]}
         aria-label={typeof children === 'string' ? children : 'Clear all'}
         {...props}
       >

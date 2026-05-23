@@ -1,7 +1,9 @@
 {
   "name": "@omniviewdev/editors",
-  "version": "0.1.0",
-  "publishConfig": { "access": "public" },
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Omniview editor components — code editor, diff viewer, terminal, markdown preview, command palette, object inspector.",
   "type": "module",
   "main": "./dist/index.js",

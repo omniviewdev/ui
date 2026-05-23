@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.2.1
+
+### Patch Changes
+
+- [#43](https://github.com/omniviewdev/ui/pull/43) [`dfccc76`](https://github.com/omniviewdev/ui/commit/dfccc76c1d3bbf702f1a2dbc8d8e600d024dc1da) Thanks [@joshuapare](https://github.com/joshuapare)! - Move the `'use no memo'` directive from module top into the `useDataTable` function body so rollup stops stripping it. Restores the React Compiler opt-out for the data-table hook.
+
 ## 0.2.0
 
 ### Minor Changes

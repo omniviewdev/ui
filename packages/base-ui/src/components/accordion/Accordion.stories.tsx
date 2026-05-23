@@ -16,7 +16,7 @@ const meta = {
     exclusive: { control: 'boolean' },
     defaultExpanded: { control: 'object' },
     animation: { control: 'inline-radio', options: ['default', 'fast', 'none'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
 } satisfies Meta<AccordionProps>;
 
@@ -118,7 +118,7 @@ export const SizeComparison: Story = {
   name: 'Size comparison',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-      {(['sm', 'md', 'lg'] as const).map((size) => (
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
         <div key={size}>
           <p
             style={{

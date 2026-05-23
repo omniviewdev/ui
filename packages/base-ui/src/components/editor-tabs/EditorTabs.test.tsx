@@ -249,6 +249,24 @@ describe('EditorTabs', () => {
     expect(root).toHaveAttribute('data-ov-variant', 'pill');
   });
 
+  it('applies xs and xl size data attributes', () => {
+    const tabs: TabDescriptor[] = [{ id: '1', title: 'Tab 1' }];
+    const { rerender } = renderWithTheme(<EditorTabs tabs={tabs} size="xs" />);
+    expect(screen.getByRole('tablist')).toHaveAttribute('data-ov-size', 'xs');
+
+    rerender(<EditorTabs tabs={tabs} size="xl" />);
+    expect(screen.getByRole('tablist')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const tabs: TabDescriptor[] = [{ id: '1', title: 'Tab 1' }];
+    const { rerender } = renderWithTheme(<EditorTabs tabs={tabs} color="discovery" />);
+    expect(screen.getByRole('tablist')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<EditorTabs tabs={tabs} color="secondary" />);
+    expect(screen.getByRole('tablist')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('detachable tab wires onDetachCommit through without crashing', () => {
     // Full pointer drag simulation is not feasible in jsdom (dnd-kit requires
     // setPointerCapture, getBoundingClientRect, etc.). The useTabDetach hook

@@ -130,4 +130,20 @@ describe('StatRow', () => {
     const dividers = screen.getByTestId('row').querySelectorAll('[aria-hidden]');
     expect(dividers).toHaveLength(0);
   });
+
+  it('renders discovery and secondary colors on item', () => {
+    const { rerender } = renderWithTheme(
+      <StatRow>
+        <StatRow.Item color="discovery" data-testid="item">Val</StatRow.Item>
+      </StatRow>,
+    );
+    expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <StatRow>
+        <StatRow.Item color="secondary" data-testid="item">Val</StatRow.Item>
+      </StatRow>,
+    );
+    expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

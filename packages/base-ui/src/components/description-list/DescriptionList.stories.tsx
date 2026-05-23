@@ -13,7 +13,7 @@ const meta = {
   },
   argTypes: {
     layout: { control: 'inline-radio', options: ['horizontal', 'vertical', 'grid'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     columns: { control: 'inline-radio', options: [1, 2, 3] },
   },
 } satisfies Meta<DescriptionListProps>;
@@ -94,6 +94,36 @@ export const WithCopyableValues: Story = {
         sha256:abc123def456
       </DescriptionList.Item>
     </DescriptionList>
+  ),
+};
+
+export const SizeComparison: Story = {
+  name: 'Size comparison',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <div key={size}>
+          <p
+            style={{
+              margin: '0 0 8px',
+              fontFamily: 'var(--ov-font-sans)',
+              fontSize: 'var(--ov-font-size-caption)',
+              color: 'var(--ov-color-fg-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {size}
+          </p>
+          <DescriptionList size={size}>
+            <DescriptionList.Item label="Cluster">production-us-east-1</DescriptionList.Item>
+            <DescriptionList.Item label="Namespace">default</DescriptionList.Item>
+            <DescriptionList.Item label="Pod Count">42</DescriptionList.Item>
+            <DescriptionList.Item label="Created">2025-01-15T09:30:00Z</DescriptionList.Item>
+          </DescriptionList>
+        </div>
+      ))}
+    </div>
   ),
 };
 

@@ -1,10 +1,12 @@
 .Root {
   --_ov-tab-height: var(--ov-control-height-md);
   --_ov-tab-font-size: var(--ov-font-size-body);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-list-bg: var(--ov-color-bg-surface-raised);
   --_ov-list-border: var(--ov-color-border-default);
   --_ov-tab-fg: var(--ov-color-fg-muted);
   --_ov-tab-fg-active: var(--ov-color-fg-default);
+  --_ov-tab-fg-hover: var(--ov-color-fg-default);
   --_ov-tab-bg-hover: var(--ov-color-state-hover);
   --_ov-tab-bg-active: var(--ov-color-state-selected);
   --_ov-indicator: var(--ov-color-brand-400);
@@ -15,13 +17,26 @@
   font-family: var(--ov-font-sans);
 }
 
+.Root[data-ov-size='xs'] {
+  --_ov-tab-height: var(--ov-control-height-xs);
+  --_ov-tab-font-size: var(--ov-font-size-caption);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-xs);
+}
+
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: var(--ov-control-height-sm);
   --_ov-tab-font-size: var(--ov-font-size-caption);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-tab-height: var(--ov-control-height-lg);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-tab-height: var(--ov-control-height-xl);
+  --_ov-tab-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Root[data-ov-color='neutral'] {
@@ -47,6 +62,21 @@
 .Root[data-ov-color='danger'] {
   --_ov-indicator: var(--ov-color-danger);
   --_ov-tab-bg-active: var(--ov-color-danger-soft);
+}
+
+.Root[data-ov-color='info'] {
+  --_ov-indicator: var(--ov-color-info);
+  --_ov-tab-bg-active: var(--ov-color-info-soft);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-indicator: var(--ov-color-discovery);
+  --_ov-tab-bg-active: var(--ov-color-discovery-soft);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-indicator: var(--ov-color-secondary);
+  --_ov-tab-bg-active: var(--ov-color-secondary-soft);
 }
 
 .Root[data-ov-variant='outline'] {
@@ -97,13 +127,18 @@
   height: var(--_ov-tab-height);
 }
 
-.Root[data-ov-variant='flat'] .Tab[data-selected] {
-  background: transparent;
+.Root[data-ov-variant='flat'] .Tab[data-active] {
+  background: var(--ov-color-bg-surface-raised);
   color: var(--_ov-tab-fg-active);
+  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
+  box-shadow: inset 0 2px 0 var(--_ov-indicator);
 }
 
 .Root[data-ov-variant='flat'] .Indicator {
-  border-radius: 0;
+  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
+  height: 2px;
+  top: 0;
+  bottom: auto;
 }
 
 .Root[data-ov-variant='flat'] .Panel {
@@ -127,8 +162,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--ov-space-stack-xs);
   height: calc(var(--_ov-tab-height) - 4px);
-  padding: 0 calc(var(--ov-space-inline-control) + var(--ov-space-stack-sm));
+  padding: 0 var(--ov-space-inline-control);
   border: 0;
   border-radius: calc(var(--ov-radius-control) - 2px);
   background: transparent;
@@ -146,9 +182,10 @@
 
 .Tab:hover {
   background: var(--_ov-tab-bg-hover);
+  color: var(--_ov-tab-fg-hover);
 }
 
-.Tab[data-selected] {
+.Tab[data-active] {
   color: var(--_ov-tab-fg-active);
   background: var(--_ov-tab-bg-active);
 }
@@ -160,7 +197,9 @@
 .TabDecorator {
   display: inline-flex;
   align-items: center;
-  margin-left: var(--ov-space-stack-xs, 4px);
+  justify-content: center;
+  width: var(--_ov-tab-icon-size, 16px);
+  height: var(--_ov-tab-icon-size, 16px);
   flex-shrink: 0;
 }
 

@@ -78,6 +78,18 @@
   --_ov-selected-bg: var(--ov-color-danger-soft);
 }
 
+.Root[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-selected-bg: var(--ov-color-discovery-soft);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-selected-bg: var(--ov-color-secondary-soft);
+}
+
 /* ---------------------------------------------------------------------------
  * Viewport
  * --------------------------------------------------------------------------- */

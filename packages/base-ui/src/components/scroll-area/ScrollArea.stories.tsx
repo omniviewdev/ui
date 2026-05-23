@@ -11,7 +11,7 @@ const meta = {
   },
   argTypes: {
     orientation: { control: 'inline-radio', options: ['vertical', 'horizontal', 'both'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
   render: (args) => (
     <ScrollArea

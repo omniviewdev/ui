@@ -1,7 +1,10 @@
 .Trigger {
-  --_ov-control-height: var(--ov-control-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-padding-inline: var(--ov-space-inline-control);
+  /* Default = md. Mirror the Button scale exactly via --ov-size-button-*
+     tokens so Select lines up with Button (and Input) at every tier and
+     every density. */
+  --_ov-control-height: var(--ov-size-button-height-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-gap: var(--ov-space-stack-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
@@ -44,15 +47,37 @@
   outline: none;
 }
 
+.Trigger[data-ov-size='xs'] {
+  --_ov-control-height: var(--ov-size-button-height-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
+}
+
 .Trigger[data-ov-size='sm'] {
-  --_ov-control-height: var(--ov-control-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-control-height: var(--ov-size-button-height-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 .Trigger[data-ov-size='lg'] {
-  --_ov-control-height: var(--ov-control-height-lg);
+  --_ov-control-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
   --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+.Trigger[data-ov-size='xl'] {
+  --_ov-control-height: var(--ov-size-button-height-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
+}
+
+.Trigger[data-ov-color='neutral'] {
+  --_ov-focus: var(--ov-color-border-default);
+  --_ov-accent-soft: var(--ov-color-state-selected);
 }
 
 .Trigger[data-ov-color='brand'] {
@@ -75,6 +100,21 @@
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
+.Trigger[data-ov-color='info'] {
+  --_ov-focus: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+}
+
+.Trigger[data-ov-color='discovery'] {
+  --_ov-focus: var(--ov-color-discovery);
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+}
+
+.Trigger[data-ov-color='secondary'] {
+  --_ov-focus: var(--ov-color-secondary);
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+}
+
 .Trigger[data-ov-variant='solid'] {
   --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--_ov-accent-soft) 14%);
 }
@@ -85,6 +125,11 @@
 
 .Trigger[data-ov-variant='ghost'] {
   --_ov-bg: transparent;
+  --_ov-border: transparent;
+}
+
+.Trigger[data-ov-variant='soft'] {
+  --_ov-bg: var(--_ov-accent-soft);
   --_ov-border: transparent;
 }
 
@@ -177,6 +222,16 @@
   outline: none;
 }
 
+.Popup[data-ov-size='xs'] {
+  --_ov-popup-padding: 2px;
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-xs);
+  --_ov-item-height: var(--ov-size-list-item-height-xs);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xs);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-sm);
+}
+
 .Popup[data-ov-size='sm'] {
   --_ov-popup-padding: 3px;
   --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
@@ -197,6 +252,20 @@
   --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
 }
 
+.Popup[data-ov-size='xl'] {
+  --_ov-popup-padding: 6px;
+  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-xl);
+  --_ov-item-height: var(--ov-size-list-item-height-xl);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xl);
+  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
+  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
+  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+}
+
+.Popup[data-ov-color='neutral'] {
+  --_ov-selected-bg: var(--ov-color-state-selected);
+}
+
 .Popup[data-ov-color='brand'] {
   --_ov-selected-bg: var(--ov-color-accent-soft);
 }
@@ -211,6 +280,18 @@
 
 .Popup[data-ov-color='danger'] {
   --_ov-selected-bg: var(--ov-color-danger-soft);
+}
+
+.Popup[data-ov-color='info'] {
+  --_ov-selected-bg: var(--ov-color-info-soft);
+}
+
+.Popup[data-ov-color='discovery'] {
+  --_ov-selected-bg: var(--ov-color-discovery-soft);
+}
+
+.Popup[data-ov-color='secondary'] {
+  --_ov-selected-bg: var(--ov-color-secondary-soft);
 }
 
 .List {

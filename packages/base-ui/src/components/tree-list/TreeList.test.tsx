@@ -105,6 +105,14 @@ describe('TreeList', () => {
     expect(root).toHaveAttribute('data-ov-density', 'default');
   });
 
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(<TestTree color="discovery" />);
+    expect(screen.getByTestId('tree-root')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<TestTree color="secondary" />);
+    expect(screen.getByTestId('tree-root')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders all visible item labels', () => {
     renderWithTheme(<TestTree />);
     expect(screen.getByText('src')).toBeInTheDocument();

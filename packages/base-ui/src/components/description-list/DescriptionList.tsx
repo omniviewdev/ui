@@ -9,7 +9,7 @@ export type DescriptionListColumns = 1 | 2 | 3;
 export interface DescriptionListProps extends HTMLAttributes<HTMLDListElement> {
   layout?: DescriptionListLayout;
   columns?: DescriptionListColumns;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export interface DescriptionListItemProps extends HTMLAttributes<HTMLDivElement> {

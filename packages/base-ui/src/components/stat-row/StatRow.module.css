@@ -4,31 +4,49 @@
    ─────────────────────────────────────────────── */
 
 .Root {
+  /* Default = sm. Sized as compact metadata, not a control — never matches
+     button heights. Progression: font 11→14, icon font+1step, gap 4→12. */
+  --_ov-stat-gap: 6px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-11);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-12);
+
   display: inline-flex;
   align-items: center;
-  gap: var(--_ov-stat-gap, var(--ov-space-stack-sm));
+  gap: var(--_ov-stat-gap);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 /* ─── Size variants ─────────────────────────── */
 
+.Root[data-ov-size='xs'] {
+  --_ov-stat-gap: 4px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-11);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-11);
+}
+
 .Root[data-ov-size='sm'] {
-  --_ov-stat-gap: var(--ov-space-stack-xs, 6px);
-  --_ov-stat-icon-size: 0.6875rem;
-  --_ov-stat-font-size: var(--ov-font-size-xs, 0.6875rem);
+  --_ov-stat-gap: 6px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-11);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-12);
 }
 
 .Root[data-ov-size='md'] {
-  --_ov-stat-gap: var(--ov-space-stack-sm, 8px);
-  --_ov-stat-icon-size: 0.8125rem;
-  --_ov-stat-font-size: var(--ov-font-size-sm, 0.8125rem);
+  --_ov-stat-gap: 8px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-12);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-13);
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-stat-gap: var(--ov-space-stack-md, 10px);
-  --_ov-stat-icon-size: 0.9375rem;
-  --_ov-stat-font-size: var(--ov-font-size-md, 0.9375rem);
+  --_ov-stat-gap: 10px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-13);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-14);
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-stat-gap: 12px;
+  --_ov-stat-font-size: var(--ov-primitive-font-size-14);
+  --_ov-stat-icon-size: var(--ov-primitive-font-size-16);
 }
 
 /* ─── Item ──────────────────────────────────── */
@@ -36,8 +54,8 @@
 .Item {
   display: inline-flex;
   align-items: center;
-  gap: var(--ov-space-stack-xs, 4px);
-  font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
+  gap: 4px;
+  font-size: var(--_ov-stat-font-size);
   color: var(--_ov-stat-item-color, var(--ov-color-fg-muted));
   line-height: 1;
   white-space: nowrap;
@@ -55,15 +73,15 @@
 }
 
 .ItemIcon :where(svg) {
-  width: var(--_ov-stat-icon-size, 0.6875rem);
-  height: var(--_ov-stat-icon-size, 0.6875rem);
+  width: var(--_ov-stat-icon-size);
+  height: var(--_ov-stat-icon-size);
 }
 
 /* ─── Divider (dot separator) ───────────────── */
 
 .Divider {
   color: var(--ov-color-fg-subtle);
-  font-size: var(--_ov-stat-font-size, var(--ov-font-size-xs, 0.75rem));
+  font-size: var(--_ov-stat-font-size);
   line-height: 1;
   user-select: none;
 }
@@ -92,4 +110,12 @@
 
 .Item[data-ov-color='info'] {
   --_ov-stat-item-color: var(--ov-color-info);
+}
+
+.Item[data-ov-color='discovery'] {
+  --_ov-stat-item-color: var(--ov-color-discovery);
+}
+
+.Item[data-ov-color='secondary'] {
+  --_ov-stat-item-color: var(--ov-color-secondary);
 }

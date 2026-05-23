@@ -324,6 +324,30 @@ describe('StatusBar.IconItem', () => {
 
     expect(screen.getByTestId('ii')).toHaveAttribute('data-ov-active', 'true');
   });
+
+  it('renders discovery and secondary colors', () => {
+    const { rerender } = renderWithTheme(
+      <StatusBar>
+        <StatusBar.Section>
+          <StatusBar.IconItem icon={<svg />} color="discovery" data-testid="ii">
+            Discover
+          </StatusBar.IconItem>
+        </StatusBar.Section>
+      </StatusBar>,
+    );
+    expect(screen.getByTestId('ii')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(
+      <StatusBar>
+        <StatusBar.Section>
+          <StatusBar.IconItem icon={<svg />} color="secondary" data-testid="ii">
+            Secondary
+          </StatusBar.IconItem>
+        </StatusBar.Section>
+      </StatusBar>,
+    );
+    expect(screen.getByTestId('ii')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });
 
 describe('StatusBar size propagation via context', () => {

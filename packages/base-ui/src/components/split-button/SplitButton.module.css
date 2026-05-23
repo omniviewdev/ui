@@ -100,6 +100,13 @@
 
 /* ----------------------------- Size variants ------------------------------ */
 
+.Action[data-ov-size='xs'],
+.MenuTrigger[data-ov-size='xs'] {
+  --_ov-control-height: var(--ov-size-button-height-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+}
+
 .Action[data-ov-size='sm'],
 .MenuTrigger[data-ov-size='sm'] {
   --_ov-control-height: var(--ov-size-button-height-sm);
@@ -112,6 +119,13 @@
   --_ov-control-height: var(--ov-size-button-height-lg);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
   --_ov-font-size: var(--ov-size-button-font-size-lg);
+}
+
+.Action[data-ov-size='xl'],
+.MenuTrigger[data-ov-size='xl'] {
+  --_ov-control-height: var(--ov-size-button-height-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
 }
 
 /* ----------------------------- Color accents ------------------------------ */
@@ -164,6 +178,36 @@
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-accent-soft-fg: var(--ov-color-danger);
   --_ov-accent-ghost-fg: var(--ov-color-danger);
+}
+
+.Action[data-ov-color='info'],
+.MenuTrigger[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-accent-soft-fg: var(--ov-color-info);
+  --_ov-accent-ghost-fg: var(--ov-color-info);
+}
+
+.Action[data-ov-color='discovery'],
+.MenuTrigger[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-accent-soft-fg: var(--ov-color-discovery);
+  --_ov-accent-ghost-fg: var(--ov-color-discovery);
+}
+
+.Action[data-ov-color='secondary'],
+.MenuTrigger[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-accent-soft-fg: var(--ov-color-secondary);
+  --_ov-accent-ghost-fg: var(--ov-color-secondary);
 }
 
 /* --------------------------- Variant overrides ----------------------------- */

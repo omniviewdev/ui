@@ -29,7 +29,7 @@ const meta = {
   argTypes: {
     variant: { control: 'inline-radio', options: ['text', 'circular', 'rectangular', 'rounded'] },
     animation: { control: 'inline-radio', options: ['pulse', 'wave', 'none'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     width: { control: 'text' },
     height: { control: 'text' },
     lines: { control: 'number' },

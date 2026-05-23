@@ -4,6 +4,38 @@ import { renderWithTheme } from '../../test/render';
 import { Menu } from './Menu';
 
 describe('Menu', () => {
+  it('renders discovery and secondary colors on menu items', () => {
+    renderWithTheme(
+      <Menu.Root defaultOpen color="discovery">
+        <Menu.Trigger>Open</Menu.Trigger>
+        <Menu.Portal>
+          <Menu.Positioner>
+            <Menu.Popup>
+              <Menu.Item>Item A</Menu.Item>
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>,
+    );
+    expect(screen.getByText('Item A')).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders secondary color on menu items', () => {
+    renderWithTheme(
+      <Menu.Root defaultOpen color="secondary">
+        <Menu.Trigger>Open</Menu.Trigger>
+        <Menu.Portal>
+          <Menu.Positioner>
+            <Menu.Popup>
+              <Menu.Item>Item B</Menu.Item>
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>,
+    );
+    expect(screen.getByText('Item B')).toHaveAttribute('data-ov-color', 'secondary');
+  });
+
   it('renders themed popup and items', () => {
     renderWithTheme(
       <Menu.Root defaultOpen color="brand" size="sm" variant="outline">

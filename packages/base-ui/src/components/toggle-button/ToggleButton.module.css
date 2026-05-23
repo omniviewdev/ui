@@ -1,3 +1,34 @@
+/* ─── Color accent vars (mirrors Button.module.css for new colors) ─── */
+
+.Root[data-ov-color='info'] {
+  --_ov-accent-bg: var(--ov-color-info);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-info);
+  --_ov-accent-soft-bg: var(--ov-color-info-soft);
+  --_ov-accent-soft-fg: var(--ov-color-info);
+  --_ov-accent-ghost-fg: var(--ov-color-info);
+}
+
+.Root[data-ov-color='discovery'] {
+  --_ov-accent-bg: var(--ov-color-discovery);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-discovery);
+  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
+  --_ov-accent-soft-fg: var(--ov-color-discovery);
+  --_ov-accent-ghost-fg: var(--ov-color-discovery);
+}
+
+.Root[data-ov-color='secondary'] {
+  --_ov-accent-bg: var(--ov-color-secondary);
+  --_ov-accent-fg: var(--ov-color-fg-inverse);
+  --_ov-accent-border: var(--ov-color-secondary);
+  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
+  --_ov-accent-soft-fg: var(--ov-color-secondary);
+  --_ov-accent-ghost-fg: var(--ov-color-secondary);
+}
+
+/* ─── Pressed states ─── */
+
 .Root[data-pressed] {
   --_ov-toggle-selected-bg: var(--_ov-accent-soft-bg);
   --_ov-toggle-selected-fg: var(--_ov-accent-soft-fg);

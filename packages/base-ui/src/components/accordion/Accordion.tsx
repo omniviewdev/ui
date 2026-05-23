@@ -29,8 +29,16 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 // ─── Public types ───────────────────────────────────────────────────────────
 
 export type AccordionAnimation = 'default' | 'fast' | 'none';
-export type AccordionSize = 'sm' | 'md' | 'lg';
+export type AccordionSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type AccordionVariant = 'default' | 'flush';
+
+const CHEVRON_SIZE: Record<AccordionSize, number> = {
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
+  xl: 20,
+};
 
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time. */
@@ -103,7 +111,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
   const panelId = `ov-accordion-panel-${uid}`;
   const headerId = `ov-accordion-header-${uid}`;
 
-  const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 18 : 16;
+  const chevronSize = CHEVRON_SIZE[size];
 
   return (
     <div

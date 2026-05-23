@@ -237,7 +237,7 @@ const meta: Meta<PlaygroundArgs> = {
   argTypes: {
     size: {
       control: 'inline-radio',
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
       description: 'Controls the overall size of tree items (font size, icon size, spacing).',
       table: { defaultValue: { summary: 'md' } },
     },

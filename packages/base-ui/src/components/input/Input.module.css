@@ -1,7 +1,10 @@
 .Root {
-  --_ov-control-height: var(--ov-control-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-padding-inline: var(--ov-space-inline-control);
+  /* Default = md. Mirror the Button scale exactly via --ov-size-button-*
+     tokens so Input lines up with Button (and Select) at every tier and
+     every density. */
+  --_ov-control-height: var(--ov-size-button-height-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-gap: var(--ov-space-stack-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
@@ -17,19 +20,36 @@
   font-family: var(--ov-font-sans);
 }
 
+:is(.Root, .ControlShell)[data-ov-size='xs'] {
+  --_ov-control-height: var(--ov-size-button-height-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-gap: var(--ov-space-stack-xs);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
+}
+
 :is(.Root, .ControlShell)[data-ov-size='sm'] {
-  --_ov-control-height: var(--ov-control-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 2px);
-  --_ov-gap: calc(var(--ov-space-stack-sm) - 2px);
+  --_ov-control-height: var(--ov-size-button-height-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
+  --_ov-gap: var(--ov-space-stack-xs);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 :is(.Root, .ControlShell)[data-ov-size='lg'] {
-  --_ov-control-height: var(--ov-control-height-lg);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 2px);
-  --_ov-gap: var(--ov-space-stack-md);
+  --_ov-control-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+  --_ov-gap: var(--ov-space-stack-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
+}
+
+:is(.Root, .ControlShell)[data-ov-size='xl'] {
+  --_ov-control-height: var(--ov-size-button-height-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-gap: var(--ov-space-stack-sm);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 :is(.Root, .ControlShell)[data-ov-color='neutral'] {
@@ -59,6 +79,24 @@
   --_ov-accent: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
   --_ov-focus: var(--ov-color-danger);
+}
+
+:is(.Root, .ControlShell)[data-ov-color='info'] {
+  --_ov-accent: var(--ov-color-info);
+  --_ov-accent-soft: var(--ov-color-info-soft);
+  --_ov-focus: var(--ov-color-info);
+}
+
+:is(.Root, .ControlShell)[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
+  --_ov-accent-soft: var(--ov-color-discovery-soft);
+  --_ov-focus: var(--ov-color-discovery);
+}
+
+:is(.Root, .ControlShell)[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
+  --_ov-accent-soft: var(--ov-color-secondary-soft);
+  --_ov-focus: var(--ov-color-secondary);
 }
 
 :is(.Root, .ControlShell)[data-ov-variant='solid'] {

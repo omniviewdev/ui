@@ -77,4 +77,22 @@ describe('Meter', () => {
     renderWithTheme(<Meter value={50} className="custom" aria-label="CPU" />);
     expect(screen.getByRole('meter')).toHaveClass('custom');
   });
+
+  it('applies xs size data attribute', () => {
+    renderWithTheme(<Meter value={50} size="xs" aria-label="CPU" />);
+    expect(screen.getByRole('meter')).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('applies xl size data attribute', () => {
+    renderWithTheme(<Meter value={50} size="xl" aria-label="CPU" />);
+    expect(screen.getByRole('meter')).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('applies discovery and secondary color data attributes', () => {
+    const { rerender } = renderWithTheme(<Meter value={50} color="discovery" aria-label="CPU" />);
+    expect(screen.getByRole('meter')).toHaveAttribute('data-ov-color', 'discovery');
+
+    rerender(<Meter value={50} color="secondary" aria-label="CPU" />);
+    expect(screen.getByRole('meter')).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

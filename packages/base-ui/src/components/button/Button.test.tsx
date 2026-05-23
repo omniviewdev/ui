@@ -36,4 +36,28 @@ describe('Button', () => {
     expect(button.querySelector('[data-ov-slot="start-decorator"]')).toBeInTheDocument();
     expect(button.querySelector('[data-ov-slot="end-decorator"]')).toBeInTheDocument();
   });
+
+  it('renders with xs size', () => {
+    renderWithTheme(<Button size="xs">Tiny</Button>);
+    const button = screen.getByRole('button', { name: 'Tiny' });
+    expect(button).toHaveAttribute('data-ov-size', 'xs');
+  });
+
+  it('renders with xl size', () => {
+    renderWithTheme(<Button size="xl">Hero</Button>);
+    const button = screen.getByRole('button', { name: 'Hero' });
+    expect(button).toHaveAttribute('data-ov-size', 'xl');
+  });
+
+  it('renders with discovery color', () => {
+    renderWithTheme(<Button color="discovery">New</Button>);
+    const button = screen.getByRole('button', { name: 'New' });
+    expect(button).toHaveAttribute('data-ov-color', 'discovery');
+  });
+
+  it('renders with secondary color', () => {
+    renderWithTheme(<Button color="secondary">Meta</Button>);
+    const button = screen.getByRole('button', { name: 'Meta' });
+    expect(button).toHaveAttribute('data-ov-color', 'secondary');
+  });
 });

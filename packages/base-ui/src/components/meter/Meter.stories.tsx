@@ -14,8 +14,8 @@ const meta = {
   },
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100 } },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
-    color: { control: 'select', options: [undefined, 'neutral', 'brand', 'success', 'warning', 'danger', 'info'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
+    color: { control: 'select', options: [undefined, 'neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
   },
 } satisfies Meta<typeof Meter>;
 

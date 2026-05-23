@@ -33,6 +33,10 @@
 
 /* ---------- Size variants ---------- */
 
+.Root[data-ov-variant='text'][data-ov-size='xs'] {
+  height: 0.625em;
+}
+
 .Root[data-ov-variant='text'][data-ov-size='sm'] {
   height: 0.75em;
 }
@@ -43,6 +47,10 @@
 
 .Root[data-ov-variant='text'][data-ov-size='lg'] {
   height: 1.25em;
+}
+
+.Root[data-ov-variant='text'][data-ov-size='xl'] {
+  height: 1.5em;
 }
 
 /* ---------- Pulse animation ---------- */

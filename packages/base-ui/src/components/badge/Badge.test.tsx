@@ -147,6 +147,41 @@ describe('Badge', () => {
     expect(badge).toBeInTheDocument();
   });
 
+  it('xs size prop applies data attribute', () => {
+    renderWithTheme(
+      <Badge content={1} size="xs">
+        <span>Icon</span>
+      </Badge>,
+    );
+    expect(document.querySelector('[data-ov-size="xs"]')).toBeInTheDocument();
+  });
+
+  it('xl size prop applies data attribute', () => {
+    renderWithTheme(
+      <Badge content={1} size="xl">
+        <span>Icon</span>
+      </Badge>,
+    );
+    expect(document.querySelector('[data-ov-size="xl"]')).toBeInTheDocument();
+  });
+
+  it('discovery and secondary color variants apply data attributes', () => {
+    const { unmount } = renderWithTheme(
+      <Badge content={1} color="discovery">
+        <span>Icon</span>
+      </Badge>,
+    );
+    expect(document.querySelector('[data-ov-color="discovery"]')).toBeInTheDocument();
+    unmount();
+
+    renderWithTheme(
+      <Badge content={1} color="secondary">
+        <span>Icon</span>
+      </Badge>,
+    );
+    expect(document.querySelector('[data-ov-color="secondary"]')).toBeInTheDocument();
+  });
+
   it('overlap prop applies data attribute for circular', () => {
     renderWithTheme(
       <Badge content={1} overlap="circular">

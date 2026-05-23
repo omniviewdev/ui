@@ -1,6 +1,25 @@
 .Root {
+  /* Default = md. Gap scales with size so the bar's rhythm tracks the chips. */
+  --_ov-gap: 8px;
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--ov-space-stack-sm);
+  gap: var(--_ov-gap);
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-gap: 4px;
+}
+
+.Root[data-ov-size='sm'] {
+  --_ov-gap: 6px;
+}
+
+.Root[data-ov-size='lg'] {
+  --_ov-gap: 10px;
+}
+
+.Root[data-ov-size='xl'] {
+  --_ov-gap: 12px;
 }

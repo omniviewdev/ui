@@ -84,7 +84,7 @@ const actionsColumn: ColumnDef<LogEntry, unknown> = {
   id: 'actions',
   header: '',
   cell: () => (
-    <IconButton dense variant="ghost" color="neutral" size="sm" aria-label="Row actions">
+    <IconButton variant="ghost" color="neutral" size="sm" aria-label="Row actions">
       <LuEllipsisVertical />
     </IconButton>
   ),

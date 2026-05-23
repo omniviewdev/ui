@@ -15,8 +15,8 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     elevation: { control: 'inline-radio', options: [0, 1, 2, 3] },
     surface: {
       control: 'select',

@@ -14,7 +14,7 @@ const meta = {
     children: 'Open runtime diagnostics and troubleshooting docs',
   },
   argTypes: {
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     tone: {
       control: 'select',
       options: ['default', 'muted', 'subtle', 'brand', 'success', 'warning', 'danger'],

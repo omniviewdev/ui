@@ -1,13 +1,17 @@
+/* Vertical scale: rhythm tracks the checkbox font heights — tight stack of
+   labels reads better with smaller row gaps.
+   Horizontal scale: items sit side-by-side, so lateral breathing room is one
+   tier larger than vertical at every size. */
+
 .Root {
+  /* Default = md, vertical */
   display: grid;
   gap: var(--ov-space-stack-sm);
   width: 100%;
 }
 
-.Root[data-ov-orientation='horizontal'] {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ov-space-stack-md);
+.Root[data-ov-size='xs'] {
+  gap: var(--ov-space-stack-xs);
 }
 
 .Root[data-ov-size='sm'] {
@@ -16,6 +20,34 @@
 
 .Root[data-ov-size='lg'] {
   gap: var(--ov-space-stack-md);
+}
+
+.Root[data-ov-size='xl'] {
+  gap: var(--ov-space-stack-lg);
+}
+
+/* Horizontal — one tier larger gap at each size. */
+
+.Root[data-ov-orientation='horizontal'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-md);
+}
+
+.Root[data-ov-orientation='horizontal'][data-ov-size='xs'] {
+  gap: var(--ov-space-stack-sm);
+}
+
+.Root[data-ov-orientation='horizontal'][data-ov-size='sm'] {
+  gap: 10px;
+}
+
+.Root[data-ov-orientation='horizontal'][data-ov-size='lg'] {
+  gap: var(--ov-space-stack-lg);
+}
+
+.Root[data-ov-orientation='horizontal'][data-ov-size='xl'] {
+  gap: calc(var(--ov-space-stack-lg) + var(--ov-space-stack-xs));
 }
 
 .Item {

@@ -21,7 +21,7 @@ const meta = {
   component: StatRow,
   tags: ['autodocs'],
   argTypes: {
-    size: { control: 'radio', options: ['sm', 'md', 'lg'] },
+    size: { control: 'radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     separator: { control: 'text' },
   },
 } satisfies Meta<StatRowProps>;
@@ -43,22 +43,28 @@ export const Playground: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <StatRow size="sm">
-        <StatRow.Item icon={<LuZap />}>95.20 tok/sec</StatRow.Item>
-        <StatRow.Item icon={<LuGauge />}>512 tokens</StatRow.Item>
-        <StatRow.Item icon={<LuClock />}>0.12s</StatRow.Item>
-      </StatRow>
-      <StatRow size="md">
-        <StatRow.Item icon={<LuZap />}>95.20 tok/sec</StatRow.Item>
-        <StatRow.Item icon={<LuGauge />}>512 tokens</StatRow.Item>
-        <StatRow.Item icon={<LuClock />}>0.12s</StatRow.Item>
-      </StatRow>
-      <StatRow size="lg">
-        <StatRow.Item icon={<LuZap />}>95.20 tok/sec</StatRow.Item>
-        <StatRow.Item icon={<LuGauge />}>512 tokens</StatRow.Item>
-        <StatRow.Item icon={<LuClock />}>0.12s</StatRow.Item>
-      </StatRow>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <div key={size} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <span
+            style={{
+              minWidth: 28,
+              fontFamily: 'var(--ov-font-sans)',
+              fontSize: 'var(--ov-font-size-caption)',
+              color: 'var(--ov-color-fg-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {size}
+          </span>
+          <StatRow size={size}>
+            <StatRow.Item icon={<LuZap />}>95.20 tok/sec</StatRow.Item>
+            <StatRow.Item icon={<LuGauge />}>512 tokens</StatRow.Item>
+            <StatRow.Item icon={<LuClock />}>0.12s</StatRow.Item>
+          </StatRow>
+        </div>
+      ))}
     </div>
   ),
 };

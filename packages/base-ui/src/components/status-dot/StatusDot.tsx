@@ -11,7 +11,7 @@ export interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {
   pulse?: boolean;
   /** Controls the visual intensity of the pulse animation. */
   pulseIntensity?: StatusDotPulseIntensity;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export const StatusDot = forwardRef<HTMLSpanElement, StatusDotProps>(function StatusDot(

@@ -156,7 +156,6 @@ export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchIn
               {showClearButton ? (
                 <IconButton
                   className={styles.ClearButton}
-                  dense
                   variant="ghost"
                   color={resolvedColor ?? 'neutral'}
                   size={resolvedSize}

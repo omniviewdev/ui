@@ -35,9 +35,17 @@
   background: transparent;
   color: var(--ov-color-fg-default);
   font-family: inherit;
-  font-size: var(--ov-font-size-sm, 0.875rem);
-  line-height: var(--ov-line-height-normal, 1.5);
-  padding: var(--ov-space-3, 12px) var(--ov-space-3, 12px) 0;
+  font-size: var(--ov-font-size-sm);
+  line-height: var(--ov-line-height-normal);
+  /* Symmetric padding so the placeholder / typed text is vertically centered
+     when the textarea renders without a toolbar below. The :has() rule below
+     drops the bottom padding when a toolbar IS present so the textarea sits
+     flush against it. */
+  padding: var(--ov-space-3);
+}
+
+.Root:has(.Toolbar) .Textarea {
+  padding-block-end: 0;
 }
 
 .Textarea::placeholder {

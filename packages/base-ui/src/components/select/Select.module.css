@@ -1,7 +1,10 @@
 .Trigger {
-  --_ov-control-height: var(--ov-control-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-padding-inline: var(--ov-space-inline-control);
+  /* Default = md. Mirror the Button scale exactly via --ov-size-button-*
+     tokens so Select lines up with Button (and Input) at every tier and
+     every density. */
+  --_ov-control-height: var(--ov-size-button-height-md);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-gap: var(--ov-space-stack-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
@@ -45,24 +48,30 @@
 }
 
 .Trigger[data-ov-size='xs'] {
-  --_ov-control-height: var(--ov-control-height-xs);
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-control-height: var(--ov-size-button-height-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
   --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
 }
 
 .Trigger[data-ov-size='sm'] {
-  --_ov-control-height: var(--ov-control-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-control-height: var(--ov-size-button-height-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 .Trigger[data-ov-size='lg'] {
-  --_ov-control-height: var(--ov-control-height-lg);
+  --_ov-control-height: var(--ov-size-button-height-lg);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
   --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
 }
 
 .Trigger[data-ov-size='xl'] {
-  --_ov-control-height: var(--ov-control-height-xl);
+  --_ov-control-height: var(--ov-size-button-height-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
   --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 

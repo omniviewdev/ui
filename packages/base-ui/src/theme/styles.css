@@ -137,10 +137,40 @@
   --ov-size-button-padding-inline-lg: 12px;
   --ov-size-button-padding-inline-xl: 16px;
   --ov-size-button-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-button-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-button-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-button-font-size-lg: var(--ov-primitive-font-size-13);
-  --ov-size-button-font-size-xl: var(--ov-primitive-font-size-14);
+  --ov-size-button-font-size-sm: var(--ov-primitive-font-size-12);
+  --ov-size-button-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-button-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-button-font-size-xl: var(--ov-primitive-font-size-16);
+
+  /* Generic 5-tier semantic aliases — used by ai-ui and other consumers that
+     don't want to tie to button-specific tokens. Single source of truth: any
+     change to the button-font-size scale propagates here automatically. */
+  --ov-font-size-xs: var(--ov-size-button-font-size-xs);
+  --ov-font-size-sm: var(--ov-size-button-font-size-sm);
+  --ov-font-size-md: var(--ov-size-button-font-size-md);
+  --ov-font-size-lg: var(--ov-size-button-font-size-lg);
+  --ov-font-size-xl: var(--ov-size-button-font-size-xl);
+
+  /* Flat-index spacing aliases (numeric scale) — bridge from the
+     --ov-primitive-space-N + .5-step values used throughout ai-ui. */
+  --ov-space-1: var(--ov-primitive-space-1);
+  --ov-space-1-5: 6px;
+  --ov-space-2: var(--ov-primitive-space-2);
+  --ov-space-2-5: 10px;
+  --ov-space-3: var(--ov-primitive-space-3);
+  --ov-space-4: var(--ov-primitive-space-4);
+
+  /* Generic radius aliases — match the primitive radius scale with a pill
+     option for chips/badges and a slightly larger surface for cards. */
+  --ov-radius-sm: var(--ov-primitive-radius-sm);
+  --ov-radius-md: var(--ov-primitive-radius-md);
+  --ov-radius-lg: var(--ov-primitive-radius-lg);
+  --ov-radius-xl: 14px;
+  --ov-radius-full: 9999px;
+
+  /* Misc semantic aliases */
+  --ov-line-height-normal: 1.5;
+  --ov-duration-fast: var(--ov-duration-interactive);
   --ov-size-card-padding-inline-xs: 6px;
   --ov-size-card-padding-inline-sm: 8px;
   --ov-size-card-padding-inline-md: 12px;

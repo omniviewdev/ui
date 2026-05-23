@@ -5,10 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "types": ["vitest/globals", "@testing-library/jest-dom"],
-    "paths": {
-      "@omniviewdev/base-ui": ["../base-ui/src/index.ts"]
-    }
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"]
 }

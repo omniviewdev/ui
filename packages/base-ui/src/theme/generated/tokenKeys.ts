@@ -35,6 +35,16 @@ export type ColorTokenKey =
   | 'color.brand.500'
   | 'color.danger'
   | 'color.danger.soft'
+  | 'color.datepicker.cell.bg'
+  | 'color.datepicker.cell.bg.hover'
+  | 'color.datepicker.cell.bg.selected'
+  | 'color.datepicker.cell.bg.today'
+  | 'color.datepicker.cell.fg'
+  | 'color.datepicker.cell.fg.disabled'
+  | 'color.datepicker.cell.fg.other.month'
+  | 'color.datepicker.cell.fg.selected'
+  | 'color.datepicker.cell.fg.today'
+  | 'color.datepicker.header.bg'
   | 'color.diff.insert.bg'
   | 'color.diff.remove.bg'
   | 'color.drawer.handle'
@@ -178,6 +188,16 @@ export const COLOR_TOKEN_KEYS: ReadonlySet<ColorTokenKey> = new Set([
   'color.brand.500',
   'color.danger',
   'color.danger.soft',
+  'color.datepicker.cell.bg',
+  'color.datepicker.cell.bg.hover',
+  'color.datepicker.cell.bg.selected',
+  'color.datepicker.cell.bg.today',
+  'color.datepicker.cell.fg',
+  'color.datepicker.cell.fg.disabled',
+  'color.datepicker.cell.fg.other.month',
+  'color.datepicker.cell.fg.selected',
+  'color.datepicker.cell.fg.today',
+  'color.datepicker.header.bg',
   'color.diff.insert.bg',
   'color.diff.remove.bg',
   'color.drawer.handle',

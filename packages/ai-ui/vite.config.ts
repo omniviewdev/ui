@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
@@ -9,7 +10,11 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler', {}]],
       },
     }),
-    dts({ include: ['src'], rollupTypes: true }),
+    dts({
+      include: ['src'],
+      exclude: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.test.tsx', '**/*.test.ts'],
+      rollupTypes: true,
+    }),
   ],
   build: {
     lib: {
@@ -26,5 +31,13 @@ export default defineConfig({
       ],
     },
     sourcemap: true,
+  },
+  resolve: {
+    alias: [
+      {
+        find: '@omniviewdev/base-ui',
+        replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)),
+      },
+    ],
   },
 });

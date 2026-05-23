@@ -1,5 +1,3 @@
-'use no memo'; // TanStack Table returns a stable ref — Compiler can't track internal state changes
-
 import { useState } from 'react';
 import {
   useReactTable,
@@ -28,6 +26,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): Table<TData> {
+  'use no memo'; // TanStack Table returns a stable ref — Compiler can't track internal state changes
   const {
     data,
     columns,

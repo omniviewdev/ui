@@ -10,7 +10,11 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler', {}]],
       },
     }),
-    dts({ include: ['src'], rollupTypes: true }),
+    dts({
+      include: ['src'],
+      exclude: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.test.tsx', '**/*.test.ts'],
+      rollupTypes: true,
+    }),
   ],
   build: {
     lib: {

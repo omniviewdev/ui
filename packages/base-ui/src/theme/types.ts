@@ -1,11 +1,10 @@
-export type ThemeMode =
-  | 'dark'
-  | 'light'
-  | 'high-contrast-dark'
-  | 'high-contrast-light'
-  | 'obsidian'
-  | 'carbon'
-  | 'void';
+import type { BuiltInThemeMode } from './registry/types';
+
+/**
+ * A theme identifier. Built-in mode ids autocomplete; any registered custom
+ * theme id is also accepted.
+ */
+export type ThemeMode = BuiltInThemeMode | (string & {});
 export type ThemeDensity = 'compact' | 'comfortable';
 export type ThemeMotion = 'normal' | 'reduced';
 

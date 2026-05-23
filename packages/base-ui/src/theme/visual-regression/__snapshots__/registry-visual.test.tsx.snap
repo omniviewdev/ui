@@ -1,0 +1,73 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'carbon' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "carbon",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_5_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'dark' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "dark",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_0_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'high-contrast-dark' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "high-contrast-dark",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_2_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'high-contrast-light' 1`] = `
+{
+  "colorScheme": "light",
+  "dataOvTheme": "high-contrast-light",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_3_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'light' 1`] = `
+{
+  "colorScheme": "light",
+  "dataOvTheme": "light",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_1_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'obsidian' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "obsidian",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_4_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'solarized-dark-fixture' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "dark",
+  "dataOvThemeCustom": "solarized-dark-fixture",
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_7_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'void' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "void",
+  "dataOvThemeCustom": null,
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_6_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;

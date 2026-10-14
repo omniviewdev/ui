@@ -5,6 +5,11 @@
     "access": "public"
   },
   "description": "Omniview Base UI component library built with Base UI primitives and static CSS tokens.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omniviewdev/ui.git",
+    "directory": "packages/base-ui"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

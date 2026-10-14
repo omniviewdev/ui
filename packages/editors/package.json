@@ -5,6 +5,11 @@
     "access": "public"
   },
   "description": "Omniview editor components — code editor, diff viewer, terminal, markdown preview, command palette, object inspector.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omniviewdev/ui.git",
+    "directory": "packages/editors"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

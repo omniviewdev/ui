@@ -5,6 +5,11 @@
     "access": "public"
   },
   "description": "Omniview AI UI components for chat, streaming, reasoning, and agent interfaces.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omniviewdev/ui.git",
+    "directory": "packages/ai-ui"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

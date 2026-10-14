@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.2.2
+
+### Patch Changes
+
+- [#45](https://github.com/omniviewdev/ui/pull/45) [`2a497a5`](https://github.com/omniviewdev/ui/commit/2a497a53ab5a7b34c625ed5fae3dd4d7d91db80e) Thanks [@mononen](https://github.com/mononen)! - DataTable.VirtualBody: re-render cells when a row's data or the column definitions change, so rows updated in place with a stable `getRowId` no longer show stale values. Add `onRowClick` and `getRowProps` props.
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,4 +1,12 @@
-import { forwardRef, memo, useEffect, useRef, type HTMLAttributes } from 'react';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  type HTMLAttributes,
+  type MouseEvent,
+} from 'react';
 import type { Cell, Row } from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -11,7 +19,9 @@ import styles from './DataTable.module.css';
 
 // ---------------------------------------------------------------------------
 // Memoized cell — prevents re-rendering cells whose content hasn't changed.
-// Selection-only updates (e.g. "Select all") change `contentKey` for the
+// A cell re-renders when its row's data object or its column's cell renderer
+// changes (row ids are often stable across updates, e.g. a resource uid, so
+// the id alone can't detect in-place updates). Selection-only updates (e.g. "Select all") change `contentKey` for the
 // checkbox column but leave other cells' keys stable, skipping ~85% of work.
 //
 // `'use no memo'` is required inside the render body because TanStack Table v8
@@ -27,6 +37,8 @@ interface DataCellProps {
    * For data-only columns: `cell.id`
    */
   contentKey: string;
+  /** The row's `original` data object — a new object means new cell content */
+  original: unknown;
 }
 
 const DataCell = memo(function DataCell({ cell }: DataCellProps) {
@@ -51,7 +63,11 @@ const DataCell = memo(function DataCell({ cell }: DataCellProps) {
       </span>
     </td>
   );
-}, (prev, next) => prev.contentKey === next.contentKey);
+}, (prev, next) =>
+  prev.contentKey === next.contentKey &&
+  prev.original === next.original &&
+  prev.cell.column.columnDef.cell === next.cell.column.columnDef.cell,
+);
 
 DataCell.displayName = 'DataTable.DataCell';
 
@@ -76,6 +92,13 @@ interface VirtualRowProps {
   /** When set, enforces exact row height (used with fixedRowHeight mode) */
   rowHeight?: number;
   measureRef?: (node: HTMLTableRowElement | null) => void;
+  /** `table.options.columns` — a new array means cell renderers may have changed */
+  columns: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRowProps?: (row: Row<any>) => HTMLAttributes<HTMLTableRowElement>;
+  /** Stable handler that forwards to the latest `onRowClick` */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onRowClick?: (row: Row<any>, event: MouseEvent<HTMLTableRowElement>) => void;
 }
 
 function VirtualRowInner({
@@ -85,6 +108,8 @@ function VirtualRowInner({
   dataIndex,
   rowHeight,
   measureRef,
+  getRowProps,
+  onRowClick,
 }: VirtualRowProps) {
   'use no memo'; // TanStack Table v8 mutable objects — Compiler breaks cell context
   const isSelected = row.getIsSelected();
@@ -107,14 +132,32 @@ function VirtualRowInner({
     trRef.current.dataset.ovExpanded = isExpanded ? 'true' : 'false';
   }
 
+  const {
+    className: extraClassName,
+    style: extraStyle,
+    onClick: extraOnClick,
+    ...extraProps
+  } = getRowProps?.(row) ?? {};
+
+  const handleClick =
+    extraOnClick || onRowClick
+      ? (event: MouseEvent<HTMLTableRowElement>) => {
+          extraOnClick?.(event);
+          if (!event.defaultPrevented) onRowClick?.(row, event);
+        }
+      : undefined;
+
   return (
     <tr
+      {...extraProps}
       data-index={dataIndex}
       ref={setRefs}
-      className={styles.Row}
+      className={cn(styles.Row, extraClassName)}
       data-ov-selected={isSelected ? 'true' : 'false'}
       data-ov-expanded={isExpanded ? 'true' : 'false'}
+      onClick={handleClick}
       style={{
+        ...extraStyle,
         display: 'flex',
         position: 'absolute',
         transform: `translateY(${virtualStart}px)`,
@@ -135,6 +178,7 @@ function VirtualRowInner({
             key={cell.id}
             cell={cell}
             contentKey={contentKey}
+            original={row.original}
           />
         );
       })}
@@ -147,7 +191,10 @@ const VirtualRow = memo(VirtualRowInner, (prev, next) =>
   prev.virtualStart === next.virtualStart &&
   prev.stateRevision === next.stateRevision &&
   prev.dataIndex === next.dataIndex &&
-  prev.rowHeight === next.rowHeight,
+  prev.rowHeight === next.rowHeight &&
+  prev.columns === next.columns &&
+  prev.getRowProps === next.getRowProps &&
+  prev.onRowClick === next.onRowClick,
 );
 
 VirtualRow.displayName = 'DataTable.VirtualRow';
@@ -163,6 +210,16 @@ export interface DataTableVirtualBodyProps extends HTMLAttributes<HTMLTableSecti
    * to avoid forced reflow on mount — a significant perf win for large tables.
    */
   fixedRowHeight?: boolean;
+  /** Called when a row is clicked. Not called if a `getRowProps` onClick prevents default. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onRowClick?: (row: Row<any>, event: MouseEvent<HTMLTableRowElement>) => void;
+  /**
+   * Extra props for each `<tr>` (className, aria/data attributes, handlers).
+   * Positioning styles and data attributes owned by the table take precedence.
+   * Memoize it (e.g. `useCallback`): a new function re-renders every row.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRowProps?: (row: Row<any>) => HTMLAttributes<HTMLTableRowElement>;
 }
 
 export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTableVirtualBodyProps>(
@@ -172,6 +229,8 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
       estimateRowSize = DEFAULT_ESTIMATE_ROW_SIZE,
       overscan = DEFAULT_OVERSCAN,
       fixedRowHeight = false,
+      onRowClick,
+      getRowProps,
       ...props
     },
     ref,
@@ -180,6 +239,17 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
     const { table } = useDataTableContext();
     const scrollElement = useScrollElement();
     const { rows } = table.getRowModel();
+
+    // Keep onRowClick out of the row memo: rows get a stable handler that
+    // forwards to the latest callback, so inline lambdas don't re-render rows.
+    const onRowClickRef = useRef(onRowClick);
+    onRowClickRef.current = onRowClick;
+    const hasRowClick = onRowClick != null;
+    const handleRowClick = useCallback(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (row: Row<any>, event: MouseEvent<HTMLTableRowElement>) => onRowClickRef.current?.(row, event),
+      [],
+    );
 
     // Virtualizer follows the exact TanStack pattern:
     // - getScrollElement returns the Container div (via context)
@@ -239,6 +309,9 @@ export const DataTableVirtualBody = forwardRef<HTMLTableSectionElement, DataTabl
               stateRevision={stateRevision}
               dataIndex={virtualRow.index}
               rowHeight={fixedRowHeight ? estimateRowSize : undefined}
+              columns={table.options.columns}
+              getRowProps={getRowProps}
+              onRowClick={hasRowClick ? handleRowClick : undefined}
               measureRef={fixedRowHeight ? undefined : (node) => {
                 if (node) rowVirtualizer.measureElement(node);
               }}

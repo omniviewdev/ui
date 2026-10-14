@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { LuEllipsisVertical } from 'react-icons/lu';
@@ -172,4 +173,56 @@ export const TenThousandRows: Story = {
 
 export const FiftyThousandRows: Story = {
   render: () => <FiftyThousandRowsStory />,
+};
+
+// Rows keep their id while their data changes (like a watched Kubernetes
+// resource keyed by uid). Visible cells must pick up the new values.
+const liveSeed = generateLogData(1_000);
+
+function LiveUpdatesStory() {
+  const [data, setData] = useState(liveSeed);
+  const [clicked, setClicked] = useState<string | null>(null);
+
+  useEffect(() => {
+    const levels: LogEntry['level'][] = ['info', 'warn', 'error', 'debug'];
+    let tick = 0;
+    const timer = setInterval(() => {
+      tick += 1;
+      setData((prev) =>
+        prev.map((entry, i) =>
+          i % 3 === tick % 3
+            ? { ...entry, level: levels[(levels.indexOf(entry.level) + 1) % levels.length]!, message: `Updated (tick ${tick})` }
+            : entry,
+        ),
+      );
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const table = useDataTable({
+    data,
+    columns: baseLogColumns,
+    getRowId: (row) => row.id,
+  });
+
+  const getRowProps = useCallback(() => ({ style: { cursor: 'pointer' } }), []);
+
+  return (
+    <DataTable.Root table={table} variant="soft" size="sm" hoverable>
+      <p style={{ margin: '0 0 8px' }}>Last clicked row: {clicked ?? 'none'}</p>
+      <DataTable.Container height={400}>
+        <DataTable.Header />
+        <DataTable.VirtualBody
+          estimateRowSize={30}
+          fixedRowHeight
+          getRowProps={getRowProps}
+          onRowClick={(row) => setClicked((row.original as LogEntry).id)}
+        />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+export const LiveUpdates: Story = {
+  render: () => <LiveUpdatesStory />,
 };

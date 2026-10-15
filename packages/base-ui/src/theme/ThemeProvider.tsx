@@ -10,7 +10,12 @@ const MOTION_ATTR = 'data-ov-motion';
 const THEME_STORAGE_KEY = 'ov-theme-mode';
 const DENSITY_STORAGE_KEY = 'ov-theme-density';
 const MOTION_STORAGE_KEY = 'ov-theme-motion';
-const ROOT_THEME_OWNER = new WeakMap<HTMLElement, symbol>();
+interface RootThemeOwner {
+  token: symbol;
+  properties: Set<string>;
+}
+
+const ROOT_THEME_OWNER = new WeakMap<HTMLElement, RootThemeOwner>();
 
 export interface ThemeProviderProps extends PropsWithChildren {
   initialTheme?: ThemeMode;
@@ -36,7 +41,6 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   // --- THEME ---
   const pendingThemeIdRef = useRef<string | null>(null);
-  const injectedPropertiesRef = useRef<Set<string>>(new Set());
   const activeThemeIdRef = useRef<ThemeMode | null>(null);
   const activeBaseRef = useRef<ThemeMode>('dark');
   const domOwnerRef = useRef(Symbol('ThemeProvider'));
@@ -55,9 +59,12 @@ export function ThemeProvider({
       return;
     }
     const root = document.documentElement;
-    ROOT_THEME_OWNER.set(root, domOwnerRef.current);
-    for (const property of injectedPropertiesRef.current) root.style.removeProperty(property);
-    injectedPropertiesRef.current.clear();
+    const previousOwner = ROOT_THEME_OWNER.get(root);
+    if (previousOwner) {
+      for (const property of previousOwner.properties) root.style.removeProperty(property);
+    }
+    const properties = new Set<string>();
+    ROOT_THEME_OWNER.set(root, { token: domOwnerRef.current, properties });
     root.setAttribute('data-ov-theme', registered.builtIn ? registered.id : registered.base);
     if (registered.builtIn) root.removeAttribute('data-ov-theme-custom');
     else root.setAttribute('data-ov-theme-custom', registered.id);
@@ -67,7 +74,7 @@ export function ThemeProvider({
         if (value === undefined) continue;
         const property = dottedKeyToCssVar(key);
         root.style.setProperty(property, value);
-        injectedPropertiesRef.current.add(property);
+        properties.add(property);
       }
     }
     activeThemeIdRef.current = next;
@@ -91,11 +98,9 @@ export function ThemeProvider({
     return () => {
       unsubscribe();
       const root = document.documentElement;
-      if (ROOT_THEME_OWNER.get(root) !== domOwnerRef.current) return;
-      for (const property of injectedPropertiesRef.current) {
-        root.style.removeProperty(property);
-      }
-      injectedPropertiesRef.current.clear();
+      const owner = ROOT_THEME_OWNER.get(root);
+      if (owner?.token !== domOwnerRef.current) return;
+      for (const property of owner.properties) root.style.removeProperty(property);
       root.removeAttribute('data-ov-theme-custom');
       ROOT_THEME_OWNER.delete(root);
     };

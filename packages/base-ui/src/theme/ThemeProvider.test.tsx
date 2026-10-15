@@ -127,4 +127,43 @@ describe('ThemeProvider + themeRegistry integration', () => {
     expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
   });
+
+  it('clears earlier-only properties during an overlapping provider handoff', () => {
+    themeRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'provider.earlier',
+        name: 'Earlier',
+        base: 'dark',
+        tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
+      },
+      owner,
+    );
+    themeRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'provider.later',
+        name: 'Later',
+        base: 'dark',
+        tokens: { 'color.bg.base': '#073642' },
+      },
+      owner,
+    );
+    const earlier = render(
+      <ThemeProvider initialTheme="provider.earlier" persist={false}><Reader /></ThemeProvider>,
+    );
+    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('#839496');
+
+    const later = render(
+      <ThemeProvider initialTheme="provider.later" persist={false}><Reader /></ThemeProvider>,
+    );
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#073642');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
+
+    earlier.unmount();
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#073642');
+    later.unmount();
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
+  });
 });

@@ -36,6 +36,8 @@ export function ThemeProvider({
   // --- THEME ---
   const pendingThemeIdRef = useRef<string | null>(null);
   const injectedPropertiesRef = useRef<Set<string>>(new Set());
+  const activeThemeIdRef = useRef<ThemeMode | null>(null);
+  const activeBaseRef = useRef<ThemeMode>('dark');
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     if (!persist) return initialTheme;
     const stored = getStored(THEME_STORAGE_KEY);
@@ -65,19 +67,32 @@ export function ThemeProvider({
         injectedPropertiesRef.current.add(property);
       }
     }
+    activeThemeIdRef.current = next;
+    activeBaseRef.current = registered.base;
     setThemeState(next);
     if (persist && typeof window !== 'undefined') window.localStorage.setItem(THEME_STORAGE_KEY, next);
   };
 
   useEffect(() => {
     applyTheme(theme);
-    return themeRegistry.subscribe(() => {
+    const unsubscribe = themeRegistry.subscribe(() => {
       const pending = pendingThemeIdRef.current;
       if (pending && themeRegistry.has(pending)) {
         pendingThemeIdRef.current = null;
         applyTheme(pending);
+        return;
       }
+      const active = activeThemeIdRef.current;
+      if (active && !themeRegistry.has(active)) applyTheme(activeBaseRef.current);
     });
+    return () => {
+      unsubscribe();
+      for (const property of injectedPropertiesRef.current) {
+        document.documentElement.style.removeProperty(property);
+      }
+      injectedPropertiesRef.current.clear();
+      document.documentElement.removeAttribute('data-ov-theme-custom');
+    };
     // The registry and initial theme are intentionally consumed once at mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -12,7 +12,9 @@ function Reader() {
 }
 
 function reset() {
-  themeRegistry.unregisterOwner(owner);
+  act(() => {
+    themeRegistry.unregisterOwner(owner);
+  });
   document.documentElement.removeAttribute('data-ov-theme');
   document.documentElement.removeAttribute('data-ov-theme-custom');
   document.documentElement.style.cssText = '';
@@ -47,5 +49,54 @@ describe('ThemeProvider + themeRegistry integration', () => {
     });
     expect(screen.getByTestId('theme').textContent).toBe('provider.custom');
     expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('provider.custom');
+  });
+
+  it('falls back to the active custom theme base when its registration is removed', () => {
+    const dispose = themeRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'provider.removed',
+        name: 'Removed',
+        base: 'light',
+        tokens: { 'color.bg.base': '#fdf6e3' },
+      },
+      owner,
+    );
+    render(<ThemeProvider initialTheme="provider.removed"><Reader /></ThemeProvider>);
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#fdf6e3');
+
+    act(dispose);
+
+    expect(screen.getByTestId('theme').textContent).toBe('light');
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('light');
+    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+    expect(window.localStorage.getItem('ov-theme-mode')).toBe('light');
+  });
+
+  it('clears custom inline properties and attributes before a built-in provider remounts', () => {
+    themeRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'provider.lifecycle',
+        name: 'Lifecycle',
+        base: 'dark',
+        tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
+      },
+      owner,
+    );
+    const mounted = render(
+      <ThemeProvider initialTheme="provider.lifecycle" persist={false}><Reader /></ThemeProvider>,
+    );
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
+
+    mounted.unmount();
+
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
+    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
+    render(<ThemeProvider initialTheme="dark" persist={false}><Reader /></ThemeProvider>);
+    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
   });
 });

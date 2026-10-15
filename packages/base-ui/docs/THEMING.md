@@ -56,8 +56,9 @@ export function App() {
 
 By default the provider writes `data-ov-theme`, `data-ov-density`, and
 `data-ov-motion` to `document.documentElement`. Supply `root` to target another
-element. Multiple providers may target one root: the latest owner controls it,
-and unmounting that provider restores the previous owner's values.
+element. Use one provider per root. Overlapping providers use last-writer
+ownership to prevent stale cleanup from clobbering the current provider; this
+is not a nesting or restoration API.
 
 The host owns persistence. Load a saved ID before rendering (or update host
 state after loading it) and persist changes in `onThemeChange`.

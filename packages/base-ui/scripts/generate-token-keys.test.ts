@@ -1,48 +1,60 @@
-import { describe, it, expect } from 'vitest';
-import { extractTokenKeys } from './generate-token-keys';
+import { describe, expect, it } from 'vitest';
+import { extractThemeTokens, renderTypesFile } from './generate-token-keys';
 
-describe('extractTokenKeys', () => {
-  it('extracts color, syntax, and terminal keys from css input', () => {
+describe('extractThemeTokens', () => {
+  it('extracts one keyed token catalog with value kinds', () => {
     const css = `
       :root {
         --ov-color-bg-base: #000;
-        --ov-color-fg-default: #fff;
-        --ov-syntax-comment: #888;
-        --ov-terminal-red: #c00;
-        --ov-primitive-gray-0: #090a0c;
-        --ov-size-button-sm: 28px;
-      }
-      :root[data-ov-theme='light'] {
-        --ov-color-bg-base: #eef0f3;
+        --ov-color-terminal-bg: #111;
+        --ov-color-ansi-red: #c00;
+        --ov-syntax-keyword: #f0f;
+        --ov-syntax-style-keyword: bold;
+        --ov-size-button-md: 26px;
       }
     `;
-    const result = extractTokenKeys(css);
-    expect(result.colors).toEqual(['color.bg.base', 'color.fg.default']);
-    expect(result.syntax).toEqual(['syntax.comment']);
-    expect(result.terminal).toEqual(['terminal.red']);
+
+    expect(extractThemeTokens(css)).toEqual({
+      'color.ansi.red': { cssVariable: '--ov-color-ansi-red', valueKind: 'color' },
+      'color.bg.base': { cssVariable: '--ov-color-bg-base', valueKind: 'color' },
+      'color.terminal.bg': { cssVariable: '--ov-color-terminal-bg', valueKind: 'color' },
+      'syntax.keyword': { cssVariable: '--ov-syntax-keyword', valueKind: 'color' },
+      'syntax.style.keyword': {
+        cssVariable: '--ov-syntax-style-keyword',
+        valueKind: 'font-style',
+      },
+    });
   });
 
-  it('deduplicates keys defined in multiple theme blocks', () => {
+  it('collapses duplicate definitions to one entry', () => {
     const css = `
       :root { --ov-color-bg-base: #000; }
       :root[data-ov-theme='light'] { --ov-color-bg-base: #fff; }
     `;
-    const result = extractTokenKeys(css);
-    expect(result.colors).toEqual(['color.bg.base']);
+
+    expect(extractThemeTokens(css)).toEqual({
+      'color.bg.base': { cssVariable: '--ov-color-bg-base', valueKind: 'color' },
+    });
   });
 
-  it('ignores primitives, sizes, and non-ov variables', () => {
-    const css = `
+  it('renders deterministic output regardless of declaration order', () => {
+    const first = `
       :root {
-        --ov-primitive-gray-0: #000;
-        --ov-size-button-md: 36px;
-        --ov-duration-fast: 90ms;
-        --other-lib-var: red;
+        --ov-syntax-style-keyword: bold;
+        --ov-color-bg-base: #000;
+        --ov-syntax-keyword: #f0f;
       }
     `;
-    const result = extractTokenKeys(css);
-    expect(result.colors).toEqual([]);
-    expect(result.syntax).toEqual([]);
-    expect(result.terminal).toEqual([]);
+    const reordered = `
+      :root {
+        --ov-syntax-keyword: #f0f;
+        --ov-syntax-style-keyword: bold;
+        --ov-color-bg-base: #000;
+      }
+    `;
+
+    expect(renderTypesFile(extractThemeTokens(first))).toBe(
+      renderTypesFile(extractThemeTokens(reordered)),
+    );
   });
 });

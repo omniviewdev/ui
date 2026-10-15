@@ -109,13 +109,16 @@ selectable?: boolean;
 
 The default is `true`. A non-selectable item remains focusable and may invoke its click handler or expansion action, but selection state does not change.
 
-`TreeList` gains:
+`TreeList` gains separate reorderable item and handle slots:
 
 ```tsx
-<TreeList.ItemDragHandle aria-label="Reorder Workload" />
+<TreeList.ReorderableItem itemKey={node.key}>
+  <TreeList.ItemDragHandle aria-label="Reorder Workload" />
+  {/* remaining item slots */}
+</TreeList.ReorderableItem>
 ```
 
-The handle is an explicit button-like control that owns pointer and keyboard drag listeners. Row clicks never start a drag. Disabled items expose no active drag behavior.
+`TreeList.Item` remains the unchanged static fast path. Consumers use `ReorderableItem` only when `reorderable` is enabled, ensuring ordinary trees do not perform an optional reorder-context lookup. The handle is an explicit button-like control that owns pointer and keyboard drag listeners. Row clicks never start a drag. Disabled items expose no active drag behavior.
 
 ## Ordering Model
 
@@ -153,7 +156,7 @@ The result preserves `depth`, `parentKey`, `isLastChild`, and `ancestorIsLast`, 
 
 ### Reorderable path
 
-The reorderable root mounts one `DndContext` and one visible-item `SortableContext`. A dedicated reorderable item implementation invokes `useSortable`; the static item implementation does not.
+The reorderable root mounts one `DndContext` and one visible-item `SortableContext`. `TreeList.ReorderableItem` invokes `useSortable`; `TreeList.Item` remains the existing static implementation and performs no reorder-context lookup.
 
 The sortable context may contain all visible keys, but drag completion accepts only same-parent targets. Collision feedback may identify another parent; such drops are invalid and do not alter state.
 

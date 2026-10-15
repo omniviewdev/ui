@@ -36,6 +36,33 @@ describe('applySiblingOrder', () => {
     ]);
   });
 
+  it('orders an undefined item when its key is explicit', () => {
+    const items: readonly (string | undefined)[] = ['a', undefined];
+    const order: TreeOrder = new Map([[null, ['undefined']]]);
+
+    expect(applySiblingOrder(items, null, order, (item) => item ?? 'undefined')).toEqual([
+      undefined,
+      'a',
+    ]);
+  });
+
+  it('ignores malformed order positions beyond the sibling count', () => {
+    const items = [{ id: 'a' }, { id: 'b' }];
+    const orderedKeys = ['b', 'a'];
+    Object.defineProperty(orderedKeys, 2, {
+      get: () => {
+        throw new Error('read malformed overflow');
+      },
+    });
+    Object.defineProperty(orderedKeys, 'length', { value: 3 });
+    const order: TreeOrder = new Map([[null, orderedKeys]]);
+
+    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual([
+      'b',
+      'a',
+    ]);
+  });
+
   it('returns the source array when no order entry exists', () => {
     const items = [{ id: 'a' }];
 

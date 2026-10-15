@@ -14,10 +14,11 @@ export function applySiblingOrder<TItem>(
 
   const result: TItem[] = [];
   const includedKeys = new Set<Key>();
-  for (const key of orderedKeys) {
-    const item = itemByKey.get(key);
-    if (item !== undefined && !includedKeys.has(key)) {
-      result.push(item);
+  const explicitKeyCount = Math.min(orderedKeys.length, siblings.length);
+  for (let index = 0; index < explicitKeyCount; index += 1) {
+    const key = orderedKeys[index]!;
+    if (itemByKey.has(key) && !includedKeys.has(key)) {
+      result.push(itemByKey.get(key) as TItem);
       includedKeys.add(key);
     }
   }

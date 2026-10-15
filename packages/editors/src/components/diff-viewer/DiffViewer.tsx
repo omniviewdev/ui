@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useRef, useState, type CSSProperties } from 'react';
 import * as monaco from 'monaco-editor';
 import { useEditorTheme } from '../../themes/useEditorTheme';
-import { buildMonacoTheme, OV_MONACO_THEME } from '../../themes/monaco';
+import { buildMonacoTheme, createMonacoThemeName } from '../../themes/monaco';
 import styles from './DiffViewer.module.css';
 
 export type DiffMode = 'side-by-side' | 'inline';
@@ -40,6 +40,9 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
   ref,
 ) {
   const theme = useEditorTheme();
+  const themeNameRef = useRef<string | null>(null);
+  if (themeNameRef.current === null) themeNameRef.current = createMonacoThemeName();
+  const themeName = themeNameRef.current;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -48,10 +51,10 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
   useEffect(() => {
     if (!containerRef.current) return;
 
-    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-    monaco.editor.setTheme(OV_MONACO_THEME);
+    monaco.editor.defineTheme(themeName, buildMonacoTheme(theme.base, containerRef.current));
 
     const editor = monaco.editor.createDiffEditor(containerRef.current, {
+      theme: themeName,
       readOnly,
       renderSideBySide: mode === 'side-by-side',
       renderValidationDecorations: 'off',
@@ -116,10 +119,12 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
 
   // Update theme
   useEffect(() => {
-    if (!isReady) return;
-    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-    monaco.editor.setTheme(OV_MONACO_THEME);
-  }, [isReady, theme.registration]);
+    const editor = editorRef.current;
+    if (!editor || !isReady) return;
+    monaco.editor.defineTheme(themeName, buildMonacoTheme(theme.base, containerRef.current));
+    editor.getOriginalEditor().updateOptions({ theme: themeName });
+    editor.getModifiedEditor().updateOptions({ theme: themeName });
+  }, [isReady, theme.registration, themeName]);
 
   const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
 

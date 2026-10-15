@@ -6,6 +6,11 @@ import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
 
 let mockEditorInstance: Record<string, unknown>;
 let mockModel: Record<string, unknown>;
+const mockEditorInstances: Array<Record<string, unknown>> = [];
+interface MonacoEditorOptions {
+  theme?: string;
+}
+
 
 const mockCreate = vi.fn();
 const mockGetModel = vi.fn();
@@ -43,6 +48,7 @@ vi.mock('monaco-editor', () => {
           focus: vi.fn(),
           getOption: vi.fn(() => false),
         };
+        mockEditorInstances.push(mockEditorInstance);
         return mockEditorInstance;
       },
       getModel: (...args: unknown[]) => mockGetModel(...args),
@@ -86,6 +92,7 @@ vi.mock('../../schemas', () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetModel.mockReturnValue(null);
+  mockEditorInstances.length = 0;
 });
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
@@ -243,13 +250,108 @@ describe('CodeEditor', () => {
     );
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
-      'ov-theme',
+      expect.stringMatching(/^ov-theme-/),
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#222222' }),
       }),
     );
     expect(mockCreate).toHaveBeenCalledTimes(1);
   });
+  it('isolates root-specific themes per mounted editor through registration updates', () => {
+    const firstRegistry = createThemeRegistry();
+    const secondRegistry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'isolation-test' } as const;
+    const disposeFirst = firstRegistry.register({
+      schemaVersion: 1,
+      id: 'plugin:isolation-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+    secondRegistry.register({
+      schemaVersion: 1,
+      id: 'plugin:isolation-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#222222' },
+    }, owner);
+    const firstRoot = document.createElement('div');
+    const secondRoot = document.createElement('div');
+    document.body.append(firstRoot, secondRoot);
+
+    rtlRender(
+      <ThemeProvider
+        themeId="plugin:isolation-test/first"
+        registry={firstRegistry}
+        root={firstRoot}
+      >
+        <CodeEditor value="" />
+      </ThemeProvider>,
+      { container: firstRoot },
+    );
+    rtlRender(
+      <ThemeProvider
+        themeId="plugin:isolation-test/second"
+        registry={secondRegistry}
+        root={secondRoot}
+      >
+        <CodeEditor value="" />
+      </ThemeProvider>,
+      { container: secondRoot },
+    );
+
+    // Monaco's mocked create boundary records its construction options as unknown.
+    const firstOptions = mockCreate.mock.calls[0]?.[1] as MonacoEditorOptions;
+    const secondOptions = mockCreate.mock.calls[1]?.[1] as MonacoEditorOptions;
+    const firstThemeName = firstOptions.theme;
+    const secondThemeName = secondOptions.theme;
+    expect(firstThemeName).toMatch(/^ov-theme-/);
+    expect(secondThemeName).toMatch(/^ov-theme-/);
+    expect(firstThemeName).not.toBe(secondThemeName);
+    expect(mockDefineTheme).toHaveBeenCalledWith(
+      firstThemeName,
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#111111' }),
+      }),
+    );
+    expect(mockDefineTheme).toHaveBeenCalledWith(
+      secondThemeName,
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+
+    const firstEditor = mockEditorInstances[0]!;
+    const secondEditor = mockEditorInstances[1]!;
+    const firstUpdateOptions = firstEditor.updateOptions;
+    const secondUpdateOptions = secondEditor.updateOptions;
+    if (!vi.isMockFunction(firstUpdateOptions) || !vi.isMockFunction(secondUpdateOptions)) {
+      throw new Error('Expected mocked editor updateOptions methods');
+    }
+    const secondUpdateCount = secondUpdateOptions.mock.calls.length;
+    act(() => {
+      disposeFirst();
+      firstRegistry.register({
+        schemaVersion: 1,
+        id: 'plugin:isolation-test/first',
+        name: 'First reloaded',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#333333' },
+      }, owner);
+    });
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      firstThemeName,
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#333333' }),
+      }),
+    );
+    expect(firstUpdateOptions).toHaveBeenLastCalledWith({ theme: firstThemeName });
+    expect(secondUpdateOptions).toHaveBeenCalledTimes(secondUpdateCount);
+    expect(mockSetTheme).not.toHaveBeenCalled();
+    expect(mockCreate).toHaveBeenCalledTimes(2);
+  });
+
   it('rebuilds its theme when the active registration is replaced with the same ID and base', () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'editor-reload-test' } as const;
@@ -279,7 +381,7 @@ describe('CodeEditor', () => {
     });
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
-      'ov-theme',
+      expect.stringMatching(/^ov-theme-/),
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#222222' }),
       }),

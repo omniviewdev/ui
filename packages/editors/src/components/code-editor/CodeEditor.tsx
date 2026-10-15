@@ -9,7 +9,7 @@ import {
 } from 'react';
 import * as monaco from 'monaco-editor';
 import { useEditorTheme } from '../../themes/useEditorTheme';
-import { buildMonacoTheme, OV_MONACO_THEME } from '../../themes/monaco';
+import { buildMonacoTheme, createMonacoThemeName } from '../../themes/monaco';
 import { detectLanguage } from '../../utils/language';
 import { editorSchemas } from '../../schemas';
 import styles from './CodeEditor.module.css';
@@ -292,6 +292,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
     ref,
   ) {
     const theme = useEditorTheme();
+    const themeNameRef = useRef<string | null>(null);
+    if (themeNameRef.current === null) themeNameRef.current = createMonacoThemeName();
+    const themeName = themeNameRef.current;
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [isReady, setIsReady] = useState(false);
@@ -326,8 +329,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       log('=== MOUNT ===');
 
       // Theme
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-      monaco.editor.setTheme(OV_MONACO_THEME);
+      monaco.editor.defineTheme(themeName, buildMonacoTheme(theme.base, containerRef.current));
 
       // TypeScript / JavaScript compiler options (global — JSX & target config)
       monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -347,6 +349,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       log('  model created — uri:', model.uri.toString());
 
       const editor = monaco.editor.create(containerRef.current, {
+        theme: themeName,
         model,
         readOnly,
         lineNumbers: lineNumbers ? 'on' : 'off',
@@ -468,10 +471,11 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
 
     // Theme
     useEffect(() => {
-      if (!isReady) return;
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-      monaco.editor.setTheme(OV_MONACO_THEME);
-    }, [isReady, theme.registration]);
+      const editor = editorRef.current;
+      if (!editor || !isReady) return;
+      monaco.editor.defineTheme(themeName, buildMonacoTheme(theme.base, containerRef.current));
+      editor.updateOptions({ theme: themeName });
+    }, [isReady, theme.registration, themeName]);
 
     // onChange subscription
     useEffect(() => {

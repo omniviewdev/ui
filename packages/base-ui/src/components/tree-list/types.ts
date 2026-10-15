@@ -211,6 +211,7 @@ export interface TreeListRootProps<TItem = unknown>
 export interface TreeListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   itemKey: Key;
   disabled?: boolean;
+  selectable?: boolean;
   textValue?: string;
   children: ReactNode;
 }

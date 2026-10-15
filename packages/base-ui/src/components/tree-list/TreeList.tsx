@@ -372,7 +372,16 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
 // ---------------------------------------------------------------------------
 
 const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function TreeListItem(
-  { className, itemKey, disabled = false, textValue, children, onClick, ...props },
+  {
+    className,
+    itemKey,
+    disabled = false,
+    selectable = true,
+    textValue,
+    children,
+    onClick,
+    ...props
+  },
   ref,
 ) {
   const store = useTreeStoreContext();
@@ -392,7 +401,7 @@ const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function Tree
 
       actions.setActiveKey(itemKey);
 
-      if (config.selectionMode !== 'none') {
+      if (selectable && config.selectionMode !== 'none') {
         if (event.shiftKey && config.selectionMode === 'multiple') {
           actions.selectRange(itemKey);
         } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
@@ -406,7 +415,15 @@ const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function Tree
 
       onClick?.(event);
     },
-    [isDisabled, config.selectionMode, config.selectionBehavior, actions, itemKey, onClick],
+    [
+      isDisabled,
+      selectable,
+      config.selectionMode,
+      config.selectionBehavior,
+      actions,
+      itemKey,
+      onClick,
+    ],
   );
 
   return (

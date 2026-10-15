@@ -201,6 +201,36 @@ describe('TreeList', () => {
     expect(onChange).toHaveBeenCalledWith(new Set(['/README.md']));
   });
 
+  it('keeps non-selectable branches active and clickable without selecting them', async () => {
+    const user = userEvent.setup();
+    const onBranchClick = vi.fn();
+
+    renderWithTheme(
+      <TestTree
+        renderItem={(item, node) => (
+          <TreeList.Item
+            itemKey={node.key}
+            textValue={item.name}
+            selectable={item.type !== 'directory'}
+            onClick={item.type === 'directory' ? onBranchClick : undefined}
+          >
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.Item>
+        )}
+      />,
+    );
+
+    await user.click(screen.getByText('src'));
+    const branch = screen.getByText('src').closest('[role="treeitem"]');
+    expect(onBranchClick).toHaveBeenCalledOnce();
+    expect(branch).toHaveAttribute('data-ov-active', 'true');
+    expect(branch).not.toHaveAttribute('aria-selected');
+
+    await user.click(screen.getByText('README.md'));
+    const leaf = screen.getByText('README.md').closest('[role="treeitem"]');
+    expect(leaf).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('replaces selection on click in single mode', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

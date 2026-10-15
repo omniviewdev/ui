@@ -1,6 +1,9 @@
 export { TreeList } from './TreeList';
 export type {
   FlatNode,
+  TreeIndentGuide,
+  TreeOrder,
+  TreeReorderEvent,
   TreeNodeMeta,
   TreeItemState,
   TreeListRootProps,

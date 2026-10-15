@@ -11,6 +11,17 @@ export type SelectionMode = 'none' | 'single' | 'multiple';
 export type SelectionBehavior = 'replace' | 'toggle';
 export type ListDensity = 'compact' | 'default' | 'comfortable';
 
+export type TreeIndentGuide = 'none' | 'rail' | 'connectors';
+export type TreeOrder = ReadonlyMap<Key | null, readonly Key[]>;
+
+export interface TreeReorderEvent {
+  activeKey: Key;
+  overKey: Key;
+  parentKey: Key | null;
+  fromIndex: number;
+  toIndex: number;
+}
+
 // ---------------------------------------------------------------------------
 // Flat node (produced by DFS flattener)
 // ---------------------------------------------------------------------------

@@ -133,7 +133,68 @@ describe('controlled ThemeProvider', () => {
     expect(root.dataset.ovMotion).toBeUndefined();
   });
 
-  it('does not remove density and motion owned by a newer overlapping provider', () => {
+  it('restores an older provider when the newer owner unmounts', () => {
+    const root = document.createElement('div');
+    const earlier = render(
+      <ThemeProvider themeId="dark" root={root} initialDensity="compact" initialMotion="reduced">
+        <span />
+      </ThemeProvider>,
+    );
+    const later = render(
+      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+    );
+
+    later.unmount();
+    expect(root.dataset.ovDensity).toBe('compact');
+    expect(root.dataset.ovMotion).toBe('reduced');
+
+    earlier.unmount();
+    expect(root.dataset.ovDensity).toBeUndefined();
+    expect(root.dataset.ovMotion).toBeUndefined();
+  });
+
+  it('restores an older provider when the newer owner changes roots', () => {
+    const originalRoot = document.createElement('div');
+    const nextRoot = document.createElement('div');
+    render(
+      <ThemeProvider themeId="dark" root={originalRoot} initialDensity="compact" initialMotion="reduced">
+        <span />
+      </ThemeProvider>,
+    );
+    const later = render(
+      <ThemeProvider themeId="light" root={originalRoot}><span /></ThemeProvider>,
+    );
+
+    later.rerender(
+      <ThemeProvider themeId="light" root={nextRoot}><span /></ThemeProvider>,
+    );
+
+    expect(originalRoot.dataset.ovDensity).toBe('compact');
+    expect(originalRoot.dataset.ovMotion).toBe('reduced');
+    expect(nextRoot.dataset.ovDensity).toBe('comfortable');
+    expect(nextRoot.dataset.ovMotion).toBe('normal');
+  });
+
+  it('restores an older provider when the newer owner sets its root to null', () => {
+    const root = document.createElement('div');
+    render(
+      <ThemeProvider themeId="dark" root={root} initialDensity="compact" initialMotion="reduced">
+        <span />
+      </ThemeProvider>,
+    );
+    const later = render(
+      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+    );
+
+    later.rerender(
+      <ThemeProvider themeId="light" root={null}><span /></ThemeProvider>,
+    );
+
+    expect(root.dataset.ovDensity).toBe('compact');
+    expect(root.dataset.ovMotion).toBe('reduced');
+  });
+
+  it('does not let a stale older provider clobber the current owner', () => {
     const root = document.createElement('div');
     const earlier = render(
       <ThemeProvider themeId="dark" root={root} initialDensity="compact" initialMotion="reduced">

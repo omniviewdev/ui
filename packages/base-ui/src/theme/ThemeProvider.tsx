@@ -15,7 +15,57 @@ import type { ThemeDensity, ThemeMode, ThemeMotion } from './types';
 
 const DENSITY_ATTR = 'data-ov-density';
 const MOTION_ATTR = 'data-ov-motion';
-const ROOT_PREFERENCE_OWNER = new WeakMap<HTMLElement, symbol>();
+interface RootPreferenceEntry {
+  density: ThemeDensity;
+  motion: ThemeMotion;
+}
+
+interface RootPreferenceOwners {
+  entries: RootPreferenceEntry[];
+}
+
+const ROOT_PREFERENCE_OWNERS = new WeakMap<HTMLElement, RootPreferenceOwners>();
+
+function applyRootPreferences(
+  root: HTMLElement,
+  entry: RootPreferenceEntry,
+  density: ThemeDensity,
+  motion: ThemeMotion,
+): () => void {
+  let owners = ROOT_PREFERENCE_OWNERS.get(root);
+  if (!owners) {
+    owners = { entries: [] };
+    ROOT_PREFERENCE_OWNERS.set(root, owners);
+  }
+
+  const previousIndex = owners.entries.indexOf(entry);
+  if (previousIndex >= 0) owners.entries.splice(previousIndex, 1);
+  entry.density = density;
+  entry.motion = motion;
+  owners.entries.push(entry);
+  root.setAttribute(DENSITY_ATTR, density);
+  root.setAttribute(MOTION_ATTR, motion);
+
+  return () => {
+    if (ROOT_PREFERENCE_OWNERS.get(root) !== owners) return;
+    const index = owners.entries.indexOf(entry);
+    if (index < 0) return;
+    const wasCurrent = index === owners.entries.length - 1;
+    owners.entries.splice(index, 1);
+    if (!wasCurrent) return;
+
+    const previous = owners.entries[owners.entries.length - 1];
+    if (previous) {
+      root.setAttribute(DENSITY_ATTR, previous.density);
+      root.setAttribute(MOTION_ATTR, previous.motion);
+      return;
+    }
+
+    root.removeAttribute(DENSITY_ATTR);
+    root.removeAttribute(MOTION_ATTR);
+    ROOT_PREFERENCE_OWNERS.delete(root);
+  };
+}
 
 export interface ThemeProviderProps extends PropsWithChildren {
   themeId: string;
@@ -63,23 +113,16 @@ export function ThemeProvider({
 
   const [density, setDensity] = useState<ThemeDensity>(initialDensity);
   const [motion, setMotion] = useState<ThemeMotion>(initialMotion);
-  const preferenceOwnerRef = useRef(Symbol('ThemeProviderPreferences'));
+  const preferenceOwnerRef = useRef<RootPreferenceEntry | null>(null);
+  const preferenceOwner = preferenceOwnerRef.current ?? { density, motion };
+  preferenceOwnerRef.current = preferenceOwner;
   useInsertionEffect(() => {
     const target = root === undefined
       ? (typeof document === 'undefined' ? null : document.documentElement)
       : root;
     if (!target) return;
 
-    const owner = preferenceOwnerRef.current;
-    ROOT_PREFERENCE_OWNER.set(target, owner);
-    target.setAttribute(DENSITY_ATTR, density);
-    target.setAttribute(MOTION_ATTR, motion);
-    return () => {
-      if (ROOT_PREFERENCE_OWNER.get(target) !== owner) return;
-      target.removeAttribute(DENSITY_ATTR);
-      target.removeAttribute(MOTION_ATTR);
-      ROOT_PREFERENCE_OWNER.delete(target);
-    };
+    return applyRootPreferences(target, preferenceOwner, density, motion);
   }, [density, motion, root]);
 
   const value = useMemo(

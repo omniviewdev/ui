@@ -114,6 +114,10 @@ describe('built-in theme catalog', () => {
       expect(contrast(value('--ov-color-border-default'), value('--ov-color-bg-base')), `${theme.id} base border`).toBeGreaterThanOrEqual(3);
       expect(contrast(value('--ov-color-border-default'), value('--ov-color-bg-surface')), `${theme.id} surface border`).toBeGreaterThanOrEqual(3);
       expect(contrast(value('--ov-color-border-focus'), value('--ov-color-bg-surface')), `${theme.id} surface focus`).toBeGreaterThanOrEqual(3);
+      if (theme.id === 'solarized-dark' || theme.id === 'solarized-light') {
+        expect(contrast(value('--ov-color-border-muted'), value('--ov-color-bg-surface')), `${theme.id} muted surface border`).toBeGreaterThanOrEqual(3);
+        expect(contrast(value('--ov-color-terminal-border'), value('--ov-color-terminal-bg')), `${theme.id} terminal border`).toBeGreaterThanOrEqual(3);
+      }
     }
   });
 

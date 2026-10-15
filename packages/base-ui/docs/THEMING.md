@@ -70,13 +70,13 @@ Any token not listed falls back to the `dark` base — so the theme is forward-c
 
 ### Token key discovery
 
-Valid keys for `colors`, `syntax`, and `terminal` are generated from `styles.css` and live in:
+Every override is stored in the single `tokens` map. Valid token keys are generated from `styles.css` and live in:
 
 ```text
 src/theme/generated/tokenKeys.ts
 ```
 
-The `ThemeTokenKey` type exported from that file is the exhaustive string-literal union, and `THEME_TOKEN_METADATA` maps every key to its CSS variable and value kind. `ThemeDefinition` narrows that union by prefix for each legacy override section. If you have TypeScript available, the compiler enforces those keys; if you are writing raw JSON (e.g., for a Go-backed plugin), the registry enforces them at `register()` time.
+The `ThemeTokenKey` type exported from that file is the exhaustive string-literal union, and `THEME_TOKEN_METADATA` maps every key to its CSS variable and value kind. `ThemeDefinition.tokens` accepts any of those keys, including `color.*`, `syntax.*`, and `terminal.*` entries. TypeScript enforces the keys at compile time; the registry validates raw JSON definitions at `register()` time.
 
 **Dotted notation maps directly to CSS custom properties:**
 

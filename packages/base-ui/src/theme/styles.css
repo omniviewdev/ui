@@ -1443,7 +1443,7 @@
   --ov-color-fg-disabled: #586e75;
   --ov-color-fg-inverse: #002b36;
   --ov-color-border-default: #839496;
-  --ov-color-border-muted: #586e75;
+  --ov-color-border-muted: #839496;
   --ov-color-border-strong: #839496;
   --ov-color-border-focus: #268bd2;
   --ov-color-brand-500: #268bd2;
@@ -1464,7 +1464,7 @@
   --ov-color-terminal-cursor: #268bd2;
   --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.3);
   --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
-  --ov-color-terminal-border: #586e75;
+  --ov-color-terminal-border: #839496;
   --ov-color-ansi-black: #073642;
   --ov-color-ansi-red: #dc322f;
   --ov-color-ansi-green: #859900;
@@ -1516,7 +1516,7 @@
   --ov-color-fg-disabled: #839496;
   --ov-color-fg-inverse: #fdf6e3;
   --ov-color-border-default: #657b83;
-  --ov-color-border-muted: #93a1a1;
+  --ov-color-border-muted: #657b83;
   --ov-color-border-strong: #657b83;
   --ov-color-border-focus: #268bd2;
   --ov-color-brand-500: #268bd2;
@@ -1537,7 +1537,7 @@
   --ov-color-terminal-cursor: #268bd2;
   --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.24);
   --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
-  --ov-color-terminal-border: #839496;
+  --ov-color-terminal-border: #657b83;
   --ov-color-ansi-black: #002b36;
   --ov-color-ansi-red: #dc322f;
   --ov-color-ansi-green: #859900;

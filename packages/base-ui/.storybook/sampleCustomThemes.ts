@@ -1,19 +1,15 @@
 import type { ThemeDefinition } from '../src/theme/registry';
 
-export const SOLARIZED_DARK: ThemeDefinition = {
+export const EXAMPLE_OCEAN: ThemeDefinition = {
   schemaVersion: 1,
-  id: 'solarized-dark',
-  name: 'Solarized Dark',
+  id: 'example-ocean',
+  name: 'Example Ocean',
   base: 'dark',
-  author: 'Ethan Schoonover',
+  author: 'Omniview',
   tokens: {
-    'color.bg.base': '#002b36',
-    'color.bg.surface': '#073642',
-    'color.fg.default': '#839496',
-    'color.fg.muted': '#657b83',
-    'color.brand.500': '#268bd2',
-    'syntax.comment': '#586e75',
-    'syntax.string': '#2aa198',
-    'syntax.keyword': '#859900',
+    'color.bg.base': '#071a2b',
+    'color.bg.surface': '#0b2942',
+    'color.fg.default': '#d7eefc',
+    'color.brand.500': '#38bdf8',
   },
 };

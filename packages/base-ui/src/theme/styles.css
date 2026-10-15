@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-ov-theme='dark'] {
   --ov-primitive-gray-0: #090a0c;
   --ov-primitive-gray-50: #111214;
   --ov-primitive-gray-100: #15171a;
@@ -541,7 +542,7 @@
   --ov-color-fg-disabled: #5b6472;
   --ov-color-fg-inverse: #0e1013;
 
-  --ov-color-border-default: #2b2f36;
+  --ov-color-border-default: #6c7788;
   --ov-color-border-muted: #24272d;
   --ov-color-border-strong: #3a3f49;
   --ov-color-border-focus: #7a96db;
@@ -703,7 +704,7 @@
   --ov-color-fg-disabled: #9ea6b3;
   --ov-color-fg-inverse: #f8f9fb;
 
-  --ov-color-border-default: #d4d8de;
+  --ov-color-border-default: #7a8494;
   --ov-color-border-muted: #e4e7ec;
   --ov-color-border-strong: #7a8494;
   --ov-color-border-focus: #476dce;
@@ -1055,7 +1056,7 @@
   --ov-color-fg-disabled: #4e5566;
   --ov-color-fg-inverse: #0e1015;
 
-  --ov-color-border-default: #232730;
+  --ov-color-border-default: #6b7385;
   --ov-color-border-muted: #1e2128;
   --ov-color-border-strong: #2e3340;
   --ov-color-border-focus: #4d7cff;
@@ -1084,6 +1085,18 @@
   --ov-color-state-pressed: rgb(160 170 185 / 0.16);
   --ov-color-state-selected: rgb(77 124 255 / 0.18);
   --ov-color-state-focus-ring: #4d7cff;
+
+  /* Editor and terminal surfaces — obsidian */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
 
   /* Date picker tokens — obsidian */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
@@ -1116,7 +1129,7 @@
   --ov-color-fg-disabled: #555555;
   --ov-color-fg-inverse: #0a0a0a;
 
-  --ov-color-border-default: #2a2a2a;
+  --ov-color-border-default: #737373;
   --ov-color-border-muted: #222222;
   --ov-color-border-strong: #363636;
   --ov-color-border-focus: #4b8cff;
@@ -1145,6 +1158,18 @@
   --ov-color-state-pressed: rgb(160 160 160 / 0.16);
   --ov-color-state-selected: rgb(75 140 255 / 0.18);
   --ov-color-state-focus-ring: #4b8cff;
+
+  /* Editor and terminal surfaces — carbon */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
 
   /* Date picker tokens — carbon */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
@@ -1177,7 +1202,7 @@
   --ov-color-fg-disabled: #505359;
   --ov-color-fg-inverse: #09090b;
 
-  --ov-color-border-default: #232528;
+  --ov-color-border-default: #6e7179;
   --ov-color-border-muted: #1e1f22;
   --ov-color-border-strong: #2e3033;
   --ov-color-border-focus: #508aff;
@@ -1206,6 +1231,18 @@
   --ov-color-state-pressed: rgb(160 165 175 / 0.14);
   --ov-color-state-selected: rgb(80 138 255 / 0.15);
   --ov-color-state-focus-ring: #508aff;
+
+  /* Editor and terminal surfaces — void */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
 
   /* Date picker tokens — void */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
@@ -1396,20 +1433,147 @@
 :root[data-ov-theme='solarized-dark'] {
   --ov-color-bg-base: #002b36;
   --ov-color-bg-surface: #073642;
-  --ov-color-fg-default: #839496;
-  --ov-color-fg-muted: #657b83;
+  --ov-color-bg-surface-raised: #073642;
+  --ov-color-bg-surface-overlay: #073642;
+  --ov-color-bg-inset: #002b36;
+  --ov-color-bg-elevated: #073642;
+  --ov-color-fg-default: #93a1a1;
+  --ov-color-fg-muted: #839496;
+  --ov-color-fg-subtle: #839496;
+  --ov-color-fg-disabled: #586e75;
+  --ov-color-fg-inverse: #002b36;
+  --ov-color-border-default: #839496;
+  --ov-color-border-muted: #586e75;
+  --ov-color-border-strong: #839496;
+  --ov-color-border-focus: #268bd2;
   --ov-color-brand-500: #268bd2;
+  --ov-color-brand-400: #268bd2;
+  --ov-color-brand-300: #6c71c4;
+  --ov-color-accent-soft: rgb(38 139 210 / 0.24);
+  --ov-color-accent-strong: #268bd2;
+  --ov-color-state-hover: rgb(131 148 150 / 0.12);
+  --ov-color-state-pressed: rgb(131 148 150 / 0.2);
+  --ov-color-state-selected: rgb(38 139 210 / 0.24);
+  --ov-color-state-focus-ring: #268bd2;
+  --ov-color-editor-bg: #073642;
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: #268bd2;
+  --ov-color-editor-selection-bg: rgb(38 139 210 / 0.3);
+  --ov-color-terminal-bg: #073642;
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: #268bd2;
+  --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.3);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: #586e75;
+  --ov-color-ansi-black: #073642;
+  --ov-color-ansi-red: #dc322f;
+  --ov-color-ansi-green: #859900;
+  --ov-color-ansi-yellow: #b58900;
+  --ov-color-ansi-blue: #268bd2;
+  --ov-color-ansi-magenta: #d33682;
+  --ov-color-ansi-cyan: #2aa198;
+  --ov-color-ansi-white: #eee8d5;
+  --ov-color-ansi-bright-black: #586e75;
+  --ov-color-ansi-bright-red: #cb4b16;
+  --ov-color-ansi-bright-green: #859900;
+  --ov-color-ansi-bright-yellow: #b58900;
+  --ov-color-ansi-bright-blue: #6c71c4;
+  --ov-color-ansi-bright-magenta: #d33682;
+  --ov-color-ansi-bright-cyan: #2aa198;
+  --ov-color-ansi-bright-white: #fdf6e3;
   --ov-syntax-comment: #586e75;
   --ov-syntax-string: #2aa198;
+  --ov-syntax-string-escape: #cb4b16;
+  --ov-syntax-number: #d33682;
   --ov-syntax-keyword: #859900;
+  --ov-syntax-keyword-control: #859900;
+  --ov-syntax-keyword-operator: #859900;
+  --ov-syntax-type: #b58900;
+  --ov-syntax-class: #b58900;
+  --ov-syntax-interface: #b58900;
+  --ov-syntax-function: #268bd2;
+  --ov-syntax-method: #268bd2;
+  --ov-syntax-variable: var(--ov-color-fg-default);
+  --ov-syntax-parameter: #cb4b16;
+  --ov-syntax-property: #268bd2;
+  --ov-syntax-namespace: #b58900;
+  --ov-syntax-decorator: #6c71c4;
+  --ov-syntax-regexp: #2aa198;
+  --ov-syntax-operator: #859900;
+  --ov-syntax-punctuation: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-theme='solarized-light'] {
   --ov-color-bg-base: #fdf6e3;
   --ov-color-bg-surface: #eee8d5;
-  --ov-color-fg-default: #657b83;
-  --ov-color-fg-muted: #93a1a1;
+  --ov-color-bg-surface-raised: #fdf6e3;
+  --ov-color-bg-surface-overlay: #fdf6e3;
+  --ov-color-bg-inset: #eee8d5;
+  --ov-color-bg-elevated: #fdf6e3;
+  --ov-color-fg-default: #073642;
+  --ov-color-fg-muted: #657b83;
+  --ov-color-fg-subtle: #657b83;
+  --ov-color-fg-disabled: #839496;
+  --ov-color-fg-inverse: #fdf6e3;
+  --ov-color-border-default: #657b83;
+  --ov-color-border-muted: #93a1a1;
+  --ov-color-border-strong: #657b83;
+  --ov-color-border-focus: #268bd2;
   --ov-color-brand-500: #268bd2;
+  --ov-color-brand-400: #268bd2;
+  --ov-color-brand-300: #6c71c4;
+  --ov-color-accent-soft: rgb(38 139 210 / 0.18);
+  --ov-color-accent-strong: #268bd2;
+  --ov-color-state-hover: rgb(88 110 117 / 0.1);
+  --ov-color-state-pressed: rgb(88 110 117 / 0.16);
+  --ov-color-state-selected: rgb(38 139 210 / 0.18);
+  --ov-color-state-focus-ring: #268bd2;
+  --ov-color-editor-bg: #eee8d5;
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: #268bd2;
+  --ov-color-editor-selection-bg: rgb(38 139 210 / 0.24);
+  --ov-color-terminal-bg: #eee8d5;
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: #268bd2;
+  --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.24);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: #839496;
+  --ov-color-ansi-black: #002b36;
+  --ov-color-ansi-red: #dc322f;
+  --ov-color-ansi-green: #859900;
+  --ov-color-ansi-yellow: #b58900;
+  --ov-color-ansi-blue: #268bd2;
+  --ov-color-ansi-magenta: #d33682;
+  --ov-color-ansi-cyan: #2aa198;
+  --ov-color-ansi-white: #657b83;
+  --ov-color-ansi-bright-black: #586e75;
+  --ov-color-ansi-bright-red: #cb4b16;
+  --ov-color-ansi-bright-green: #859900;
+  --ov-color-ansi-bright-yellow: #b58900;
+  --ov-color-ansi-bright-blue: #6c71c4;
+  --ov-color-ansi-bright-magenta: #d33682;
+  --ov-color-ansi-bright-cyan: #2aa198;
+  --ov-color-ansi-bright-white: #002b36;
+  --ov-syntax-comment: #586e75;
+  --ov-syntax-string: #2aa198;
+  --ov-syntax-string-escape: #cb4b16;
+  --ov-syntax-number: #d33682;
+  --ov-syntax-keyword: #859900;
+  --ov-syntax-keyword-control: #859900;
+  --ov-syntax-keyword-operator: #859900;
+  --ov-syntax-type: #b58900;
+  --ov-syntax-class: #b58900;
+  --ov-syntax-interface: #b58900;
+  --ov-syntax-function: #268bd2;
+  --ov-syntax-method: #268bd2;
+  --ov-syntax-variable: var(--ov-color-fg-default);
+  --ov-syntax-parameter: #cb4b16;
+  --ov-syntax-property: #268bd2;
+  --ov-syntax-namespace: #b58900;
+  --ov-syntax-decorator: #6c71c4;
+  --ov-syntax-regexp: #2aa198;
+  --ov-syntax-operator: #859900;
+  --ov-syntax-punctuation: var(--ov-color-fg-muted);
 }
 
 :root[data-ov-density='comfortable'] {

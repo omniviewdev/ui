@@ -6,10 +6,10 @@ import { ThemeProvider } from '../ThemeProvider';
 
 const SAMPLE = {
   schemaVersion: 1 as const,
-  id: 'solarized-dark-fixture',
-  name: 'Solarized Dark Fixture',
+  id: 'example-ocean',
+  name: 'Example Ocean',
   base: 'dark' as const,
-  tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
+  tokens: { 'color.bg.base': '#071a2b', 'color.fg.default': '#d7eefc' },
 };
 
 function Fixture() {

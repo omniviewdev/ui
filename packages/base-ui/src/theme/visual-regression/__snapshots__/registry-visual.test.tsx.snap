@@ -18,6 +18,15 @@ exports[`visual regression — representative components under each theme > matc
 }
 `;
 
+exports[`visual regression — representative components under each theme > matches snapshot under theme 'example-ocean' 1`] = `
+{
+  "colorScheme": "dark",
+  "dataOvTheme": "dark",
+  "dataOvThemeCustom": "example-ocean",
+  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_9_" placeholder="type here" class="_Control_459b12"></div>",
+}
+`;
+
 exports[`visual regression — representative components under each theme > matches snapshot under theme 'high-contrast-dark' 1`] = `
 {
   "colorScheme": "dark",
@@ -60,15 +69,6 @@ exports[`visual regression — representative components under each theme > matc
   "dataOvTheme": "solarized-dark",
   "dataOvThemeCustom": null,
   "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_5_" placeholder="type here" class="_Control_459b12"></div>",
-}
-`;
-
-exports[`visual regression — representative components under each theme > matches snapshot under theme 'solarized-dark-fixture' 1`] = `
-{
-  "colorScheme": "dark",
-  "dataOvTheme": "dark",
-  "dataOvThemeCustom": "solarized-dark-fixture",
-  "html": "<div><button type="button" tabindex="0" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md" class="_Root_263d1a">click</button><section class="_Root_6a08b6" data-ov-elevation="0" data-ov-surface="default" data-ov-variant="soft" data-ov-color="neutral" data-ov-size="md"><div>card body</div></section><input id="base-ui-_r_9_" placeholder="type here" class="_Control_459b12"></div>",
 }
 `;
 

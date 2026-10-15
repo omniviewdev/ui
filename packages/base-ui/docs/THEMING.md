@@ -1,6 +1,6 @@
 # Theming — `@omniviewdev/base-ui`
 
-The library ships seven built-in themes and a token system based on CSS custom properties. Every visual token is prefixed `--ov-`, defined in `src/theme/styles.css`, and switched by setting a `data-ov-theme` attribute on `<html>`.
+The library ships nine built-in themes and a token system based on CSS custom properties. Every visual token is prefixed `--ov-`, defined in `src/theme/styles.css`, and switched by setting a `data-ov-theme` attribute on `<html>`.
 
 ## Built-in themes
 
@@ -8,6 +8,8 @@ The library ships seven built-in themes and a token system based on CSS custom p
 |----------------------|------------|
 | `dark`               | Default dark |
 | `light`              | Default light |
+| `solarized-dark`     | Dark — canonical Solarized palette |
+| `solarized-light`    | Light — canonical Solarized palette |
 | `high-contrast-dark` | Dark, WCAG-enhanced contrast |
 | `high-contrast-light`| Light, WCAG-enhanced contrast |
 | `obsidian`           | Dark — cool slate tones |
@@ -35,45 +37,35 @@ Custom themes extend a built-in by overriding specific tokens. Everything else f
 
 ```typescript
 interface ThemeDefinition {
+  schemaVersion: 1;
   id: string;                                         // stable, unique identifier
   name: string;                                       // display name
-  base: BuiltInThemeMode;                             // one of the 7 built-ins above
+  base: BuiltInThemeId;                               // one of the 9 built-ins above
   author?: string;
   version?: string;
-  colors?: Partial<Record<Extract<ThemeTokenKey, `color.${string}`>, string>>;
-  syntax?: Partial<Record<Extract<ThemeTokenKey, `syntax.${string}`>, string>>;
-  terminal?: Partial<Record<Extract<ThemeTokenKey, `terminal.${string}`>, string>>;
+  description?: string;
+  tokens: Partial<Record<ThemeTokenKey, string>>;
 }
 ```
 
-A minimal JSON example — a "Solarized Dark" theme that only touches a handful of tokens:
+A minimal JSON example — an "Example Ocean" theme that only touches a handful of tokens:
 
 ```json
 {
-  "id": "solarized-dark",
-  "name": "Solarized Dark",
+  "schemaVersion": 1,
+  "id": "example-ocean",
+  "name": "Example Ocean",
   "base": "dark",
-  "author": "Ethan Schoonover",
+  "author": "Omniview",
   "version": "1.0.0",
-  "colors": {
-    "color.bg.base":    "#002b36",
-    "color.bg.surface": "#073642",
-    "color.bg.inset":   "#073642",
-    "color.bg.elevated":"#586e75",
-    "color.brand.500":  "#268bd2",
-    "color.accent.strong": "#2aa198"
-  },
-  "syntax": {
-    "syntax.keyword":   "#859900",
-    "syntax.string":    "#2aa198",
-    "syntax.comment":   "#586e75",
-    "syntax.function":  "#268bd2",
-    "syntax.variable":  "#cb4b16",
-    "syntax.number":    "#d33682"
+  "tokens": {
+    "color.bg.base": "#071a2b",
+    "color.bg.surface": "#0b2942",
+    "color.fg.default": "#d7eefc",
+    "color.brand.500": "#38bdf8"
   }
 }
 ```
-
 Any token not listed falls back to the `dark` base — so the theme is forward-compatible with new tokens added to the library in future releases.
 
 ### Token key discovery
@@ -125,17 +117,17 @@ import { themeRegistry } from '@omniviewdev/base-ui';
 themeRegistry.register(myThemeDefinition);
 
 // Activate.
-themeRegistry.apply('solarized-dark');
+themeRegistry.apply('example-ocean');
 
 // List all themes (built-in + registered).
 const themes = themeRegistry.list(); // ThemeInfo[]
 
 // Unregister a custom theme (built-ins cannot be unregistered).
-themeRegistry.unregister('solarized-dark');
+themeRegistry.unregister('example-ocean');
 ```
 
 `register()` throws for:
-- A duplicate `id` — `"Theme 'solarized-dark' is already registered"`.
+- A duplicate `id` — `"Theme 'example-ocean' is already registered"`.
 - Unknown token keys — `"Unknown color token key(s): color.bg.typo"`.
 
 `apply()` throws if the `id` was never registered.

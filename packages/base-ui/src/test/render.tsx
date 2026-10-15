@@ -1,5 +1,5 @@
 import { render, type RenderOptions, type RenderResult } from '@testing-library/react';
-import type { ReactElement, ReactNode } from 'react';
+import { useState, type ReactElement, type ReactNode } from 'react';
 import { ThemeProvider } from '../theme/ThemeProvider';
 
 interface WrapperProps {
@@ -7,7 +7,8 @@ interface WrapperProps {
 }
 
 function Wrapper({ children }: WrapperProps) {
-  return <ThemeProvider persist={false}>{children}</ThemeProvider>;
+  const [themeId, setThemeId] = useState('dark');
+  return <ThemeProvider themeId={themeId} onThemeChange={setThemeId}>{children}</ThemeProvider>;
 }
 
 export function renderWithTheme(

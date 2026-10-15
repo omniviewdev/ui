@@ -1,169 +1,118 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { StrictMode, useState } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeProvider } from './ThemeProvider';
+import { createThemeRegistry, type ThemeRegistry } from './registry';
 import { useTheme } from './useTheme';
-import { themeRegistry } from './registry';
 
-const owner = { kind: 'user', id: 'provider-tests' } as const;
+const owner = { kind: 'plugin', id: 'acme' } as const;
+const pluginTheme = {
+  schemaVersion: 1 as const,
+  id: 'plugin:acme/slate',
+  name: 'Slate',
+  base: 'dark' as const,
+  tokens: { 'color.bg.base': '#101114' } as const,
+};
 
 function Reader() {
-  const { theme, setTheme } = useTheme();
-  return <button data-testid="theme" onClick={() => setTheme('light')}>{theme}</button>;
+  const theme = useTheme();
+  return (
+    <div>
+      <output data-testid="state">{JSON.stringify({
+        requestedThemeId: theme.requestedThemeId,
+        activeThemeId: theme.activeTheme.id,
+        isFallback: theme.isFallback,
+        density: theme.density,
+        motion: theme.motion,
+      })}</output>
+      <button onClick={() => theme.setTheme('light')}>theme</button>
+      <button onClick={() => theme.setDensity('compact')}>density</button>
+      <button onClick={() => theme.setMotion('reduced')}>motion</button>
+    </div>
+  );
 }
 
-function reset() {
-  act(() => {
-    themeRegistry.unregisterOwner(owner);
-  });
+function read() {
+  return JSON.parse(screen.getByTestId('state').textContent!);
+}
+
+function Harness({ initial = 'dark', registry = createThemeRegistry() }: { initial?: string; registry?: ThemeRegistry }) {
+  const [themeId, setThemeId] = useState(initial);
+  return <ThemeProvider themeId={themeId} onThemeChange={setThemeId} registry={registry}><Reader /></ThemeProvider>;
+}
+
+afterEach(() => {
   document.documentElement.removeAttribute('data-ov-theme');
   document.documentElement.removeAttribute('data-ov-theme-custom');
+  document.documentElement.removeAttribute('data-ov-density');
+  document.documentElement.removeAttribute('data-ov-motion');
   document.documentElement.style.cssText = '';
-  window.localStorage.clear();
-}
+  vi.restoreAllMocks();
+});
 
-describe('ThemeProvider + themeRegistry integration', () => {
-  beforeEach(reset);
-  afterEach(reset);
-
-  it('applies initialTheme on mount', () => {
-    render(<ThemeProvider initialTheme="light" persist={false}><Reader /></ThemeProvider>);
-    expect(screen.getByTestId('theme').textContent).toBe('light');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('light');
+describe('controlled ThemeProvider', () => {
+  it('resolves and applies a known controlled selection', () => {
+    render(<Harness initial="light" />);
+    expect(read()).toMatchObject({ requestedThemeId: 'light', activeThemeId: 'light', isFallback: false });
+    expect(document.documentElement.dataset.ovTheme).toBe('light');
   });
 
-  it('applies and persists selection through context', () => {
-    render(<ThemeProvider initialTheme="dark"><Reader /></ThemeProvider>);
-    fireEvent.click(screen.getByTestId('theme'));
-    expect(screen.getByTestId('theme').textContent).toBe('light');
-    expect(window.localStorage.getItem('ov-theme-mode')).toBe('light');
+  it('falls back while preserving a missing requested id, then activates it after registration', () => {
+    const registry = createThemeRegistry();
+    render(<Harness initial="plugin:acme/slate" registry={registry} />);
+    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'void', isFallback: true });
+
+    act(() => { registry.register(pluginTheme, owner); });
+    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'plugin:acme/slate', isFallback: false });
   });
 
-  it('auto-applies a pending stored theme after registration', () => {
-    window.localStorage.setItem('ov-theme-mode', 'provider.custom');
-    render(<ThemeProvider initialTheme="dark"><Reader /></ThemeProvider>);
-    act(() => {
-      themeRegistry.register(
-        { schemaVersion: 1, id: 'provider.custom', name: 'Custom', base: 'dark', tokens: { 'color.bg.base': '#002b36' } },
-        owner,
-      );
-    });
-    expect(screen.getByTestId('theme').textContent).toBe('provider.custom');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('provider.custom');
-  });
-
-  it('falls back to the active custom theme base when its registration is removed', () => {
-    const dispose = themeRegistry.register(
-      {
-        schemaVersion: 1,
-        id: 'provider.removed',
-        name: 'Removed',
-        base: 'light',
-        tokens: { 'color.bg.base': '#fdf6e3' },
-      },
-      owner,
-    );
-    render(<ThemeProvider initialTheme="provider.removed"><Reader /></ThemeProvider>);
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#fdf6e3');
-
+  it('falls back when the active registration is removed', () => {
+    const registry = createThemeRegistry();
+    const dispose = registry.register(pluginTheme, owner);
+    render(<Harness initial="plugin:acme/slate" registry={registry} />);
     act(dispose);
-
-    expect(screen.getByTestId('theme').textContent).toBe('light');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('light');
-    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
-    expect(window.localStorage.getItem('ov-theme-mode')).toBe('light');
-  });
-
-  it('clears custom inline properties and attributes before a built-in provider remounts', () => {
-    themeRegistry.register(
-      {
-        schemaVersion: 1,
-        id: 'provider.lifecycle',
-        name: 'Lifecycle',
-        base: 'dark',
-        tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
-      },
-      owner,
-    );
-    const mounted = render(
-      <ThemeProvider initialTheme="provider.lifecycle" persist={false}><Reader /></ThemeProvider>,
-    );
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
-
-    mounted.unmount();
-
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
-    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
-    render(<ThemeProvider initialTheme="dark" persist={false}><Reader /></ThemeProvider>);
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
+    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'void', isFallback: true });
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
   });
 
-  it('does not clear a later provider DOM state when overlapping providers share a theme', () => {
-    themeRegistry.register(
-      {
-        schemaVersion: 1,
-        id: 'provider.shared',
-        name: 'Shared',
-        base: 'dark',
-        tokens: { 'color.bg.base': '#002b36' },
-      },
-      owner,
-    );
-    const earlier = render(
-      <ThemeProvider initialTheme="provider.shared" persist={false}><Reader /></ThemeProvider>,
-    );
-    const later = render(
-      <ThemeProvider initialTheme="provider.shared" persist={false}><Reader /></ThemeProvider>,
-    );
-
-    earlier.unmount();
-
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('provider.shared');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
-
-    later.unmount();
-    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+  it('uses the configured fallback theme', () => {
+    render(<ThemeProvider themeId="missing" fallbackThemeId="light"><Reader /></ThemeProvider>);
+    expect(read()).toMatchObject({ activeThemeId: 'light', isFallback: true });
   });
 
-  it('clears earlier-only properties during an overlapping provider handoff', () => {
-    themeRegistry.register(
-      {
-        schemaVersion: 1,
-        id: 'provider.earlier',
-        name: 'Earlier',
-        base: 'dark',
-        tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
-      },
-      owner,
-    );
-    themeRegistry.register(
-      {
-        schemaVersion: 1,
-        id: 'provider.later',
-        name: 'Later',
-        base: 'dark',
-        tokens: { 'color.bg.base': '#073642' },
-      },
-      owner,
-    );
-    const earlier = render(
-      <ThemeProvider initialTheme="provider.earlier" persist={false}><Reader /></ThemeProvider>,
-    );
-    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('#839496');
+  it('setTheme only requests a controlled change', () => {
+    const onThemeChange = vi.fn();
+    render(<ThemeProvider themeId="dark" onThemeChange={onThemeChange}><Reader /></ThemeProvider>);
+    fireEvent.click(screen.getByText('theme'));
+    expect(onThemeChange).toHaveBeenCalledWith('light');
+    expect(read()).toMatchObject({ requestedThemeId: 'dark', activeThemeId: 'dark' });
+  });
 
-    const later = render(
-      <ThemeProvider initialTheme="provider.later" persist={false}><Reader /></ThemeProvider>,
-    );
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#073642');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
+  it('keeps density and motion as provider-local state and applies attributes', () => {
+    render(<ThemeProvider themeId="dark" initialDensity="comfortable" initialMotion="normal"><Reader /></ThemeProvider>);
+    fireEvent.click(screen.getByText('density'));
+    fireEvent.click(screen.getByText('motion'));
+    expect(read()).toMatchObject({ density: 'compact', motion: 'reduced' });
+    expect(document.documentElement.dataset.ovDensity).toBe('compact');
+    expect(document.documentElement.dataset.ovMotion).toBe('reduced');
+  });
 
-    earlier.unmount();
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#073642');
-    later.unmount();
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('');
+  it('does not access localStorage', () => {
+    const getItem = vi.spyOn(Storage.prototype, 'getItem');
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    render(<Harness />);
+    fireEvent.click(screen.getByText('theme'));
+    expect(getItem).not.toHaveBeenCalled();
+    expect(setItem).not.toHaveBeenCalled();
+  });
+
+  it('supports Strict Mode without losing applied state', () => {
+    render(<StrictMode><Harness initial="light" /></StrictMode>);
+    expect(document.documentElement.dataset.ovTheme).toBe('light');
+  });
+
+  it('renders without a DOM root during SSR', () => {
+    expect(() => renderToString(<ThemeProvider themeId="dark"><Reader /></ThemeProvider>)).not.toThrow();
   });
 });

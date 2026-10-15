@@ -34,8 +34,8 @@ const LINE_NUMBER_STYLE: CSSProperties = {
 
 const CODE_TAG_PROPS = { className: styles.Code };
 
-function getSyntaxStyle(theme: ReturnType<typeof useTheme>['theme']): SyntaxHighlighterStyle {
-  if (theme === 'light' || theme === 'high-contrast-light') {
+function getSyntaxStyle(appearance: 'dark' | 'light'): SyntaxHighlighterStyle {
+  if (appearance === 'light') {
     return oneLight as SyntaxHighlighterStyle;
   }
 
@@ -67,9 +67,9 @@ export function CodeBlock({
   ...props
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const { theme } = useTheme();
+  const { activeTheme } = useTheme();
   const value = code ?? children ?? '';
-  const syntaxStyle = useMemo(() => getSyntaxStyle(theme), [theme]);
+  const syntaxStyle = useMemo(() => getSyntaxStyle(activeTheme.appearance), [activeTheme.appearance]);
   const resolvedLanguage = language?.trim().toLowerCase();
   const maxHeightCss = toCssMaxHeight(maxHeight);
   const customStyle = useMemo<CSSProperties>(

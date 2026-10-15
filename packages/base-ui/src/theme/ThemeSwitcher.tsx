@@ -1,6 +1,7 @@
 import { memo, useId } from 'react';
 import { cn } from '../system/classnames';
 import { useTheme } from './useTheme';
+import { useThemeList } from './useThemeList';
 import styles from './ThemeSwitcher.module.css';
 
 export interface ThemeSwitcherProps {
@@ -8,7 +9,8 @@ export interface ThemeSwitcherProps {
 }
 
 export const ThemeSwitcher = memo(function ThemeSwitcher({ className }: ThemeSwitcherProps) {
-  const { theme, density, motion, setTheme, setDensity, setMotion } = useTheme();
+  const { requestedThemeId, density, motion, setTheme, setDensity, setMotion } = useTheme();
+  const themes = useThemeList();
   const themeId = useId();
   const densityId = useId();
   const motionId = useId();
@@ -19,13 +21,12 @@ export const ThemeSwitcher = memo(function ThemeSwitcher({ className }: ThemeSwi
         Theme
         <select
           id={themeId}
-          value={theme}
-          onChange={(event) => setTheme(event.target.value as typeof theme)}
+          value={requestedThemeId}
+          onChange={(event) => setTheme(event.target.value)}
         >
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-          <option value="high-contrast-dark">High Contrast Dark</option>
-          <option value="high-contrast-light">High Contrast Light</option>
+          {themes.map((theme) => (
+            <option key={theme.id} value={theme.id}>{theme.name}</option>
+          ))}
         </select>
       </label>
 

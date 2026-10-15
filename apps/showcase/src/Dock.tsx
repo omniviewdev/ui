@@ -1,6 +1,5 @@
 import { useCallback, type KeyboardEvent } from 'react';
 import { IconButton, Tooltip, Separator, Menu, useTheme, useThemeList } from '@omniviewdev/base-ui';
-import type { ThemeMode } from '@omniviewdev/base-ui';
 import { LuLayoutGrid, LuPalette } from 'react-icons/lu';
 import { apps } from './registry';
 import styles from './Dock.module.css';
@@ -11,7 +10,7 @@ interface DockProps {
 }
 
 export function Dock({ activeApp, onSelectApp }: DockProps) {
-  const { theme, setTheme } = useTheme();
+  const { requestedThemeId, setTheme } = useTheme();
   const themes = useThemeList();
 
   const handleKeyDown = useCallback(
@@ -112,8 +111,8 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
             <Menu.Positioner side="right" sideOffset={8} align="end">
               <Menu.Popup>
                 <Menu.RadioGroup
-                  value={theme}
-                  onValueChange={(value) => setTheme(value as ThemeMode)}
+                  value={requestedThemeId}
+                  onValueChange={setTheme}
                 >
                   {themes.map((t) => (
                     <Menu.RadioItem key={t.id} value={t.id}>

@@ -1,5 +1,7 @@
 export { ThemeProvider } from './ThemeProvider';
 export type { ThemeProviderProps } from './ThemeProvider';
+export { createThemeRootApplier } from './applyTheme';
+export type { ThemeRootApplier } from './applyTheme';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export type { ThemeSwitcherProps } from './ThemeSwitcher';
 export { useTheme } from './useTheme';

@@ -1,4 +1,4 @@
-import type { BuiltInThemeId } from './schema';
+import type { BuiltInThemeId, ThemeSummary } from './schema';
 
 /**
  * A theme identifier. Built-in mode ids autocomplete; any registered custom
@@ -9,13 +9,15 @@ export type ThemeDensity = 'compact' | 'comfortable';
 export type ThemeMotion = 'normal' | 'reduced';
 
 export interface ThemeState {
-  theme: ThemeMode;
+  requestedThemeId: string;
+  activeTheme: Readonly<ThemeSummary>;
+  isFallback: boolean;
   density: ThemeDensity;
   motion: ThemeMotion;
 }
 
 export interface ThemeContextValue extends ThemeState {
-  setTheme: (theme: ThemeMode) => void;
+  setTheme: (themeId: ThemeMode) => void;
   setDensity: (density: ThemeDensity) => void;
   setMotion: (motion: ThemeMotion) => void;
 }

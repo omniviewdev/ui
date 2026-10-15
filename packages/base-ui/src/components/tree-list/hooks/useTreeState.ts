@@ -5,6 +5,7 @@ import type {
   TreeActionsContextValue,
   TreeStore,
   TreeListRootProps,
+  TreeOrder,
 } from '../types';
 import {
   DEFAULT_SELECTION_MODE,
@@ -16,7 +17,7 @@ import { useControllableState } from '../../list/hooks/useControllableState';
 import { useTreeStore } from './useTreeStore';
 import { useTreeFlattener } from './useTreeFlattener';
 
-interface TreeStateReturn {
+export interface TreeStateReturn {
   config: Omit<TreeConfigContextValue, 'listId'>;
   store: TreeStore;
   actions: TreeActionsContextValue;
@@ -27,7 +28,10 @@ interface TreeStateReturn {
  * Creates the store, wires controlled/uncontrolled state,
  * runs the DFS flattener, and returns the three context values.
  */
-export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateReturn {
+export function useTreeState<TItem>(
+  props: TreeListRootProps<TItem>,
+  order?: TreeOrder,
+): TreeStateReturn {
   const {
     items,
     itemKey,
@@ -121,6 +125,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     expandedKeys,
     filterText,
     resolvedFilterFn,
+    order,
   );
 
   // Sync state to store synchronously during render so that

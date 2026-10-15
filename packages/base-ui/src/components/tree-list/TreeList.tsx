@@ -20,7 +20,8 @@ import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ComponentColor } from '../../system/types';
 import type { TreeListRootProps, TreeListItemProps, TreeNodeMeta, FlatNode, Key } from './types';
-import { useTreeState } from './hooks/useTreeState';
+import { useTreeState, type TreeStateReturn } from './hooks/useTreeState';
+import { useTreeOrder } from './hooks/useTreeOrder';
 import { useTreeItem as useTreeItemHook } from './hooks/useTreeItem';
 import { useTreeFocus } from './hooks/useTreeFocus';
 import { useListVirtualizer } from '../list/hooks/useListVirtualizer';
@@ -56,8 +57,15 @@ function useRenderNode(): RenderNodeFn {
 // Root
 // ---------------------------------------------------------------------------
 
-function TreeListRootImpl<TItem>(
+type TreeListRootContentProps<TItem> = TreeListRootProps<TItem> & {
+  treeState: TreeStateReturn;
+  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+};
+
+function TreeListRootContent<TItem>(
   {
+    treeState,
+    forwardedRef,
     className,
     variant,
     color,
@@ -99,46 +107,13 @@ function TreeListRootImpl<TItem>(
     defaultFilterText,
     onFilterTextChange,
     filterFn,
+    order: _order,
+    defaultOrder: _defaultOrder,
+    onOrderChange: _onOrderChange,
     ...domProps
-  }: TreeListRootProps<TItem>,
-  ref: React.ForwardedRef<HTMLDivElement>,
+  }: TreeListRootContentProps<TItem>,
 ) {
-  const { config, store, actions } = useTreeState<TItem>({
-    items,
-    itemKey,
-    getChildren,
-    isBranch: isBranchProp,
-    getTextValue,
-    renderItem,
-    loadChildren,
-    onLoadError,
-    selectionMode,
-    selectionBehavior,
-    selectedKeys: selectedKeysProp,
-    defaultSelectedKeys,
-    onSelectedKeysChange,
-    activeKey: activeKeyProp,
-    defaultActiveKey,
-    onActiveKeyChange,
-    disabledKeys: disabledKeysProp,
-    expandedKeys: expandedKeysProp,
-    defaultExpandedKeys,
-    onExpandedKeysChange,
-    loopFocus,
-    typeahead,
-    density,
-    virtualized,
-    overscan,
-    estimatedItemSize,
-    indentation,
-    showBranchConnectors,
-    filterText: filterTextProp,
-    defaultFilterText,
-    onFilterTextChange,
-    filterFn,
-    loading,
-    children,
-  });
+  const { config, store, actions } = treeState;
 
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
@@ -229,7 +204,7 @@ function TreeListRootImpl<TItem>(
         <TreeStoreContext.Provider value={store}>
           <TreeActionsContext.Provider value={actions}>
             <div
-              ref={ref}
+              ref={forwardedRef}
               role="tree"
               tabIndex={0}
               aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
@@ -248,6 +223,46 @@ function TreeListRootImpl<TItem>(
       </TreeConfigContext.Provider>
     </RenderNodeContext.Provider>
   );
+}
+
+function StaticTreeListRootImpl<TItem>(
+  props: TreeListRootProps<TItem>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const treeState = useTreeState(props);
+  return <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
+}
+
+function OrderedTreeListRootImpl<TItem>(
+  props: TreeListRootProps<TItem>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const { currentOrder } = useTreeOrder(props);
+  const treeState = useTreeState(props, currentOrder);
+  return <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
+}
+
+const StaticTreeListRoot = forwardRef(StaticTreeListRootImpl) as <TItem>(
+  props: TreeListRootProps<TItem> & { ref?: Ref<HTMLDivElement> },
+) => ReactNode;
+
+const OrderedTreeListRoot = forwardRef(OrderedTreeListRootImpl) as <TItem>(
+  props: TreeListRootProps<TItem> & { ref?: Ref<HTMLDivElement> },
+) => ReactNode;
+
+function TreeListRootImpl<TItem>(
+  props: TreeListRootProps<TItem>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const isOrdered =
+    props.order !== undefined ||
+    props.defaultOrder !== undefined ||
+    props.onOrderChange !== undefined;
+
+  if (isOrdered) {
+    return <OrderedTreeListRoot {...props} ref={ref} />;
+  }
+  return <StaticTreeListRoot {...props} ref={ref} />;
 }
 
 // Generic forwardRef via type assertion — the standard React pattern

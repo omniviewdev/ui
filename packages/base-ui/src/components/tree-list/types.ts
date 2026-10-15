@@ -155,6 +155,11 @@ export interface TreeListRootProps<TItem = unknown>
   getTextValue?: (item: TItem) => string;
   renderItem: (item: TItem, node: TreeNodeMeta) => ReactNode;
 
+  // Ordering
+  order?: TreeOrder;
+  defaultOrder?: TreeOrder;
+  onOrderChange?: (order: TreeOrder, event: TreeReorderEvent) => void;
+
   // Expansion
   expandedKeys?: ReadonlySet<Key>;
   defaultExpandedKeys?: Iterable<Key>;

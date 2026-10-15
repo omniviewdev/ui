@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { TreeList } from './TreeList';
-import type { TreeNodeMeta, TreeListRootProps } from './types';
+import type { TreeNodeMeta, TreeListRootProps, TreeOrder } from './types';
 
 // ---------------------------------------------------------------------------
 // Test data
@@ -671,6 +671,93 @@ describe('TreeList', () => {
       const src = screen.getByText('src').closest('[role="treeitem"]')!;
       const srcIndent = src.querySelector('[class*="ItemIndent"]')!;
       expect(srcIndent).not.toHaveAttribute('data-ov-guides');
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Ordering
+  // -------------------------------------------------------------------------
+
+  describe('ordering', () => {
+    it('orders root and nested siblings', () => {
+      const order: TreeOrder = new Map([
+        [null, ['/README.md', '/src']],
+        ['/src', ['/src/index.ts', '/src/components']],
+      ]);
+
+      renderWithTheme(<TestTree order={order} defaultExpandedKeys={new Set(['/src'])} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+        'index.ts',
+        'components',
+      ]);
+    });
+
+    it('appends source siblings missing from an order entry', () => {
+      const order: TreeOrder = new Map([[null, ['/README.md']]]);
+
+      renderWithTheme(<TestTree defaultOrder={order} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+    });
+
+    it('uses replacement controlled order props', () => {
+      const initial: TreeOrder = new Map([[null, ['/README.md', '/src']]]);
+      const replacement: TreeOrder = new Map([[null, ['/src', '/README.md']]]);
+      const { rerender } = renderWithTheme(<TestTree order={initial} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+
+      rerender(<TestTree order={replacement} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'src',
+        'README.md',
+      ]);
+    });
+
+    it('preserves sibling order and last-child metadata while filtering', () => {
+      const order: TreeOrder = new Map([
+        ['/src/components', ['/src/components/Header.tsx', '/src/components/App.tsx']],
+      ]);
+      const renderItemWithLastChild = (item: FileItem, node: TreeNodeMeta) => (
+        <TreeList.Item
+          itemKey={node.key}
+          textValue={item.name}
+          data-testid={`ordered-${item.name}`}
+          data-last-child={node.isLastChild ? 'true' : 'false'}
+        >
+          <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+        </TreeList.Item>
+      );
+
+      renderWithTheme(
+        <TestTree
+          order={order}
+          filterText=".tsx"
+          renderItem={renderItemWithLastChild}
+        />,
+      );
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'src',
+        'components',
+        'Header.tsx',
+        'App.tsx',
+      ]);
+      expect(screen.getByTestId('ordered-Header.tsx')).toHaveAttribute(
+        'data-last-child',
+        'false',
+      );
+      expect(screen.getByTestId('ordered-App.tsx')).toHaveAttribute('data-last-child', 'true');
     });
   });
 

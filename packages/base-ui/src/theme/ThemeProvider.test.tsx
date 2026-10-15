@@ -99,4 +99,32 @@ describe('ThemeProvider + themeRegistry integration', () => {
     expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
   });
+
+  it('does not clear a later provider DOM state when overlapping providers share a theme', () => {
+    themeRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'provider.shared',
+        name: 'Shared',
+        base: 'dark',
+        tokens: { 'color.bg.base': '#002b36' },
+      },
+      owner,
+    );
+    const earlier = render(
+      <ThemeProvider initialTheme="provider.shared" persist={false}><Reader /></ThemeProvider>,
+    );
+    const later = render(
+      <ThemeProvider initialTheme="provider.shared" persist={false}><Reader /></ThemeProvider>,
+    );
+
+    earlier.unmount();
+
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('provider.shared');
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
+
+    later.unmount();
+    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
+    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
+  });
 });

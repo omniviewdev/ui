@@ -10,6 +10,7 @@ const MOTION_ATTR = 'data-ov-motion';
 const THEME_STORAGE_KEY = 'ov-theme-mode';
 const DENSITY_STORAGE_KEY = 'ov-theme-density';
 const MOTION_STORAGE_KEY = 'ov-theme-motion';
+const ROOT_THEME_OWNER = new WeakMap<HTMLElement, symbol>();
 
 export interface ThemeProviderProps extends PropsWithChildren {
   initialTheme?: ThemeMode;
@@ -38,6 +39,7 @@ export function ThemeProvider({
   const injectedPropertiesRef = useRef<Set<string>>(new Set());
   const activeThemeIdRef = useRef<ThemeMode | null>(null);
   const activeBaseRef = useRef<ThemeMode>('dark');
+  const domOwnerRef = useRef(Symbol('ThemeProvider'));
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     if (!persist) return initialTheme;
     const stored = getStored(THEME_STORAGE_KEY);
@@ -53,6 +55,7 @@ export function ThemeProvider({
       return;
     }
     const root = document.documentElement;
+    ROOT_THEME_OWNER.set(root, domOwnerRef.current);
     for (const property of injectedPropertiesRef.current) root.style.removeProperty(property);
     injectedPropertiesRef.current.clear();
     root.setAttribute('data-ov-theme', registered.builtIn ? registered.id : registered.base);
@@ -87,11 +90,14 @@ export function ThemeProvider({
     });
     return () => {
       unsubscribe();
+      const root = document.documentElement;
+      if (ROOT_THEME_OWNER.get(root) !== domOwnerRef.current) return;
       for (const property of injectedPropertiesRef.current) {
-        document.documentElement.style.removeProperty(property);
+        root.style.removeProperty(property);
       }
       injectedPropertiesRef.current.clear();
-      document.documentElement.removeAttribute('data-ov-theme-custom');
+      root.removeAttribute('data-ov-theme-custom');
+      ROOT_THEME_OWNER.delete(root);
     };
     // The registry and initial theme are intentionally consumed once at mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from 'react';
 import { themeRegistry } from './registry';
-import type { ThemeInfo } from './registry';
+import type { ThemeSummary } from './registry';
 
-let snapshot: ThemeInfo[] = themeRegistry.list();
+let snapshot: ThemeSummary[] = themeRegistry.list();
 const invalidate = () => {
   snapshot = themeRegistry.list();
 };
@@ -21,7 +21,7 @@ themeRegistry.subscribe((event) => {
  * custom) and re-renders the calling component whenever a theme is
  * registered or unregistered.
  */
-export function useThemeList(): readonly ThemeInfo[] {
+export function useThemeList(): readonly ThemeSummary[] {
   return useSyncExternalStore(
     (listener) =>
       themeRegistry.subscribe((event) => {

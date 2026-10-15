@@ -1,35 +1,15 @@
-import { THEME_TOKEN_METADATA } from '../generated/tokenKeys';
+import { validateThemeDefinition } from '../validation';
 import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
-import { dottedKeyToCssVar, validateKeys } from './keyTransform';
+import { dottedKeyToCssVar } from './keyTransform';
 import { LIGHT_THEME_MODES } from './types';
 import type {
   ThemeDefinition,
-  ThemeInfo,
+  ThemeSummary,
   ThemeRegistry,
   ThemeRegistryEvent,
   ThemeRegistryListener,
 } from './types';
 
-function validateDefinition(def: ThemeDefinition): void {
-  if (def.colors) {
-    const invalid = validateKeys(Object.keys(def.colors), THEME_TOKEN_METADATA, 'color.');
-    if (invalid.length > 0) {
-      throw new Error(`Unknown color token key(s): ${invalid.join(', ')}`);
-    }
-  }
-  if (def.syntax) {
-    const invalid = validateKeys(Object.keys(def.syntax), THEME_TOKEN_METADATA, 'syntax.');
-    if (invalid.length > 0) {
-      throw new Error(`Unknown syntax token key(s): ${invalid.join(', ')}`);
-    }
-  }
-  if (def.terminal) {
-    const invalid = validateKeys(Object.keys(def.terminal), THEME_TOKEN_METADATA, 'terminal.');
-    if (invalid.length > 0) {
-      throw new Error(`Unknown terminal token key(s): ${invalid.join(', ')}`);
-    }
-  }
-}
 
 export function createThemeRegistry(): ThemeRegistry {
   const themes = new Map<string, ThemeDefinition>();
@@ -89,8 +69,8 @@ export function createThemeRegistry(): ThemeRegistry {
       if (themes.has(theme.id)) {
         throw new Error(`Theme '${theme.id}' is already registered`);
       }
-      validateDefinition(theme);
-      themes.set(theme.id, theme);
+      const validated = validateThemeDefinition(theme);
+      themes.set(validated.id, validated);
       emit({ type: 'registered', id: theme.id });
     },
     unregister(id) {
@@ -110,13 +90,21 @@ export function createThemeRegistry(): ThemeRegistry {
     get(id) {
       return themes.get(id);
     },
-    list(): ThemeInfo[] {
-      return Array.from(themes.values()).map((t) => ({
-        id: t.id,
-        name: t.name,
-        base: t.base,
-        builtIn: BUILT_IN_THEME_IDS.has(t.id),
-      }));
+    list(): ThemeSummary[] {
+      return Array.from(themes.values()).map((theme) => {
+        const builtIn = BUILT_IN_THEME_IDS.has(theme.id);
+        return {
+          id: theme.id,
+          name: theme.name,
+          base: theme.base,
+          appearance: LIGHT_THEME_MODES.has(theme.base) ? 'light' : 'dark',
+          ...(theme.description === undefined ? {} : { description: theme.description }),
+          builtIn,
+          owner: builtIn
+            ? { kind: 'builtin', id: 'base-ui' }
+            : { kind: 'user', id: theme.id },
+        };
+      });
     },
     has(id) {
       return themes.has(id);
@@ -127,9 +115,7 @@ export function createThemeRegistry(): ThemeRegistry {
       clearInjectedProperties();
       setAttributes(def);
       if (!BUILT_IN_THEME_IDS.has(def.id)) {
-        applyOverrides(def.colors as Record<string, string> | undefined);
-        applyOverrides(def.syntax as Record<string, string> | undefined);
-        applyOverrides(def.terminal as Record<string, string> | undefined);
+        applyOverrides(def.tokens as Record<string, string>);
       }
       activeId = id;
       emit({ type: 'applied', id });

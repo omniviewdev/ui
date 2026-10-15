@@ -4,10 +4,11 @@ import { Button, Card, TextField } from '../../components';
 import { themeRegistry } from '../registry';
 
 const SAMPLE = {
+  schemaVersion: 1 as const,
   id: 'solarized-dark-fixture',
   name: 'Solarized Dark Fixture',
   base: 'dark' as const,
-  colors: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
+  tokens: { 'color.bg.base': '#002b36', 'color.fg.default': '#839496' },
 };
 
 function Fixture() {

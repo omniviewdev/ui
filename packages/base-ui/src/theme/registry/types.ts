@@ -1,55 +1,32 @@
-import type { ThemeTokenKey } from '../generated/tokenKeys';
+import type { BuiltInThemeId, ThemeDefinition, ThemeSummary } from '../schema';
 
-/** The built-in modes that a custom theme can inherit from. */
-export type BuiltInThemeMode =
-  | 'dark'
-  | 'light'
-  | 'high-contrast-dark'
-  | 'high-contrast-light'
-  | 'obsidian'
-  | 'carbon'
-  | 'void';
+export type {
+  BuiltInThemeId,
+  ThemeDefinition,
+  ThemeDefinitionV1,
+  ThemeOwner,
+  ThemeSummary,
+  RegisteredTheme,
+} from '../schema';
 
-export const BUILT_IN_THEME_MODES: readonly BuiltInThemeMode[] = [
+export const BUILT_IN_THEME_MODES: readonly BuiltInThemeId[] = [
+  'void',
   'dark',
   'light',
-  'high-contrast-dark',
-  'high-contrast-light',
   'obsidian',
   'carbon',
-  'void',
+  'solarized-dark',
+  'solarized-light',
+  'high-contrast-dark',
+  'high-contrast-light',
 ];
 
-export const LIGHT_THEME_MODES: ReadonlySet<BuiltInThemeMode> = new Set([
+export const LIGHT_THEME_MODES: ReadonlySet<BuiltInThemeId> = new Set([
   'light',
+  'solarized-light',
   'high-contrast-light',
 ]);
 
-export interface ThemeDefinition {
-  /** Stable identifier, used for persistence and activation. */
-  id: string;
-  /** Human-readable display name. */
-  name: string;
-  /** The built-in mode this theme inherits from. */
-  base: BuiltInThemeMode;
-  /** Optional author metadata. */
-  author?: string;
-  /** Optional version string. */
-  version?: string;
-  /** UI chrome color overrides, keyed by dotted token path. */
-  colors?: Partial<Record<Extract<ThemeTokenKey, `color.${string}`>, string>>;
-  /** Syntax highlighting overrides. */
-  syntax?: Partial<Record<Extract<ThemeTokenKey, `syntax.${string}`>, string>>;
-  /** Terminal ANSI palette overrides. */
-  terminal?: Partial<Record<Extract<ThemeTokenKey, `terminal.${string}`>, string>>;
-}
-
-export interface ThemeInfo {
-  id: string;
-  name: string;
-  base: BuiltInThemeMode;
-  builtIn: boolean;
-}
 
 export type ThemeRegistryEvent =
   | { type: 'registered'; id: string }
@@ -62,7 +39,7 @@ export interface ThemeRegistry {
   register(theme: ThemeDefinition): void;
   unregister(id: string): void;
   get(id: string): ThemeDefinition | undefined;
-  list(): ThemeInfo[];
+  list(): ThemeSummary[];
   has(id: string): boolean;
   apply(id: string): void;
   active(): string | null;

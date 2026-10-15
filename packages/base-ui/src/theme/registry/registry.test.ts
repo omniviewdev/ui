@@ -3,7 +3,7 @@ import { createThemeRegistry } from './registry';
 import type { ThemeDefinition, ThemeRegistry, ThemeRegistryEvent } from './types';
 
 function makeCustom(id: string, base: 'dark' | 'light' = 'dark'): ThemeDefinition {
-  return { id, name: id, base };
+  return { schemaVersion: 1, id, name: id, base, tokens: {} };
 }
 
 describe('themeRegistry — registration', () => {
@@ -12,18 +12,18 @@ describe('themeRegistry — registration', () => {
     registry = createThemeRegistry();
   });
 
-  it('lists all 7 built-ins by default', () => {
+  it('lists all 9 built-ins by default', () => {
     const info = registry.list();
-    expect(info).toHaveLength(7);
+    expect(info).toHaveLength(9);
     expect(info.every((i) => i.builtIn)).toBe(true);
   });
 
   it('registers a custom theme and exposes it via get/has/list', () => {
-    registry.register(makeCustom('solarized-dark'));
-    expect(registry.has('solarized-dark')).toBe(true);
-    expect(registry.get('solarized-dark')?.id).toBe('solarized-dark');
-    expect(registry.list().map((i) => i.id)).toContain('solarized-dark');
-    expect(registry.list().find((i) => i.id === 'solarized-dark')?.builtIn).toBe(false);
+    registry.register(makeCustom('custom-solarized-dark'));
+    expect(registry.has('custom-solarized-dark')).toBe(true);
+    expect(registry.get('custom-solarized-dark')?.id).toBe('custom-solarized-dark');
+    expect(registry.list().map((i) => i.id)).toContain('custom-solarized-dark');
+    expect(registry.list().find((i) => i.id === 'custom-solarized-dark')?.builtIn).toBe(false);
   });
 
   it('throws when registering a duplicate id', () => {
@@ -35,35 +35,13 @@ describe('themeRegistry — registration', () => {
     expect(() => registry.register(makeCustom('dark'))).toThrow(/already registered/i);
   });
 
-  it('throws when registering unknown color token keys', () => {
+  it('throws when registering an unknown token key', () => {
     expect(() =>
       registry.register({
-        id: 'bad-color',
-        name: 'bad',
-        base: 'dark',
-        colors: { 'color.bogus.key': '#000' } as never,
+        ...makeCustom('bad-token'),
+        tokens: { 'color.bogus.key': '#000' } as never,
       }),
-    ).toThrow(/unknown.*color.*key/i);
-  });
-
-  it('validates each legacy override section against its metadata prefix', () => {
-    expect(() =>
-      registry.register({
-        id: 'bad-syntax',
-        name: 'bad',
-        base: 'dark',
-        syntax: { 'color.bg.base': '#000' } as never,
-      }),
-    ).toThrow(/unknown.*syntax.*key/i);
-
-    expect(() =>
-      registry.register({
-        id: 'bad-terminal',
-        name: 'bad',
-        base: 'dark',
-        terminal: { 'color.ansi.red': '#c00' } as never,
-      }),
-    ).toThrow(/unknown.*terminal.*key/i);
+    ).toThrow(/unknown theme token/i);
   });
 
   it('unregisters a custom theme', () => {
@@ -114,9 +92,9 @@ describe('themeRegistry — registration', () => {
       calls.push('outer');
       registry2.subscribe(inner);
     });
-    registry2.register({ id: 'x', name: 'x', base: 'dark' });
+    registry2.register(makeCustom('x'));
     expect(calls).toEqual(['outer']); // inner should NOT fire for the triggering event
-    registry2.register({ id: 'y', name: 'y', base: 'dark' });
+    registry2.register(makeCustom('y'));
     expect(calls).toEqual(['outer', 'outer', 'inner']);
   });
 });
@@ -150,15 +128,16 @@ describe('themeRegistry — apply()', () => {
 
   it('writes CSS variable overrides for a custom theme and sets data-ov-theme-custom', () => {
     registry.register({
-      id: 'solarized-dark',
+      ...makeCustom('solarized-dark-custom'),
       name: 'Solarized Dark',
-      base: 'dark',
-      colors: { 'color.bg.base': '#002b36' },
-      syntax: { 'syntax.comment': '#586e75' },
+      tokens: {
+        'color.bg.base': '#002b36',
+        'syntax.comment': '#586e75',
+      },
     });
-    registry.apply('solarized-dark');
+    registry.apply('solarized-dark-custom');
     expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('solarized-dark');
+    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('solarized-dark-custom');
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
     expect(document.documentElement.style.getPropertyValue('--ov-syntax-comment')).toBe('#586e75');
     expect(document.documentElement.style.colorScheme).toBe('dark');
@@ -166,10 +145,8 @@ describe('themeRegistry — apply()', () => {
 
   it('clears previous overrides when switching to a built-in', () => {
     registry.register({
-      id: 'sol',
-      name: 'sol',
-      base: 'dark',
-      colors: { 'color.bg.base': '#002b36' },
+      ...makeCustom('sol'),
+      tokens: { 'color.bg.base': '#002b36' },
     });
     registry.apply('sol');
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
@@ -179,8 +156,8 @@ describe('themeRegistry — apply()', () => {
   });
 
   it('clears previous overrides when switching between custom themes with different keys', () => {
-    registry.register({ id: 'a', name: 'a', base: 'dark', colors: { 'color.bg.base': '#111' } });
-    registry.register({ id: 'b', name: 'b', base: 'dark', colors: { 'color.fg.default': '#eee' } });
+    registry.register({ ...makeCustom('a'), tokens: { 'color.bg.base': '#111' } });
+    registry.register({ ...makeCustom('b'), tokens: { 'color.fg.default': '#eee' } });
     registry.apply('a');
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#111');
     registry.apply('b');
@@ -210,7 +187,7 @@ describe('themeRegistry — apply()', () => {
   });
 
   it('sets colorScheme light for high-contrast-light base', () => {
-    registry.register({ id: 'lc', name: 'lc', base: 'high-contrast-light' });
+    registry.register({ ...makeCustom('lc'), base: 'high-contrast-light' });
     registry.apply('lc');
     expect(document.documentElement.style.colorScheme).toBe('light');
   });

@@ -7,3 +7,13 @@ export { useThemeRegistry } from './useThemeRegistry';
 export type { ThemeContextValue, ThemeDensity, ThemeMode, ThemeMotion, ThemeState } from './types';
 export * from './registry';
 export { useThemeList } from './useThemeList';
+export type {
+  BuiltInThemeId,
+  RegisteredTheme,
+  ThemeDefinition,
+  ThemeDefinitionV1,
+  ThemeOwner,
+  ThemeSummary,
+} from './schema';
+export { ThemeValidationError, validateThemeDefinition } from './validation';
+export type { ThemeValidationErrorCode } from './validation';

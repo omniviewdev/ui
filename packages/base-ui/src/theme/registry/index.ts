@@ -3,11 +3,14 @@ export {
   createThemeRegistry,
 } from './registry';
 export type {
+  BuiltInThemeId,
+  RegisteredTheme,
   ThemeDefinition,
-  ThemeInfo,
+  ThemeDefinitionV1,
+  ThemeOwner,
   ThemeRegistry,
   ThemeRegistryEvent,
   ThemeRegistryListener,
-  BuiltInThemeMode,
+  ThemeSummary,
 } from './types';
 export { BUILT_IN_THEME_MODES } from './types';

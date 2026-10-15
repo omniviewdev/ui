@@ -1,10 +1,10 @@
-import type { BuiltInThemeMode } from './registry/types';
+import type { BuiltInThemeId } from './schema';
 
 /**
  * A theme identifier. Built-in mode ids autocomplete; any registered custom
  * theme id is also accepted.
  */
-export type ThemeMode = BuiltInThemeMode | (string & {});
+export type ThemeMode = BuiltInThemeId | (string & {});
 export type ThemeDensity = 'compact' | 'comfortable';
 export type ThemeMotion = 'normal' | 'reduced';
 

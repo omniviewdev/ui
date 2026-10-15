@@ -23,32 +23,40 @@ afterEach(() => {
 });
 
 describe('useThemeList', () => {
-  it('initially returns the 7 built-ins', () => {
+  it('initially returns the 9 built-ins', () => {
     render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(9);
   });
 
   it('re-renders when a theme is registered', () => {
     render(<List />);
     act(() => {
       themeRegistry.register({
+        schemaVersion: 1,
         id: 'use-theme-list-fixture',
         name: 'Fixture',
         base: 'dark',
+        tokens: {},
       });
     });
     const items = screen.getAllByTestId('theme-item');
-    expect(items).toHaveLength(8);
+    expect(items).toHaveLength(10);
     expect(items.some((el) => el.textContent === 'use-theme-list-fixture')).toBe(true);
   });
 
   it('re-renders when a theme is unregistered', () => {
-    themeRegistry.register({ id: 'unreg-fixture', name: 'Fixture', base: 'dark' });
+    themeRegistry.register({
+      schemaVersion: 1,
+      id: 'unreg-fixture',
+      name: 'Fixture',
+      base: 'dark',
+      tokens: {},
+    });
     render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(8);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(10);
     act(() => {
       themeRegistry.unregister('unreg-fixture');
     });
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(9);
   });
 });

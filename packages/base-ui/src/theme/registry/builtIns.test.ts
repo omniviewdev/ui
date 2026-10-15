@@ -14,11 +14,9 @@ describe('BUILT_IN_THEME_DEFINITIONS', () => {
     }
   });
 
-  it('no definition has override fields', () => {
+  it('every definition has an empty unified token map', () => {
     for (const def of BUILT_IN_THEME_DEFINITIONS) {
-      expect(def.colors).toBeUndefined();
-      expect(def.syntax).toBeUndefined();
-      expect(def.terminal).toBeUndefined();
+      expect(def.tokens).toEqual({});
     }
   });
 

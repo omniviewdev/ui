@@ -1,13 +1,39 @@
 import type { ThemeDefinition } from './types';
 
 export const BUILT_IN_THEME_DEFINITIONS: readonly ThemeDefinition[] = [
-  { id: 'dark', name: 'Dark', base: 'dark' },
-  { id: 'light', name: 'Light', base: 'light' },
-  { id: 'high-contrast-dark', name: 'High Contrast Dark', base: 'high-contrast-dark' },
-  { id: 'high-contrast-light', name: 'High Contrast Light', base: 'high-contrast-light' },
-  { id: 'obsidian', name: 'Obsidian', base: 'obsidian' },
-  { id: 'carbon', name: 'Carbon', base: 'carbon' },
-  { id: 'void', name: 'Void', base: 'void' },
+  { schemaVersion: 1, id: 'void', name: 'Void', base: 'void', tokens: {} },
+  { schemaVersion: 1, id: 'dark', name: 'Dark', base: 'dark', tokens: {} },
+  { schemaVersion: 1, id: 'light', name: 'Light', base: 'light', tokens: {} },
+  { schemaVersion: 1, id: 'obsidian', name: 'Obsidian', base: 'obsidian', tokens: {} },
+  { schemaVersion: 1, id: 'carbon', name: 'Carbon', base: 'carbon', tokens: {} },
+  {
+    schemaVersion: 1,
+    id: 'solarized-dark',
+    name: 'Solarized Dark',
+    base: 'solarized-dark',
+    tokens: {},
+  },
+  {
+    schemaVersion: 1,
+    id: 'solarized-light',
+    name: 'Solarized Light',
+    base: 'solarized-light',
+    tokens: {},
+  },
+  {
+    schemaVersion: 1,
+    id: 'high-contrast-dark',
+    name: 'High Contrast Dark',
+    base: 'high-contrast-dark',
+    tokens: {},
+  },
+  {
+    schemaVersion: 1,
+    id: 'high-contrast-light',
+    name: 'High Contrast Light',
+    base: 'high-contrast-light',
+    tokens: {},
+  },
 ];
 
 export const BUILT_IN_THEME_IDS: ReadonlySet<string> = new Set(

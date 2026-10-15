@@ -1,138 +1,137 @@
 import { validateThemeDefinition } from '../validation';
-import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
-import { dottedKeyToCssVar } from './keyTransform';
-import { LIGHT_THEME_MODES } from './types';
+import { BUILT_IN_THEME_DEFINITIONS } from './builtIns';
+import { BUILT_IN_THEMES } from './catalog';
 import type {
+  RegisteredTheme,
   ThemeDefinition,
-  ThemeSummary,
+  ThemeOwner,
   ThemeRegistry,
-  ThemeRegistryEvent,
   ThemeRegistryListener,
+  ThemeRegistrySnapshot,
+  ThemeSummary,
 } from './types';
 
+const ownerMatches = (left: ThemeOwner, right: ThemeOwner) =>
+  left.kind === right.kind && left.id === right.id;
+
+const compareText = (left: string, right: string) => (left < right ? -1 : left > right ? 1 : 0);
 
 export function createThemeRegistry(): ThemeRegistry {
-  const themes = new Map<string, ThemeDefinition>();
+  const themes = new Map<string, Readonly<RegisteredTheme>>();
   const listeners = new Set<ThemeRegistryListener>();
-  const injectedProperties = new Set<string>();
-  let activeId: string | null = null;
+  let snapshot: ThemeRegistrySnapshot;
 
-  for (const def of BUILT_IN_THEME_DEFINITIONS) {
-    themes.set(def.id, def);
-  }
+  BUILT_IN_THEMES.forEach((summary, index) => {
+    const definition = BUILT_IN_THEME_DEFINITIONS[index];
+    if (!definition) throw new Error(`Missing built-in definition for "${summary.id}"`);
+    themes.set(summary.id, Object.freeze({ ...summary, definition }));
+  });
 
-  function emit(event: ThemeRegistryEvent): void {
+  const buildSnapshot = (): ThemeRegistrySnapshot => {
+    const custom = [...themes.values()].filter(({ builtIn }) => !builtIn);
+    custom.sort((left, right) => {
+      const leftGroup = left.owner.kind === 'user' ? 0 : 1;
+      const rightGroup = right.owner.kind === 'user' ? 0 : 1;
+      return (
+        leftGroup - rightGroup ||
+        compareText(left.name, right.name) ||
+        compareText(left.id, right.id)
+      );
+    });
+    const summaries: readonly Readonly<ThemeSummary>[] = Object.freeze([
+      ...BUILT_IN_THEMES,
+      ...custom.map(({ definition: _definition, ...summary }) => Object.freeze(summary)),
+    ]);
+    return Object.freeze({ themes: summaries });
+  };
+
+  snapshot = buildSnapshot();
+
+  const notify = (): void => {
     for (const listener of [...listeners]) {
       try {
-        listener(event);
-      } catch (err) {
-        // A misbehaving listener must not break other subscribers.
-        console.error('theme registry listener threw', err);
+        listener();
+      } catch {
+        // A faulty consumer must not prevent other subscribers from observing mutation.
       }
     }
-  }
+  };
 
-  function clearInjectedProperties(): void {
-    if (typeof document === 'undefined') return;
-    const style = document.documentElement.style;
-    for (const prop of injectedProperties) {
-      style.removeProperty(prop);
-    }
-    injectedProperties.clear();
-  }
-
-  function applyOverrides(section: Record<string, string> | undefined): void {
-    if (!section || typeof document === 'undefined') return;
-    const style = document.documentElement.style;
-    for (const [key, value] of Object.entries(section)) {
-      const cssVar = dottedKeyToCssVar(key);
-      style.setProperty(cssVar, value);
-      injectedProperties.add(cssVar);
-    }
-  }
-
-  function setAttributes(def: ThemeDefinition): void {
-    if (typeof document === 'undefined') return;
-    const root = document.documentElement;
-    root.setAttribute('data-ov-theme', def.base);
-    const isBuiltIn = BUILT_IN_THEME_IDS.has(def.id);
-    if (isBuiltIn) {
-      root.removeAttribute('data-ov-theme-custom');
-    } else {
-      root.setAttribute('data-ov-theme-custom', def.id);
-    }
-    root.style.colorScheme = LIGHT_THEME_MODES.has(def.base) ? 'light' : 'dark';
-  }
+  const invalidateSnapshot = (): void => {
+    snapshot = buildSnapshot();
+    notify();
+  };
 
   const registry: ThemeRegistry = {
-    register(theme) {
-      if (themes.has(theme.id)) {
-        throw new Error(`Theme '${theme.id}' is already registered`);
-      }
-      const validated = validateThemeDefinition(theme);
-      themes.set(validated.id, validated);
-      emit({ type: 'registered', id: theme.id });
+    register(theme: ThemeDefinition, owner: ThemeOwner): () => void {
+      if (owner.kind === 'builtin') throw new Error('Only base-ui may register built-in themes');
+      const definition = validateThemeDefinition(theme);
+      if (themes.has(definition.id)) throw new Error(`Theme "${definition.id}" is already registered`);
+      const frozenOwner = Object.freeze({ ...owner });
+      const registered: Readonly<RegisteredTheme> = Object.freeze({
+        id: definition.id,
+        name: definition.name,
+        base: definition.base,
+        appearance: definition.base === 'light' || definition.base === 'solarized-light' || definition.base === 'high-contrast-light' ? 'light' : 'dark',
+        ...(definition.description === undefined ? {} : { description: definition.description }),
+        builtIn: false,
+        owner: frozenOwner,
+        definition,
+      });
+      themes.set(definition.id, registered);
+      invalidateSnapshot();
+
+      let disposed = false;
+      return () => {
+        if (disposed) return;
+        disposed = true;
+        if (themes.get(definition.id) === registered) {
+          themes.delete(definition.id);
+          invalidateSnapshot();
+        }
+      };
     },
-    unregister(id) {
-      if (BUILT_IN_THEME_IDS.has(id)) {
-        throw new Error(`Cannot unregister built-in theme '${id}'`);
-      }
-      const removed = themes.get(id);
-      if (!removed) return;
-      const wasActive = activeId === id;
+
+    unregister(id: string, owner: ThemeOwner): boolean {
+      const registered = themes.get(id);
+      if (!registered) return false;
+      if (registered.builtIn) throw new Error(`Cannot unregister built-in theme "${id}"`);
+      if (!ownerMatches(registered.owner, owner)) throw new Error(`Theme "${id}" owner mismatch`);
       themes.delete(id);
-      emit({ type: 'unregistered', id });
-      if (wasActive) {
-        // Reconcile DOM + activeId by falling back to the removed theme's base.
-        registry.apply(removed.base);
-      }
+      invalidateSnapshot();
+      return true;
     },
-    get(id) {
+
+    unregisterOwner(owner: ThemeOwner): number {
+      if (owner.kind === 'builtin') throw new Error('Cannot unregister built-in themes');
+      let removed = 0;
+      for (const [id, registered] of themes) {
+        if (!registered.builtIn && ownerMatches(registered.owner, owner)) {
+          themes.delete(id);
+          removed += 1;
+        }
+      }
+      if (removed > 0) invalidateSnapshot();
+      return removed;
+    },
+
+    get(id: string) {
       return themes.get(id);
     },
-    list(): ThemeSummary[] {
-      return Array.from(themes.values()).map((theme) => {
-        const builtIn = BUILT_IN_THEME_IDS.has(theme.id);
-        return {
-          id: theme.id,
-          name: theme.name,
-          base: theme.base,
-          appearance: LIGHT_THEME_MODES.has(theme.base) ? 'light' : 'dark',
-          ...(theme.description === undefined ? {} : { description: theme.description }),
-          builtIn,
-          owner: builtIn
-            ? { kind: 'builtin', id: 'base-ui' }
-            : { kind: 'user', id: theme.id },
-        };
-      });
-    },
-    has(id) {
+
+    has(id: string): boolean {
       return themes.has(id);
     },
-    apply(id) {
-      const def = themes.get(id);
-      if (!def) throw new Error(`Unknown theme '${id}'`);
-      clearInjectedProperties();
-      setAttributes(def);
-      if (!BUILT_IN_THEME_IDS.has(def.id)) {
-        applyOverrides(def.tokens as Record<string, string>);
-      }
-      activeId = id;
-      emit({ type: 'applied', id });
-    },
-    active() {
-      return activeId;
-    },
-    subscribe(listener) {
+
+    getSnapshot: () => snapshot,
+
+    subscribe(listener: ThemeRegistryListener): () => void {
       listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
+      return () => listeners.delete(listener);
     },
   };
 
   return registry;
 }
 
-/** Module-level singleton. */
 export const themeRegistry: ThemeRegistry = createThemeRegistry();

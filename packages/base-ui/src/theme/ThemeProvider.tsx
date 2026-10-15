@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { ThemeContext } from './context';
 import { themeRegistry } from './registry';
+import { dottedKeyToCssVar } from './registry/keyTransform';
 import type { ThemeDensity, ThemeMode, ThemeMotion } from './types';
 
 const DENSITY_ATTR = 'data-ov-density';
@@ -33,51 +34,55 @@ export function ThemeProvider({
   persist = true,
 }: ThemeProviderProps) {
   // --- THEME ---
-  // Resolve an initial theme id. If localStorage has a registered id, use that;
-  // otherwise fall back to `initialTheme` and remember the pending id (if any)
-  // so we can auto-apply it when a matching `registered` event arrives.
   const pendingThemeIdRef = useRef<string | null>(null);
+  const injectedPropertiesRef = useRef<Set<string>>(new Set());
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (!persist) {
-      if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
-      return initialTheme;
-    }
+    if (!persist) return initialTheme;
     const stored = getStored(THEME_STORAGE_KEY);
     if (stored && themeRegistry.has(stored)) return stored;
     if (stored) pendingThemeIdRef.current = stored;
-    else if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
     return initialTheme;
   });
 
-  // Subscribe before apply so the initial `applied` event isn't missed, and
-  // skip apply when the resolved theme isn't registered yet (the `registered`
-  // handler below auto-applies it once it lands).
+  const applyTheme = (next: ThemeMode) => {
+    const registered = themeRegistry.get(next);
+    if (!registered) {
+      pendingThemeIdRef.current = next;
+      return;
+    }
+    const root = document.documentElement;
+    for (const property of injectedPropertiesRef.current) root.style.removeProperty(property);
+    injectedPropertiesRef.current.clear();
+    root.setAttribute('data-ov-theme', registered.builtIn ? registered.id : registered.base);
+    if (registered.builtIn) root.removeAttribute('data-ov-theme-custom');
+    else root.setAttribute('data-ov-theme-custom', registered.id);
+    root.style.colorScheme = registered.appearance;
+    if (!registered.builtIn) {
+      for (const [key, value] of Object.entries(registered.definition.tokens)) {
+        if (value === undefined) continue;
+        const property = dottedKeyToCssVar(key);
+        root.style.setProperty(property, value);
+        injectedPropertiesRef.current.add(property);
+      }
+    }
+    setThemeState(next);
+    if (persist && typeof window !== 'undefined') window.localStorage.setItem(THEME_STORAGE_KEY, next);
+  };
+
   useEffect(() => {
-    const unsubscribe = themeRegistry.subscribe((event) => {
-      if (event.type === 'applied') {
-        setThemeState(event.id);
-        if (persist && typeof window !== 'undefined') {
-          window.localStorage.setItem(THEME_STORAGE_KEY, event.id);
-        }
-      } else if (event.type === 'registered') {
-        if (pendingThemeIdRef.current === event.id) {
-          pendingThemeIdRef.current = null;
-          themeRegistry.apply(event.id);
-        }
+    applyTheme(theme);
+    return themeRegistry.subscribe(() => {
+      const pending = pendingThemeIdRef.current;
+      if (pending && themeRegistry.has(pending)) {
+        pendingThemeIdRef.current = null;
+        applyTheme(pending);
       }
     });
-    if (themeRegistry.has(theme)) {
-      themeRegistry.apply(theme);
-    }
-    return unsubscribe;
-    // Intentionally only on mount. `theme` state is updated via the subscriber.
+    // The registry and initial theme are intentionally consumed once at mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setTheme = (next: ThemeMode) => {
-    themeRegistry.apply(next);
-    // State update flows through the `applied` listener above.
-  };
+  const setTheme = (next: ThemeMode) => applyTheme(next);
 
   // --- DENSITY ---
   const [density, setDensity] = useState<ThemeDensity>(() => {

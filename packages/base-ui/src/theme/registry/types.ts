@@ -1,4 +1,4 @@
-import type { BuiltInThemeId, ThemeDefinition, ThemeSummary } from '../schema';
+import type { ThemeDefinition, ThemeOwner, ThemeSummary, RegisteredTheme } from '../schema';
 
 export type {
   BuiltInThemeId,
@@ -9,37 +9,30 @@ export type {
   RegisteredTheme,
 } from '../schema';
 
-export const BUILT_IN_THEME_MODES: readonly BuiltInThemeId[] = [
+export const BUILT_IN_THEME_MODES = [
+  'void',
   'dark',
   'light',
-  'high-contrast-dark',
-  'high-contrast-light',
   'obsidian',
   'carbon',
-  'void',
-];
-
-export const LIGHT_THEME_MODES: ReadonlySet<BuiltInThemeId> = new Set([
-  'light',
+  'solarized-dark',
   'solarized-light',
+  'high-contrast-dark',
   'high-contrast-light',
-]);
+] as const;
 
+export interface ThemeRegistrySnapshot {
+  readonly themes: readonly Readonly<ThemeSummary>[];
+}
 
-export type ThemeRegistryEvent =
-  | { type: 'registered'; id: string }
-  | { type: 'unregistered'; id: string }
-  | { type: 'applied'; id: string };
-
-export type ThemeRegistryListener = (event: ThemeRegistryEvent) => void;
+export type ThemeRegistryListener = () => void;
 
 export interface ThemeRegistry {
-  register(theme: ThemeDefinition): void;
-  unregister(id: string): void;
-  get(id: string): ThemeDefinition | undefined;
-  list(): ThemeSummary[];
+  register(theme: ThemeDefinition, owner: ThemeOwner): () => void;
+  unregister(id: string, owner: ThemeOwner): boolean;
+  unregisterOwner(owner: ThemeOwner): number;
+  get(id: string): Readonly<RegisteredTheme> | undefined;
   has(id: string): boolean;
-  apply(id: string): void;
-  active(): string | null;
+  getSnapshot(): ThemeRegistrySnapshot;
   subscribe(listener: ThemeRegistryListener): () => void;
 }

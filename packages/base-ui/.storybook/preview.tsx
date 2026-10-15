@@ -2,9 +2,6 @@ import type { Preview } from '@storybook/react';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 import { themeRegistry } from '../src/theme/registry';
 import '../src/theme/styles.css';
-import { SOLARIZED_DARK } from './sampleCustomThemes';
-
-if (!themeRegistry.has(SOLARIZED_DARK.id)) themeRegistry.register(SOLARIZED_DARK);
 
 const preview: Preview = {
   globalTypes: {
@@ -13,7 +10,7 @@ const preview: Preview = {
       defaultValue: 'dark',
       toolbar: {
         icon: 'paintbrush',
-        items: themeRegistry.list().map((t) => ({ value: t.id, title: t.name })),
+        items: themeRegistry.getSnapshot().themes.map((t) => ({ value: t.id, title: t.name })),
       },
     },
     density: {

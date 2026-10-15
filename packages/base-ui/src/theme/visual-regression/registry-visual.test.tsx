@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { Button, Card, TextField } from '../../components';
 import { themeRegistry } from '../registry';
+import { ThemeProvider } from '../ThemeProvider';
 
 const SAMPLE = {
   schemaVersion: 1 as const,
@@ -23,17 +24,17 @@ function Fixture() {
   );
 }
 
-// Register the fixture theme at module scope so it appears in themeRegistry.list()
-// before the for-loop below executes (describe-time).
+const visualOwner = { kind: 'user', id: 'visual-regression' } as const;
 if (!themeRegistry.has(SAMPLE.id)) {
-  themeRegistry.register(SAMPLE);
+  themeRegistry.register(SAMPLE, visualOwner);
 }
 
 describe('visual regression — representative components under each theme', () => {
-  for (const info of themeRegistry.list()) {
+  for (const info of themeRegistry.getSnapshot().themes) {
     it(`matches snapshot under theme '${info.id}'`, () => {
-      themeRegistry.apply(info.id);
-      const { container } = render(<Fixture />);
+      const { container } = render(
+        <ThemeProvider initialTheme={info.id} persist={false}><Fixture /></ThemeProvider>,
+      );
       // Capture both the outer HTML and the resolved theme attributes so
       // snapshots regress when attribute behavior changes.
       const shape = {

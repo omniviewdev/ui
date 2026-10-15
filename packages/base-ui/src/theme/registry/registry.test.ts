@@ -1,222 +1,132 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createThemeRegistry } from './registry';
-import type { ThemeDefinition, ThemeRegistry, ThemeRegistryEvent } from './types';
+import type { ThemeDefinition, ThemeOwner } from './types';
 
-function makeCustom(id: string, base: 'dark' | 'light' = 'dark'): ThemeDefinition {
-  return { schemaVersion: 1, id, name: id, base, tokens: {} };
+const user = { kind: 'user', id: 'local' } as const;
+const plugin = { kind: 'plugin', id: 'acme' } as const;
+
+function theme(id: string, name = id, base: 'dark' | 'light' = 'dark'): ThemeDefinition {
+  return { schemaVersion: 1, id, name, base, tokens: {} };
 }
 
-describe('themeRegistry — registration', () => {
-  let registry: ThemeRegistry;
-  beforeEach(() => {
-    registry = createThemeRegistry();
-  });
-
-  it('lists all 7 built-ins by default', () => {
-    const info = registry.list();
-    expect(info).toHaveLength(7);
-    expect(info.every((i) => i.builtIn)).toBe(true);
-  });
-
-  it('registers a custom theme and exposes it via get/has/list', () => {
-    registry.register(makeCustom('custom-solarized-dark'));
-    expect(registry.has('custom-solarized-dark')).toBe(true);
-    expect(registry.get('custom-solarized-dark')?.id).toBe('custom-solarized-dark');
-    expect(registry.list().map((i) => i.id)).toContain('custom-solarized-dark');
-    expect(registry.list().find((i) => i.id === 'custom-solarized-dark')?.builtIn).toBe(false);
-  });
-
-  it('throws when registering a duplicate id', () => {
-    registry.register(makeCustom('dup'));
-    expect(() => registry.register(makeCustom('dup'))).toThrow(/already registered/i);
-  });
-
-  it('throws when registering an id that collides with a built-in', () => {
-    expect(() => registry.register(makeCustom('dark'))).toThrow(/already registered/i);
-  });
-
-  it('throws when registering an unknown token key', () => {
-    expect(() =>
-      registry.register({
-        ...makeCustom('bad-token'),
-        tokens: { 'color.bogus.key': '#000' } as never,
-      }),
-    ).toThrow(/unknown theme token/i);
-  });
-
-  it('unregisters a custom theme', () => {
-    registry.register(makeCustom('temp'));
-    registry.unregister('temp');
-    expect(registry.has('temp')).toBe(false);
-  });
-
-  it('reconciles active state when the active custom theme is unregistered', () => {
-    registry.register(makeCustom('temp', 'dark'));
-    registry.apply('temp');
-    expect(registry.active()).toBe('temp');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('temp');
-
-    registry.unregister('temp');
-
-    expect(registry.active()).toBe('dark');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
-    expect(document.documentElement.hasAttribute('data-ov-theme-custom')).toBe(false);
-  });
-
-  it('unregister is a no-op for unknown ids', () => {
-    expect(() => registry.unregister('never-existed')).not.toThrow();
-  });
-
-  it('throws when attempting to unregister a built-in', () => {
-    expect(() => registry.unregister('dark')).toThrow(/cannot unregister.*built-in/i);
-  });
-
-  it('emits registered and unregistered events', () => {
-    const events: ThemeRegistryEvent[] = [];
-    const unsubscribe = registry.subscribe((e) => events.push(e));
-    registry.register(makeCustom('a'));
-    registry.unregister('a');
-    unsubscribe();
-    registry.register(makeCustom('b'));
-    expect(events).toEqual([
-      { type: 'registered', id: 'a' },
-      { type: 'unregistered', id: 'a' },
-    ]);
-  });
-
-  it('listeners added during dispatch are not invoked for the current event', () => {
-    const registry2 = createThemeRegistry();
-    const calls: string[] = [];
-    const inner = () => calls.push('inner');
-    registry2.subscribe(() => {
-      calls.push('outer');
-      registry2.subscribe(inner);
-    });
-    registry2.register(makeCustom('x'));
-    expect(calls).toEqual(['outer']); // inner should NOT fire for the triggering event
-    registry2.register(makeCustom('y'));
-    expect(calls).toEqual(['outer', 'outer', 'inner']);
-  });
-});
-
-describe('themeRegistry — apply()', () => {
-  let registry: ThemeRegistry;
-  beforeEach(() => {
-    registry = createThemeRegistry();
-    document.documentElement.removeAttribute('data-ov-theme');
-    document.documentElement.removeAttribute('data-ov-theme-custom');
-    document.documentElement.style.cssText = '';
-  });
-  afterEach(() => {
-    document.documentElement.removeAttribute('data-ov-theme');
-    document.documentElement.removeAttribute('data-ov-theme-custom');
-    document.documentElement.style.cssText = '';
-  });
-
-  it('throws when applying an unknown id', () => {
-    expect(() => registry.apply('ghost')).toThrow(/unknown theme/i);
-  });
-
-  it('sets data-ov-theme and colorScheme for a built-in', () => {
-    registry.apply('light');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('light');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe(null);
-    expect(document.documentElement.style.colorScheme).toBe('light');
-    registry.apply('dark');
-    expect(document.documentElement.style.colorScheme).toBe('dark');
-  });
-
-  it('writes CSS variable overrides for a custom theme and sets data-ov-theme-custom', () => {
-    registry.register({
-      ...makeCustom('solarized-dark-custom'),
-      name: 'Solarized Dark',
-      tokens: {
-        'color.bg.base': '#002b36',
-        'syntax.comment': '#586e75',
-      },
-    });
-    registry.apply('solarized-dark-custom');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe('solarized-dark-custom');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
-    expect(document.documentElement.style.getPropertyValue('--ov-syntax-comment')).toBe('#586e75');
-    expect(document.documentElement.style.colorScheme).toBe('dark');
-  });
-
-  it('clears previous overrides when switching to a built-in', () => {
-    registry.register({
-      ...makeCustom('sol'),
-      tokens: { 'color.bg.base': '#002b36' },
-    });
-    registry.apply('sol');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#002b36');
-    registry.apply('light');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
-    expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe(null);
-  });
-
-  it('clears previous overrides when switching between custom themes with different keys', () => {
-    registry.register({ ...makeCustom('a'), tokens: { 'color.bg.base': '#111' } });
-    registry.register({ ...makeCustom('b'), tokens: { 'color.fg.default': '#eee' } });
-    registry.apply('a');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('#111');
-    registry.apply('b');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
-    expect(document.documentElement.style.getPropertyValue('--ov-color-fg-default')).toBe('#eee');
-  });
-
-  it('active() returns null before any apply()', () => {
-    expect(registry.active()).toBeNull();
-  });
-
-  it('updates active() after apply()', () => {
-    registry.apply('light');
-    expect(registry.active()).toBe('light');
-  });
-
-  it('is idempotent — reapplies and emits event even if already active', () => {
-    const events: ThemeRegistryEvent[] = [];
-    registry.subscribe((e) => events.push(e));
-    registry.apply('dark');
-    registry.apply('dark');
-    const applied = events.filter((e) => e.type === 'applied');
-    expect(applied).toEqual([
-      { type: 'applied', id: 'dark' },
-      { type: 'applied', id: 'dark' },
-    ]);
-  });
-
-  it('sets colorScheme light for high-contrast-light base', () => {
-    registry.register({ ...makeCustom('lc'), base: 'high-contrast-light' });
-    registry.apply('lc');
-    expect(document.documentElement.style.colorScheme).toBe('light');
-  });
-
-  it('idempotent apply() rewrites DOM state, not just events', () => {
-    registry.apply('dark');
-    // Externally corrupt the DOM.
-    document.documentElement.removeAttribute('data-ov-theme');
-    registry.apply('dark');
-    expect(document.documentElement.getAttribute('data-ov-theme')).toBe('dark');
-  });
-});
-
-describe('themeRegistry — SSR guard', () => {
-  it('apply() does not throw when document is undefined; still updates active() and emits', () => {
+describe('theme registry', () => {
+  it('provides stable immutable snapshots and idempotent owner-bound disposal', () => {
     const registry = createThemeRegistry();
-    const events: ThemeRegistryEvent[] = [];
-    registry.subscribe((e) => events.push(e));
-    const originalDoc = globalThis.document;
-    // @ts-expect-error — simulate SSR
-    delete globalThis.document;
+    const before = registry.getSnapshot();
+    expect(registry.getSnapshot()).toBe(before);
+    expect(Object.isFrozen(before)).toBe(true);
+    expect(Object.isFrozen(before.themes)).toBe(true);
+
+    const dispose = registry.register(theme('acme.slate'), plugin);
+    const afterAdd = registry.getSnapshot();
+    expect(afterAdd.themes.some((entry) => entry.id === 'acme.slate')).toBe(true);
+    expect(registry.getSnapshot()).toBe(afterAdd);
+    expect(afterAdd).not.toBe(before);
+
+    dispose();
+    dispose();
+    expect(registry.has('acme.slate')).toBe(false);
+    expect(registry.getSnapshot()).not.toBe(afterAdd);
+  });
+
+  it('rejects duplicate IDs and built-in removal', () => {
+    const registry = createThemeRegistry();
+    registry.register(theme('duplicate'), user);
+    expect(() => registry.register(theme('duplicate'), plugin)).toThrow(/already registered/i);
+    expect(() => registry.unregister('void', { kind: 'builtin', id: 'base-ui' })).toThrow(/built-in/i);
+  });
+
+  it('rejects removal by the wrong owner', () => {
+    const registry = createThemeRegistry();
+    registry.register(theme('owned'), plugin);
+    expect(() => registry.unregister('owned', { kind: 'plugin', id: 'other' })).toThrow(/owner/i);
+    expect(registry.has('owned')).toBe(true);
+  });
+
+  it('unregisters all themes for an owner with one notification', () => {
+    const registry = createThemeRegistry();
+    const listener = vi.fn();
+    registry.register(theme('acme.one'), plugin);
+    registry.register(theme('acme.two'), plugin);
+    registry.register(theme('user.one'), user);
+    registry.subscribe(listener);
+
+    expect(registry.unregisterOwner(plugin)).toBe(2);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(registry.has('acme.one')).toBe(false);
+    expect(registry.has('acme.two')).toBe(false);
+    expect(registry.has('user.one')).toBe(true);
+    expect(registry.unregisterOwner(plugin)).toBe(0);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('orders built-ins, users, then plugins deterministically', () => {
+    const registry = createThemeRegistry();
+    registry.register(theme('plugin.z', 'Alpha'), plugin);
+    registry.register(theme('user.z', 'Zulu'), user);
+    registry.register(theme('user.a', 'Alpha'), user);
+    registry.register(theme('user.b', 'Alpha'), user);
+    registry.register(theme('plugin.a', 'Zulu'), plugin);
+
+    expect(registry.getSnapshot().themes.slice(9).map(({ id }) => id)).toEqual([
+      'user.a',
+      'user.b',
+      'user.z',
+      'plugin.z',
+      'plugin.a',
+    ]);
+  });
+
+  it('isolates listener exceptions and snapshots dispatch listeners', () => {
+    const registry = createThemeRegistry();
+    const later = vi.fn();
+    const healthy = vi.fn();
+    registry.subscribe(() => {
+      registry.subscribe(later);
+      throw new Error('listener failure');
+    });
+    registry.subscribe(healthy);
+
+    expect(() => registry.register(theme('first'), user)).not.toThrow();
+    expect(healthy).toHaveBeenCalledTimes(1);
+    expect(later).not.toHaveBeenCalled();
+    registry.register(theme('second'), user);
+    expect(later).toHaveBeenCalledTimes(1);
+  });
+
+  it('never reads or writes document', () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');
+    const get = vi.fn(() => {
+      throw new Error('document accessed');
+    });
+    Object.defineProperty(globalThis, 'document', { configurable: true, get });
     try {
-      expect(() => registry.apply('light')).not.toThrow();
-      expect(registry.active()).toBe('light');
-      expect(events.filter((e) => e.type === 'applied')).toEqual([
-        { type: 'applied', id: 'light' },
-      ]);
+      const registry = createThemeRegistry();
+      const dispose = registry.register(theme('pure'), user);
+      registry.getSnapshot();
+      dispose();
+      expect(get).not.toHaveBeenCalled();
     } finally {
-      globalThis.document = originalDoc;
+      if (descriptor) Object.defineProperty(globalThis, 'document', descriptor);
     }
+  });
+
+  it('returns frozen registered definitions with source metadata', () => {
+    const registry = createThemeRegistry();
+    const input = theme('safe');
+    registry.register(input, user);
+    const registered = registry.get('safe');
+    expect(registered?.owner).toEqual(user);
+    expect(registered?.builtIn).toBe(false);
+    expect(Object.isFrozen(registered)).toBe(true);
+    expect(Object.isFrozen(registered?.definition)).toBe(true);
+  });
+
+  it('compares owner kind and id', () => {
+    const registry = createThemeRegistry();
+    const first: ThemeOwner = { kind: 'plugin', id: 'shared' };
+    const second: ThemeOwner = { kind: 'user', id: 'shared' };
+    registry.register(theme('plugin.theme'), first);
+    expect(() => registry.unregister('plugin.theme', second)).toThrow(/owner/i);
   });
 });

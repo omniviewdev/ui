@@ -1,62 +1,26 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { createThemeRegistry } from './registry';
 import { useThemeList } from './useThemeList';
-import { themeRegistry } from './registry';
 
-function List() {
-  const themes = useThemeList();
-  return (
-    <ul>
-      {themes.map((t) => (
-        <li key={t.id} data-testid="theme-item">
-          {t.id}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-afterEach(() => {
-  for (const info of themeRegistry.list()) {
-    if (!info.builtIn) themeRegistry.unregister(info.id);
-  }
-});
+const owner = { kind: 'user', id: 'tests' } as const;
 
 describe('useThemeList', () => {
-  it('initially returns the 7 built-ins', () => {
-    render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
-  });
+  it('returns the registry snapshot and reacts to registration and disposal', () => {
+    const registry = createThemeRegistry();
+    const { result } = renderHook(() => useThemeList(registry));
+    expect(result.current).toHaveLength(9);
 
-  it('re-renders when a theme is registered', () => {
-    render(<List />);
+    let dispose = () => {};
     act(() => {
-      themeRegistry.register({
-        schemaVersion: 1,
-        id: 'use-theme-list-fixture',
-        name: 'Fixture',
-        base: 'dark',
-        tokens: {},
-      });
+      dispose = registry.register(
+        { schemaVersion: 1, id: 'hook-theme', name: 'Hook Theme', base: 'dark', tokens: {} },
+        owner,
+      );
     });
-    const items = screen.getAllByTestId('theme-item');
-    expect(items).toHaveLength(8);
-    expect(items.some((el) => el.textContent === 'use-theme-list-fixture')).toBe(true);
-  });
+    expect(result.current.map(({ id }) => id)).toContain('hook-theme');
 
-  it('re-renders when a theme is unregistered', () => {
-    themeRegistry.register({
-      schemaVersion: 1,
-      id: 'unreg-fixture',
-      name: 'Fixture',
-      base: 'dark',
-      tokens: {},
-    });
-    render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(8);
-    act(() => {
-      themeRegistry.unregister('unreg-fixture');
-    });
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
+    act(dispose);
+    expect(result.current).toHaveLength(9);
   });
 });

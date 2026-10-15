@@ -1393,6 +1393,25 @@
   --ov-size-datepicker-gap: 1px;
 }
 
+:root[data-ov-theme='solarized-dark'] {
+  --ov-color-bg-base: #002b36;
+  --ov-color-bg-surface: #073642;
+  --ov-color-fg-default: #839496;
+  --ov-color-fg-muted: #657b83;
+  --ov-color-brand-500: #268bd2;
+  --ov-syntax-comment: #586e75;
+  --ov-syntax-string: #2aa198;
+  --ov-syntax-keyword: #859900;
+}
+
+:root[data-ov-theme='solarized-light'] {
+  --ov-color-bg-base: #fdf6e3;
+  --ov-color-bg-surface: #eee8d5;
+  --ov-color-fg-default: #657b83;
+  --ov-color-fg-muted: #93a1a1;
+  --ov-color-brand-500: #268bd2;
+}
+
 :root[data-ov-density='comfortable'] {
   --ov-control-height-sm: 28px;
   --ov-control-height-md: 36px;

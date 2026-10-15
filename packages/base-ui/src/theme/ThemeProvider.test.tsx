@@ -48,7 +48,7 @@ describe('ThemeProvider + themeRegistry integration', () => {
   });
 
   it('defers apply for unregistered stored id and auto-applies on registration', () => {
-    window.localStorage.setItem('ov-theme-mode', 'solarized-dark-custom');
+    window.localStorage.setItem('ov-theme-mode', 'solarized-dark');
     render(
       <ThemeProvider initialTheme="dark" persist>
         <Reader />
@@ -59,16 +59,16 @@ describe('ThemeProvider + themeRegistry integration', () => {
     act(() => {
       themeRegistry.register({
         schemaVersion: 1,
-        id: 'solarized-dark-custom',
+        id: 'solarized-dark',
         name: 'Solarized Dark',
         base: 'dark',
         tokens: { 'color.bg.base': '#002b36' },
       });
     });
     // Registration triggers auto-apply.
-    expect(screen.getByTestId('theme').textContent).toBe('solarized-dark-custom');
+    expect(screen.getByTestId('theme').textContent).toBe('solarized-dark');
     expect(document.documentElement.getAttribute('data-ov-theme-custom')).toBe(
-      'solarized-dark-custom',
+      'solarized-dark',
     );
   });
 

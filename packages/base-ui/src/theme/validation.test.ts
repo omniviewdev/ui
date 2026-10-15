@@ -83,6 +83,39 @@ describe('validateThemeDefinition', () => {
     expect(rejectColor).toHaveBeenCalledWith('not-a-color');
   });
 
+  it('uses CSS.supports color validation when available', () => {
+    const browserSupports = vi.fn(() => true);
+    vi.stubGlobal('CSS', { supports: browserSupports });
+    validateThemeDefinition({
+      ...valid,
+      tokens: { 'color.bg.base': 'oklch(50% 0.1 120)' },
+    });
+    expect(browserSupports).toHaveBeenCalledWith('color', 'oklch(50% 0.1 120)');
+    vi.unstubAllGlobals();
+  });
+
+  it('accepts strict color syntax when CSS.supports is unavailable', () => {
+    vi.stubGlobal('CSS', undefined);
+    expect(
+      validateThemeDefinition({
+        ...valid,
+        tokens: { 'color.bg.base': '#002b36' },
+      }),
+    ).toBeDefined();
+    vi.unstubAllGlobals();
+  });
+
+  it('rejects invalid colors when CSS.supports is unavailable', () => {
+    vi.stubGlobal('CSS', undefined);
+    expect(() =>
+      validateThemeDefinition({
+        ...valid,
+        tokens: { 'color.bg.base': 'definitely-not-a-color' },
+      }),
+    ).toThrowError(expect.objectContaining({ code: 'invalid_value' }));
+    vi.unstubAllGlobals();
+  });
+
   it.each([
     'normal',
     'italic',

@@ -10,15 +10,13 @@ export type {
 } from '../schema';
 
 export const BUILT_IN_THEME_MODES: readonly BuiltInThemeId[] = [
-  'void',
   'dark',
   'light',
-  'obsidian',
-  'carbon',
-  'solarized-dark',
-  'solarized-light',
   'high-contrast-dark',
   'high-contrast-light',
+  'obsidian',
+  'carbon',
+  'void',
 ];
 
 export const LIGHT_THEME_MODES: ReadonlySet<BuiltInThemeId> = new Set([

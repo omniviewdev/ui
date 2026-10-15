@@ -3,7 +3,7 @@ import { BUILT_IN_THEME_DEFINITIONS } from './builtIns';
 import { BUILT_IN_THEME_MODES } from './types';
 
 describe('BUILT_IN_THEME_DEFINITIONS', () => {
-  it('has one definition per built-in mode', () => {
+  it('has one definition per current runtime built-in mode', () => {
     const ids = BUILT_IN_THEME_DEFINITIONS.map((t) => t.id).sort();
     expect(ids).toEqual([...BUILT_IN_THEME_MODES].sort());
   });

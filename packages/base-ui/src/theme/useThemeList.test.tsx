@@ -23,9 +23,9 @@ afterEach(() => {
 });
 
 describe('useThemeList', () => {
-  it('initially returns the 9 built-ins', () => {
+  it('initially returns the 7 built-ins', () => {
     render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(9);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
   });
 
   it('re-renders when a theme is registered', () => {
@@ -40,7 +40,7 @@ describe('useThemeList', () => {
       });
     });
     const items = screen.getAllByTestId('theme-item');
-    expect(items).toHaveLength(10);
+    expect(items).toHaveLength(8);
     expect(items.some((el) => el.textContent === 'use-theme-list-fixture')).toBe(true);
   });
 
@@ -53,10 +53,10 @@ describe('useThemeList', () => {
       tokens: {},
     });
     render(<List />);
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(10);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(8);
     act(() => {
       themeRegistry.unregister('unreg-fixture');
     });
-    expect(screen.getAllByTestId('theme-item')).toHaveLength(9);
+    expect(screen.getAllByTestId('theme-item')).toHaveLength(7);
   });
 });

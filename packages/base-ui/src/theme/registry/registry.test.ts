@@ -12,9 +12,9 @@ describe('themeRegistry — registration', () => {
     registry = createThemeRegistry();
   });
 
-  it('lists all 9 built-ins by default', () => {
+  it('lists all 7 built-ins by default', () => {
     const info = registry.list();
-    expect(info).toHaveLength(9);
+    expect(info).toHaveLength(7);
     expect(info.every((i) => i.builtIn)).toBe(true);
   });
 

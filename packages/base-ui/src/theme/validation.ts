@@ -49,10 +49,19 @@ const FONT_STYLES = new Set([
 
 type SupportsColor = (value: string) => boolean;
 
+const STRICT_FALLBACK_COLOR =
+  /^(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|transparent|currentcolor)$/i;
+
 function defaultSupportsColor(value: string): boolean {
-  return typeof CSS !== 'undefined' && typeof CSS.supports === 'function'
-    ? CSS.supports('color', value)
-    : false;
+  if (typeof CSS !== 'undefined' && typeof CSS.supports === 'function') {
+    return CSS.supports('color', value);
+  }
+  if (typeof document !== 'undefined') {
+    const probe = document.createElement('option');
+    probe.style.color = value;
+    return probe.style.color !== '';
+  }
+  return STRICT_FALLBACK_COLOR.test(value);
 }
 
 function fail(code: ThemeValidationErrorCode, path: string, message: string): never {

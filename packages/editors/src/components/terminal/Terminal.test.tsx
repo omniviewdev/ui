@@ -1,5 +1,6 @@
-import { render as rtlRender, screen, act } from '@testing-library/react';
+import { render as rtlRender, screen, act, type RenderResult } from '@testing-library/react';
 import { createRef, type ReactElement, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
 import { Terminal as XTerminal } from '@xterm/xterm';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
@@ -104,7 +105,10 @@ const mockWebLinksAddon = {
 
 // Vitest 4.x requires function expressions (not arrows) for mocks used with `new`
 vi.mock('@xterm/xterm', () => ({
-  Terminal: vi.fn(function () { return mockTerminal; }),
+  Terminal: vi.fn(function (options: Record<string, unknown>) {
+    mockTerminal.options = options;
+    return mockTerminal;
+  }),
 }));
 
 vi.mock('@xterm/addon-fit', () => ({
@@ -158,7 +162,10 @@ beforeEach(async () => {
 
   // Re-establish mock constructor implementations cleared by clearAllMocks
   const { Terminal: TerminalCtor } = await import('@xterm/xterm');
-  (TerminalCtor as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockTerminal; });
+  (TerminalCtor as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (options: Record<string, unknown>) {
+    mockTerminal.options = options;
+    return mockTerminal;
+  });
   const { FitAddon } = await import('@xterm/addon-fit');
   (FitAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockFitAddon; });
   const { SearchAddon } = await import('@xterm/addon-search');
@@ -998,6 +1005,48 @@ describe('Terminal', () => {
         <Terminal />
       </ThemeProvider>,
     );
+
+    expect(mockTerminal.options.theme).toEqual(
+      expect.objectContaining({ background: '#222222' }),
+    );
+    expect(XTerminal).toHaveBeenCalledTimes(1);
+  });
+
+  it('applies a same-base theme switch that occurs while WebGL initialization is pending', async () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'terminal-init-test' } as const;
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:terminal-init-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.terminal.bg': '#111111' },
+    }, owner);
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:terminal-init-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.terminal.bg': '#222222' },
+    }, owner);
+
+    let mounted: RenderResult;
+    mockTerminal.open.mockImplementationOnce(() => {
+      flushSync(() => {
+        mounted.rerender(
+          <ThemeProvider themeId="plugin:terminal-init-test/second" registry={registry}>
+            <Terminal />
+          </ThemeProvider>,
+        );
+      });
+    });
+    mounted = rtlRender(
+      <ThemeProvider themeId="plugin:terminal-init-test/first" registry={registry}>
+        <Terminal />
+      </ThemeProvider>,
+    );
+
+    await waitForInit();
 
     expect(mockTerminal.options.theme).toEqual(
       expect.objectContaining({ background: '#222222' }),

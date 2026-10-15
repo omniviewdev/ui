@@ -2,7 +2,7 @@ import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, t
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
-const REMARK_PLUGINS = [remarkGfm] as const;
+import type { PluggableList } from 'unified';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import {
   Accordion,
@@ -15,6 +15,8 @@ import {
   Table,
 } from '@omniviewdev/base-ui';
 import styles from './MarkdownPreview.module.css';
+
+const REMARK_PLUGINS: PluggableList = [remarkGfm];
 
 const ReactMarkdown = lazy(() => import('react-markdown'));
 
@@ -190,7 +192,7 @@ function MarkdownContent({ content, allowHtml }: { content: string; allowHtml: b
   return (
     <ReactMarkdown
       skipHtml={!allowHtml}
-      remarkPlugins={[...REMARK_PLUGINS]}
+      remarkPlugins={REMARK_PLUGINS}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rehypePlugins={rehypePlugins as any}
       components={markdownComponents}

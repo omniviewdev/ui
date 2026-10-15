@@ -574,6 +574,9 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
         return;
       }
 
+      // Theme may have changed while optional addons were loading.
+      term.options.theme = buildXtermTheme();
+
       // Initial fit
       fitAddon.fit();
 

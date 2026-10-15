@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import type { StyledComponentProps } from '../../system/types';
 
 // ---------------------------------------------------------------------------
@@ -156,6 +156,7 @@ export interface TreeListRootProps<TItem = unknown>
   renderItem: (item: TItem, node: TreeNodeMeta) => ReactNode;
 
   // Ordering
+  reorderable?: boolean;
   order?: TreeOrder;
   defaultOrder?: TreeOrder;
   onOrderChange?: (order: TreeOrder, event: TreeReorderEvent) => void;
@@ -215,3 +216,20 @@ export interface TreeListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   textValue?: string;
   children: ReactNode;
 }
+
+type TreeListItemDragHandleBaseProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-label' | 'aria-labelledby' | 'type'
+>;
+
+export type TreeListItemDragHandleProps = TreeListItemDragHandleBaseProps &
+  (
+    | {
+        'aria-label': string;
+        'aria-labelledby'?: string;
+      }
+    | {
+        'aria-label'?: string;
+        'aria-labelledby': string;
+      }
+  );

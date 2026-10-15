@@ -181,6 +181,66 @@
   cursor: default;
 }
 
+.Item[data-ov-reorderable='true'] {
+  position: relative;
+}
+
+.Item[data-ov-dragging='true'] {
+  z-index: 1;
+  cursor: grabbing;
+  opacity: 0.8;
+}
+
+.ItemDragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--_ov-tree-toggle-size);
+  inline-size: var(--_ov-tree-toggle-size);
+  block-size: var(--_ov-tree-toggle-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ov-radius-sm);
+  background: transparent;
+  color: var(--ov-color-fg-muted);
+  cursor: grab;
+  touch-action: none;
+  transition:
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.ItemDragHandle:hover:not(:disabled) {
+  color: var(--ov-color-fg-default);
+  background: var(--_ov-highlight-bg);
+}
+
+.ItemDragHandle:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 1px;
+}
+
+.ItemDragHandle:disabled {
+  cursor: default;
+  opacity: var(--ov-opacity-disabled, 0.45);
+}
+
+.ItemDragHandle[data-ov-dragging='true'] {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Item[data-ov-reorderable='true'],
+  .ItemDragHandle {
+    transition: none !important;
+  }
+}
+
+:root[data-ov-motion='reduced'] .Item[data-ov-reorderable='true'],
+:root[data-ov-motion='reduced'] .ItemDragHandle {
+  transition: none !important;
+}
+
 /* ---------------------------------------------------------------------------
  * Tree-specific item slots
  * --------------------------------------------------------------------------- */

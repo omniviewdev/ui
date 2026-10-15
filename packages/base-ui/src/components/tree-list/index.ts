@@ -8,6 +8,7 @@ export type {
   TreeItemState,
   TreeListRootProps,
   TreeListItemProps,
+  TreeListItemDragHandleProps,
 } from './types';
 export { useTreeItem } from './hooks/useTreeItem';
 export { useTreeConfig, useTreeStoreContext, useTreeActions } from './context/TreeContext';

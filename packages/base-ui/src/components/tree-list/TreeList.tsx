@@ -8,18 +8,30 @@ import {
   useRef,
   useSyncExternalStore,
   Fragment,
+  type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent,
   type MouseEvent,
+  type PointerEvent,
   type ReactNode,
   type Ref,
   type RefObject,
-  type CSSProperties,
 } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { ComponentColor } from '../../system/types';
-import type { TreeListRootProps, TreeListItemProps, TreeNodeMeta, FlatNode, Key } from './types';
+import type {
+  FlatNode,
+  Key,
+  TreeConfigContextValue,
+  TreeItemState,
+  TreeListItemDragHandleProps,
+  TreeListItemProps,
+  TreeListRootProps,
+  TreeNodeMeta,
+} from './types';
 import { useTreeState, type TreeStateReturn } from './hooks/useTreeState';
 import { useTreeOrder } from './hooks/useTreeOrder';
 import { useTreeItem as useTreeItemHook } from './hooks/useTreeItem';
@@ -34,6 +46,11 @@ import {
   useTreeStoreContext,
   useTreeActions,
 } from './context/TreeContext';
+import {
+  TreeItemActivatorContext,
+  TreeReorderContext,
+} from './context/TreeReorderContext';
+import { TreeListReorder } from './TreeListReorder';
 import styles from './TreeList.module.css';
 
 // ---------------------------------------------------------------------------
@@ -107,6 +124,7 @@ function TreeListRootContent<TItem>(
     defaultFilterText,
     onFilterTextChange,
     filterFn,
+    reorderable: _reorderable,
     order: _order,
     defaultOrder: _defaultOrder,
     onOrderChange: _onOrderChange,
@@ -114,6 +132,43 @@ function TreeListRootContent<TItem>(
   }: TreeListRootContentProps<TItem>,
 ) {
   const { config, store, actions } = treeState;
+  // These props are intentionally removed from domProps above.
+  void loading;
+  void items;
+  void itemKey;
+  void getChildren;
+  void isBranchProp;
+  void getTextValue;
+  void loadChildren;
+  void onLoadError;
+  void selectionMode;
+  void selectionBehavior;
+  void selectedKeysProp;
+  void defaultSelectedKeys;
+  void onSelectedKeysChange;
+  void activeKeyProp;
+  void defaultActiveKey;
+  void onActiveKeyChange;
+  void disabledKeysProp;
+  void expandedKeysProp;
+  void defaultExpandedKeys;
+  void onExpandedKeysChange;
+  void loopFocus;
+  void typeahead;
+  void density;
+  void virtualized;
+  void overscan;
+  void estimatedItemSize;
+  void indentation;
+  void showBranchConnectors;
+  void filterTextProp;
+  void defaultFilterText;
+  void onFilterTextChange;
+  void filterFn;
+  void _reorderable;
+  void _order;
+  void _defaultOrder;
+  void _onOrderChange;
 
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
@@ -191,6 +246,12 @@ function TreeListRootContent<TItem>(
 
   const combinedKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest('[data-ov-tree-drag-handle]')
+      ) {
+        return;
+      }
       handleKeyDown(event);
       handleTypeahead(event);
       onKeyDown?.(event);
@@ -237,9 +298,18 @@ function OrderedTreeListRootImpl<TItem>(
   props: TreeListRootProps<TItem>,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
-  const { currentOrder } = useTreeOrder(props);
+  const { currentOrder, proposeMove } = useTreeOrder(props);
   const treeState = useTreeState(props, currentOrder);
-  return <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
+  const content = <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
+
+  if (props.reorderable) {
+    return (
+      <TreeListReorder store={treeState.store} proposeMove={proposeMove}>
+        {content}
+      </TreeListReorder>
+    );
+  }
+  return content;
 }
 
 const StaticTreeListRoot = forwardRef(StaticTreeListRootImpl) as <TItem>(
@@ -255,6 +325,7 @@ function TreeListRootImpl<TItem>(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const isOrdered =
+    props.reorderable === true ||
     props.order !== undefined ||
     props.defaultOrder !== undefined ||
     props.onOrderChange !== undefined;
@@ -276,14 +347,18 @@ const TreeListRoot = forwardRef(TreeListRootImpl) as <TItem>(
 
 type TreeListViewportProps = HTMLAttributes<HTMLDivElement>;
 
+function setRefValue<T>(ref: Ref<T> | null, node: T | null): void {
+  if (typeof ref === 'function') ref(node);
+  else if (ref) ref.current = node;
+}
+
 function mergeRefs<T>(
   localRef: RefObject<T | null>,
   forwardedRef: Ref<T> | null,
 ): (node: T | null) => void {
   return (node) => {
-    (localRef as { current: T | null }).current = node;
-    if (typeof forwardedRef === 'function') forwardedRef(node);
-    else if (forwardedRef) (forwardedRef as { current: T | null }).current = node;
+    setRefValue(localRef, node);
+    setRefValue(forwardedRef, node);
   };
 }
 
@@ -312,6 +387,10 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     const mergedRef = mergeRefs(scrollRef, ref);
 
     if (config.virtualized) {
+      const virtualContentStyle: CSSProperties = {
+        height: virtualizer.totalSize,
+        position: 'relative',
+      };
       return (
         <div
           ref={mergedRef}
@@ -319,24 +398,25 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           className={cn(styles.Viewport, className)}
           {...props}
         >
-          <div style={{ height: virtualizer.totalSize, position: 'relative' }}>
+          <div style={virtualContentStyle}>
             {virtualizer.virtualItems.map((virtualItem) => {
               const node = flatNodes[virtualItem.index];
               if (!node) return null;
               const nodeMeta = store.getNodeMeta(node.key);
               if (!nodeMeta) return null;
+              const virtualItemStyle: CSSProperties = {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualItem.start}px)`,
+              };
               return (
                 <div
                   key={node.key}
                   ref={virtualizer.measureElement}
                   data-index={virtualItem.index}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualItem.start}px)`,
-                  }}
+                  style={virtualItemStyle}
                 >
                   {renderNode(node.key, nodeMeta)}
                 </div>
@@ -371,25 +451,26 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
 // Item
 // ---------------------------------------------------------------------------
 
-const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function TreeListItem(
-  {
-    className,
-    itemKey,
-    disabled = false,
-    selectable = true,
-    textValue,
-    children,
-    onClick,
-    ...props
-  },
-  ref,
-) {
+interface TreeListItemBehavior {
+  config: TreeConfigContextValue;
+  itemState: TreeItemState;
+  nodeMeta: TreeNodeMeta | undefined;
+  isDisabled: boolean;
+  handleClick: (event: MouseEvent<HTMLDivElement>) => void;
+}
+
+function useTreeListItemBehavior({
+  itemKey,
+  disabled = false,
+  selectable = true,
+  textValue,
+  onClick,
+}: TreeListItemProps): TreeListItemBehavior {
   const store = useTreeStoreContext();
   const actions = useTreeActions();
   const config = useTreeConfig();
   const itemState = useTreeItemHook(store, itemKey, textValue);
   const nodeMeta = store.getNodeMeta(itemKey);
-
   const isDisabled = disabled || itemState.isDisabled;
 
   const handleClick = useCallback(
@@ -426,29 +507,209 @@ const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function Tree
     ],
   );
 
-  return (
-    <div
-      ref={ref}
-      id={`${config.listId}-item-${itemKey}`}
-      role="treeitem"
-      aria-selected={itemState.isSelected || undefined}
-      aria-disabled={isDisabled || undefined}
-      aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
-      aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
-      className={cn(styles.Item, className)}
-      data-ov-selected={itemState.isSelected}
-      data-ov-active={itemState.isActive}
-      data-ov-disabled={isDisabled}
-      data-ov-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
-      data-ov-branch={itemState.isBranch || undefined}
-      data-ov-depth={nodeMeta?.depth}
-      onClick={handleClick}
-      {...props}
-    >
-      {children}
-    </div>
-  );
+  return { config, itemState, nodeMeta, isDisabled, handleClick };
+}
+
+type TreeListItemImplementationProps = TreeListItemProps & {
+  behavior: TreeListItemBehavior;
+  sortableStyle?: CSSProperties;
+  reorderable?: boolean;
+  isDragging?: boolean;
+};
+
+const TreeListItemImplementation = forwardRef<HTMLDivElement, TreeListItemImplementationProps>(
+  function TreeListItemImplementation(
+    {
+      behavior,
+      className,
+      itemKey,
+      disabled: _disabled,
+      selectable: _selectable,
+      textValue: _textValue,
+      children,
+      onClick: _onClick,
+      style,
+      sortableStyle,
+      reorderable,
+      isDragging,
+      ...props
+    },
+    ref,
+  ) {
+    const { config, itemState, nodeMeta, isDisabled, handleClick } = behavior;
+    void _disabled;
+    void _selectable;
+    void _textValue;
+    void _onClick;
+
+    return (
+      <div
+        ref={ref}
+        id={`${config.listId}-item-${itemKey}`}
+        role="treeitem"
+        aria-selected={itemState.isSelected || undefined}
+        aria-disabled={isDisabled || undefined}
+        aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
+        aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
+        className={cn(styles.Item, className)}
+        data-ov-selected={itemState.isSelected}
+        data-ov-active={itemState.isActive}
+        data-ov-disabled={isDisabled}
+        data-ov-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
+        data-ov-branch={itemState.isBranch || undefined}
+        data-ov-depth={nodeMeta?.depth}
+        data-ov-reorderable={reorderable || undefined}
+        data-ov-dragging={isDragging || undefined}
+        onClick={handleClick}
+        style={sortableStyle === undefined ? style : { ...style, ...sortableStyle }}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  },
+);
+
+const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function TreeListItem(
+  props,
+  ref,
+) {
+  const behavior = useTreeListItemBehavior(props);
+  return <TreeListItemImplementation ref={ref} behavior={behavior} {...props} />;
 });
+
+const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
+  function TreeListReorderableItem(props, ref) {
+    const { itemKey } = props;
+    const behavior = useTreeListItemBehavior(props);
+    const reorderContext = useContext(TreeReorderContext);
+    const sortableDisabled = reorderContext === null || behavior.isDisabled;
+    const {
+      attributes,
+      listeners,
+      setActivatorNodeRef,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: itemKey, disabled: sortableDisabled });
+    const mergedRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        setNodeRef(node);
+        setRefValue(ref, node);
+      },
+      [ref, setNodeRef],
+    );
+    const sortableStyle = useMemo<CSSProperties>(
+      () => ({
+        transform: CSS.Transform.toString(transform),
+        transition: transition ?? undefined,
+      }),
+      [transform, transition],
+    );
+    const activatorContext = useMemo(
+      () =>
+        reorderContext === null
+          ? null
+          : {
+              attributes,
+              listeners: sortableDisabled ? undefined : listeners,
+              setActivatorNodeRef,
+              disabled: sortableDisabled,
+              isDragging,
+            },
+      [
+        reorderContext,
+        attributes,
+        listeners,
+        setActivatorNodeRef,
+        sortableDisabled,
+        isDragging,
+      ],
+    );
+
+    return (
+      <TreeItemActivatorContext.Provider value={activatorContext}>
+        <TreeListItemImplementation
+          ref={mergedRef}
+          behavior={behavior}
+          sortableStyle={sortableStyle}
+          reorderable
+          isDragging={isDragging}
+          {...props}
+        />
+      </TreeItemActivatorContext.Provider>
+    );
+  },
+);
+
+const TreeListItemDragHandle = forwardRef<HTMLButtonElement, TreeListItemDragHandleProps>(
+  function TreeListItemDragHandle(
+    {
+      className,
+      disabled = false,
+      onClick,
+      onKeyDown,
+      onPointerDown,
+      children,
+      ...props
+    },
+    ref,
+  ) {
+    const activator = useContext(TreeItemActivatorContext);
+    const isEnabled = activator !== null && !activator.disabled && !disabled;
+    const attributes = isEnabled ? activator.attributes : undefined;
+    const listeners = isEnabled ? activator.listeners : undefined;
+    const mergedRef = useCallback(
+      (node: HTMLButtonElement | null) => {
+        activator?.setActivatorNodeRef(isEnabled ? node : null);
+        setRefValue(ref, node);
+      },
+      [activator, isEnabled, ref],
+    );
+    const handleClick = useCallback(
+      (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        onClick?.(event);
+      },
+      [onClick],
+    );
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLButtonElement>) => {
+        onKeyDown?.(event);
+        if (!event.defaultPrevented) listeners?.onKeyDown?.(event);
+      },
+      [listeners, onKeyDown],
+    );
+    const handlePointerDown = useCallback(
+      (event: PointerEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        onPointerDown?.(event);
+        if (!event.defaultPrevented) listeners?.onPointerDown?.(event);
+      },
+      [listeners, onPointerDown],
+    );
+
+    return (
+      <button
+        {...attributes}
+        {...listeners}
+        {...props}
+        data-ov-tree-drag-handle=""
+        ref={mergedRef}
+        type="button"
+        className={cn(styles.ItemDragHandle, className)}
+        disabled={!isEnabled}
+        data-ov-dragging={activator?.isDragging || undefined}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        onPointerDown={handlePointerDown}
+      >
+        {children}
+      </button>
+    );
+  },
+);
 
 // ---------------------------------------------------------------------------
 // ItemIndent
@@ -688,6 +949,8 @@ const TreeListLoading = forwardRef<HTMLDivElement, TreeListLoadingProps>(functio
 (TreeListRoot as { displayName?: string }).displayName = 'TreeList';
 TreeListViewport.displayName = 'TreeList.Viewport';
 TreeListItem.displayName = 'TreeList.Item';
+TreeListReorderableItem.displayName = 'TreeList.ReorderableItem';
+TreeListItemDragHandle.displayName = 'TreeList.ItemDragHandle';
 TreeListItemIndent.displayName = 'TreeList.ItemIndent';
 TreeListItemToggle.displayName = 'TreeList.ItemToggle';
 TreeListItemIcon.displayName = 'TreeList.ItemIcon';
@@ -707,6 +970,8 @@ type TreeListCompound = typeof TreeListRoot & {
   Root: typeof TreeListRoot;
   Viewport: typeof TreeListViewport;
   Item: typeof TreeListItem;
+  ReorderableItem: typeof TreeListReorderableItem;
+  ItemDragHandle: typeof TreeListItemDragHandle;
   ItemIndent: typeof TreeListItemIndent;
   ItemToggle: typeof TreeListItemToggle;
   ItemIcon: typeof TreeListItemIcon;
@@ -723,6 +988,8 @@ export const TreeList = Object.assign(TreeListRoot, {
   Root: TreeListRoot,
   Viewport: TreeListViewport,
   Item: TreeListItem,
+  ReorderableItem: TreeListReorderableItem,
+  ItemDragHandle: TreeListItemDragHandle,
   ItemIndent: TreeListItemIndent,
   ItemToggle: TreeListItemToggle,
   ItemIcon: TreeListItemIcon,

@@ -1,9 +1,11 @@
-import { fireEvent, screen } from '@testing-library/react';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { TreeList } from './TreeList';
-import type { TreeNodeMeta, TreeListRootProps, TreeOrder } from './types';
+import { handleTreeDragEnd } from './TreeListReorder';
+import type { Key, TreeNodeMeta, TreeListRootProps, TreeOrder } from './types';
 
 // ---------------------------------------------------------------------------
 // Test data
@@ -49,6 +51,37 @@ function renderItem(item: FileItem, node: TreeNodeMeta) {
       <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
     </TreeList.Item>
   );
+}
+
+function renderReorderableItem(item: FileItem, node: TreeNodeMeta) {
+  return (
+    <TreeList.ReorderableItem itemKey={node.key} textValue={item.name}>
+      <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>⋮⋮</TreeList.ItemDragHandle>
+      <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+    </TreeList.ReorderableItem>
+  );
+}
+
+function dragEndEvent(activeKey: Key, overKey: Key | null): DragEndEvent {
+  return {
+    active: { id: activeKey },
+    over: overKey === null ? null : { id: overKey },
+  } as DragEndEvent;
+}
+
+function supportKeyboardDraggingInJSDOM() {
+  Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+    configurable: true,
+    value: vi.fn(),
+  });
+}
+
+function giveTreeRowsVerticalGeometry() {
+  screen.getAllByRole('treeitem').forEach((row, index) => {
+    vi.spyOn(row, 'getBoundingClientRect').mockReturnValue(
+      DOMRect.fromRect({ x: 0, y: index * 40, width: 200, height: 32 }),
+    );
+  });
 }
 
 function TestTree(props: Partial<TreeListRootProps<FileItem>>) {
@@ -792,6 +825,248 @@ describe('TreeList', () => {
   });
 
   // -------------------------------------------------------------------------
+  // Reordering
+  // -------------------------------------------------------------------------
+
+  describe('reordering', () => {
+    it('reorders uncontrolled siblings with the keyboard and reports move metadata', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      renderWithTheme(
+        <TestTree
+          reorderable
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      giveTreeRowsVerticalGeometry();
+
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(1);
+      expect(onOrderChange.mock.calls[0]?.[1]).toEqual({
+        activeKey: '/src',
+        overKey: '/README.md',
+        parentKey: null,
+        fromIndex: 0,
+        toIndex: 1,
+      });
+    });
+
+    it('emits a controlled reorder without changing rendering until rerender', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const initialOrder: TreeOrder = new Map([[null, ['/src', '/README.md']]]);
+      const { rerender } = renderWithTheme(
+        <TestTree
+          reorderable
+          order={initialOrder}
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(1);
+
+      const nextOrder = onOrderChange.mock.calls[0]?.[0] as TreeOrder;
+      rerender(
+        <TestTree
+          reorderable
+          order={nextOrder}
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+    });
+
+    it('rejects cross-parent, disabled, self, invalid, and cancelled reorder drops', () => {
+      const proposeMove = vi.fn();
+      const nodeMeta = new Map<Key, TreeNodeMeta>([
+        [
+          '/src',
+          {
+            key: '/src',
+            depth: 0,
+            parentKey: null,
+            isBranch: true,
+            isExpanded: true,
+            isLoading: false,
+            isLastChild: false,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/README.md',
+          {
+            key: '/README.md',
+            depth: 0,
+            parentKey: null,
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/src/index.ts',
+          {
+            key: '/src/index.ts',
+            depth: 1,
+            parentKey: '/src',
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [false],
+          },
+        ],
+      ]);
+      const baseOptions = {
+        visibleKeys: ['/src', '/src/index.ts', '/README.md'] as const,
+        disabledKeys: new Set<Key>(),
+        getNodeMeta: (key: Key) => nodeMeta.get(key),
+        proposeMove,
+      };
+
+      handleTreeDragEnd(dragEndEvent('/src', '/src/index.ts'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', '/src'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/missing', '/README.md'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', null), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        ...baseOptions,
+        disabledKeys: new Set<Key>(['/README.md']),
+      });
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        ...baseOptions,
+        disabledKeys: new Set<Key>(['/src']),
+      });
+
+      expect(proposeMove).not.toHaveBeenCalled();
+    });
+
+    it('proposes one reorder for a valid same-parent drop using visible siblings', () => {
+      const proposeMove = vi.fn();
+      const nodeMeta = new Map<Key, TreeNodeMeta>([
+        [
+          '/src',
+          {
+            key: '/src',
+            depth: 0,
+            parentKey: null,
+            isBranch: true,
+            isExpanded: true,
+            isLoading: false,
+            isLastChild: false,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/src/index.ts',
+          {
+            key: '/src/index.ts',
+            depth: 1,
+            parentKey: '/src',
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [false],
+          },
+        ],
+        [
+          '/README.md',
+          {
+            key: '/README.md',
+            depth: 0,
+            parentKey: null,
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [],
+          },
+        ],
+      ]);
+
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        visibleKeys: ['/src', '/src/index.ts', '/README.md'],
+        disabledKeys: new Set(),
+        getNodeMeta: (key) => nodeMeta.get(key),
+        proposeMove,
+      });
+
+      expect(proposeMove).toHaveBeenCalledOnce();
+      expect(proposeMove).toHaveBeenCalledWith(
+        ['/src', '/README.md'],
+        null,
+        '/src',
+        '/README.md',
+      );
+    });
+
+    it('keeps drag-handle pointer and keyboard events from activating or selecting rows', async () => {
+      const user = userEvent.setup();
+      const onActiveKeyChange = vi.fn();
+      const onSelectedKeysChange = vi.fn();
+      renderWithTheme(
+        <TestTree
+          reorderable
+          renderItem={renderReorderableItem}
+          defaultActiveKey="/src"
+          onActiveKeyChange={onActiveKeyChange}
+          onSelectedKeysChange={onSelectedKeysChange}
+        />,
+      );
+      const handle = screen.getByRole('button', { name: 'Reorder README.md' });
+
+      await user.click(handle);
+      fireEvent.keyDown(handle, { key: 'Enter' });
+
+      expect(onActiveKeyChange).not.toHaveBeenCalled();
+      expect(onSelectedKeysChange).not.toHaveBeenCalled();
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'data-ov-active',
+        'true',
+      );
+    });
+
+    it('keeps static items free of drag handles, sortable attributes, and wrappers', () => {
+      renderWithTheme(<TestTree reorderable />);
+
+      expect(screen.queryByRole('button', { name: /reorder/i })).not.toBeInTheDocument();
+      const viewport = screen.getByTestId('tree-viewport');
+      const rows = screen.getAllByRole('treeitem');
+      expect([...viewport.children]).toEqual(rows);
+      for (const row of rows) {
+        expect(row).not.toHaveAttribute('data-ov-dragging');
+        expect(row).not.toHaveAttribute('data-ov-reorderable');
+        expect(row).not.toHaveAttribute('aria-roledescription');
+        expect(row).not.toHaveStyle({ transform: expect.any(String) });
+      }
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // Filtering
   // -------------------------------------------------------------------------
 
@@ -1004,8 +1279,10 @@ describe('TreeList', () => {
       expect(nodeMeta.isLoading).toBe(true);
     });
 
-    // Clean up
-    resolveLoad();
+    await act(async () => {
+      resolveLoad();
+      await loadPromise;
+    });
   });
 
   it('calls onLoadError when loadChildren rejects', async () => {

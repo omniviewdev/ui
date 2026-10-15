@@ -4,13 +4,16 @@ export function dottedKeyToCssVar(key: string): string {
 }
 
 /** Return the subset of `keys` that are NOT in `known`. */
-export function validateKeys<T extends string>(
+export function validateKeys(
   keys: readonly string[],
-  known: ReadonlySet<T>,
+  known: Readonly<Record<string, unknown>>,
+  prefix?: string,
 ): string[] {
   const invalid: string[] = [];
   for (const key of keys) {
-    if (!(known as ReadonlySet<string>).has(key)) invalid.push(key);
+    if (!Object.hasOwn(known, key) || (prefix !== undefined && !key.startsWith(prefix))) {
+      invalid.push(key);
+    }
   }
   return invalid;
 }

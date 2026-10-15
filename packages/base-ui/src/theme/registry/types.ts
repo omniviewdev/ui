@@ -1,8 +1,4 @@
-import type {
-  ColorTokenKey,
-  SyntaxTokenKey,
-  TerminalTokenKey,
-} from '../generated/tokenKeys';
+import type { ThemeTokenKey } from '../generated/tokenKeys';
 
 /** The built-in modes that a custom theme can inherit from. */
 export type BuiltInThemeMode =
@@ -41,11 +37,11 @@ export interface ThemeDefinition {
   /** Optional version string. */
   version?: string;
   /** UI chrome color overrides, keyed by dotted token path. */
-  colors?: Partial<Record<ColorTokenKey, string>>;
+  colors?: Partial<Record<Extract<ThemeTokenKey, `color.${string}`>, string>>;
   /** Syntax highlighting overrides. */
-  syntax?: Partial<Record<SyntaxTokenKey, string>>;
+  syntax?: Partial<Record<Extract<ThemeTokenKey, `syntax.${string}`>, string>>;
   /** Terminal ANSI palette overrides. */
-  terminal?: Partial<Record<TerminalTokenKey, string>>;
+  terminal?: Partial<Record<Extract<ThemeTokenKey, `terminal.${string}`>, string>>;
 }
 
 export interface ThemeInfo {

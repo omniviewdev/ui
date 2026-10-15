@@ -1,8 +1,4 @@
-import {
-  COLOR_TOKEN_KEYS,
-  SYNTAX_TOKEN_KEYS,
-  TERMINAL_TOKEN_KEYS,
-} from '../generated/tokenKeys';
+import { THEME_TOKEN_METADATA } from '../generated/tokenKeys';
 import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
 import { dottedKeyToCssVar, validateKeys } from './keyTransform';
 import { LIGHT_THEME_MODES } from './types';
@@ -16,19 +12,19 @@ import type {
 
 function validateDefinition(def: ThemeDefinition): void {
   if (def.colors) {
-    const invalid = validateKeys(Object.keys(def.colors), COLOR_TOKEN_KEYS);
+    const invalid = validateKeys(Object.keys(def.colors), THEME_TOKEN_METADATA, 'color.');
     if (invalid.length > 0) {
       throw new Error(`Unknown color token key(s): ${invalid.join(', ')}`);
     }
   }
   if (def.syntax) {
-    const invalid = validateKeys(Object.keys(def.syntax), SYNTAX_TOKEN_KEYS);
+    const invalid = validateKeys(Object.keys(def.syntax), THEME_TOKEN_METADATA, 'syntax.');
     if (invalid.length > 0) {
       throw new Error(`Unknown syntax token key(s): ${invalid.join(', ')}`);
     }
   }
   if (def.terminal) {
-    const invalid = validateKeys(Object.keys(def.terminal), TERMINAL_TOKEN_KEYS);
+    const invalid = validateKeys(Object.keys(def.terminal), THEME_TOKEN_METADATA, 'terminal.');
     if (invalid.length > 0) {
       throw new Error(`Unknown terminal token key(s): ${invalid.join(', ')}`);
     }

@@ -12,11 +12,7 @@ import type {
   BuiltInThemeMode,
   ThemeDefinition,
 } from './registry/types';
-import type {
-  ColorTokenKey,
-  SyntaxTokenKey,
-  TerminalTokenKey,
-} from './generated/tokenKeys';
+import type { ThemeTokenKey } from './generated/tokenKeys';
 
 describe('BuiltInThemeMode', () => {
   it('accepts all 7 known ids', () => {
@@ -67,41 +63,23 @@ describe('ThemeDefinition', () => {
   });
 
   it('rejects unknown color override keys', () => {
-    // @ts-expect-error — 'not.a.real.key' is not a ColorTokenKey
-    assertType<Partial<Record<ColorTokenKey, string>>>({ 'not.a.real.key': '#000' });
+    assertType<Partial<Record<Extract<ThemeTokenKey, `color.${string}`>, string>>>({
+      // @ts-expect-error — 'not.a.real.key' is not a color ThemeTokenKey
+      'not.a.real.key': '#000',
+    });
   });
 });
 
-describe('ColorTokenKey', () => {
-  it('accepts known color token keys', () => {
-    expectTypeOf<'color.bg.base'>().toExtend<ColorTokenKey>();
-    expectTypeOf<'color.fg.default'>().toExtend<ColorTokenKey>();
-    expectTypeOf<'color.accent.soft'>().toExtend<ColorTokenKey>();
+describe('ThemeTokenKey', () => {
+  it('accepts known color and syntax token keys', () => {
+    expectTypeOf<'color.bg.base'>().toExtend<ThemeTokenKey>();
+    expectTypeOf<'color.fg.default'>().toExtend<ThemeTokenKey>();
+    expectTypeOf<'syntax.keyword'>().toExtend<ThemeTokenKey>();
+    expectTypeOf<'syntax.comment'>().toExtend<ThemeTokenKey>();
   });
 
-  it('rejects unknown color token keys', () => {
-    expectTypeOf<'not.a.real.key'>().not.toExtend<ColorTokenKey>();
-    expectTypeOf<string>().not.toExtend<ColorTokenKey>();
-  });
-});
-
-describe('SyntaxTokenKey', () => {
-  it('accepts known syntax token keys', () => {
-    expectTypeOf<'syntax.keyword'>().toExtend<SyntaxTokenKey>();
-    expectTypeOf<'syntax.string'>().toExtend<SyntaxTokenKey>();
-    expectTypeOf<'syntax.comment'>().toExtend<SyntaxTokenKey>();
-  });
-
-  it('rejects unknown syntax token keys', () => {
-    expectTypeOf<'syntax.bogus'>().not.toExtend<SyntaxTokenKey>();
-    expectTypeOf<string>().not.toExtend<SyntaxTokenKey>();
-  });
-});
-
-describe('TerminalTokenKey', () => {
-  it('is currently never — no string is assignable', () => {
-    // TerminalTokenKey = never (no terminal tokens defined yet).
-    // string is not assignable to never.
-    expectTypeOf<string>().not.toExtend<TerminalTokenKey>();
+  it('rejects unknown token keys', () => {
+    expectTypeOf<'not.a.real.key'>().not.toExtend<ThemeTokenKey>();
+    expectTypeOf<string>().not.toExtend<ThemeTokenKey>();
   });
 });

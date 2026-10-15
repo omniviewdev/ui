@@ -46,6 +46,26 @@ describe('themeRegistry — registration', () => {
     ).toThrow(/unknown.*color.*key/i);
   });
 
+  it('validates each legacy override section against its metadata prefix', () => {
+    expect(() =>
+      registry.register({
+        id: 'bad-syntax',
+        name: 'bad',
+        base: 'dark',
+        syntax: { 'color.bg.base': '#000' } as never,
+      }),
+    ).toThrow(/unknown.*syntax.*key/i);
+
+    expect(() =>
+      registry.register({
+        id: 'bad-terminal',
+        name: 'bad',
+        base: 'dark',
+        terminal: { 'color.ansi.red': '#c00' } as never,
+      }),
+    ).toThrow(/unknown.*terminal.*key/i);
+  });
+
   it('unregisters a custom theme', () => {
     registry.register(makeCustom('temp'));
     registry.unregister('temp');

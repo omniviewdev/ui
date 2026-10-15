@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { THEME_TOKEN_METADATA } from '../generated/tokenKeys';
 import { dottedKeyToCssVar, validateKeys } from './keyTransform';
-import { COLOR_TOKEN_KEYS } from '../generated/tokenKeys';
 
 describe('dottedKeyToCssVar', () => {
   it('transforms dotted key to ov-prefixed CSS variable', () => {
@@ -18,16 +18,16 @@ describe('dottedKeyToCssVar', () => {
 
 describe('validateKeys', () => {
   it('returns empty array when all keys are valid', () => {
-    const valid = [...COLOR_TOKEN_KEYS].slice(0, 2);
-    expect(validateKeys(valid, COLOR_TOKEN_KEYS)).toEqual([]);
+    const valid = Object.keys(THEME_TOKEN_METADATA).slice(0, 2);
+    expect(validateKeys(valid, THEME_TOKEN_METADATA)).toEqual([]);
   });
 
   it('returns unknown keys as invalid', () => {
-    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], COLOR_TOKEN_KEYS))
+    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], THEME_TOKEN_METADATA))
       .toEqual(['color.bogus.nope']);
   });
 
   it('handles empty input', () => {
-    expect(validateKeys([], COLOR_TOKEN_KEYS)).toEqual([]);
+    expect(validateKeys([], THEME_TOKEN_METADATA)).toEqual([]);
   });
 });

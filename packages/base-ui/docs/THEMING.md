@@ -40,9 +40,9 @@ interface ThemeDefinition {
   base: BuiltInThemeMode;                             // one of the 7 built-ins above
   author?: string;
   version?: string;
-  colors?: Partial<Record<ColorTokenKey, string>>;    // UI chrome overrides
-  syntax?: Partial<Record<SyntaxTokenKey, string>>;   // syntax highlighting overrides
-  terminal?: Partial<Record<TerminalTokenKey, string>>; // terminal ANSI palette overrides
+  colors?: Partial<Record<Extract<ThemeTokenKey, `color.${string}`>, string>>;
+  syntax?: Partial<Record<Extract<ThemeTokenKey, `syntax.${string}`>, string>>;
+  terminal?: Partial<Record<Extract<ThemeTokenKey, `terminal.${string}`>, string>>;
 }
 ```
 
@@ -84,7 +84,7 @@ Valid keys for `colors`, `syntax`, and `terminal` are generated from `styles.css
 src/theme/generated/tokenKeys.ts
 ```
 
-The types `ColorTokenKey`, `SyntaxTokenKey`, and `TerminalTokenKey` exported from that file are the exhaustive string-literal unions. If you have TypeScript available, the compiler enforces them; if you are writing raw JSON (e.g., for a Go-backed plugin), the registry enforces them at `register()` time.
+The `ThemeTokenKey` type exported from that file is the exhaustive string-literal union, and `THEME_TOKEN_METADATA` maps every key to its CSS variable and value kind. `ThemeDefinition` narrows that union by prefix for each legacy override section. If you have TypeScript available, the compiler enforces those keys; if you are writing raw JSON (e.g., for a Go-backed plugin), the registry enforces them at `register()` time.
 
 **Dotted notation maps directly to CSS custom properties:**
 

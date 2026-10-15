@@ -250,4 +250,40 @@ describe('CodeEditor', () => {
     );
     expect(mockCreate).toHaveBeenCalledTimes(1);
   });
+  it('rebuilds its theme when the active registration is replaced with the same ID and base', () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'editor-reload-test' } as const;
+    const dispose = registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-reload-test/theme',
+      name: 'Reloadable',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+
+    rtlRender(
+      <ThemeProvider themeId="plugin:editor-reload-test/theme" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+
+    act(() => {
+      dispose();
+      registry.register({
+        schemaVersion: 1,
+        id: 'plugin:editor-reload-test/theme',
+        name: 'Reloaded',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      }, owner);
+    });
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+  });
 });

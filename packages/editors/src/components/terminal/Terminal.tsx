@@ -473,7 +473,7 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
 
       if (disposed) return;
 
-      const xtermTheme = buildXtermTheme();
+      const xtermTheme = buildXtermTheme(container);
       const termOptions: Record<string, unknown> = {
         fontSize,
         fontFamily: fontFamily || "'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace",
@@ -575,7 +575,7 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       }
 
       // Theme may have changed while optional addons were loading.
-      term.options.theme = buildXtermTheme();
+      term.options.theme = buildXtermTheme(container);
 
       // Initial fit
       fitAddon.fit();
@@ -717,9 +717,9 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
   useEffect(() => {
     const term = termRef.current as { options?: { theme: unknown } } | null;
     if (term?.options) {
-      term.options.theme = buildXtermTheme();
+      term.options.theme = buildXtermTheme(containerRef.current);
     }
-  }, [theme.id, theme.base]);
+  }, [theme.registration]);
 
   // Update font size dynamically
   useEffect(() => {

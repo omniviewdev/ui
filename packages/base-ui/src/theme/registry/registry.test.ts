@@ -1,6 +1,21 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createThemeRegistry } from './registry';
 import type { ThemeDefinition, ThemeOwner } from './types';
+import { ThemeValidationError, type ThemeValidationErrorCode } from '../validation';
+
+function expectRegistryError(
+  action: () => unknown,
+  code: ThemeValidationErrorCode,
+  path: string,
+): void {
+  try {
+    action();
+    throw new Error('Expected registry operation to fail');
+  } catch (error) {
+    expect(error).toBeInstanceOf(ThemeValidationError);
+    expect(error).toMatchObject({ code, path });
+  }
+}
 
 const user = { kind: 'user', id: 'local' } as const;
 const plugin = { kind: 'plugin', id: 'acme' } as const;
@@ -29,17 +44,31 @@ describe('theme registry', () => {
     expect(registry.getSnapshot()).not.toBe(afterAdd);
   });
 
-  it('rejects duplicate IDs and built-in removal', () => {
+  it('throws typed errors for duplicate, reserved, and owner-mismatched operations', () => {
     const registry = createThemeRegistry();
     registry.register(theme('duplicate'), user);
-    expect(() => registry.register(theme('duplicate'), plugin)).toThrow(/already registered/i);
-    expect(() => registry.unregister('void', { kind: 'builtin', id: 'base-ui' })).toThrow(/built-in/i);
-  });
-
-  it('rejects removal by the wrong owner', () => {
-    const registry = createThemeRegistry();
     registry.register(theme('owned'), plugin);
-    expect(() => registry.unregister('owned', { kind: 'plugin', id: 'other' })).toThrow(/owner/i);
+
+    expectRegistryError(
+      () => registry.register(theme('duplicate'), plugin),
+      'duplicate_id',
+      'id',
+    );
+    expectRegistryError(
+      () => registry.register(theme('void'), plugin),
+      'reserved_id',
+      'id',
+    );
+    expectRegistryError(
+      () => registry.unregister('void', { kind: 'builtin', id: 'base-ui' }),
+      'reserved_id',
+      'id',
+    );
+    expectRegistryError(
+      () => registry.unregister('owned', { kind: 'plugin', id: 'other' }),
+      'owner_mismatch',
+      'owner',
+    );
     expect(registry.has('owned')).toBe(true);
   });
 

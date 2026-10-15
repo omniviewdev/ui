@@ -5,6 +5,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeProvider } from './ThemeProvider';
 import { createThemeRegistry, type ThemeRegistry } from './registry';
 import { useTheme } from './useTheme';
+import themeStyles from './styles.css?inline';
+
+const themeStyleElement = document.createElement('style');
+themeStyleElement.textContent = themeStyles;
+document.head.append(themeStyleElement);
 
 const owner = { kind: 'plugin', id: 'acme' } as const;
 const pluginTheme = {
@@ -226,6 +231,84 @@ describe('controlled ThemeProvider', () => {
   it('supports Strict Mode without losing applied state', () => {
     render(<StrictMode><Harness initial="light" /></StrictMode>);
     expect(document.documentElement.dataset.ovTheme).toBe('light');
+  });
+
+  it('applies built-in theme, density, and motion variables to a configured element root', () => {
+    const root = document.createElement('div');
+    document.body.append(root);
+
+    const mounted = render(
+      <ThemeProvider themeId="light" root={root} initialDensity="compact" initialMotion="reduced">
+        <Reader />
+      </ThemeProvider>,
+    );
+
+    const styles = getComputedStyle(root);
+    expect(styles.getPropertyValue('--ov-color-bg-base').trim()).toBe('#eef0f3');
+    expect(styles.getPropertyValue('--ov-control-height-md').trim()).toBe('30px');
+    expect(styles.getPropertyValue('--ov-duration-interactive').trim()).toBe('0ms');
+
+    mounted.unmount();
+    root.remove();
+  });
+
+  it('inherits a custom theme base palette on a configured element root', () => {
+    const registry = createThemeRegistry();
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:acme/light',
+        name: 'Acme Light',
+        base: 'light',
+        tokens: { 'color.bg.base': '#fff8ee' },
+      },
+      owner,
+    );
+    const root = document.createElement('div');
+    document.body.append(root);
+
+    const mounted = render(
+      <ThemeProvider themeId="plugin:acme/light" registry={registry} root={root}>
+        <Reader />
+      </ThemeProvider>,
+    );
+
+    const styles = getComputedStyle(root);
+    expect(styles.getPropertyValue('--ov-color-bg-base').trim()).toBe('#fff8ee');
+    expect(styles.getPropertyValue('--ov-color-fg-default').trim()).toBe('#1b1d22');
+
+    mounted.unmount();
+    root.remove();
+  });
+
+  it.each([
+    [
+      'solarized-dark',
+      {
+        '--ov-color-editor-selection-inactive-bg': 'rgb(88 110 117 / 0.24)',
+        '--ov-color-editor-bracket-4': '#2aa198',
+        '--ov-color-gutter-added': '#859900',
+        '--ov-color-diff-remove-bg': 'rgb(220 50 47 / 0.18)',
+        '--ov-color-minimap-find-match': '#b58900',
+      },
+    ],
+    [
+      'solarized-light',
+      {
+        '--ov-color-editor-selection-inactive-bg': 'rgb(101 123 131 / 0.18)',
+        '--ov-color-editor-bracket-4': '#2aa198',
+        '--ov-color-gutter-added': '#859900',
+        '--ov-color-diff-remove-bg': 'rgb(220 50 47 / 0.14)',
+        '--ov-color-minimap-find-match': '#b58900',
+      },
+    ],
+  ])('defines a complete %s editor palette', (themeId, expected) => {
+    render(<ThemeProvider themeId={themeId}><Reader /></ThemeProvider>);
+    const styles = getComputedStyle(document.documentElement);
+
+    for (const [property, value] of Object.entries(expected)) {
+      expect(styles.getPropertyValue(property).trim()).toBe(value);
+    }
   });
 
   it('renders without a DOM root during SSR', () => {

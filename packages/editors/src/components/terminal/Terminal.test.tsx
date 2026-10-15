@@ -1012,6 +1012,41 @@ describe('Terminal', () => {
     expect(XTerminal).toHaveBeenCalledTimes(1);
   });
 
+  it('rebuilds its theme when the active registration is replaced with the same ID and base', async () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'terminal-reload-test' } as const;
+    const dispose = registry.register({
+      schemaVersion: 1,
+      id: 'plugin:terminal-reload-test/theme',
+      name: 'Reloadable',
+      base: 'dark',
+      tokens: { 'color.terminal.bg': '#111111' },
+    }, owner);
+
+    rtlRender(
+      <ThemeProvider themeId="plugin:terminal-reload-test/theme" registry={registry}>
+        <Terminal />
+      </ThemeProvider>,
+    );
+    await waitForInit();
+
+    act(() => {
+      dispose();
+      registry.register({
+        schemaVersion: 1,
+        id: 'plugin:terminal-reload-test/theme',
+        name: 'Reloaded',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#222222' },
+      }, owner);
+    });
+
+    expect(mockTerminal.options.theme).toEqual(
+      expect.objectContaining({ background: '#222222' }),
+    );
+    expect(XTerminal).toHaveBeenCalledTimes(1);
+  });
+
   it('applies a same-base theme switch that occurs while WebGL initialization is pending', async () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'terminal-init-test' } as const;

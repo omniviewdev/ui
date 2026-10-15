@@ -1,4 +1,4 @@
-import { validateThemeDefinition } from '../validation';
+import { ThemeValidationError, validateThemeDefinition } from '../validation';
 import { BUILT_IN_THEME_DEFINITIONS } from './builtIns';
 import { BUILT_IN_THEMES } from './catalog';
 import type {
@@ -64,9 +64,24 @@ export function createThemeRegistry(): ThemeRegistry {
 
   const registry: ThemeRegistry = {
     register(theme: ThemeDefinition, owner: ThemeOwner): () => void {
-      if (owner.kind === 'builtin') throw new Error('Only base-ui may register built-in themes');
+      if (owner.kind === 'builtin') {
+        throw new ThemeValidationError(
+          'reserved_id',
+          'owner.kind',
+          'Only base-ui may register built-in themes',
+        );
+      }
       const definition = validateThemeDefinition(theme);
-      if (themes.has(definition.id)) throw new Error(`Theme "${definition.id}" is already registered`);
+      const existing = themes.get(definition.id);
+      if (existing) {
+        throw new ThemeValidationError(
+          existing.builtIn ? 'reserved_id' : 'duplicate_id',
+          'id',
+          existing.builtIn
+            ? `Theme ID "${definition.id}" is reserved for a built-in theme`
+            : `Theme "${definition.id}" is already registered`,
+        );
+      }
       const frozenOwner = Object.freeze({ ...owner });
       const registered: Readonly<RegisteredTheme> = Object.freeze({
         id: definition.id,
@@ -95,15 +110,33 @@ export function createThemeRegistry(): ThemeRegistry {
     unregister(id: string, owner: ThemeOwner): boolean {
       const registered = themes.get(id);
       if (!registered) return false;
-      if (registered.builtIn) throw new Error(`Cannot unregister built-in theme "${id}"`);
-      if (!ownerMatches(registered.owner, owner)) throw new Error(`Theme "${id}" owner mismatch`);
+      if (registered.builtIn) {
+        throw new ThemeValidationError(
+          'reserved_id',
+          'id',
+          `Cannot unregister built-in theme "${id}"`,
+        );
+      }
+      if (!ownerMatches(registered.owner, owner)) {
+        throw new ThemeValidationError(
+          'owner_mismatch',
+          'owner',
+          `Theme "${id}" owner mismatch`,
+        );
+      }
       themes.delete(id);
       invalidateSnapshot();
       return true;
     },
 
     unregisterOwner(owner: ThemeOwner): number {
-      if (owner.kind === 'builtin') throw new Error('Cannot unregister built-in themes');
+      if (owner.kind === 'builtin') {
+        throw new ThemeValidationError(
+          'reserved_id',
+          'owner.kind',
+          'Cannot unregister built-in themes',
+        );
+      }
       let removed = 0;
       for (const [id, registered] of themes) {
         if (!registered.builtIn && ownerMatches(registered.owner, owner)) {

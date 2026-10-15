@@ -1,5 +1,5 @@
 :root,
-:root[data-ov-theme='dark'] {
+[data-ov-theme='dark'] {
   --ov-primitive-gray-0: #090a0c;
   --ov-primitive-gray-50: #111214;
   --ov-primitive-gray-100: #15171a;
@@ -575,7 +575,7 @@
   --ov-color-tab-bg: transparent;
   --ov-color-tab-fg: var(--ov-color-fg-muted);
   --ov-color-tab-border: var(--ov-color-border-muted);
-  --ov-color-tab-active-bg: var(--ov-color-bg-surface);  /* matches editor content */
+  --ov-color-tab-active-bg: var(--ov-color-bg-surface); /* matches editor content */
   --ov-color-tab-active-fg: var(--ov-color-fg-default);
   --ov-color-tab-active-border: var(--ov-color-brand-400);
   --ov-color-tab-inactive-bg: transparent;
@@ -585,12 +585,12 @@
   --ov-color-tab-modified-border: var(--ov-color-warning);
   --ov-color-editor-group-bg: var(--ov-color-bg-surface);
   --ov-color-editor-group-border: var(--ov-color-border-default);
-  --ov-color-editor-group-header-bg: var(--ov-color-bg-base);  /* tab bar = chrome level */
+  --ov-color-editor-group-header-bg: var(--ov-color-bg-base); /* tab bar = chrome level */
   --ov-color-editor-group-drop-border: var(--ov-color-brand-400);
   --ov-size-tab-height: 35px;
 
   /* Editor tokens */
-  --ov-color-editor-bg: var(--ov-color-bg-surface);  /* editor content = surface level */
+  --ov-color-editor-bg: var(--ov-color-bg-surface); /* editor content = surface level */
   --ov-color-editor-fg: var(--ov-color-fg-default);
   --ov-color-editor-cursor: var(--ov-color-accent-strong);
   --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
@@ -690,7 +690,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='light'] {
+[data-ov-theme='light'] {
   --ov-color-bg-base: #eef0f3;
   --ov-color-bg-surface: #f7f8fa;
   --ov-color-bg-surface-raised: #ffffff;
@@ -812,7 +812,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='high-contrast-dark'] {
+[data-ov-theme='high-contrast-dark'] {
   --ov-color-bg-base: #000000;
   --ov-color-bg-surface: #0a0a0a;
   --ov-color-bg-surface-raised: #161616;
@@ -925,7 +925,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='high-contrast-light'] {
+[data-ov-theme='high-contrast-light'] {
   --ov-color-bg-base: #ffffff;
   --ov-color-bg-surface: #ffffff;
   --ov-color-bg-surface-raised: #ffffff;
@@ -1042,7 +1042,7 @@
  * Obsidian — near-black neutral, punchy cobalt accent
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='obsidian'] {
+[data-ov-theme='obsidian'] {
   --ov-color-bg-base: #12141a;
   --ov-color-bg-surface: #16181c;
   --ov-color-bg-surface-raised: #1c1f25;
@@ -1115,7 +1115,7 @@
  * Carbon — pure achromatic grays, maximum content clarity
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='carbon'] {
+[data-ov-theme='carbon'] {
   --ov-color-bg-base: #0f0f0f;
   --ov-color-bg-surface: #161616;
   --ov-color-bg-surface-raised: #1e1e1e;
@@ -1188,7 +1188,7 @@
  * Void — ultra-deep warm-neutral grays, luxury feel
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='void'] {
+[data-ov-theme='void'] {
   --ov-color-bg-base: #0e0f11;
   --ov-color-bg-surface: #141517;
   --ov-color-bg-surface-raised: #1a1b1e;
@@ -1257,7 +1257,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-density='compact'] {
+[data-ov-density='compact'] {
   --ov-control-height-sm: 24px;
   --ov-control-height-md: 30px;
   --ov-control-height-lg: 34px;
@@ -1430,7 +1430,7 @@
   --ov-size-datepicker-gap: 1px;
 }
 
-:root[data-ov-theme='solarized-dark'] {
+[data-ov-theme='solarized-dark'] {
   --ov-color-bg-base: #002b36;
   --ov-color-bg-surface: #073642;
   --ov-color-bg-surface-raised: #073642;
@@ -1459,6 +1459,38 @@
   --ov-color-editor-fg: var(--ov-color-fg-default);
   --ov-color-editor-cursor: #268bd2;
   --ov-color-editor-selection-bg: rgb(38 139 210 / 0.3);
+  --ov-color-editor-selection-inactive-bg: rgb(88 110 117 / 0.24);
+  --ov-color-editor-line-highlight-bg: rgb(0 43 54 / 0.55);
+  --ov-color-editor-line-highlight-border: transparent;
+  --ov-color-editor-line-number: #586e75;
+  --ov-color-editor-line-number-active: #839496;
+  --ov-color-editor-whitespace: #586e75;
+  --ov-color-editor-indent-guide: rgb(88 110 117 / 0.5);
+  --ov-color-editor-indent-guide-active: #839496;
+  --ov-color-editor-ruler: #586e75;
+  --ov-color-editor-find-match-bg: rgb(181 137 0 / 0.35);
+  --ov-color-editor-find-match-border: #b58900;
+  --ov-color-editor-find-range-bg: rgb(181 137 0 / 0.16);
+  --ov-color-editor-link: #268bd2;
+  --ov-color-editor-bracket-match-bg: rgb(108 113 196 / 0.24);
+  --ov-color-editor-bracket-match-border: #6c71c4;
+  --ov-color-editor-bracket-1: #b58900;
+  --ov-color-editor-bracket-2: #d33682;
+  --ov-color-editor-bracket-3: #268bd2;
+  --ov-color-editor-bracket-4: #2aa198;
+  --ov-color-editor-bracket-5: #859900;
+  --ov-color-editor-bracket-6: #cb4b16;
+  --ov-color-gutter-bg: #073642;
+  --ov-color-gutter-added: #859900;
+  --ov-color-gutter-modified: #268bd2;
+  --ov-color-gutter-deleted: #dc322f;
+  --ov-color-diff-insert-bg: rgb(133 153 0 / 0.18);
+  --ov-color-diff-remove-bg: rgb(220 50 47 / 0.18);
+  --ov-color-minimap-bg: #073642;
+  --ov-color-minimap-selection: rgb(38 139 210 / 0.24);
+  --ov-color-minimap-error: #dc322f;
+  --ov-color-minimap-warning: #b58900;
+  --ov-color-minimap-find-match: #b58900;
   --ov-color-terminal-bg: #073642;
   --ov-color-terminal-fg: var(--ov-color-fg-default);
   --ov-color-terminal-cursor: #268bd2;
@@ -1503,7 +1535,7 @@
   --ov-syntax-punctuation: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='solarized-light'] {
+[data-ov-theme='solarized-light'] {
   --ov-color-bg-base: #fdf6e3;
   --ov-color-bg-surface: #eee8d5;
   --ov-color-bg-surface-raised: #fdf6e3;
@@ -1532,6 +1564,38 @@
   --ov-color-editor-fg: var(--ov-color-fg-default);
   --ov-color-editor-cursor: #268bd2;
   --ov-color-editor-selection-bg: rgb(38 139 210 / 0.24);
+  --ov-color-editor-selection-inactive-bg: rgb(101 123 131 / 0.18);
+  --ov-color-editor-line-highlight-bg: #fdf6e3;
+  --ov-color-editor-line-highlight-border: transparent;
+  --ov-color-editor-line-number: #839496;
+  --ov-color-editor-line-number-active: #657b83;
+  --ov-color-editor-whitespace: #93a1a1;
+  --ov-color-editor-indent-guide: rgb(147 161 161 / 0.55);
+  --ov-color-editor-indent-guide-active: #657b83;
+  --ov-color-editor-ruler: #93a1a1;
+  --ov-color-editor-find-match-bg: rgb(181 137 0 / 0.28);
+  --ov-color-editor-find-match-border: #b58900;
+  --ov-color-editor-find-range-bg: rgb(181 137 0 / 0.12);
+  --ov-color-editor-link: #268bd2;
+  --ov-color-editor-bracket-match-bg: rgb(108 113 196 / 0.18);
+  --ov-color-editor-bracket-match-border: #6c71c4;
+  --ov-color-editor-bracket-1: #b58900;
+  --ov-color-editor-bracket-2: #d33682;
+  --ov-color-editor-bracket-3: #268bd2;
+  --ov-color-editor-bracket-4: #2aa198;
+  --ov-color-editor-bracket-5: #859900;
+  --ov-color-editor-bracket-6: #cb4b16;
+  --ov-color-gutter-bg: #eee8d5;
+  --ov-color-gutter-added: #859900;
+  --ov-color-gutter-modified: #268bd2;
+  --ov-color-gutter-deleted: #dc322f;
+  --ov-color-diff-insert-bg: rgb(133 153 0 / 0.14);
+  --ov-color-diff-remove-bg: rgb(220 50 47 / 0.14);
+  --ov-color-minimap-bg: #eee8d5;
+  --ov-color-minimap-selection: rgb(38 139 210 / 0.18);
+  --ov-color-minimap-error: #dc322f;
+  --ov-color-minimap-warning: #b58900;
+  --ov-color-minimap-find-match: #b58900;
   --ov-color-terminal-bg: #eee8d5;
   --ov-color-terminal-fg: var(--ov-color-fg-default);
   --ov-color-terminal-cursor: #268bd2;
@@ -1576,7 +1640,7 @@
   --ov-syntax-punctuation: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-density='comfortable'] {
+[data-ov-density='comfortable'] {
   --ov-control-height-sm: 28px;
   --ov-control-height-md: 36px;
   --ov-control-height-lg: 42px;
@@ -1749,7 +1813,7 @@
   --ov-size-datepicker-gap: 2px;
 }
 
-:root[data-ov-motion='reduced'] {
+[data-ov-motion='reduced'] {
   --ov-duration-interactive: 0ms;
   --ov-duration-panel: 0ms;
 }

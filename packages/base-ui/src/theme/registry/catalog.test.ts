@@ -90,8 +90,8 @@ describe('built-in theme catalog', () => {
   it('provides an explicit static selector and complete surface tokens for every built-in', () => {
     for (const theme of BUILT_IN_THEMES) {
       const selector = theme.id === 'dark'
-        ? /:root\s*,\s*:root\[data-ov-theme=['"]dark['"]\]\s*\{/
-        : new RegExp(`:root\\[data-ov-theme=['"]${theme.id}['"]\\]\\s*\\{`);
+        ? /:root\s*,\s*\[data-ov-theme=['"]dark['"]\]\s*\{/
+        : new RegExp(`\\[data-ov-theme=['"]${theme.id}['"]\\]\\s*\\{`);
       expect(styles, `${theme.id} must have an explicit selector`).toMatch(selector);
 
       document.documentElement.dataset.ovTheme = theme.id;

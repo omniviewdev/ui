@@ -21,7 +21,10 @@ saving the selected ID. `useTheme().setTheme(id)` calls `onThemeChange`; it does
 not mutate hidden provider state.
 
 The provider applies `data-ov-theme`, `data-ov-density`, and `data-ov-motion`
-to `document.documentElement` by default. A host can supply another `root`.
+to `document.documentElement` by default. A host can supply another `root`;
+built-in palettes and density/motion selectors apply directly to that element.
+Monaco and Xterm resolve tokens from their nearest themed ancestor, so editors
+inside a non-document provider root use that root's built-in or custom palette.
 
 ## Resolution contract
 

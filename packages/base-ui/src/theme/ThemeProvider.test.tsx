@@ -98,6 +98,61 @@ describe('controlled ThemeProvider', () => {
     expect(document.documentElement.dataset.ovMotion).toBe('reduced');
   });
 
+  it('removes density and motion attributes when the root changes', () => {
+    const firstRoot = document.createElement('div');
+    const secondRoot = document.createElement('div');
+    const mounted = render(
+      <ThemeProvider themeId="dark" root={firstRoot} initialDensity="compact" initialMotion="reduced">
+        <Reader />
+      </ThemeProvider>,
+    );
+
+    mounted.rerender(
+      <ThemeProvider themeId="dark" root={secondRoot} initialDensity="compact" initialMotion="reduced">
+        <Reader />
+      </ThemeProvider>,
+    );
+
+    expect(firstRoot.dataset.ovDensity).toBeUndefined();
+    expect(firstRoot.dataset.ovMotion).toBeUndefined();
+    expect(secondRoot.dataset.ovDensity).toBe('compact');
+    expect(secondRoot.dataset.ovMotion).toBe('reduced');
+  });
+
+  it('removes density and motion attributes when its root becomes null', () => {
+    const root = document.createElement('div');
+    const mounted = render(
+      <ThemeProvider themeId="dark" root={root}><Reader /></ThemeProvider>,
+    );
+
+    mounted.rerender(
+      <ThemeProvider themeId="dark" root={null}><Reader /></ThemeProvider>,
+    );
+
+    expect(root.dataset.ovDensity).toBeUndefined();
+    expect(root.dataset.ovMotion).toBeUndefined();
+  });
+
+  it('does not remove density and motion owned by a newer overlapping provider', () => {
+    const root = document.createElement('div');
+    const earlier = render(
+      <ThemeProvider themeId="dark" root={root} initialDensity="compact" initialMotion="reduced">
+        <span />
+      </ThemeProvider>,
+    );
+    const later = render(
+      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+    );
+
+    earlier.unmount();
+    expect(root.dataset.ovDensity).toBe('comfortable');
+    expect(root.dataset.ovMotion).toBe('normal');
+
+    later.unmount();
+    expect(root.dataset.ovDensity).toBeUndefined();
+    expect(root.dataset.ovMotion).toBeUndefined();
+  });
+
   it('does not access localStorage', () => {
     const getItem = vi.spyOn(Storage.prototype, 'getItem');
     const setItem = vi.spyOn(Storage.prototype, 'setItem');

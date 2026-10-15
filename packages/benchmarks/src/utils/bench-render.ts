@@ -8,7 +8,7 @@ import { resolveOptions, type BenchRenderOptions } from './bench-options';
  * Wraps a ReactElement in the ThemeProvider needed for @omniview components.
  */
 function wrapWithTheme(element: ReactElement): ReactElement {
-  return createElement(ThemeProvider, { persist: false }, element);
+  return createElement(ThemeProvider, { themeId: 'dark' }, element);
 }
 
 /**

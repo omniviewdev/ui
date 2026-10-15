@@ -42,8 +42,8 @@ const preview: Preview = {
 
       return (
         <ThemeProvider
-          persist={false}
-          initialTheme={theme}
+          themeId={theme}
+          onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}
           initialDensity={density}
           initialMotion={motion}
         >

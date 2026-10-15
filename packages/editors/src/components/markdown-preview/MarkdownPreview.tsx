@@ -190,7 +190,7 @@ function MarkdownContent({ content, allowHtml }: { content: string; allowHtml: b
   return (
     <ReactMarkdown
       skipHtml={!allowHtml}
-      remarkPlugins={REMARK_PLUGINS}
+      remarkPlugins={[...REMARK_PLUGINS]}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rehypePlugins={rehypePlugins as any}
       components={markdownComponents}

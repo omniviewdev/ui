@@ -1,5 +1,6 @@
-import { render, screen, act } from '@testing-library/react';
-import { createRef } from 'react';
+import { render as rtlRender, screen, act } from '@testing-library/react';
+import { createRef, type ReactElement, type ReactNode } from 'react';
+import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
 
@@ -81,19 +82,19 @@ vi.mock('../../schemas', () => ({
   },
 }));
 
-vi.mock('../../themes/useEditorTheme', () => ({
-  useEditorTheme: () => ({ isDark: false }),
-}));
-
-vi.mock('../../themes/monaco', () => ({
-  buildMonacoTheme: () => ({ base: 'vs', inherit: true, rules: [], colors: {} }),
-  OV_MONACO_THEME: 'ov-theme',
-}));
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetModel.mockReturnValue(null);
 });
+
+function ThemeWrapper({ children }: { children: ReactNode }) {
+  return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
+}
+
+function render(ui: ReactElement) {
+  return rtlRender(ui, { wrapper: ThemeWrapper });
+}
 
 describe('CodeEditor', () => {
   it('renders the editor container', () => {
@@ -210,5 +211,43 @@ describe('CodeEditor', () => {
     unmount();
     expect(mockModel.dispose).toHaveBeenCalled();
     expect(mockEditorInstance.dispose).toHaveBeenCalled();
+  });
+
+  it('rebuilds its theme from current tokens when switching custom themes with the same base', () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'editor-test' } as const;
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#222222' },
+    }, owner);
+
+    const mounted = rtlRender(
+      <ThemeProvider themeId="plugin:editor-test/first" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+    mounted.rerender(
+      <ThemeProvider themeId="plugin:editor-test/second" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+    expect(mockCreate).toHaveBeenCalledTimes(1);
   });
 });

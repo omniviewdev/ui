@@ -1,5 +1,7 @@
-import { render, screen, act } from '@testing-library/react';
-import { createRef } from 'react';
+import { render as rtlRender, screen, act } from '@testing-library/react';
+import { createRef, type ReactElement, type ReactNode } from 'react';
+import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
+import { Terminal as XTerminal } from '@xterm/xterm';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { Terminal, type TerminalHandle } from './Terminal';
 
@@ -185,6 +187,14 @@ async function waitForInit() {
   }
 }
 
+
+function ThemeWrapper({ children }: { children: ReactNode }) {
+  return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
+}
+
+function render(ui: ReactElement) {
+  return rtlRender(ui, { wrapper: ThemeWrapper });
+}
 describe('Terminal', () => {
   it('renders terminal container', () => {
     render(<Terminal />);
@@ -955,5 +965,43 @@ describe('Terminal', () => {
       expect(fitIndex).toBeGreaterThanOrEqual(0);
       expect(readyIndex).toBeGreaterThan(fitIndex);
     });
+  });
+
+  it('rebuilds its theme from current tokens when switching custom themes with the same base', async () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'terminal-test' } as const;
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:terminal-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.terminal.bg': '#111111' },
+    }, owner);
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:terminal-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.terminal.bg': '#222222' },
+    }, owner);
+
+    const mounted = rtlRender(
+      <ThemeProvider themeId="plugin:terminal-test/first" registry={registry}>
+        <Terminal />
+      </ThemeProvider>,
+    );
+    await waitForInit();
+    expect(XTerminal).toHaveBeenCalledTimes(1);
+
+    mounted.rerender(
+      <ThemeProvider themeId="plugin:terminal-test/second" registry={registry}>
+        <Terminal />
+      </ThemeProvider>,
+    );
+
+    expect(mockTerminal.options.theme).toEqual(
+      expect.objectContaining({ background: '#222222' }),
+    );
+    expect(XTerminal).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import { getComputedToken } from './useEditorTheme';
-import type { ThemeMode } from './types';
+import type { BuiltInThemeId } from '@omniviewdev/base-ui';
 
 interface MonacoThemeData {
   base: 'vs' | 'vs-dark' | 'hc-black' | 'hc-light';
@@ -52,7 +52,7 @@ function hexToken(name: string): string {
   return toHex(token(name));
 }
 
-function getBaseTheme(mode: ThemeMode): 'vs' | 'vs-dark' | 'hc-black' | 'hc-light' {
+function getBaseTheme(mode: BuiltInThemeId): 'vs' | 'vs-dark' | 'hc-black' | 'hc-light' {
   switch (mode) {
     case 'light':
       return 'vs';
@@ -101,7 +101,7 @@ function filterColors(colors: Record<string, string>): Record<string, string> {
   return result;
 }
 
-export function buildMonacoTheme(mode: ThemeMode): MonacoThemeData {
+export function buildMonacoTheme(mode: BuiltInThemeId): MonacoThemeData {
   const rules = [
     tokenRule('comment', '--ov-syntax-comment', '--ov-syntax-style-comment', 'italic'),
     tokenRule('string', '--ov-syntax-string'),

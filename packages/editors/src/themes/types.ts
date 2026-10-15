@@ -1,1 +1,6 @@
-export type ThemeMode = 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light';
+import type { BuiltInThemeId } from '@omniviewdev/base-ui';
+
+export interface EditorTheme {
+  id: string;
+  base: BuiltInThemeId;
+}

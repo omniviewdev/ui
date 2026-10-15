@@ -716,7 +716,7 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
     if (term?.options) {
       term.options.theme = buildXtermTheme();
     }
-  }, [theme]);
+  }, [theme.id, theme.base]);
 
   // Update font size dynamically
   useEffect(() => {

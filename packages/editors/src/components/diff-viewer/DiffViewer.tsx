@@ -48,7 +48,7 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
   useEffect(() => {
     if (!containerRef.current) return;
 
-    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
+    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base));
     monaco.editor.setTheme(OV_MONACO_THEME);
 
     const editor = monaco.editor.createDiffEditor(containerRef.current, {
@@ -117,9 +117,9 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
   // Update theme
   useEffect(() => {
     if (!isReady) return;
-    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
+    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base));
     monaco.editor.setTheme(OV_MONACO_THEME);
-  }, [theme, isReady]);
+  }, [isReady, theme.id, theme.base]);
 
   const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
 

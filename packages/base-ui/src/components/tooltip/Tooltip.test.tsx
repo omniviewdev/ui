@@ -2,9 +2,96 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
+import { IconButton } from '../icon-button';
 import { Tooltip } from './Tooltip';
 
 describe('Tooltip', () => {
+  it('preserves explicitly styled rendered triggers and hover interaction', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(
+      <Tooltip.Provider delay={0} closeDelay={0}>
+        <Tooltip.Root size="lg" color="brand" variant="solid">
+          <Tooltip.Trigger
+            render={
+              <IconButton aria-label="Reset widths" size="sm" color="neutral" variant="outline">
+                <span aria-hidden>Reset</span>
+              </IconButton>
+            }
+          />
+          <Tooltip.Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Popup>Reset column widths</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>
+      </Tooltip.Provider>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Reset widths' });
+    expect(trigger).toHaveAttribute('data-ov-size', 'sm');
+    expect(trigger).toHaveAttribute('data-ov-color', 'neutral');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'outline');
+    await user.hover(trigger);
+    expect(await screen.findByText('Reset column widths')).toBeInTheDocument();
+  });
+
+  it('prioritizes explicit trigger styles independently of rendered styles', () => {
+    renderWithTheme(
+      <Tooltip.Root size="lg" color="brand" variant="solid">
+        <Tooltip.Trigger
+          size="xs"
+          render={
+            <IconButton aria-label="Reset widths" size="sm" variant="outline">
+              <span aria-hidden>Reset</span>
+            </IconButton>
+          }
+        />
+      </Tooltip.Root>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Reset widths' });
+    expect(trigger).toHaveAttribute('data-ov-size', 'xs');
+    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'outline');
+  });
+
+  it('inherits styles without interpreting native input props as library styles', () => {
+    renderWithTheme(
+      <Tooltip.Root size="lg" color="brand" variant="solid">
+        <Tooltip.Trigger render={<input aria-label="Filter columns" size={12} color="#123456" />} />
+      </Tooltip.Root>,
+    );
+
+    const trigger = screen.getByRole('textbox', { name: 'Filter columns' });
+    expect(trigger).toHaveAttribute('size', '12');
+    expect(trigger).toHaveAttribute('data-ov-size', 'lg');
+    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'solid');
+  });
+
+  it('preserves inherited styling and hover interaction through a render function', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(
+      <Tooltip.Provider delay={0} closeDelay={0}>
+        <Tooltip.Root size="lg" color="brand" variant="solid">
+          <Tooltip.Trigger render={(props) => <button {...props}>Reset widths</button>} />
+          <Tooltip.Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Popup>Reset column widths</Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>
+      </Tooltip.Provider>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Reset widths' });
+    expect(trigger).toHaveAttribute('data-ov-size', 'lg');
+    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'solid');
+    await user.hover(trigger);
+    expect(await screen.findByText('Reset column widths')).toBeInTheDocument();
+  });
+
   it('renders neutral color on popup', () => {
     renderWithTheme(
       <Tooltip.Root defaultOpen color="neutral">

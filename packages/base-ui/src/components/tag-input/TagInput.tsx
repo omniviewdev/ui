@@ -182,6 +182,7 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
         <Chip
           key={`${tag}-${index}`}
           size={size}
+          className={styles.Tag}
           variant="soft"
           color="neutral"
           endDecorator={

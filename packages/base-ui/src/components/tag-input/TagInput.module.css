@@ -1,46 +1,61 @@
 .Root {
   --_ov-min-height: var(--ov-size-button-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-gap: var(--ov-space-stack-xs, var(--ov-primitive-space-1)); /* no --ov-space-stack-xs semantic token yet */
-  --_ov-padding: var(--ov-space-stack-sm);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-gap: var(--ov-space-stack-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-padding-block: 2px;
 
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--_ov-gap);
   min-height: var(--_ov-min-height);
-  padding: var(--_ov-padding);
-  background: var(--ov-color-bg-surface);
+  padding: var(--_ov-padding-block) var(--_ov-padding-inline);
+  background: color-mix(
+    in srgb,
+    var(--ov-color-bg-surface-raised) 88%,
+    var(--ov-color-state-hover) 12%
+  );
   border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-control);
   cursor: text;
   box-sizing: border-box;
+  font-family: var(--ov-font-sans);
   transition:
     border-color var(--ov-duration-interactive) var(--ov-ease-standard),
     box-shadow var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
 .Root[data-ov-size='xs'] {
-  --_ov-min-height: var(--ov-size-button-height-xs, var(--ov-size-button-height-sm));
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-min-height: var(--ov-size-button-height-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-padding-block: 0px;
 }
 
 .Root[data-ov-size='sm'] {
   --_ov-min-height: var(--ov-size-button-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
+  --_ov-padding-block: 1px;
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-min-height: var(--ov-size-button-height-lg);
-  --_ov-font-size: var(--ov-font-size-subheading);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
+  --_ov-padding-block: 3px;
 }
 
 .Root[data-ov-size='xl'] {
-  --_ov-min-height: var(--ov-size-button-height-xl, var(--ov-size-button-height-lg));
-  --_ov-font-size: var(--ov-font-size-subheading);
+  --_ov-min-height: var(--ov-size-button-height-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-padding-block: 4px;
 }
 
-.Root[data-ov-focused='true'] {
+.Root[data-ov-focused='true'],
+.Root:focus-within {
   border-color: var(--ov-color-border-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
@@ -50,10 +65,19 @@
   cursor: not-allowed;
 }
 
+.Root .Tag {
+  --_ov-tag-chip-interior-height: calc(var(--_ov-height) - 2px);
+
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
 .TagRemove {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  inline-size: var(--_ov-tag-chip-interior-height);
+  block-size: var(--_ov-tag-chip-interior-height);
   padding: 0;
   margin: 0;
   border: none;
@@ -80,13 +104,13 @@
 
 .Input {
   flex: 1;
-  min-width: 60px;
+  min-width: min(60px, 100%);
   border: none;
   background: transparent;
   color: var(--ov-color-fg-default);
   font: inherit;
   font-size: var(--_ov-font-size);
-  line-height: 1.4;
+  line-height: 1.2;
   outline: none;
   padding: 0;
 }

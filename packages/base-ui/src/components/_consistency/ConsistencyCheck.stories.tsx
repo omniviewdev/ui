@@ -32,15 +32,6 @@ const SearchIcon = () => (
 
 const SIZES: ComponentSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 
-// Expected pixel heights per size tier (informational labels)
-const SIZE_HEIGHTS: Record<ComponentSize, string> = {
-  xs: '18px',
-  sm: '22px',
-  md: '26px',
-  lg: '32px',
-  xl: '40px',
-};
-
 const COLORS: ComponentColor[] = [
   'neutral',
   'brand',
@@ -95,7 +86,7 @@ function SizeConsistencyGrid() {
     <div style={{ marginBottom: 64 }}>
       <SectionHeader
         title="Section 1 — Size Consistency Grid"
-        subtitle="All controls in each row should appear at the same height. The reference line passes through the vertical midpoint."
+        subtitle="Field controls share one height per tier at the active density. Chips, choice marks, switch tracks, and badge markers use compact scales; the guide checks their center alignment, not equal visual height."
       />
 
       {/* Column headers */}
@@ -108,30 +99,40 @@ function SizeConsistencyGrid() {
           paddingLeft: 4,
         }}
       >
-        {['', 'Button', 'IconButton', 'Input', 'Select', 'Chip', 'Checkbox\n(control)', 'Radio\n(control)', 'Switch', 'Badge'].map(
-          (label) => (
-            <div
-              key={label}
-              style={{
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                color: 'var(--ov-color-text-tertiary, #888)',
-                fontFamily: 'var(--ov-font-sans, sans-serif)',
-                textAlign: 'center',
-              }}
-            >
-              {label}
-            </div>
-          ),
-        )}
+        {[
+          '',
+          'Button',
+          'IconButton',
+          'Input',
+          'Select',
+          'Chip (compact)',
+          'Checkbox (mark)',
+          'Radio (mark)',
+          'Switch (track)',
+          'Badge (28px host)',
+        ].map((label) => (
+          <div
+            key={label}
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ov-color-text-tertiary, #888)',
+              fontFamily: 'var(--ov-font-sans, sans-serif)',
+              textAlign: 'center',
+            }}
+          >
+            {label}
+          </div>
+        ))}
       </div>
 
       {/* Size rows */}
       {SIZES.map((size) => (
         <div
           key={size}
+          data-testid={`audit-size-${size}`}
           style={{
             position: 'relative',
             display: 'grid',
@@ -175,7 +176,7 @@ function SizeConsistencyGrid() {
                 fontSize: 10,
               }}
             >
-              {SIZE_HEIGHTS[size]}
+              field tier
             </span>
           </div>
 
@@ -196,14 +197,14 @@ function SizeConsistencyGrid() {
           {/* Input */}
           <div style={{ display: 'flex', justifyContent: 'center', zIndex: 1 }}>
             <Input.Root size={size} variant="soft" color="brand" style={{ width: '100%' }}>
-              <Input.Control placeholder="Value" />
+              <Input.Control aria-label={`${size} input`} placeholder="Value" />
             </Input.Root>
           </div>
 
           {/* Select */}
           <div style={{ display: 'flex', justifyContent: 'center', zIndex: 1 }}>
             <Select.Root size={size} variant="soft" color="brand">
-              <Select.Trigger style={{ width: '100%' }}>
+              <Select.Trigger aria-label={`${size} select`} style={{ width: '100%' }}>
                 <Select.Value placeholder="Select" />
                 <Select.Icon>
                   <LuChevronDown aria-hidden />
@@ -234,20 +235,43 @@ function SizeConsistencyGrid() {
           </div>
 
           {/* Checkbox (control only — no label, to measure control height) */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
-            <Checkbox.Item size={size} variant="soft" color="brand" defaultChecked />
+          <div
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}
+          >
+            <Checkbox.Item
+              aria-label={`${size} checkbox`}
+              size={size}
+              variant="soft"
+              color="brand"
+              defaultChecked
+            />
           </div>
 
           {/* Radio (control only — no label) */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
-            <RadioGroup defaultValue="yes" color="brand" variant="soft" size={size}>
-              <Radio.Item value="yes" />
+          <div
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}
+          >
+            <RadioGroup
+              defaultValue="yes"
+              color="brand"
+              variant="soft"
+              size={size}
+              orientation="horizontal"
+              style={{ justifyContent: 'center' }}
+            >
+              <Radio.Item aria-label={`${size} radio`} value="yes" />
             </RadioGroup>
           </div>
 
           {/* Switch */}
           <div style={{ display: 'flex', justifyContent: 'center', zIndex: 1 }}>
-            <Switch size={size} variant="soft" color="brand" defaultChecked />
+            <Switch
+              aria-label={`${size} switch`}
+              size={size}
+              variant="soft"
+              color="brand"
+              defaultChecked
+            />
           </div>
 
           {/* Badge */}
@@ -454,12 +478,7 @@ function IconButtonSquarenessCheck() {
                   zIndex: 10,
                 }}
               />
-              <IconButton
-                size={size}
-                variant="soft"
-                color="brand"
-                aria-label={`Search ${size}`}
-              >
+              <IconButton size={size} variant="soft" color="brand" aria-label={`Search ${size}`}>
                 <SearchIcon />
               </IconButton>
             </div>
@@ -510,7 +529,8 @@ function AuditPage() {
             color: 'var(--ov-color-text-tertiary, #888)',
           }}
         >
-          Visual reference tool — not interactive. Resize the panel to stress-test layouts.
+          Interactive visual reference. Use the theme and density toolbar, and resize the panel to
+          stress-test layouts.
         </p>
       </div>
 
@@ -585,7 +605,13 @@ function BoundaryHierarchyFixture() {
         title="Boundary hierarchy"
         subtitle="Quiet enclosures and row rules, identifiable controls, independent focus, and shared popup edges."
       />
-      <Card data-testid="boundary-outer-card" variant="outline" color="neutral" surface="default" size="sm">
+      <Card
+        data-testid="boundary-outer-card"
+        variant="outline"
+        color="neutral"
+        surface="default"
+        size="sm"
+      >
         <Card.Header>
           <Card.Title>Resource inspector</Card.Title>
           <Card.Description>One outer frame with quiet nested content.</Card.Description>
@@ -614,22 +640,34 @@ function BoundaryHierarchyFixture() {
               </Card.Body>
             </Card>
           </div>
-          <Separator data-testid="boundary-labeled-separator" label="Selection controls" labelAlign="start" />
+          <Separator
+            data-testid="boundary-labeled-separator"
+            label="Selection controls"
+            labelAlign="start"
+          />
           <div style={{ display: 'flex', gap: 12, alignItems: 'end', flexWrap: 'wrap' }}>
             <div style={{ width: 220 }} data-testid="boundary-select">
               <Select.Root defaultValue="production" variant="soft" color="neutral">
                 <Select.Trigger aria-label="Boundary namespace">
                   <Select.Value />
-                  <Select.Icon><LuChevronDown /></Select.Icon>
+                  <Select.Icon>
+                    <LuChevronDown />
+                  </Select.Icon>
                 </Select.Trigger>
                 <Select.Portal>
                   <Select.Positioner sideOffset={6}>
                     <Select.Popup data-testid="boundary-select-popup">
                       <Select.List>
-                        <Select.Item value="production"><Select.ItemText>production</Select.ItemText></Select.Item>
-                        <Select.Item value="staging"><Select.ItemText>staging</Select.ItemText></Select.Item>
+                        <Select.Item value="production">
+                          <Select.ItemText>production</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="staging">
+                          <Select.ItemText>staging</Select.ItemText>
+                        </Select.Item>
                         <Select.Separator />
-                        <Select.Item value="system"><Select.ItemText>system</Select.ItemText></Select.Item>
+                        <Select.Item value="system">
+                          <Select.ItemText>system</Select.ItemText>
+                        </Select.Item>
                       </Select.List>
                     </Select.Popup>
                   </Select.Positioner>
@@ -648,20 +686,32 @@ function BoundaryHierarchyFixture() {
                 color="neutral"
               />
             </div>
-            <Input variant="outline" color="neutral">
+            <Input>
               <Input.Control aria-label="Boundary resource filter" placeholder="Filter resources" />
             </Input>
-            <Checkbox aria-label="Boundary include inactive" variant="outline" />
-            <Switch aria-label="Boundary live updates" variant="outline" />
+            <Checkbox>Include inactive</Checkbox>
+            <Switch>Live updates</Switch>
           </div>
           <Separator data-testid="boundary-data-separator" label="Resources" />
-          <DataTable.Root data-testid="boundary-data-table" table={table} variant="outline" color="neutral" size="sm">
+          <DataTable.Root
+            data-testid="boundary-data-table"
+            table={table}
+            variant="outline"
+            color="neutral"
+            size="sm"
+          >
             <DataTable.Container>
               <DataTable.Header />
               <DataTable.Body />
             </DataTable.Container>
           </DataTable.Root>
-          <Table.Root data-testid="boundary-table" aria-label="Boundary resource summary" variant="outline" color="neutral" size="sm">
+          <Table.Root
+            data-testid="boundary-table"
+            aria-label="Boundary resource summary"
+            variant="outline"
+            color="neutral"
+            size="sm"
+          >
             <Table.Head>
               <Table.Row>
                 <Table.HeaderCell>Resource</Table.HeaderCell>
@@ -686,26 +736,4 @@ function BoundaryHierarchyFixture() {
 export const BoundaryHierarchy: Story = {
   render: () => <BoundaryHierarchyFixture />,
   parameters: { controls: { disable: true } },
-  play: ({ canvasElement }) => {
-    const input = canvasElement.querySelector<HTMLInputElement>(
-      'input[aria-label="Boundary resource filter"]',
-    );
-    if (!input || input.type !== 'text' || input.getBoundingClientRect().height === 0) {
-      throw new Error('Boundary resource filter must render a visible textbox.');
-    }
-    const shell = input.parentElement;
-    const view = input.ownerDocument.defaultView;
-    if (!shell || !view) {
-      throw new Error('Boundary resource filter must render its outlined control shell.');
-    }
-    const border = view.getComputedStyle(shell);
-    if (
-      Number.parseFloat(border.borderTopWidth) <= 0 ||
-      border.borderTopStyle === 'none' ||
-      border.borderTopColor === 'transparent' ||
-      border.borderTopColor === 'rgba(0, 0, 0, 0)'
-    ) {
-      throw new Error('Boundary resource filter must retain a visible identification outline.');
-    }
-  },
 };

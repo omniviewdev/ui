@@ -15,6 +15,7 @@
   --_ov-focus-ring: var(--ov-color-state-focus-ring);
 
   display: grid;
+  min-inline-size: 0;
   gap: var(--ov-space-stack-sm);
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
@@ -54,7 +55,7 @@
 
 :is(.Root, .ControlShell)[data-ov-color='neutral'] {
   --_ov-accent: var(--ov-color-border-control);
-  --_ov-accent-soft: var(--ov-color-state-selected);
+  --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 :is(.Root, .ControlShell)[data-ov-color='brand'] {
@@ -119,7 +120,11 @@
 }
 
 .ControlShell {
+  /* Resolve the border budget here, before nested buttons set their own size. */
+  --_ov-input-interior-height: calc(var(--_ov-control-height) - 2px);
+
   width: 100%;
+  min-inline-size: 0;
   min-height: var(--_ov-control-height);
   border-radius: var(--ov-radius-control);
   border: 1px solid var(--_ov-border);

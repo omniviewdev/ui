@@ -1,5 +1,14 @@
 # @omniviewdev/base-ui
 
+## Unreleased
+
+### Patch Changes
+
+- Align Button, IconButton, Input, SearchInput, TextField, Select, MultiSelect, TagInput, and NumberInput to one five-tier height scale per density. Keep field heights stable when clearing, typing, or selecting; fit nested affordances inside their parent, retain intentional tag wrapping, and scroll narrow selected-chip rows without overlapping neighboring controls. SearchInput now supports every public size and semantic color.
+- Match resting field surfaces for every public color and variant while retaining semantic accents and popup selection-state colors.
+- Preserve explicit library size, color, and variant props on elements rendered by `Popover.Trigger` and `Tooltip.Trigger`; explicit trigger props take precedence over valid rendered-element style props, then inherited context. Unrelated native or generic props do not override inherited styling.
+- Repair RadioGroup style inheritance for direct and compound radios, make comfortable `xl` choice marks and switch tracks larger than `lg`, keep unchecked choice marks identifiable, and restore visible, contained switch thumbs. The consistency audit now uses default form controls and distinguishes density-aware field heights from compact glyph scales.
+
 ## 0.4.1
 
 ### Patch Changes

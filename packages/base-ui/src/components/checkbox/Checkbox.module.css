@@ -55,7 +55,7 @@
   align-self: center;
 }
 
-.Root:not(:has(.Content)) {
+.Root:not(:has(.Content, .Label, .Description)) {
   grid-template-columns: var(--_ov-control-size);
   column-gap: 0;
 }
@@ -160,8 +160,7 @@
     var(--ov-color-bg-surface-raised) 88%,
     var(--ov-color-state-hover) 12%
   );
-  --_ov-control-border: transparent;
-  --_ov-control-border-hover: transparent;
+  /* Keep the base control boundary: the quiet fill alone cannot identify an empty choice. */
   --_ov-control-bg-checked: var(--_ov-accent-soft-bg);
   --_ov-control-border-checked: transparent;
   --_ov-control-fg-checked: var(--_ov-accent-soft-fg);
@@ -389,5 +388,5 @@
 }
 
 .Item {
-  width: 100%;
+  width: fit-content;
 }

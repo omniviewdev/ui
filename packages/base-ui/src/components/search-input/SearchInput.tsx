@@ -9,12 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { LuSearch, LuX } from 'react-icons/lu';
-import type {
-  ComponentColor,
-  ComponentSize,
-  ComponentVariant,
-  StyledComponentProps,
-} from '../../system/types';
+import type { StyledComponentProps } from '../../system/types';
 import { Input, type InputControlProps } from '../input';
 import { IconButton } from '../icon-button';
 import styles from './SearchInput.module.css';
@@ -50,10 +45,6 @@ export interface SearchInputProps
   controlClassName?: string;
   rootProps?: Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>;
 }
-
-const ALLOWED_VARIANTS: ComponentVariant[] = ['solid', 'soft', 'outline', 'ghost'];
-const ALLOWED_COLORS: ComponentColor[] = ['neutral', 'brand', 'success', 'warning', 'danger'];
-const ALLOWED_SIZES: ComponentSize[] = ['sm', 'md', 'lg'];
 
 export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchInputProps>(
   function SearchInput(
@@ -110,22 +101,13 @@ export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchIn
     };
 
     const showClearButton = clearable && !disabled && resolvedValue.length > 0;
-    const resolvedVariant = ALLOWED_VARIANTS.includes(variant as ComponentVariant)
-      ? (variant as ComponentVariant)
-      : undefined;
-    const resolvedColor = ALLOWED_COLORS.includes(color as ComponentColor)
-      ? (color as ComponentColor)
-      : undefined;
-    const resolvedSize = ALLOWED_SIZES.includes(size as ComponentSize)
-      ? (size as ComponentSize)
-      : undefined;
 
     return (
       <Input.Root
         className={className}
-        variant={resolvedVariant}
-        color={resolvedColor}
-        size={resolvedSize}
+        variant={variant}
+        color={color}
+        size={size}
         disabled={disabled}
         style={style}
         {...rootProps}
@@ -157,8 +139,8 @@ export const SearchInput = forwardRef<ElementRef<typeof Input.Control>, SearchIn
                 <IconButton
                   className={styles.ClearButton}
                   variant="ghost"
-                  color={resolvedColor ?? 'neutral'}
-                  size={resolvedSize}
+                  color={color ?? 'neutral'}
+                  size={size}
                   onClick={handleClear}
                   aria-label={clearButtonLabel}
                 >

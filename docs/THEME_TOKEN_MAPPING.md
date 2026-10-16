@@ -1,56 +1,55 @@
-# Theme Token Mapping (Proposed v1)
+# Theme Token Mapping
 
-This document maps semantic tokens to concrete values per theme mode.
+## Authoritative palette and token sources
 
-## Themes
+Do not copy per-theme hex values into this document. The former proposed
+four-theme palette table diverged from the shipped styles and omitted built-ins.
+Use these sources together:
 
-- `dark` (default)
-- `light`
-- `high-contrast-dark`
-- `high-contrast-light`
+- [Static CSS declarations](../packages/base-ui/src/theme/styles.css): actual
+  palette values, semantic aliases, and density/motion declarations. Follow
+  `var()` aliases in the active theme rather than treating an alias as a color.
+- [Built-in catalog](../packages/base-ui/src/theme/registry/catalog.ts): supported
+  theme IDs and appearance metadata. Storybook's theme toolbar and the theme
+  coverage audit consume this catalog rather than maintaining separate lists.
+- [Generated public token keys and metadata](../packages/base-ui/src/theme/generated/tokenKeys.ts):
+  supported dotted keys, CSS variable names, and value kinds. This is a schema
+  catalog, not a second palette-value table.
+- [Theming guidelines](THEMING.md#boundary-design): role selection and composition.
 
-Default visual direction:
+For theme JSON, `color.border.control` maps to `--ov-color-border-control`,
+and `color.border.overlay` maps to `--ov-color-border-overlay`.
+Regenerate the public catalog with
+`pnpm --filter @omniviewdev/base-ui generate:token-keys` when variables change.
 
-- `dark`: native graphite baseline for Omniview
-- `light`: low-glare neutral light
-- `high-contrast-*`: accessibility-first modes
+## Boundary roles
 
-## Semantic color tokens
+Use `border-muted` for structural hairlines and row rules, `border-default`
+for passive enclosures, and `border-strong` for intentional structural emphasis.
+Necessary control-identification outlines use `border-control`; overlay
+perimeters use `border-overlay`. Keyboard focus remains `border-focus` /
+`state-focus-ring`. Selection and status use their own semantic roles.
+No neutral boundary role derives from foreground/text colors.
 
-| Token                           | Dark                      | Light                    | HC Dark                   | HC Light               |
-| ------------------------------- | ------------------------- | ------------------------ | ------------------------- | ---------------------- |
-| `--ov-color-bg-base`            | `#141518`                 | `#f5f5f6`                | `#000000`                 | `#ffffff`              |
-| `--ov-color-bg-surface`         | `#1a1c20`                 | `#ffffff`                | `#0b0b0b`                 | `#ffffff`              |
-| `--ov-color-bg-surface-raised`  | `#202329`                 | `#fbfbfc`                | `#111111`                 | `#ffffff`              |
-| `--ov-color-bg-surface-overlay` | `#252a31`                 | `#f7f8f9`                | `#181818`                 | `#ffffff`              |
-| `--ov-color-bg-inset`           | `#111316`                 | `#eceef1`                | `#000000`                 | `#f4f4f4`              |
-| `--ov-color-bg-elevated`        | `#2b3038`                 | `#ffffff`                | `#171717`                 | `#ffffff`              |
-| `--ov-color-fg-default`         | `#e2e7ee`                 | `#1b1d22`                | `#ffffff`                 | `#000000`              |
-| `--ov-color-fg-muted`           | `#a1a9b6`                 | `#4b5564`                | `#d7d7d7`                 | `#111111`              |
-| `--ov-color-fg-subtle`          | `#7b8494`                 | `#6b7481`                | `#bcbcbc`                 | `#2d2d2d`              |
-| `--ov-color-fg-disabled`        | `#5b6472`                 | `#9ea6b3`                | `#8d8d8d`                 | `#5c5c5c`              |
-| `--ov-color-fg-inverse`         | `#0e1013`                 | `#f8f9fb`                | `#000000`                 | `#ffffff`              |
-| `--ov-color-border-default`     | `#333944`                 | `#d4d8de`                | `#f0f0f0`                 | `#000000`              |
-| `--ov-color-border-muted`       | `#2a2f37`                 | `#e4e7ec`                | `#ababab`                 | `#3a3a3a`              |
-| `--ov-color-border-strong`      | `#4d5665`                 | `#7a8494`                | `#ffffff`                 | `#000000`              |
-| `--ov-color-border-focus`       | `#7a96db`                 | `#476dce`                | `#ffffff`                 | `#000000`              |
-| `--ov-color-brand-500`          | `#5a7fe2`                 | `#476dce`                | `#7fb3ff`                 | `#004ad7`              |
-| `--ov-color-brand-400`          | `#7092e8`                 | `#5a7fe2`                | `#a6c8ff`                 | `#1d4ed8`              |
-| `--ov-color-brand-300`          | `#89a7ee`                 | `#7092e8`                | `#c8deff`                 | `#2563eb`              |
-| `--ov-color-accent-soft`        | `rgb(90 127 226 / 0.18)`  | `rgb(71 109 206 / 0.13)` | `rgb(127 179 255 / 0.25)` | `rgb(0 74 215 / 0.16)` |
-| `--ov-color-accent-strong`      | `#89a7ee`                 | `#3d5fb0`                | `#d6e8ff`                 | `#0037a3`              |
-| `--ov-color-success`            | `#3aad74`                 | `#2f9161`                | `#73ffa2`                 | `#006b2f`              |
-| `--ov-color-success-soft`       | `rgb(58 173 116 / 0.17)`  | `rgb(47 145 97 / 0.12)`  | `rgb(115 255 162 / 0.25)` | `rgb(0 107 47 / 0.16)` |
-| `--ov-color-warning`            | `#cf9030`                 | `#946221`                | `#ffd27d`                 | `#8a3f00`              |
-| `--ov-color-warning-soft`       | `rgb(207 144 48 / 0.17)`  | `rgb(148 98 33 / 0.12)`  | `rgb(255 210 125 / 0.24)` | `rgb(138 63 0 / 0.16)` |
-| `--ov-color-danger`             | `#c45f5f`                 | `#ad4f4f`                | `#ff9f9f`                 | `#8f0000`              |
-| `--ov-color-danger-soft`        | `rgb(196 95 95 / 0.17)`   | `rgb(173 79 79 / 0.12)`  | `rgb(255 159 159 / 0.24)` | `rgb(143 0 0 / 0.16)`  |
-| `--ov-color-info`               | `#7092e8`                 | `#476dce`                | `#b4d1ff`                 | `#0041bf`              |
-| `--ov-color-info-soft`          | `rgb(112 146 232 / 0.17)` | `rgb(71 109 206 / 0.13)` | `rgb(180 209 255 / 0.24)` | `rgb(0 65 191 / 0.16)` |
-| `--ov-color-state-hover`        | `rgb(161 169 182 / 0.11)` | `rgb(75 85 100 / 0.08)`  | `rgb(255 255 255 / 0.16)` | `rgb(0 0 0 / 0.08)`    |
-| `--ov-color-state-pressed`      | `rgb(161 169 182 / 0.2)`  | `rgb(75 85 100 / 0.14)`  | `rgb(255 255 255 / 0.24)` | `rgb(0 0 0 / 0.14)`    |
-| `--ov-color-state-selected`     | `rgb(90 127 226 / 0.2)`   | `rgb(71 109 206 / 0.14)` | `rgb(127 179 255 / 0.34)` | `rgb(0 74 215 / 0.2)`  |
-| `--ov-color-state-focus-ring`   | `#7a96db`                 | `#476dce`                | `#ffffff`                 | `#000000`              |
+Structural boundaries are deliberately quieter than control outlines in normal
+themes, including Solarized. Required control-identification and state cues
+must meet applicable non-text contrast requirements against their actual adjacent
+colors; decorative boundaries do not inherit a universal 3:1 floor.
+High-contrast themes retain intentionally strong boundaries. Status borders
+retain their semantic accent rather than a neutral or text-derived substitute.
+
+Each built-in `border-overlay` currently aliases its own `border-default`;
+keep the separate role so an overlay can diverge when a theme requires it.
+Neutral Separators use the muted boundary role, independently of their text
+labels. Their default compact-density stroke is one CSS pixel; explicit size
+tiers remain available.
+
+The `Layout/Separator/BoundaryRegression` Storybook fixture covers actual
+horizontal, vertical, and labeled borders across built-ins on both base and
+surface backgrounds. Run its browser assertions when changing these roles:
+computed stroke/color and geometry, not data attributes or token declarations
+alone, establish that a divider is visible. The static cycle audit complements
+this browser coverage; it does not replace it.
 
 ## Shared semantic non-color tokens
 
@@ -176,228 +175,19 @@ Default visual direction:
 | `--ov-duration-panel`                          | `var(--ov-primitive-duration-normal)`      |
 | `--ov-ease-standard`                           | `var(--ov-primitive-ease-standard)`        |
 
-## IDE semantic alias defaults
+## Semantic color aliases
 
-These aliases provide full IDE coverage without forcing immediate per-feature color divergence.
+The shipped IDE, syntax, terminal, and Omniview domain alias mappings are in
+[`styles.css`](../packages/base-ui/src/theme/styles.css); the
+[generated catalog](../packages/base-ui/src/theme/generated/tokenKeys.ts)
+identifies which aliases are public. The former manual alias tables included
+obsolete names and control outlines mapped to passive boundaries. Do not use
+those proposed mappings as an implementation contract.
 
-### Chrome and layout aliases
-
-| Token                        | Default mapping                     |
-| ---------------------------- | ----------------------------------- |
-| `--ov-color-titlebar-bg`     | `var(--ov-color-bg-surface)`        |
-| `--ov-color-titlebar-fg`     | `var(--ov-color-fg-muted)`          |
-| `--ov-color-menubar-bg`      | `var(--ov-color-bg-surface)`        |
-| `--ov-color-activitybar-bg`  | `var(--ov-color-bg-inset)`          |
-| `--ov-color-sidebar-bg`      | `var(--ov-color-bg-surface)`        |
-| `--ov-color-panel-bg`        | `var(--ov-color-bg-surface-raised)` |
-| `--ov-color-statusbar-bg`    | `var(--ov-color-bg-surface)`        |
-| `--ov-color-statusbar-fg`    | `var(--ov-color-fg-muted)`          |
-| `--ov-color-tab-active-bg`   | `var(--ov-color-bg-base)`           |
-| `--ov-color-tab-inactive-bg` | `var(--ov-color-bg-surface)`        |
-| `--ov-color-tab-active-fg`   | `var(--ov-color-fg-default)`        |
-| `--ov-color-tab-inactive-fg` | `var(--ov-color-fg-subtle)`         |
-
-### Editor and diff aliases
-
-| Token                                  | Default mapping                 |
-| -------------------------------------- | ------------------------------- |
-| `--ov-color-editor-bg`                 | `var(--ov-color-bg-base)`       |
-| `--ov-color-editor-fg`                 | `var(--ov-color-fg-default)`    |
-| `--ov-color-editor-line-number`        | `var(--ov-color-fg-subtle)`     |
-| `--ov-color-editor-line-number-active` | `var(--ov-color-fg-muted)`      |
-| `--ov-color-editor-selection-bg`       | `var(--ov-color-accent-soft)`   |
-| `--ov-color-editor-cursor`             | `var(--ov-color-accent-strong)` |
-| `--ov-color-diff-insert-bg`            | `var(--ov-color-success-soft)`  |
-| `--ov-color-diff-remove-bg`            | `var(--ov-color-danger-soft)`   |
-| `--ov-color-diff-change-bg`            | `var(--ov-color-info-soft)`     |
-| `--ov-color-gutter-added`              | `var(--ov-color-success)`       |
-| `--ov-color-gutter-modified`           | `var(--ov-color-info)`          |
-| `--ov-color-gutter-deleted`            | `var(--ov-color-danger)`        |
-
-### List/input/action aliases
-
-| Token                        | Default mapping                     |
-| ---------------------------- | ----------------------------------- |
-| `--ov-color-list-bg`         | `var(--ov-color-bg-surface)`        |
-| `--ov-color-list-fg`         | `var(--ov-color-fg-default)`        |
-| `--ov-color-list-hover-bg`   | `var(--ov-color-state-hover)`       |
-| `--ov-color-list-active-bg`  | `var(--ov-color-state-selected)`    |
-| `--ov-color-input-bg`        | `var(--ov-color-bg-surface-raised)` |
-| `--ov-color-input-fg`        | `var(--ov-color-fg-default)`        |
-| `--ov-color-input-border`    | `var(--ov-color-border-default)`    |
-| `--ov-color-button-bg`       | `var(--ov-color-brand-500)`         |
-| `--ov-color-button-fg`       | `var(--ov-color-fg-inverse)`        |
-| `--ov-color-button-hover-bg` | `var(--ov-color-brand-400)`         |
-
-### Terminal aliases
-
-| Token                              | Default mapping                    |
-| ---------------------------------- | ---------------------------------- |
-| `--ov-color-terminal-bg`           | `var(--ov-color-bg-inset)`         |
-| `--ov-color-terminal-fg`           | `var(--ov-color-fg-default)`       |
-| `--ov-color-terminal-cursor`       | `var(--ov-color-accent-strong)`    |
-| `--ov-color-terminal-selection-bg` | `var(--ov-color-accent-soft)`      |
-| `--ov-color-ansi-black`            | `var(--ov-primitive-ansi-black)`   |
-| `--ov-color-ansi-red`              | `var(--ov-primitive-ansi-red)`     |
-| `--ov-color-ansi-green`            | `var(--ov-primitive-ansi-green)`   |
-| `--ov-color-ansi-yellow`           | `var(--ov-primitive-ansi-yellow)`  |
-| `--ov-color-ansi-blue`             | `var(--ov-primitive-ansi-blue)`    |
-| `--ov-color-ansi-magenta`          | `var(--ov-primitive-ansi-magenta)` |
-| `--ov-color-ansi-cyan`             | `var(--ov-primitive-ansi-cyan)`    |
-| `--ov-color-ansi-white`            | `var(--ov-primitive-ansi-white)`   |
-
-### Syntax aliases
-
-| Token                   | Default mapping                  |
-| ----------------------- | -------------------------------- |
-| `--ov-syntax-comment`   | `var(--ov-color-fg-subtle)`      |
-| `--ov-syntax-string`    | `var(--ov-primitive-green-400)`  |
-| `--ov-syntax-number`    | `var(--ov-primitive-amber-400)`  |
-| `--ov-syntax-keyword`   | `var(--ov-primitive-purple-400)` |
-| `--ov-syntax-function`  | `var(--ov-primitive-blue-300)`   |
-| `--ov-syntax-type`      | `var(--ov-primitive-cyan-300)`   |
-| `--ov-syntax-variable`  | `var(--ov-color-fg-default)`     |
-| `--ov-syntax-property`  | `var(--ov-primitive-blue-200)`   |
-| `--ov-syntax-decorator` | `var(--ov-primitive-purple-300)` |
-| `--ov-syntax-regexp`    | `var(--ov-primitive-red-300)`    |
-
-Style defaults:
-
-- `--ov-syntax-style-comment: italic`
-- `--ov-syntax-style-keyword: normal`
-- `--ov-syntax-style-function: normal`
-- `--ov-syntax-style-type: normal`
-
-## Omniview IDE alias defaults
-
-Trivy/scan-specific aliases are intentionally excluded.
-
-### Plugin lifecycle and marketplace aliases
-
-| Token                                           | Default mapping               |
-| ----------------------------------------------- | ----------------------------- |
-| `--ov-color-plugin-phase-running`               | `var(--ov-color-success)`     |
-| `--ov-color-plugin-phase-starting`              | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-phase-building`              | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-phase-validating`            | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-phase-recovering`            | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-phase-failed`                | `var(--ov-color-danger)`      |
-| `--ov-color-plugin-phase-build-failed`          | `var(--ov-color-danger)`      |
-| `--ov-color-plugin-phase-stopped`               | `var(--ov-color-fg-subtle)`   |
-| `--ov-color-plugin-phase-connecting`            | `var(--ov-color-info)`        |
-| `--ov-color-plugin-devmode`                     | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-official-badge`              | `var(--ov-color-brand-400)`   |
-| `--ov-color-plugin-marketplace-rating-active`   | `var(--ov-color-warning)`     |
-| `--ov-color-plugin-marketplace-rating-inactive` | `var(--ov-color-fg-disabled)` |
-| `--ov-color-plugin-marketplace-download`        | `var(--ov-color-fg-muted)`    |
-| `--ov-color-plugin-install-border`              | `var(--ov-color-brand-400)`   |
-| `--ov-color-plugin-install-hover-bg`            | `var(--ov-color-accent-soft)` |
-| `--ov-color-plugin-error-bg`                    | `var(--ov-color-danger-soft)` |
-| `--ov-color-plugin-error-border`                | `var(--ov-color-danger)`      |
-| `--ov-color-plugin-error-fg`                    | `var(--ov-color-danger)`      |
-
-### Dev server and connection aliases
-
-| Token                                          | Default mapping                |
-| ---------------------------------------------- | ------------------------------ |
-| `--ov-color-devserver-ready`                   | `var(--ov-color-success)`      |
-| `--ov-color-devserver-building`                | `var(--ov-color-warning)`      |
-| `--ov-color-devserver-error`                   | `var(--ov-color-danger)`       |
-| `--ov-color-devserver-stopped`                 | `var(--ov-color-fg-subtle)`    |
-| `--ov-color-devserver-connecting`              | `var(--ov-color-info)`         |
-| `--ov-color-devserver-grpc-connected`          | `var(--ov-color-success)`      |
-| `--ov-color-devserver-grpc-disconnected`       | `var(--ov-color-danger)`       |
-| `--ov-color-devserver-action-start`            | `var(--ov-color-success)`      |
-| `--ov-color-devserver-action-stop`             | `var(--ov-color-danger)`       |
-| `--ov-color-devserver-action-restart-disabled` | `var(--ov-color-fg-disabled)`  |
-| `--ov-color-devserver-overlay-scrim`           | `rgb(0 0 0 / 0.7)`             |
-| `--ov-color-devserver-overlay-border`          | `var(--ov-color-danger)`       |
-| `--ov-color-devserver-build-error`             | `var(--ov-color-danger)`       |
-| `--ov-color-devserver-build-warning`           | `var(--ov-color-warning)`      |
-| `--ov-color-connection-state-connected`        | `var(--ov-color-success)`      |
-| `--ov-color-connection-state-syncing`          | `var(--ov-color-info)`         |
-| `--ov-color-connection-state-error`            | `var(--ov-color-danger)`       |
-| `--ov-color-connection-state-idle`             | `var(--ov-color-fg-subtle)`    |
-| `--ov-color-connection-progress-track`         | `var(--ov-color-border-muted)` |
-| `--ov-color-connection-progress-bar`           | `var(--ov-color-info)`         |
-| `--ov-color-connection-group-header-bg`        | `var(--ov-color-state-hover)`  |
-| `--ov-color-connection-skipped-fg`             | `var(--ov-color-fg-subtle)`    |
-| `--ov-color-connection-forbidden-fg`           | `var(--ov-color-warning)`      |
-| `--ov-color-connection-retry-action`           | `var(--ov-color-info)`         |
-| `--ov-color-connection-disconnect-action`      | `var(--ov-color-danger)`       |
-
-### Logs and terminal session aliases
-
-| Token                                            | Default mapping                                  |
-| ------------------------------------------------ | ------------------------------------------------ |
-| `--ov-color-log-bg`                              | `var(--ov-color-bg-inset)`                       |
-| `--ov-color-log-fg`                              | `var(--ov-color-fg-default)`                     |
-| `--ov-color-log-muted`                           | `var(--ov-color-fg-muted)`                       |
-| `--ov-color-log-line-hover-bg`                   | `var(--ov-color-state-hover)`                    |
-| `--ov-color-log-system-row-bg`                   | `var(--ov-color-bg-surface)`                     |
-| `--ov-color-log-level-error`                     | `var(--ov-color-danger)`                         |
-| `--ov-color-log-level-warn`                      | `var(--ov-color-warning)`                        |
-| `--ov-color-log-level-info`                      | `var(--ov-color-info)`                           |
-| `--ov-color-log-level-debug`                     | `var(--ov-color-fg-subtle)`                      |
-| `--ov-color-log-level-trace`                     | `var(--ov-color-fg-disabled)`                    |
-| `--ov-color-log-search-match-bg`                 | `var(--ov-color-warning-soft)`                   |
-| `--ov-color-log-search-match-active-bg`          | `var(--ov-color-warning)`                        |
-| `--ov-color-log-search-match-fg`                 | `var(--ov-color-fg-inverse)`                     |
-| `--ov-color-log-stream-error-banner-bg`          | `var(--ov-color-warning-soft)`                   |
-| `--ov-color-log-stream-error-banner-border`      | `var(--ov-color-warning)`                        |
-| `--ov-color-log-stream-error-banner-fg`          | `var(--ov-color-warning)`                        |
-| `--ov-color-log-copy-flash`                      | `var(--ov-color-success-soft)`                   |
-| `--ov-color-log-source-badge-bg-1..12`           | `theme palette-defined set (dark-muted)`         |
-| `--ov-color-log-source-badge-fg-1..12`           | `theme palette-defined set (high-contrast text)` |
-| `--ov-color-terminal-session-connecting-spinner` | `var(--ov-color-fg-subtle)`                      |
-| `--ov-color-terminal-session-connecting-fg`      | `var(--ov-color-fg-subtle)`                      |
-| `--ov-color-terminal-session-error-title`        | `var(--ov-color-danger)`                         |
-| `--ov-color-terminal-session-error-detail`       | `var(--ov-color-fg-muted)`                       |
-| `--ov-color-terminal-session-error-surface`      | `var(--ov-color-bg-inset)`                       |
-| `--ov-color-terminal-session-error-border`       | `var(--ov-color-danger)`                         |
-| `--ov-color-terminal-session-retry-border`       | `var(--ov-color-border-default)`                 |
-| `--ov-color-terminal-session-retry-hover-bg`     | `var(--ov-color-state-hover)`                    |
-
-### Footer, drawer, and resource editor aliases
-
-| Token                                           | Default mapping                  |
-| ----------------------------------------------- | -------------------------------- |
-| `--ov-color-footer-chip-dev-active`             | `var(--ov-color-success)`        |
-| `--ov-color-footer-chip-failed`                 | `var(--ov-color-danger)`         |
-| `--ov-color-footer-chip-portforward`            | `var(--ov-color-success)`        |
-| `--ov-color-footer-chip-operations-active`      | `var(--ov-color-info)`           |
-| `--ov-color-footer-chip-operations-idle`        | `var(--ov-color-fg-subtle)`      |
-| `--ov-color-operation-running`                  | `var(--ov-color-warning)`        |
-| `--ov-color-operation-completed`                | `var(--ov-color-success)`        |
-| `--ov-color-operation-error`                    | `var(--ov-color-danger)`         |
-| `--ov-color-operation-duration-fg`              | `var(--ov-color-fg-subtle)`      |
-| `--ov-color-portforward-open-action`            | `var(--ov-color-fg-default)`     |
-| `--ov-color-portforward-close-action`           | `var(--ov-color-danger)`         |
-| `--ov-color-bottomdrawer-handle`                | `var(--ov-color-brand-500)`      |
-| `--ov-color-bottomdrawer-handle-hover`          | `var(--ov-color-brand-400)`      |
-| `--ov-color-bottomdrawer-handle-active`         | `var(--ov-color-brand-300)`      |
-| `--ov-color-bottomdrawer-tab-selected-bg`       | `var(--ov-color-state-selected)` |
-| `--ov-color-bottomdrawer-tab-selected-border`   | `var(--ov-color-brand-400)`      |
-| `--ov-color-bottomdrawer-tab-hover-bg`          | `var(--ov-color-state-hover)`    |
-| `--ov-color-rightdrawer-tab-active-border`      | `var(--ov-color-brand-400)`      |
-| `--ov-color-rightdrawer-tab-inactive-fg`        | `var(--ov-color-fg-muted)`       |
-| `--ov-color-rightdrawer-tab-active-fg`          | `var(--ov-color-fg-default)`     |
-| `--ov-color-resource-editor-submit`             | `var(--ov-color-brand-500)`      |
-| `--ov-color-resource-editor-submit-disabled`    | `var(--ov-color-fg-disabled)`    |
-| `--ov-color-resource-editor-cancel`             | `var(--ov-color-fg-default)`     |
-| `--ov-color-resource-editor-reset`              | `var(--ov-color-warning)`        |
-| `--ov-color-resource-editor-diff-toggle`        | `var(--ov-color-fg-default)`     |
-| `--ov-color-resource-editor-parse-error-fg`     | `var(--ov-color-danger)`         |
-| `--ov-color-resource-editor-parse-error-bg`     | `var(--ov-color-danger-soft)`    |
-| `--ov-color-resource-editor-parse-error-border` | `var(--ov-color-danger)`         |
-| `--ov-color-resource-drawer-header-bg`          | `var(--ov-color-bg-surface)`     |
-| `--ov-color-resource-drawer-border`             | `var(--ov-color-border-default)` |
-| `--ov-color-resource-status-healthy`            | `var(--ov-color-success)`        |
-| `--ov-color-resource-status-pending`            | `var(--ov-color-info)`           |
-| `--ov-color-resource-status-warning`            | `var(--ov-color-warning)`        |
-| `--ov-color-resource-status-degraded`           | `var(--ov-color-warning)`        |
-| `--ov-color-resource-status-error`              | `var(--ov-color-danger)`         |
-| `--ov-color-resource-status-unknown`            | `var(--ov-color-fg-subtle)`      |
+Feature-specific aliases keep their semantic intent: structural shell edges
+remain structural, required control outlines use the control role, and
+status/selection/focus accents must not be flattened into neutral boundaries.
+See [boundary design](THEMING.md#boundary-design) before changing an alias.
 
 ## Density mappings
 

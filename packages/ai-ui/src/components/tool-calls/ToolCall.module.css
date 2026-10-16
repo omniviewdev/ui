@@ -74,7 +74,7 @@
 .Arguments {
   margin: 0;
   padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
-  border-top: 1px solid var(--ov-color-border-default);
+  border-top: 1px solid var(--ov-color-border-muted);
   background: var(--ov-color-bg-inset);
   font-family: var(--ov-font-family-mono, monospace);
   font-size: var(--ov-font-size-xs, 0.75rem);
@@ -86,7 +86,7 @@
 }
 
 .ResultContent {
-  border-top: 1px solid var(--ov-color-border-default);
+  border-top: 1px solid var(--ov-color-border-muted);
   padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
   font-family: var(--ov-font-family-mono, monospace);
   font-size: var(--ov-font-size-xs, 0.75rem);

@@ -39,7 +39,7 @@
   min-width: 0;
   height: calc(var(--_ov-item-height) - 8px);
   padding-inline: var(--ov-space-inline-xs, 4px);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-sm, 4px);
   background: var(--ov-color-bg-surface);
   color: var(--ov-color-fg-default);
@@ -65,7 +65,7 @@
   width: calc(var(--_ov-item-height) - 8px);
   height: calc(var(--_ov-item-height) - 8px);
   padding: 0;
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-sm, 4px);
   background: transparent;
   color: var(--ov-color-fg-default);

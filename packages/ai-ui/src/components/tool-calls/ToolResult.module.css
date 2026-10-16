@@ -31,7 +31,7 @@
   width: 100%;
   padding: var(--ov-space-1, 4px);
   border: none;
-  border-top: 1px solid var(--ov-color-border-default);
+  border-top: 1px solid var(--ov-color-border-muted);
   background: transparent;
   color: var(--ov-color-fg-brand, var(--ov-color-brand-default));
   font-size: var(--ov-font-size-xs, 0.75rem);

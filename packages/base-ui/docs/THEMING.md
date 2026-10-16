@@ -148,6 +148,34 @@ pnpm --filter @omniviewdev/base-ui generate:token-keys
 
 Do not maintain separate color, syntax, or terminal override maps.
 
+## Boundary roles and composition
+
+Follow the repository's [boundary design guidelines](../../../docs/THEMING.md#boundary-design)
+and [source-linked token mapping](../../../docs/THEME_TOKEN_MAPPING.md); do not
+maintain a second palette table here.
+
+- `color.border.muted`: structural hairlines, separators, and table row rules.
+- `color.border.default`: quiet passive enclosures.
+- `color.border.strong`: intentional structural emphasis, not every nested box.
+- `color.border.control`: necessary control-identification outlines.
+- `color.border.overlay`: popup/dialog perimeter; currently aliases the theme's
+  ordinary default boundary independently of the closed trigger.
+- `color.border.focus` / `color.state.focus.ring`: keyboard focus, not idle
+  enclosure, selection, or status.
+
+Choose one owner per shell edge/group. Nested inspector subsections share their
+parent's surface and use spacing or a muted separator rather than duplicate
+neutral frames; semantic left status accents remain meaningful and visible.
+Never derive neutral boundaries from text colors. A control already identified
+by its background/content does not automatically need an outline.
+
+Required control-identification and non-text state/focus cues retain accessible
+contrast against their actual adjacent colors. Decorative enclosure lines do not
+inherit a universal 3:1 floor. High-contrast themes intentionally retain stronger
+boundaries. Review open/closed selectors and keyboard focus in Chromium across
+the built-in catalog, including Solarized; attributes and token presence alone
+are not visual evidence.
+
 ## Owner-aware registration
 
 Every custom registration declares who owns it:

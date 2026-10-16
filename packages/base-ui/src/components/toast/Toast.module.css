@@ -68,7 +68,7 @@
   max-width: 420px;
   padding: var(--ov-space-stack-md) var(--ov-space-stack-lg);
   border-radius: var(--ov-radius-surface);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-overlay);
   border-left: 3px solid var(--_ov-border-accent);
   background: var(--_ov-surface-bg);
   box-shadow: var(--_ov-surface-shadow);
@@ -185,7 +185,7 @@
 /* ------------------------------------------------------------------ */
 
 .ToastLoading {
-  --_ov-border-accent: var(--ov-color-fg-muted);
+  --_ov-border-accent: var(--ov-color-border-strong);
 }
 
 @keyframes ov-toast-pulse {

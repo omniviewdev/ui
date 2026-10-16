@@ -18,7 +18,7 @@
   --_ov-control-gap: var(--ov-space-stack-sm);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-focus: var(--ov-color-border-focus);
   --_ov-placeholder: var(--ov-color-fg-subtle);
   --_ov-accent-soft: var(--ov-color-state-selected);
@@ -63,42 +63,34 @@
 }
 
 .Control[data-ov-color='neutral'] {
-  --_ov-focus: var(--ov-color-border-default);
   --_ov-accent-soft: var(--ov-color-state-selected);
 }
 
 .Control[data-ov-color='brand'] {
-  --_ov-focus: var(--ov-color-brand-400);
   --_ov-accent-soft: var(--ov-color-accent-soft);
 }
 
 .Control[data-ov-color='success'] {
-  --_ov-focus: var(--ov-color-success);
   --_ov-accent-soft: var(--ov-color-success-soft);
 }
 
 .Control[data-ov-color='warning'] {
-  --_ov-focus: var(--ov-color-warning);
   --_ov-accent-soft: var(--ov-color-warning-soft);
 }
 
 .Control[data-ov-color='danger'] {
-  --_ov-focus: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
 .Control[data-ov-color='info'] {
-  --_ov-focus: var(--ov-color-info);
   --_ov-accent-soft: var(--ov-color-info-soft);
 }
 
 .Control[data-ov-color='discovery'] {
-  --_ov-focus: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);
 }
 
 .Control[data-ov-color='secondary'] {
-  --_ov-focus: var(--ov-color-secondary);
   --_ov-accent-soft: var(--ov-color-secondary-soft);
 }
 
@@ -120,8 +112,7 @@
   --_ov-border: transparent;
 }
 
-.Control:focus-within,
-.Control:has(.Trigger[data-popup-open]) {
+.Control:has(:focus-visible) {
   border-color: var(--_ov-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
@@ -188,7 +179,7 @@
 
 .Popup {
   --_ov-bg: var(--ov-color-bg-surface-overlay);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-selected-bg: var(--ov-color-state-selected);
   --_ov-highlight-bg: var(--ov-color-state-hover);
   --_ov-popup-padding: 4px;
@@ -273,7 +264,7 @@
   min-height: var(--ov-control-height-md);
   padding-inline: var(--ov-space-inline-control);
   border-radius: var(--ov-radius-control);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   background: var(--ov-color-bg-surface-raised);
   margin-block-end: 2px;
 }

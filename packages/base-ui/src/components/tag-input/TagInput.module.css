@@ -11,7 +11,7 @@
   min-height: var(--_ov-min-height);
   padding: var(--_ov-padding);
   background: var(--ov-color-bg-surface);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-control);
   cursor: text;
   box-sizing: border-box;

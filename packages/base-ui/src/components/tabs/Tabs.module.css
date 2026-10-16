@@ -119,7 +119,7 @@
 .Root[data-ov-variant='flat'] .List {
   border-radius: 0;
   padding: 0;
-  border-bottom: 1px solid var(--ov-color-border-default);
+  border-bottom: 1px solid var(--ov-color-border-muted);
 }
 
 .Root[data-ov-variant='flat'] .Tab {

@@ -14,7 +14,7 @@
     var(--_ov-accent-soft) 16%
   );
   --_ov-table-border: var(--ov-color-border-default);
-  --_ov-table-divider: color-mix(in srgb, var(--ov-color-border-default) 80%, transparent 20%);
+  --_ov-table-divider: var(--ov-color-border-muted);
   --_ov-table-row-hover-bg: var(--ov-color-state-hover);
   --_ov-table-row-selected-bg: var(--ov-color-state-selected);
   --_ov-cell-padding-inline: var(--ov-size-table-cell-padding-inline-md);
@@ -72,7 +72,7 @@
 }
 
 .Root[data-ov-color='neutral'] {
-  --_ov-accent: var(--ov-color-border-strong);
+  --_ov-accent: var(--ov-color-border-default);
   --_ov-accent-soft: var(--ov-color-state-selected);
 }
 

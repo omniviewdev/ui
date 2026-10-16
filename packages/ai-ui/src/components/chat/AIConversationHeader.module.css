@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--ov-space-3, 12px);
   padding: var(--ov-space-2, 8px) var(--ov-space-3, 12px);
-  border-bottom: 1px solid var(--ov-color-border, #e0e0e0);
+  border-bottom: 1px solid var(--ov-color-border-muted);
 }
 
 .Title {

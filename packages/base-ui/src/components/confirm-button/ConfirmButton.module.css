@@ -5,7 +5,7 @@
   --_ov-content-gap: var(--ov-space-stack-sm);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
 
@@ -73,7 +73,7 @@
 .Root[data-ov-color='neutral'] {
   --_ov-accent-bg: var(--ov-color-bg-surface-raised);
   --_ov-accent-fg: var(--ov-color-fg-default);
-  --_ov-accent-border: var(--ov-color-border-default);
+  --_ov-accent-border: var(--ov-color-border-control);
   --_ov-accent-soft-bg: var(--ov-color-state-hover);
   --_ov-accent-soft-fg: var(--ov-color-fg-default);
   --_ov-accent-ghost-fg: var(--ov-color-fg-muted);

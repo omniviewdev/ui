@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   background: var(--ov-color-quickpick-bg, var(--ov-color-bg-surface));
-  border: 1px solid var(--ov-color-quickpick-border, var(--ov-color-border-default));
+  border: 1px solid var(--ov-color-border-overlay);
   border-radius: var(--ov-radius-md, 8px);
   box-shadow: var(--ov-color-quickpick-shadow, 0 8px 32px rgba(0, 0, 0, 0.4));
   overflow: hidden;

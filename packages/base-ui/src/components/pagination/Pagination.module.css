@@ -44,7 +44,7 @@
   min-height: var(--_ov-item-height);
   min-width: var(--_ov-item-min-width);
   padding: 0 var(--ov-space-stack-xs);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-control);
   background: var(--ov-color-bg-surface-raised);
   color: var(--ov-color-fg-default);

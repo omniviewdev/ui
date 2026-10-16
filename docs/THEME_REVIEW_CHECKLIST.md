@@ -15,6 +15,18 @@ Use this checklist to review token system changes during implementation.
 - [ ] High contrast themes provide sufficient contrast for text and controls.
 - [ ] Status colors are distinguishable and not only hue-dependent.
 
+## Boundary hierarchy and ownership
+
+- [ ] Use [boundary design guidance](THEMING.md#boundary-design): muted structural rules, default passive enclosures, strong intentional structural emphasis, control identification, overlay perimeter, and dedicated focus roles.
+- [ ] No neutral boundary role derives from foreground/text tokens.
+- [ ] Each edge/group has one intentional owner; nested inspectors use spacing, shared surfaces, or muted separators rather than repeated neutral frames.
+- [ ] Required control outlines and meaningful non-text state/focus cues meet applicable contrast against their actual adjacent colors; no blanket 3:1 requirement is imposed on decorative lines.
+- [ ] Controls identified by background/content are not given unnecessary outlines.
+- [ ] Closed selector triggers and open popup perimeters use their separate roles; keyboard focus, selection, and status remain distinct.
+- [ ] Semantic status accents (including a left status edge) remain visible rather than being removed with redundant neutral borders.
+- [ ] Normal themes retain quiet structural roles; high-contrast themes retain intentional stronger boundaries.
+- [ ] Palette values come from `packages/base-ui/src/theme/styles.css`, public keys from the generated catalog, and built-in IDs from the registry catalog—not another manual theme list/table.
+
 ## IDE surface coverage
 
 - [ ] Window chrome tokens are defined (title bar, status bar, activity bar, side bar, panel).
@@ -48,6 +60,8 @@ Use this checklist to review token system changes during implementation.
 - [ ] Focus ring tokens are visible in all themes.
 - [ ] Hover/pressed/selected states are clear but not visually noisy.
 - [ ] Reduced motion token behavior is acceptable.
+- [ ] Chromium checks exercise actual changed artifacts on base/surface backgrounds across the built-in catalog: nested sections, table rows, horizontal/vertical/labeled Separators, opened selectors, and keyboard focus.
+- [ ] Visual regressions inspect computed stroke/color/geometry and ownership, not just part attributes or repeated token declarations.
 
 ## Density and layout
 
@@ -62,3 +76,5 @@ Use this checklist to review token system changes during implementation.
 - [ ] Tooling policy (`pnpm`, ESLint, Prettier) is acceptable.
 - [ ] Omniview feature audit in `docs/OMNIVIEW_TOKEN_AUDIT.md` is acceptable.
 - [ ] Legacy Trivy-specific tokens are explicitly excluded from v1 scope.
+- [ ] Custom-property graph/parser regressions and `pnpm audit:ui` run; new High cycles are fixed, not hidden by regenerating the baseline.
+- [ ] Release notes follow the existing changeset convention only after smoke evidence is recorded.

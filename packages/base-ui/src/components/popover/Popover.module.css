@@ -18,7 +18,7 @@
   --_ov-height: var(--ov-size-button-height-md);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
@@ -106,7 +106,7 @@
 
 .Popup {
   --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-title: var(--ov-color-fg-default);
   --_ov-description: var(--ov-color-fg-muted);
   --_ov-accent-soft: var(--ov-color-state-selected);
@@ -179,7 +179,7 @@
 
 .Arrow {
   --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-accent-soft: var(--ov-color-state-selected);
   --_ov-arrow-size: 10px;
 
@@ -229,16 +229,10 @@
 
 .Arrow[data-ov-variant='solid'] {
   --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 84%, var(--_ov-accent-soft) 16%);
-  --_ov-border: color-mix(
-    in srgb,
-    var(--ov-color-border-default) 72%,
-    var(--ov-color-border-strong) 28%
-  );
 }
 
 .Arrow[data-ov-variant='outline'] {
   --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-strong);
 }
 
 .Arrow[data-ov-variant='ghost'] {

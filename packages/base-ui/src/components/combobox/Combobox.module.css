@@ -4,7 +4,7 @@
   --_ov-padding-inline: var(--ov-space-inline-control);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-focus: var(--ov-color-border-focus);
   --_ov-placeholder: var(--ov-color-fg-subtle);
   --_ov-accent-soft: var(--ov-color-state-selected);
@@ -53,42 +53,34 @@
 }
 
 .Input[data-ov-color='neutral'] {
-  --_ov-focus: var(--ov-color-border-default);
   --_ov-accent-soft: var(--ov-color-state-selected);
 }
 
 .Input[data-ov-color='brand'] {
-  --_ov-focus: var(--ov-color-brand-400);
   --_ov-accent-soft: var(--ov-color-accent-soft);
 }
 
 .Input[data-ov-color='success'] {
-  --_ov-focus: var(--ov-color-success);
   --_ov-accent-soft: var(--ov-color-success-soft);
 }
 
 .Input[data-ov-color='warning'] {
-  --_ov-focus: var(--ov-color-warning);
   --_ov-accent-soft: var(--ov-color-warning-soft);
 }
 
 .Input[data-ov-color='danger'] {
-  --_ov-focus: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
 .Input[data-ov-color='info'] {
-  --_ov-focus: var(--ov-color-info);
   --_ov-accent-soft: var(--ov-color-info-soft);
 }
 
 .Input[data-ov-color='discovery'] {
-  --_ov-focus: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);
 }
 
 .Input[data-ov-color='secondary'] {
-  --_ov-focus: var(--ov-color-secondary);
   --_ov-accent-soft: var(--ov-color-secondary-soft);
 }
 
@@ -116,7 +108,7 @@
 
 .Popup {
   --_ov-bg: var(--ov-color-bg-surface-overlay);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-selected-bg: var(--ov-color-state-selected);
   --_ov-highlight-bg: var(--ov-color-state-hover);
   --_ov-popup-padding: var(--ov-size-list-item-gap);
@@ -318,7 +310,7 @@
 .Clear {
   --_ov-control-height: var(--ov-control-height-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-fg: var(--ov-color-fg-muted);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);

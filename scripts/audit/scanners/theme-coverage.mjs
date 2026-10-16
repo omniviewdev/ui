@@ -1,42 +1,40 @@
 // scripts/audit/scanners/theme-coverage.mjs
 import { readFileSync } from 'fs';
 import { findFiles, readLines, finding, ROOT } from '../utils.mjs';
+import { baseUIRequire, postcss } from '../css.mjs';
 
-const THEME_MODES = ['dark', 'light', 'high-contrast-dark', 'high-contrast-light'];
+export async function loadBuiltInThemeIds() {
+  const { tsImport } = baseUIRequire('tsx/esm/api');
+  const { BUILT_IN_THEMES } = await tsImport(
+    `${ROOT}/packages/base-ui/src/theme/registry/catalog.ts`, import.meta.url,
+  );
+  return BUILT_IN_THEMES.map(({ id }) => id);
+}
 
-/**
- * Parse styles.css to find tokens defined under each theme/density/motion block.
- */
-function parseThemeBlocks(cssContent) {
-  const blocks = {};
-  // Match [data-ov-theme="<mode>"] or [data-ov-theme='<mode>'] { ... } blocks
-  const blockRegex = /\[data-ov-theme=['"]([^'"]+)['"]\]\s*\{([^}]+)\}/g;
-  let match;
-  while ((match = blockRegex.exec(cssContent))) {
-    const mode = match[1];
-    const body = match[2];
-    blocks[mode] = new Set();
-    const varRegex = /(--ov-[\w-]+)\s*:/g;
-    let varMatch;
-    while ((varMatch = varRegex.exec(body))) {
-      blocks[mode].add(varMatch[1]);
+/** Collect explicit palette declarations; shared :root aliases remain inherited. */
+export function parseThemeBlocks(cssContent) {
+  const blocks = new Map();
+  postcss.parse(cssContent).walkRules((rule) => {
+    for (const selector of postcss.list.comma(rule.selector)) {
+      // Only a theme root, not descendant controls or conditional state overrides.
+      const match = /^(?::root)?\[data-ov-theme\s*=\s*(?:"([^"]+)"|'([^']+)'|([\w-]+))\s*\]$/.exec(selector);
+      if (!match) continue;
+      const mode = match[1] ?? match[2] ?? match[3];
+      if (!blocks.has(mode)) blocks.set(mode, new Set());
+      for (const node of rule.nodes ?? []) {
+        if (node.type === 'decl' && node.prop.startsWith('--ov-')) blocks.get(mode).add(node.prop);
+      }
     }
-  }
-
-  // Also parse :root for default (dark) tokens
-  const rootRegex = /:root\s*\{([^}]+)\}/g;
-  let rootMatch;
-  blocks['dark'] = blocks['dark'] || new Set();
-  while ((rootMatch = rootRegex.exec(cssContent))) {
-    const body = rootMatch[1];
-    const varRegex = /(--ov-[\w-]+)\s*:/g;
-    let varMatch;
-    while ((varMatch = varRegex.exec(body))) {
-      blocks['dark'].add(varMatch[1]);
-    }
-  }
-
+  });
   return blocks;
+}
+
+export function findThemeCoverageGaps(cssContent, themeIds) {
+  const blocks = parseThemeBlocks(cssContent);
+  const tokens = new Set([...blocks.values()].flatMap((block) => [...block]));
+  return [...tokens].sort().filter((token) => !token.startsWith('--ov-primitive-'))
+    .map((token) => ({ token, missingThemes: themeIds.filter((id) => !blocks.get(id)?.has(token)) }))
+    .filter(({ missingThemes }) => missingThemes.length > 0);
 }
 
 export async function scanThemeCoverage() {
@@ -45,25 +43,18 @@ export async function scanThemeCoverage() {
   // Read styles.css
   const stylesPath = `${ROOT}/packages/base-ui/src/theme/styles.css`;
   const stylesContent = readFileSync(stylesPath, 'utf-8');
+  const themeIds = await loadBuiltInThemeIds();
   const themeBlocks = parseThemeBlocks(stylesContent);
-
-  // Collect all tokens across all modes
-  const allTokens = new Set();
-  for (const tokens of Object.values(themeBlocks)) {
-    for (const t of tokens) allTokens.add(t);
-  }
-
-  // Check each token exists in all theme modes
-  for (const token of allTokens) {
-    // Skip primitive tokens — they're only in :root
-    if (token.startsWith('--ov-primitive-')) continue;
-
-    const missingModes = THEME_MODES.filter(mode => !themeBlocks[mode]?.has(token));
-    if (missingModes.length > 0 && missingModes.length < THEME_MODES.length) {
-      results.push(finding('Medium', 'Token/Styling', 'Missing theme coverage',
-        stylesPath, 0, '',
-        `Token ${token} missing from mode(s): ${missingModes.join(', ')}`));
+  for (const id of themeIds) {
+    if (!themeBlocks.has(id)) {
+      results.push(finding('High', 'Token/Styling', 'Missing built-in theme',
+        stylesPath, 0, '', `Catalog theme ${id} has no explicit palette selector`));
     }
+  }
+  for (const { token, missingThemes } of findThemeCoverageGaps(stylesContent, themeIds)) {
+    results.push(finding('Medium', 'Token/Styling', 'Missing theme coverage',
+      stylesPath, 0, '',
+      `Token ${token} missing from mode(s): ${missingThemes.join(', ')}`));
   }
 
   // --- IDE alias indirection check (Medium) ---

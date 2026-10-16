@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
-  border-bottom: 1px solid var(--ov-color-border-default);
+  border-bottom: 1px solid var(--ov-color-border-muted);
   background: var(--ov-color-bg-surface);
 }
 

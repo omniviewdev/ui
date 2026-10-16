@@ -1,6 +1,6 @@
 .Root {
   --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-handle-color: var(--ov-color-drawer-handle);
   --_ov-handle-hover: var(--ov-color-drawer-handle-hover);
   --_ov-handle-thickness: var(--ov-size-drawer-handle-thickness);

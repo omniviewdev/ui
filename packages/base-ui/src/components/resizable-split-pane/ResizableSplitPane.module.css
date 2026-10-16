@@ -90,8 +90,7 @@
 }
 
 /* Hover state */
-.Handle:hover,
-.Handle:focus-visible {
+.Handle:hover {
   background: var(--ov-color-border-default);
 }
 
@@ -102,7 +101,8 @@
 
 /* Focus ring */
 .Handle:focus-visible {
-  outline: 2px solid var(--ov-color-focus-ring);
+  background: var(--ov-color-border-focus);
+  outline: 2px solid var(--ov-color-state-focus-ring);
   outline-offset: -1px;
 }
 

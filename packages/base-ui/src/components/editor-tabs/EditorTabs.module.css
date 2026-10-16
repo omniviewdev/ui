@@ -12,7 +12,7 @@
   --_ov-tab-hover-fg: var(--ov-color-tab-hover-fg);
   --_ov-tab-modified-border: var(--ov-color-tab-modified-border);
   --_ov-tab-border: var(--ov-color-tab-border);
-  --_ov-tab-divider: var(--ov-color-border-default);
+  --_ov-tab-divider: var(--ov-color-border-muted);
   --_ov-tab-font-size: var(--ov-primitive-font-size-13, 0.8125rem);
   --_ov-tab-padding-x: 10px;
   --_ov-tab-padding-trailing: 6px;
@@ -52,10 +52,10 @@
   --_ov-tab-bg: transparent;
   --_ov-tab-active-bg: transparent;
   --_ov-tab-active-border: var(--ov-color-brand-400);
-  --_ov-tab-divider: var(--ov-color-border-strong);
+  --_ov-tab-divider: var(--ov-color-border-muted);
   --_ov-group-header-bg: transparent;
 
-  border-bottom-color: var(--ov-color-border-default);
+  border-bottom-color: var(--ov-color-border-muted);
 }
 
 .Root[data-ov-variant='ghost'] {

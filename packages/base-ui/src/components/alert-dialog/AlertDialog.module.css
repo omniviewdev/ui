@@ -8,7 +8,7 @@
 
 .Popup {
   --_ov-bg: var(--ov-color-bg-surface);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-title: var(--ov-color-fg-default);
   --_ov-description: var(--ov-color-fg-muted);
   --_ov-accent-soft: var(--ov-color-state-selected);
@@ -105,7 +105,7 @@
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-fg: var(--ov-color-fg-default);
 
   display: inline-flex;
@@ -203,7 +203,7 @@
 .Trigger[data-ov-variant='solid'],
 .Close[data-ov-variant='solid'] {
   --_ov-bg: var(--ov-color-bg-surface-raised);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
 }
 
 .Trigger[data-ov-variant='soft'],

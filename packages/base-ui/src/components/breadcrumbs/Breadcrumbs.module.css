@@ -76,7 +76,7 @@
   width: 1.75em;
   height: 1.75em;
   border-radius: var(--ov-radius-control);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   background: var(--ov-color-bg-surface-raised);
   transition:
     color var(--ov-duration-interactive) var(--ov-ease-standard),
@@ -87,7 +87,7 @@
 .Ellipsis:hover {
   color: var(--ov-color-fg-default);
   background-color: var(--ov-color-state-hover);
-  border-color: var(--ov-color-border-strong);
+  border-color: var(--ov-color-border-control);
 }
 
 .Ellipsis:focus-visible {

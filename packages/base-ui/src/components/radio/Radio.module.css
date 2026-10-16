@@ -3,13 +3,13 @@
   --_ov-indicator-size: var(--ov-size-choice-indicator-md);
   --_ov-gap: var(--ov-size-choice-gap-md);
   --_ov-control-bg: var(--ov-color-bg-surface-raised);
-  --_ov-control-border: var(--ov-color-border-default);
+  --_ov-control-border: var(--ov-color-border-control);
   --_ov-control-bg-hover: color-mix(
     in srgb,
     var(--ov-color-bg-surface-raised) 82%,
     var(--ov-color-state-hover) 18%
   );
-  --_ov-control-border-hover: var(--ov-color-border-strong);
+  --_ov-control-border-hover: var(--ov-color-border-control);
   --_ov-control-bg-checked: var(--ov-color-accent-soft);
   --_ov-control-border-checked: var(--ov-color-brand-400);
   --_ov-dot-color: var(--ov-color-brand-400);
@@ -64,7 +64,6 @@
   --_ov-accent-border: var(--ov-color-brand-400);
   --_ov-accent-soft-bg: var(--ov-color-accent-soft);
   --_ov-accent-soft-fg: var(--ov-color-accent-strong);
-  --_ov-focus-border: var(--ov-color-brand-400);
 }
 
 .Root[data-ov-color='success'] {
@@ -73,7 +72,6 @@
   --_ov-accent-border: var(--ov-color-success);
   --_ov-accent-soft-bg: var(--ov-color-success-soft);
   --_ov-accent-soft-fg: var(--ov-color-success);
-  --_ov-focus-border: var(--ov-color-success);
 }
 
 .Root[data-ov-color='warning'] {
@@ -82,7 +80,6 @@
   --_ov-accent-border: var(--ov-color-warning);
   --_ov-accent-soft-bg: var(--ov-color-warning-soft);
   --_ov-accent-soft-fg: var(--ov-color-warning);
-  --_ov-focus-border: var(--ov-color-warning);
 }
 
 .Root[data-ov-color='danger'] {
@@ -91,7 +88,6 @@
   --_ov-accent-border: var(--ov-color-danger);
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
   --_ov-accent-soft-fg: var(--ov-color-danger);
-  --_ov-focus-border: var(--ov-color-danger);
 }
 
 .Root[data-ov-color='info'] {
@@ -100,7 +96,6 @@
   --_ov-accent-border: var(--ov-color-info);
   --_ov-accent-soft-bg: var(--ov-color-info-soft);
   --_ov-accent-soft-fg: var(--ov-color-info);
-  --_ov-focus-border: var(--ov-color-info);
 }
 
 .Root[data-ov-color='discovery'] {
@@ -109,7 +104,6 @@
   --_ov-accent-border: var(--ov-color-discovery);
   --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
   --_ov-accent-soft-fg: var(--ov-color-discovery);
-  --_ov-focus-border: var(--ov-color-discovery);
 }
 
 .Root[data-ov-color='secondary'] {
@@ -118,7 +112,6 @@
   --_ov-accent-border: var(--ov-color-secondary);
   --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
   --_ov-accent-soft-fg: var(--ov-color-secondary);
-  --_ov-focus-border: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {
@@ -142,8 +135,8 @@
 
 .Root[data-ov-variant='outline'] {
   --_ov-control-bg: transparent;
-  --_ov-control-border: var(--ov-color-border-default);
-  --_ov-control-border-hover: var(--ov-color-border-strong);
+  --_ov-control-border: var(--ov-color-border-control);
+  --_ov-control-border-hover: var(--ov-color-border-control);
   --_ov-control-bg-checked: color-mix(in srgb, var(--_ov-accent-soft-bg) 58%, transparent 42%);
   --_ov-control-border-checked: var(--_ov-accent-border);
   --_ov-dot-color: var(--_ov-accent-soft-fg);
@@ -151,8 +144,8 @@
 
 .Root[data-ov-variant='ghost'] {
   --_ov-control-bg: transparent;
-  --_ov-control-border: var(--ov-color-border-muted);
-  --_ov-control-border-hover: var(--ov-color-border-default);
+  --_ov-control-border: var(--ov-color-border-control);
+  --_ov-control-border-hover: var(--ov-color-border-control);
   --_ov-control-bg-checked: color-mix(in srgb, var(--_ov-accent-soft-bg) 50%, transparent 50%);
   --_ov-control-border-checked: transparent;
   --_ov-dot-color: var(--_ov-accent-soft-fg);

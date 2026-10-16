@@ -1,15 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import type { ColumnDef } from '@tanstack/react-table';
 import { LuChevronDown } from 'react-icons/lu';
 import { Badge } from '../badge';
 import { Button } from '../button';
+import { Card } from '../card';
 import { Checkbox } from '../checkbox';
 import { Chip } from '../chip';
+import { DataTable } from '../data-table/DataTable';
+import { useDataTable } from '../data-table/hooks/useDataTable';
 import { IconButton } from '../icon-button';
 import { Input } from '../input';
+import { MultiSelect } from '../multi-select';
 import { Radio } from '../radio';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
+import { Separator } from '../separator';
 import { Switch } from '../switch';
+import { Table } from '../table';
 import type { ComponentColor, ComponentSize, ComponentVariant } from '../../system/types';
 
 // ─── Shared icon ──────────────────────────────────────────────────────────────
@@ -530,5 +537,175 @@ type Story = StoryObj<typeof meta>;
 export const Audit: Story = {
   parameters: {
     controls: { disable: true },
+  },
+};
+
+interface BoundaryResource {
+  name: string;
+  namespace: string;
+  status: string;
+}
+
+const boundaryResources: BoundaryResource[] = [
+  { name: 'api-gateway', namespace: 'production', status: 'Ready' },
+  { name: 'worker', namespace: 'production', status: 'Ready' },
+  { name: 'scheduler', namespace: 'staging', status: 'Pending' },
+];
+
+const boundaryColumns: ColumnDef<BoundaryResource, unknown>[] = [
+  { accessorKey: 'name', header: 'Resource', size: 240 },
+  { accessorKey: 'namespace', header: 'Namespace', size: 180 },
+  { accessorKey: 'status', header: 'Status', size: 120 },
+];
+
+const boundaryNamespaces = ['production', 'staging', 'system'];
+
+function BoundaryHierarchyFixture() {
+  const table = useDataTable({
+    data: boundaryResources,
+    columns: boundaryColumns,
+    getRowId: (row) => row.name,
+  });
+
+  return (
+    <main
+      data-testid="boundary-hierarchy"
+      aria-label="Boundary hierarchy"
+      style={{
+        padding: 24,
+        display: 'grid',
+        gap: 16,
+        minHeight: '100vh',
+        background: 'var(--ov-color-bg-base)',
+        color: 'var(--ov-color-fg-default)',
+        fontFamily: 'var(--ov-font-sans)',
+      }}
+    >
+      <SectionHeader
+        title="Boundary hierarchy"
+        subtitle="Quiet enclosures and row rules, identifiable controls, independent focus, and shared popup edges."
+      />
+      <Card data-testid="boundary-outer-card" variant="outline" color="neutral" surface="default" size="sm">
+        <Card.Header>
+          <Card.Title>Resource inspector</Card.Title>
+          <Card.Description>One outer frame with quiet nested content.</Card.Description>
+        </Card.Header>
+        <Separator data-testid="boundary-horizontal-separator" />
+        <Card.Body style={{ display: 'grid', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
+            <Card
+              data-testid="boundary-inner-card"
+              variant="outline"
+              color="neutral"
+              surface="default"
+              size="sm"
+              style={{ flex: 1 }}
+            >
+              <Card.Body>
+                <Card.KeyValue label="Name">api-gateway</Card.KeyValue>
+                <Card.KeyValue label="Namespace">production</Card.KeyValue>
+              </Card.Body>
+            </Card>
+            <Separator data-testid="boundary-vertical-separator" orientation="vertical" />
+            <Card variant="ghost" color="neutral" surface="default" size="sm" style={{ flex: 1 }}>
+              <Card.Body>
+                <Card.KeyValue label="Replicas">3 / 3</Card.KeyValue>
+                <Card.KeyValue label="Node">worker-01</Card.KeyValue>
+              </Card.Body>
+            </Card>
+          </div>
+          <Separator data-testid="boundary-labeled-separator" label="Selection controls" labelAlign="start" />
+          <div style={{ display: 'flex', gap: 12, alignItems: 'end', flexWrap: 'wrap' }}>
+            <div style={{ width: 220 }} data-testid="boundary-select">
+              <Select.Root defaultValue="production" variant="soft" color="neutral">
+                <Select.Trigger aria-label="Boundary namespace">
+                  <Select.Value />
+                  <Select.Icon><LuChevronDown /></Select.Icon>
+                </Select.Trigger>
+                <Select.Portal>
+                  <Select.Positioner sideOffset={6}>
+                    <Select.Popup data-testid="boundary-select-popup">
+                      <Select.List>
+                        <Select.Item value="production"><Select.ItemText>production</Select.ItemText></Select.Item>
+                        <Select.Item value="staging"><Select.ItemText>staging</Select.ItemText></Select.Item>
+                        <Select.Separator />
+                        <Select.Item value="system"><Select.ItemText>system</Select.ItemText></Select.Item>
+                      </Select.List>
+                    </Select.Popup>
+                  </Select.Positioner>
+                </Select.Portal>
+              </Select.Root>
+            </div>
+            <div style={{ width: 280 }} data-testid="boundary-multiselect">
+              <MultiSelect
+                items={boundaryNamespaces}
+                defaultValue={['production']}
+                label="Boundary namespaces"
+                triggerLabel="Open boundary namespaces"
+                searchPlaceholder="Search boundary namespaces"
+                popupClassName="boundary-multiselect-popup"
+                variant="soft"
+                color="neutral"
+              />
+            </div>
+            <Input variant="outline" color="neutral">
+              <Input.Control aria-label="Boundary resource filter" placeholder="Filter resources" />
+            </Input>
+            <Checkbox aria-label="Boundary include inactive" variant="outline" />
+            <Switch aria-label="Boundary live updates" variant="outline" />
+          </div>
+          <Separator data-testid="boundary-data-separator" label="Resources" />
+          <DataTable.Root data-testid="boundary-data-table" table={table} variant="outline" color="neutral" size="sm">
+            <DataTable.Container>
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Container>
+          </DataTable.Root>
+          <Table.Root data-testid="boundary-table" aria-label="Boundary resource summary" variant="outline" color="neutral" size="sm">
+            <Table.Head>
+              <Table.Row>
+                <Table.HeaderCell>Resource</Table.HeaderCell>
+                <Table.HeaderCell>Status</Table.HeaderCell>
+              </Table.Row>
+            </Table.Head>
+            <Table.Body>
+              {boundaryResources.map((resource) => (
+                <Table.Row key={resource.name}>
+                  <Table.Cell>{resource.name}</Table.Cell>
+                  <Table.Cell>{resource.status}</Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </Card.Body>
+      </Card>
+    </main>
+  );
+}
+
+export const BoundaryHierarchy: Story = {
+  render: () => <BoundaryHierarchyFixture />,
+  parameters: { controls: { disable: true } },
+  play: ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>(
+      'input[aria-label="Boundary resource filter"]',
+    );
+    if (!input || input.type !== 'text' || input.getBoundingClientRect().height === 0) {
+      throw new Error('Boundary resource filter must render a visible textbox.');
+    }
+    const shell = input.parentElement;
+    const view = input.ownerDocument.defaultView;
+    if (!shell || !view) {
+      throw new Error('Boundary resource filter must render its outlined control shell.');
+    }
+    const border = view.getComputedStyle(shell);
+    if (
+      Number.parseFloat(border.borderTopWidth) <= 0 ||
+      border.borderTopStyle === 'none' ||
+      border.borderTopColor === 'transparent' ||
+      border.borderTopColor === 'rgba(0, 0, 0, 0)'
+    ) {
+      throw new Error('Boundary resource filter must retain a visible identification outline.');
+    }
   },
 };

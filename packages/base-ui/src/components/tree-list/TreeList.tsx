@@ -122,7 +122,7 @@ function TreeListRootContent<TItem>(
     overscan,
     estimatedItemSize,
     indentation,
-    showBranchConnectors,
+    indentGuide,
     filterText: filterTextProp,
     defaultFilterText,
     onFilterTextChange,
@@ -165,7 +165,7 @@ function TreeListRootContent<TItem>(
   void overscan;
   void estimatedItemSize;
   void indentation;
-  void showBranchConnectors;
+  void indentGuide;
   void filterTextProp;
   void defaultFilterText;
   void onFilterTextChange;
@@ -794,13 +794,13 @@ const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
   ) {
     const config = useTreeConfig();
 
-    // When branch connectors are enabled, render individual guide segments
-    if (config.showBranchConnectors && depth > 0) {
+    if (config.indentGuide !== 'none' && depth > 0) {
       return (
         <span
           ref={ref}
           className={cn(styles.ItemIndent, className)}
-          data-ov-guides=""
+          data-ov-guides={config.indentGuide}
+          aria-hidden="true"
           style={
             {
               ...style,
@@ -811,15 +811,23 @@ const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
         >
           {Array.from({ length: depth }, (_, i) => {
             const isConnector = i === depth - 1;
-            // Pass-through: show vertical line if ancestor at this depth is NOT last
-            const showLine = !isConnector && !(ancestorIsLast?.[i] ?? true);
+            // Rails sit under ancestor icons: continuation depends on the next
+            // branch in the path, not on the ancestor's own root-level siblings.
+            // Preserve the existing column semantics for elbow connectors.
+            const ancestorIndex = config.indentGuide === 'rail' ? i + 1 : i;
+            const showLine = !isConnector && !(ancestorIsLast?.[ancestorIndex] ?? true);
+            const segment = isConnector ? (isLastChild ? 'last' : 'mid') : showLine ? 'pass' : undefined;
 
             return (
               <span
                 key={i}
                 className={styles.ItemGuide}
-                data-ov-line={showLine ? '' : undefined}
-                data-ov-connector={isConnector ? (isLastChild ? 'last' : 'mid') : undefined}
+                style={{ '--_ov-tree-guide-level': i } as CSSProperties}
+                data-ov-guide={config.indentGuide}
+                data-ov-segment={segment}
+                data-ov-connector={
+                  config.indentGuide === 'connectors' && isConnector ? segment : undefined
+                }
               />
             );
           })}

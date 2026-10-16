@@ -117,7 +117,7 @@ export interface TreeConfigContextValue {
   loopFocus: boolean;
   virtualized: boolean;
   indentation: number;
-  showBranchConnectors: boolean;
+  indentGuide: TreeIndentGuide;
 }
 
 export interface TreeActionsContextValue {
@@ -201,7 +201,8 @@ export interface TreeListRootProps<TItem = unknown>
 
   // Visual
   indentation?: number;
-  showBranchConnectors?: boolean;
+  /** Indentation only (default), icon-centered rails, or elbow connectors. */
+  indentGuide?: TreeIndentGuide;
 
   loading?: boolean;
   error?: ReactNode;

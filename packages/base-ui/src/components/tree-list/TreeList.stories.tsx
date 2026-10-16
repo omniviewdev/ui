@@ -15,7 +15,7 @@ import {
 } from 'react-icons/lu';
 import { TreeList } from './TreeList';
 import { SearchInput } from '../search-input';
-import type { Key } from './types';
+import type { Key, TreeIndentGuide } from './types';
 
 // ---------------------------------------------------------------------------
 // Shared types and data
@@ -218,7 +218,7 @@ interface PlaygroundArgs {
   loopFocus: boolean;
   typeahead: boolean;
   indentation: number;
-  showBranchConnectors: boolean;
+  indentGuide: TreeIndentGuide;
 }
 
 const meta: Meta<PlaygroundArgs> = {
@@ -232,7 +232,7 @@ const meta: Meta<PlaygroundArgs> = {
     loopFocus: false,
     typeahead: true,
     indentation: 16,
-    showBranchConnectors: false,
+    indentGuide: 'none',
   },
   argTypes: {
     size: {
@@ -274,10 +274,11 @@ const meta: Meta<PlaygroundArgs> = {
       description: 'Pixels of indentation per depth level.',
       table: { defaultValue: { summary: '16' } },
     },
-    showBranchConnectors: {
-      control: 'boolean',
-      description: 'Show vertical connector lines from branches to children.',
-      table: { defaultValue: { summary: 'false' } },
+    indentGuide: {
+      control: 'inline-radio',
+      options: ['none', 'rail', 'connectors'],
+      description: 'Indentation only, icon-centered vertical rails, or elbow connectors.',
+      table: { defaultValue: { summary: 'none' } },
     },
   },
   parameters: {
@@ -290,7 +291,7 @@ const meta: Meta<PlaygroundArgs> = {
         'loopFocus',
         'typeahead',
         'indentation',
-        'showBranchConnectors',
+        'indentGuide',
       ],
     },
   },
@@ -339,7 +340,7 @@ export const Playground: Story = {
     loopFocus,
     typeahead,
     indentation,
-    showBranchConnectors,
+    indentGuide,
   }) => (
     <TreeList.Root
       items={fileExplorerData}
@@ -371,7 +372,7 @@ export const Playground: Story = {
       loopFocus={loopFocus}
       typeahead={typeahead}
       indentation={indentation}
-      showBranchConnectors={showBranchConnectors}
+      indentGuide={indentGuide}
     >
       <TreeList.Viewport />
     </TreeList.Root>
@@ -954,7 +955,7 @@ export const WithBranchConnectors: Story = {
   getChildren={(item) => item.children}
   isBranch={(item) => item.type === 'directory'}
   selectionMode="single"
-  showBranchConnectors
+  indentGuide="connectors"
   renderItem={(item, node) => (
     <TreeList.Item itemKey={node.key} textValue={item.name}>
       <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
@@ -978,7 +979,7 @@ export const WithBranchConnectors: Story = {
       getTextValue={(item) => item.name}
       selectionMode="single"
       defaultExpandedKeys={new Set(['/src', '/src/components', '/src/hooks'])}
-      showBranchConnectors
+      indentGuide="connectors"
       renderItem={(item, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
           <TreeList.ItemIndent
@@ -996,6 +997,73 @@ export const WithBranchConnectors: Story = {
       <TreeList.Viewport />
     </TreeList.Root>
   ),
+};
+
+// ---------------------------------------------------------------------------
+// RailGuides — parent-icon alignment across sizes, density, and edit mode
+// ---------------------------------------------------------------------------
+
+function RailGuidesStory({ size, density, indentation }: PlaygroundArgs) {
+  const [editing, setEditing] = useState(false);
+  const Item = editing ? TreeList.ReorderableItem : TreeList.Item;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <label>
+        <input
+          type="checkbox"
+          checked={editing}
+          onChange={(event) => setEditing(event.target.checked)}
+        />
+        {' '}Edit mode (show drag handles)
+      </label>
+      <TreeList.Root
+        items={fileExplorerData}
+        itemKey={(item) => item.path}
+        getChildren={(item) => item.children}
+        isBranch={(item) => item.type === 'directory'}
+        getTextValue={(item) => item.name}
+        defaultExpandedKeys={new Set(['/src', '/src/components', '/src/hooks'])}
+        indentGuide="rail"
+        reorderable={editing}
+        size={size}
+        density={density}
+        indentation={indentation}
+        renderItem={(item, node) => (
+          <Item itemKey={node.key} textValue={item.name}>
+            {editing && (
+              <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+                ⋮⋮
+              </TreeList.ItemDragHandle>
+            )}
+            <TreeList.ItemIndent
+              depth={node.depth}
+              ancestorIsLast={node.ancestorIsLast}
+              isLastChild={node.isLastChild}
+            />
+            <TreeList.ItemToggle itemKey={node.key} />
+            <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </Item>
+        )}
+        style={{ width: 400, maxHeight: 500 }}
+      >
+        <TreeList.Viewport />
+      </TreeList.Root>
+    </div>
+  );
+}
+
+export const RailGuides: Story = {
+  parameters: {
+    controls: { include: ['size', 'density', 'indentation'] },
+    docs: {
+      description: {
+        story: 'Vertical-only rails follow parent icon centers at every depth. Toggle edit mode to inspect the drag-handle offset; change size, density, or indentation to inspect token-based alignment.',
+      },
+    },
+  },
+  render: (args) => <RailGuidesStory {...args} />,
 };
 
 // ---------------------------------------------------------------------------

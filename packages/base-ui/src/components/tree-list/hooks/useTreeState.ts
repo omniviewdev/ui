@@ -57,7 +57,7 @@ export function useTreeState<TItem>(
     density = DEFAULT_DENSITY,
     virtualized = false,
     indentation = DEFAULT_INDENTATION,
-    showBranchConnectors = false,
+    indentGuide = 'none',
     filterText: filterTextProp,
     defaultFilterText,
     onFilterTextChange,
@@ -386,7 +386,7 @@ export function useTreeState<TItem>(
       loopFocus,
       virtualized,
       indentation,
-      showBranchConnectors,
+      indentGuide,
     }),
     [
       selectionMode,
@@ -396,7 +396,7 @@ export function useTreeState<TItem>(
       loopFocus,
       virtualized,
       indentation,
-      showBranchConnectors,
+      indentGuide,
     ],
   );
 

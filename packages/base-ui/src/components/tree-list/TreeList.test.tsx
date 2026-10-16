@@ -592,148 +592,153 @@ describe('TreeList', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Branch connectors
+  // Indent guides
   // -------------------------------------------------------------------------
 
-  describe('branch connectors', () => {
-    function renderItemWithConnectors(item: FileItem, node: TreeNodeMeta) {
-      return (
-        <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent
-            depth={node.depth}
-            ancestorIsLast={node.ancestorIsLast}
-            isLastChild={node.isLastChild}
-          />
-          <TreeList.ItemToggle itemKey={node.key} />
-          <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
-        </TreeList.Item>
-      );
+  describe('indent guides', () => {
+    function guidesFor(name: string) {
+      return screen.getByText(name).closest('[role="treeitem"]')!
+        .querySelectorAll('[data-ov-guide]');
     }
 
-    it('renders guide segments when showBranchConnectors is enabled', () => {
+    it('retains mid, last, and pass-through elbows in connectors mode', () => {
       renderWithTheme(
         <TestTree
           defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          indentGuide="connectors"
         />,
       );
 
-      // depth-1 item: should have 1 guide segment
-      const components = screen.getByText('components').closest('[role="treeitem"]')!;
-      const compIndent = components.querySelector('[class*="ItemIndent"]')!;
-      expect(compIndent).toHaveAttribute('data-ov-guides');
-      const compGuides = compIndent.querySelectorAll('[class*="ItemGuide"]');
-      expect(compGuides).toHaveLength(1);
+      expect(guidesFor('components')).toHaveLength(1);
+      expect(guidesFor('App.tsx')[0]).toHaveAttribute('data-ov-segment', 'pass');
+      expect(guidesFor('App.tsx')[1]).toHaveAttribute('data-ov-connector', 'mid');
+      expect(guidesFor('Header.tsx')[1]).toHaveAttribute('data-ov-connector', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-connector', 'last');
     });
 
-    it('renders mid connector for non-last children', () => {
+    it('renders full-height and center-terminated rail segments without elbows', () => {
       renderWithTheme(
         <TestTree
           defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          indentGuide="rail"
         />,
       );
 
-      // App.tsx is NOT the last child of components → mid connector at column 1
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appGuides = appItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(appGuides).toHaveLength(2); // depth 2 = 2 guides
-
-      // Column 1 (last) should be a mid connector
-      expect(appGuides[1]).toHaveAttribute('data-ov-connector', 'mid');
+      const appGuides = guidesFor('App.tsx');
+      expect(appGuides).toHaveLength(2);
+      expect(appGuides[0]).toHaveAttribute('data-ov-guide', 'rail');
+      expect(appGuides[0]).toHaveAttribute('data-ov-segment', 'pass');
+      expect(appGuides[1]).toHaveAttribute('data-ov-segment', 'mid');
+      expect(guidesFor('Header.tsx')[1]).toHaveAttribute('data-ov-segment', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'last');
+      expect(screen.getByRole('tree').querySelector('[data-ov-connector]')).toBeNull();
     });
 
-    it('renders last connector for last children', () => {
+    it('continues rail ancestors at multiple depths and stops after their final children', () => {
+      const nested: FileItem[] = [{
+        path: '/root', name: 'root', type: 'directory', children: [
+          {
+            path: '/branch', name: 'branch', type: 'directory', children: [
+              {
+                path: '/nested', name: 'nested', type: 'directory',
+                children: [{ path: '/leaf', name: 'leaf', type: 'file' }],
+              },
+              { path: '/branch-last', name: 'branch-last', type: 'file' },
+            ],
+          },
+          {
+            path: '/last-branch', name: 'last-branch', type: 'directory',
+            children: [{ path: '/last-leaf', name: 'last-leaf', type: 'file' }],
+          },
+        ],
+      }];
+      renderWithTheme(
+        <TestTree
+          items={nested}
+          defaultExpandedKeys={new Set(['/root', '/branch', '/nested', '/last-branch'])}
+          indentGuide="rail"
+        />,
+      );
+
+      expect(Array.from(guidesFor('leaf'), (guide) => guide.getAttribute('data-ov-segment')))
+        .toEqual(['pass', 'pass', 'last']);
+      const lastGuides = guidesFor('last-leaf');
+      expect(lastGuides).toHaveLength(2);
+      expect(lastGuides[0]).not.toHaveAttribute('data-ov-segment');
+      expect(lastGuides[1]).toHaveAttribute('data-ov-segment', 'last');
+    });
+
+    it.each(['rail', 'connectors'] as const)('omits %s guides at depth zero', (indentGuide) => {
+      renderWithTheme(<TestTree indentGuide={indentGuide} />);
+      expect(guidesFor('src')).toHaveLength(0);
+      expect(guidesFor('README.md')).toHaveLength(0);
+    });
+
+    it.each([undefined, 'none'] as const)('retains plain indentation for guide mode %s', (indentGuide) => {
       renderWithTheme(
         <TestTree
           defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          indentGuide={indentGuide}
+          indentation={24}
         />,
       );
-
-      // Header.tsx is the last child of components → last connector at column 1
-      const headerItem = screen.getByText('Header.tsx').closest('[role="treeitem"]')!;
-      const headerGuides = headerItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(headerGuides).toHaveLength(2);
-      expect(headerGuides[1]).toHaveAttribute('data-ov-connector', 'last');
+      const row = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
+      expect(guidesFor('App.tsx')).toHaveLength(0);
+      expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle({
+        '--tree-depth': '2',
+        '--_ov-tree-indent': '24px',
+      });
     });
 
-    it('renders vertical pass-through line when ancestor is not last', () => {
-      renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
-        />,
+    it('updates rail termination when sibling order changes', () => {
+      const { rerender } = renderWithTheme(
+        <TestTree defaultExpandedKeys={new Set(['/src'])} indentGuide="rail" />,
       );
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'mid');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'last');
 
-      // App.tsx at depth 2: column 0 should show vertical line
-      // because /src (depth 0) is NOT last root (README.md follows)
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appGuides = appItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(appGuides[0]).toHaveAttribute('data-ov-line');
-    });
-
-    it('does not render vertical line when ancestor is last', () => {
-      // Use data where the root is the last item so ancestorIsLast[0] = true
-      const singleRoot: FileItem[] = [
-        {
-          path: '/only',
-          name: 'only',
-          type: 'directory',
-          children: [{ path: '/only/child.ts', name: 'child.ts', type: 'file' }],
-        },
-      ];
-
-      renderWithTheme(
-        <TestTree
-          items={singleRoot}
-          defaultExpandedKeys={new Set(['/only'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
-        />,
-      );
-
-      // child.ts at depth 1: only 1 guide (the connector), no pass-through needed
-      const child = screen.getByText('child.ts').closest('[role="treeitem"]')!;
-      const guides = child.querySelectorAll('[class*="ItemGuide"]');
-      expect(guides).toHaveLength(1);
-      // It should be a last connector (only child)
-      expect(guides[0]).toHaveAttribute('data-ov-connector', 'last');
-    });
-
-    it('does not render guide segments when showBranchConnectors is false', () => {
-      renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors={false}
-          renderItem={renderItemWithConnectors}
-        />,
-      );
-
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appIndent = appItem.querySelector('[class*="ItemIndent"]')!;
-      // Should NOT have guide segments — uses simple CSS var indent instead
-      expect(appIndent).not.toHaveAttribute('data-ov-guides');
-      expect(appIndent.querySelectorAll('[class*="ItemGuide"]')).toHaveLength(0);
-    });
-
-    it('does not render guides for root-level items (depth 0)', () => {
-      renderWithTheme(
+      rerender(
         <TestTree
           defaultExpandedKeys={new Set(['/src'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          indentGuide="rail"
+          order={new Map([['/src', ['/src/index.ts', '/src/components']]])}
         />,
       );
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'mid');
+    });
 
-      // /src is depth 0 — no indent guides needed
-      const src = screen.getByText('src').closest('[role="treeitem"]')!;
-      const srcIndent = src.querySelector('[class*="ItemIndent"]')!;
-      expect(srcIndent).not.toHaveAttribute('data-ov-guides');
+    it('terminates rails at the final matching child when filtering', () => {
+      renderWithTheme(
+        <TestTree indentGuide="rail" filterText="App.tsx" />,
+      );
+
+      expect(screen.queryByText('Header.tsx')).not.toBeInTheDocument();
+      expect(screen.queryByText('index.ts')).not.toBeInTheDocument();
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'last');
+      const appGuides = guidesFor('App.tsx');
+      expect(appGuides[0]).not.toHaveAttribute('data-ov-segment');
+      expect(appGuides[1]).toHaveAttribute('data-ov-segment', 'last');
+    });
+
+    it('preserves expansion and selection when changing guide modes', async () => {
+      const user = userEvent.setup();
+      const { rerender } = renderWithTheme(
+        <TestTree indentGuide="none" defaultExpandedKeys={new Set(['/src'])} />,
+      );
+      await user.click(screen.getByText('components'));
+      expect(screen.getByText('components').closest('[role="treeitem"]'))
+        .toHaveAttribute('aria-selected', 'true');
+
+      rerender(<TestTree indentGuide="rail" defaultExpandedKeys={new Set(['/src'])} />);
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-guide', 'rail');
+      expect(screen.getByText('components').closest('[role="treeitem"]'))
+        .toHaveAttribute('aria-selected', 'true');
+
+      rerender(<TestTree indentGuide="connectors" defaultExpandedKeys={new Set(['/src'])} />);
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-connector', 'mid');
+      expect(screen.getByText('src').closest('[role="treeitem"]'))
+        .toHaveAttribute('aria-expanded', 'true');
     });
   });
 

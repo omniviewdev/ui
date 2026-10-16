@@ -130,6 +130,8 @@
  * --------------------------------------------------------------------------- */
 
 .Item {
+  position: relative;
+  --_ov-tree-handle-offset: 0px;
   display: flex;
   align-items: center;
   gap: var(--_ov-item-gap);
@@ -181,14 +183,15 @@
   cursor: default;
 }
 
-.Item[data-ov-reorderable='true'] {
-  position: relative;
-}
-
 .Item[data-ov-dragging='true'] {
   z-index: 1;
   cursor: grabbing;
   opacity: 0.8;
+}
+
+/* Reorderable rows reserve one toggle-sized handle column and one flex gap. */
+.Item[data-ov-reorderable='true'] {
+  --_ov-tree-handle-offset: calc(var(--_ov-tree-toggle-size) + var(--_ov-item-gap));
 }
 
 .ItemDragHandle {
@@ -251,15 +254,13 @@
   width: calc(var(--tree-depth, 0) * var(--_ov-tree-indent));
 }
 
-/* When branch connectors are rendered, width is driven by guide children.
- * align-self: stretch overrides Item's align-items:center so guides span
- * the full row height — needed for vertical connector lines. */
+/* Guide children determine width and stretch through the full row height. */
 .ItemIndent[data-ov-guides] {
   width: auto;
   align-self: stretch;
 }
 
-/* --- Branch connector guides ---------------------------------------------- */
+/* --- Indent guides -------------------------------------------------------- */
 
 .ItemGuide {
   display: inline-block;
@@ -268,35 +269,34 @@
   position: relative;
 }
 
-/* Vertical pass-through line (ancestor has more siblings below) */
-.ItemGuide[data-ov-line]::before {
+/* Connectors retain their original half-indent column; rails use the row as
+ * their containing block to align under ancestor icon centers, regardless of
+ * whether the optional drag handle comes before or after ItemIndent.
+ * Parent icon center = padding + handle + depth * indent + two slot gaps
+ *                      + toggle + half the icon width. */
+.ItemGuide[data-ov-guide='rail'] {
+  position: static;
+  --_ov-tree-guide-position: calc(
+    var(--_ov-item-padding-inline) + var(--_ov-tree-handle-offset) +
+    var(--_ov-tree-guide-level) * var(--_ov-tree-indent) +
+    var(--_ov-tree-toggle-size) + 2 * var(--_ov-item-gap) + var(--_ov-icon-size) / 2
+  );
+}
+
+.ItemGuide[data-ov-segment]::before {
   content: '';
   position: absolute;
-  left: calc(var(--_ov-tree-indent) / 2);
-  top: 0;
-  bottom: 0;
-  width: var(--_ov-tree-connector-width);
+  inset-inline-start: var(--_ov-tree-guide-position, calc(var(--_ov-tree-indent) / 2));
+  inset-block-start: 0;
+  inset-block-end: 0;
+  inline-size: var(--_ov-tree-connector-width);
   background: var(--_ov-tree-connector-color);
+  pointer-events: none;
 }
 
-/* Connector: vertical portion */
-.ItemGuide[data-ov-connector]::before {
-  content: '';
-  position: absolute;
-  left: calc(var(--_ov-tree-indent) / 2);
-  top: 0;
-  width: var(--_ov-tree-connector-width);
-  background: var(--_ov-tree-connector-color);
-}
-
-/* Mid-child connector: vertical line runs full height */
-.ItemGuide[data-ov-connector='mid']::before {
-  bottom: 0;
-}
-
-/* Last-child connector: vertical line runs to center only */
-.ItemGuide[data-ov-connector='last']::before {
-  height: 50%;
+/* Final children terminate at row center; mid and pass span the full row. */
+.ItemGuide[data-ov-segment='last']::before {
+  inset-block-end: 50%;
 }
 
 /* Connector: horizontal branch to the right */

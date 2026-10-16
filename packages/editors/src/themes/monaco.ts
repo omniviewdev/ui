@@ -1,5 +1,5 @@
-import { getComputedToken } from './useEditorTheme';
-import type { ThemeMode } from './types';
+import { getComputedThemeStyle, getEditorThemeRoot } from './useEditorTheme';
+import type { BuiltInThemeId } from '@omniviewdev/base-ui';
 
 interface MonacoThemeData {
   base: 'vs' | 'vs-dark' | 'hc-black' | 'hc-light';
@@ -8,53 +8,89 @@ interface MonacoThemeData {
   colors: Record<string, string>;
 }
 
-/**
- * Convert any CSS color value to hex format that Monaco understands.
- * Monaco only accepts #RGB, #RRGGBB, or #RRGGBBAA — it renders a bright red
- * fallback for rgb(), rgba(), transparent, or any other format.
- */
-function toHex(color: string): string {
+const HEX_COLOR = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+const SERIALIZED_RGB =
+  /^rgba?\(\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)(?:\s*,\s*|\s+)([\d.]+)(?:\s*(?:,|\/)\s*([\d.]+))?\s*\)$/i;
+
+function byteToHex(value: number): string {
+  return Math.max(0, Math.min(255, Math.round(value)))
+    .toString(16)
+    .padStart(2, '0');
+}
+
+function serializedColorToHex(color: string): string {
   const trimmed = color.trim();
-  if (!trimmed || trimmed === 'transparent') return '';
+  if (HEX_COLOR.test(trimmed)) return trimmed;
 
-  // Already hex — return as-is (with hash)
-  if (trimmed.startsWith('#')) return trimmed;
+  const match = trimmed.match(SERIALIZED_RGB);
+  if (!match) return '';
+  const alpha = match[4] === undefined ? 1 : Number(match[4]);
+  const rgb = `#${byteToHex(Number(match[1]))}${byteToHex(Number(match[2]))}${byteToHex(Number(match[3]))}`;
+  return alpha >= 1 ? rgb : `${rgb}${byteToHex(alpha * 255)}`;
+}
 
-  // Match rgb/rgba in both legacy (comma) and modern (space) syntax
-  // rgb(255, 255, 255) | rgb(255 255 255) | rgba(255, 255, 255, 0.5) | rgb(255 255 255 / 0.5)
-  const rgbMatch = trimmed.match(
-    /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:\s*[/,]\s*([\d.]+))?\s*\)$/,
-  );
-  if (rgbMatch) {
-    const r = Number(rgbMatch[1]);
-    const g = Number(rgbMatch[2]);
-    const b = Number(rgbMatch[3]);
-    const a = rgbMatch[4] !== undefined ? Number(rgbMatch[4]) : 1;
-    const hex = (c: number) => c.toString(16).padStart(2, '0');
-    if (a >= 1) return `#${hex(r)}${hex(g)}${hex(b)}`;
-    return `#${hex(r)}${hex(g)}${hex(b)}${hex(Math.round(a * 255))}`;
+interface MonacoColorNormalizer {
+  normalize(color: string): string;
+  dispose(): void;
+}
+
+function createMonacoColorNormalizer(root: HTMLElement | null): MonacoColorNormalizer {
+  if (!root) {
+    return {
+      normalize: serializedColorToHex,
+      dispose() {},
+    };
   }
 
-  // Unrecognized format — drop it so Monaco falls back to base theme
-  return '';
+  const surface = root.ownerDocument.createElement('canvas');
+  surface.width = 1;
+  surface.height = 1;
+  surface.setAttribute('aria-hidden', 'true');
+  surface.style.cssText =
+    'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;visibility:hidden';
+  root.append(surface);
+  let context: CanvasRenderingContext2D | null | undefined;
+
+  return {
+    normalize(color) {
+      const direct = serializedColorToHex(color);
+      if (direct) return direct;
+
+      surface.style.color = '';
+      surface.style.color = color.trim();
+      if (!surface.style.color) return '';
+
+      const computed = getComputedStyle(surface).color;
+      const serialized = serializedColorToHex(computed);
+      if (serialized) return serialized;
+      if (!/^(?:color|lab|lch|oklab|oklch)\(/i.test(computed)) return '';
+
+      try {
+        context ??= surface.getContext('2d', { willReadFrequently: true });
+        if (!context) return '';
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = '#010203';
+        context.fillStyle = computed;
+        if (context.fillStyle === '#010203') return '';
+        context.fillRect(0, 0, 1, 1);
+        const pixel = context.getImageData(0, 0, 1, 1).data;
+        const rgb = `#${byteToHex(pixel[0]!)}${byteToHex(pixel[1]!)}${byteToHex(pixel[2]!)}`;
+        return pixel[3] === 255 ? rgb : `${rgb}${byteToHex(pixel[3]!)}`;
+      } catch {
+        return '';
+      }
+    },
+
+    dispose() {
+      surface.remove();
+    },
+  };
 }
 
-function stripHash(color: string): string {
-  return color.startsWith('#') ? color.slice(1) : color;
-}
-
-function token(name: string): string {
-  return getComputedToken(name) || '';
-}
-
-/** Read a CSS token and convert to hex for Monaco. */
-function hexToken(name: string): string {
-  return toHex(token(name));
-}
-
-function getBaseTheme(mode: ThemeMode): 'vs' | 'vs-dark' | 'hc-black' | 'hc-light' {
+function getBaseTheme(mode: BuiltInThemeId): 'vs' | 'vs-dark' | 'hc-black' | 'hc-light' {
   switch (mode) {
     case 'light':
+    case 'solarized-light':
       return 'vs';
     case 'high-contrast-dark':
       return 'hc-black';
@@ -73,18 +109,19 @@ function getBaseTheme(mode: ThemeMode): 'vs' | 'vs-dark' | 'hc-black' | 'hc-ligh
 function tokenRule(
   name: string,
   fgVar: string,
+  styles: CSSStyleDeclaration | null,
+  normalizer: MonacoColorNormalizer,
   styleVar?: string,
   styleDefault?: string,
 ): { token: string; foreground?: string; fontStyle?: string } | null {
-  const fg = toHex(token(fgVar));
-  const stripped = fg ? stripHash(fg) : '';
-  if (!stripped) return null;
+  const foreground = normalizer.normalize(styles?.getPropertyValue(fgVar).trim() ?? '');
+  if (!foreground) return null;
   const entry: { token: string; foreground: string; fontStyle?: string } = {
     token: name,
-    foreground: stripped,
+    foreground: foreground.slice(1),
   };
   if (styleVar) {
-    entry.fontStyle = token(styleVar) || styleDefault || '';
+    entry.fontStyle = styles?.getPropertyValue(styleVar).trim() || styleDefault || '';
   }
   return entry;
 }
@@ -101,76 +138,90 @@ function filterColors(colors: Record<string, string>): Record<string, string> {
   return result;
 }
 
-export function buildMonacoTheme(mode: ThemeMode): MonacoThemeData {
-  const rules = [
-    tokenRule('comment', '--ov-syntax-comment', '--ov-syntax-style-comment', 'italic'),
-    tokenRule('string', '--ov-syntax-string'),
-    tokenRule('string.escape', '--ov-syntax-string-escape'),
-    tokenRule('number', '--ov-syntax-number'),
-    tokenRule('keyword', '--ov-syntax-keyword', '--ov-syntax-style-keyword'),
-    tokenRule('keyword.control', '--ov-syntax-keyword-control'),
-    tokenRule('keyword.operator', '--ov-syntax-keyword-operator'),
-    tokenRule('type', '--ov-syntax-type', '--ov-syntax-style-type'),
-    tokenRule('type.identifier', '--ov-syntax-type'),
-    tokenRule('class', '--ov-syntax-class'),
-    tokenRule('interface', '--ov-syntax-interface'),
-    tokenRule('function', '--ov-syntax-function', '--ov-syntax-style-function'),
-    tokenRule('function.declaration', '--ov-syntax-function'),
-    tokenRule('method', '--ov-syntax-method'),
-    tokenRule('variable', '--ov-syntax-variable'),
-    tokenRule('parameter', '--ov-syntax-parameter'),
-    tokenRule('property', '--ov-syntax-property'),
-    tokenRule('namespace', '--ov-syntax-namespace'),
-    tokenRule('decorator', '--ov-syntax-decorator'),
-    tokenRule('regexp', '--ov-syntax-regexp'),
-    tokenRule('operator', '--ov-syntax-operator'),
-    tokenRule('delimiter', '--ov-syntax-punctuation'),
-    tokenRule('delimiter.bracket', '--ov-syntax-punctuation'),
-  ].filter((r): r is NonNullable<typeof r> => r !== null);
+export function buildMonacoTheme(
+  mode: BuiltInThemeId,
+  element?: HTMLElement | null,
+): MonacoThemeData {
+  const root = getEditorThemeRoot(element);
+  const styles = getComputedThemeStyle(root);
+  const normalizer = createMonacoColorNormalizer(root);
+  const rule = (name: string, fgVar: string, styleVar?: string, styleDefault?: string) =>
+    tokenRule(name, fgVar, styles, normalizer, styleVar, styleDefault);
+  const color = (name: string) => normalizer.normalize(styles?.getPropertyValue(name).trim() ?? '');
 
-  return {
-    base: getBaseTheme(mode),
-    inherit: true,
-    rules,
-    colors: filterColors({
-      'editor.background': hexToken('--ov-color-editor-bg'),
-      'editor.foreground': hexToken('--ov-color-editor-fg'),
-      'editorCursor.foreground': hexToken('--ov-color-editor-cursor'),
-      'editor.selectionBackground': hexToken('--ov-color-editor-selection-bg'),
-      'editor.inactiveSelectionBackground': hexToken('--ov-color-editor-selection-inactive-bg'),
-      'editor.lineHighlightBackground': hexToken('--ov-color-editor-line-highlight-bg'),
-      'editor.lineHighlightBorder': hexToken('--ov-color-editor-line-highlight-border'),
-      'editorLineNumber.foreground': hexToken('--ov-color-editor-line-number'),
-      'editorLineNumber.activeForeground': hexToken('--ov-color-editor-line-number-active'),
-      'editorWhitespace.foreground': hexToken('--ov-color-editor-whitespace'),
-      'editorIndentGuide.background': hexToken('--ov-color-editor-indent-guide'),
-      'editorIndentGuide.activeBackground': hexToken('--ov-color-editor-indent-guide-active'),
-      'editorRuler.foreground': hexToken('--ov-color-editor-ruler'),
-      'editor.findMatchBackground': hexToken('--ov-color-editor-find-match-bg'),
-      'editor.findMatchBorder': hexToken('--ov-color-editor-find-match-border'),
-      'editor.findMatchHighlightBackground': hexToken('--ov-color-editor-find-range-bg'),
-      'editorLink.activeForeground': hexToken('--ov-color-editor-link'),
-      'editorBracketMatch.background': hexToken('--ov-color-editor-bracket-match-bg'),
-      'editorBracketMatch.border': hexToken('--ov-color-editor-bracket-match-border'),
-      'editorBracketHighlight.foreground1': hexToken('--ov-color-editor-bracket-1'),
-      'editorBracketHighlight.foreground2': hexToken('--ov-color-editor-bracket-2'),
-      'editorBracketHighlight.foreground3': hexToken('--ov-color-editor-bracket-3'),
-      'editorBracketHighlight.foreground4': hexToken('--ov-color-editor-bracket-4'),
-      'editorBracketHighlight.foreground5': hexToken('--ov-color-editor-bracket-5'),
-      'editorBracketHighlight.foreground6': hexToken('--ov-color-editor-bracket-6'),
-      'editorGutter.background': hexToken('--ov-color-gutter-bg'),
-      'editorGutter.addedBackground': hexToken('--ov-color-gutter-added'),
-      'editorGutter.modifiedBackground': hexToken('--ov-color-gutter-modified'),
-      'editorGutter.deletedBackground': hexToken('--ov-color-gutter-deleted'),
-      'diffEditor.insertedTextBackground': hexToken('--ov-color-diff-insert-bg'),
-      'diffEditor.removedTextBackground': hexToken('--ov-color-diff-remove-bg'),
-      'minimap.background': hexToken('--ov-color-minimap-bg'),
-      'minimap.selectionHighlight': hexToken('--ov-color-minimap-selection'),
-      'minimap.errorHighlight': hexToken('--ov-color-minimap-error'),
-      'minimap.warningHighlight': hexToken('--ov-color-minimap-warning'),
-      'minimap.findMatchHighlight': hexToken('--ov-color-minimap-find-match'),
-    }),
-  };
+  try {
+    const rules = [
+      rule('comment', '--ov-syntax-comment', '--ov-syntax-style-comment', 'italic'),
+      rule('string', '--ov-syntax-string'),
+      rule('string.escape', '--ov-syntax-string-escape'),
+      rule('number', '--ov-syntax-number'),
+      rule('keyword', '--ov-syntax-keyword', '--ov-syntax-style-keyword'),
+      rule('keyword.control', '--ov-syntax-keyword-control'),
+      rule('keyword.operator', '--ov-syntax-keyword-operator'),
+      rule('type', '--ov-syntax-type', '--ov-syntax-style-type'),
+      rule('type.identifier', '--ov-syntax-type'),
+      rule('class', '--ov-syntax-class'),
+      rule('interface', '--ov-syntax-interface'),
+      rule('function', '--ov-syntax-function', '--ov-syntax-style-function'),
+      rule('function.declaration', '--ov-syntax-function'),
+      rule('method', '--ov-syntax-method'),
+      rule('variable', '--ov-syntax-variable'),
+      rule('parameter', '--ov-syntax-parameter'),
+      rule('property', '--ov-syntax-property'),
+      rule('namespace', '--ov-syntax-namespace'),
+      rule('decorator', '--ov-syntax-decorator'),
+      rule('regexp', '--ov-syntax-regexp'),
+      rule('operator', '--ov-syntax-operator'),
+      rule('delimiter', '--ov-syntax-punctuation'),
+      rule('delimiter.bracket', '--ov-syntax-punctuation'),
+    ].filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+
+    return {
+      base: getBaseTheme(mode),
+      inherit: true,
+      rules,
+      colors: filterColors({
+        'editor.background': color('--ov-color-editor-bg'),
+        'editor.foreground': color('--ov-color-editor-fg'),
+        'editorCursor.foreground': color('--ov-color-editor-cursor'),
+        'editor.selectionBackground': color('--ov-color-editor-selection-bg'),
+        'editor.inactiveSelectionBackground': color('--ov-color-editor-selection-inactive-bg'),
+        'editor.lineHighlightBackground': color('--ov-color-editor-line-highlight-bg'),
+        'editor.lineHighlightBorder': color('--ov-color-editor-line-highlight-border'),
+        'editorLineNumber.foreground': color('--ov-color-editor-line-number'),
+        'editorLineNumber.activeForeground': color('--ov-color-editor-line-number-active'),
+        'editorWhitespace.foreground': color('--ov-color-editor-whitespace'),
+        'editorIndentGuide.background': color('--ov-color-editor-indent-guide'),
+        'editorIndentGuide.activeBackground': color('--ov-color-editor-indent-guide-active'),
+        'editorRuler.foreground': color('--ov-color-editor-ruler'),
+        'editor.findMatchBackground': color('--ov-color-editor-find-match-bg'),
+        'editor.findMatchBorder': color('--ov-color-editor-find-match-border'),
+        'editor.findMatchHighlightBackground': color('--ov-color-editor-find-range-bg'),
+        'editorLink.activeForeground': color('--ov-color-editor-link'),
+        'editorBracketMatch.background': color('--ov-color-editor-bracket-match-bg'),
+        'editorBracketMatch.border': color('--ov-color-editor-bracket-match-border'),
+        'editorBracketHighlight.foreground1': color('--ov-color-editor-bracket-1'),
+        'editorBracketHighlight.foreground2': color('--ov-color-editor-bracket-2'),
+        'editorBracketHighlight.foreground3': color('--ov-color-editor-bracket-3'),
+        'editorBracketHighlight.foreground4': color('--ov-color-editor-bracket-4'),
+        'editorBracketHighlight.foreground5': color('--ov-color-editor-bracket-5'),
+        'editorBracketHighlight.foreground6': color('--ov-color-editor-bracket-6'),
+        'editorGutter.background': color('--ov-color-gutter-bg'),
+        'editorGutter.addedBackground': color('--ov-color-gutter-added'),
+        'editorGutter.modifiedBackground': color('--ov-color-gutter-modified'),
+        'editorGutter.deletedBackground': color('--ov-color-gutter-deleted'),
+        'diffEditor.insertedTextBackground': color('--ov-color-diff-insert-bg'),
+        'diffEditor.removedTextBackground': color('--ov-color-diff-remove-bg'),
+        'minimap.background': color('--ov-color-minimap-bg'),
+        'minimap.selectionHighlight': color('--ov-color-minimap-selection'),
+        'minimap.errorHighlight': color('--ov-color-minimap-error'),
+        'minimap.warningHighlight': color('--ov-color-minimap-warning'),
+        'minimap.findMatchHighlight': color('--ov-color-minimap-find-match'),
+      }),
+    };
+  } finally {
+    normalizer.dispose();
+  }
 }
 
 export const OV_MONACO_THEME = 'ov-theme';

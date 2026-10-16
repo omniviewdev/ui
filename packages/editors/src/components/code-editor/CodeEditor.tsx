@@ -326,7 +326,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       log('=== MOUNT ===');
 
       // Theme
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
+      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
       monaco.editor.setTheme(OV_MONACO_THEME);
 
       // TypeScript / JavaScript compiler options (global — JSX & target config)
@@ -469,9 +469,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
     // Theme
     useEffect(() => {
       if (!isReady) return;
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme));
+      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
       monaco.editor.setTheme(OV_MONACO_THEME);
-    }, [theme, isReady]);
+    }, [isReady, theme.registration]);
 
     // onChange subscription
     useEffect(() => {

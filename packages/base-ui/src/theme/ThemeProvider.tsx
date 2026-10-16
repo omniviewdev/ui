@@ -1,109 +1,143 @@
-import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
+import {
+  useCallback,
+  useInsertionEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type PropsWithChildren,
+} from 'react';
+import { createThemeRootApplier } from './applyTheme';
 import { ThemeContext } from './context';
 import { themeRegistry } from './registry';
+import type { ThemeRegistry } from './registry';
 import type { ThemeDensity, ThemeMode, ThemeMotion } from './types';
 
 const DENSITY_ATTR = 'data-ov-density';
 const MOTION_ATTR = 'data-ov-motion';
+interface RootPreferenceEntry {
+  density: ThemeDensity;
+  motion: ThemeMotion;
+}
 
-const THEME_STORAGE_KEY = 'ov-theme-mode';
-const DENSITY_STORAGE_KEY = 'ov-theme-density';
-const MOTION_STORAGE_KEY = 'ov-theme-motion';
+interface RootPreferenceOwners {
+  entries: RootPreferenceEntry[];
+}
+
+const ROOT_PREFERENCE_OWNERS = new WeakMap<HTMLElement, RootPreferenceOwners>();
+
+function applyRootPreferences(
+  root: HTMLElement,
+  entry: RootPreferenceEntry,
+  density: ThemeDensity,
+  motion: ThemeMotion,
+): () => void {
+  let owners = ROOT_PREFERENCE_OWNERS.get(root);
+  if (!owners) {
+    owners = { entries: [] };
+    ROOT_PREFERENCE_OWNERS.set(root, owners);
+  }
+
+  const previousIndex = owners.entries.indexOf(entry);
+  if (previousIndex >= 0) owners.entries.splice(previousIndex, 1);
+  entry.density = density;
+  entry.motion = motion;
+  owners.entries.push(entry);
+  root.setAttribute(DENSITY_ATTR, density);
+  root.setAttribute(MOTION_ATTR, motion);
+
+  return () => {
+    if (ROOT_PREFERENCE_OWNERS.get(root) !== owners) return;
+    const index = owners.entries.indexOf(entry);
+    if (index < 0) return;
+    const wasCurrent = index === owners.entries.length - 1;
+    owners.entries.splice(index, 1);
+    if (!wasCurrent) return;
+
+    const previous = owners.entries[owners.entries.length - 1];
+    if (previous) {
+      root.setAttribute(DENSITY_ATTR, previous.density);
+      root.setAttribute(MOTION_ATTR, previous.motion);
+      return;
+    }
+
+    root.removeAttribute(DENSITY_ATTR);
+    root.removeAttribute(MOTION_ATTR);
+    ROOT_PREFERENCE_OWNERS.delete(root);
+  };
+}
 
 export interface ThemeProviderProps extends PropsWithChildren {
-  initialTheme?: ThemeMode;
+  themeId: string;
+  onThemeChange?: (themeId: string) => void;
+  fallbackThemeId?: string;
   initialDensity?: ThemeDensity;
   initialMotion?: ThemeMotion;
-  persist?: boolean;
+  registry?: ThemeRegistry;
+  root?: HTMLElement | null;
 }
-
-function getStored(key: string): string | null {
-  if (typeof window === 'undefined') return null;
-  return window.localStorage.getItem(key);
-}
-
-const isThemeDensity = (v: string): v is ThemeDensity => v === 'compact' || v === 'comfortable';
-const isThemeMotion = (v: string): v is ThemeMotion => v === 'normal' || v === 'reduced';
 
 export function ThemeProvider({
   children,
-  initialTheme = 'dark',
+  themeId,
+  onThemeChange,
+  fallbackThemeId = 'void',
   initialDensity = 'comfortable',
   initialMotion = 'normal',
-  persist = true,
+  registry = themeRegistry,
+  root,
 }: ThemeProviderProps) {
-  // --- THEME ---
-  // Resolve an initial theme id. If localStorage has a registered id, use that;
-  // otherwise fall back to `initialTheme` and remember the pending id (if any)
-  // so we can auto-apply it when a matching `registered` event arrives.
-  const pendingThemeIdRef = useRef<string | null>(null);
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (!persist) {
-      if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
-      return initialTheme;
-    }
-    const stored = getStored(THEME_STORAGE_KEY);
-    if (stored && themeRegistry.has(stored)) return stored;
-    if (stored) pendingThemeIdRef.current = stored;
-    else if (!themeRegistry.has(initialTheme)) pendingThemeIdRef.current = initialTheme;
-    return initialTheme;
-  });
+  useSyncExternalStore(registry.subscribe, registry.getSnapshot, registry.getSnapshot);
 
-  // Subscribe before apply so the initial `applied` event isn't missed, and
-  // skip apply when the resolved theme isn't registered yet (the `registered`
-  // handler below auto-applies it once it lands).
-  useEffect(() => {
-    const unsubscribe = themeRegistry.subscribe((event) => {
-      if (event.type === 'applied') {
-        setThemeState(event.id);
-        if (persist && typeof window !== 'undefined') {
-          window.localStorage.setItem(THEME_STORAGE_KEY, event.id);
-        }
-      } else if (event.type === 'registered') {
-        if (pendingThemeIdRef.current === event.id) {
-          pendingThemeIdRef.current = null;
-          themeRegistry.apply(event.id);
-        }
-      }
-    });
-    if (themeRegistry.has(theme)) {
-      themeRegistry.apply(theme);
-    }
-    return unsubscribe;
-    // Intentionally only on mount. `theme` state is updated via the subscriber.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const requestedTheme = registry.get(themeId);
+  const configuredFallback = registry.get(fallbackThemeId);
+  const defaultFallback = registry.get('void');
+  const activeTheme = requestedTheme ?? configuredFallback ?? defaultFallback;
+  if (!activeTheme) throw new Error('Theme registry must contain the built-in "void" theme');
+  const isFallback = requestedTheme === undefined;
 
-  const setTheme = (next: ThemeMode) => {
-    themeRegistry.apply(next);
-    // State update flows through the `applied` listener above.
-  };
+  useInsertionEffect(() => {
+    const target = root === undefined
+      ? (typeof document === 'undefined' ? null : document.documentElement)
+      : root;
+    if (!target) return;
 
-  // --- DENSITY ---
-  const [density, setDensity] = useState<ThemeDensity>(() => {
-    if (!persist) return initialDensity;
-    const stored = getStored(DENSITY_STORAGE_KEY);
-    return stored && isThemeDensity(stored) ? stored : initialDensity;
-  });
-  useEffect(() => {
-    document.documentElement.setAttribute(DENSITY_ATTR, density);
-    if (persist) window.localStorage.setItem(DENSITY_STORAGE_KEY, density);
-  }, [density, persist]);
+    const applier = createThemeRootApplier(target);
+    applier.apply(activeTheme);
+    return applier.cleanup;
+  }, [activeTheme, root]);
 
-  // --- MOTION ---
-  const [motion, setMotion] = useState<ThemeMotion>(() => {
-    if (!persist) return initialMotion;
-    const stored = getStored(MOTION_STORAGE_KEY);
-    return stored && isThemeMotion(stored) ? stored : initialMotion;
-  });
-  useEffect(() => {
-    document.documentElement.setAttribute(MOTION_ATTR, motion);
-    if (persist) window.localStorage.setItem(MOTION_STORAGE_KEY, motion);
-  }, [motion, persist]);
+  const setTheme = useCallback((nextThemeId: ThemeMode) => {
+    onThemeChange?.(nextThemeId);
+  }, [onThemeChange]);
+
+  const [density, setDensity] = useState<ThemeDensity>(initialDensity);
+  const [motion, setMotion] = useState<ThemeMotion>(initialMotion);
+  const preferenceOwnerRef = useRef<RootPreferenceEntry | null>(null);
+  const preferenceOwner = preferenceOwnerRef.current ?? { density, motion };
+  preferenceOwnerRef.current = preferenceOwner;
+  useInsertionEffect(() => {
+    const target = root === undefined
+      ? (typeof document === 'undefined' ? null : document.documentElement)
+      : root;
+    if (!target) return;
+
+    return applyRootPreferences(target, preferenceOwner, density, motion);
+  }, [density, motion, root]);
 
   const value = useMemo(
-    () => ({ theme, density, motion, setTheme, setDensity, setMotion }),
-    [theme, density, motion],
+    () => ({
+      requestedThemeId: themeId,
+      activeTheme,
+      isFallback,
+      density,
+      motion,
+      setTheme,
+      setDensity,
+      setMotion,
+    }),
+    [themeId, activeTheme, isFallback, density, motion, setTheme],
   );
+
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

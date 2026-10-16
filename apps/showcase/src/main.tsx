@@ -1,23 +1,32 @@
-import { StrictMode } from 'react';
+import { StrictMode, useState, type PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider, ToastProvider, themeRegistry } from '@omniviewdev/base-ui';
+import { themeRegistry, ThemeProvider, ToastProvider } from '@omniviewdev/base-ui';
 import '@omniviewdev/base-ui/styles.css';
 import './global.css';
 import { App } from './App';
 import { SHOWCASE_CUSTOM_THEMES } from './sampleThemes';
 
-// Register showcase-specific custom themes before the provider mounts so they
-// appear in the theme picker from first render.
+const SHOWCASE_THEME_OWNER = { kind: 'user', id: 'showcase' } as const;
+themeRegistry.unregisterOwner(SHOWCASE_THEME_OWNER);
 for (const theme of SHOWCASE_CUSTOM_THEMES) {
-  if (!themeRegistry.has(theme.id)) themeRegistry.register(theme);
+  themeRegistry.register(theme, SHOWCASE_THEME_OWNER);
+}
+
+function ThemeHarness({ children }: PropsWithChildren) {
+  const [themeId, setThemeId] = useState('dark');
+  return (
+    <ThemeProvider themeId={themeId} onThemeChange={setThemeId}>
+      {children}
+    </ThemeProvider>
+  );
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeHarness>
       <ToastProvider>
         <App />
       </ToastProvider>
-    </ThemeProvider>
+    </ThemeHarness>
   </StrictMode>,
 );

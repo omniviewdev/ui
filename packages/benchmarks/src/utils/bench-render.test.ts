@@ -12,7 +12,7 @@ describe('bench-render utilities integration', () => {
   it('render + cleanup cycle works for simple component', () => {
     const element = createElement(
       ThemeProvider,
-      { persist: false },
+      { themeId: 'dark' },
       createElement('button', { 'data-testid': 'btn' }, 'Click'),
     );
     render(element);
@@ -24,14 +24,14 @@ describe('bench-render utilities integration', () => {
   it('rerender cycle works for prop changes', () => {
     const element = createElement(
       ThemeProvider,
-      { persist: false },
+      { themeId: 'dark' },
       createElement('button', { 'data-testid': 'btn' }, 'Initial'),
     );
     const { rerender } = render(element);
 
     const updated = createElement(
       ThemeProvider,
-      { persist: false },
+      { themeId: 'dark' },
       createElement('button', { 'data-testid': 'btn' }, 'Updated'),
     );
     rerender(updated);
@@ -45,7 +45,7 @@ describe('bench-render utilities integration', () => {
     );
     const wrapper = createElement(
       ThemeProvider,
-      { persist: false },
+      { themeId: 'dark' },
       createElement('div', { 'data-testid': 'wrapper' }, ...children),
     );
     render(wrapper);

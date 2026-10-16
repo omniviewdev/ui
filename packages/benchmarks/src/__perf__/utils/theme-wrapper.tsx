@@ -6,5 +6,5 @@ import { ThemeProvider } from '@omniviewdev/base-ui';
  * required by all @omniview components.
  */
 export function ThemeWrapper({ children }: { children: ReactElement }) {
-  return <ThemeProvider persist={false}>{children}</ThemeProvider>;
+  return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
 }

@@ -6,7 +6,7 @@ import { MuiThemeWrapper } from './mui-theme/theme';
  * Wrap element in @omniviewdev/base-ui ThemeProvider.
  */
 export function wrapOv(element: ReactElement): ReactElement {
-  return createElement(ThemeProvider, { persist: false }, element);
+  return createElement(ThemeProvider, { themeId: 'dark' }, element);
 }
 
 /**

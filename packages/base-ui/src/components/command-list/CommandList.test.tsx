@@ -39,7 +39,7 @@ const commands: TestCommand[] = [
 ];
 
 function renderWithTheme(ui: React.ReactElement) {
-  return render(<ThemeProvider>{ui}</ThemeProvider>);
+  return render(<ThemeProvider themeId="dark">{ui}</ThemeProvider>);
 }
 
 type Story = Partial<CommandListRootProps<TestCommand>>;
@@ -200,7 +200,7 @@ describe('CommandList', () => {
       expect(screen.getAllByRole('option')).toHaveLength(2);
 
       rerender(
-        <ThemeProvider>
+        <ThemeProvider themeId="dark">
           <TestCommandList items={commands} />
         </ThemeProvider>,
       );
@@ -451,7 +451,7 @@ describe('CommandList', () => {
 
       // Change items
       rerender(
-        <ThemeProvider>
+        <ThemeProvider themeId="dark">
           <TestCommandList items={commands.slice(2)} />
         </ThemeProvider>,
       );

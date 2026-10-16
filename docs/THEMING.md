@@ -1,73 +1,124 @@
 # Theming Engine
 
-## Requirements coverage
+Base UI's theme engine is controlled by the host. Components use static CSS
+variables, while runtime changes are applied at a root element by
+`ThemeProvider`.
 
-1. Fastest possible component rendering: all component styles are static CSS.
-2. Runtime theme changes allowed to be slower: theme updates happen via root-level CSS variable and attribute updates.
+## Host integration
 
-## Theme state contract
+Keep the requested theme ID in application state and pass it to the provider:
 
-Theme context values:
+```tsx
+const [themeId, setThemeId] = useState('dark');
 
-- `theme`: `dark | light | high-contrast-dark | high-contrast-light`
-- `density`: `compact | comfortable`
-- `motion`: `normal | reduced`
-- `setTheme`, `setDensity`, `setMotion`
+<ThemeProvider themeId={themeId} onThemeChange={setThemeId} fallbackThemeId="void">
+  <App />
+</ThemeProvider>;
+```
 
-Persistence:
+The provider has no storage behavior. The host is responsible for loading and
+saving the selected ID. `useTheme().setTheme(id)` calls `onThemeChange`; it does
+not mutate hidden provider state.
 
-- LocalStorage keys:
-  - `ov-theme-mode`
-  - `ov-theme-density`
-  - `ov-theme-motion`
-- On mount, the provider applies state to `document.documentElement`.
+The provider applies `data-ov-theme`, `data-ov-density`, and `data-ov-motion`
+to `document.documentElement` by default. A host can supply another `root`;
+built-in palettes and density/motion selectors apply directly to that element.
+Providers that share a root form an ordered owner stack: the most recently
+applied provider controls the root, and its cleanup restores the newest
+surviving provider. Cleaning up the last provider removes the theme attributes,
+inline theme-token overrides, and `color-scheme` while retaining unrelated
+host-owned styles.
 
-## Attribute contract
+Xterm resolves tokens per terminal from its nearest themed ancestor. Monaco
+0.52 themes are page-global: each `CodeEditor` or `DiffViewer` builds the shared
+theme from its own nearest themed ancestor when it mounts or updates, and that
+last update changes every Monaco editor on the page. Separate provider roots do
+not isolate simultaneous Monaco palettes.
 
-Applied to `document.documentElement`:
+## Resolution contract
 
-- `data-ov-theme`
-- `data-ov-density`
-- `data-ov-motion`
+`useTheme()` distinguishes selection from rendering:
 
-## Performance notes
+- `requestedThemeId` is always the host's controlled `themeId`.
+- `activeTheme` is the registered theme currently rendered.
+- `isFallback` is true when the requested ID is unavailable.
 
-- Theme switching updates a bounded number of root-level properties.
-- Components consume variables and do not re-register styles.
-- CSS modules are compiled once; no runtime style serialization.
+An unknown requested ID resolves to `fallbackThemeId`, then to built-in `void`
+if the configured fallback is also unknown. The requested ID is retained, so a
+plugin theme becomes active automatically if it is registered later and falls
+back safely when its plugin unloads.
 
-## Baseline palette notes
+## Theme files and tokens
 
-- The default `dark` mode uses a neutral graphite ramp with reduced blue bias.
-- Surface separation is driven by semantic tokens (`--ov-color-bg-*`, `--ov-color-border-*`) instead of component-local color tweaks.
-- Accent and status colors are intentionally slightly desaturated so dense IDE layouts feel native and low-glare.
+Custom JSON uses the versioned `ThemeDefinitionV1` schema:
+
+```ts
+interface ThemeDefinitionV1 {
+  schemaVersion: 1;
+  id: string;
+  name: string;
+  base: BuiltInThemeId;
+  author?: string;
+  version?: string;
+  description?: string;
+  tokens: Partial<Record<ThemeTokenKey, string>>;
+}
+```
+
+All overrides live in the single `tokens` map. The generated token catalog is
+`packages/base-ui/src/theme/generated/tokenKeys.ts`; it defines the exhaustive
+keys used by `ThemeDefinitionV1['tokens']` and metadata mapping each dotted key
+to its `--ov-*` CSS variable and value kind. Its source is
+`packages/base-ui/src/theme/styles.css`. Run
+`pnpm --filter @omniviewdev/base-ui generate:token-keys` after changing theme
+variables.
+
+`validateThemeDefinition(unknownValue)` validates untrusted JSON before use.
+Registration performs the same validation.
+
+## Plugin and user ownership
+
+Registry entries must have an explicit owner:
+
+```ts
+const owner = { kind: 'plugin', id: pluginId } as const;
+const disposeTheme = themeRegistry.register(definition, owner);
+
+// On plugin unload:
+disposeTheme();
+// Or remove every theme owned by the plugin:
+themeRegistry.unregisterOwner(owner);
+```
+
+User themes use `{ kind: 'user', id }`. Owner checks prevent one plugin or user
+from unregistering another owner's theme. Built-in ownership is reserved for
+Base UI. Registration only adds a theme to the catalog; activation is performed
+by changing the controlled provider `themeId`. `useThemeList()` provides a
+reactive theme list for selectors.
+
+Custom themes inherit every unspecified token from their built-in `base`.
+Switching away from or unregistering a custom theme removes its inline
+overrides, exposing base values again.
+
+## Migration from the legacy engine
+
+- Replace `initialTheme` with controlled `themeId` and `onThemeChange`.
+- Remove `persist`; persistence belongs to the host.
+- Merge split color, syntax, and terminal maps into `tokens`.
+- Pass a `ThemeOwner` to `themeRegistry.register`.
+- Replace registry `apply()` calls with host-state updates.
+- Replace registry `active` reads with `useTheme().activeTheme`.
+
+The package-level guide at `packages/base-ui/docs/THEMING.md` contains the
+complete built-in catalog, schema example, validation details, and registry
+API.
 
 ## Integration rules
 
-1. Every component must use semantic tokens, not primitives directly.
-2. Component-specific hardcoded colors are forbidden unless intentional (e.g. brand logo).
-3. Visual states rely on data attributes from Base UI parts (`data-disabled`, `data-highlighted`, etc.).
-4. New tokens must be added to the catalog before usage.
-
-## Token scope guardrails
-
-1. Keep the global token surface minimal: prefer existing semantic tokens before creating new component tokens.
-2. Add a new `--ov-size-*` or `--ov-color-*` component token only when the value is reused across multiple selectors or density modes.
-3. Wrapper-only components must not introduce dedicated token families until they have real themed slot styling.
-4. Current component implementation tiers are tracked in `docs/COMPONENT_STATUS.md`.
-
-## IDE coverage requirement
-
-Theme specs must cover:
-
-1. Workbench/chrome regions (title bar, side bar, panel, status bar, tabs).
-2. Editor rendering states (selection, cursor, line highlights, gutters, diff, minimap).
-3. Terminal and ANSI colors.
-4. Syntax and semantic highlighting colors plus style modifiers.
-5. Debug/source-control/testing/chat surfaces.
-6. Omniview runtime surfaces (plugin lifecycle, dev server, connection sync, logs, operations, and drawer/editor workflows).
-
-Reference docs:
-
-- `docs/IDE_TOKEN_CATALOG.md`
-- `docs/OMNIVIEW_TOKEN_AUDIT.md`
+1. Components use semantic tokens rather than primitives directly.
+2. Component-specific hardcoded colors are forbidden unless intentional (for
+   example, a brand logo).
+3. Visual states use Base UI part attributes such as `data-disabled` and
+   `data-highlighted`.
+4. Add new variables to `styles.css` and regenerate the token catalog before
+   use.

@@ -2,9 +2,11 @@ import type { Preview } from '@storybook/react';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 import { themeRegistry } from '../src/theme/registry';
 import '../src/theme/styles.css';
-import { SOLARIZED_DARK } from './sampleCustomThemes';
+import { EXAMPLE_OCEAN } from './sampleCustomThemes';
 
-if (!themeRegistry.has(SOLARIZED_DARK.id)) themeRegistry.register(SOLARIZED_DARK);
+const STORYBOOK_THEME_OWNER = { kind: 'user', id: 'base-ui-storybook' } as const;
+themeRegistry.unregisterOwner(STORYBOOK_THEME_OWNER);
+themeRegistry.register(EXAMPLE_OCEAN, STORYBOOK_THEME_OWNER);
 
 const preview: Preview = {
   globalTypes: {
@@ -13,7 +15,7 @@ const preview: Preview = {
       defaultValue: 'dark',
       toolbar: {
         icon: 'paintbrush',
-        items: themeRegistry.list().map((t) => ({ value: t.id, title: t.name })),
+        items: themeRegistry.getSnapshot().themes.map((t) => ({ value: t.id, title: t.name })),
       },
     },
     density: {
@@ -41,8 +43,8 @@ const preview: Preview = {
 
       return (
         <ThemeProvider
-          persist={false}
-          initialTheme={theme}
+          themeId={theme}
+          onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}
           initialDensity={density}
           initialMotion={motion}
         >

@@ -1,10 +1,12 @@
-import { render, screen, act } from '@testing-library/react';
-import { createRef } from 'react';
+import { render as rtlRender, screen, act } from '@testing-library/react';
+import { createRef, type ReactElement, type ReactNode } from 'react';
+import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
 
 let mockEditorInstance: Record<string, unknown>;
 let mockModel: Record<string, unknown>;
+
 
 const mockCreate = vi.fn();
 const mockGetModel = vi.fn();
@@ -81,19 +83,19 @@ vi.mock('../../schemas', () => ({
   },
 }));
 
-vi.mock('../../themes/useEditorTheme', () => ({
-  useEditorTheme: () => ({ isDark: false }),
-}));
-
-vi.mock('../../themes/monaco', () => ({
-  buildMonacoTheme: () => ({ base: 'vs', inherit: true, rules: [], colors: {} }),
-  OV_MONACO_THEME: 'ov-theme',
-}));
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetModel.mockReturnValue(null);
 });
+
+function ThemeWrapper({ children }: { children: ReactNode }) {
+  return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
+}
+
+function render(ui: ReactElement) {
+  return rtlRender(ui, { wrapper: ThemeWrapper });
+}
 
 describe('CodeEditor', () => {
   it('renders the editor container', () => {
@@ -210,5 +212,158 @@ describe('CodeEditor', () => {
     unmount();
     expect(mockModel.dispose).toHaveBeenCalled();
     expect(mockEditorInstance.dispose).toHaveBeenCalled();
+  });
+
+  it('rebuilds its theme from current tokens when switching custom themes with the same base', () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'editor-test' } as const;
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+    registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#222222' },
+    }, owner);
+
+    const mounted = rtlRender(
+      <ThemeProvider themeId="plugin:editor-test/first" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+    mounted.rerender(
+      <ThemeProvider themeId="plugin:editor-test/second" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+  });
+  it('uses one page-global theme rebuilt from the root that last drives it', () => {
+    const firstRegistry = createThemeRegistry();
+    const secondRegistry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'global-theme-test' } as const;
+    const disposeFirst = firstRegistry.register({
+      schemaVersion: 1,
+      id: 'plugin:global-theme-test/first',
+      name: 'First',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+    secondRegistry.register({
+      schemaVersion: 1,
+      id: 'plugin:global-theme-test/second',
+      name: 'Second',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#222222' },
+    }, owner);
+    const firstRoot = document.createElement('div');
+    const secondRoot = document.createElement('div');
+    document.body.append(firstRoot, secondRoot);
+
+    rtlRender(
+      <ThemeProvider
+        themeId="plugin:global-theme-test/first"
+        registry={firstRegistry}
+        root={firstRoot}
+      >
+        <CodeEditor value="" />
+      </ThemeProvider>,
+      { container: firstRoot },
+    );
+    rtlRender(
+      <ThemeProvider
+        themeId="plugin:global-theme-test/second"
+        registry={secondRegistry}
+        root={secondRoot}
+      >
+        <CodeEditor value="" />
+      </ThemeProvider>,
+      { container: secondRoot },
+    );
+
+    expect(mockDefineTheme).toHaveBeenCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#111111' }),
+      }),
+    );
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+    expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
+
+    act(() => {
+      disposeFirst();
+      firstRegistry.register({
+        schemaVersion: 1,
+        id: 'plugin:global-theme-test/first',
+        name: 'First reloaded',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#333333' },
+      }, owner);
+    });
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#333333' }),
+      }),
+    );
+    expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
+    expect(mockCreate).toHaveBeenCalledTimes(2);
+  });
+
+  it('rebuilds its theme when the active registration is replaced with the same ID and base', () => {
+    const registry = createThemeRegistry();
+    const owner = { kind: 'plugin', id: 'editor-reload-test' } as const;
+    const dispose = registry.register({
+      schemaVersion: 1,
+      id: 'plugin:editor-reload-test/theme',
+      name: 'Reloadable',
+      base: 'dark',
+      tokens: { 'color.editor.bg': '#111111' },
+    }, owner);
+
+    rtlRender(
+      <ThemeProvider themeId="plugin:editor-reload-test/theme" registry={registry}>
+        <CodeEditor value="" />
+      </ThemeProvider>,
+    );
+
+    act(() => {
+      dispose();
+      registry.register({
+        schemaVersion: 1,
+        id: 'plugin:editor-reload-test/theme',
+        name: 'Reloaded',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      }, owner);
+    });
+
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
+      expect.objectContaining({
+        colors: expect.objectContaining({ 'editor.background': '#222222' }),
+      }),
+    );
+    expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
+    expect(mockCreate).toHaveBeenCalledTimes(1);
   });
 });

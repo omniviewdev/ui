@@ -1,4 +1,4 @@
-import { getComputedToken } from './useEditorTheme';
+import { getComputedThemeStyle } from './useEditorTheme';
 
 export interface XtermThemeData {
   background: string;
@@ -25,11 +25,10 @@ export interface XtermThemeData {
   brightWhite: string;
 }
 
-function token(name: string, fallback = ''): string {
-  return getComputedToken(name) || fallback;
-}
+export function buildXtermTheme(element?: HTMLElement | null): XtermThemeData {
+  const styles = getComputedThemeStyle(element);
+  const token = (name: string, fallback = '') => styles?.getPropertyValue(name).trim() || fallback;
 
-export function buildXtermTheme(): XtermThemeData {
   return {
     background: token('--ov-color-terminal-bg', '#0d0e10'),
     foreground: token('--ov-color-terminal-fg', '#e2e7ee'),

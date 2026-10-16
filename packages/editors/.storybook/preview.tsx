@@ -20,7 +20,7 @@ const preview: Preview = {
       const theme = context.globals.theme ?? 'dark';
 
       return (
-        <ThemeProvider persist={false} initialTheme={theme}>
+        <ThemeProvider themeId={theme} onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}>
           <div
             style={{
               width: '100%',

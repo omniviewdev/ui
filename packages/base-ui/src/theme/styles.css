@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-ov-theme='dark'] {
   --ov-primitive-gray-0: #090a0c;
   --ov-primitive-gray-50: #111214;
   --ov-primitive-gray-100: #15171a;
@@ -541,9 +542,9 @@
   --ov-color-fg-disabled: #5b6472;
   --ov-color-fg-inverse: #0e1013;
 
-  --ov-color-border-default: #2b2f36;
+  --ov-color-border-default: #6c7788;
   --ov-color-border-muted: #24272d;
-  --ov-color-border-strong: #3a3f49;
+  --ov-color-border-strong: #8792a3;
   --ov-color-border-focus: #7a96db;
 
   --ov-color-brand-500: #5a7fe2;
@@ -574,7 +575,7 @@
   --ov-color-tab-bg: transparent;
   --ov-color-tab-fg: var(--ov-color-fg-muted);
   --ov-color-tab-border: var(--ov-color-border-muted);
-  --ov-color-tab-active-bg: var(--ov-color-bg-surface);  /* matches editor content */
+  --ov-color-tab-active-bg: var(--ov-color-bg-surface); /* matches editor content */
   --ov-color-tab-active-fg: var(--ov-color-fg-default);
   --ov-color-tab-active-border: var(--ov-color-brand-400);
   --ov-color-tab-inactive-bg: transparent;
@@ -584,12 +585,12 @@
   --ov-color-tab-modified-border: var(--ov-color-warning);
   --ov-color-editor-group-bg: var(--ov-color-bg-surface);
   --ov-color-editor-group-border: var(--ov-color-border-default);
-  --ov-color-editor-group-header-bg: var(--ov-color-bg-base);  /* tab bar = chrome level */
+  --ov-color-editor-group-header-bg: var(--ov-color-bg-base); /* tab bar = chrome level */
   --ov-color-editor-group-drop-border: var(--ov-color-brand-400);
   --ov-size-tab-height: 35px;
 
   /* Editor tokens */
-  --ov-color-editor-bg: var(--ov-color-bg-surface);  /* editor content = surface level */
+  --ov-color-editor-bg: var(--ov-color-bg-surface); /* editor content = surface level */
   --ov-color-editor-fg: var(--ov-color-fg-default);
   --ov-color-editor-cursor: var(--ov-color-accent-strong);
   --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
@@ -689,7 +690,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='light'] {
+[data-ov-theme='light'] {
   --ov-color-bg-base: #eef0f3;
   --ov-color-bg-surface: #f7f8fa;
   --ov-color-bg-surface-raised: #ffffff;
@@ -703,9 +704,9 @@
   --ov-color-fg-disabled: #9ea6b3;
   --ov-color-fg-inverse: #f8f9fb;
 
-  --ov-color-border-default: #d4d8de;
+  --ov-color-border-default: #7a8494;
   --ov-color-border-muted: #e4e7ec;
-  --ov-color-border-strong: #7a8494;
+  --ov-color-border-strong: #596273;
   --ov-color-border-focus: #476dce;
 
   --ov-color-brand-500: #476dce;
@@ -811,7 +812,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='high-contrast-dark'] {
+[data-ov-theme='high-contrast-dark'] {
   --ov-color-bg-base: #000000;
   --ov-color-bg-surface: #0a0a0a;
   --ov-color-bg-surface-raised: #161616;
@@ -924,7 +925,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-theme='high-contrast-light'] {
+[data-ov-theme='high-contrast-light'] {
   --ov-color-bg-base: #ffffff;
   --ov-color-bg-surface: #ffffff;
   --ov-color-bg-surface-raised: #ffffff;
@@ -1041,7 +1042,7 @@
  * Obsidian — near-black neutral, punchy cobalt accent
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='obsidian'] {
+[data-ov-theme='obsidian'] {
   --ov-color-bg-base: #12141a;
   --ov-color-bg-surface: #16181c;
   --ov-color-bg-surface-raised: #1c1f25;
@@ -1055,9 +1056,9 @@
   --ov-color-fg-disabled: #4e5566;
   --ov-color-fg-inverse: #0e1015;
 
-  --ov-color-border-default: #232730;
+  --ov-color-border-default: #6b7385;
   --ov-color-border-muted: #1e2128;
-  --ov-color-border-strong: #2e3340;
+  --ov-color-border-strong: #858e9f;
   --ov-color-border-focus: #4d7cff;
 
   --ov-color-brand-500: #4d7cff;
@@ -1085,6 +1086,18 @@
   --ov-color-state-selected: rgb(77 124 255 / 0.18);
   --ov-color-state-focus-ring: #4d7cff;
 
+  /* Editor and terminal surfaces — obsidian */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
+
   /* Date picker tokens — obsidian */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
   --ov-color-datepicker-cell-bg: transparent;
@@ -1102,7 +1115,7 @@
  * Carbon — pure achromatic grays, maximum content clarity
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='carbon'] {
+[data-ov-theme='carbon'] {
   --ov-color-bg-base: #0f0f0f;
   --ov-color-bg-surface: #161616;
   --ov-color-bg-surface-raised: #1e1e1e;
@@ -1116,9 +1129,9 @@
   --ov-color-fg-disabled: #555555;
   --ov-color-fg-inverse: #0a0a0a;
 
-  --ov-color-border-default: #2a2a2a;
+  --ov-color-border-default: #737373;
   --ov-color-border-muted: #222222;
-  --ov-color-border-strong: #363636;
+  --ov-color-border-strong: #8c8c8c;
   --ov-color-border-focus: #4b8cff;
 
   --ov-color-brand-500: #4b8cff;
@@ -1146,6 +1159,18 @@
   --ov-color-state-selected: rgb(75 140 255 / 0.18);
   --ov-color-state-focus-ring: #4b8cff;
 
+  /* Editor and terminal surfaces — carbon */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
+
   /* Date picker tokens — carbon */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
   --ov-color-datepicker-cell-bg: transparent;
@@ -1163,7 +1188,7 @@
  * Void — ultra-deep warm-neutral grays, luxury feel
  * --------------------------------------------------------------------------- */
 
-:root[data-ov-theme='void'] {
+[data-ov-theme='void'] {
   --ov-color-bg-base: #0e0f11;
   --ov-color-bg-surface: #141517;
   --ov-color-bg-surface-raised: #1a1b1e;
@@ -1177,9 +1202,9 @@
   --ov-color-fg-disabled: #505359;
   --ov-color-fg-inverse: #09090b;
 
-  --ov-color-border-default: #232528;
+  --ov-color-border-default: #6e7179;
   --ov-color-border-muted: #1e1f22;
-  --ov-color-border-strong: #2e3033;
+  --ov-color-border-strong: #888b94;
   --ov-color-border-focus: #508aff;
 
   --ov-color-brand-500: #508aff;
@@ -1207,6 +1232,18 @@
   --ov-color-state-selected: rgb(80 138 255 / 0.15);
   --ov-color-state-focus-ring: #508aff;
 
+  /* Editor and terminal surfaces — void */
+  --ov-color-editor-bg: var(--ov-color-bg-base);
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: var(--ov-color-accent-strong);
+  --ov-color-editor-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-bg: var(--ov-color-bg-inset);
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: var(--ov-color-accent-strong);
+  --ov-color-terminal-selection-bg: var(--ov-color-accent-soft);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: var(--ov-color-border-default);
+
   /* Date picker tokens — void */
   --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
   --ov-color-datepicker-cell-bg: transparent;
@@ -1220,7 +1257,7 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
-:root[data-ov-density='compact'] {
+[data-ov-density='compact'] {
   --ov-control-height-sm: 24px;
   --ov-control-height-md: 30px;
   --ov-control-height-lg: 34px;
@@ -1393,7 +1430,217 @@
   --ov-size-datepicker-gap: 1px;
 }
 
-:root[data-ov-density='comfortable'] {
+[data-ov-theme='solarized-dark'] {
+  --ov-color-bg-base: #002b36;
+  --ov-color-bg-surface: #073642;
+  --ov-color-bg-surface-raised: #073642;
+  --ov-color-bg-surface-overlay: #073642;
+  --ov-color-bg-inset: #002b36;
+  --ov-color-bg-elevated: #073642;
+  --ov-color-fg-default: #93a1a1;
+  --ov-color-fg-muted: #839496;
+  --ov-color-fg-subtle: #839496;
+  --ov-color-fg-disabled: #586e75;
+  --ov-color-fg-inverse: #002b36;
+  --ov-color-border-default: #839496;
+  --ov-color-border-muted: #839496;
+  --ov-color-border-strong: #839496;
+  --ov-color-border-focus: #268bd2;
+  --ov-color-brand-500: #268bd2;
+  --ov-color-brand-400: #268bd2;
+  --ov-color-brand-300: #6c71c4;
+  --ov-color-accent-soft: rgb(38 139 210 / 0.24);
+  --ov-color-accent-strong: #268bd2;
+  --ov-color-state-hover: rgb(131 148 150 / 0.12);
+  --ov-color-state-pressed: rgb(131 148 150 / 0.2);
+  --ov-color-state-selected: rgb(38 139 210 / 0.24);
+  --ov-color-state-focus-ring: #268bd2;
+  --ov-color-editor-bg: #073642;
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: #268bd2;
+  --ov-color-editor-selection-bg: rgb(38 139 210 / 0.3);
+  --ov-color-editor-selection-inactive-bg: rgb(88 110 117 / 0.24);
+  --ov-color-editor-line-highlight-bg: rgb(0 43 54 / 0.55);
+  --ov-color-editor-line-highlight-border: transparent;
+  --ov-color-editor-line-number: #586e75;
+  --ov-color-editor-line-number-active: #839496;
+  --ov-color-editor-whitespace: #586e75;
+  --ov-color-editor-indent-guide: rgb(88 110 117 / 0.5);
+  --ov-color-editor-indent-guide-active: #839496;
+  --ov-color-editor-ruler: #586e75;
+  --ov-color-editor-find-match-bg: rgb(181 137 0 / 0.35);
+  --ov-color-editor-find-match-border: #b58900;
+  --ov-color-editor-find-range-bg: rgb(181 137 0 / 0.16);
+  --ov-color-editor-link: #268bd2;
+  --ov-color-editor-bracket-match-bg: rgb(108 113 196 / 0.24);
+  --ov-color-editor-bracket-match-border: #6c71c4;
+  --ov-color-editor-bracket-1: #b58900;
+  --ov-color-editor-bracket-2: #d33682;
+  --ov-color-editor-bracket-3: #268bd2;
+  --ov-color-editor-bracket-4: #2aa198;
+  --ov-color-editor-bracket-5: #859900;
+  --ov-color-editor-bracket-6: #cb4b16;
+  --ov-color-gutter-bg: #073642;
+  --ov-color-gutter-added: #859900;
+  --ov-color-gutter-modified: #268bd2;
+  --ov-color-gutter-deleted: #dc322f;
+  --ov-color-diff-insert-bg: rgb(133 153 0 / 0.18);
+  --ov-color-diff-remove-bg: rgb(220 50 47 / 0.18);
+  --ov-color-minimap-bg: #073642;
+  --ov-color-minimap-selection: rgb(38 139 210 / 0.24);
+  --ov-color-minimap-error: #dc322f;
+  --ov-color-minimap-warning: #b58900;
+  --ov-color-minimap-find-match: #b58900;
+  --ov-color-terminal-bg: #073642;
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: #268bd2;
+  --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.3);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: #839496;
+  --ov-color-ansi-black: #073642;
+  --ov-color-ansi-red: #dc322f;
+  --ov-color-ansi-green: #859900;
+  --ov-color-ansi-yellow: #b58900;
+  --ov-color-ansi-blue: #268bd2;
+  --ov-color-ansi-magenta: #d33682;
+  --ov-color-ansi-cyan: #2aa198;
+  --ov-color-ansi-white: #eee8d5;
+  --ov-color-ansi-bright-black: #586e75;
+  --ov-color-ansi-bright-red: #cb4b16;
+  --ov-color-ansi-bright-green: #859900;
+  --ov-color-ansi-bright-yellow: #b58900;
+  --ov-color-ansi-bright-blue: #6c71c4;
+  --ov-color-ansi-bright-magenta: #d33682;
+  --ov-color-ansi-bright-cyan: #2aa198;
+  --ov-color-ansi-bright-white: #fdf6e3;
+  --ov-syntax-comment: #586e75;
+  --ov-syntax-string: #2aa198;
+  --ov-syntax-string-escape: #cb4b16;
+  --ov-syntax-number: #d33682;
+  --ov-syntax-keyword: #859900;
+  --ov-syntax-keyword-control: #859900;
+  --ov-syntax-keyword-operator: #859900;
+  --ov-syntax-type: #b58900;
+  --ov-syntax-class: #b58900;
+  --ov-syntax-interface: #b58900;
+  --ov-syntax-function: #268bd2;
+  --ov-syntax-method: #268bd2;
+  --ov-syntax-variable: var(--ov-color-fg-default);
+  --ov-syntax-parameter: #cb4b16;
+  --ov-syntax-property: #268bd2;
+  --ov-syntax-namespace: #b58900;
+  --ov-syntax-decorator: #6c71c4;
+  --ov-syntax-regexp: #2aa198;
+  --ov-syntax-operator: #859900;
+  --ov-syntax-punctuation: var(--ov-color-fg-muted);
+}
+
+[data-ov-theme='solarized-light'] {
+  --ov-color-bg-base: #fdf6e3;
+  --ov-color-bg-surface: #eee8d5;
+  --ov-color-bg-surface-raised: #fdf6e3;
+  --ov-color-bg-surface-overlay: #fdf6e3;
+  --ov-color-bg-inset: #eee8d5;
+  --ov-color-bg-elevated: #fdf6e3;
+  --ov-color-fg-default: #073642;
+  --ov-color-fg-muted: #657b83;
+  --ov-color-fg-subtle: #657b83;
+  --ov-color-fg-disabled: #839496;
+  --ov-color-fg-inverse: #fdf6e3;
+  --ov-color-border-default: #657b83;
+  --ov-color-border-muted: #657b83;
+  --ov-color-border-strong: #657b83;
+  --ov-color-border-focus: #268bd2;
+  --ov-color-brand-500: #268bd2;
+  --ov-color-brand-400: #268bd2;
+  --ov-color-brand-300: #6c71c4;
+  --ov-color-accent-soft: rgb(38 139 210 / 0.18);
+  --ov-color-accent-strong: #268bd2;
+  --ov-color-state-hover: rgb(88 110 117 / 0.1);
+  --ov-color-state-pressed: rgb(88 110 117 / 0.16);
+  --ov-color-state-selected: rgb(38 139 210 / 0.18);
+  --ov-color-state-focus-ring: #268bd2;
+  --ov-color-editor-bg: #eee8d5;
+  --ov-color-editor-fg: var(--ov-color-fg-default);
+  --ov-color-editor-cursor: #268bd2;
+  --ov-color-editor-selection-bg: rgb(38 139 210 / 0.24);
+  --ov-color-editor-selection-inactive-bg: rgb(101 123 131 / 0.18);
+  --ov-color-editor-line-highlight-bg: #fdf6e3;
+  --ov-color-editor-line-highlight-border: transparent;
+  --ov-color-editor-line-number: #839496;
+  --ov-color-editor-line-number-active: #657b83;
+  --ov-color-editor-whitespace: #93a1a1;
+  --ov-color-editor-indent-guide: rgb(147 161 161 / 0.55);
+  --ov-color-editor-indent-guide-active: #657b83;
+  --ov-color-editor-ruler: #93a1a1;
+  --ov-color-editor-find-match-bg: rgb(181 137 0 / 0.28);
+  --ov-color-editor-find-match-border: #b58900;
+  --ov-color-editor-find-range-bg: rgb(181 137 0 / 0.12);
+  --ov-color-editor-link: #268bd2;
+  --ov-color-editor-bracket-match-bg: rgb(108 113 196 / 0.18);
+  --ov-color-editor-bracket-match-border: #6c71c4;
+  --ov-color-editor-bracket-1: #b58900;
+  --ov-color-editor-bracket-2: #d33682;
+  --ov-color-editor-bracket-3: #268bd2;
+  --ov-color-editor-bracket-4: #2aa198;
+  --ov-color-editor-bracket-5: #859900;
+  --ov-color-editor-bracket-6: #cb4b16;
+  --ov-color-gutter-bg: #eee8d5;
+  --ov-color-gutter-added: #859900;
+  --ov-color-gutter-modified: #268bd2;
+  --ov-color-gutter-deleted: #dc322f;
+  --ov-color-diff-insert-bg: rgb(133 153 0 / 0.14);
+  --ov-color-diff-remove-bg: rgb(220 50 47 / 0.14);
+  --ov-color-minimap-bg: #eee8d5;
+  --ov-color-minimap-selection: rgb(38 139 210 / 0.18);
+  --ov-color-minimap-error: #dc322f;
+  --ov-color-minimap-warning: #b58900;
+  --ov-color-minimap-find-match: #b58900;
+  --ov-color-terminal-bg: #eee8d5;
+  --ov-color-terminal-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-cursor: #268bd2;
+  --ov-color-terminal-selection-bg: rgb(38 139 210 / 0.24);
+  --ov-color-terminal-selection-fg: var(--ov-color-fg-default);
+  --ov-color-terminal-border: #657b83;
+  --ov-color-ansi-black: #002b36;
+  --ov-color-ansi-red: #dc322f;
+  --ov-color-ansi-green: #859900;
+  --ov-color-ansi-yellow: #b58900;
+  --ov-color-ansi-blue: #268bd2;
+  --ov-color-ansi-magenta: #d33682;
+  --ov-color-ansi-cyan: #2aa198;
+  --ov-color-ansi-white: #657b83;
+  --ov-color-ansi-bright-black: #586e75;
+  --ov-color-ansi-bright-red: #cb4b16;
+  --ov-color-ansi-bright-green: #859900;
+  --ov-color-ansi-bright-yellow: #b58900;
+  --ov-color-ansi-bright-blue: #6c71c4;
+  --ov-color-ansi-bright-magenta: #d33682;
+  --ov-color-ansi-bright-cyan: #2aa198;
+  --ov-color-ansi-bright-white: #002b36;
+  --ov-syntax-comment: #586e75;
+  --ov-syntax-string: #2aa198;
+  --ov-syntax-string-escape: #cb4b16;
+  --ov-syntax-number: #d33682;
+  --ov-syntax-keyword: #859900;
+  --ov-syntax-keyword-control: #859900;
+  --ov-syntax-keyword-operator: #859900;
+  --ov-syntax-type: #b58900;
+  --ov-syntax-class: #b58900;
+  --ov-syntax-interface: #b58900;
+  --ov-syntax-function: #268bd2;
+  --ov-syntax-method: #268bd2;
+  --ov-syntax-variable: var(--ov-color-fg-default);
+  --ov-syntax-parameter: #cb4b16;
+  --ov-syntax-property: #268bd2;
+  --ov-syntax-namespace: #b58900;
+  --ov-syntax-decorator: #6c71c4;
+  --ov-syntax-regexp: #2aa198;
+  --ov-syntax-operator: #859900;
+  --ov-syntax-punctuation: var(--ov-color-fg-muted);
+}
+
+[data-ov-density='comfortable'] {
   --ov-control-height-sm: 28px;
   --ov-control-height-md: 36px;
   --ov-control-height-lg: 42px;
@@ -1566,7 +1813,7 @@
   --ov-size-datepicker-gap: 2px;
 }
 
-:root[data-ov-motion='reduced'] {
+[data-ov-motion='reduced'] {
   --ov-duration-interactive: 0ms;
   --ov-duration-panel: 0ms;
 }

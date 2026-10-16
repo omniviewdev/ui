@@ -21,6 +21,7 @@
   background: var(--_ov-bg);
   color: var(--_ov-fg);
   padding-inline: var(--_ov-padding-inline);
+  padding-block: 0;
   display: inline-flex;
   align-items: center;
   gap: var(--_ov-gap);
@@ -76,7 +77,7 @@
 }
 
 .Trigger[data-ov-color='neutral'] {
-  --_ov-accent-soft: var(--ov-color-state-selected);
+  --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 .Trigger[data-ov-color='brand'] {
@@ -123,6 +124,14 @@
 .Trigger[data-ov-variant='soft'] {
   --_ov-bg: var(--_ov-accent-soft);
   --_ov-border: transparent;
+}
+
+.Trigger[data-ov-color='neutral'][data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--ov-color-border-control) 14%);
+}
+
+.Trigger[data-ov-color='neutral'][data-ov-variant='soft'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-raised) 88%, var(--_ov-accent-soft) 12%);
 }
 
 .Trigger[data-disabled] {

@@ -1,7 +1,7 @@
 .Root {
   --_ov-control-height: var(--ov-control-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-stepper-width: var(--ov-control-height-md);
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
@@ -17,38 +17,40 @@
 }
 
 .Root[data-ov-size='xs'] {
-  --_ov-control-height: var(--ov-control-height-xs, var(--ov-control-height-sm));
-  --_ov-font-size: var(--ov-font-size-caption);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 4px);
-  --_ov-stepper-width: var(--ov-control-height-xs, var(--ov-control-height-sm));
-  --_ov-icon-size: var(--ov-size-icon-button-icon-xs, var(--ov-size-icon-button-icon-sm));
+  --_ov-control-height: var(--ov-control-height-xs);
+  --_ov-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-stepper-width: var(--ov-control-height-xs);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xs);
 }
 
 .Root[data-ov-size='sm'] {
   --_ov-control-height: var(--ov-control-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 2px);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
   --_ov-stepper-width: var(--ov-control-height-sm);
   --_ov-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-control-height: var(--ov-control-height-lg);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 2px);
+  --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
   --_ov-stepper-width: var(--ov-control-height-lg);
   --_ov-icon-size: var(--ov-size-icon-button-icon-lg);
 }
 
 .Root[data-ov-size='xl'] {
-  --_ov-control-height: var(--ov-control-height-xl, var(--ov-control-height-lg));
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 4px);
-  --_ov-stepper-width: var(--ov-control-height-xl, var(--ov-control-height-lg));
-  --_ov-icon-size: var(--ov-size-icon-button-icon-xl, var(--ov-size-icon-button-icon-lg));
+  --_ov-control-height: var(--ov-control-height-xl);
+  --_ov-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-stepper-width: var(--ov-control-height-xl);
+  --_ov-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Root[data-ov-color='neutral'] {
   --_ov-accent: var(--ov-color-border-control);
-  --_ov-accent-soft: var(--ov-color-state-selected);
+  --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 .Root[data-ov-color='brand'] {

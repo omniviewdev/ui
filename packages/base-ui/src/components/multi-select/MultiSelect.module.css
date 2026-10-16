@@ -13,9 +13,14 @@
 
 .Control {
   --_ov-control-min-height: var(--ov-control-height-md);
-  --_ov-control-padding-inline: var(--ov-space-inline-control);
-  --_ov-control-padding-block: 3px;
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-control-padding-block: 2px;
   --_ov-control-gap: var(--ov-space-stack-sm);
+  --_ov-control-font-size: var(--ov-size-button-font-size-md);
+  /* Nested affordances share the space remaining inside padding and borders. */
+  --_ov-control-interior-height: calc(
+    var(--_ov-control-min-height) - 2px - 2 * var(--_ov-control-padding-block)
+  );
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-border: var(--ov-color-border-control);
@@ -24,6 +29,7 @@
   --_ov-accent-soft: var(--ov-color-state-selected);
 
   width: 100%;
+  min-inline-size: 0;
   box-sizing: border-box;
   min-height: var(--_ov-control-min-height);
   display: flex;
@@ -42,28 +48,44 @@
   cursor: text;
 }
 
-.Control[data-ov-size='xs'] {
+.Control[data-ov-size='xs'],
+.SearchShell[data-ov-size='xs'] {
   --_ov-control-min-height: var(--ov-control-height-xs);
-  --_ov-control-padding-block: 1px;
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-control-padding-block: 0px;
+  --_ov-control-font-size: var(--ov-size-button-font-size-xs);
+  --_ov-control-icon-size: var(--ov-size-icon-button-icon-xs);
 }
 
-.Control[data-ov-size='sm'] {
+.Control[data-ov-size='sm'],
+.SearchShell[data-ov-size='sm'] {
   --_ov-control-min-height: var(--ov-control-height-sm);
-  --_ov-control-padding-block: 2px;
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-sm);
+  --_ov-control-padding-block: 1px;
+  --_ov-control-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-control-icon-size: var(--ov-size-icon-button-icon-sm);
 }
 
-.Control[data-ov-size='lg'] {
+.Control[data-ov-size='lg'],
+.SearchShell[data-ov-size='lg'] {
   --_ov-control-min-height: var(--ov-control-height-lg);
-  --_ov-control-padding-block: 4px;
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-lg);
+  --_ov-control-padding-block: 3px;
+  --_ov-control-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-control-icon-size: var(--ov-size-icon-button-icon-lg);
 }
 
-.Control[data-ov-size='xl'] {
+.Control[data-ov-size='xl'],
+.SearchShell[data-ov-size='xl'] {
   --_ov-control-min-height: var(--ov-control-height-xl);
-  --_ov-control-padding-block: 5px;
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-control-padding-block: 4px;
+  --_ov-control-font-size: var(--ov-size-button-font-size-xl);
+  --_ov-control-icon-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Control[data-ov-color='neutral'] {
-  --_ov-accent-soft: var(--ov-color-state-selected);
+  --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 .Control[data-ov-color='brand'] {
@@ -112,6 +134,14 @@
   --_ov-border: transparent;
 }
 
+.Control[data-ov-color='neutral'][data-ov-variant='solid'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--ov-color-border-control) 14%);
+}
+
+.Control[data-ov-color='neutral'][data-ov-variant='soft'] {
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-raised) 88%, var(--_ov-accent-soft) 12%);
+}
+
 .Control:has(:focus-visible) {
   border-color: var(--_ov-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
@@ -123,30 +153,67 @@
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  overflow: hidden;
   gap: var(--ov-size-list-item-gap);
+  /* Keep a single row without shrinking remove buttons into adjacent chips.
+     The inset gives their focus rings room inside the scroll viewport. */
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 1px;
+  margin: -1px;
+  scroll-padding-inline: 1px;
+}
+
+.Chips::-webkit-scrollbar {
+  display: none;
 }
 
 .Placeholder {
   color: var(--_ov-placeholder);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: var(--_ov-control-font-size);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.Control[data-ov-size='sm'] .Placeholder {
-  font-size: var(--ov-font-size-caption);
-}
-
 .ChipWrapper {
   display: inline-flex;
+  flex-shrink: 0;
+  min-inline-size: min-content;
+  max-inline-size: 100%;
 }
 
-.Chip {
-  max-inline-size: 220px;
+.Control :is(.Chip, .MoreChip) {
+  --_ov-selected-chip-height: min(var(--_ov-height), var(--_ov-control-interior-height));
+
+  min-height: var(--_ov-selected-chip-height);
+  min-inline-size: 0;
+  max-inline-size: min(220px, 100%);
+}
+
+.Control .Chip {
+  /* Chip borders plus the remove button equal the selected chip height. */
+  min-inline-size: calc(
+    var(--_ov-padding-inline) + var(--_ov-decorator-inset) + var(--_ov-gap) +
+      var(--_ov-selected-chip-height)
+  );
+}
+
+.Control :is(.Trigger, .Clear) {
+  inline-size: var(--_ov-control-interior-height);
+  block-size: var(--_ov-control-interior-height);
+  min-inline-size: var(--_ov-control-interior-height);
+  min-width: var(--_ov-control-interior-height);
+  min-height: var(--_ov-control-interior-height);
+}
+
+.Control .ChipRemove {
+  inline-size: calc(var(--_ov-selected-chip-height) - 2px);
+  block-size: calc(var(--_ov-selected-chip-height) - 2px);
+  min-inline-size: calc(var(--_ov-selected-chip-height) - 2px);
+  min-width: calc(var(--_ov-selected-chip-height) - 2px);
+  min-height: calc(var(--_ov-selected-chip-height) - 2px);
 }
 
 .Trigger {
@@ -166,6 +233,7 @@
 }
 
 .MoreChip {
+  flex-shrink: 0;
   opacity: 0.9;
 }
 
@@ -258,11 +326,16 @@
 }
 
 .SearchShell {
+  --_ov-control-min-height: var(--ov-control-height-md);
+  --_ov-control-padding-inline: var(--ov-size-button-padding-inline-md);
+  --_ov-control-font-size: var(--ov-size-button-font-size-md);
+  --_ov-control-icon-size: var(--ov-size-icon-button-icon-md);
+
   display: flex;
   align-items: center;
   gap: var(--ov-space-stack-sm);
-  min-height: var(--ov-control-height-md);
-  padding-inline: var(--ov-space-inline-control);
+  min-height: var(--_ov-control-min-height);
+  padding-inline: var(--_ov-control-padding-inline);
   border-radius: var(--ov-radius-control);
   border: 1px solid var(--ov-color-border-control);
   background: var(--ov-color-bg-surface-raised);
@@ -270,12 +343,10 @@
 }
 
 .SearchShell[data-ov-size='sm'] {
-  min-height: var(--ov-control-height-sm);
   margin-block-end: 1px;
 }
 
 .SearchShell[data-ov-size='lg'] {
-  min-height: var(--ov-control-height-lg);
   margin-block-end: 3px;
 }
 
@@ -293,18 +364,8 @@
 }
 
 .SearchIcon :where(svg) {
-  inline-size: var(--ov-size-icon-button-icon-md);
-  block-size: var(--ov-size-icon-button-icon-md);
-}
-
-.SearchShell[data-ov-size='sm'] .SearchIcon :where(svg) {
-  inline-size: var(--ov-size-icon-button-icon-sm);
-  block-size: var(--ov-size-icon-button-icon-sm);
-}
-
-.SearchShell[data-ov-size='lg'] .SearchIcon :where(svg) {
-  inline-size: var(--ov-size-icon-button-icon-lg);
-  block-size: var(--ov-size-icon-button-icon-lg);
+  inline-size: var(--_ov-control-icon-size);
+  block-size: var(--_ov-control-icon-size);
 }
 
 .SearchInput {
@@ -315,16 +376,13 @@
   background: transparent;
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: var(--_ov-control-font-size);
   line-height: 1.2;
+  padding: 0;
 }
 
 .SearchInput::placeholder {
   color: var(--ov-color-fg-subtle);
-}
-
-.SearchShell[data-ov-size='sm'] .SearchInput {
-  font-size: var(--ov-font-size-caption);
 }
 
 .List {

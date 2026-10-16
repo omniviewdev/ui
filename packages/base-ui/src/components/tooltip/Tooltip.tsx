@@ -11,7 +11,7 @@ import {
   type ElementRef,
 } from 'react';
 import { withBaseClassName } from '../../system/classnames';
-import { styleDataAttributes } from '../../system/styleProps';
+import { renderedStyleProps, styleDataAttributes } from '../../system/styleProps';
 import {
   DEFAULT_COLOR,
   DEFAULT_SIZE,
@@ -113,7 +113,12 @@ const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(functi
   { className, variant, color, size, ...props },
   ref,
 ) {
-  const resolved = useResolvedStyleProps({ variant, color, size });
+  const rendered = renderedStyleProps(props.render);
+  const resolved = useResolvedStyleProps({
+    variant: variant ?? rendered?.variant,
+    color: color ?? rendered?.color,
+    size: size ?? rendered?.size,
+  });
   return (
     <BaseTooltip.Trigger
       ref={ref}

@@ -127,11 +127,11 @@
   --ov-control-height-xl: 40px;
   --ov-list-row-height: 34px;
   --ov-panel-padding: 16px;
-  --ov-size-button-height-xs: 18px;
-  --ov-size-button-height-sm: 22px;
-  --ov-size-button-height-md: 26px;
-  --ov-size-button-height-lg: 32px;
-  --ov-size-button-height-xl: 40px;
+  --ov-size-button-height-xs: var(--ov-control-height-xs);
+  --ov-size-button-height-sm: var(--ov-control-height-sm);
+  --ov-size-button-height-md: var(--ov-control-height-md);
+  --ov-size-button-height-lg: var(--ov-control-height-lg);
+  --ov-size-button-height-xl: var(--ov-control-height-xl);
   --ov-size-button-padding-inline-xs: 4px;
   --ov-size-button-padding-inline-sm: 6px;
   --ov-size-button-padding-inline-md: 8px;
@@ -1274,14 +1274,18 @@
 }
 
 [data-ov-density='compact'] {
+  --ov-control-height-xs: 18px;
   --ov-control-height-sm: 24px;
   --ov-control-height-md: 30px;
-  --ov-control-height-lg: 34px;
+  --ov-control-height-lg: 38px;
+  --ov-control-height-xl: 40px;
   --ov-list-row-height: 28px;
   --ov-panel-padding: 12px;
-  --ov-size-button-height-sm: 24px;
-  --ov-size-button-height-md: 30px;
-  --ov-size-button-height-lg: 38px;
+  --ov-size-button-height-xs: var(--ov-control-height-xs);
+  --ov-size-button-height-sm: var(--ov-control-height-sm);
+  --ov-size-button-height-md: var(--ov-control-height-md);
+  --ov-size-button-height-lg: var(--ov-control-height-lg);
+  --ov-size-button-height-xl: var(--ov-control-height-xl);
   --ov-size-button-padding-inline-sm: 8px;
   --ov-size-button-padding-inline-md: 10px;
   --ov-size-button-padding-inline-lg: 16px;
@@ -1661,14 +1665,18 @@
 }
 
 [data-ov-density='comfortable'] {
+  --ov-control-height-xs: 18px;
   --ov-control-height-sm: 28px;
   --ov-control-height-md: 36px;
-  --ov-control-height-lg: 42px;
+  --ov-control-height-lg: 44px;
+  --ov-control-height-xl: 48px;
   --ov-list-row-height: 34px;
   --ov-panel-padding: 16px;
-  --ov-size-button-height-sm: 28px;
-  --ov-size-button-height-md: 36px;
-  --ov-size-button-height-lg: 44px;
+  --ov-size-button-height-xs: var(--ov-control-height-xs);
+  --ov-size-button-height-sm: var(--ov-control-height-sm);
+  --ov-size-button-height-md: var(--ov-control-height-md);
+  --ov-size-button-height-lg: var(--ov-control-height-lg);
+  --ov-size-button-height-xl: var(--ov-control-height-xl);
   --ov-size-button-padding-inline-sm: 10px;
   --ov-size-button-padding-inline-md: 12px;
   --ov-size-button-padding-inline-lg: 22px;

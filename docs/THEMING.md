@@ -123,6 +123,42 @@ API.
 4. Add new variables to `styles.css` and regenerate the token catalog before
    use.
 
+## Control sizing and resting surfaces
+
+The five public sizes use the same single-row outer-height scale across Button,
+IconButton, Input, SearchInput, TextField, Select, MultiSelect, TagInput, and
+NumberInput. Heights describe the control shell, not labels or helper text:
+
+| Density                    | xs   | sm   | md   | lg   | xl   |
+| -------------------------- | ---- | ---- | ---- | ---- | ---- |
+| Base (no density override) | 18px | 22px | 26px | 32px | 40px |
+| Compact                    | 18px | 24px | 30px | 38px | 40px |
+| Comfortable                | 18px | 28px | 36px | 44px | 48px |
+
+`--ov-control-height-*` defines the canonical scale; existing
+`--ov-size-button-height-*` tokens alias it. Field typography and inline padding
+reuse the corresponding button tier tokens. Match adjacent controls by `size`
+rather than adding local pixel-height overrides.
+
+Typing, selecting, and clearing do not change single-row field height; nested
+clear, trigger, and remove buttons fit inside the parent shell. TagInput may
+intentionally grow when tags wrap. Narrow MultiSelect chip rows scroll
+horizontally, keeping removal controls keyboard-reachable without overlapping
+the clear button, trigger, or neighboring fields.
+
+Neutral resting field surfaces agree by variant: soft mixes the raised neutral
+surface with neutral hover, solid mixes the surface with the control boundary,
+and outline/ghost stay transparent. Selection-state blue remains reserved for
+actual selection; semantic colors retain their intentional accents. TagInput
+uses the neutral soft surface without adding a variant prop.
+
+For `Popover.Trigger` and `Tooltip.Trigger` composition, explicit trigger
+size/color/variant props override valid library style values explicitly supplied
+on a rendered element; remaining values inherit the context/defaults independently.
+Unrelated native or generic props (such as an input's numeric `size`) remain
+unchanged and do not override inherited styling. Render functions keep the
+existing resolved-props and state contract.
+
 ## Boundary design
 
 Choose a boundary by its job, not by the brightness of nearby text. The CSS
@@ -130,15 +166,15 @@ source and [generated catalog](../packages/base-ui/src/theme/generated/tokenKeys
 are authoritative; [token mapping](THEME_TOKEN_MAPPING.md) links to the live
 palette rather than duplicating per-theme colors.
 
-| Intent | CSS token | Typical use |
-| --- | --- | --- |
-| Quiet structural rule | `--ov-color-border-muted` | Table row rule, separator, subsection divider |
-| Ordinary passive enclosure | `--ov-color-border-default` | Card or panel perimeter when a frame is necessary |
-| Intentional structural emphasis | `--ov-color-border-strong` | Deliberately emphasized structural edge, not every nested box |
-| Necessary control-identification outline | `--ov-color-border-control` | Input, selector trigger, or choice control identified by its outline |
-| Overlay perimeter | `--ov-color-border-overlay` | Open selector/menu popup, popover, dialog perimeter |
-| Keyboard focus | `--ov-color-border-focus`, `--ov-color-state-focus-ring` | Visible keyboard focus cue, separate from an idle outline |
-| Selection or status | Appropriate `state-selected`, brand, or status token | Active item, selected state, warning/error/success accent |
+| Intent                                   | CSS token                                                | Typical use                                                          |
+| ---------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------- |
+| Quiet structural rule                    | `--ov-color-border-muted`                                | Table row rule, separator, subsection divider                        |
+| Ordinary passive enclosure               | `--ov-color-border-default`                              | Card or panel perimeter when a frame is necessary                    |
+| Intentional structural emphasis          | `--ov-color-border-strong`                               | Deliberately emphasized structural edge, not every nested box        |
+| Necessary control-identification outline | `--ov-color-border-control`                              | Input, selector trigger, or choice control identified by its outline |
+| Overlay perimeter                        | `--ov-color-border-overlay`                              | Open selector/menu popup, popover, dialog perimeter                  |
+| Keyboard focus                           | `--ov-color-border-focus`, `--ov-color-state-focus-ring` | Visible keyboard focus cue, separate from an idle outline            |
+| Selection or status                      | Appropriate `state-selected`, brand, or status token     | Active item, selected state, warning/error/success accent            |
 
 `color.border.control` and `color.border.overlay` are the public JSON keys.
 Every built-in defines the two CSS tokens. Overlay currently aliases the

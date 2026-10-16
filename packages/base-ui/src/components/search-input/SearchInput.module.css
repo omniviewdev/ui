@@ -2,7 +2,12 @@
   color: inherit;
 }
 
-.ClearButton {
+.ClearButton[data-ov-size] {
+  inline-size: var(--_ov-input-interior-height);
+  block-size: var(--_ov-input-interior-height);
+  min-inline-size: var(--_ov-input-interior-height);
+  min-width: var(--_ov-input-interior-height);
+  min-height: var(--_ov-input-interior-height);
   color: var(--ov-color-fg-muted);
   flex-shrink: 0;
 }

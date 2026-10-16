@@ -1,7 +1,7 @@
 .Root {
   --_ov-control-height: var(--ov-control-height-md);
-  --_ov-font-size: var(--ov-font-size-body);
-  --_ov-padding-inline: var(--ov-space-inline-control);
+  --_ov-font-size: var(--ov-size-button-font-size-md);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-border: var(--ov-color-border-control);
@@ -18,28 +18,30 @@
 .Root[data-ov-size='xs'] {
   --_ov-control-height: var(--ov-control-height-xs);
   --_ov-font-size: var(--ov-size-button-font-size-xs);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) - 4px);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
 }
 
 .Root[data-ov-size='sm'] {
   --_ov-control-height: var(--ov-control-height-sm);
-  --_ov-font-size: var(--ov-font-size-caption);
+  --_ov-font-size: var(--ov-size-button-font-size-sm);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-sm);
 }
 
 .Root[data-ov-size='lg'] {
   --_ov-control-height: var(--ov-control-height-lg);
   --_ov-font-size: var(--ov-size-button-font-size-lg);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-lg);
 }
 
 .Root[data-ov-size='xl'] {
   --_ov-control-height: var(--ov-control-height-xl);
   --_ov-font-size: var(--ov-size-button-font-size-xl);
-  --_ov-padding-inline: calc(var(--ov-space-inline-control) + 4px);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
 }
 
 .Root[data-ov-color='neutral'] {
   --_ov-accent: var(--ov-color-border-control);
-  --_ov-accent-soft: var(--ov-color-state-selected);
+  --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 .Root[data-ov-color='brand'] {
@@ -113,6 +115,7 @@
   padding: 0 var(--_ov-padding-inline);
   font: inherit;
   font-size: var(--_ov-font-size);
+  line-height: 1.35;
   outline: none;
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),

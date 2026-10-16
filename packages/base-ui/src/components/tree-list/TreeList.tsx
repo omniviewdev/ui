@@ -350,6 +350,7 @@ function TreeListNodes<TItem>({
     <TreeListReorder
       store={store}
       flatNodes={flatNodes}
+      nodesByKey={nodesByKey}
       proposeMove={proposeMove}
       getSiblingKeys={getSiblingKeys}
     >
@@ -362,24 +363,15 @@ function TreeListNodes<TItem>({
 
 function OrderedTreeListNodes<TItem>(props: TreeListNodesProps<TItem>) {
   const { currentOrder, proposeMove } = useTreeOrder(props);
-  const {
-    items,
-    itemKey,
-    getChildren,
-    treeState: { store },
-  } = props;
+  const { items, itemKey, getChildren } = props;
   const getSiblingKeys = useCallback(
-    (parentKey: Key | null): readonly Key[] => {
-      // Only resolve the dropped group, from consumer data rather than filtered rows.
-      const parent =
-        parentKey === null
-          ? undefined
-          : store.getFlatNodes().find((node) => node.key === parentKey);
+    (parentKey: Key | null, parent: FlatNode | undefined): readonly Key[] => {
+      // Resolve only the dropped group, using the existing visible-node index.
       const siblings =
         parentKey === null ? items : parent ? (getChildren(parent.item as TItem) ?? []) : [];
       return applySiblingOrder(siblings, parentKey, currentOrder, itemKey).map(itemKey);
     },
-    [items, itemKey, getChildren, store, currentOrder],
+    [items, itemKey, getChildren, currentOrder],
   );
   return (
     <TreeListNodes

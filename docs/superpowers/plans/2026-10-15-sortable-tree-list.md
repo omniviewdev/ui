@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Work only in `/Users/joshuapare/Repos/omniviewdev/ui/feat/sortable-tree-list` on branch `feat/sortable-tree-list`.
+- Work in the `feat/sortable-tree-list` worktree on branch `feat/sortable-tree-list`.
 - The static no-order/non-reorderable path must mount no DnD provider, sensor, sortable hook, transform style, drag context, or additional DOM wrapper.
 - Keep the current static DFS sibling loop free of ordering work.
 - Apply explicit sibling order in O(s) time without sorting, where s is sibling count.

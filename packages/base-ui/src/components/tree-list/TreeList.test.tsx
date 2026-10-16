@@ -1,7 +1,7 @@
 import type { DragEndEvent } from '@dnd-kit/core';
 import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { TreeList } from './TreeList';
 import { handleTreeDragEnd } from './TreeListReorder';
@@ -68,6 +68,19 @@ function dragEndEvent(activeKey: Key, overKey: Key | null): DragEndEvent {
     over: overKey === null ? null : { id: overKey },
   } as DragEndEvent;
 }
+
+const originalScrollIntoView = Object.getOwnPropertyDescriptor(
+  HTMLElement.prototype,
+  'scrollIntoView',
+);
+
+afterEach(() => {
+  if (originalScrollIntoView) {
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', originalScrollIntoView);
+  } else {
+    Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
+  }
+});
 
 function supportKeyboardDraggingInJSDOM() {
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {

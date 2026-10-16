@@ -51,14 +51,16 @@ interface TreeListReorderProps {
   children: ReactNode;
   store: TreeStore;
   flatNodes: readonly FlatNode[];
+  nodesByKey: ReadonlyMap<Key, FlatNode>;
   proposeMove: TreeReorderContextValue['proposeMove'];
-  getSiblingKeys: TreeDragEndOptions['getSiblingKeys'];
+  getSiblingKeys: (parentKey: Key | null, parent: FlatNode | undefined) => readonly Key[];
 }
 
 function TreeListReorderImpl({
   children,
   store,
   flatNodes,
+  nodesByKey,
   proposeMove,
   getSiblingKeys,
 }: TreeListReorderProps) {
@@ -75,11 +77,12 @@ function TreeListReorderImpl({
         visibleKeys: snapshot.flattenedKeys,
         disabledKeys: snapshot.disabledKeys,
         getNodeMeta: store.getNodeMeta,
-        getSiblingKeys,
+        getSiblingKeys: (parentKey) =>
+          getSiblingKeys(parentKey, parentKey === null ? undefined : nodesByKey.get(parentKey)),
         proposeMove,
       });
     },
-    [store, proposeMove, getSiblingKeys],
+    [store, proposeMove, getSiblingKeys, nodesByKey],
   );
 
   return (

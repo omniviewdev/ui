@@ -15,7 +15,7 @@
 
 .Popup {
   --_ov-bg: var(--ov-color-bg-surface-overlay);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-accent-soft: var(--ov-color-state-selected);
   --_ov-padding-inline: var(--ov-size-list-item-padding-inline-md);
@@ -93,7 +93,7 @@
 
 .Arrow {
   --_ov-bg: var(--ov-color-bg-surface-overlay);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-overlay);
   --_ov-accent-soft: var(--ov-color-state-selected);
   --_ov-arrow-size: 9px;
 

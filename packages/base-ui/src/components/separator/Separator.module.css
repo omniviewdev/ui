@@ -1,6 +1,7 @@
 .Root {
-  --_ov-separator-color: var(--ov-color-border-default);
-  --_ov-separator-thickness: var(--ov-size-separator-thickness-md, 2px);
+  --_ov-separator-base: var(--ov-color-border-muted);
+  --_ov-separator-color: var(--_ov-separator-base);
+  --_ov-separator-thickness: var(--ov-size-separator-thickness-md, 1px);
   --_ov-separator-inset: var(--ov-size-separator-inset-md, 12px);
   --_ov-separator-label-color: var(--ov-color-fg-muted);
   --_ov-separator-label-size: var(--ov-size-separator-label-font-size-md, 0.75rem);
@@ -23,23 +24,23 @@
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-separator-thickness: var(--ov-size-separator-thickness-lg, 3px);
+  --_ov-separator-thickness: var(--ov-size-separator-thickness-lg, 2px);
   --_ov-separator-inset: var(--ov-size-separator-inset-lg, 16px);
   --_ov-separator-label-size: var(--ov-size-separator-label-font-size-lg, 0.8125rem);
 }
 
 .Root[data-ov-size='xl'] {
-  --_ov-separator-thickness: var(--ov-size-separator-thickness-xl, 4px);
+  --_ov-separator-thickness: var(--ov-size-separator-thickness-xl, 3px);
   --_ov-separator-inset: var(--ov-size-separator-inset-xl, 20px);
   --_ov-separator-label-size: var(--ov-size-separator-label-font-size-xl, 0.875rem);
 }
 
 .Root[data-ov-color='neutral'] {
-  --_ov-separator-color: color-mix(in srgb, var(--ov-color-fg-muted) 62%, transparent 38%);
+  --_ov-separator-base: var(--ov-color-border-muted);
 }
 
 .Root[data-ov-color='brand'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-brand-400) 62%,
     var(--ov-color-border-default) 38%
@@ -47,7 +48,7 @@
 }
 
 .Root[data-ov-color='success'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-success) 66%,
     var(--ov-color-border-default) 34%
@@ -55,7 +56,7 @@
 }
 
 .Root[data-ov-color='warning'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-warning) 66%,
     var(--ov-color-border-default) 34%
@@ -63,7 +64,7 @@
 }
 
 .Root[data-ov-color='danger'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-danger) 66%,
     var(--ov-color-border-default) 34%
@@ -71,7 +72,7 @@
 }
 
 .Root[data-ov-color='info'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-info) 66%,
     var(--ov-color-border-default) 34%
@@ -79,7 +80,7 @@
 }
 
 .Root[data-ov-color='discovery'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-discovery) 66%,
     var(--ov-color-border-default) 34%
@@ -87,7 +88,7 @@
 }
 
 .Root[data-ov-color='secondary'] {
-  --_ov-separator-color: color-mix(
+  --_ov-separator-base: color-mix(
     in srgb,
     var(--ov-color-secondary) 66%,
     var(--ov-color-border-default) 34%
@@ -97,21 +98,21 @@
 .Root[data-ov-variant='solid'] {
   --_ov-separator-color: color-mix(
     in srgb,
-    var(--_ov-separator-color) 86%,
+    var(--_ov-separator-base) 86%,
     var(--ov-color-border-strong) 14%
   );
 }
 
 .Root[data-ov-variant='soft'] {
-  --_ov-separator-color: color-mix(in srgb, var(--_ov-separator-color) 90%, transparent 10%);
+  --_ov-separator-color: var(--_ov-separator-base);
 }
 
 .Root[data-ov-variant='outline'] {
-  --_ov-separator-color: color-mix(in srgb, var(--_ov-separator-color) 95%, transparent 5%);
+  --_ov-separator-color: color-mix(in srgb, var(--_ov-separator-base) 95%, transparent 5%);
 }
 
 .Root[data-ov-variant='ghost'] {
-  --_ov-separator-color: color-mix(in srgb, var(--_ov-separator-color) 58%, transparent 42%);
+  --_ov-separator-color: color-mix(in srgb, var(--_ov-separator-base) 58%, transparent 42%);
 }
 
 .Root[data-ov-orientation='horizontal'] {

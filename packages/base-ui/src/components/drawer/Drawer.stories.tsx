@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../button';
 import { Drawer, type DrawerProps } from './Drawer';
+import { BUILT_IN_THEMES } from '../../theme/registry/catalog';
 
 const meta = {
   title: 'Surfaces/Drawer',
@@ -78,6 +79,49 @@ function PlaygroundStory(args: DrawerProps) {
 
 export const Playground: Story = {
   render: (args) => <PlaygroundStory {...args} />,
+};
+
+export const HandleContrast: Story = {
+  args: { animate: false, handleVariant: 'bar' },
+  render: (args) => <PlaygroundStory {...args} />,
+  play: ({ canvasElement }) => {
+    const document = canvasElement.ownerDocument;
+    const root = document.documentElement;
+    const previousTheme = root.getAttribute('data-ov-theme');
+    const drawer = canvasElement.querySelector<HTMLElement>('[data-ov-handle="bar"]');
+    const handle = drawer?.querySelector<HTMLElement>('[role="separator"] > div');
+    if (!drawer || !handle) throw new Error('Expected a visible default drawer resize bar');
+
+    const luminance = (color: string) => {
+      const match = /^rgb\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)\s*\)$/.exec(color);
+      if (!match) throw new Error(`Expected an opaque computed RGB color, received ${color}`);
+      const [red, green, blue] = match.slice(1).map((channel) => {
+        const value = Number(channel) / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * red! + 0.7152 * green! + 0.0722 * blue!;
+    };
+
+    // Measure idle paint, not a hover/focus cue or an intermediate theme transition.
+    if (handle.parentElement?.matches(':hover')) throw new Error('Move the pointer off the resize handle');
+    const previousTransition = handle.style.transition;
+    handle.style.transition = 'none';
+    try {
+      for (const { id } of BUILT_IN_THEMES) {
+        root.dataset.ovTheme = id;
+        const barBounds = handle.getBoundingClientRect();
+        if (barBounds.width <= 0 || barBounds.height <= 0) throw new Error(`${id}: resize bar is not visible`);
+        const foreground = luminance(getComputedStyle(handle).backgroundColor);
+        const background = luminance(getComputedStyle(drawer).backgroundColor);
+        const ratio = (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+        if (ratio < 3) throw new Error(`${id}: idle resize bar contrast ${ratio.toFixed(2)}:1 is below 3:1`);
+      }
+    } finally {
+      if (previousTheme === null) root.removeAttribute('data-ov-theme');
+      else root.setAttribute('data-ov-theme', previousTheme);
+      handle.style.transition = previousTransition;
+    }
+  },
 };
 
 function OverlayModalStory() {

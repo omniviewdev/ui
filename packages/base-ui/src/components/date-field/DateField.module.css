@@ -6,7 +6,7 @@
   --_ov-padding-inline: var(--ov-space-inline-control);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-focus: var(--ov-color-border-focus);
   --_ov-placeholder: var(--ov-color-fg-subtle);
 

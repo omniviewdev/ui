@@ -28,9 +28,11 @@ export type ThemeTokenKey =
   | 'color.bg.surface'
   | 'color.bg.surface.overlay'
   | 'color.bg.surface.raised'
+  | 'color.border.control'
   | 'color.border.default'
   | 'color.border.focus'
   | 'color.border.muted'
+  | 'color.border.overlay'
   | 'color.border.strong'
   | 'color.brand.300'
   | 'color.brand.400'
@@ -182,9 +184,11 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.bg.surface': { cssVariable: '--ov-color-bg-surface', valueKind: 'color' },
   'color.bg.surface.overlay': { cssVariable: '--ov-color-bg-surface-overlay', valueKind: 'color' },
   'color.bg.surface.raised': { cssVariable: '--ov-color-bg-surface-raised', valueKind: 'color' },
+  'color.border.control': { cssVariable: '--ov-color-border-control', valueKind: 'color' },
   'color.border.default': { cssVariable: '--ov-color-border-default', valueKind: 'color' },
   'color.border.focus': { cssVariable: '--ov-color-border-focus', valueKind: 'color' },
   'color.border.muted': { cssVariable: '--ov-color-border-muted', valueKind: 'color' },
+  'color.border.overlay': { cssVariable: '--ov-color-border-overlay', valueKind: 'color' },
   'color.border.strong': { cssVariable: '--ov-color-border-strong', valueKind: 'color' },
   'color.brand.300': { cssVariable: '--ov-color-brand-300', valueKind: 'color' },
   'color.brand.400': { cssVariable: '--ov-color-brand-400', valueKind: 'color' },

@@ -5,6 +5,7 @@ import { scanThemeCoverage } from './scanners/theme-coverage.mjs';
 import { scanConventionViolations } from './scanners/convention-violations.mjs';
 import { scanReactPerformance } from './scanners/react-performance.mjs';
 import { scanAccessibility } from './scanners/accessibility.mjs';
+import { scanCustomPropertyCycles } from './scanners/custom-property-cycles.mjs';
 import { generateReport } from './report.mjs';
 import { ROOT } from './utils.mjs';
 
@@ -36,6 +37,10 @@ async function main() {
   const themeFindings = await scanThemeCoverage();
   console.log(`  → ${themeFindings.length} findings\n`);
 
+  console.log('  Scanning custom-property dependency cycles...');
+  const cycleFindings = await scanCustomPropertyCycles();
+  console.log(`  → ${cycleFindings.length} findings\n`);
+
   console.log('  Scanning convention violations...');
   const conventionFindings = await scanConventionViolations();
   console.log(`  → ${conventionFindings.length} findings\n`);
@@ -51,6 +56,7 @@ async function main() {
   const allFindings = [
     ...tokenFindings,
     ...themeFindings,
+    ...cycleFindings,
     ...conventionFindings,
     ...perfFindings,
     ...a11yFindings,

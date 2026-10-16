@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--ov-space-2, 8px);
   padding: var(--ov-space-2, 8px);
-  border-bottom: 1px solid var(--ov-color-border-default);
+  border-bottom: 1px solid var(--ov-color-border-muted);
 }
 
 .SearchInput {
@@ -22,7 +22,7 @@
   padding: var(--ov-space-1, 4px) var(--ov-space-2, 8px);
   background: var(--ov-color-input-bg, transparent);
   color: var(--ov-color-input-fg, var(--ov-color-fg-default));
-  border: 1px solid var(--ov-color-input-border, var(--ov-color-border-default));
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-sm, 4px);
   font-family: inherit;
   font-size: inherit;

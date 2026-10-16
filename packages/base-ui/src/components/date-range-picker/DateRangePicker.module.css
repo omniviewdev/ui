@@ -8,7 +8,7 @@
   --_ov-icon-size: var(--ov-size-icon-button-icon-md);
   --_ov-bg: var(--ov-color-bg-surface-raised);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-default);
+  --_ov-border: var(--ov-color-border-control);
   --_ov-focus: var(--ov-color-border-focus);
   --_ov-placeholder: var(--ov-color-fg-subtle);
 
@@ -114,7 +114,7 @@
 
 .popup {
   background: var(--ov-color-bg-surface-raised);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-overlay);
   border-radius: var(--ov-radius-surface);
   box-shadow: var(--ov-shadow-surface);
   padding: 0;
@@ -131,7 +131,7 @@
   align-items: center;
   gap: var(--ov-space-stack-sm, 8px);
   padding: var(--ov-space-stack-sm, 8px) var(--ov-space-stack-md, 12px);
-  border-top: 1px solid var(--ov-color-border-default);
+  border-top: 1px solid var(--ov-color-border-muted);
   background: var(--ov-color-bg-surface-raised);
 }
 

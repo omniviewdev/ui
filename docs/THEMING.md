@@ -122,3 +122,106 @@ API.
    `data-highlighted`.
 4. Add new variables to `styles.css` and regenerate the token catalog before
    use.
+
+## Boundary design
+
+Choose a boundary by its job, not by the brightness of nearby text. The CSS
+source and [generated catalog](../packages/base-ui/src/theme/generated/tokenKeys.ts)
+are authoritative; [token mapping](THEME_TOKEN_MAPPING.md) links to the live
+palette rather than duplicating per-theme colors.
+
+| Intent | CSS token | Typical use |
+| --- | --- | --- |
+| Quiet structural rule | `--ov-color-border-muted` | Table row rule, separator, subsection divider |
+| Ordinary passive enclosure | `--ov-color-border-default` | Card or panel perimeter when a frame is necessary |
+| Intentional structural emphasis | `--ov-color-border-strong` | Deliberately emphasized structural edge, not every nested box |
+| Necessary control-identification outline | `--ov-color-border-control` | Input, selector trigger, or choice control identified by its outline |
+| Overlay perimeter | `--ov-color-border-overlay` | Open selector/menu popup, popover, dialog perimeter |
+| Keyboard focus | `--ov-color-border-focus`, `--ov-color-state-focus-ring` | Visible keyboard focus cue, separate from an idle outline |
+| Selection or status | Appropriate `state-selected`, brand, or status token | Active item, selected state, warning/error/success accent |
+
+`color.border.control` and `color.border.overlay` are the public JSON keys.
+Every built-in defines the two CSS tokens. Overlay currently aliases the
+theme's ordinary default boundary, but its distinct role allows intentional
+theme-specific contrast without brightening passive structure.
+Do not derive boundary roles from foreground tokens or add compatibility aliases.
+
+### One boundary owner
+
+Each shell edge or logical group has one intentional boundary owner. If a
+parent panel draws an edge, its child content must not draw the same edge again.
+Prefer spacing or a surface change before adding another enclosure. A table
+owns its row rules; a card wrapping it need not repeat a full inner frame.
+
+For a nested inspector, let the outer card/panel own the perimeter. Subsection
+headings and content share that surface; use spacing and, when useful, one muted
+separator between sibling sections. Do not stack neutral full-strength frames
+around each field group. A semantic left status accent can remain: it conveys
+status rather than owning a duplicate neutral enclosure.
+
+### Controls, overlays, focus, and accessibility
+
+Review closed and opened selectors separately. The trigger is a control and may
+need `border-control`; its popup owns an overlay perimeter. Reusing the trigger's
+bright identification outline for every menu edge defeats the hierarchy.
+Controls already identified by contrasting background, text, or icons need not
+gain an outline solely because a control token exists.
+
+Required control-identification cues and non-text state indicators, including
+author-supplied focus indicators, must achieve at least 3:1 against the applicable
+adjacent colors under WCAG 1.4.11. Inspect the actual component surface and state,
+not just a token swatch on the page background. Text has its own contrast
+requirements. Keep keyboard focus visible and distinct from selection, hover,
+and status; a selected row is not necessarily keyboard-focused.
+
+There is no universal 3:1 floor for decorative card outlines, table rules, or
+redundant separators. A line becomes meaningful rather than decorative when it
+is necessary to understand content or identify a control/state; review that
+case against the applicable contrast requirement. In normal themes, structural
+muted/default/strong boundaries stay quieter than necessary control outlines.
+High-contrast themes intentionally retain stronger boundaries instead of being
+forced into the normal-theme quietness ladder. Preserve visible semantic status
+accents and do not rely on hue alone to convey status.
+
+### Regression and audit evidence
+
+Use every theme in the [built-in catalog](../packages/base-ui/src/theme/registry/catalog.ts),
+including Solarized and both high-contrast themes. Check nested sections, table
+row rules, horizontal/vertical/labeled Separators, opened selectors, and keyboard
+focus on their actual backgrounds in Chromium against the changed source/build.
+Data attributes, jsdom snapshots, and repeated declarations alone cannot establish
+visible stroke, geometry, resolved color, accessible contrast, or boundary ownership.
+
+`pnpm audit:ui` retains the full audit report and fails on new High findings.
+The theme scanner loads the built-in catalog; the custom-property scanner parses
+CSS with the existing PostCSS toolchain and reports local dependency cycles as
+High. A fallback referencing the same cyclic property does not rescue it.
+The static scanner joins repeated identical selectors in the same at-rule
+context, respects declaration order/importance, and includes fallback dependencies.
+It deliberately does not merge different selectors: inherited parent values
+have already been computed, and a parent/child reference chain is not a
+same-element cycle. Arbitrary intersecting selectors and runtime inline overrides
+still require browser coverage. Do not regenerate the High baseline to hide
+new findings.
+
+Run the audit scanner graph/parser regressions with:
+
+```bash
+node --test scripts/audit/scanners/custom-property-cycles.test.mjs scripts/audit/scanners/theme-coverage.test.mjs
+```
+
+### Design and accessibility references
+
+- [W3C: Understanding Non-text Contrast, including boundaries and focus](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html):
+  distinguishes necessary control/state information from optional boundaries;
+  does not require every control to have an outline.
+- [Carbon: role-based color tokens](https://www.carbondesignsystem.com/building-blocks/foundations/color/overview)
+  and [layering guidance](https://www.carbondesignsystem.com/building-blocks/foundations/color/guidelines):
+  pair surface, field, and border roles with their actual layer. This informs
+  our static semantic roles; it does not introduce a contextual layer runtime.
+- [NN/g: The Principle of Common Region](https://www.nngroup.com/articles/common-region/):
+  enclosures communicate grouping strongly; excess borders add clutter when
+  proximity already communicates the grouping.
+- [VS Code: Theme Color reference](https://code.visualstudio.com/api/references/theme-color):
+  separates widget/control boundaries, focus borders, selection, and additional
+  high-contrast borders rather than treating every edge as the same role.

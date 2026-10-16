@@ -17,7 +17,7 @@
   --_ov-bg: var(--_ov-surface-bg);
   --_ov-fg: var(--ov-color-fg-default);
   --_ov-title-color: var(--ov-color-fg-default);
-  --_ov-border: color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%);
+  --_ov-border: var(--ov-color-border-default);
   --_ov-muted: var(--ov-color-fg-muted);
   --_card-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
   --_card-shadow-md: var(--ov-shadow-surface);
@@ -199,7 +199,7 @@
   --_ov-border: color-mix(
     in srgb,
     var(--_ov-accent) 64%,
-    color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 36%
+    var(--ov-color-border-default) 36%
   );
   --_ov-title-color: color-mix(in srgb, var(--_ov-fg) 78%, var(--_ov-accent-fg) 22%);
 }
@@ -208,7 +208,7 @@
   --_ov-bg: color-mix(in srgb, var(--_ov-surface-bg) 82%, var(--_ov-accent-soft) 18%);
   --_ov-border: color-mix(
     in srgb,
-    color-mix(in srgb, var(--_ov-surface-bg) 72%, var(--ov-color-fg-subtle) 28%) 62%,
+    var(--ov-color-border-default) 62%,
     var(--_ov-accent) 38%
   );
   --_ov-title-color: color-mix(in srgb, var(--_ov-fg) 72%, var(--_ov-accent-fg) 28%);
@@ -238,7 +238,7 @@
   border-color: color-mix(
     in srgb,
     var(--_ov-border) 50%,
-    var(--_ov-accent, var(--ov-color-fg-subtle)) 50%
+    var(--_ov-accent, var(--ov-color-border-default)) 50%
   );
 }
 
@@ -510,7 +510,7 @@
 .Separator {
   height: 0;
   border: none;
-  border-top: 1px solid color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
+  border-top: 1px solid var(--ov-color-border-muted);
   margin-block: var(--_ov-gap);
 }
 
@@ -586,7 +586,7 @@
   gap: var(--_ov-footer-gap);
   padding-top: var(--_ov-footer-padding-block);
   padding-bottom: var(--_ov-footer-padding-block);
-  border-top: 1px solid color-mix(in srgb, var(--_ov-border) 72%, transparent 28%);
+  border-top: 1px solid var(--ov-color-border-muted);
 
   --ov-size-button-height-md: var(--_ov-action-height);
   --ov-size-button-padding-inline-md: var(--_ov-action-padding-inline);

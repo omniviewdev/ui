@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { ThemeProvider } from '@omniviewdev/base-ui';
+import { BUILT_IN_THEMES, ThemeProvider } from '@omniviewdev/base-ui';
 import '../packages/base-ui/src/theme/styles.css';
 
 // Side-effect import — configures Monaco workers before any editor story mounts.
@@ -14,7 +14,7 @@ const preview: Preview = {
       defaultValue: 'dark',
       toolbar: {
         icon: 'paintbrush',
-        items: ['dark', 'light', 'high-contrast-dark', 'high-contrast-light', 'obsidian', 'carbon', 'void'],
+        items: BUILT_IN_THEMES.map(({ id, name }) => ({ value: id, title: name })),
       },
     },
     density: {

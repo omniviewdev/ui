@@ -7,7 +7,7 @@
 .Root {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   border-radius: var(--ov-radius-xl, 12px);
   background: var(--ov-color-bg-surface);
   transition: border-color var(--ov-duration-fast, 150ms);

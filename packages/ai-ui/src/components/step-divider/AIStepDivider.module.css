@@ -9,7 +9,7 @@
 .Line {
   flex: 1;
   height: 1px;
-  background: var(--ov-color-border-default, #e0e0e0);
+  background: var(--ov-color-border-muted);
 }
 
 .Label {

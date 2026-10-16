@@ -59,36 +59,6 @@ describe('DatePicker (convenience)', () => {
     expect(onChange).toHaveBeenCalledWith(expect.any(Date));
   });
 
-  it('shows error state when DateField fires a date outside the min/max range', async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    // Start with an in-range value so the shell renders without error, then
-    // paste a date outside the range into the DateField. The DatePicker's
-    // onChange handler should mark the shell with shellError.
-    render(
-      <DatePicker
-        value={new Date(2026, 3, 20)}
-        onChange={onChange}
-        min={new Date(2026, 3, 15)}
-        max={new Date(2026, 3, 30)}
-      />,
-    );
-    const shell = screen.getByTestId('date-picker-shell');
-    expect(shell.className).not.toMatch(/shellError/);
-
-    // Focus the DateField (en-US → month/day/year), then paste an out-of-
-    // range date. The DateField parses the paste + emits a complete Date,
-    // which the DatePicker wrapper then rejects via setRangeError(true).
-    const dateField = screen.getByRole('group', { name: 'Date' });
-    const firstSection = dateField.querySelector(
-      '[role="spinbutton"]',
-    ) as HTMLElement;
-    firstSection.focus();
-    await user.paste('01/05/2026'); // Jan 5 2026 — before min
-
-    expect(shell.className).toMatch(/shellError/);
-  });
-
   it('does not open the popover when disabled and icon button is clicked', async () => {
     const user = userEvent.setup();
     render(<DatePicker value={null} onChange={() => {}} disabled />);

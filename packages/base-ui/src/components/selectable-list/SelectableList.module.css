@@ -39,7 +39,7 @@
   justify-content: center;
   inline-size: var(--_ov-control-size);
   block-size: var(--_ov-control-size);
-  border: 1px solid var(--ov-color-border-default);
+  border: 1px solid var(--ov-color-border-control);
   background: var(--ov-color-bg-surface-raised);
   color: transparent;
   transition:
@@ -73,7 +73,7 @@
 
 /* Hover on parent item highlights unchecked control */
 .Item:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
-  border-color: var(--ov-color-border-strong);
+  border-color: var(--ov-color-border-control);
   background: color-mix(
     in srgb,
     var(--ov-color-bg-surface-raised) 82%,
@@ -116,7 +116,7 @@
 }
 
 .SelectAll:hover .IndicatorWrapper:not([data-checked], [data-indeterminate]) .IndicatorControl {
-  border-color: var(--ov-color-border-strong);
+  border-color: var(--ov-color-border-control);
   background: color-mix(
     in srgb,
     var(--ov-color-bg-surface-raised) 82%,
@@ -164,7 +164,7 @@
 .GroupSelectAll:hover
   .IndicatorWrapper:not([data-checked], [data-indeterminate])
   .IndicatorControl {
-  border-color: var(--ov-color-border-strong);
+  border-color: var(--ov-color-border-control);
   background: color-mix(
     in srgb,
     var(--ov-color-bg-surface-raised) 82%,

@@ -7,6 +7,8 @@ const REQUIRED_SURFACE_TOKENS = [
   '--ov-color-bg-base',
   '--ov-color-fg-default',
   '--ov-color-editor-bg',
+  '--ov-color-border-control',
+  '--ov-color-border-overlay',
   '--ov-color-editor-fg',
   '--ov-color-editor-cursor',
   '--ov-color-editor-selection-bg',
@@ -102,7 +104,7 @@ describe('built-in theme catalog', () => {
     }
   });
 
-  it('keeps standard theme text and focus colors at accessible contrast', () => {
+  it('keeps text, control identification, and keyboard focus at accessible contrast', () => {
     for (const theme of BUILT_IN_THEMES) {
       document.documentElement.dataset.ovTheme = theme.id;
       const computedStyle = getComputedStyle(document.documentElement);
@@ -110,28 +112,28 @@ describe('built-in theme catalog', () => {
 
       expect(contrast(value('--ov-color-fg-default'), value('--ov-color-bg-base')), `${theme.id} base text`).toBeGreaterThanOrEqual(4.5);
       expect(contrast(value('--ov-color-fg-default'), value('--ov-color-bg-surface')), `${theme.id} surface text`).toBeGreaterThanOrEqual(4.5);
-      expect(contrast(value('--ov-color-border-focus'), value('--ov-color-bg-base')), `${theme.id} base focus`).toBeGreaterThanOrEqual(3);
-      expect(contrast(value('--ov-color-border-default'), value('--ov-color-bg-base')), `${theme.id} base border`).toBeGreaterThanOrEqual(3);
-      expect(contrast(value('--ov-color-border-default'), value('--ov-color-bg-surface')), `${theme.id} surface border`).toBeGreaterThanOrEqual(3);
-      expect(contrast(value('--ov-color-border-focus'), value('--ov-color-bg-surface')), `${theme.id} surface focus`).toBeGreaterThanOrEqual(3);
-      if (theme.id === 'solarized-dark' || theme.id === 'solarized-light') {
-        expect(contrast(value('--ov-color-border-muted'), value('--ov-color-bg-surface')), `${theme.id} muted surface border`).toBeGreaterThanOrEqual(3);
-        expect(contrast(value('--ov-color-terminal-border'), value('--ov-color-terminal-bg')), `${theme.id} terminal border`).toBeGreaterThanOrEqual(3);
+      for (const surface of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
+        for (const cue of ['--ov-color-border-control', '--ov-color-border-focus', '--ov-color-state-focus-ring']) {
+          expect(contrast(value(cue), value(surface)), `${theme.id} ${cue} against ${surface}`).toBeGreaterThanOrEqual(3);
+        }
       }
     }
   });
 
-  it('keeps strong borders more distinct from adjacent surfaces than default borders', () => {
-    for (const id of ['dark', 'light', 'obsidian', 'carbon', 'void']) {
+  it('keeps normal structural boundaries quieter than control identification', () => {
+    for (const { id } of BUILT_IN_THEMES.filter((theme) => !theme.id.startsWith('high-contrast-'))) {
       document.documentElement.dataset.ovTheme = id;
       const computedStyle = getComputedStyle(document.documentElement);
       const value = (token: string) => computedStyle.getPropertyValue(token).trim();
 
       for (const surface of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
-        expect(
-          contrast(value('--ov-color-border-strong'), value(surface)),
-          `${id} strong border against ${surface}`,
-        ).toBeGreaterThan(contrast(value('--ov-color-border-default'), value(surface)));
+        const muted = contrast(value('--ov-color-border-muted'), value(surface));
+        const ordinary = contrast(value('--ov-color-border-default'), value(surface));
+        const strong = contrast(value('--ov-color-border-strong'), value(surface));
+        const control = contrast(value('--ov-color-border-control'), value(surface));
+        expect(ordinary, `${id} default boundary against ${surface}`).toBeGreaterThan(muted);
+        expect(strong, `${id} structural emphasis against ${surface}`).toBeGreaterThan(ordinary);
+        expect(control, `${id} control identification against ${surface}`).toBeGreaterThan(strong);
       }
     }
   });
@@ -143,6 +145,12 @@ describe('built-in theme catalog', () => {
       const foreground = computedStyle.getPropertyValue('--ov-color-fg-default').trim();
       for (const background of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
         expect(contrast(foreground, computedStyle.getPropertyValue(background).trim()), `${id} ${background}`).toBeGreaterThanOrEqual(7);
+      }
+      for (const boundary of ['--ov-color-border-muted', '--ov-color-border-default', '--ov-color-border-control']) {
+        expect(
+          contrast(computedStyle.getPropertyValue(boundary).trim(), computedStyle.getPropertyValue('--ov-color-bg-surface').trim()),
+          `${id} intentional ${boundary}`,
+        ).toBeGreaterThanOrEqual(3);
       }
     }
   });

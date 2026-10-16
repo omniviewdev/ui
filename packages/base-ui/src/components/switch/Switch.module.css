@@ -8,11 +8,7 @@
     var(--ov-color-fg-muted) 74%,
     var(--ov-color-bg-surface-raised) 26%
   );
-  --_ov-track-border-off: color-mix(
-    in srgb,
-    var(--ov-color-fg-subtle) 60%,
-    var(--ov-color-border-default) 40%
-  );
+  --_ov-track-border-off: var(--ov-color-border-control);
   --_ov-track-bg-off-hover: color-mix(in srgb, var(--_ov-track-bg-off) 85%, white 15%);
   --_ov-track-bg-on: var(--ov-color-brand-500);
   --_ov-track-border-on: color-mix(in srgb, var(--ov-color-brand-500) 82%, black 18%);
@@ -71,49 +67,42 @@
   --_ov-accent-bg: var(--ov-color-brand-500);
   --_ov-accent-border: var(--ov-color-brand-400);
   --_ov-accent-soft-bg: var(--ov-color-accent-soft);
-  --_ov-focus-border: var(--ov-color-brand-400);
 }
 
 .Root[data-ov-color='success'] {
   --_ov-accent-bg: var(--ov-color-success);
   --_ov-accent-border: var(--ov-color-success);
   --_ov-accent-soft-bg: var(--ov-color-success-soft);
-  --_ov-focus-border: var(--ov-color-success);
 }
 
 .Root[data-ov-color='warning'] {
   --_ov-accent-bg: var(--ov-color-warning);
   --_ov-accent-border: var(--ov-color-warning);
   --_ov-accent-soft-bg: var(--ov-color-warning-soft);
-  --_ov-focus-border: var(--ov-color-warning);
 }
 
 .Root[data-ov-color='danger'] {
   --_ov-accent-bg: var(--ov-color-danger);
   --_ov-accent-border: var(--ov-color-danger);
   --_ov-accent-soft-bg: var(--ov-color-danger-soft);
-  --_ov-focus-border: var(--ov-color-danger);
 }
 
 .Root[data-ov-color='info'] {
   --_ov-accent-bg: var(--ov-color-info);
   --_ov-accent-border: var(--ov-color-info);
   --_ov-accent-soft-bg: var(--ov-color-info-soft);
-  --_ov-focus-border: var(--ov-color-info);
 }
 
 .Root[data-ov-color='discovery'] {
   --_ov-accent-bg: var(--ov-color-discovery);
   --_ov-accent-border: var(--ov-color-discovery);
   --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
-  --_ov-focus-border: var(--ov-color-discovery);
 }
 
 .Root[data-ov-color='secondary'] {
   --_ov-accent-bg: var(--ov-color-secondary);
   --_ov-accent-border: var(--ov-color-secondary);
   --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
-  --_ov-focus-border: var(--ov-color-secondary);
 }
 
 .Root[data-ov-variant='solid'] {
@@ -130,7 +119,7 @@
 
 .Root[data-ov-variant='outline'] {
   --_ov-track-bg-off: transparent;
-  --_ov-track-border-off: var(--ov-color-border-default);
+  --_ov-track-border-off: var(--ov-color-border-control);
   --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-soft-bg) 72%, transparent 28%);
   --_ov-track-border-on: var(--_ov-accent-border);
   --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 82%, white 18%);

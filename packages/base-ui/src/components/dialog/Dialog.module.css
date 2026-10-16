@@ -34,6 +34,7 @@
   width: 100%;
   max-height: calc(100vh - 64px);
   border-radius: var(--ov-radius-surface, 8px);
+  border: 1px solid var(--ov-color-border-overlay);
   background: var(--ov-color-bg-surface-raised, #fff);
   box-shadow: var(--ov-shadow-overlay, 0 8px 32px rgba(0, 0, 0, 0.24));
   color: var(--ov-color-fg-default);

@@ -366,17 +366,19 @@ function TreeListRootImpl<TItem>(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   // State and the focus-owning tree DOM stay mounted when edit mode changes.
-  // Only the optional node-ordering and DnD subtree is replaced.
+  // Ordering stays activated after its first use; only DnD follows edit mode.
   const treeState = useTreeState(props);
   const isOrdered =
     props.reorderable === true ||
     props.order !== undefined ||
     props.defaultOrder !== undefined ||
     props.onOrderChange !== undefined;
+  const hasEnabledOrdering = useRef(false);
+  if (isOrdered) hasEnabledOrdering.current = true;
 
   return (
     <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref}>
-      {isOrdered ? (
+      {hasEnabledOrdering.current ? (
         <OrderedTreeListNodes {...props} treeState={treeState} />
       ) : (
         <TreeListNodes {...props} treeState={treeState} />

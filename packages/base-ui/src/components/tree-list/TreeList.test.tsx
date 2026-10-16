@@ -864,6 +864,43 @@ describe('TreeList', () => {
       });
     });
 
+    it('retains uncontrolled sibling order when edit mode exits and reenters without order props', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const { rerender } = renderWithTheme(<TestTree />);
+      rerender(<TestTree reorderable renderItem={renderReorderableItem} />);
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+
+      rerender(<TestTree />);
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+      expect(screen.queryByRole('button', { name: /reorder/i })).not.toBeInTheDocument();
+      for (const row of screen.getAllByRole('treeitem')) {
+        expect(row).not.toHaveAttribute('data-ov-reorderable');
+      }
+
+      rerender(<TestTree reorderable renderItem={renderReorderableItem} />);
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder README.md' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
+    });
+
     it('preserves uncontrolled reorder state while showing and recovering from an error', async () => {
       supportKeyboardDraggingInJSDOM();
       const user = userEvent.setup();

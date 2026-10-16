@@ -12,10 +12,21 @@ import {
   LuHash,
   LuType,
   LuChevronRight,
+  LuLayoutDashboard,
+  LuServer,
+  LuCalendar,
+  LuLayers,
+  LuSettings,
+  LuNetwork,
+  LuDatabase,
+  LuShield,
+  LuAnchor,
+  LuPuzzle,
 } from 'react-icons/lu';
 import { TreeList } from './TreeList';
 import { SearchInput } from '../search-input';
-import type { Key, TreeIndentGuide } from './types';
+import type { Key, TreeIndentGuide, TreeNodeMeta, TreeOrder, TreeReorderEvent } from './types';
+import { useTreeActions } from './context/TreeContext';
 
 // ---------------------------------------------------------------------------
 // Shared types and data
@@ -1542,4 +1553,207 @@ export const ControlledExpansion: Story = {
     },
   },
   render: () => <ControlledExpansionStory />,
+};
+
+// Stable fixtures shared by the ordering examples.
+const fileKey = (item: FileItem) => item.path;
+const fileChildren = (item: FileItem) => item.children;
+const fileBranch = (item: FileItem) => item.type === 'directory';
+const fileText = (item: FileItem) => item.name;
+const fileExpanded = new Set<Key>(['/src', '/src/components', '/src/hooks', '/public']);
+const sourceOrder: TreeOrder = new Map<Key | null, readonly Key[]>([
+  [null, ['/src', '/public', '/package.json', '/tsconfig.json', '/README.md']],
+]);
+const alternateOrder: TreeOrder = new Map<Key | null, readonly Key[]>([
+  [null, ['/public', '/README.md', '/src', '/tsconfig.json', '/package.json']],
+  ['/src', ['/src/utils', '/src/hooks', '/src/components', '/src/types.ts', '/src/index.ts']],
+]);
+
+function ReorderableFileRow({ item, node }: { item: FileItem; node: TreeNodeMeta }) {
+  const actions = useTreeActions();
+  return (
+    <TreeList.ReorderableItem
+      itemKey={node.key}
+      textValue={item.name}
+      selectable={!node.isBranch}
+      onClick={node.isBranch ? () => actions.toggleExpanded(node.key) : undefined}
+    >
+      <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>⋮⋮</TreeList.ItemDragHandle>
+      <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+      <TreeList.ItemToggle itemKey={node.key} />
+      <TreeList.ItemIcon>{getFileIcon(item, node.isExpanded)}</TreeList.ItemIcon>
+      <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+    </TreeList.ReorderableItem>
+  );
+}
+const renderReorderableFile = (item: FileItem, node: TreeNodeMeta) => <ReorderableFileRow item={item} node={node} />;
+
+function ReorderableUncontrolledStory() {
+  const [lastMove, setLastMove] = useState('Drag a handle or focus it and press Space to reorder siblings.');
+  const reportOrder = useCallback((_order: TreeOrder, event: TreeReorderEvent) => {
+    setLastMove(JSON.stringify(event));
+  }, []);
+  return (
+    <div style={{ width: 440 }}>
+      <p>Edit mode: reorder within each sibling group. Branch rows expand; leaves select.</p>
+      <TreeList.Root
+        items={fileExplorerData} itemKey={fileKey} getChildren={fileChildren}
+        isBranch={fileBranch} getTextValue={fileText} renderItem={renderReorderableFile}
+        reorderable defaultOrder={alternateOrder} onOrderChange={reportOrder}
+        defaultExpandedKeys={fileExpanded} selectionMode="single" indentGuide="rail"
+        style={{ height: 440 }}
+      >
+        <TreeList.Viewport />
+      </TreeList.Root>
+      <output aria-live="polite" style={{ display: 'block', overflowWrap: 'anywhere' }}>{lastMove}</output>
+    </div>
+  );
+}
+
+export const ReorderableUncontrolled: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <ReorderableUncontrolledStory />,
+};
+
+function ReorderableControlledPresetStory() {
+  const [order, setOrder] = useState<TreeOrder>(sourceOrder);
+  return (
+    <div style={{ width: 440 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <button type="button" onClick={() => setOrder(sourceOrder)}>Source preset</button>
+        <button type="button" onClick={() => setOrder(alternateOrder)}>Alternate preset</button>
+        <button type="button" onClick={() => setOrder(sourceOrder)}>Reset</button>
+      </div>
+      <TreeList.Root
+        items={fileExplorerData} itemKey={fileKey} getChildren={fileChildren}
+        isBranch={fileBranch} getTextValue={fileText} renderItem={renderReorderableFile}
+        reorderable order={order} onOrderChange={setOrder} defaultExpandedKeys={fileExpanded}
+        selectionMode="single" indentGuide="rail" style={{ height: 440 }}
+      >
+        <TreeList.Viewport />
+      </TreeList.Root>
+    </div>
+  );
+}
+
+export const ReorderableControlledPreset: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <ReorderableControlledPresetStory />,
+};
+
+const virtualReorderItems: FileItem[] = Array.from({ length: 60 }, (_, parent) => ({
+  path: `/group-${parent}`, name: `Group ${parent + 1}`, type: 'directory',
+  children: Array.from({ length: 20 }, (_, child) => ({
+    path: `/group-${parent}/file-${child}`, name: `File ${parent + 1}-${child + 1}.ts`, type: 'file',
+  })),
+}));
+const virtualReorderExpanded = new Set<Key>(virtualReorderItems.map(fileKey));
+
+export const ReorderableVirtualized: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ width: 440 }}>
+      <p>Edit mode: 1,260 expanded rows in a fixed-height virtualized viewport.</p>
+      <TreeList.Root
+        items={virtualReorderItems} itemKey={fileKey} getChildren={fileChildren}
+        isBranch={fileBranch} getTextValue={fileText} renderItem={renderReorderableFile}
+        defaultExpandedKeys={virtualReorderExpanded} reorderable virtualized
+        selectionMode="single" indentGuide="rail" style={{ height: 420 }}
+      >
+        <TreeList.Viewport />
+      </TreeList.Root>
+    </div>
+  ),
+};
+
+interface SidebarItem {
+  id: string;
+  label: string;
+  icon?: typeof LuBox;
+  children?: SidebarItem[];
+}
+const sidebarItems: SidebarItem[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: LuLayoutDashboard },
+  { id: 'nodes', label: 'Nodes', icon: LuServer },
+  { id: 'events', label: 'Events', icon: LuCalendar },
+  { id: 'namespaces', label: 'Namespaces', icon: LuLayers },
+  { id: 'workloads', label: 'Workloads', icon: LuBox, children: [
+    { id: 'pods', label: 'Pods' }, { id: 'deployments', label: 'Deployments' },
+    { id: 'daemonsets', label: 'DaemonSets' }, { id: 'statefulsets', label: 'StatefulSets' },
+    { id: 'replicasets', label: 'ReplicaSets' }, { id: 'jobs', label: 'Jobs' },
+    { id: 'cronjobs', label: 'CronJobs' },
+  ] },
+  { id: 'config', label: 'Config', icon: LuSettings, children: [
+    { id: 'configmaps', label: 'ConfigMaps' }, { id: 'secrets', label: 'Secrets' },
+  ] },
+  { id: 'networking', label: 'Networking', icon: LuNetwork, children: [
+    { id: 'services', label: 'Services' }, { id: 'ingresses', label: 'Ingresses' },
+  ] },
+  { id: 'storage', label: 'Storage', icon: LuDatabase, children: [
+    { id: 'volumes', label: 'PersistentVolumes' }, { id: 'claims', label: 'PersistentVolumeClaims' },
+  ] },
+  { id: 'access', label: 'Access Control', icon: LuShield, children: [
+    { id: 'roles', label: 'Roles' }, { id: 'bindings', label: 'RoleBindings' },
+  ] },
+  { id: 'admission', label: 'Admission Control', icon: LuShield, children: [
+    { id: 'validating', label: 'Validating Webhooks' }, { id: 'mutating', label: 'Mutating Webhooks' },
+  ] },
+  { id: 'helm', label: 'Helm', icon: LuAnchor, children: [
+    { id: 'releases', label: 'Releases' }, { id: 'repositories', label: 'Repositories' },
+  ] },
+  { id: 'crds', label: 'Custom Resource Definitions', icon: LuPuzzle },
+];
+const sidebarKey = (item: SidebarItem) => item.id;
+const sidebarChildren = (item: SidebarItem) => item.children;
+const sidebarBranch = (item: SidebarItem) => Boolean(item.children?.length);
+const sidebarText = (item: SidebarItem) => item.label;
+const sidebarExpanded = new Set<Key>(['workloads', 'helm']);
+
+function SidebarRow({ item, node, editing }: { item: SidebarItem; node: TreeNodeMeta; editing: boolean }) {
+  const actions = useTreeActions();
+  const Item = editing ? TreeList.ReorderableItem : TreeList.Item;
+  const Icon = item.icon;
+  return (
+    <Item
+      itemKey={node.key} textValue={item.label} selectable={!node.isBranch}
+      onClick={node.isBranch ? () => actions.toggleExpanded(node.key) : undefined}
+    >
+      {editing && <TreeList.ItemDragHandle aria-label={`Reorder ${item.label}`}>⋮⋮</TreeList.ItemDragHandle>}
+      <TreeList.ItemIndent depth={node.depth} ancestorIsLast={node.ancestorIsLast} isLastChild={node.isLastChild} />
+      <TreeList.ItemToggle itemKey={node.key} />
+      {Icon && <TreeList.ItemIcon><Icon /></TreeList.ItemIcon>}
+      <TreeList.ItemLabel>{item.label}</TreeList.ItemLabel>
+    </Item>
+  );
+}
+const renderSidebar = (item: SidebarItem, node: TreeNodeMeta) => <SidebarRow item={item} node={node} editing={false} />;
+const renderEditableSidebar = (item: SidebarItem, node: TreeNodeMeta) => <SidebarRow item={item} node={node} editing />;
+
+function KubernetesSidebarStory() {
+  const [editing, setEditing] = useState(false);
+  const [order, setOrder] = useState<TreeOrder>(() => new Map());
+  return (
+    <div style={{ width: 320 }}>
+      <label style={{ display: 'block', marginBottom: 12 }}>
+        <input type="checkbox" checked={editing} onChange={(event) => setEditing(event.target.checked)} />
+        {' '}Edit navigation order
+      </label>
+      <TreeList.Root
+        items={sidebarItems} itemKey={sidebarKey} getChildren={sidebarChildren}
+        isBranch={sidebarBranch} getTextValue={sidebarText}
+        renderItem={editing ? renderEditableSidebar : renderSidebar}
+        reorderable={editing} defaultExpandedKeys={sidebarExpanded}
+        order={order} onOrderChange={setOrder}
+        defaultSelectedKeys={new Set<Key>(['pods'])} selectionMode="single"
+        indentGuide="rail" size="sm" density="compact" style={{ height: 660 }}
+      >
+        <TreeList.Viewport />
+      </TreeList.Root>
+    </div>
+  );
+}
+
+export const KubernetesSidebar: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <KubernetesSidebarStory />,
 };

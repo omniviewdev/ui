@@ -56,9 +56,17 @@ export function App() {
 
 By default the provider writes `data-ov-theme`, `data-ov-density`, and
 `data-ov-motion` to `document.documentElement`. Supply `root` to target another
-element. Use one provider per root. Overlapping providers use last-writer
-ownership to prevent stale cleanup from clobbering the current provider; this
-is not a nesting or restoration API.
+element. Providers that share a root form an ordered owner stack. The most
+recently applied provider controls the root; when it unmounts, the newest
+surviving provider is restored. When the last provider unmounts, Base UI
+removes theme attributes, inline token overrides, and `color-scheme` while
+leaving unrelated host-owned styles intact.
+
+Xterm terminals resolve tokens independently from their nearest themed
+ancestor. Monaco 0.52 has one page-global theme, so the last `CodeEditor` or
+`DiffViewer` to mount or receive a theme update rebuilds that shared theme from
+its nearest themed ancestor for every Monaco editor. Separate roots cannot
+display different Monaco palettes at the same time.
 
 The host owns persistence. Load a saved ID before rendering (or update host
 state after loading it) and persist changes in `onThemeChange`.

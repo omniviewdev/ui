@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { THEME_TOKEN_METADATA } from './generated/tokenKeys';
 import type { ThemeDefinition } from './schema';
 import { ThemeValidationError, validateThemeDefinition } from './validation';
@@ -19,6 +19,9 @@ const valid: ThemeDefinition = {
 };
 
 const supportsColor = vi.fn<(value: string) => boolean>(() => true);
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 function expectValidationError(input: unknown, code: ThemeValidationError['code'], path?: string) {
   try {
@@ -94,26 +97,49 @@ describe('validateThemeDefinition', () => {
     vi.unstubAllGlobals();
   });
 
-  it('accepts strict color syntax when CSS.supports is unavailable', () => {
+  it.each([
+    'red',
+    'rgb(12 34 56 / 50%)',
+    'rgba(12, 34, 56, 0.5)',
+    'hsl(120 50% 40% / 0.25)',
+    'oklch(62% 0.18 240 / 80%)',
+    'hsla(120, 50%, 40%, 25%)',
+    'hwb(120 20% 30% / 0.5)',
+    'lab(60% 10 20 / 75%)',
+    'lch(60% 30 120 / 0.75)',
+    'oklab(60% 0.1 -0.1 / 75%)',
+    'color(display-p3 0.2 0.4 0.6 / 50%)',
+  ])('accepts structurally safe %s colors without DOM APIs', (value) => {
     vi.stubGlobal('CSS', undefined);
+    vi.stubGlobal('document', undefined);
+
     expect(
       validateThemeDefinition({
         ...valid,
-        tokens: { 'color.bg.base': '#002b36' },
+        tokens: { 'color.bg.base': value },
       }),
     ).toBeDefined();
-    vi.unstubAllGlobals();
   });
 
-  it('rejects invalid colors when CSS.supports is unavailable', () => {
+  it.each([
+    'rgb(12 34)',
+    'hsl(120 50%)',
+    'oklch(62% 0.18 240))',
+    'color()',
+    'rgb(12 34 56 /)',
+    'rgb(12 34 56); color: red',
+    'hsl(120 50% 40%){background:red}',
+    'url(https://example.com/color)',
+  ])('rejects malformed or injectable %s colors without DOM APIs', (value) => {
     vi.stubGlobal('CSS', undefined);
+    vi.stubGlobal('document', undefined);
+
     expect(() =>
       validateThemeDefinition({
         ...valid,
-        tokens: { 'color.bg.base': 'definitely-not-a-color' },
+        tokens: { 'color.bg.base': value },
       }),
     ).toThrowError(expect.objectContaining({ code: 'invalid_value' }));
-    vi.unstubAllGlobals();
   });
 
   it.each([

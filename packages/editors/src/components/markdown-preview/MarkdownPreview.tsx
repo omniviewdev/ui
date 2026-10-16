@@ -2,7 +2,7 @@ import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, t
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
-import type { PluggableList } from 'unified';
+import type { Options as ReactMarkdownOptions } from 'react-markdown';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import {
   Accordion,
@@ -16,7 +16,7 @@ import {
 } from '@omniviewdev/base-ui';
 import styles from './MarkdownPreview.module.css';
 
-const REMARK_PLUGINS: PluggableList = [remarkGfm];
+const REMARK_PLUGINS: NonNullable<ReactMarkdownOptions['remarkPlugins']> = [remarkGfm];
 
 const ReactMarkdown = lazy(() => import('react-markdown'));
 

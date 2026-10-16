@@ -23,8 +23,17 @@ not mutate hidden provider state.
 The provider applies `data-ov-theme`, `data-ov-density`, and `data-ov-motion`
 to `document.documentElement` by default. A host can supply another `root`;
 built-in palettes and density/motion selectors apply directly to that element.
-Monaco and Xterm resolve tokens from their nearest themed ancestor, so editors
-inside a non-document provider root use that root's built-in or custom palette.
+Providers that share a root form an ordered owner stack: the most recently
+applied provider controls the root, and its cleanup restores the newest
+surviving provider. Cleaning up the last provider removes the theme attributes,
+inline theme-token overrides, and `color-scheme` while retaining unrelated
+host-owned styles.
+
+Xterm resolves tokens per terminal from its nearest themed ancestor. Monaco
+0.52 themes are page-global: each `CodeEditor` or `DiffViewer` builds the shared
+theme from its own nearest themed ancestor when it mounts or updates, and that
+last update changes every Monaco editor on the page. Separate provider roots do
+not isolate simultaneous Monaco palettes.
 
 ## Resolution contract
 

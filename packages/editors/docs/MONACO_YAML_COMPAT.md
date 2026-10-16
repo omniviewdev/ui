@@ -58,6 +58,20 @@ monaco-editor@0.55 + monaco-yaml@5.4.1 = broken (hangs on "Loading...")
 monaco-editor@0.52 + monaco-yaml@5.4.1 = working (completions + validation)
 ```
 
+## Page-global theme model
+
+Monaco 0.52 stores themes and the active theme at page scope. Passing a theme
+through `editor.create(...)` or `editor.updateOptions({ theme })` does not
+isolate it to that editor. `CodeEditor` and `DiffViewer` therefore share the
+single `ov-theme` registration and activate it with `monaco.editor.setTheme`.
+
+Each component still reads tokens from its nearest themed ancestor when it
+mounts or receives a theme registration update. The component that updates
+last rebuilds `ov-theme`, and every Monaco editor on the page displays that
+palette. Applications that need simultaneous independently themed editors must
+use separate documents or frames; separate Base UI provider roots are not
+sufficient.
+
 ## Vite Worker Loading
 
 Monaco workers in Vite require special handling:

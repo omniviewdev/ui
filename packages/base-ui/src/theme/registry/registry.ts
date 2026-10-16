@@ -1,6 +1,6 @@
 import { ThemeValidationError, validateThemeDefinition } from '../validation';
 import { BUILT_IN_THEME_DEFINITIONS } from './builtIns';
-import { BUILT_IN_THEMES } from './catalog';
+import { BUILT_IN_THEME_BY_ID, BUILT_IN_THEMES } from './catalog';
 import type {
   RegisteredTheme,
   ThemeDefinition,
@@ -87,7 +87,7 @@ export function createThemeRegistry(): ThemeRegistry {
         id: definition.id,
         name: definition.name,
         base: definition.base,
-        appearance: definition.base === 'light' || definition.base === 'solarized-light' || definition.base === 'high-contrast-light' ? 'light' : 'dark',
+        appearance: BUILT_IN_THEME_BY_ID[definition.base].appearance,
         ...(definition.description === undefined ? {} : { description: definition.description }),
         builtIn: false,
         owner: frozenOwner,

@@ -225,10 +225,3 @@ export function buildMonacoTheme(
 }
 
 export const OV_MONACO_THEME = 'ov-theme';
-
-let nextMonacoThemeId = 0;
-
-export function createMonacoThemeName(): string {
-  nextMonacoThemeId += 1;
-  return `${OV_MONACO_THEME}-${nextMonacoThemeId}`;
-}

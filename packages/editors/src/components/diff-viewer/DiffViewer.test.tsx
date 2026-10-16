@@ -15,16 +15,8 @@ interface TestModel {
   getValue: () => string;
   dispose: () => void;
 }
-interface MonacoDiffEditorOptions {
-  theme?: string;
-}
 
 const sharedModels: TestModel[] = [];
-const mockOriginalEditors: Array<{ updateOptions: (...args: unknown[]) => unknown }> = [];
-const mockModifiedEditors: Array<{
-  getValue: () => string;
-  updateOptions: (...args: unknown[]) => unknown;
-}> = [];
 
 vi.mock('monaco-editor', () => ({
   default: undefined,
@@ -41,8 +33,6 @@ vi.mock('monaco-editor', () => ({
         getValue: () => sharedModels[1]?.getValue?.() ?? '',
         updateOptions: vi.fn(),
       };
-      mockOriginalEditors.push(originalEditor);
-      mockModifiedEditors.push(modifiedEditor);
       mockDiffEditorInstance = {
         setModel: vi.fn(),
         getModel: vi.fn(() => ({
@@ -89,8 +79,6 @@ vi.mock('monaco-editor', () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   sharedModels.length = 0;
-  mockOriginalEditors.length = 0;
-  mockModifiedEditors.length = 0;
 });
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
@@ -215,27 +203,27 @@ describe('DiffViewer', () => {
     );
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
-      expect.stringMatching(/^ov-theme-/),
+      'ov-theme',
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#222222' }),
       }),
     );
     expect(mockCreateDiffEditor).toHaveBeenCalledTimes(1);
   });
-  it('isolates root-specific themes per mounted diff editor through registration updates', () => {
+  it('uses one page-global theme rebuilt from the root that last drives it', () => {
     const firstRegistry = createThemeRegistry();
     const secondRegistry = createThemeRegistry();
-    const owner = { kind: 'plugin', id: 'diff-isolation-test' } as const;
+    const owner = { kind: 'plugin', id: 'diff-global-theme-test' } as const;
     const disposeFirst = firstRegistry.register({
       schemaVersion: 1,
-      id: 'plugin:diff-isolation-test/first',
+      id: 'plugin:diff-global-theme-test/first',
       name: 'First',
       base: 'dark',
       tokens: { 'color.editor.bg': '#111111' },
     }, owner);
     secondRegistry.register({
       schemaVersion: 1,
-      id: 'plugin:diff-isolation-test/second',
+      id: 'plugin:diff-global-theme-test/second',
       name: 'Second',
       base: 'dark',
       tokens: { 'color.editor.bg': '#222222' },
@@ -246,7 +234,7 @@ describe('DiffViewer', () => {
 
     rtlRender(
       <ThemeProvider
-        themeId="plugin:diff-isolation-test/first"
+        themeId="plugin:diff-global-theme-test/first"
         registry={firstRegistry}
         root={firstRoot}
       >
@@ -256,7 +244,7 @@ describe('DiffViewer', () => {
     );
     rtlRender(
       <ThemeProvider
-        themeId="plugin:diff-isolation-test/second"
+        themeId="plugin:diff-global-theme-test/second"
         registry={secondRegistry}
         root={secondRoot}
       >
@@ -265,46 +253,25 @@ describe('DiffViewer', () => {
       { container: secondRoot },
     );
 
-    // Monaco's mocked create boundary records its construction options as unknown.
-    const firstOptions = mockCreateDiffEditor.mock.calls[0]?.[1] as MonacoDiffEditorOptions;
-    const secondOptions = mockCreateDiffEditor.mock.calls[1]?.[1] as MonacoDiffEditorOptions;
-    const firstThemeName = firstOptions.theme;
-    const secondThemeName = secondOptions.theme;
-    expect(firstThemeName).toMatch(/^ov-theme-/);
-    expect(secondThemeName).toMatch(/^ov-theme-/);
-    expect(firstThemeName).not.toBe(secondThemeName);
     expect(mockDefineTheme).toHaveBeenCalledWith(
-      firstThemeName,
+      'ov-theme',
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#111111' }),
       }),
     );
-    expect(mockDefineTheme).toHaveBeenCalledWith(
-      secondThemeName,
+    expect(mockDefineTheme).toHaveBeenLastCalledWith(
+      'ov-theme',
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#222222' }),
       }),
     );
+    expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
 
-    const firstOriginalUpdate = mockOriginalEditors[0]!.updateOptions;
-    const firstModifiedUpdate = mockModifiedEditors[0]!.updateOptions;
-    const secondOriginalUpdate = mockOriginalEditors[1]!.updateOptions;
-    const secondModifiedUpdate = mockModifiedEditors[1]!.updateOptions;
-    if (
-      !vi.isMockFunction(firstOriginalUpdate) ||
-      !vi.isMockFunction(firstModifiedUpdate) ||
-      !vi.isMockFunction(secondOriginalUpdate) ||
-      !vi.isMockFunction(secondModifiedUpdate)
-    ) {
-      throw new Error('Expected mocked diff child editor updateOptions methods');
-    }
-    const secondOriginalUpdateCount = secondOriginalUpdate.mock.calls.length;
-    const secondModifiedUpdateCount = secondModifiedUpdate.mock.calls.length;
     act(() => {
       disposeFirst();
       firstRegistry.register({
         schemaVersion: 1,
-        id: 'plugin:diff-isolation-test/first',
+        id: 'plugin:diff-global-theme-test/first',
         name: 'First reloaded',
         base: 'dark',
         tokens: { 'color.editor.bg': '#333333' },
@@ -312,16 +279,12 @@ describe('DiffViewer', () => {
     });
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
-      firstThemeName,
+      'ov-theme',
       expect.objectContaining({
         colors: expect.objectContaining({ 'editor.background': '#333333' }),
       }),
     );
-    expect(firstOriginalUpdate).toHaveBeenLastCalledWith({ theme: firstThemeName });
-    expect(firstModifiedUpdate).toHaveBeenLastCalledWith({ theme: firstThemeName });
-    expect(secondOriginalUpdate).toHaveBeenCalledTimes(secondOriginalUpdateCount);
-    expect(secondModifiedUpdate).toHaveBeenCalledTimes(secondModifiedUpdateCount);
-    expect(mockSetTheme).not.toHaveBeenCalled();
+    expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
     expect(mockCreateDiffEditor).toHaveBeenCalledTimes(2);
   });
 

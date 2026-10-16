@@ -1,5 +1,6 @@
 import { THEME_TOKEN_METADATA } from './generated/tokenKeys';
 import type { ThemeTokenKey } from './generated/tokenKeys';
+import { isBuiltInThemeId } from './registry/catalog';
 import type { BuiltInThemeId, ThemeDefinition } from './schema';
 
 export type ThemeValidationErrorCode =
@@ -24,18 +25,23 @@ export class ThemeValidationError extends Error {
   }
 }
 
-const BUILT_IN_THEME_IDS: Record<BuiltInThemeId, true> = {
-  void: true,
-  dark: true,
-  light: true,
-  obsidian: true,
-  carbon: true,
-  'solarized-dark': true,
-  'solarized-light': true,
-  'high-contrast-dark': true,
-  'high-contrast-light': true,
-};
 const ID_PATTERN = /^[A-Za-z0-9._~%/:\-]+$/;
+const SAFE_NAMED_COLOR = /^[a-z]+$/i;
+const SAFE_COLOR_COMPONENT =
+  /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?(?:%|deg|grad|rad|turn)?$/i;
+const SAFE_ALPHA_COMPONENT = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?%?$/i;
+const FALLBACK_COLOR_FUNCTION_ARITY: Readonly<Record<string, number | 'profile'>> = Object.freeze({
+  rgb: 3,
+  rgba: 3,
+  hsl: 3,
+  hsla: 3,
+  hwb: 3,
+  lab: 3,
+  lch: 3,
+  oklab: 3,
+  oklch: 3,
+  color: 'profile',
+});
 const FONT_STYLES = new Set([
   'normal',
   'italic',
@@ -49,8 +55,51 @@ const FONT_STYLES = new Set([
 
 type SupportsColor = (value: string) => boolean;
 
-const STRICT_FALLBACK_COLOR =
-  /^(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|transparent|currentcolor)$/i;
+const STRICT_FALLBACK_HEX = /^(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8})$/i;
+
+function structurallySupportsColor(value: string): boolean {
+  const color = value.trim();
+  if (STRICT_FALLBACK_HEX.test(color) || SAFE_NAMED_COLOR.test(color)) return true;
+
+  const call = /^([a-z]+)\(([^()]*)\)$/i.exec(color);
+  if (!call) return false;
+  const name = call[1]!.toLowerCase();
+  const arity = FALLBACK_COLOR_FUNCTION_ARITY[name];
+  if (arity === undefined) return false;
+
+  const body = call[2]!.trim();
+  if (body.length === 0 || !/^[a-z0-9\s.,%+\-/]+$/i.test(body)) return false;
+  const slashParts = body.split('/');
+  if (slashParts.length > 2 || slashParts.some((part) => part.trim().length === 0)) return false;
+  const alpha = slashParts[1]?.trim();
+  if (alpha !== undefined && !SAFE_ALPHA_COMPONENT.test(alpha)) return false;
+
+  const main = slashParts[0]!.trim();
+  const commaSyntax = main.includes(',');
+  const components = commaSyntax ? main.split(',').map((part) => part.trim()) : main.split(/\s+/);
+  if (components.some((part) => part.length === 0)) return false;
+
+  if (arity === 'profile') {
+    if (commaSyntax || components.length < 2 || !/^(?:--)?[a-z][a-z0-9-]*$/i.test(components[0]!)) {
+      return false;
+    }
+    return components.slice(1).every((part) => SAFE_COLOR_COMPONENT.test(part));
+  }
+
+  if (commaSyntax) {
+    if (alpha !== undefined) return false;
+    const expected = name === 'rgba' || name === 'hsla' ? arity + 1 : arity;
+    if (components.length !== expected) return false;
+    const mainComponents = components.slice(0, arity);
+    const legacyAlpha = components[arity];
+    return (
+      mainComponents.every((part) => SAFE_COLOR_COMPONENT.test(part)) &&
+      (legacyAlpha === undefined || SAFE_ALPHA_COMPONENT.test(legacyAlpha))
+    );
+  }
+
+  return components.length === arity && components.every((part) => SAFE_COLOR_COMPONENT.test(part));
+}
 
 function defaultSupportsColor(value: string): boolean {
   if (typeof CSS !== 'undefined' && typeof CSS.supports === 'function') {
@@ -61,7 +110,7 @@ function defaultSupportsColor(value: string): boolean {
     probe.style.color = value;
     return probe.style.color !== '';
   }
-  return STRICT_FALLBACK_COLOR.test(value);
+  return structurallySupportsColor(value);
 }
 
 function fail(code: ThemeValidationErrorCode, path: string, message: string): never {
@@ -104,10 +153,7 @@ export function validateThemeDefinition(
   if (typeof candidate.name !== 'string' || candidate.name.length === 0 || candidate.name.length > 80) {
     fail('invalid_metadata', 'name', 'Theme name must contain 1 to 80 characters');
   }
-  if (
-    typeof candidate.base !== 'string' ||
-    !Object.prototype.hasOwnProperty.call(BUILT_IN_THEME_IDS, candidate.base)
-  ) {
+  if (typeof candidate.base !== 'string' || !isBuiltInThemeId(candidate.base)) {
     fail('unknown_base', 'base', 'Theme base is not a built-in theme');
   }
 

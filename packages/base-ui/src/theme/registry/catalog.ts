@@ -45,6 +45,13 @@ export const BUILT_IN_THEMES: readonly Readonly<ThemeSummary>[] = Object.freeze(
   summary('high-contrast-dark', 'High Contrast Dark', 'dark', 'High-contrast dark theme'),
   summary('high-contrast-light', 'High Contrast Light', 'light', 'High-contrast light theme'),
 ]);
+export const BUILT_IN_THEME_BY_ID: Readonly<Record<BuiltInThemeId, Readonly<ThemeSummary>>> =
+  Object.freeze(
+    Object.fromEntries(BUILT_IN_THEMES.map((theme) => [theme.id, theme])) as Record<
+      BuiltInThemeId,
+      Readonly<ThemeSummary>
+    >,
+  );
 
 export const BUILT_IN_THEME_IDS: ReadonlySet<BuiltInThemeId> = Object.freeze(
   new ImmutableSet(BUILT_IN_THEMES.map(({ id }) => id as BuiltInThemeId)),

@@ -1,4 +1,4 @@
-import { render as rtlRender, screen, act, type RenderResult } from '@testing-library/react';
+import { render as rtlRender, screen, act } from '@testing-library/react';
 import { createRef, type ReactElement, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
@@ -1065,7 +1065,6 @@ describe('Terminal', () => {
       tokens: { 'color.terminal.bg': '#222222' },
     }, owner);
 
-    let mounted: RenderResult;
     mockTerminal.open.mockImplementationOnce(() => {
       flushSync(() => {
         mounted.rerender(
@@ -1075,7 +1074,7 @@ describe('Terminal', () => {
         );
       });
     });
-    mounted = rtlRender(
+    const mounted = rtlRender(
       <ThemeProvider themeId="plugin:terminal-init-test/first" registry={registry}>
         <Terminal />
       </ThemeProvider>,

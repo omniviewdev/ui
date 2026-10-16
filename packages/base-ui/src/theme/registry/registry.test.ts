@@ -151,6 +151,22 @@ describe('theme registry', () => {
     expect(Object.isFrozen(registered?.definition)).toBe(true);
   });
 
+  it('derives Solarized Light custom-theme appearance from the built-in catalog', () => {
+    const registry = createThemeRegistry();
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'solarized-child',
+        name: 'Solarized Child',
+        base: 'solarized-light',
+        tokens: {},
+      },
+      user,
+    );
+
+    expect(registry.get('solarized-child')?.appearance).toBe('light');
+  });
+
   it('compares owner kind and id', () => {
     const registry = createThemeRegistry();
     const first: ThemeOwner = { kind: 'plugin', id: 'shared' };

@@ -121,6 +121,21 @@ describe('built-in theme catalog', () => {
     }
   });
 
+  it('keeps strong borders more distinct from adjacent surfaces than default borders', () => {
+    for (const id of ['dark', 'light', 'obsidian', 'carbon', 'void']) {
+      document.documentElement.dataset.ovTheme = id;
+      const computedStyle = getComputedStyle(document.documentElement);
+      const value = (token: string) => computedStyle.getPropertyValue(token).trim();
+
+      for (const surface of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
+        expect(
+          contrast(value('--ov-color-border-strong'), value(surface)),
+          `${id} strong border against ${surface}`,
+        ).toBeGreaterThan(contrast(value('--ov-color-border-default'), value(surface)));
+      }
+    }
+  });
+
   it('keeps high-contrast primary text pairs at enhanced contrast', () => {
     for (const id of ['high-contrast-dark', 'high-contrast-light']) {
       document.documentElement.dataset.ovTheme = id;

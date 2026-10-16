@@ -2,11 +2,14 @@
   --_ov-track-width: var(--ov-size-switch-track-width-md);
   --_ov-track-height: var(--ov-size-switch-track-height-md);
   --_ov-thumb-size: var(--ov-size-switch-thumb-size-md);
-  --_ov-track-padding: calc((var(--_ov-track-height) - var(--_ov-thumb-size)) / 2);
+  --_ov-track-border-width: 1px;
+  --_ov-track-padding: calc(
+    (var(--_ov-track-height) - var(--_ov-thumb-size)) / 2 - var(--_ov-track-border-width)
+  );
   --_ov-track-bg-off: color-mix(
     in srgb,
-    var(--ov-color-fg-muted) 74%,
-    var(--ov-color-bg-surface-raised) 26%
+    var(--ov-color-fg-muted) 80%,
+    var(--ov-color-bg-surface-raised) 20%
   );
   --_ov-track-border-off: var(--ov-color-border-control);
   --_ov-track-bg-off-hover: color-mix(in srgb, var(--_ov-track-bg-off) 85%, white 15%);
@@ -22,7 +25,7 @@
   inline-size: var(--_ov-track-width);
   block-size: var(--_ov-track-height);
   border-radius: var(--ov-radius-pill, 999px);
-  border: 1px solid var(--_ov-track-border-off);
+  border: var(--_ov-track-border-width) solid var(--_ov-track-border-off);
   background: var(--_ov-track-bg-off);
   padding: var(--_ov-track-padding);
   cursor: pointer;
@@ -60,49 +63,41 @@
 .Root[data-ov-color='neutral'] {
   --_ov-accent-bg: var(--ov-color-brand-500);
   --_ov-accent-border: var(--ov-color-brand-400);
-  --_ov-accent-soft-bg: var(--ov-color-state-selected);
 }
 
 .Root[data-ov-color='brand'] {
   --_ov-accent-bg: var(--ov-color-brand-500);
   --_ov-accent-border: var(--ov-color-brand-400);
-  --_ov-accent-soft-bg: var(--ov-color-accent-soft);
 }
 
 .Root[data-ov-color='success'] {
   --_ov-accent-bg: var(--ov-color-success);
   --_ov-accent-border: var(--ov-color-success);
-  --_ov-accent-soft-bg: var(--ov-color-success-soft);
 }
 
 .Root[data-ov-color='warning'] {
   --_ov-accent-bg: var(--ov-color-warning);
   --_ov-accent-border: var(--ov-color-warning);
-  --_ov-accent-soft-bg: var(--ov-color-warning-soft);
 }
 
 .Root[data-ov-color='danger'] {
   --_ov-accent-bg: var(--ov-color-danger);
   --_ov-accent-border: var(--ov-color-danger);
-  --_ov-accent-soft-bg: var(--ov-color-danger-soft);
 }
 
 .Root[data-ov-color='info'] {
   --_ov-accent-bg: var(--ov-color-info);
   --_ov-accent-border: var(--ov-color-info);
-  --_ov-accent-soft-bg: var(--ov-color-info-soft);
 }
 
 .Root[data-ov-color='discovery'] {
   --_ov-accent-bg: var(--ov-color-discovery);
   --_ov-accent-border: var(--ov-color-discovery);
-  --_ov-accent-soft-bg: var(--ov-color-discovery-soft);
 }
 
 .Root[data-ov-color='secondary'] {
   --_ov-accent-bg: var(--ov-color-secondary);
   --_ov-accent-border: var(--ov-color-secondary);
-  --_ov-accent-soft-bg: var(--ov-color-secondary-soft);
 }
 
 .Root[data-ov-variant='solid'] {
@@ -120,17 +115,30 @@
 .Root[data-ov-variant='outline'] {
   --_ov-track-bg-off: transparent;
   --_ov-track-border-off: var(--ov-color-border-control);
-  --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-soft-bg) 72%, transparent 28%);
+  --_ov-track-bg-on: transparent;
   --_ov-track-border-on: var(--_ov-accent-border);
-  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 82%, white 18%);
 }
 
 .Root[data-ov-variant='ghost'] {
   --_ov-track-bg-off: transparent;
   --_ov-track-border-off: var(--ov-color-border-muted);
-  --_ov-track-bg-on: color-mix(in srgb, var(--_ov-accent-soft-bg) 60%, transparent 40%);
+  --_ov-track-bg-on: transparent;
   --_ov-track-border-on: transparent;
-  --_ov-track-bg-on-hover: color-mix(in srgb, var(--_ov-track-bg-on) 84%, white 16%);
+}
+
+/* Transparent tracks need a foreground thumb, not the surrounding surface color. */
+.Root:is([data-ov-variant='outline'], [data-ov-variant='ghost']) {
+  --_ov-thumb-bg: var(--ov-color-fg-muted);
+  --_ov-track-bg-off-hover: color-mix(
+    in srgb,
+    var(--_ov-track-bg-off) 86%,
+    var(--ov-color-state-hover) 14%
+  );
+  --_ov-track-bg-on-hover: var(--_ov-track-bg-off-hover);
+}
+
+.Root:is([data-ov-variant='outline'], [data-ov-variant='ghost'])[data-checked] {
+  --_ov-thumb-bg: var(--_ov-accent-bg);
 }
 
 .Root:not([data-disabled], [disabled]):hover {
@@ -159,7 +167,9 @@
 .Thumb {
   inline-size: var(--_ov-thumb-size);
   block-size: var(--_ov-thumb-size);
+  flex-shrink: 0;
   border-radius: var(--ov-radius-pill, 999px);
+  border: 1px solid var(--ov-color-fg-default);
   background: var(--_ov-thumb-bg);
   /* elevation shadow — no semantic token maps to raw alpha-black shadow values */
   box-shadow:
@@ -174,7 +184,10 @@
 
 .Root[data-checked] .Thumb {
   transform: translateX(
-    calc(var(--_ov-track-width) - var(--_ov-thumb-size) - (var(--_ov-track-padding) * 2))
+    calc(
+      var(--_ov-track-width) - var(--_ov-thumb-size) -
+        ((var(--_ov-track-padding) + var(--_ov-track-border-width)) * 2)
+    )
   );
 }
 

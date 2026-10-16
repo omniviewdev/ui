@@ -146,11 +146,25 @@ intentionally grow when tags wrap. Narrow MultiSelect chip rows scroll
 horizontally, keeping removal controls keyboard-reachable without overlapping
 the clear button, trigger, or neighboring fields.
 
-Neutral resting field surfaces agree by variant: soft mixes the raised neutral
-surface with neutral hover, solid mixes the surface with the control boundary,
-and outline/ghost stay transparent. Selection-state blue remains reserved for
-actual selection; semantic colors retain their intentional accents. TagInput
-uses the neutral soft surface without adding a variant prop.
+Resting field surfaces agree for the same color and variant: soft mixes the
+raised surface with the accent's soft color, solid mixes the surface with the
+accent, and outline/ghost stay transparent. Neutral fields use neutral hover
+and control-boundary colors rather than selection-state blue. Popup selections
+retain their semantic accents. TagInput uses the neutral soft surface without
+adding a variant prop.
+
+Checkbox and radio marks, switch tracks, chips, and badge markers intentionally
+use compact scales rather than full field heights. Their visual tiers must still
+increase monotonically at each density. RadioGroup styling applies to direct
+Radio, Radio.Item, compound Radio.Root, and RadioGroup.Item compositions; explicit
+item props take precedence.
+
+Prefer default filled controls in ordinary forms instead of forcing outline
+on every component. Empty checkbox/radio marks retain a thin identification
+boundary because fill alone disappears against raised surfaces. Switch thumbs
+retain an identifiable edge and stay inside their tracks at both endpoints,
+including transparent variants. Do not weaken global control or focus tokens
+to quiet decorative enclosures.
 
 For `Popover.Trigger` and `Tooltip.Trigger` composition, explicit trigger
 size/color/variant props override valid library style values explicitly supplied

@@ -77,39 +77,47 @@
 }
 
 .Trigger[data-ov-color='neutral'] {
+  --_ov-accent: var(--ov-color-border-control);
   --_ov-accent-soft: var(--ov-color-state-hover);
 }
 
 .Trigger[data-ov-color='brand'] {
+  --_ov-accent: var(--ov-color-brand-400);
   --_ov-accent-soft: var(--ov-color-accent-soft);
 }
 
 .Trigger[data-ov-color='success'] {
+  --_ov-accent: var(--ov-color-success);
   --_ov-accent-soft: var(--ov-color-success-soft);
 }
 
 .Trigger[data-ov-color='warning'] {
+  --_ov-accent: var(--ov-color-warning);
   --_ov-accent-soft: var(--ov-color-warning-soft);
 }
 
 .Trigger[data-ov-color='danger'] {
+  --_ov-accent: var(--ov-color-danger);
   --_ov-accent-soft: var(--ov-color-danger-soft);
 }
 
 .Trigger[data-ov-color='info'] {
+  --_ov-accent: var(--ov-color-info);
   --_ov-accent-soft: var(--ov-color-info-soft);
 }
 
 .Trigger[data-ov-color='discovery'] {
+  --_ov-accent: var(--ov-color-discovery);
   --_ov-accent-soft: var(--ov-color-discovery-soft);
 }
 
 .Trigger[data-ov-color='secondary'] {
+  --_ov-accent: var(--ov-color-secondary);
   --_ov-accent-soft: var(--ov-color-secondary-soft);
 }
 
 .Trigger[data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--_ov-accent-soft) 14%);
+  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--_ov-accent) 14%);
 }
 
 .Trigger[data-ov-variant='outline'] {
@@ -122,16 +130,8 @@
 }
 
 .Trigger[data-ov-variant='soft'] {
-  --_ov-bg: var(--_ov-accent-soft);
-  --_ov-border: transparent;
-}
-
-.Trigger[data-ov-color='neutral'][data-ov-variant='solid'] {
-  --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface) 86%, var(--ov-color-border-control) 14%);
-}
-
-.Trigger[data-ov-color='neutral'][data-ov-variant='soft'] {
   --_ov-bg: color-mix(in srgb, var(--ov-color-bg-surface-raised) 88%, var(--_ov-accent-soft) 12%);
+  --_ov-border: transparent;
 }
 
 .Trigger[data-disabled] {

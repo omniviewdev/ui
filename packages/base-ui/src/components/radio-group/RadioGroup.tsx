@@ -1,5 +1,5 @@
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
-import { createContext, useContext, useMemo, type ComponentPropsWithoutRef } from 'react';
+import { useMemo, type ComponentPropsWithoutRef } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import {
@@ -8,12 +8,8 @@ import {
   DEFAULT_VARIANT,
   type StyledComponentProps,
 } from '../../system/types';
-import { Radio, type RadioItemProps } from '../radio';
+import { Radio, RadioGroupContext, type RadioItemProps } from '../radio/Radio';
 import styles from './RadioGroup.module.css';
-
-interface RadioGroupContextValue extends StyledComponentProps {}
-
-const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
 export interface RadioGroupProps
   extends
@@ -48,18 +44,8 @@ export function RadioGroupRoot({
   );
 }
 
-export function RadioGroupItem({ className, variant, color, size, ...props }: RadioGroupItemProps) {
-  const group = useContext(RadioGroupContext);
-
-  return (
-    <Radio.Item
-      className={withBaseClassName(styles.Item, className)}
-      variant={variant ?? group?.variant ?? DEFAULT_VARIANT}
-      color={color ?? group?.color ?? DEFAULT_COLOR}
-      size={size ?? group?.size ?? DEFAULT_SIZE}
-      {...props}
-    />
-  );
+export function RadioGroupItem({ className, ...props }: RadioGroupItemProps) {
+  return <Radio.Item className={withBaseClassName(styles.Item, className)} {...props} />;
 }
 
 RadioGroupRoot.displayName = 'RadioGroup';

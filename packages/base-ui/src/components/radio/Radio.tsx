@@ -1,6 +1,8 @@
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import {
+  createContext,
   forwardRef,
+  useContext,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type HTMLAttributes,
@@ -10,6 +12,9 @@ import { cn, withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import styles from './Radio.module.css';
+
+/** Internal style inheritance shared by RadioGroup and every Radio root. */
+export const RadioGroupContext = createContext<StyledComponentProps | null>(null);
 
 export interface RadioRootProps
   extends
@@ -36,11 +41,16 @@ export interface RadioItemProps extends Omit<RadioRootProps, 'children'> {
 
 const RadioRoot = forwardRef<ElementRef<typeof BaseRadio.Root<string>>, RadioRootProps>(
   function RadioRoot({ className, variant, color, size, ...props }, ref) {
+    const group = useContext(RadioGroupContext);
     return (
       <BaseRadio.Root
         ref={ref}
         className={withBaseClassName<BaseRadio.Root.State>(styles.Root, className)}
-        {...styleDataAttributes({ variant, color, size })}
+        {...styleDataAttributes({
+          variant: variant ?? group?.variant,
+          color: color ?? group?.color,
+          size: size ?? group?.size,
+        })}
         {...props}
       />
     );

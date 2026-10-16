@@ -18,7 +18,19 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     disabled: { control: 'boolean' },
   },
@@ -65,6 +77,25 @@ export const CustomIndicators: Story = {
       <RadioGroup.Item value="fast" indicator={<LuRocket aria-hidden />}>
         Fast
       </RadioGroup.Item>
+    </RadioGroup>
+  ),
+};
+
+export const CompoundComposition: Story = {
+  render: () => (
+    <RadioGroup defaultValue="inherited" size="lg" color="success" variant="outline">
+      <Radio.Root value="inherited" aria-label="Inherited group styling">
+        <Radio.Control>
+          <Radio.Indicator />
+        </Radio.Control>
+        <Radio.Label>Inherited group styling</Radio.Label>
+      </Radio.Root>
+      <Radio.Root value="override" size="sm" color="brand" aria-label="Explicit item styling">
+        <Radio.Control>
+          <Radio.Indicator />
+        </Radio.Control>
+        <Radio.Label>Explicit item styling</Radio.Label>
+      </Radio.Root>
     </RadioGroup>
   ),
 };

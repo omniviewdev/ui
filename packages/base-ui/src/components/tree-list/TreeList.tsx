@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useSyncExternalStore,
@@ -31,9 +32,11 @@ import type {
   TreeListItemProps,
   TreeListRootProps,
   TreeNodeMeta,
+  TreeOrder,
 } from './types';
 import { useTreeState, type TreeStateReturn } from './hooks/useTreeState';
 import { useTreeOrder } from './hooks/useTreeOrder';
+import { useTreeFlattener } from './hooks/useTreeFlattener';
 import { useTreeItem as useTreeItemHook } from './hooks/useTreeItem';
 import { useTreeFocus } from './hooks/useTreeFocus';
 import { useListVirtualizer } from '../list/hooks/useListVirtualizer';
@@ -75,7 +78,7 @@ function useRenderNode(): RenderNodeFn {
 // ---------------------------------------------------------------------------
 
 type TreeListRootContentProps<TItem> = TreeListRootProps<TItem> & {
-  treeState: TreeStateReturn;
+  treeState: TreeStateReturn<TItem>;
   forwardedRef: React.ForwardedRef<HTMLDivElement>;
 };
 
@@ -134,11 +137,13 @@ function TreeListRootContent<TItem>(
   const { config, store, actions } = treeState;
   // These props are intentionally removed from domProps above.
   void loading;
+  void error;
   void items;
   void itemKey;
   void getChildren;
   void isBranchProp;
   void getTextValue;
+  void renderItem;
   void loadChildren;
   void onLoadError;
   void selectionMode;
@@ -172,23 +177,6 @@ function TreeListRootContent<TItem>(
 
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
-
-  // Build an O(1) lookup map from flat nodes so renderNode avoids O(n) scans
-  const flatNodesMapRef = useRef<Map<Key, FlatNode>>(new Map());
-  const currentFlatNodes = store.getFlatNodes();
-  // Rebuild map each render from the latest store state
-  const map = new Map<Key, FlatNode>();
-  for (const node of currentFlatNodes) map.set(node.key, node);
-  flatNodesMapRef.current = map;
-
-  const renderNode: RenderNodeFn = useCallback(
-    (key: Key, node: TreeNodeMeta) => {
-      const flat = flatNodesMapRef.current.get(key);
-      if (!flat) return null;
-      return renderItem(flat.item as TItem, node);
-    },
-    [renderItem],
-  );
 
   const { handleKeyDown } = useTreeFocus({ config: fullConfig, actions, store });
 
@@ -260,80 +248,141 @@ function TreeListRootContent<TItem>(
   );
 
   return (
-    <RenderNodeContext.Provider value={renderNode}>
-      <TreeConfigContext.Provider value={fullConfig}>
-        <TreeStoreContext.Provider value={store}>
-          <TreeActionsContext.Provider value={actions}>
-            <div
-              ref={forwardedRef}
-              role="tree"
-              tabIndex={0}
-              aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
-              aria-activedescendant={activeDescendantId}
-              className={cn(styles.Root, className)}
-              data-ov-density={fullConfig.density}
-              data-ov-list-id={listId}
-              onKeyDown={combinedKeyDown}
-              {...styleDataAttributes({ variant, color, size })}
-              {...domProps}
-            >
-              {error ? <div className={styles.Empty}>{error}</div> : children}
-            </div>
-          </TreeActionsContext.Provider>
-        </TreeStoreContext.Provider>
-      </TreeConfigContext.Provider>
-    </RenderNodeContext.Provider>
+    <TreeConfigContext.Provider value={fullConfig}>
+      <TreeStoreContext.Provider value={store}>
+        <TreeActionsContext.Provider value={actions}>
+          <div
+            ref={forwardedRef}
+            role="tree"
+            tabIndex={0}
+            aria-multiselectable={fullConfig.selectionMode === 'multiple' ? true : undefined}
+            aria-activedescendant={activeDescendantId}
+            className={cn(styles.Root, className)}
+            data-ov-density={fullConfig.density}
+            data-ov-list-id={listId}
+            onKeyDown={combinedKeyDown}
+            {...styleDataAttributes({ variant, color, size })}
+            {...domProps}
+          >
+            {children}
+          </div>
+        </TreeActionsContext.Provider>
+      </TreeStoreContext.Provider>
+    </TreeConfigContext.Provider>
   );
 }
 
-function StaticTreeListRootImpl<TItem>(
-  props: TreeListRootProps<TItem>,
-  ref: React.ForwardedRef<HTMLDivElement>,
-) {
-  const treeState = useTreeState(props);
-  return <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
-}
+type TreeListNodesProps<TItem> = TreeListRootProps<TItem> & {
+  treeState: TreeStateReturn<TItem>;
+  currentOrder?: TreeOrder;
+  proposeMove?: React.ComponentProps<typeof TreeListReorder>['proposeMove'];
+};
 
-function OrderedTreeListRootImpl<TItem>(
-  props: TreeListRootProps<TItem>,
-  ref: React.ForwardedRef<HTMLDivElement>,
-) {
-  const { currentOrder, proposeMove } = useTreeOrder(props);
-  const treeState = useTreeState(props, currentOrder);
-  const content = <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref} />;
-
-  if (props.reorderable) {
-    return (
-      <TreeListReorder store={treeState.store} proposeMove={proposeMove}>
-        {content}
-      </TreeListReorder>
-    );
+function TreeListNodes<TItem>({
+  treeState,
+  items,
+  itemKey,
+  getChildren,
+  getTextValue,
+  renderItem,
+  children,
+  error,
+  currentOrder,
+  proposeMove,
+}: TreeListNodesProps<TItem>) {
+  const { store, isBranch, expandedKeys, filterText, filterFn } = treeState;
+  const flatNodes = useTreeFlattener(
+    items,
+    itemKey,
+    getChildren,
+    isBranch,
+    expandedKeys,
+    filterText,
+    filterFn,
+    currentOrder,
+  );
+  const previousNodes = useRef<typeof flatNodes | null>(null);
+  const needsNotify = useRef(false);
+  if (previousNodes.current !== flatNodes) {
+    previousNodes.current = flatNodes;
+    store.setFlatNodes(flatNodes, true);
+    needsNotify.current = true;
+    if (getTextValue) {
+      for (const node of flatNodes) {
+        const text = getTextValue(node.item as TItem);
+        if (text) store.registerTextValue(node.key, text);
+      }
+    }
   }
-  return content;
+  useLayoutEffect(() => {
+    if (needsNotify.current) {
+      needsNotify.current = false;
+      store.emit();
+    }
+  });
+
+  const nodesByKey = useMemo(() => {
+    const map = new Map<Key, FlatNode>();
+    for (const node of flatNodes) map.set(node.key, node);
+    return map;
+  }, [flatNodes]);
+  const renderNode: RenderNodeFn = useCallback(
+    (key, node) => {
+      const flat = nodesByKey.get(key);
+      return flat ? renderItem(flat.item as TItem, node) : null;
+    },
+    [nodesByKey, renderItem],
+  );
+  // Keep the ordering owner mounted while hiding failed content and DnD.
+  if (error) return <div className={styles.Empty}>{error}</div>;
+
+  const content = (
+    <RenderNodeContext.Provider value={renderNode}>{children}</RenderNodeContext.Provider>
+  );
+  return proposeMove ? (
+    <TreeListReorder
+      store={store}
+      flatNodes={flatNodes}
+      proposeMove={proposeMove}
+    >
+      {content}
+    </TreeListReorder>
+  ) : content;
 }
 
-const StaticTreeListRoot = forwardRef(StaticTreeListRootImpl) as <TItem>(
-  props: TreeListRootProps<TItem> & { ref?: Ref<HTMLDivElement> },
-) => ReactNode;
-
-const OrderedTreeListRoot = forwardRef(OrderedTreeListRootImpl) as <TItem>(
-  props: TreeListRootProps<TItem> & { ref?: Ref<HTMLDivElement> },
-) => ReactNode;
+function OrderedTreeListNodes<TItem>(props: TreeListNodesProps<TItem>) {
+  const { currentOrder, proposeMove } = useTreeOrder(props);
+  return (
+    <TreeListNodes
+      {...props}
+      currentOrder={currentOrder}
+      proposeMove={props.reorderable ? proposeMove : undefined}
+    />
+  );
+}
 
 function TreeListRootImpl<TItem>(
   props: TreeListRootProps<TItem>,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
+  // State and the focus-owning tree DOM stay mounted when edit mode changes.
+  // Only the optional node-ordering and DnD subtree is replaced.
+  const treeState = useTreeState(props);
   const isOrdered =
     props.reorderable === true ||
     props.order !== undefined ||
     props.defaultOrder !== undefined ||
     props.onOrderChange !== undefined;
 
-  if (isOrdered) {
-    return <OrderedTreeListRoot {...props} ref={ref} />;
-  }
-  return <StaticTreeListRoot {...props} ref={ref} />;
+  return (
+    <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref}>
+      {isOrdered ? (
+        <OrderedTreeListNodes {...props} treeState={treeState} />
+      ) : (
+        <TreeListNodes {...props} treeState={treeState} />
+      )}
+    </TreeListRootContent>
+  );
 }
 
 // Generic forwardRef via type assertion — the standard React pattern
@@ -580,7 +629,7 @@ const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function Tree
 
 const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
   function TreeListReorderableItem(props, ref) {
-    const { itemKey } = props;
+    const { itemKey, onKeyDown } = props;
     const behavior = useTreeListItemBehavior(props);
     const reorderContext = useContext(TreeReorderContext);
     const sortableDisabled = reorderContext === null || behavior.isDisabled;
@@ -592,7 +641,12 @@ const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
       transform,
       transition,
       isDragging,
-    } = useSortable({ id: itemKey, disabled: sortableDisabled });
+    } = useSortable({
+      id: itemKey,
+      data: { disabled: behavior.isDisabled },
+      // Keep disabled rows measurable so collision resolves to the rejected target.
+      disabled: { draggable: sortableDisabled, droppable: reorderContext === null },
+    });
     const mergedRef = useCallback(
       (node: HTMLDivElement | null) => {
         setNodeRef(node);
@@ -627,6 +681,17 @@ const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
         isDragging,
       ],
     );
+    const handleRowKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLDivElement>) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest('[data-ov-tree-drag-handle]')
+        ) return;
+        // Do not stop propagation: the keyboard sensor listens on document.
+        onKeyDown?.(event);
+      },
+      [onKeyDown],
+    );
 
     return (
       <TreeItemActivatorContext.Provider value={activatorContext}>
@@ -637,6 +702,7 @@ const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
           reorderable
           isDragging={isDragging}
           {...props}
+          onKeyDown={handleRowKeyDown}
         />
       </TreeItemActivatorContext.Provider>
     );

@@ -859,6 +859,68 @@ describe('TreeList', () => {
       });
     });
 
+    it('preserves uncontrolled reorder state while showing and recovering from an error', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const { rerender } = renderWithTheme(
+        <TestTree
+          reorderable
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      const tree = screen.getByRole('tree');
+
+      rerender(
+        <TestTree
+          reorderable
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+          error="Unable to refresh files"
+        />,
+      );
+      expect(screen.getByText('Unable to refresh files')).toBeInTheDocument();
+      expect(screen.queryByRole('treeitem')).not.toBeInTheDocument();
+      expect(screen.getByRole('tree')).toBe(tree);
+
+      rerender(
+        <TestTree
+          reorderable
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledOnce();
+
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder README.md' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(2);
+      expect(onOrderChange.mock.calls[1]?.[1]).toEqual({
+        activeKey: '/README.md',
+        overKey: '/src',
+        parentKey: null,
+        fromIndex: 0,
+        toIndex: 1,
+      });
+    });
+
     it('emits a controlled reorder without changing rendering until rerender', async () => {
       supportKeyboardDraggingInJSDOM();
       const user = userEvent.setup();
@@ -896,6 +958,162 @@ describe('TreeList', () => {
         '⋮⋮README.md',
         '⋮⋮src',
       ]);
+    });
+
+    it.each(['root', 'item'] as const)(
+      'keeps a %s-disabled sibling measurable as a rejected reorder target',
+      async (disabledAt) => {
+        supportKeyboardDraggingInJSDOM();
+        const user = userEvent.setup();
+        const onOrderChange = vi.fn();
+        const siblingData: FileItem[] = [
+          { path: '/a', name: 'a', type: 'file' },
+          { path: '/b', name: 'b', type: 'file' },
+          { path: '/c', name: 'c', type: 'file' },
+        ];
+        renderWithTheme(
+          <TestTree
+            items={siblingData}
+            reorderable
+            disabledKeys={disabledAt === 'root' ? ['/b'] : undefined}
+            renderItem={(item, node) => (
+              <TreeList.ReorderableItem
+                itemKey={node.key}
+                disabled={disabledAt === 'item' && node.key === '/b'}
+              >
+                <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+                  ⋮⋮
+                </TreeList.ItemDragHandle>
+                <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+              </TreeList.ReorderableItem>
+            )}
+            onOrderChange={onOrderChange}
+          />,
+        );
+        giveTreeRowsVerticalGeometry();
+
+        expect(screen.getByRole('button', { name: 'Reorder b' })).toBeDisabled();
+        screen.getByRole('button', { name: 'Reorder a' }).focus();
+        await user.keyboard('[Space]');
+        await user.keyboard('[ArrowDown]');
+        expect(document.body).toHaveTextContent(
+          'Draggable item /a was moved over droppable area /b.',
+        );
+        await user.keyboard('[Space]');
+
+        expect(onOrderChange).not.toHaveBeenCalled();
+        expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+          '⋮⋮a',
+          '⋮⋮b',
+          '⋮⋮c',
+        ]);
+      },
+    );
+
+    it.each([false, true])(
+      'preserves uncontrolled state and focus on edit toggle with order props: %s',
+      async (hasOrder) => {
+        const user = userEvent.setup();
+        const defaultOrder: TreeOrder | undefined = hasOrder ? new Map() : undefined;
+        const renderEditingItem = (item: FileItem, node: TreeNodeMeta) => (
+          <TreeList.ReorderableItem itemKey={node.key}>
+            <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+              ⋮⋮
+            </TreeList.ItemDragHandle>
+            <TreeList.ItemToggle itemKey={node.key} />
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.ReorderableItem>
+        );
+        const { rerender } = renderWithTheme(<TestTree defaultOrder={defaultOrder} />);
+
+        await user.click(screen.getByRole('button', { name: 'Expand' }));
+        await user.click(screen.getByText('index.ts'));
+        const tree = screen.getByRole('tree');
+        tree.focus();
+
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(tree).toHaveFocus();
+
+        rerender(
+          <TestTree
+            reorderable
+            defaultOrder={defaultOrder}
+            renderItem={renderEditingItem}
+          />,
+        );
+
+        expect(screen.getByRole('tree')).toBe(tree);
+        expect(tree).toHaveFocus();
+        expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-expanded',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'data-ov-active',
+          'true',
+        );
+
+        rerender(<TestTree defaultOrder={defaultOrder} />);
+        expect(screen.getByRole('tree')).toBe(tree);
+        expect(tree).toHaveFocus();
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-expanded',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'data-ov-active',
+          'true',
+        );
+      },
+    );
+
+    it('keeps handle drag keys out of the public row key handler', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const onRowKeyDown = vi.fn();
+      const renderItemWithRowKeyHandler = (item: FileItem, node: TreeNodeMeta) => (
+        <TreeList.ReorderableItem
+          itemKey={node.key}
+          textValue={item.name}
+          onKeyDown={onRowKeyDown}
+        >
+          <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+            ⋮⋮
+          </TreeList.ItemDragHandle>
+          <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+        </TreeList.ReorderableItem>
+      );
+      renderWithTheme(
+        <TestTree
+          reorderable
+          renderItem={renderItemWithRowKeyHandler}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      giveTreeRowsVerticalGeometry();
+
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Enter][ArrowDown][Space]');
+
+      expect(onRowKeyDown).not.toHaveBeenCalled();
+      expect(onOrderChange).toHaveBeenCalledOnce();
+
+      fireEvent.keyDown(screen.getByText('src').closest('[role="treeitem"]')!, {
+        key: 'Enter',
+      });
+      expect(onRowKeyDown).toHaveBeenCalledOnce();
     });
 
     it('rejects cross-parent, disabled, self, invalid, and cancelled reorder drops', () => {

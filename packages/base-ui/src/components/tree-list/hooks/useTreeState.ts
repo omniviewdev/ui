@@ -5,7 +5,6 @@ import type {
   TreeActionsContextValue,
   TreeStore,
   TreeListRootProps,
-  TreeOrder,
 } from '../types';
 import {
   DEFAULT_SELECTION_MODE,
@@ -15,23 +14,25 @@ import {
 } from '../constants';
 import { useControllableState } from '../../list/hooks/useControllableState';
 import { useTreeStore } from './useTreeStore';
-import { useTreeFlattener } from './useTreeFlattener';
 
-export interface TreeStateReturn {
+export interface TreeStateReturn<TItem> {
   config: Omit<TreeConfigContextValue, 'listId'>;
   store: TreeStore;
   actions: TreeActionsContextValue;
+  expandedKeys: Set<Key>;
+  filterText: string;
+  filterFn: TreeListRootProps<TItem>['filterFn'];
+  isBranch: (item: TItem) => boolean;
 }
 
 /**
  * Core state orchestrator for TreeList.Root.
  * Creates the store, wires controlled/uncontrolled state,
- * runs the DFS flattener, and returns the three context values.
+ * returns persistent state independently of optional ordering and DnD.
  */
 export function useTreeState<TItem>(
   props: TreeListRootProps<TItem>,
-  order?: TreeOrder,
-): TreeStateReturn {
+): TreeStateReturn<TItem> {
   const {
     items,
     itemKey,
@@ -116,22 +117,9 @@ export function useTreeState<TItem>(
     };
   }, [filterFnProp, getTextValue]);
 
-  // Flatten tree (with optional filtering)
-  const flatNodes = useTreeFlattener(
-    items,
-    itemKey,
-    getChildren,
-    isBranch,
-    expandedKeys,
-    filterText,
-    resolvedFilterFn,
-    order,
-  );
-
   // Sync state to store synchronously during render so that
   // the Viewport's useSyncExternalStore sees the data on the first render pass.
   // This mirrors how the List store syncs disabledKeys in its render body.
-  const prevFlatNodesRef = useRef<typeof flatNodes | null>(null);
   const prevExpandedKeysRef = useRef<typeof expandedKeys | null>(null);
   const prevSelectedKeysRef = useRef<typeof selectedKeys | null>(null);
   const prevActiveKeyRef = useRef<typeof activeKey | undefined>(undefined);
@@ -147,18 +135,6 @@ export function useTreeState<TItem>(
     prevExpandedKeysRef.current = expandedKeys;
     store.setExpandedKeys(expandedKeys, true);
     needsNotifyRef.current = true;
-  }
-
-  if (prevFlatNodesRef.current !== flatNodes) {
-    prevFlatNodesRef.current = flatNodes;
-    store.setFlatNodes(flatNodes, true);
-    needsNotifyRef.current = true;
-    if (getTextValue) {
-      for (const node of flatNodes) {
-        const text = getTextValue(node.item as TItem);
-        if (text) store.registerTextValue(node.key, text);
-      }
-    }
   }
 
   if (prevSelectedKeysRef.current !== selectedKeys) {
@@ -283,7 +259,7 @@ export function useTreeState<TItem>(
 
   const expand = useCallback(
     (key: Key) => {
-      const flatNode = flatNodes.find((n) => n.key === key);
+      const flatNode = store.getFlatNodes().find((n) => n.key === key);
       if (!flatNode) return;
 
       const item = flatNode.item as TItem;
@@ -321,7 +297,7 @@ export function useTreeState<TItem>(
         });
       }
     },
-    [flatNodes, getChildren, isBranch, loadChildren, onLoadError, store, setExpandedKeys],
+    [getChildren, isBranch, loadChildren, onLoadError, store, setExpandedKeys],
   );
 
   const collapse = useCallback(
@@ -457,5 +433,13 @@ export function useTreeState<TItem>(
     ],
   );
 
-  return { config, store, actions };
+  return {
+    config,
+    store,
+    actions,
+    expandedKeys,
+    filterText,
+    filterFn: resolvedFilterFn,
+    isBranch,
+  };
 }

@@ -17,7 +17,7 @@ import {
   TreeReorderContext,
   type TreeReorderContextValue,
 } from './context/TreeReorderContext';
-import type { Key, TreeNodeMeta, TreeStore } from './types';
+import type { FlatNode, Key, TreeNodeMeta, TreeStore } from './types';
 
 interface TreeDragEndOptions {
   visibleKeys: readonly Key[];
@@ -36,6 +36,8 @@ export const handleTreeDragEnd = (
   const activeKey = event.active.id;
   const overKey = over.id;
   if (activeKey === overKey || disabledKeys.has(activeKey) || disabledKeys.has(overKey)) return;
+  // Item-local disabled props are not part of the root store's disabledKeys.
+  if (event.active.data?.current?.disabled || over.data?.current?.disabled) return;
 
   const activeNode = getNodeMeta(activeKey);
   const overNode = getNodeMeta(overKey);
@@ -58,17 +60,16 @@ export const handleTreeDragEnd = (
 interface TreeListReorderProps {
   children: ReactNode;
   store: TreeStore;
+  flatNodes: readonly FlatNode[];
   proposeMove: TreeReorderContextValue['proposeMove'];
 }
 
-function TreeListReorderImpl({ children, store, proposeMove }: TreeListReorderProps) {
+function TreeListReorderImpl({ children, store, flatNodes, proposeMove }: TreeListReorderProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-  const visibleKeys = store.getSnapshot().flattenedKeys;
-  // dnd-kit only reads this list, but its public type unnecessarily requires mutability.
-  const sortableItems = visibleKeys as Key[];
+  const sortableItems = useMemo(() => flatNodes.map((node) => node.key), [flatNodes]);
   const contextValue = useMemo(
     () => ({ store, proposeMove }),
     [store, proposeMove],

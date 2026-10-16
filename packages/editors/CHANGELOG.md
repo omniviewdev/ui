@@ -1,5 +1,23 @@
 # @omniviewdev/editors
 
+## 3.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`4428ab3`](https://github.com/omniviewdev/ui/commit/4428ab3e43016b952da8389d86f29a638b9e4163)]:
+  - @omniviewdev/base-ui@0.4.0
+
+## 2.0.0
+
+### Major Changes
+
+- [#47](https://github.com/omniviewdev/ui/pull/47) [`c3c8135`](https://github.com/omniviewdev/ui/commit/c3c81357b667fa42c678ce972b2eba169f13c3a9) Thanks [@joshuapare](https://github.com/joshuapare)! - Replace the persisted uncontrolled theme provider with a controlled, owner-aware theme engine; add nine complete built-in themes, versioned custom-theme validation, and typed registry errors. Element-scoped providers now apply their full palette, while Monaco and Xterm resolve and normalize colors from the nearest active theme registration. Editors 2.0.0 removes the previous `useEditorTheme` return contract and changes `buildMonacoTheme` to accept a built-in base plus an optional themed element.
+
+### Patch Changes
+
+- Updated dependencies [[`c3c8135`](https://github.com/omniviewdev/ui/commit/c3c81357b667fa42c678ce972b2eba169f13c3a9)]:
+  - @omniviewdev/base-ui@0.3.0
+
 ## 1.0.2
 
 ### Patch Changes

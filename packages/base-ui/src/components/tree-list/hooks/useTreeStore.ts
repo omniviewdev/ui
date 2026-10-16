@@ -22,6 +22,8 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   const flatNodesRef = useRef<FlatNode[]>([]);
   const nodeMetaMapRef = useRef(new Map<Key, TreeNodeMeta>());
   const textValuesRef = useRef(new Map<Key, string>());
+  const nonSelectableKeysRef = useRef(new Set<Key>());
+  const sourceNonSelectableKeysRef = useRef<ReadonlySet<Key> | undefined>(undefined);
   const disabledKeysRef = useRef(disabledKeys);
 
   const versionRef = useRef(0);
@@ -175,6 +177,19 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     return textValuesRef.current.get(key);
   }, []);
 
+  const registerSelectable = useCallback((key: Key, selectable: boolean) => {
+    if (selectable) nonSelectableKeysRef.current.delete(key);
+    else nonSelectableKeysRef.current.add(key);
+  }, []);
+
+  const setSourceNonSelectableKeys = useCallback((keys: ReadonlySet<Key> | undefined) => {
+    sourceNonSelectableKeysRef.current = keys;
+  }, []);
+
+  const isSelectable = useCallback((key: Key): boolean => {
+    return !nonSelectableKeysRef.current.has(key) && !sourceNonSelectableKeysRef.current?.has(key);
+  }, []);
+
   const getRegisteredKeys = useCallback((): Key[] => {
     return flatNodesRef.current.map((n) => n.key);
   }, []);
@@ -199,6 +214,9 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     setLoadingKey,
     setFlatNodes,
     registerTextValue,
+    registerSelectable,
+    setSourceNonSelectableKeys,
+    isSelectable,
     getTextValue,
     getRegisteredKeys,
     emit,

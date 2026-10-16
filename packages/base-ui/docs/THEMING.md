@@ -177,7 +177,6 @@ the built-in catalog, including Solarized; attributes and token presence alone
 are not visual evidence.
 
 ## Owner-aware registration
-
 Every custom registration declares who owns it:
 
 ```tsx

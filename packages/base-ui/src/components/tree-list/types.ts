@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import type { StyledComponentProps } from '../../system/types';
 
 // ---------------------------------------------------------------------------
@@ -10,6 +10,20 @@ export type Key = string | number;
 export type SelectionMode = 'none' | 'single' | 'multiple';
 export type SelectionBehavior = 'replace' | 'toggle';
 export type ListDensity = 'compact' | 'default' | 'comfortable';
+
+export type TreeIndentGuide = 'none' | 'rail' | 'connectors';
+/** Sparse sibling presets; missing keys are ignored across the full entry.
+ * Resolving a group costs O(source siblings + saved keys), without sorting.
+ */
+export type TreeOrder = ReadonlyMap<Key | null, readonly Key[]>;
+
+export interface TreeReorderEvent {
+  activeKey: Key;
+  overKey: Key;
+  parentKey: Key | null;
+  fromIndex: number;
+  toIndex: number;
+}
 
 // ---------------------------------------------------------------------------
 // Flat node (produced by DFS flattener)
@@ -86,6 +100,9 @@ export interface TreeStore {
   setLoadingKey: (key: Key, loading: boolean, silent?: boolean) => void;
   setFlatNodes: (nodes: FlatNode[], silent?: boolean) => void;
   registerTextValue: (key: Key, textValue: string) => void;
+  registerSelectable: (key: Key, selectable: boolean) => void;
+  setSourceNonSelectableKeys: (keys: ReadonlySet<Key> | undefined) => void;
+  isSelectable: (key: Key) => boolean;
   getTextValue: (key: Key) => string | undefined;
   getRegisteredKeys: () => Key[];
 
@@ -106,7 +123,7 @@ export interface TreeConfigContextValue {
   loopFocus: boolean;
   virtualized: boolean;
   indentation: number;
-  showBranchConnectors: boolean;
+  indentGuide: TreeIndentGuide;
 }
 
 export interface TreeActionsContextValue {
@@ -141,8 +158,17 @@ export interface TreeListRootProps<TItem = unknown>
    *  An empty array `[]` means "loaded, no children" and will NOT trigger `loadChildren`. */
   getChildren: (item: TItem) => readonly TItem[] | undefined;
   isBranch?: (item: TItem) => boolean;
+  /** Source-level selection eligibility, including never-mounted virtualized rows.
+   * Returning false overrides Item selectable; Item selectable=false may further restrict it. */
+  isItemSelectable?: (item: TItem) => boolean;
   getTextValue?: (item: TItem) => string;
   renderItem: (item: TItem, node: TreeNodeMeta) => ReactNode;
+
+  // Ordering
+  reorderable?: boolean;
+  order?: TreeOrder;
+  defaultOrder?: TreeOrder;
+  onOrderChange?: (order: TreeOrder, event: TreeReorderEvent) => void;
 
   // Expansion
   expandedKeys?: ReadonlySet<Key>;
@@ -184,7 +210,8 @@ export interface TreeListRootProps<TItem = unknown>
 
   // Visual
   indentation?: number;
-  showBranchConnectors?: boolean;
+  /** Indentation only (default), icon-centered rails, or elbow connectors. */
+  indentGuide?: TreeIndentGuide;
 
   loading?: boolean;
   error?: ReactNode;
@@ -195,6 +222,24 @@ export interface TreeListRootProps<TItem = unknown>
 export interface TreeListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   itemKey: Key;
   disabled?: boolean;
+  selectable?: boolean;
   textValue?: string;
   children: ReactNode;
 }
+
+type TreeListItemDragHandleBaseProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-label' | 'aria-labelledby' | 'type'
+>;
+
+export type TreeListItemDragHandleProps = TreeListItemDragHandleBaseProps &
+  (
+    | {
+        'aria-label': string;
+        'aria-labelledby'?: string;
+      }
+    | {
+        'aria-label'?: string;
+        'aria-labelledby': string;
+      }
+  );

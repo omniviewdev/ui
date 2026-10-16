@@ -38,7 +38,7 @@ export function FilesTab({ container }: FilesTabProps) {
       onSelectedKeysChange={setSelectedKeys}
       expandedKeys={expandedKeys}
       onExpandedKeysChange={setExpandedKeys}
-      showBranchConnectors
+      indentGuide="connectors"
       renderItem={(item: FileSystemNode, node) => (
         <TreeList.Item itemKey={node.key} textValue={item.name}>
           <TreeList.ItemIndent

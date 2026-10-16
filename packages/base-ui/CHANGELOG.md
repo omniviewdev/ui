@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.4.2
+
+### Patch Changes
+
+- [#53](https://github.com/omniviewdev/ui/pull/53) [`5ced267`](https://github.com/omniviewdev/ui/commit/5ced267acd03b140a9b4fc7485aec200bed0a39e) Thanks [@joshuapare](https://github.com/joshuapare)! - Unify five-tier input, select, and button sizing across densities; keep compound fields stable when typing, selecting, and clearing; contain narrow selected-chip rows without overlapping actions; and align resting field surfaces for every public color and variant. Preserve explicit styled-button sizes and variants through Popover and Tooltip triggers while ignoring unrelated native render props. Repair RadioGroup style inheritance and compact size gradients, retain identifiable empty choice marks, and keep switch thumbs visible and contained in every state.
+
 ## Unreleased
 
 ### Patch Changes

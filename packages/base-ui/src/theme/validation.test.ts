@@ -98,16 +98,22 @@ describe('validateThemeDefinition', () => {
   });
 
   it.each([
-    'red',
+    'rebeccapurple',
+    'transparent',
+    'currentColor',
     'rgb(12 34 56 / 50%)',
+    'rgb(10%, 20%, 30%)',
     'rgba(12, 34, 56, 0.5)',
-    'hsl(120 50% 40% / 0.25)',
-    'oklch(62% 0.18 240 / 80%)',
+    'hsl(0.5turn 50% 40% / 0.25)',
+    'hsl(120, 50%, 40%)',
+    'hsl(none none none / none)',
     'hsla(120, 50%, 40%, 25%)',
-    'hwb(120 20% 30% / 0.5)',
+    'hwb(120deg 20% 30% / 0.5)',
+    'hwb(none none none)',
     'lab(60% 10 20 / 75%)',
-    'lch(60% 30 120 / 0.75)',
+    'lch(60% 30 120deg / 0.75)',
     'oklab(60% 0.1 -0.1 / 75%)',
+    'oklch(62% 0.18 240 / 80%)',
     'color(display-p3 0.2 0.4 0.6 / 50%)',
   ])('accepts structurally safe %s colors without DOM APIs', (value) => {
     vi.stubGlobal('CSS', undefined);
@@ -122,10 +128,18 @@ describe('validateThemeDefinition', () => {
   });
 
   it.each([
+    'definitelynotacolor',
     'rgb(12 34)',
-    'hsl(120 50%)',
+    'rgba(1, 2, 3, none)',
+    'rgb(1deg 2deg 3deg)',
+    'hsl(120 50 40%)',
+    'hwb(120 20 30%)',
+    'lab(60deg 10 20)',
+    'lch(60% 30deg 120)',
     'oklch(62% 0.18 240))',
     'color()',
+    'color(display-p3 1)',
+    'color(not-a-profile 1 0 0)',
     'rgb(12 34 56 /)',
     'rgb(12 34 56); color: red',
     'hsl(120 50% 40%){background:red}',

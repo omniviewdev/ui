@@ -1,5 +1,6 @@
 import { THEME_TOKEN_METADATA } from './generated/tokenKeys';
 import type { ThemeTokenKey } from './generated/tokenKeys';
+import { CSS_NAMED_COLORS } from './cssNamedColors';
 import { isBuiltInThemeId } from './registry/catalog';
 import type { BuiltInThemeId, ThemeDefinition } from './schema';
 
@@ -26,21 +27,20 @@ export class ThemeValidationError extends Error {
 }
 
 const ID_PATTERN = /^[A-Za-z0-9._~%/:\-]+$/;
-const SAFE_NAMED_COLOR = /^[a-z]+$/i;
-const SAFE_COLOR_COMPONENT =
-  /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?(?:%|deg|grad|rad|turn)?$/i;
-const SAFE_ALPHA_COMPONENT = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?%?$/i;
-const FALLBACK_COLOR_FUNCTION_ARITY: Readonly<Record<string, number | 'profile'>> = Object.freeze({
-  rgb: 3,
-  rgba: 3,
-  hsl: 3,
-  hsla: 3,
-  hwb: 3,
-  lab: 3,
-  lch: 3,
-  oklab: 3,
-  oklch: 3,
-  color: 'profile',
+const CSS_NUMBER = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?$/i;
+const CSS_PERCENTAGE = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?%$/i;
+const CSS_ANGLE =
+  /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?(?:deg|grad|rad|turn)?$/i;
+const CSS_COLOR_PROFILES: Readonly<Record<string, true>> = Object.freeze({
+  srgb: true,
+  'srgb-linear': true,
+  'display-p3': true,
+  'a98-rgb': true,
+  'prophoto-rgb': true,
+  rec2020: true,
+  xyz: true,
+  'xyz-d50': true,
+  'xyz-d65': true,
 });
 const FONT_STYLES = new Set([
   'normal',
@@ -57,48 +57,107 @@ type SupportsColor = (value: string) => boolean;
 
 const STRICT_FALLBACK_HEX = /^(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8})$/i;
 
+function isNumber(value: string): boolean {
+  return CSS_NUMBER.test(value);
+}
+
+function isPercentage(value: string): boolean {
+  return CSS_PERCENTAGE.test(value);
+}
+function isPercentageOrNone(value: string): boolean {
+  return value === 'none' || isPercentage(value);
+}
+
+function isNumberOrPercentage(value: string): boolean {
+  return value === 'none' || isNumber(value) || isPercentage(value);
+}
+
+function isHue(value: string): boolean {
+  return value === 'none' || CSS_ANGLE.test(value);
+}
+
 function structurallySupportsColor(value: string): boolean {
   const color = value.trim();
-  if (STRICT_FALLBACK_HEX.test(color) || SAFE_NAMED_COLOR.test(color)) return true;
+  if (STRICT_FALLBACK_HEX.test(color)) return true;
+  if (Object.prototype.hasOwnProperty.call(CSS_NAMED_COLORS, color.toLowerCase())) return true;
 
   const call = /^([a-z]+)\(([^()]*)\)$/i.exec(color);
   if (!call) return false;
   const name = call[1]!.toLowerCase();
-  const arity = FALLBACK_COLOR_FUNCTION_ARITY[name];
-  if (arity === undefined) return false;
-
   const body = call[2]!.trim();
   if (body.length === 0 || !/^[a-z0-9\s.,%+\-/]+$/i.test(body)) return false;
+
   const slashParts = body.split('/');
   if (slashParts.length > 2 || slashParts.some((part) => part.trim().length === 0)) return false;
-  const alpha = slashParts[1]?.trim();
-  if (alpha !== undefined && !SAFE_ALPHA_COMPONENT.test(alpha)) return false;
+  const alpha = slashParts[1]?.trim().toLowerCase();
+  if (alpha !== undefined && !isNumberOrPercentage(alpha)) return false;
 
   const main = slashParts[0]!.trim();
   const commaSyntax = main.includes(',');
-  const components = commaSyntax ? main.split(',').map((part) => part.trim()) : main.split(/\s+/);
+  const components = commaSyntax
+    ? main.split(',').map((part) => part.trim().toLowerCase())
+    : main.split(/\s+/).map((part) => part.toLowerCase());
   if (components.some((part) => part.length === 0)) return false;
 
-  if (arity === 'profile') {
-    if (commaSyntax || components.length < 2 || !/^(?:--)?[a-z][a-z0-9-]*$/i.test(components[0]!)) {
+  if (commaSyntax) {
+    if (alpha !== undefined || (name !== 'rgb' && name !== 'rgba' && name !== 'hsl' && name !== 'hsla')) {
       return false;
     }
-    return components.slice(1).every((part) => SAFE_COLOR_COMPONENT.test(part));
+    if (components.length !== 3 && components.length !== 4) return false;
+    const legacyAlpha = components[3];
+    if (
+      legacyAlpha !== undefined &&
+      !isNumber(legacyAlpha) &&
+      !isPercentage(legacyAlpha)
+    ) {
+      return false;
+    }
+
+    if (name === 'rgb' || name === 'rgba') {
+      const channels = components.slice(0, 3);
+      return channels.every(isNumber) || channels.every(isPercentage);
+    }
+    return isHue(components[0]!) && isPercentage(components[1]!) && isPercentage(components[2]!);
   }
 
-  if (commaSyntax) {
-    if (alpha !== undefined) return false;
-    const expected = name === 'rgba' || name === 'hsla' ? arity + 1 : arity;
-    if (components.length !== expected) return false;
-    const mainComponents = components.slice(0, arity);
-    const legacyAlpha = components[arity];
-    return (
-      mainComponents.every((part) => SAFE_COLOR_COMPONENT.test(part)) &&
-      (legacyAlpha === undefined || SAFE_ALPHA_COMPONENT.test(legacyAlpha))
-    );
+  if (name === 'color') {
+    if (components.length !== 4) return false;
+    const profile = components[0]!;
+    if (
+      !Object.prototype.hasOwnProperty.call(CSS_COLOR_PROFILES, profile) &&
+      !/^--[a-z][a-z0-9-]*$/i.test(profile)
+    ) {
+      return false;
+    }
+    return components.slice(1).every(isNumberOrPercentage);
   }
 
-  return components.length === arity && components.every((part) => SAFE_COLOR_COMPONENT.test(part));
+  if (components.length !== 3) return false;
+  switch (name) {
+    case 'rgb':
+    case 'rgba':
+      return components.every(isNumberOrPercentage);
+    case 'hsl':
+    case 'hsla':
+    case 'hwb':
+      return (
+        isHue(components[0]!) &&
+        isPercentageOrNone(components[1]!) &&
+        isPercentageOrNone(components[2]!)
+      );
+    case 'lab':
+    case 'oklab':
+      return components.every(isNumberOrPercentage);
+    case 'lch':
+    case 'oklch':
+      return (
+        isNumberOrPercentage(components[0]!) &&
+        isNumberOrPercentage(components[1]!) &&
+        isHue(components[2]!)
+      );
+    default:
+      return false;
+  }
 }
 
 function defaultSupportsColor(value: string): boolean {

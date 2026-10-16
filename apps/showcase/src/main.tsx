@@ -7,8 +7,9 @@ import { App } from './App';
 import { SHOWCASE_CUSTOM_THEMES } from './sampleThemes';
 
 const SHOWCASE_THEME_OWNER = { kind: 'user', id: 'showcase' } as const;
+themeRegistry.unregisterOwner(SHOWCASE_THEME_OWNER);
 for (const theme of SHOWCASE_CUSTOM_THEMES) {
-  if (!themeRegistry.has(theme.id)) themeRegistry.register(theme, SHOWCASE_THEME_OWNER);
+  themeRegistry.register(theme, SHOWCASE_THEME_OWNER);
 }
 
 function ThemeHarness({ children }: PropsWithChildren) {

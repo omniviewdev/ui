@@ -5,9 +5,8 @@ import '../src/theme/styles.css';
 import { EXAMPLE_OCEAN } from './sampleCustomThemes';
 
 const STORYBOOK_THEME_OWNER = { kind: 'user', id: 'base-ui-storybook' } as const;
-if (!themeRegistry.has(EXAMPLE_OCEAN.id)) {
-  themeRegistry.register(EXAMPLE_OCEAN, STORYBOOK_THEME_OWNER);
-}
+themeRegistry.unregisterOwner(STORYBOOK_THEME_OWNER);
+themeRegistry.register(EXAMPLE_OCEAN, STORYBOOK_THEME_OWNER);
 
 const preview: Preview = {
   globalTypes: {

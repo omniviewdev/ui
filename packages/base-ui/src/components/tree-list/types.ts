@@ -12,6 +12,9 @@ export type SelectionBehavior = 'replace' | 'toggle';
 export type ListDensity = 'compact' | 'default' | 'comfortable';
 
 export type TreeIndentGuide = 'none' | 'rail' | 'connectors';
+/** Sparse sibling presets; missing keys are ignored across the full entry.
+ * Resolving a group costs O(source siblings + saved keys), without sorting.
+ */
 export type TreeOrder = ReadonlyMap<Key | null, readonly Key[]>;
 
 export interface TreeReorderEvent {
@@ -97,6 +100,9 @@ export interface TreeStore {
   setLoadingKey: (key: Key, loading: boolean, silent?: boolean) => void;
   setFlatNodes: (nodes: FlatNode[], silent?: boolean) => void;
   registerTextValue: (key: Key, textValue: string) => void;
+  registerSelectable: (key: Key, selectable: boolean) => void;
+  setSourceNonSelectableKeys: (keys: ReadonlySet<Key> | undefined) => void;
+  isSelectable: (key: Key) => boolean;
   getTextValue: (key: Key) => string | undefined;
   getRegisteredKeys: () => Key[];
 
@@ -152,6 +158,9 @@ export interface TreeListRootProps<TItem = unknown>
    *  An empty array `[]` means "loaded, no children" and will NOT trigger `loadChildren`. */
   getChildren: (item: TItem) => readonly TItem[] | undefined;
   isBranch?: (item: TItem) => boolean;
+  /** Source-level selection eligibility, including never-mounted virtualized rows.
+   * Returning false overrides Item selectable; Item selectable=false may further restrict it. */
+  isItemSelectable?: (item: TItem) => boolean;
   getTextValue?: (item: TItem) => string;
   renderItem: (item: TItem, node: TreeNodeMeta) => ReactNode;
 

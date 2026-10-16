@@ -13,22 +13,20 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {
-  TreeReorderContext,
-  type TreeReorderContextValue,
-} from './context/TreeReorderContext';
+import { TreeReorderContext, type TreeReorderContextValue } from './context/TreeReorderContext';
 import type { FlatNode, Key, TreeNodeMeta, TreeStore } from './types';
 
 interface TreeDragEndOptions {
   visibleKeys: readonly Key[];
   disabledKeys: ReadonlySet<Key>;
   getNodeMeta: (key: Key) => TreeNodeMeta | undefined;
+  getSiblingKeys: (parentKey: Key | null) => readonly Key[];
   proposeMove: TreeReorderContextValue['proposeMove'];
 }
 
 export const handleTreeDragEnd = (
   event: Pick<DragEndEvent, 'active' | 'over'>,
-  { visibleKeys, disabledKeys, getNodeMeta, proposeMove }: TreeDragEndOptions,
+  { visibleKeys, disabledKeys, getNodeMeta, getSiblingKeys, proposeMove }: TreeDragEndOptions,
 ): void => {
   const over = event.over;
   if (over === null) return;
@@ -43,16 +41,8 @@ export const handleTreeDragEnd = (
   const overNode = getNodeMeta(overKey);
   if (!activeNode || !overNode || activeNode.parentKey !== overNode.parentKey) return;
 
-  const siblingKeys: Key[] = [];
-  let includesActive = false;
-  let includesOver = false;
-  for (const key of visibleKeys) {
-    if (getNodeMeta(key)?.parentKey !== activeNode.parentKey) continue;
-    siblingKeys.push(key);
-    if (key === activeKey) includesActive = true;
-    if (key === overKey) includesOver = true;
-  }
-  if (!includesActive || !includesOver) return;
+  if (!visibleKeys.includes(activeKey) || !visibleKeys.includes(overKey)) return;
+  const siblingKeys = getSiblingKeys(activeNode.parentKey);
 
   proposeMove(siblingKeys, activeNode.parentKey, activeKey, overKey);
 };
@@ -62,18 +52,22 @@ interface TreeListReorderProps {
   store: TreeStore;
   flatNodes: readonly FlatNode[];
   proposeMove: TreeReorderContextValue['proposeMove'];
+  getSiblingKeys: TreeDragEndOptions['getSiblingKeys'];
 }
 
-function TreeListReorderImpl({ children, store, flatNodes, proposeMove }: TreeListReorderProps) {
+function TreeListReorderImpl({
+  children,
+  store,
+  flatNodes,
+  proposeMove,
+  getSiblingKeys,
+}: TreeListReorderProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const sortableItems = useMemo(() => flatNodes.map((node) => node.key), [flatNodes]);
-  const contextValue = useMemo(
-    () => ({ store, proposeMove }),
-    [store, proposeMove],
-  );
+  const contextValue = useMemo(() => ({ store, proposeMove }), [store, proposeMove]);
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
       const snapshot = store.getSnapshot();
@@ -81,10 +75,11 @@ function TreeListReorderImpl({ children, store, flatNodes, proposeMove }: TreeLi
         visibleKeys: snapshot.flattenedKeys,
         disabledKeys: snapshot.disabledKeys,
         getNodeMeta: store.getNodeMeta,
+        getSiblingKeys,
         proposeMove,
       });
     },
-    [store, proposeMove],
+    [store, proposeMove, getSiblingKeys],
   );
 
   return (

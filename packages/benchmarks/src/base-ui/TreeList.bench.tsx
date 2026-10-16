@@ -54,10 +54,7 @@ const flat150 = makeFlatItems(150);
 const nestedExpanded = new Set<Key>(nested50x2.map(itemKey));
 const nestedOrder: TreeOrder = new Map<Key | null, readonly Key[]>([
   [null, nested50x2.map(itemKey)],
-  ...nested50x2.map((parent): [Key, readonly Key[]] => [
-    parent.id,
-    parent.children!.map(itemKey),
-  ]),
+  ...nested50x2.map((parent): [Key, readonly Key[]] => [parent.id, parent.children!.map(itemKey)]),
 ]);
 const changedNestedOrder = new Map(nestedOrder);
 changedNestedOrder.set('parent-0', ['parent-0-child-1', 'parent-0-child-0']);
@@ -70,7 +67,13 @@ const renderReorderableItem = (item: TreeItem, node: TreeNodeMeta) => (
   </TreeList.ReorderableItem>
 );
 
-function OrderedTreeListBench({ order, reorderable = false }: { order?: TreeOrder; reorderable?: boolean }) {
+function OrderedTreeListBench({
+  order,
+  reorderable = false,
+}: {
+  order?: TreeOrder;
+  reorderable?: boolean;
+}) {
   return (
     <TreeList
       items={nested50x2}

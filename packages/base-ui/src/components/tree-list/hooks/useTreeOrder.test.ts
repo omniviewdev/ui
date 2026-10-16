@@ -14,9 +14,7 @@ describe('useTreeOrder', () => {
 
   it('notifies uncontrolled consumers with the next order and reorder event', () => {
     const onOrderChange = vi.fn<(order: TreeOrder, event: TreeReorderEvent) => void>();
-    const { result } = renderHook(() =>
-      useTreeOrder({ defaultOrder: new Map(), onOrderChange }),
-    );
+    const { result } = renderHook(() => useTreeOrder({ defaultOrder: new Map(), onOrderChange }));
 
     act(() => result.current.proposeMove(['a', 'b'], null, 'b', 'a'));
 

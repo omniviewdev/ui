@@ -109,6 +109,8 @@ selectable?: boolean;
 
 The default is `true`. A non-selectable item remains focusable and may invoke its click handler or expansion action, but selection state does not change.
 
+For virtualized trees, root `isItemSelectable?: (item: TItem) => boolean` supplies selection eligibility from source data for every flattened row, including rows that have never mounted. Root false is authoritative; `Item selectable={false}` can further restrict a row. Omitting the callback preserves default selection behavior without an additional source-data traversal. Selection actions use both eligibility sources for keyboard activation, select-all, and range selection, without changing focus or expansion.
+
 `TreeList` gains separate reorderable item and handle slots:
 
 ```tsx
@@ -124,7 +126,7 @@ The default is `true`. A non-selectable item remains focusable and may invoke it
 
 The source item graph remains consumer-owned through `items` and `getChildren`. `TreeList` does not mutate or deep-clone item data.
 
-When an order entry exists for a sibling group, TreeList applies it in linear time:
+When an order entry exists for a sibling group, TreeList applies it in O(s + o) time, where s is the source sibling count and o is the complete saved entry length. Stale saved keys never truncate later valid keys; external preset correctness takes precedence over an impossible O(s) bound for unbounded saved entries:
 
 1. Build a key-to-item lookup for that sibling group.
 2. Emit valid keys in the explicit order.
@@ -182,7 +184,7 @@ Guide styling uses existing TreeList connector width and muted-border color vari
 1. Static trees mount no DnD provider, sensor, sortable hook, drag context, transform style, or extra wrapper.
 2. Static trees continue to use the current flattener without order-processing branches in its sibling loop.
 3. Ordering one sibling group clones one outer map and one sibling key array; it does not recursively clone item data.
-4. Applying explicit order is O(s) for a sibling group of size s and performs no sort.
+4. Applying explicit order is O(s + o) for s source siblings and o saved keys and performs no sort. The full saved entry is consumed, including entries longer than the current sibling group.
 5. Rail geometry is CSS-only and uses metadata already produced by flattening.
 6. Virtualization remains available in static, read-only ordered, and reorderable modes.
 7. Drag movement must not rebuild the item graph or update ordering state before drag end.

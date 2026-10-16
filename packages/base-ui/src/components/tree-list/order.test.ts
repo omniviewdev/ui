@@ -7,11 +7,9 @@ describe('applySiblingOrder', () => {
     const items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
     const order: TreeOrder = new Map([[null, ['b', 'missing']]]);
 
-    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual([
-      'b',
-      'a',
-      'c',
-    ]);
+    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual(
+      ['b', 'a', 'c'],
+    );
   });
 
   it('supports number keys', () => {
@@ -19,9 +17,7 @@ describe('applySiblingOrder', () => {
     const order: TreeOrder = new Map([[7, [3, 1]]]);
 
     expect(applySiblingOrder(items, 7, order, (item) => item.id).map((item) => item.id)).toEqual([
-      3,
-      1,
-      2,
+      3, 1, 2,
     ]);
   });
 
@@ -29,11 +25,9 @@ describe('applySiblingOrder', () => {
     const items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
     const order: TreeOrder = new Map([[null, ['b', 'b', 'a']]]);
 
-    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual([
-      'b',
-      'a',
-      'c',
-    ]);
+    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual(
+      ['b', 'a', 'c'],
+    );
   });
 
   it('orders an undefined item when its key is explicit', () => {
@@ -46,21 +40,13 @@ describe('applySiblingOrder', () => {
     ]);
   });
 
-  it('ignores malformed order positions beyond the sibling count', () => {
+  it('retains valid saved keys after stale entries beyond the current sibling count', () => {
     const items = [{ id: 'a' }, { id: 'b' }];
-    const orderedKeys = ['b', 'a'];
-    Object.defineProperty(orderedKeys, 2, {
-      get: () => {
-        throw new Error('read malformed overflow');
-      },
-    });
-    Object.defineProperty(orderedKeys, 'length', { value: 3 });
-    const order: TreeOrder = new Map([[null, orderedKeys]]);
+    const order: TreeOrder = new Map([[null, ['removed1', 'removed2', 'b', 'a']]]);
 
-    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual([
-      'b',
-      'a',
-    ]);
+    expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual(
+      ['b', 'a'],
+    );
   });
 
   it('returns the source array when no order entry exists', () => {

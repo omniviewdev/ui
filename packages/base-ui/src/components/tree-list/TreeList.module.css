@@ -273,13 +273,14 @@
  * their containing block to align under ancestor icon centers, regardless of
  * whether the optional drag handle comes before or after ItemIndent.
  * Parent icon center = padding + handle + depth * indent + two slot gaps
- *                      + toggle + half the icon width. */
+ *                      + toggle + half the icon width.
+ * Subtract half the stroke so its center, not its leading edge, hits the icon. */
 .ItemGuide[data-ov-guide='rail'] {
   position: static;
   --_ov-tree-guide-position: calc(
-    var(--_ov-item-padding-inline) + var(--_ov-tree-handle-offset) +
-    var(--_ov-tree-guide-level) * var(--_ov-tree-indent) +
-    var(--_ov-tree-toggle-size) + 2 * var(--_ov-item-gap) + var(--_ov-icon-size) / 2
+    var(--_ov-item-padding-inline) + var(--_ov-tree-handle-offset) + var(--_ov-tree-guide-level) *
+      var(--_ov-tree-indent) + var(--_ov-tree-toggle-size) + 2 * var(--_ov-item-gap) +
+      var(--_ov-icon-size) / 2 - var(--_ov-tree-connector-width) / 2
   );
 }
 

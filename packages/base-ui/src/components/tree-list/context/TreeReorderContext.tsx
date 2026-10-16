@@ -1,8 +1,5 @@
 import { createContext } from 'react';
-import type {
-  DraggableAttributes,
-  DraggableSyntheticListeners,
-} from '@dnd-kit/core';
+import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core';
 import type { Key, TreeStore } from '../types';
 
 export interface TreeReorderContextValue {

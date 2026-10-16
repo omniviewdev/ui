@@ -264,6 +264,125 @@ describe('TreeList', () => {
     expect(leaf).toHaveAttribute('aria-selected', 'true');
   });
 
+  it.each(['single', 'multiple'] as const)(
+    'keeps non-selectable branches focused and expandable through keyboard activation in %s mode',
+    async (selectionMode) => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderWithTheme(
+        <TestTree
+          selectionMode={selectionMode}
+          onSelectedKeysChange={onChange}
+          renderItem={(item, node) => (
+            <TreeList.Item itemKey={node.key} selectable={item.type !== 'directory'}>
+              <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+            </TreeList.Item>
+          )}
+        />,
+      );
+      screen.getByRole('tree').focus();
+      await user.keyboard('{ArrowDown}{Enter}{ArrowRight}');
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'data-ov-active',
+        'true',
+      );
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+      await user.keyboard(' ');
+      expect(onChange).not.toHaveBeenCalled();
+      expect(screen.getByText('src').closest('[role="treeitem"]')).not.toHaveAttribute(
+        'aria-selected',
+      );
+      await user.keyboard('{End}{Enter}');
+      expect(onChange).toHaveBeenLastCalledWith(new Set(['/README.md']));
+    },
+  );
+
+  it('excludes never-mounted virtualized branches from Ctrl+A using source eligibility', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const renderRow = vi.fn(renderItem);
+    const items: FileItem[] = Array.from({ length: 200 }, (_, index) => ({
+      path: `row-${index}`,
+      name: `Row ${index}`,
+      type: index % 2 === 0 ? 'directory' : 'file',
+      children: index % 2 === 0 ? [] : undefined,
+    }));
+    renderWithTheme(
+      <TestTree
+        items={items}
+        virtualized
+        selectionMode="multiple"
+        isItemSelectable={(item) => item.type !== 'directory'}
+        renderItem={renderRow}
+        onSelectedKeysChange={onChange}
+      />,
+    );
+    expect(screen.queryByText('Row 198')).not.toBeInTheDocument();
+    expect(renderRow.mock.calls.some(([item]) => item.path === 'row-198')).toBe(false);
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Control>}a{/Control}');
+    expect(onChange).toHaveBeenLastCalledWith(
+      new Set(items.filter((item) => item.type === 'file').map((item) => item.path)),
+    );
+  });
+
+  it('keeps source eligibility authoritative over mounted item defaults and updates it externally', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { rerender } = renderWithTheme(
+      <TestTree
+        isItemSelectable={(item) => item.type !== 'directory'}
+        onSelectedKeysChange={onChange}
+      />,
+    );
+    await user.click(screen.getByText('src'));
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Enter} ');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+      'data-ov-active',
+      'true',
+    );
+    rerender(<TestTree onSelectedKeysChange={onChange} />);
+    await user.keyboard('{Enter}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src']));
+  });
+
+  it('excludes non-selectable branches from select-all and keyboard ranges', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithTheme(
+      <TestTree
+        selectionMode="multiple"
+        defaultExpandedKeys={new Set(['/src'])}
+        onSelectedKeysChange={onChange}
+        renderItem={(item, node) => (
+          <TreeList.Item itemKey={node.key} selectable={item.type !== 'directory'}>
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.Item>
+        )}
+      />,
+    );
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Control>}a{/Control}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src/index.ts', '/README.md']));
+    await user.keyboard('{End}{Enter}{Shift>}{ArrowUp}{ArrowUp}{ArrowUp}{/Shift}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src/index.ts', '/README.md']));
+    expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+      'data-ov-active',
+      'true',
+    );
+    expect(screen.getByText('components').closest('[role="treeitem"]')).not.toHaveAttribute(
+      'aria-selected',
+    );
+    expect(screen.getByText('src').closest('[role="treeitem"]')).not.toHaveAttribute(
+      'aria-selected',
+    );
+  });
+
   it('replaces selection on click in single mode', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -597,7 +716,9 @@ describe('TreeList', () => {
 
   describe('indent guides', () => {
     function guidesFor(name: string) {
-      return screen.getByText(name).closest('[role="treeitem"]')!
+      return screen
+        .getByText(name)
+        .closest('[role="treeitem"]')!
         .querySelectorAll('[data-ov-guide]');
     }
 
@@ -618,10 +739,7 @@ describe('TreeList', () => {
 
     it('renders full-height and center-terminated rail segments without elbows', () => {
       renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          indentGuide="rail"
-        />,
+        <TestTree defaultExpandedKeys={new Set(['/src', '/src/components'])} indentGuide="rail" />,
       );
 
       const appGuides = guidesFor('App.tsx');
@@ -635,23 +753,35 @@ describe('TreeList', () => {
     });
 
     it('continues rail ancestors at multiple depths and stops after their final children', () => {
-      const nested: FileItem[] = [{
-        path: '/root', name: 'root', type: 'directory', children: [
-          {
-            path: '/branch', name: 'branch', type: 'directory', children: [
-              {
-                path: '/nested', name: 'nested', type: 'directory',
-                children: [{ path: '/leaf', name: 'leaf', type: 'file' }],
-              },
-              { path: '/branch-last', name: 'branch-last', type: 'file' },
-            ],
-          },
-          {
-            path: '/last-branch', name: 'last-branch', type: 'directory',
-            children: [{ path: '/last-leaf', name: 'last-leaf', type: 'file' }],
-          },
-        ],
-      }];
+      const nested: FileItem[] = [
+        {
+          path: '/root',
+          name: 'root',
+          type: 'directory',
+          children: [
+            {
+              path: '/branch',
+              name: 'branch',
+              type: 'directory',
+              children: [
+                {
+                  path: '/nested',
+                  name: 'nested',
+                  type: 'directory',
+                  children: [{ path: '/leaf', name: 'leaf', type: 'file' }],
+                },
+                { path: '/branch-last', name: 'branch-last', type: 'file' },
+              ],
+            },
+            {
+              path: '/last-branch',
+              name: 'last-branch',
+              type: 'directory',
+              children: [{ path: '/last-leaf', name: 'last-leaf', type: 'file' }],
+            },
+          ],
+        },
+      ];
       renderWithTheme(
         <TestTree
           items={nested}
@@ -660,8 +790,9 @@ describe('TreeList', () => {
         />,
       );
 
-      expect(Array.from(guidesFor('leaf'), (guide) => guide.getAttribute('data-ov-segment')))
-        .toEqual(['pass', 'pass', 'last']);
+      expect(
+        Array.from(guidesFor('leaf'), (guide) => guide.getAttribute('data-ov-segment')),
+      ).toEqual(['pass', 'pass', 'last']);
       const lastGuides = guidesFor('last-leaf');
       expect(lastGuides).toHaveLength(2);
       expect(lastGuides[0]).not.toHaveAttribute('data-ov-segment');
@@ -674,21 +805,24 @@ describe('TreeList', () => {
       expect(guidesFor('README.md')).toHaveLength(0);
     });
 
-    it.each([undefined, 'none'] as const)('retains plain indentation for guide mode %s', (indentGuide) => {
-      renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          indentGuide={indentGuide}
-          indentation={24}
-        />,
-      );
-      const row = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      expect(guidesFor('App.tsx')).toHaveLength(0);
-      expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle({
-        '--tree-depth': '2',
-        '--_ov-tree-indent': '24px',
-      });
-    });
+    it.each([undefined, 'none'] as const)(
+      'retains plain indentation for guide mode %s',
+      (indentGuide) => {
+        renderWithTheme(
+          <TestTree
+            defaultExpandedKeys={new Set(['/src', '/src/components'])}
+            indentGuide={indentGuide}
+            indentation={24}
+          />,
+        );
+        const row = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
+        expect(guidesFor('App.tsx')).toHaveLength(0);
+        expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle({
+          '--tree-depth': '2',
+          '--_ov-tree-indent': '24px',
+        });
+      },
+    );
 
     it('updates rail termination when sibling order changes', () => {
       const { rerender } = renderWithTheme(
@@ -709,9 +843,7 @@ describe('TreeList', () => {
     });
 
     it('terminates rails at the final matching child when filtering', () => {
-      renderWithTheme(
-        <TestTree indentGuide="rail" filterText="App.tsx" />,
-      );
+      renderWithTheme(<TestTree indentGuide="rail" filterText="App.tsx" />);
 
       expect(screen.queryByText('Header.tsx')).not.toBeInTheDocument();
       expect(screen.queryByText('index.ts')).not.toBeInTheDocument();
@@ -727,18 +859,24 @@ describe('TreeList', () => {
         <TestTree indentGuide="none" defaultExpandedKeys={new Set(['/src'])} />,
       );
       await user.click(screen.getByText('components'));
-      expect(screen.getByText('components').closest('[role="treeitem"]'))
-        .toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText('components').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
 
       rerender(<TestTree indentGuide="rail" defaultExpandedKeys={new Set(['/src'])} />);
       expect(guidesFor('components')[0]).toHaveAttribute('data-ov-guide', 'rail');
-      expect(screen.getByText('components').closest('[role="treeitem"]'))
-        .toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText('components').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
 
       rerender(<TestTree indentGuide="connectors" defaultExpandedKeys={new Set(['/src'])} />);
       expect(guidesFor('components')[0]).toHaveAttribute('data-ov-connector', 'mid');
-      expect(screen.getByText('src').closest('[role="treeitem"]'))
-        .toHaveAttribute('aria-expanded', 'true');
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
     });
   });
 
@@ -808,11 +946,7 @@ describe('TreeList', () => {
       );
 
       renderWithTheme(
-        <TestTree
-          order={order}
-          filterText=".tsx"
-          renderItem={renderItemWithLastChild}
-        />,
+        <TestTree order={order} filterText=".tsx" renderItem={renderItemWithLastChild} />,
       );
 
       expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
@@ -821,10 +955,7 @@ describe('TreeList', () => {
         'Header.tsx',
         'App.tsx',
       ]);
-      expect(screen.getByTestId('ordered-Header.tsx')).toHaveAttribute(
-        'data-last-child',
-        'false',
-      );
+      expect(screen.getByTestId('ordered-Header.tsx')).toHaveAttribute('data-last-child', 'false');
       expect(screen.getByTestId('ordered-App.tsx')).toHaveAttribute('data-last-child', 'true');
     });
   });
@@ -839,11 +970,7 @@ describe('TreeList', () => {
       const user = userEvent.setup();
       const onOrderChange = vi.fn();
       renderWithTheme(
-        <TestTree
-          reorderable
-          renderItem={renderReorderableItem}
-          onOrderChange={onOrderChange}
-        />,
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
       );
       giveTreeRowsVerticalGeometry();
 
@@ -906,11 +1033,7 @@ describe('TreeList', () => {
       const user = userEvent.setup();
       const onOrderChange = vi.fn();
       const { rerender } = renderWithTheme(
-        <TestTree
-          reorderable
-          renderItem={renderReorderableItem}
-          onOrderChange={onOrderChange}
-        />,
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
       );
       giveTreeRowsVerticalGeometry();
       screen.getByRole('button', { name: 'Reorder src' }).focus();
@@ -934,11 +1057,7 @@ describe('TreeList', () => {
       expect(screen.getByRole('tree')).toBe(tree);
 
       rerender(
-        <TestTree
-          reorderable
-          renderItem={renderReorderableItem}
-          onOrderChange={onOrderChange}
-        />,
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
       );
       expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
         '⋮⋮README.md',
@@ -1080,11 +1199,7 @@ describe('TreeList', () => {
         expect(tree).toHaveFocus();
 
         rerender(
-          <TestTree
-            reorderable
-            defaultOrder={defaultOrder}
-            renderItem={renderEditingItem}
-          />,
+          <TestTree reorderable defaultOrder={defaultOrder} renderItem={renderEditingItem} />,
         );
 
         expect(screen.getByRole('tree')).toBe(tree);
@@ -1120,20 +1235,60 @@ describe('TreeList', () => {
       },
     );
 
+    it.each([null, 'parent'])(
+      'preserves hidden saved sibling order in group %s after filter → reorder → clear',
+      async (parentKey) => {
+        supportKeyboardDraggingInJSDOM();
+        const user = userEvent.setup();
+        const onOrderChange = vi.fn();
+        const siblings: FileItem[] = [
+          { path: 'a', name: 'shown A', type: 'file' },
+          { path: 'b', name: 'shown B', type: 'file' },
+          { path: 'c', name: 'hidden C', type: 'file' },
+          { path: 'd', name: 'hidden D', type: 'file' },
+        ];
+        const props = {
+          items:
+            parentKey === null
+              ? siblings
+              : [
+                  {
+                    path: parentKey,
+                    name: 'parent',
+                    type: 'directory' as const,
+                    children: siblings,
+                  },
+                ],
+          defaultExpandedKeys: new Set(parentKey === null ? [] : [parentKey]),
+          reorderable: true,
+          defaultOrder: new Map([[parentKey, ['d', 'a', 'c', 'b']]]),
+          renderItem: renderReorderableItem,
+          onOrderChange,
+        };
+        const { rerender } = renderWithTheme(<TestTree {...props} filterText="shown" />);
+        giveTreeRowsVerticalGeometry();
+        screen.getByRole('button', { name: 'Reorder shown A' }).focus();
+        await user.keyboard('[Enter][ArrowDown][Space]');
+        expect(onOrderChange).toHaveBeenCalledOnce();
+        expect(onOrderChange.mock.calls[0]![0].get(parentKey)).toEqual(['d', 'c', 'b', 'a']);
+        rerender(<TestTree {...props} filterText="" />);
+        expect(
+          screen
+            .getAllByRole('treeitem')
+            .filter((row) => row.textContent !== '⋮⋮parent')
+            .map((row) => row.textContent),
+        ).toEqual(['⋮⋮hidden D', '⋮⋮hidden C', '⋮⋮shown B', '⋮⋮shown A']);
+      },
+    );
+
     it('keeps handle drag keys out of the public row key handler', async () => {
       supportKeyboardDraggingInJSDOM();
       const user = userEvent.setup();
       const onOrderChange = vi.fn();
       const onRowKeyDown = vi.fn();
       const renderItemWithRowKeyHandler = (item: FileItem, node: TreeNodeMeta) => (
-        <TreeList.ReorderableItem
-          itemKey={node.key}
-          textValue={item.name}
-          onKeyDown={onRowKeyDown}
-        >
-          <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
-            ⋮⋮
-          </TreeList.ItemDragHandle>
+        <TreeList.ReorderableItem itemKey={node.key} textValue={item.name} onKeyDown={onRowKeyDown}>
+          <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>⋮⋮</TreeList.ItemDragHandle>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
         </TreeList.ReorderableItem>
       );
@@ -1205,6 +1360,7 @@ describe('TreeList', () => {
         visibleKeys: ['/src', '/src/index.ts', '/README.md'] as const,
         disabledKeys: new Set<Key>(),
         getNodeMeta: (key: Key) => nodeMeta.get(key),
+        getSiblingKeys: () => ['/src', '/README.md'],
         proposeMove,
       };
 
@@ -1224,7 +1380,7 @@ describe('TreeList', () => {
       expect(proposeMove).not.toHaveBeenCalled();
     });
 
-    it('proposes one reorder for a valid same-parent drop using visible siblings', () => {
+    it('proposes one reorder for a valid same-parent drop using complete resolved siblings', () => {
       const proposeMove = vi.fn();
       const nodeMeta = new Map<Key, TreeNodeMeta>([
         [
@@ -1272,12 +1428,13 @@ describe('TreeList', () => {
         visibleKeys: ['/src', '/src/index.ts', '/README.md'],
         disabledKeys: new Set(),
         getNodeMeta: (key) => nodeMeta.get(key),
+        getSiblingKeys: () => ['/hidden', '/src', '/README.md'],
         proposeMove,
       });
 
       expect(proposeMove).toHaveBeenCalledOnce();
       expect(proposeMove).toHaveBeenCalledWith(
-        ['/src', '/README.md'],
+        ['/hidden', '/src', '/README.md'],
         null,
         '/src',
         '/README.md',

@@ -49,11 +49,9 @@ import {
   useTreeStoreContext,
   useTreeActions,
 } from './context/TreeContext';
-import {
-  TreeItemActivatorContext,
-  TreeReorderContext,
-} from './context/TreeReorderContext';
+import { TreeItemActivatorContext, TreeReorderContext } from './context/TreeReorderContext';
 import { TreeListReorder } from './TreeListReorder';
+import { applySiblingOrder } from './order';
 import styles from './TreeList.module.css';
 
 // ---------------------------------------------------------------------------
@@ -82,58 +80,57 @@ type TreeListRootContentProps<TItem> = TreeListRootProps<TItem> & {
   forwardedRef: React.ForwardedRef<HTMLDivElement>;
 };
 
-function TreeListRootContent<TItem>(
-  {
-    treeState,
-    forwardedRef,
-    className,
-    variant,
-    color,
-    size,
-    children,
-    loading,
-    error,
-    onKeyDown,
-    // Extract tree-specific props so they don't spread to DOM
-    items,
-    itemKey,
-    getChildren,
-    isBranch: isBranchProp,
-    getTextValue,
-    renderItem,
-    loadChildren,
-    onLoadError,
-    selectionMode,
-    selectionBehavior,
-    selectedKeys: selectedKeysProp,
-    defaultSelectedKeys,
-    onSelectedKeysChange,
-    activeKey: activeKeyProp,
-    defaultActiveKey,
-    onActiveKeyChange,
-    disabledKeys: disabledKeysProp,
-    expandedKeys: expandedKeysProp,
-    defaultExpandedKeys,
-    onExpandedKeysChange,
-    loopFocus,
-    typeahead,
-    density,
-    virtualized,
-    overscan,
-    estimatedItemSize,
-    indentation,
-    indentGuide,
-    filterText: filterTextProp,
-    defaultFilterText,
-    onFilterTextChange,
-    filterFn,
-    reorderable: _reorderable,
-    order: _order,
-    defaultOrder: _defaultOrder,
-    onOrderChange: _onOrderChange,
-    ...domProps
-  }: TreeListRootContentProps<TItem>,
-) {
+function TreeListRootContent<TItem>({
+  treeState,
+  forwardedRef,
+  className,
+  variant,
+  color,
+  size,
+  children,
+  loading,
+  error,
+  onKeyDown,
+  // Extract tree-specific props so they don't spread to DOM
+  items,
+  itemKey,
+  getChildren,
+  isBranch: isBranchProp,
+  isItemSelectable: _isItemSelectable,
+  getTextValue,
+  renderItem,
+  loadChildren,
+  onLoadError,
+  selectionMode,
+  selectionBehavior,
+  selectedKeys: selectedKeysProp,
+  defaultSelectedKeys,
+  onSelectedKeysChange,
+  activeKey: activeKeyProp,
+  defaultActiveKey,
+  onActiveKeyChange,
+  disabledKeys: disabledKeysProp,
+  expandedKeys: expandedKeysProp,
+  defaultExpandedKeys,
+  onExpandedKeysChange,
+  loopFocus,
+  typeahead,
+  density,
+  virtualized,
+  overscan,
+  estimatedItemSize,
+  indentation,
+  indentGuide,
+  filterText: filterTextProp,
+  defaultFilterText,
+  onFilterTextChange,
+  filterFn,
+  reorderable: _reorderable,
+  order: _order,
+  defaultOrder: _defaultOrder,
+  onOrderChange: _onOrderChange,
+  ...domProps
+}: TreeListRootContentProps<TItem>) {
   const { config, store, actions } = treeState;
   // These props are intentionally removed from domProps above.
   void loading;
@@ -142,6 +139,7 @@ function TreeListRootContent<TItem>(
   void itemKey;
   void getChildren;
   void isBranchProp;
+  void _isItemSelectable;
   void getTextValue;
   void renderItem;
   void loadChildren;
@@ -234,10 +232,7 @@ function TreeListRootContent<TItem>(
 
   const combinedKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
-      if (
-        event.target instanceof Element &&
-        event.target.closest('[data-ov-tree-drag-handle]')
-      ) {
+      if (event.target instanceof Element && event.target.closest('[data-ov-tree-drag-handle]')) {
         return;
       }
       handleKeyDown(event);
@@ -276,6 +271,7 @@ type TreeListNodesProps<TItem> = TreeListRootProps<TItem> & {
   treeState: TreeStateReturn<TItem>;
   currentOrder?: TreeOrder;
   proposeMove?: React.ComponentProps<typeof TreeListReorder>['proposeMove'];
+  getSiblingKeys?: React.ComponentProps<typeof TreeListReorder>['getSiblingKeys'];
 };
 
 function TreeListNodes<TItem>({
@@ -284,11 +280,13 @@ function TreeListNodes<TItem>({
   itemKey,
   getChildren,
   getTextValue,
+  isItemSelectable,
   renderItem,
   children,
   error,
   currentOrder,
   proposeMove,
+  getSiblingKeys,
 }: TreeListNodesProps<TItem>) {
   const { store, isBranch, expandedKeys, filterText, filterFn } = treeState;
   const flatNodes = useTreeFlattener(
@@ -301,6 +299,15 @@ function TreeListNodes<TItem>({
     filterFn,
     currentOrder,
   );
+  const sourceNonSelectableKeys = useMemo(() => {
+    if (!isItemSelectable) return undefined;
+    const keys = new Set<Key>();
+    for (const node of flatNodes) {
+      if (!isItemSelectable(node.item as TItem)) keys.add(node.key);
+    }
+    return keys;
+  }, [flatNodes, isItemSelectable]);
+  store.setSourceNonSelectableKeys(sourceNonSelectableKeys);
   const previousNodes = useRef<typeof flatNodes | null>(null);
   const needsNotify = useRef(false);
   if (previousNodes.current !== flatNodes) {
@@ -339,24 +346,47 @@ function TreeListNodes<TItem>({
   const content = (
     <RenderNodeContext.Provider value={renderNode}>{children}</RenderNodeContext.Provider>
   );
-  return proposeMove ? (
+  return proposeMove && getSiblingKeys ? (
     <TreeListReorder
       store={store}
       flatNodes={flatNodes}
       proposeMove={proposeMove}
+      getSiblingKeys={getSiblingKeys}
     >
       {content}
     </TreeListReorder>
-  ) : content;
+  ) : (
+    content
+  );
 }
 
 function OrderedTreeListNodes<TItem>(props: TreeListNodesProps<TItem>) {
   const { currentOrder, proposeMove } = useTreeOrder(props);
+  const {
+    items,
+    itemKey,
+    getChildren,
+    treeState: { store },
+  } = props;
+  const getSiblingKeys = useCallback(
+    (parentKey: Key | null): readonly Key[] => {
+      // Only resolve the dropped group, from consumer data rather than filtered rows.
+      const parent =
+        parentKey === null
+          ? undefined
+          : store.getFlatNodes().find((node) => node.key === parentKey);
+      const siblings =
+        parentKey === null ? items : parent ? (getChildren(parent.item as TItem) ?? []) : [];
+      return applySiblingOrder(siblings, parentKey, currentOrder, itemKey).map(itemKey);
+    },
+    [items, itemKey, getChildren, store, currentOrder],
+  );
   return (
     <TreeListNodes
       {...props}
       currentOrder={currentOrder}
       proposeMove={props.reorderable ? proposeMove : undefined}
+      getSiblingKeys={getSiblingKeys}
     />
   );
 }
@@ -520,7 +550,7 @@ function useTreeListItemBehavior({
   const store = useTreeStoreContext();
   const actions = useTreeActions();
   const config = useTreeConfig();
-  const itemState = useTreeItemHook(store, itemKey, textValue);
+  const itemState = useTreeItemHook(store, itemKey, textValue, selectable);
   const nodeMeta = store.getNodeMeta(itemKey);
   const isDisabled = disabled || itemState.isDisabled;
 
@@ -533,7 +563,7 @@ function useTreeListItemBehavior({
 
       actions.setActiveKey(itemKey);
 
-      if (selectable && config.selectionMode !== 'none') {
+      if (selectable && store.isSelectable(itemKey) && config.selectionMode !== 'none') {
         if (event.shiftKey && config.selectionMode === 'multiple') {
           actions.selectRange(itemKey);
         } else if ((event.metaKey || event.ctrlKey) && config.selectionMode === 'multiple') {
@@ -550,6 +580,7 @@ function useTreeListItemBehavior({
     [
       isDisabled,
       selectable,
+      store,
       config.selectionMode,
       config.selectionBehavior,
       actions,
@@ -621,13 +652,12 @@ const TreeListItemImplementation = forwardRef<HTMLDivElement, TreeListItemImplem
   },
 );
 
-const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(function TreeListItem(
-  props,
-  ref,
-) {
-  const behavior = useTreeListItemBehavior(props);
-  return <TreeListItemImplementation ref={ref} behavior={behavior} {...props} />;
-});
+const TreeListItem = forwardRef<HTMLDivElement, TreeListItemProps>(
+  function TreeListItem(props, ref) {
+    const behavior = useTreeListItemBehavior(props);
+    return <TreeListItemImplementation ref={ref} behavior={behavior} {...props} />;
+  },
+);
 
 const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
   function TreeListReorderableItem(props, ref) {
@@ -674,21 +704,12 @@ const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
               disabled: sortableDisabled,
               isDragging,
             },
-      [
-        reorderContext,
-        attributes,
-        listeners,
-        setActivatorNodeRef,
-        sortableDisabled,
-        isDragging,
-      ],
+      [reorderContext, attributes, listeners, setActivatorNodeRef, sortableDisabled, isDragging],
     );
     const handleRowKeyDown = useCallback(
       (event: KeyboardEvent<HTMLDivElement>) => {
-        if (
-          event.target instanceof Element &&
-          event.target.closest('[data-ov-tree-drag-handle]')
-        ) return;
+        if (event.target instanceof Element && event.target.closest('[data-ov-tree-drag-handle]'))
+          return;
         // Do not stop propagation: the keyboard sensor listens on document.
         onKeyDown?.(event);
       },
@@ -713,15 +734,7 @@ const TreeListReorderableItem = forwardRef<HTMLDivElement, TreeListItemProps>(
 
 const TreeListItemDragHandle = forwardRef<HTMLButtonElement, TreeListItemDragHandleProps>(
   function TreeListItemDragHandle(
-    {
-      className,
-      disabled = false,
-      onClick,
-      onKeyDown,
-      onPointerDown,
-      children,
-      ...props
-    },
+    { className, disabled = false, onClick, onKeyDown, onPointerDown, children, ...props },
     ref,
   ) {
     const activator = useContext(TreeItemActivatorContext);
@@ -818,7 +831,13 @@ const TreeListItemIndent = forwardRef<HTMLSpanElement, TreeListItemIndentProps>(
             // Preserve the existing column semantics for elbow connectors.
             const ancestorIndex = config.indentGuide === 'rail' ? i + 1 : i;
             const showLine = !isConnector && !(ancestorIsLast?.[ancestorIndex] ?? true);
-            const segment = isConnector ? (isLastChild ? 'last' : 'mid') : showLine ? 'pass' : undefined;
+            const segment = isConnector
+              ? isLastChild
+                ? 'last'
+                : 'mid'
+              : showLine
+                ? 'pass'
+                : undefined;
 
             return (
               <span

@@ -30,9 +30,7 @@ export interface TreeStateReturn<TItem> {
  * Creates the store, wires controlled/uncontrolled state,
  * returns persistent state independently of optional ordering and DnD.
  */
-export function useTreeState<TItem>(
-  props: TreeListRootProps<TItem>,
-): TreeStateReturn<TItem> {
+export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateReturn<TItem> {
   const {
     items,
     itemKey,
@@ -168,7 +166,7 @@ export function useTreeState<TItem>(
 
   const select = useCallback(
     (key: Key) => {
-      if (selectionMode === 'none' || disabledKeys.has(key)) return;
+      if (selectionMode === 'none' || disabledKeys.has(key) || !store.isSelectable(key)) return;
       if (selectionMode === 'single') {
         setSelectedKeys(new Set([key]));
         anchorKeyRef.current = key;
@@ -181,7 +179,7 @@ export function useTreeState<TItem>(
         anchorKeyRef.current = key;
       }
     },
-    [selectionMode, selectionBehavior, disabledKeys, setSelectedKeys],
+    [selectionMode, selectionBehavior, disabledKeys, store, setSelectedKeys],
   );
 
   const deselect = useCallback(
@@ -197,7 +195,7 @@ export function useTreeState<TItem>(
 
   const toggle = useCallback(
     (key: Key) => {
-      if (selectionMode === 'none' || disabledKeys.has(key)) return;
+      if (selectionMode === 'none' || disabledKeys.has(key) || !store.isSelectable(key)) return;
       if (selectionMode === 'single') {
         setSelectedKeys((prev) => (prev.has(key) ? new Set() : new Set([key])));
         anchorKeyRef.current = key;
@@ -214,7 +212,7 @@ export function useTreeState<TItem>(
         anchorKeyRef.current = key;
       }
     },
-    [selectionMode, disabledKeys, setSelectedKeys],
+    [selectionMode, disabledKeys, store, setSelectedKeys],
   );
 
   const selectRange = useCallback(
@@ -228,7 +226,9 @@ export function useTreeState<TItem>(
 
       const start = Math.min(fromIndex, toIndex);
       const end = Math.max(fromIndex, toIndex);
-      const rangeKeys = keys.slice(start, end + 1).filter((k) => !disabledKeys.has(k));
+      const rangeKeys = keys
+        .slice(start, end + 1)
+        .filter((k) => !disabledKeys.has(k) && store.isSelectable(k));
 
       setSelectedKeys(new Set(rangeKeys));
     },
@@ -237,7 +237,9 @@ export function useTreeState<TItem>(
 
   const selectAll = useCallback(() => {
     if (selectionMode !== 'multiple') return;
-    const keys = store.getRegisteredKeys().filter((k) => !disabledKeys.has(k));
+    const keys = store
+      .getRegisteredKeys()
+      .filter((k) => !disabledKeys.has(k) && store.isSelectable(k));
     setSelectedKeys(new Set(keys));
   }, [selectionMode, disabledKeys, store, setSelectedKeys]);
 

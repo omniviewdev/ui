@@ -35,12 +35,7 @@ export function useTreeOrder({
   onOrderChangeRef.current = onOrderChange;
 
   const proposeMove = useCallback(
-    (
-      siblingKeys: readonly Key[],
-      parentKey: Key | null,
-      activeKey: Key,
-      overKey: Key,
-    ) => {
+    (siblingKeys: readonly Key[], parentKey: Key | null, activeKey: Key, overKey: Key) => {
       const proposal = moveSibling(
         currentOrderRef.current,
         siblingKeys,

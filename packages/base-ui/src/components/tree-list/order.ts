@@ -14,9 +14,7 @@ export function applySiblingOrder<TItem>(
 
   const result: TItem[] = [];
   const includedKeys = new Set<Key>();
-  const explicitKeyCount = Math.min(orderedKeys.length, siblings.length);
-  for (let index = 0; index < explicitKeyCount; index += 1) {
-    const key = orderedKeys[index]!;
+  for (const key of orderedKeys) {
     if (itemByKey.has(key) && !includedKeys.has(key)) {
       result.push(itemByKey.get(key) as TItem);
       includedKeys.add(key);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { Key, TreeItemState, TreeStore } from '../types';
 
 /**
@@ -9,13 +9,20 @@ import type { Key, TreeItemState, TreeStore } from '../types';
  * Unlike useListItem, this does NOT self-register — keys come from
  * the flattener, not from DOM mount.
  */
-export function useTreeItem(store: TreeStore, key: Key, textValue?: string): TreeItemState {
-  // Register text value for typeahead (but not the key itself)
-  useEffect(() => {
+export function useTreeItem(
+  store: TreeStore,
+  key: Key,
+  textValue?: string,
+  selectable = true,
+): TreeItemState {
+  // Retain per-key metadata across virtualized/filtered unmounts. Eligibility
+  // must be registered before keyboard interaction, not only on row clicks.
+  useLayoutEffect(() => {
+    store.registerSelectable(key, selectable);
     if (textValue !== undefined) {
       store.registerTextValue(key, textValue);
     }
-  }, [store, key, textValue]);
+  }, [store, key, textValue, selectable]);
 
   const prevRef = useRef<TreeItemState>({
     isSelected: false,

@@ -1,9 +1,11 @@
-import { fireEvent, screen } from '@testing-library/react';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { TreeList } from './TreeList';
-import type { TreeNodeMeta, TreeListRootProps } from './types';
+import { handleTreeDragEnd } from './TreeListReorder';
+import type { Key, TreeNodeMeta, TreeListRootProps, TreeOrder } from './types';
 
 // ---------------------------------------------------------------------------
 // Test data
@@ -49,6 +51,50 @@ function renderItem(item: FileItem, node: TreeNodeMeta) {
       <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
     </TreeList.Item>
   );
+}
+
+function renderReorderableItem(item: FileItem, node: TreeNodeMeta) {
+  return (
+    <TreeList.ReorderableItem itemKey={node.key} textValue={item.name}>
+      <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>⋮⋮</TreeList.ItemDragHandle>
+      <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+    </TreeList.ReorderableItem>
+  );
+}
+
+function dragEndEvent(activeKey: Key, overKey: Key | null): DragEndEvent {
+  return {
+    active: { id: activeKey },
+    over: overKey === null ? null : { id: overKey },
+  } as DragEndEvent;
+}
+
+const originalScrollIntoView = Object.getOwnPropertyDescriptor(
+  HTMLElement.prototype,
+  'scrollIntoView',
+);
+
+afterEach(() => {
+  if (originalScrollIntoView) {
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', originalScrollIntoView);
+  } else {
+    Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
+  }
+});
+
+function supportKeyboardDraggingInJSDOM() {
+  Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+    configurable: true,
+    value: vi.fn(),
+  });
+}
+
+function giveTreeRowsVerticalGeometry() {
+  screen.getAllByRole('treeitem').forEach((row, index) => {
+    vi.spyOn(row, 'getBoundingClientRect').mockReturnValue(
+      DOMRect.fromRect({ x: 0, y: index * 40, width: 200, height: 32 }),
+    );
+  });
 }
 
 function TestTree(props: Partial<TreeListRootProps<FileItem>>) {
@@ -199,6 +245,155 @@ describe('TreeList', () => {
 
     await user.click(screen.getByText('README.md'));
     expect(onChange).toHaveBeenCalledWith(new Set(['/README.md']));
+  });
+
+  it('keeps non-selectable branches active and clickable without selecting them', async () => {
+    const user = userEvent.setup();
+    const onBranchClick = vi.fn();
+
+    renderWithTheme(
+      <TestTree
+        renderItem={(item, node) => (
+          <TreeList.Item
+            itemKey={node.key}
+            textValue={item.name}
+            selectable={item.type !== 'directory'}
+            onClick={item.type === 'directory' ? onBranchClick : undefined}
+          >
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.Item>
+        )}
+      />,
+    );
+
+    await user.click(screen.getByText('src'));
+    const branch = screen.getByText('src').closest('[role="treeitem"]');
+    expect(onBranchClick).toHaveBeenCalledOnce();
+    expect(branch).toHaveAttribute('data-ov-active', 'true');
+    expect(branch).not.toHaveAttribute('aria-selected');
+
+    await user.click(screen.getByText('README.md'));
+    const leaf = screen.getByText('README.md').closest('[role="treeitem"]');
+    expect(leaf).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it.each(['single', 'multiple'] as const)(
+    'keeps non-selectable branches focused and expandable through keyboard activation in %s mode',
+    async (selectionMode) => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderWithTheme(
+        <TestTree
+          selectionMode={selectionMode}
+          onSelectedKeysChange={onChange}
+          renderItem={(item, node) => (
+            <TreeList.Item itemKey={node.key} selectable={item.type !== 'directory'}>
+              <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+            </TreeList.Item>
+          )}
+        />,
+      );
+      screen.getByRole('tree').focus();
+      await user.keyboard('{ArrowDown}{Enter}{ArrowRight}');
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'data-ov-active',
+        'true',
+      );
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+      await user.keyboard(' ');
+      expect(onChange).not.toHaveBeenCalled();
+      expect(screen.getByText('src').closest('[role="treeitem"]')).not.toHaveAttribute(
+        'aria-selected',
+      );
+      await user.keyboard('{End}{Enter}');
+      expect(onChange).toHaveBeenLastCalledWith(new Set(['/README.md']));
+    },
+  );
+
+  it('excludes never-mounted virtualized branches from Ctrl+A using source eligibility', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const renderRow = vi.fn(renderItem);
+    const items: FileItem[] = Array.from({ length: 200 }, (_, index) => ({
+      path: `row-${index}`,
+      name: `Row ${index}`,
+      type: index % 2 === 0 ? 'directory' : 'file',
+      children: index % 2 === 0 ? [] : undefined,
+    }));
+    renderWithTheme(
+      <TestTree
+        items={items}
+        virtualized
+        selectionMode="multiple"
+        isItemSelectable={(item) => item.type !== 'directory'}
+        renderItem={renderRow}
+        onSelectedKeysChange={onChange}
+      />,
+    );
+    expect(screen.queryByText('Row 198')).not.toBeInTheDocument();
+    expect(renderRow.mock.calls.some(([item]) => item.path === 'row-198')).toBe(false);
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Control>}a{/Control}');
+    expect(onChange).toHaveBeenLastCalledWith(
+      new Set(items.filter((item) => item.type === 'file').map((item) => item.path)),
+    );
+  });
+
+  it('keeps source eligibility authoritative over mounted item defaults and updates it externally', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { rerender } = renderWithTheme(
+      <TestTree
+        isItemSelectable={(item) => item.type !== 'directory'}
+        onSelectedKeysChange={onChange}
+      />,
+    );
+    await user.click(screen.getByText('src'));
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Enter} ');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+      'data-ov-active',
+      'true',
+    );
+    rerender(<TestTree onSelectedKeysChange={onChange} />);
+    await user.keyboard('{Enter}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src']));
+  });
+
+  it('excludes non-selectable branches from select-all and keyboard ranges', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithTheme(
+      <TestTree
+        selectionMode="multiple"
+        defaultExpandedKeys={new Set(['/src'])}
+        onSelectedKeysChange={onChange}
+        renderItem={(item, node) => (
+          <TreeList.Item itemKey={node.key} selectable={item.type !== 'directory'}>
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.Item>
+        )}
+      />,
+    );
+    screen.getByRole('tree').focus();
+    await user.keyboard('{Control>}a{/Control}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src/index.ts', '/README.md']));
+    await user.keyboard('{End}{Enter}{Shift>}{ArrowUp}{ArrowUp}{ArrowUp}{/Shift}');
+    expect(onChange).toHaveBeenLastCalledWith(new Set(['/src/index.ts', '/README.md']));
+    expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+      'data-ov-active',
+      'true',
+    );
+    expect(screen.getByText('components').closest('[role="treeitem"]')).not.toHaveAttribute(
+      'aria-selected',
+    );
+    expect(screen.getByText('src').closest('[role="treeitem"]')).not.toHaveAttribute(
+      'aria-selected',
+    );
   });
 
   it('replaces selection on click in single mode', async () => {
@@ -529,148 +724,775 @@ describe('TreeList', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Branch connectors
+  // Indent guides
   // -------------------------------------------------------------------------
 
-  describe('branch connectors', () => {
-    function renderItemWithConnectors(item: FileItem, node: TreeNodeMeta) {
-      return (
-        <TreeList.Item itemKey={node.key} textValue={item.name}>
-          <TreeList.ItemIndent
-            depth={node.depth}
-            ancestorIsLast={node.ancestorIsLast}
-            isLastChild={node.isLastChild}
-          />
-          <TreeList.ItemToggle itemKey={node.key} />
+  describe('indent guides', () => {
+    function guidesFor(name: string) {
+      return screen
+        .getByText(name)
+        .closest('[role="treeitem"]')!
+        .querySelectorAll('[data-ov-guide]');
+    }
+
+    it('retains mid, last, and pass-through elbows in connectors mode', () => {
+      renderWithTheme(
+        <TestTree
+          defaultExpandedKeys={new Set(['/src', '/src/components'])}
+          indentGuide="connectors"
+        />,
+      );
+
+      expect(guidesFor('components')).toHaveLength(1);
+      expect(guidesFor('App.tsx')[0]).toHaveAttribute('data-ov-segment', 'pass');
+      expect(guidesFor('App.tsx')[1]).toHaveAttribute('data-ov-connector', 'mid');
+      expect(guidesFor('Header.tsx')[1]).toHaveAttribute('data-ov-connector', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-connector', 'last');
+    });
+
+    it('renders full-height and center-terminated rail segments without elbows', () => {
+      renderWithTheme(
+        <TestTree defaultExpandedKeys={new Set(['/src', '/src/components'])} indentGuide="rail" />,
+      );
+
+      const appGuides = guidesFor('App.tsx');
+      expect(appGuides).toHaveLength(2);
+      expect(appGuides[0]).toHaveAttribute('data-ov-guide', 'rail');
+      expect(appGuides[0]).toHaveAttribute('data-ov-segment', 'pass');
+      expect(appGuides[1]).toHaveAttribute('data-ov-segment', 'mid');
+      expect(guidesFor('Header.tsx')[1]).toHaveAttribute('data-ov-segment', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'last');
+      expect(screen.getByRole('tree').querySelector('[data-ov-connector]')).toBeNull();
+    });
+
+    it('continues rail ancestors at multiple depths and stops after their final children', () => {
+      const nested: FileItem[] = [
+        {
+          path: '/root',
+          name: 'root',
+          type: 'directory',
+          children: [
+            {
+              path: '/branch',
+              name: 'branch',
+              type: 'directory',
+              children: [
+                {
+                  path: '/nested',
+                  name: 'nested',
+                  type: 'directory',
+                  children: [{ path: '/leaf', name: 'leaf', type: 'file' }],
+                },
+                { path: '/branch-last', name: 'branch-last', type: 'file' },
+              ],
+            },
+            {
+              path: '/last-branch',
+              name: 'last-branch',
+              type: 'directory',
+              children: [{ path: '/last-leaf', name: 'last-leaf', type: 'file' }],
+            },
+          ],
+        },
+      ];
+      renderWithTheme(
+        <TestTree
+          items={nested}
+          defaultExpandedKeys={new Set(['/root', '/branch', '/nested', '/last-branch'])}
+          indentGuide="rail"
+        />,
+      );
+
+      expect(
+        Array.from(guidesFor('leaf'), (guide) => guide.getAttribute('data-ov-segment')),
+      ).toEqual(['pass', 'pass', 'last']);
+      const lastGuides = guidesFor('last-leaf');
+      expect(lastGuides).toHaveLength(2);
+      expect(lastGuides[0]).not.toHaveAttribute('data-ov-segment');
+      expect(lastGuides[1]).toHaveAttribute('data-ov-segment', 'last');
+    });
+
+    it.each(['rail', 'connectors'] as const)('omits %s guides at depth zero', (indentGuide) => {
+      renderWithTheme(<TestTree indentGuide={indentGuide} />);
+      expect(guidesFor('src')).toHaveLength(0);
+      expect(guidesFor('README.md')).toHaveLength(0);
+    });
+
+    it.each([undefined, 'none'] as const)(
+      'retains plain indentation for guide mode %s',
+      (indentGuide) => {
+        renderWithTheme(
+          <TestTree
+            defaultExpandedKeys={new Set(['/src', '/src/components'])}
+            indentGuide={indentGuide}
+            indentation={24}
+          />,
+        );
+        const row = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
+        expect(guidesFor('App.tsx')).toHaveLength(0);
+        expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle({
+          '--tree-depth': '2',
+          '--_ov-tree-indent': '24px',
+        });
+      },
+    );
+
+    it('updates rail termination when sibling order changes', () => {
+      const { rerender } = renderWithTheme(
+        <TestTree defaultExpandedKeys={new Set(['/src'])} indentGuide="rail" />,
+      );
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'mid');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'last');
+
+      rerender(
+        <TestTree
+          defaultExpandedKeys={new Set(['/src'])}
+          indentGuide="rail"
+          order={new Map([['/src', ['/src/index.ts', '/src/components']]])}
+        />,
+      );
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'last');
+      expect(guidesFor('index.ts')[0]).toHaveAttribute('data-ov-segment', 'mid');
+    });
+
+    it('terminates rails at the final matching child when filtering', () => {
+      renderWithTheme(<TestTree indentGuide="rail" filterText="App.tsx" />);
+
+      expect(screen.queryByText('Header.tsx')).not.toBeInTheDocument();
+      expect(screen.queryByText('index.ts')).not.toBeInTheDocument();
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-segment', 'last');
+      const appGuides = guidesFor('App.tsx');
+      expect(appGuides[0]).not.toHaveAttribute('data-ov-segment');
+      expect(appGuides[1]).toHaveAttribute('data-ov-segment', 'last');
+    });
+
+    it('preserves expansion and selection when changing guide modes', async () => {
+      const user = userEvent.setup();
+      const { rerender } = renderWithTheme(
+        <TestTree indentGuide="none" defaultExpandedKeys={new Set(['/src'])} />,
+      );
+      await user.click(screen.getByText('components'));
+      expect(screen.getByText('components').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+
+      rerender(<TestTree indentGuide="rail" defaultExpandedKeys={new Set(['/src'])} />);
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-guide', 'rail');
+      expect(screen.getByText('components').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+
+      rerender(<TestTree indentGuide="connectors" defaultExpandedKeys={new Set(['/src'])} />);
+      expect(guidesFor('components')[0]).toHaveAttribute('data-ov-connector', 'mid');
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Ordering
+  // -------------------------------------------------------------------------
+
+  describe('ordering', () => {
+    it('orders root and nested siblings', () => {
+      const order: TreeOrder = new Map([
+        [null, ['/README.md', '/src']],
+        ['/src', ['/src/index.ts', '/src/components']],
+      ]);
+
+      renderWithTheme(<TestTree order={order} defaultExpandedKeys={new Set(['/src'])} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+        'index.ts',
+        'components',
+      ]);
+    });
+
+    it('appends source siblings missing from an order entry', () => {
+      const order: TreeOrder = new Map([[null, ['/README.md']]]);
+
+      renderWithTheme(<TestTree defaultOrder={order} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+    });
+
+    it('uses replacement controlled order props', () => {
+      const initial: TreeOrder = new Map([[null, ['/README.md', '/src']]]);
+      const replacement: TreeOrder = new Map([[null, ['/src', '/README.md']]]);
+      const { rerender } = renderWithTheme(<TestTree order={initial} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+
+      rerender(<TestTree order={replacement} />);
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'src',
+        'README.md',
+      ]);
+    });
+
+    it('preserves sibling order and last-child metadata while filtering', () => {
+      const order: TreeOrder = new Map([
+        ['/src/components', ['/src/components/Header.tsx', '/src/components/App.tsx']],
+      ]);
+      const renderItemWithLastChild = (item: FileItem, node: TreeNodeMeta) => (
+        <TreeList.Item
+          itemKey={node.key}
+          textValue={item.name}
+          data-testid={`ordered-${item.name}`}
+          data-last-child={node.isLastChild ? 'true' : 'false'}
+        >
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
         </TreeList.Item>
       );
-    }
 
-    it('renders guide segments when showBranchConnectors is enabled', () => {
       renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
-        />,
+        <TestTree order={order} filterText=".tsx" renderItem={renderItemWithLastChild} />,
       );
 
-      // depth-1 item: should have 1 guide segment
-      const components = screen.getByText('components').closest('[role="treeitem"]')!;
-      const compIndent = components.querySelector('[class*="ItemIndent"]')!;
-      expect(compIndent).toHaveAttribute('data-ov-guides');
-      const compGuides = compIndent.querySelectorAll('[class*="ItemGuide"]');
-      expect(compGuides).toHaveLength(1);
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'src',
+        'components',
+        'Header.tsx',
+        'App.tsx',
+      ]);
+      expect(screen.getByTestId('ordered-Header.tsx')).toHaveAttribute('data-last-child', 'false');
+      expect(screen.getByTestId('ordered-App.tsx')).toHaveAttribute('data-last-child', 'true');
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Reordering
+  // -------------------------------------------------------------------------
+
+  describe('reordering', () => {
+    it('reorders uncontrolled siblings with the keyboard and reports move metadata', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      renderWithTheme(
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
+      );
+      giveTreeRowsVerticalGeometry();
+
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(1);
+      expect(onOrderChange.mock.calls[0]?.[1]).toEqual({
+        activeKey: '/src',
+        overKey: '/README.md',
+        parentKey: null,
+        fromIndex: 0,
+        toIndex: 1,
+      });
     });
 
-    it('renders mid connector for non-last children', () => {
-      renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
-        />,
-      );
+    it('retains uncontrolled sibling order when edit mode exits and reenters without order props', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const { rerender } = renderWithTheme(<TestTree />);
+      rerender(<TestTree reorderable renderItem={renderReorderableItem} />);
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
 
-      // App.tsx is NOT the last child of components → mid connector at column 1
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appGuides = appItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(appGuides).toHaveLength(2); // depth 2 = 2 guides
+      rerender(<TestTree />);
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        'README.md',
+        'src',
+      ]);
+      expect(screen.queryByRole('button', { name: /reorder/i })).not.toBeInTheDocument();
+      for (const row of screen.getAllByRole('treeitem')) {
+        expect(row).not.toHaveAttribute('data-ov-reorderable');
+      }
 
-      // Column 1 (last) should be a mid connector
-      expect(appGuides[1]).toHaveAttribute('data-ov-connector', 'mid');
+      rerender(<TestTree reorderable renderItem={renderReorderableItem} />);
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder README.md' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
     });
 
-    it('renders last connector for last children', () => {
-      renderWithTheme(
+    it('preserves uncontrolled reorder state while showing and recovering from an error', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const { rerender } = renderWithTheme(
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
+      );
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      const tree = screen.getByRole('tree');
+
+      rerender(
         <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          reorderable
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+          error="Unable to refresh files"
         />,
       );
+      expect(screen.getByText('Unable to refresh files')).toBeInTheDocument();
+      expect(screen.queryByRole('treeitem')).not.toBeInTheDocument();
+      expect(screen.getByRole('tree')).toBe(tree);
 
-      // Header.tsx is the last child of components → last connector at column 1
-      const headerItem = screen.getByText('Header.tsx').closest('[role="treeitem"]')!;
-      const headerGuides = headerItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(headerGuides).toHaveLength(2);
-      expect(headerGuides[1]).toHaveAttribute('data-ov-connector', 'last');
+      rerender(
+        <TestTree reorderable renderItem={renderReorderableItem} onOrderChange={onOrderChange} />,
+      );
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledOnce();
+
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder README.md' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(2);
+      expect(onOrderChange.mock.calls[1]?.[1]).toEqual({
+        activeKey: '/README.md',
+        overKey: '/src',
+        parentKey: null,
+        fromIndex: 0,
+        toIndex: 1,
+      });
     });
 
-    it('renders vertical pass-through line when ancestor is not last', () => {
-      renderWithTheme(
+    it('emits a controlled reorder without changing rendering until rerender', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const initialOrder: TreeOrder = new Map([[null, ['/src', '/README.md']]]);
+      const { rerender } = renderWithTheme(
         <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          reorderable
+          order={initialOrder}
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
         />,
       );
 
-      // App.tsx at depth 2: column 0 should show vertical line
-      // because /src (depth 0) is NOT last root (README.md follows)
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appGuides = appItem.querySelectorAll('[class*="ItemGuide"]');
-      expect(appGuides[0]).toHaveAttribute('data-ov-line');
+      giveTreeRowsVerticalGeometry();
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Space][ArrowDown][Space]');
+
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮src',
+        '⋮⋮README.md',
+      ]);
+      expect(onOrderChange).toHaveBeenCalledTimes(1);
+
+      const nextOrder = onOrderChange.mock.calls[0]?.[0] as TreeOrder;
+      rerender(
+        <TestTree
+          reorderable
+          order={nextOrder}
+          renderItem={renderReorderableItem}
+          onOrderChange={onOrderChange}
+        />,
+      );
+      expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+        '⋮⋮README.md',
+        '⋮⋮src',
+      ]);
     });
 
-    it('does not render vertical line when ancestor is last', () => {
-      // Use data where the root is the last item so ancestorIsLast[0] = true
-      const singleRoot: FileItem[] = [
-        {
-          path: '/only',
-          name: 'only',
-          type: 'directory',
-          children: [{ path: '/only/child.ts', name: 'child.ts', type: 'file' }],
-        },
-      ];
+    it.each(['root', 'item'] as const)(
+      'keeps a %s-disabled sibling measurable as a rejected reorder target',
+      async (disabledAt) => {
+        supportKeyboardDraggingInJSDOM();
+        const user = userEvent.setup();
+        const onOrderChange = vi.fn();
+        const siblingData: FileItem[] = [
+          { path: '/a', name: 'a', type: 'file' },
+          { path: '/b', name: 'b', type: 'file' },
+          { path: '/c', name: 'c', type: 'file' },
+        ];
+        renderWithTheme(
+          <TestTree
+            items={siblingData}
+            reorderable
+            disabledKeys={disabledAt === 'root' ? ['/b'] : undefined}
+            renderItem={(item, node) => (
+              <TreeList.ReorderableItem
+                itemKey={node.key}
+                disabled={disabledAt === 'item' && node.key === '/b'}
+              >
+                <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+                  ⋮⋮
+                </TreeList.ItemDragHandle>
+                <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+              </TreeList.ReorderableItem>
+            )}
+            onOrderChange={onOrderChange}
+          />,
+        );
+        giveTreeRowsVerticalGeometry();
 
+        expect(screen.getByRole('button', { name: 'Reorder b' })).toBeDisabled();
+        screen.getByRole('button', { name: 'Reorder a' }).focus();
+        await user.keyboard('[Space]');
+        await user.keyboard('[ArrowDown]');
+        expect(document.body).toHaveTextContent(
+          'Draggable item /a was moved over droppable area /b.',
+        );
+        await user.keyboard('[Space]');
+
+        expect(onOrderChange).not.toHaveBeenCalled();
+        expect(screen.getAllByRole('treeitem').map((item) => item.textContent)).toEqual([
+          '⋮⋮a',
+          '⋮⋮b',
+          '⋮⋮c',
+        ]);
+      },
+    );
+
+    it.each([false, true])(
+      'preserves uncontrolled state and focus on edit toggle with order props: %s',
+      async (hasOrder) => {
+        const user = userEvent.setup();
+        const defaultOrder: TreeOrder | undefined = hasOrder ? new Map() : undefined;
+        const renderEditingItem = (item: FileItem, node: TreeNodeMeta) => (
+          <TreeList.ReorderableItem itemKey={node.key}>
+            <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>
+              ⋮⋮
+            </TreeList.ItemDragHandle>
+            <TreeList.ItemToggle itemKey={node.key} />
+            <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+          </TreeList.ReorderableItem>
+        );
+        const { rerender } = renderWithTheme(<TestTree defaultOrder={defaultOrder} />);
+
+        await user.click(screen.getByRole('button', { name: 'Expand' }));
+        await user.click(screen.getByText('index.ts'));
+        const tree = screen.getByRole('tree');
+        tree.focus();
+
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(tree).toHaveFocus();
+
+        rerender(
+          <TestTree reorderable defaultOrder={defaultOrder} renderItem={renderEditingItem} />,
+        );
+
+        expect(screen.getByRole('tree')).toBe(tree);
+        expect(tree).toHaveFocus();
+        expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-expanded',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'data-ov-active',
+          'true',
+        );
+
+        rerender(<TestTree defaultOrder={defaultOrder} />);
+        expect(screen.getByRole('tree')).toBe(tree);
+        expect(tree).toHaveFocus();
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-selected',
+          'true',
+        );
+        expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+          'aria-expanded',
+          'true',
+        );
+        expect(screen.getByText('index.ts').closest('[role="treeitem"]')).toHaveAttribute(
+          'data-ov-active',
+          'true',
+        );
+      },
+    );
+
+    it.each([null, 'parent'])(
+      'preserves hidden saved sibling order in group %s after filter → reorder → clear',
+      async (parentKey) => {
+        supportKeyboardDraggingInJSDOM();
+        const user = userEvent.setup();
+        const onOrderChange = vi.fn();
+        const siblings: FileItem[] = [
+          { path: 'a', name: 'shown A', type: 'file' },
+          { path: 'b', name: 'shown B', type: 'file' },
+          { path: 'c', name: 'hidden C', type: 'file' },
+          { path: 'd', name: 'hidden D', type: 'file' },
+        ];
+        const props = {
+          items:
+            parentKey === null
+              ? siblings
+              : [
+                  {
+                    path: parentKey,
+                    name: 'parent',
+                    type: 'directory' as const,
+                    children: siblings,
+                  },
+                ],
+          defaultExpandedKeys: new Set(parentKey === null ? [] : [parentKey]),
+          reorderable: true,
+          defaultOrder: new Map([[parentKey, ['d', 'a', 'c', 'b']]]),
+          renderItem: renderReorderableItem,
+          onOrderChange,
+        };
+        const { rerender } = renderWithTheme(<TestTree {...props} filterText="shown" />);
+        giveTreeRowsVerticalGeometry();
+        screen.getByRole('button', { name: 'Reorder shown A' }).focus();
+        await user.keyboard('[Enter][ArrowDown][Space]');
+        expect(onOrderChange).toHaveBeenCalledOnce();
+        expect(onOrderChange.mock.calls[0]![0].get(parentKey)).toEqual(['d', 'c', 'b', 'a']);
+        rerender(<TestTree {...props} filterText="" />);
+        expect(
+          screen
+            .getAllByRole('treeitem')
+            .filter((row) => row.textContent !== '⋮⋮parent')
+            .map((row) => row.textContent),
+        ).toEqual(['⋮⋮hidden D', '⋮⋮hidden C', '⋮⋮shown B', '⋮⋮shown A']);
+      },
+    );
+
+    it('keeps handle drag keys out of the public row key handler', async () => {
+      supportKeyboardDraggingInJSDOM();
+      const user = userEvent.setup();
+      const onOrderChange = vi.fn();
+      const onRowKeyDown = vi.fn();
+      const renderItemWithRowKeyHandler = (item: FileItem, node: TreeNodeMeta) => (
+        <TreeList.ReorderableItem itemKey={node.key} textValue={item.name} onKeyDown={onRowKeyDown}>
+          <TreeList.ItemDragHandle aria-label={`Reorder ${item.name}`}>⋮⋮</TreeList.ItemDragHandle>
+          <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
+        </TreeList.ReorderableItem>
+      );
       renderWithTheme(
         <TestTree
-          items={singleRoot}
-          defaultExpandedKeys={new Set(['/only'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          reorderable
+          renderItem={renderItemWithRowKeyHandler}
+          onOrderChange={onOrderChange}
         />,
       );
+      giveTreeRowsVerticalGeometry();
 
-      // child.ts at depth 1: only 1 guide (the connector), no pass-through needed
-      const child = screen.getByText('child.ts').closest('[role="treeitem"]')!;
-      const guides = child.querySelectorAll('[class*="ItemGuide"]');
-      expect(guides).toHaveLength(1);
-      // It should be a last connector (only child)
-      expect(guides[0]).toHaveAttribute('data-ov-connector', 'last');
+      screen.getByRole('button', { name: 'Reorder src' }).focus();
+      await user.keyboard('[Enter][ArrowDown][Space]');
+
+      expect(onRowKeyDown).not.toHaveBeenCalled();
+      expect(onOrderChange).toHaveBeenCalledOnce();
+
+      fireEvent.keyDown(screen.getByText('src').closest('[role="treeitem"]')!, {
+        key: 'Enter',
+      });
+      expect(onRowKeyDown).toHaveBeenCalledOnce();
     });
 
-    it('does not render guide segments when showBranchConnectors is false', () => {
-      renderWithTheme(
-        <TestTree
-          defaultExpandedKeys={new Set(['/src', '/src/components'])}
-          showBranchConnectors={false}
-          renderItem={renderItemWithConnectors}
-        />,
-      );
+    it('rejects cross-parent, disabled, self, invalid, and cancelled reorder drops', () => {
+      const proposeMove = vi.fn();
+      const nodeMeta = new Map<Key, TreeNodeMeta>([
+        [
+          '/src',
+          {
+            key: '/src',
+            depth: 0,
+            parentKey: null,
+            isBranch: true,
+            isExpanded: true,
+            isLoading: false,
+            isLastChild: false,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/README.md',
+          {
+            key: '/README.md',
+            depth: 0,
+            parentKey: null,
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/src/index.ts',
+          {
+            key: '/src/index.ts',
+            depth: 1,
+            parentKey: '/src',
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [false],
+          },
+        ],
+      ]);
+      const baseOptions = {
+        visibleKeys: ['/src', '/src/index.ts', '/README.md'] as const,
+        disabledKeys: new Set<Key>(),
+        getNodeMeta: (key: Key) => nodeMeta.get(key),
+        getSiblingKeys: () => ['/src', '/README.md'],
+        proposeMove,
+      };
 
-      const appItem = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
-      const appIndent = appItem.querySelector('[class*="ItemIndent"]')!;
-      // Should NOT have guide segments — uses simple CSS var indent instead
-      expect(appIndent).not.toHaveAttribute('data-ov-guides');
-      expect(appIndent.querySelectorAll('[class*="ItemGuide"]')).toHaveLength(0);
+      handleTreeDragEnd(dragEndEvent('/src', '/src/index.ts'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', '/src'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/missing', '/README.md'), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', null), baseOptions);
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        ...baseOptions,
+        disabledKeys: new Set<Key>(['/README.md']),
+      });
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        ...baseOptions,
+        disabledKeys: new Set<Key>(['/src']),
+      });
+
+      expect(proposeMove).not.toHaveBeenCalled();
     });
 
-    it('does not render guides for root-level items (depth 0)', () => {
+    it('proposes one reorder for a valid same-parent drop using complete resolved siblings', () => {
+      const proposeMove = vi.fn();
+      const nodeMeta = new Map<Key, TreeNodeMeta>([
+        [
+          '/src',
+          {
+            key: '/src',
+            depth: 0,
+            parentKey: null,
+            isBranch: true,
+            isExpanded: true,
+            isLoading: false,
+            isLastChild: false,
+            ancestorIsLast: [],
+          },
+        ],
+        [
+          '/src/index.ts',
+          {
+            key: '/src/index.ts',
+            depth: 1,
+            parentKey: '/src',
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [false],
+          },
+        ],
+        [
+          '/README.md',
+          {
+            key: '/README.md',
+            depth: 0,
+            parentKey: null,
+            isBranch: false,
+            isExpanded: false,
+            isLoading: false,
+            isLastChild: true,
+            ancestorIsLast: [],
+          },
+        ],
+      ]);
+
+      handleTreeDragEnd(dragEndEvent('/src', '/README.md'), {
+        visibleKeys: ['/src', '/src/index.ts', '/README.md'],
+        disabledKeys: new Set(),
+        getNodeMeta: (key) => nodeMeta.get(key),
+        getSiblingKeys: () => ['/hidden', '/src', '/README.md'],
+        proposeMove,
+      });
+
+      expect(proposeMove).toHaveBeenCalledOnce();
+      expect(proposeMove).toHaveBeenCalledWith(
+        ['/hidden', '/src', '/README.md'],
+        null,
+        '/src',
+        '/README.md',
+      );
+    });
+
+    it('keeps drag-handle pointer and keyboard events from activating or selecting rows', async () => {
+      const user = userEvent.setup();
+      const onActiveKeyChange = vi.fn();
+      const onSelectedKeysChange = vi.fn();
       renderWithTheme(
         <TestTree
-          defaultExpandedKeys={new Set(['/src'])}
-          showBranchConnectors
-          renderItem={renderItemWithConnectors}
+          reorderable
+          renderItem={renderReorderableItem}
+          defaultActiveKey="/src"
+          onActiveKeyChange={onActiveKeyChange}
+          onSelectedKeysChange={onSelectedKeysChange}
         />,
       );
+      const handle = screen.getByRole('button', { name: 'Reorder README.md' });
 
-      // /src is depth 0 — no indent guides needed
-      const src = screen.getByText('src').closest('[role="treeitem"]')!;
-      const srcIndent = src.querySelector('[class*="ItemIndent"]')!;
-      expect(srcIndent).not.toHaveAttribute('data-ov-guides');
+      await user.click(handle);
+      fireEvent.keyDown(handle, { key: 'Enter' });
+
+      expect(onActiveKeyChange).not.toHaveBeenCalled();
+      expect(onSelectedKeysChange).not.toHaveBeenCalled();
+      expect(screen.getByText('src').closest('[role="treeitem"]')).toHaveAttribute(
+        'data-ov-active',
+        'true',
+      );
+    });
+
+    it('keeps static items free of drag handles, sortable attributes, and wrappers', () => {
+      renderWithTheme(<TestTree reorderable />);
+
+      expect(screen.queryByRole('button', { name: /reorder/i })).not.toBeInTheDocument();
+      const viewport = screen.getByTestId('tree-viewport');
+      const rows = screen.getAllByRole('treeitem');
+      expect([...viewport.children]).toEqual(rows);
+      for (const row of rows) {
+        expect(row).not.toHaveAttribute('data-ov-dragging');
+        expect(row).not.toHaveAttribute('data-ov-reorderable');
+        expect(row).not.toHaveAttribute('aria-roledescription');
+        expect(row).not.toHaveStyle({ transform: expect.any(String) });
+      }
     });
   });
 
@@ -887,8 +1709,10 @@ describe('TreeList', () => {
       expect(nodeMeta.isLoading).toBe(true);
     });
 
-    // Clean up
-    resolveLoad();
+    await act(async () => {
+      resolveLoad();
+      await loadPromise;
+    });
   });
 
   it('calls onLoadError when loadChildren rejects', async () => {

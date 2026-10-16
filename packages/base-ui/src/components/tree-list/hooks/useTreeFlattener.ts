@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import type { Key, FlatNode } from '../types';
+import type { Key, FlatNode, TreeOrder } from '../types';
+import { applySiblingOrder } from '../order';
 
 /**
  * Pure DFS computation: items + expandedKeys → FlatNode[].
@@ -25,9 +26,18 @@ export function useTreeFlattener<TItem>(
   expandedKeys: ReadonlySet<Key>,
   filterText: string,
   filterFn: ((item: TItem, filterText: string) => boolean) | undefined,
+  order?: TreeOrder,
 ): FlatNode<TItem>[] {
   return useMemo(() => {
     const result: FlatNode<TItem>[] = [];
+    function resolveOrderedSiblings(
+      siblings: readonly TItem[],
+      parentKey: Key | null,
+    ): readonly TItem[] {
+      if (!order!.has(parentKey)) return siblings;
+      return applySiblingOrder(siblings, parentKey, order!, itemKey);
+    }
+
     const isFiltering = filterText.length > 0 && filterFn !== undefined;
 
     // ------------------------------------------------------------------
@@ -99,7 +109,51 @@ export function useTreeFlattener<TItem>(
           }
         }
       }
-      walkFiltered(items, 0, null, []);
+
+      function walkFilteredOrdered(
+        siblings: readonly TItem[],
+        depth: number,
+        parentKey: Key | null,
+        ancestorIsLast: boolean[],
+      ) {
+        const orderedSiblings = resolveOrderedSiblings(siblings, parentKey);
+        const visible: TItem[] = [];
+        for (const item of orderedSiblings) {
+          if (matchSet.has(itemKey(item))) {
+            visible.push(item);
+          }
+        }
+
+        for (let i = 0; i < visible.length; i++) {
+          const item = visible[i]!;
+          const key = itemKey(item);
+          const isLast = i === visible.length - 1;
+          const branch = isBranch(item);
+
+          result.push({
+            key,
+            item,
+            depth,
+            parentKey,
+            isBranch: branch,
+            isLastChild: isLast,
+            ancestorIsLast: [...ancestorIsLast],
+          });
+
+          if (branch) {
+            const children = getChildren(item);
+            if (children && children.length > 0) {
+              walkFilteredOrdered(children, depth + 1, key, [...ancestorIsLast, isLast]);
+            }
+          }
+        }
+      }
+
+      if (order === undefined) {
+        walkFiltered(items, 0, null, []);
+      } else {
+        walkFilteredOrdered(items, 0, null, []);
+      }
 
       return result;
     }
@@ -137,8 +191,43 @@ export function useTreeFlattener<TItem>(
         }
       }
     }
+    function walkOrdered(
+      siblings: readonly TItem[],
+      depth: number,
+      parentKey: Key | null,
+      ancestorIsLast: boolean[],
+    ) {
+      const orderedSiblings = resolveOrderedSiblings(siblings, parentKey);
+      for (let i = 0; i < orderedSiblings.length; i++) {
+        const item = orderedSiblings[i]!;
+        const key = itemKey(item);
+        const isLast = i === orderedSiblings.length - 1;
+        const branch = isBranch(item);
 
-    walk(items, 0, null, []);
+        result.push({
+          key,
+          item,
+          depth,
+          parentKey,
+          isBranch: branch,
+          isLastChild: isLast,
+          ancestorIsLast: [...ancestorIsLast],
+        });
+
+        if (branch && expandedKeys.has(key)) {
+          const children = getChildren(item);
+          if (children && children.length > 0) {
+            walkOrdered(children, depth + 1, key, [...ancestorIsLast, isLast]);
+          }
+        }
+      }
+    }
+
+    if (order === undefined) {
+      walk(items, 0, null, []);
+    } else {
+      walkOrdered(items, 0, null, []);
+    }
     return result;
-  }, [items, itemKey, getChildren, isBranch, expandedKeys, filterText, filterFn]);
+  }, [items, itemKey, getChildren, isBranch, expandedKeys, filterText, filterFn, order]);
 }

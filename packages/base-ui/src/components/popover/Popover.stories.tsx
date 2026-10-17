@@ -21,6 +21,10 @@ const meta: Meta = {
       include: ['variant', 'color', 'size'],
     },
     docs: {
+      description: {
+        component:
+          'Popup owns padding and inter-section gaps. Use size="sm" for compact filter surfaces (240px minimum), md for standard content (320px), and lg for wider content (400px). Keep headings and controls in section wrappers without adding another outer padding layer. Flush, independently padded sections may override popup padding and gap together. Unbroken prose wraps within the popup; code and intentionally non-wrapping content should provide their own scrolling or truncation.',
+      },
       source: {
         code: `<Popover.Root variant="soft" color="neutral" size="md">
   <Popover.Trigger>Workspace Details</Popover.Trigger>
@@ -185,6 +189,27 @@ export const WithoutArrow: Story = {
               This popover omits the arrow for a cleaner look.
             </Popover.Description>
             <Popover.Close>OK</Popover.Close>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  ),
+};
+
+export const LongUnbrokenContent: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Popover.Root {...args}>
+      <Popover.Trigger>Long content</Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner sideOffset={6}>
+          <Popover.Popup>
+            <Popover.Title>Unbroken resource identifier</Popover.Title>
+            <Popover.Description>
+              {`https://example.com/resources/${'a'.repeat(180)}`}
+            </Popover.Description>
           </Popover.Popup>
         </Popover.Positioner>
       </Popover.Portal>

@@ -113,12 +113,14 @@
   --_ov-gap: var(--ov-space-stack-md);
   --_ov-padding: var(--ov-panel-padding);
   --_ov-arrow-size: 10px;
+  --_ov-popup-min-width: 320px;
 
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  overflow-wrap: anywhere;
   gap: var(--_ov-gap);
-  min-inline-size: min(320px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
+  min-inline-size: min(var(--_ov-popup-min-width), calc(100vw - (var(--ov-space-stack-lg) * 2)));
   max-inline-size: min(92vw, 520px);
   padding: var(--_ov-padding);
   border-radius: var(--ov-radius-surface);
@@ -140,13 +142,15 @@
 
 .Popup[data-ov-size='sm'] {
   --_ov-gap: var(--ov-space-stack-sm);
-  --_ov-padding: var(--ov-space-stack-lg);
+  --_ov-padding: calc(var(--ov-panel-padding) - var(--ov-space-stack-xs));
+  --_ov-popup-min-width: 240px;
   --_ov-arrow-size: 9px;
 }
 
 .Popup[data-ov-size='lg'] {
   --_ov-gap: var(--ov-space-stack-lg);
   --_ov-padding: calc(var(--ov-panel-padding) + var(--ov-space-stack-sm));
+  --_ov-popup-min-width: 400px;
   --_ov-arrow-size: 11px;
 }
 

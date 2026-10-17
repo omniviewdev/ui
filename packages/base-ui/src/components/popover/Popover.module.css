@@ -116,6 +116,7 @@
 
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--_ov-gap);
   min-inline-size: min(320px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
   max-inline-size: min(92vw, 520px);

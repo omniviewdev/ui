@@ -42,6 +42,12 @@ const meta: Meta = {
     },
   },
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Group headers inherit the list’s resolved row height, inline padding, and group-label typography. Collapsible and static headers share sizing; optional inline counts do not change the row height. Apply outer sidebar inset to the NavList root so headers and items remain aligned.',
+      },
+    },
     controls: {
       include: ['size', 'density', 'selectionMode'],
     },
@@ -340,4 +346,57 @@ export const OpenFiles: Story = {
     },
   },
   render: () => <OpenFilesStory />,
+};
+
+export const GroupHeaderSizing: Story = {
+  args: {
+    density: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Compare headers with and without a 16px count badge using the size and density controls. The static header uses the same row height and inset as the collapsible headers.',
+      },
+    },
+  },
+  render: (args) => (
+    <NavList {...args} style={{ width: 260, padding: 'var(--ov-space-2)' }}>
+      <NavList.Viewport>
+        <NavList.Group collapsible>
+          <NavList.GroupHeader>
+            Installed{' '}
+            <span
+              style={{
+                display: 'inline-block',
+                paddingInline: 'var(--ov-space-1-5)',
+                borderRadius: 'var(--ov-radius-control)',
+                background: 'var(--ov-color-state-selected)',
+                fontSize: 'var(--ov-font-size-caption)',
+                lineHeight: '16px',
+              }}
+            >
+              16
+            </span>
+          </NavList.GroupHeader>
+          <NavList.GroupItems>
+            <NavList.Item itemKey="installed" textValue="Installed plugin">
+              <NavList.ItemLabel>Installed plugin</NavList.ItemLabel>
+            </NavList.Item>
+          </NavList.GroupItems>
+        </NavList.Group>
+        <NavList.Group collapsible>
+          <NavList.GroupHeader>Marketplace</NavList.GroupHeader>
+          <NavList.GroupItems>
+            <NavList.Item itemKey="marketplace" textValue="Available plugin">
+              <NavList.ItemLabel>Available plugin</NavList.ItemLabel>
+            </NavList.Item>
+          </NavList.GroupItems>
+        </NavList.Group>
+        <NavList.Group>
+          <NavList.GroupHeader>Settings</NavList.GroupHeader>
+        </NavList.Group>
+      </NavList.Viewport>
+    </NavList>
+  ),
 };

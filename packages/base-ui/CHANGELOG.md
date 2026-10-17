@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.4.3
+
+### Patch Changes
+
+- [#55](https://github.com/omniviewdev/ui/pull/55) [`c92e05e`](https://github.com/omniviewdev/ui/commit/c92e05eb10251d59c9cf1b007b30391a6aca8bb4) Thanks [@joshuapare](https://github.com/joshuapare)! - Keep popover grid tracks and unbroken prose within the constrained surface. Give small popovers a 240px viewport-clamped minimum width and less padding than medium popovers across densities, and large popovers a 400px minimum; preserve medium default padding and gaps. Align static and collapsible NavList group headers with the list’s size-aware typography and row dimensions, and reset native button block padding for consistent badge-bearing headers.
+
 ## 0.4.2
 
 ### Patch Changes

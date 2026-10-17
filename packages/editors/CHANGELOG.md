@@ -1,5 +1,12 @@
 # @omniviewdev/editors
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`c92e05e`](https://github.com/omniviewdev/ui/commit/c92e05eb10251d59c9cf1b007b30391a6aca8bb4)]:
+  - @omniviewdev/base-ui@0.4.3
+
 ## 3.0.2
 
 ### Patch Changes

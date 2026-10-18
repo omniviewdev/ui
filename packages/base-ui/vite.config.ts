@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 
-const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
+import { declarationOutputOptions, outputDirectory } from '../build-output';
 
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
@@ -12,7 +12,7 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler', {}]],
       },
     }),
-    dts({ include: ['src'], rollupTypes: true, outDir: outputDirectory }),
+    dts({ ...declarationOutputOptions, include: ['src'] }),
   ],
   build: {
     outDir: outputDirectory,

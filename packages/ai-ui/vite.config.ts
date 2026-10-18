@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 
-const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
+import { declarationOutputOptions, outputDirectory } from '../build-output';
 
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
@@ -14,10 +14,9 @@ export default defineConfig({
       },
     }),
     dts({
-      outDir: outputDirectory,
+      ...declarationOutputOptions,
       include: ['src'],
       exclude: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.test.tsx', '**/*.test.ts'],
-      rollupTypes: true,
     }),
   ],
   build: {

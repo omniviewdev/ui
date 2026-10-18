@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIRetryButton } from './AIRetryButton';
 
-const meta = {
+const meta: Meta<typeof AIRetryButton> = {
   title: 'AI/Chat/AIRetryButton',
   component: AIRetryButton,
   tags: ['autodocs'],
@@ -15,7 +15,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AIRetryButton>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

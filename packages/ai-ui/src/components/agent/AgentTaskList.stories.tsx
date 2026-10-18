@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AgentTaskList } from './AgentTaskList';
 
-const meta = {
+const meta: Meta<typeof AgentTaskList> = {
   title: 'AI/Agent/AgentTaskList',
   component: AgentTaskList,
   tags: ['autodocs'],
@@ -12,7 +12,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AgentTaskList>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

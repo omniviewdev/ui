@@ -3,7 +3,7 @@ import { AIMessageGroup } from './AIMessageGroup';
 import { ChatAvatar } from './ChatAvatar';
 import { ChatBubble } from './ChatBubble';
 
-const meta = {
+const meta: Meta<typeof AIMessageGroup> = {
   title: 'AI/Chat/AIMessageGroup',
   component: AIMessageGroup,
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AIMessageGroup>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

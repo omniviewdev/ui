@@ -11,7 +11,7 @@ const MESSAGES = Array.from({ length: 50 }, (_, i) => ({
     : `Assistant message #${i + 1}: Sure! Here's the solution for task ${Math.floor(i / 2) + 1}. Let me walk you through the approach step by step.`,
 }));
 
-const meta = {
+const meta: Meta<typeof ChatMessageList> = {
   title: 'AI/Chat/ChatMessageList',
   component: ChatMessageList,
   tags: ['autodocs'],
@@ -32,7 +32,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ChatMessageList>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

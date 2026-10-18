@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AICodeBlock } from './AICodeBlock';
 
-const meta = {
+const meta: Meta<typeof AICodeBlock> = {
   title: 'AI/Content/AICodeBlock',
   component: AICodeBlock,
   tags: ['autodocs'],
@@ -27,7 +27,7 @@ console.log(fibonacci(10));`,
       </div>
     ),
   ],
-} satisfies Meta<typeof AICodeBlock>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

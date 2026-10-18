@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
+import { DiagnosticCategory } from 'typescript';
 
-import { declarationOutputOptions, outputDirectory } from '../build-output';
+const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
@@ -12,7 +13,20 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler', {}]],
       },
     }),
-    dts({ ...declarationOutputOptions, include: ['src'] }),
+    dts({
+      include: ['src'],
+      outDir: outputDirectory,
+      entryRoot: 'src',
+      // Rolled declarations follow package.json's active dist entry.
+      rollupTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
+      afterDiagnostic(diagnostics) {
+        for (const diagnostic of diagnostics) {
+          if (diagnostic.category === DiagnosticCategory.Error) {
+            throw new Error('TypeScript declaration generation failed; see compiler diagnostics');
+          }
+        }
+      },
+    }),
   ],
   build: {
     outDir: outputDirectory,

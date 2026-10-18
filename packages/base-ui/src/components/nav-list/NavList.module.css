@@ -44,18 +44,19 @@
 
 .GroupHeader {
   color: var(--ov-color-fg-muted);
-  font-size: var(--ov-font-size-caption);
+  font-size: var(--_ov-group-label-font-size, var(--ov-font-size-caption));
   font-weight: var(--ov-font-weight-label);
   line-height: 1.25;
 }
 
 /* Non-collapsible header: self-styled */
 .GroupHeader:not(:has(.GroupHeaderButton)) {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--ov-space-1-5);
   padding-inline: var(--_ov-item-padding-inline, var(--ov-size-list-item-padding-inline-sm));
-  min-height: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
+  min-block-size: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
 }
 
 /* Toggle chevron — uses a clean SVG-style caret via border trick */
@@ -92,12 +93,14 @@
 
 /* Button owns the full hit target in collapsible headers */
 .GroupHeaderButton {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 6px;
-  width: 100%;
+  gap: var(--ov-space-1-5);
+  inline-size: 100%;
+  padding-block: 0;
   padding-inline: var(--_ov-item-padding-inline, var(--ov-size-list-item-padding-inline-sm));
-  min-height: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
+  min-block-size: var(--_ov-item-height, var(--ov-size-list-item-height-sm));
   border: none;
   background: none;
   color: inherit;

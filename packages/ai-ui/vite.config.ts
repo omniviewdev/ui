@@ -3,7 +3,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 
+const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
+
 export default defineConfig({
+  cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
   plugins: [
     react({
       babel: {
@@ -11,12 +14,14 @@ export default defineConfig({
       },
     }),
     dts({
+      outDir: outputDirectory,
       include: ['src'],
       exclude: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.test.tsx', '**/*.test.ts'],
       rollupTypes: true,
     }),
   ],
   build: {
+    outDir: outputDirectory,
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],

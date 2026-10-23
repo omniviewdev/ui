@@ -1,5 +1,23 @@
 # @omniviewdev/base-ui
 
+## 0.5.0
+
+### Minor Changes
+
+- [#59](https://github.com/omniviewdev/ui/pull/59) [`3c5b5fc`](https://github.com/omniviewdev/ui/commit/3c5b5fc0cb50bef541b536e865b5aceabb667d9a) Thanks [@joshuapare](https://github.com/joshuapare)! - Support controlled host-prepared table state and keyed virtual detail slots. Add native labeled expansion controls, isolate interactive and nested content from row actions, and recover focus across collapse, reorder, removal and virtual unmount while preserving viewport-bounded detail mounting.
+
+  Expansion controls accept `getAccessibleLabel(expanded, label)` so consumers can localize the complete accessible name while retaining English defaults.
+
+### Patch Changes
+
+- [#57](https://github.com/omniviewdev/ui/pull/57) [`74e3d0b`](https://github.com/omniviewdev/ui/commit/74e3d0bb267a235d27e29a0499c66d150e74cc25) Thanks [@joshuapare](https://github.com/joshuapare)! - Keep the shared Markdown remark plugin list compatible with react-markdown's mutable plugin-list contract without allocating a new list per render. Give story metadata explicit public Meta types so declaration checks do not expose pnpm's private store paths.
+
+  Emit complete declaration trees into isolated build outputs without reading or writing the active dist entry; keep rolled declarations for standalone publishing. Fail the build on declaration compiler errors instead of reporting successful output.
+
+  Keep calendar focus and its displayed month synchronized during navigation without reciprocal update effects. Focus editable-list fields when editing starts so a deferred animation frame cannot interrupt input in another field.
+
+  Retain pnpm's 24-hour release-age protection for third-party registry packages, exempting only the coordinated `@omniviewdev/*` release cohort.
+
 ## 0.4.3
 
 ### Patch Changes

@@ -107,3 +107,30 @@ Each approved component must include:
 1. Reuse existing semantic tokens first (`--ov-color-*`, `--ov-space-*`, `--ov-font-*`, `--ov-radius-*`).
 2. Introduce new component tokens only when needed for reusable sizing/state values.
 3. Keep token additions synchronized with `docs/TOKEN_CATALOG.md` and `docs/THEME_TOKEN_MAPPING.md`.
+
+## Resource-intelligence controls
+
+All controls are provider-neutral presentation. Import them from `@omniviewdev/base-ui`; no component fetches full resource inventories, evaluates CEL, infers identities or implements provider acquisition.
+
+| Area | Public components | Integration contract |
+| --- | --- | --- |
+| Query authoring | `QueryInput`, `QueryBuilder`, `QueryAuthoring`, `QueryVariables` | Controlled drafts; cancellable host language/conversion callbacks. Half-open UTF-8 edits are mapped to DOM UTF-16 and normalized textarea offsets. Advanced unsupported code stays intact. Host owns schema meaning, guards, numeric admission and execution. |
+| Prepared tables | `useDataTable`, `DataTable.VirtualBody` | External/manual result order and state; immutable keyed rows. Arbitrary expanded content mounts only while expanded and virtually visible. Retain acquisition/cache ownership outside the renderer when it must survive scrolling. |
+| Visualization | `VisualizationPanel`, `VisualizationFields`, `VisualizationBindingEditor`, `ViewLayout` | Already selected bounded values and opaque field IDs; localized errors and permission states. Controlled layout editing does not persist documents or acquire query leases. |
+| Explore and scopes | `ResourceScopePicker`, `ResourceGroupingControls`, `ExploreWorkspace` | Explicit host catalog selections and applicability. Empty dimensions never silently broaden to all values. No connection opens automatically. |
+| Saved configuration | `SavedResourceManager` | Host-owned select/create/rename/save/delete/reset/import/export, confirmed deletion and recoverable drafts. Formats, migrations, persistence and secret-export policy belong to the host. |
+| Navigation/search | `ResourceResultNavigation`, `ResourceSearchResults` | Opaque result/context forwarding with explicit navigation `requestKey`; externally ranked results and stale/disabled states, not a search engine. |
+| Inspection | `QueryExplainPanel`, `ResourceIndexManager` | Host-reported work, coverage, actual versus estimated footprint and advice. Actions require reviewed approval; no fictional disk database or guaranteed speedup. |
+| Relationships | `RelationshipRuleEditor`, `RelationshipPreview` | Host catalogs, typed draft conditions and bounded preview/provenance. Host owns matching, validation, scope access and persistence; non-ready access hides cached preview navigation. |
+
+Storybook retains focused **Components/Query Authoring**, **Components/DataTable/Prepared results** and **Components/Visualization** stories. **Resource Intelligence/Integrated Workbench** demonstrates the Monaco CEL editor, typed variables and actual development-service evaluation results. Composition-only workspace, saved-resource admission and inspector fixture showcases have been removed from the catalog; their component APIs and behavioral tests remain.
+
+Most presentation stories use explicitly labeled fixture callbacks and prepared data. The integrated CEL workbench instead requires the [real development language service](../tools/cel-language-service/README.md): `GOWORK=off go run .` from `tools/cel-language-service`. It performs actual Go CEL parsing/checking/evaluation over realistic native Pod field shapes and independent cloud/VM profiles. Missing optional fields and runtime errors remain distinguishable from nonmatches; bindings are separate typed data, never interpolated source.
+
+Import `CelQueryEditor` from `@omniviewdev/editors` and supply it through `QueryAuthoring.renderEditor`. The editor accepts completion, checking, hover and signature callbacks. The development fetch adapter lives under editors' `src/development/cel-language-service`, not its public production barrel. CEL highlighting is lexical; schema/type/receiver applicability comes from the service, not a client evaluator. Integer receivers do not acquire invented string methods.
+
+Automatic language requests use a 250 ms pause; explicit completion bypasses that wait. Context/document generations and cancellation prevent obsolete responses from appearing in another editor or scope. The native `QueryInput` remains a generic presentation component for unmigrated callers, not the integrated workbench's code editor.
+
+Editor authoring now uses a focused **LSP 3.17** adapter over the same CEL engine: full document synchronization, completion, pull diagnostics, hover, signature help and cancellation, with per-client document/version isolation. Conventional clients can launch `GOWORK=off go run . -stdio`; the browser uses JSON-RPC over loopback `POST /lsp` with server-issued sessions. UTF-16 is the default position encoding; UTF-8 is negotiated when supported. Clients must supply the documented fixture initialization context. Catalog lookup and query evaluation remain separate `/profiles` and `/evaluate` APIs; old custom authoring routes are removed. No formatting, rename, workspace indexing or semantic-token engine is advertised. See the service README for capabilities, bounds and lifecycle.
+
+The development service's integer-only numeric profile is explicitly limited and is not the production CEL numeric policy. Code/builder conversion is unavailable in this service; advanced code stays intact, and standalone visual-builder stories remain usable. Actual Wails/live result transport, provider acquisition, durable saved documents, full schema normalization and agent/CLI integration remain separate backend work.

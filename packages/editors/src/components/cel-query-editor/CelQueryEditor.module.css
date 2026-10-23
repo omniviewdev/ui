@@ -1,0 +1,43 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1, 4px);
+  min-width: 0;
+}
+.Label {
+  font-size: var(--ov-font-size-sm, 12px);
+  font-weight: 500;
+  color: var(--ov-color-fg-muted);
+}
+.Surface {
+  position: relative;
+  overflow: hidden;
+  min-height: var(--_cel-editor-min-height, 52px);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md, 6px);
+  background: var(--ov-color-bg-surface);
+}
+.Surface:focus-within {
+  border-color: var(--ov-color-border-focus);
+  box-shadow: 0 0 0 1px var(--ov-color-border-focus);
+}
+.Placeholder {
+  position: absolute;
+  inset: 8px auto auto 8px;
+  pointer-events: none;
+  color: var(--ov-color-fg-muted);
+  font: 13px var(--ov-font-family-mono, monospace);
+}
+.Loading {
+  padding: var(--ov-space-2, 8px);
+  color: var(--ov-color-fg-muted);
+}
+.Message {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm, 12px);
+  overflow-wrap: anywhere;
+}
+.Hint {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs, 11px);
+}

@@ -1,0 +1,88 @@
+.Root {
+  min-width: 0;
+}
+.Grid {
+  grid-auto-rows: var(--_ov-view-row-height);
+}
+.Item {
+  min-width: 0;
+  min-height: 0;
+  grid-row: span var(--_ov-view-row-span);
+  transform: var(--_ov-view-drag-transform);
+  transition: var(--_ov-view-drag-transition);
+}
+.Item[data-ov-dragging='true'] {
+  opacity: 0.65;
+  z-index: 1;
+}
+.Panel {
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  overflow: hidden;
+}
+.Header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ov-space-2);
+  padding: var(--ov-space-2);
+  border-block-end: 1px solid var(--ov-color-border-default);
+}
+.Header h3 {
+  margin: 0;
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+.Controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-1);
+}
+.Content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--ov-space-2);
+}
+.Footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ov-space-2);
+  padding: var(--ov-space-1) var(--ov-space-2);
+  font-size: var(--ov-font-size-sm);
+  color: var(--ov-color-fg-muted);
+}
+.Drag {
+  cursor: grab;
+  touch-action: none;
+}
+.Resize {
+  cursor: nwse-resize;
+  touch-action: none;
+}
+.SrOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 600px) {
+  .Item {
+    grid-column: 1 / -1;
+  }
+}

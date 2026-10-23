@@ -91,3 +91,7 @@ export * from './date-picker';
 export * from './time-picker';
 export * from './date-time-picker';
 export * from './date-range-picker';
+export * from './query-authoring';
+export * from './visualization';
+export * from './resource-workspace-controls';
+export * from './resource-inspector-controls';

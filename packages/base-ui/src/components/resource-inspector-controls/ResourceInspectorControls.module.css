@@ -1,0 +1,128 @@
+.Root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-md);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.Root h2,
+.Root h3,
+.Root h4,
+.Root p {
+  margin: 0;
+}
+.Root h2 {
+  font-size: var(--ov-font-size-title);
+}
+.Root h3,
+.Root h4 {
+  font-size: var(--ov-font-size-body);
+}
+
+.Card,
+.Approval {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-sm);
+  padding: var(--ov-space-stack-md);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  background: var(--ov-color-bg-surface);
+  overflow-wrap: anywhere;
+}
+
+.Approval {
+  border-color: var(--ov-color-warning);
+}
+.Row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+}
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: var(--ov-space-stack-sm);
+}
+.Details {
+  display: grid;
+  grid-template-columns: minmax(90px, auto) 1fr;
+  gap: 4px var(--ov-space-stack-sm);
+  margin: 0;
+}
+.Details dt {
+  color: var(--ov-color-fg-muted);
+}
+.Details dd {
+  margin: 0;
+  min-width: 0;
+}
+.Muted,
+.Basis {
+  color: var(--ov-color-fg-muted);
+}
+.Basis {
+  font-size: var(--ov-font-size-caption);
+}
+.Error {
+  color: var(--ov-color-danger);
+}
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.Field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.Select,
+.TextInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  padding: 4px 8px;
+  background: var(--ov-color-bg-inset);
+  color: var(--ov-color-fg-default);
+  font: inherit;
+}
+.Select:focus-visible,
+.TextInput:focus-visible {
+  outline: 2px solid var(--ov-color-brand);
+  outline-offset: 2px;
+}
+.Select:disabled,
+.TextInput:disabled {
+  opacity: 0.6;
+}
+.Conditions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-sm);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.Conditions legend {
+  padding: 0;
+  font-weight: var(--ov-font-weight-label);
+}
+.Status {
+  display: inline-flex;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  padding: 1px 6px;
+  font-size: var(--ov-font-size-caption);
+}

@@ -7,6 +7,7 @@ import { getCellSizeStyles } from './utils/getCellSizeStyles';
 import styles from './DataTable.module.css';
 
 export interface DataTableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
+  /** Use DataTable.ExpansionToggle, or mark a custom disclosure with data-ov-expansion-toggle="". */
   renderExpandedRow?: (row: unknown) => ReactNode;
 }
 
@@ -26,6 +27,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
         <Fragment key={row.id}>
           <tr
             className={styles.Row}
+            data-ov-row-id={row.id}
             data-ov-selected={isSelected ? 'true' : 'false'}
             data-ov-expanded={isExpanded ? 'true' : 'false'}
           >
@@ -54,7 +56,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
             })}
           </tr>
           {features.rowExpansion && isExpanded && renderExpandedRow && (
-            <tr className={styles.ExpandedRow}>
+            <tr className={styles.ExpandedRow} data-ov-detail-for={row.id}>
               <td className={styles.ExpandedRowContent} colSpan={row.getVisibleCells().length}>
                 {renderExpandedRow(row.original)}
               </td>

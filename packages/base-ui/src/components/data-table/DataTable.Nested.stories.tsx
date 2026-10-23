@@ -5,7 +5,6 @@ import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
 import { Checkbox } from '../checkbox';
 import { IconButton } from '../icon-button';
-import styles from './DataTable.module.css';
 
 // ---------------------------------------------------------------------------
 // Homogeneous tree (same columns at every level)
@@ -80,15 +79,9 @@ const fileColumns: ColumnDef<FileEntry, unknown>[] = [
         }}
       >
         {row.getCanExpand() ? (
-          <button
-            type="button"
-            className={styles.ExpandToggle}
-            data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
-            onClick={row.getToggleExpandedHandler()}
-            aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
-          >
+          <DataTable.ExpansionToggle row={row} label={row.original.name}>
             <LuChevronRight size={14} />
-          </button>
+          </DataTable.ExpansionToggle>
         ) : (
           <span style={{ width: 20 }} />
         )}
@@ -264,15 +257,9 @@ const ingressColumns: ColumnDef<Ingress, unknown>[] = [
     enableResizing: false,
     meta: { align: 'center' },
     cell: ({ row }) => (
-      <button
-        type="button"
-        className={styles.ExpandToggle}
-        data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
-        onClick={row.getToggleExpandedHandler()}
-        aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
-      >
+      <DataTable.ExpansionToggle row={row} label={row.original.name}>
         <LuChevronRight size={14} />
-      </button>
+      </DataTable.ExpansionToggle>
     ),
   },
   { accessorKey: 'name', header: 'Ingress', size: 180 },
@@ -292,15 +279,9 @@ const serviceColumns: ColumnDef<Service, unknown>[] = [
     enableResizing: false,
     meta: { align: 'center' },
     cell: ({ row }) => (
-      <button
-        type="button"
-        className={styles.ExpandToggle}
-        data-ov-expanded={row.getIsExpanded() ? 'true' : 'false'}
-        onClick={row.getToggleExpandedHandler()}
-        aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
-      >
+      <DataTable.ExpansionToggle row={row} label={row.original.name}>
         <LuChevronRight size={14} />
-      </button>
+      </DataTable.ExpansionToggle>
     ),
   },
   { accessorKey: 'name', header: 'Service', size: 160 },

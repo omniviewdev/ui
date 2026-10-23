@@ -181,6 +181,11 @@
   max-height: var(--_dt-max-height);
 }
 
+.Container:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
 /* --- Table (CSS Grid layout) --- */
 
 .Table {
@@ -381,6 +386,11 @@
 .ExpandToggle:hover {
   color: var(--ov-color-fg-default);
   background: var(--ov-color-state-hover);
+}
+
+.ExpandToggle:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
 }
 
 .ExpandToggle svg {

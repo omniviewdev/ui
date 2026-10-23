@@ -4,11 +4,12 @@ Status: **verified** (2026-10-22). Component deliverable complete; production P4
 
 ## Isolation and ownership
 
-- Branch: `feature/command-palette-interactions`.
-- Worktree: `/Users/joshuapare/Repos/omniviewdev/workspaces/resource-intelligence-ui/command-palette-interactions`.
+- PR branch: `feature/command-palette-interactions-main`, based on current main `3e55d761ca6c53413c27c8c924168185373d3607`.
+- PR worktree: `/Users/joshuapare/Repos/omniviewdev/workspaces/resource-intelligence-ui/command-palette-pr`.
+- Original verified branch/worktree `feature/command-palette-interactions` / `resource-intelligence-ui/command-palette-interactions` preserved unchanged.
 - Source: `resource-intelligence-ui/table-ui`, branch `feature/resource-intelligence-table-ui`, HEAD `c71831890e5c869ff9bbf92ac12a0bb7bec29d3b` plus its current tracked/untracked source.
 - Snapshot commit: `e849d8d0958c22d39bfcd37efabc92554831e000` (baseline only, not this feature). Captures 95 dirty paths, including 85 untracked files. All 1,267 tracked/nonignored source files copied; aggregate SHA-256 `e5631f693d890058c0cc773f98bdea72248df8fdbfd312b3df40c2261ccfe28a` matched source before/after and destination. No node_modules, generated output, or ignored files copied. Original worktree/index untouched; no operations against `feature/agentic-workspaces`.
-- Own: `packages/editors/src/components/command-palette/`, narrowly scoped `packages/editors/CHANGELOG.md`, and this receipt. Other baseline source is inherited, not authored or changed by this task.
+- Own: `packages/editors/src/components/command-palette/`, narrowly scoped `packages/editors/CHANGELOG.md`, `.changeset/command-palette-interactions.md` (required minor-release metadata for the additive optional props), and this receipt.
 - Read-only context: latest reconciled readiness/work-packages copies under `resource-intelligence-ui/host/docs/roadmap/`; no central ledger edits.
 
 ## Roadmap allocation
@@ -61,8 +62,17 @@ No concrete blocker remains for this component deliverable. Production command c
 
 P42/P43: reusable CommandPalette interaction/accessibility preparation **verified** on `feature/command-palette-interactions`; UI receipt `docs/roadmap-progress/command-palette-interactions.md`. Evidence: 22 real-component behavioral regressions, editor typecheck, actual Chromium Storybook on unique port 64127 (ordered keyboard selection, replacement/disable, loading/error/empty, Clear search, pointer/keyboard continuity, active scrolling, dismissal and focus restoration), plus independent focused review with no Critical/Important findings. This is **P42 presentation-only work and P43 component preparation**, not production action registration, settings/navigation wiring, permission-aware resource search or C11 freeze. Keep complete production packets and backend gates open. Central ledger has not been edited; integration owner must apply this proposed update.
 
+## Main-based PR readiness
+
+- User approved opening a PR against main. Only the two owned feature/receipt commits were cherry-picked onto `3e55d761ca6c53413c27c8c924168185373d3607`; the 95-path source snapshot and agentic-workspaces history are excluded.
+- No dependency on pending resource-intelligence work or agentic-workspaces PR #57: command-list/search-input source already matches main. The sole cherry-pick conflict was the changelog; resolved with only the palette's Unreleased entries, excluding unrelated CEL notes.
+- Main's declared manager retained: `npx --yes pnpm@10.6.2 install --frozen-lockfile` passed; no shared configuration, package manifest or lockfile changes.
+- Main-based verification: `npx --yes pnpm@10.6.2 --filter @omniviewdev/base-ui build` passed; `npx --yes pnpm@10.6.2 --filter @omniviewdev/editors test` passed **169 tests across 8 files**, including all 22 palette regressions; `npx --yes pnpm@10.6.2 --filter @omniviewdev/editors typecheck` passed. Existing Terminal mock emitted a Vitest constructor warning; API Extractor reported its older bundled TS compiler; no failures.
+- Actual main-based Chromium Storybook on unique port **64129** confirmed named input/list/active-option relationships, interleaved order, Arrow navigation, live replacement activation, disabled replacement preventing execution, Escape dismissal and opener focus restoration. Error presentation visually inspected. Earlier comprehensive port-64127 evidence remains applicable to identical component source.
+- Main-based feature commit: `bbec7ee` (cherry-pick of `d523e106664d3eb21ad798d65601c8a0217b029c`); receipt cherry-pick: `11b1776`. PR publication pending.
+
 ## Feature commit / PR
 
-- Verified feature commit: `d523e106664d3eb21ad798d65601c8a0217b029c` (`fix(editors): improve command palette interactions and accessibility`).
-- The subsequent receipt-only commit records that existing feature SHA. For integration, take the feature and receipt commits only; `e849d8d0958c22d39bfcd37efabc92554831e000` is a source-baseline snapshot of other ongoing work, not this feature's delivery.
+- Original verified feature commit: `d523e106664d3eb21ad798d65601c8a0217b029c` (`fix(editors): improve command palette interactions and accessibility`).
+- Use the clean main-based PR branch for integration. `e849d8d0958c22d39bfcd37efabc92554831e000` is a preserved source-baseline snapshot of other ongoing work and is not part of the PR.
 - Worktree/branch preserved. No push, PR, merge, package publication or central-ledger modification performed.

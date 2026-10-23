@@ -4,6 +4,7 @@
   z-index: var(--ov-z-modal, 1000);
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   padding-top: 20vh;
   background: var(--ov-color-overlay-bg, rgba(0, 0, 0, 0.4));
 }
@@ -28,4 +29,11 @@
 
 .Results {
   max-block-size: none;
+  overscroll-behavior: contain;
+}
+
+.Message {
+  padding: var(--ov-space-stack-md, 16px);
+  color: var(--ov-color-danger);
+  overflow-wrap: anywhere;
 }

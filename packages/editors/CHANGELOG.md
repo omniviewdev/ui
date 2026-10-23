@@ -1,5 +1,24 @@
 # @omniviewdev/editors
 
+## 4.0.0
+
+### Minor Changes
+
+- [#58](https://github.com/omniviewdev/ui/pull/58) [`dd8f60c`](https://github.com/omniviewdev/ui/commit/dd8f60c3f443dd0302d40ee85103ddec9d2f1d70) Thanks [@joshuapare](https://github.com/joshuapare)! - Improve CommandPalette accessibility, keyboard and focus behavior, caller-ordered result replacement, and IME safety. Add optional caller-controlled loading and error presentation without introducing command registration or resource search.
+
+### Patch Changes
+
+- [#57](https://github.com/omniviewdev/ui/pull/57) [`74e3d0b`](https://github.com/omniviewdev/ui/commit/74e3d0bb267a235d27e29a0499c66d150e74cc25) Thanks [@joshuapare](https://github.com/joshuapare)! - Keep the shared Markdown remark plugin list compatible with react-markdown's mutable plugin-list contract without allocating a new list per render. Give story metadata explicit public Meta types so declaration checks do not expose pnpm's private store paths.
+
+  Emit complete declaration trees into isolated build outputs without reading or writing the active dist entry; keep rolled declarations for standalone publishing. Fail the build on declaration compiler errors instead of reporting successful output.
+
+  Keep calendar focus and its displayed month synchronized during navigation without reciprocal update effects. Focus editable-list fields when editing starts so a deferred animation frame cannot interrupt input in another field.
+
+  Retain pnpm's 24-hour release-age protection for third-party registry packages, exempting only the coordinated `@omniviewdev/*` release cohort.
+
+- Updated dependencies [[`74e3d0b`](https://github.com/omniviewdev/ui/commit/74e3d0bb267a235d27e29a0499c66d150e74cc25), [`3c5b5fc`](https://github.com/omniviewdev/ui/commit/3c5b5fc0cb50bef541b536e865b5aceabb667d9a)]:
+  - @omniviewdev/base-ui@0.5.0
+
 ## Unreleased
 
 ### Minor Changes

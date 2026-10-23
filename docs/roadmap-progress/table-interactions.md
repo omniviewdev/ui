@@ -3,7 +3,7 @@
 - Task: table-interactions; status: verified (reusable presentation subset only).
 - Branch: `feature/resource-intelligence-table-interactions`.
 - Worktree: `~/Repos/omniviewdev/workspaces/resource-intelligence-ui/table-interactions` (UI repository).
-- Branch baseline: `main` at `817961647f8306994e6f508c9b547308404a7570`; no inherited feature/agentic-workspaces build commits.
+- Initial baseline: `main` at `817961647f8306994e6f508c9b547308404a7570`. For the user-approved combined PR, rebased only this own branch onto current `origin/main` at `3e55d76`; no inherited feature/agentic-workspaces build commits.
 - Source snapshot: complete `packages/base-ui/src/components/data-table/` from `feature/resource-intelligence-table-ui` at HEAD `c71831890e5c869ff9bbf92ac12a0bb7bec29d3b` plus current uncommitted/untracked table files. `cp -pR …/data-table/. …/data-table/` followed by `diff -qr` succeeded. Original checkout was only read; no stash/reset/commit/rebase/merge there. Ignored local dependencies were APFS-cloned by worktree tooling; not deliverables.
 - Owning files: data-table directory, `packages/base-ui/CHANGELOG.md`, this progress record. No shared barrels/configuration, authoring/editor, host, SDK or plugin changes.
 - Context read: reconciled readiness/work-packages copies in `resource-intelligence-ui/host/docs/roadmap/`; central ledgers are integration-owner-owned and unchanged.
@@ -33,7 +33,7 @@ Plan: add a table-local native expansion toggle (row-specific label + expanded s
 
 - Source snapshot equality: `diff -qr` succeeded (no differences immediately after copy).
 - Final `pnpm --filter @omniviewdev/base-ui exec vitest run src/components/data-table`: **5 files / 50 tests passed**, including 15 new interaction cases. Earlier red runs reproduced seven original failures, the nested-disclosure boundary, and the review's explicit-blur/menu-fallback defects before correction.
-- `pnpm --filter @omniviewdev/base-ui typecheck`: exit 0. Manifests remain mainline base-ui 0.4.2; no inherited package/build changes or dependency repinning.
+- `pnpm --filter @omniviewdev/base-ui typecheck`: exit 0. Repeated after rebasing onto current remote main (base-ui 0.4.3), along with the scoped table suite: 50/50 passed. No dependency repinning or package/build configuration edits.
 - Storybook launched from `packages/base-ui`: `pnpm exec storybook dev --ci --no-open --exact-port -p 6419 -c .storybook`; exact unused port startup succeeded.
 - Chromium story: `http://localhost:6419/iframe.html?id=components-datatable-interactions--keyboard-and-virtual-details&viewMode=story`.
 - Observed native table/rowgroup/row/columnheader/cell tree (no grid). Enter expanded; Tab moved from disclosure to row link then detail note; Space expanded. Parent row action count remained 0 after parent/nested checkboxes and row link.
@@ -76,7 +76,7 @@ packages/base-ui/src/components/data-table/types.ts
 
 ## Limitations / remaining dependencies
 
-- No blocker to this UI-library deliverable. Changes remain uncommitted in the preserved own worktree; no final commit SHA/PR exists. No push, merge or package publication.
+- No blocker to this UI-library deliverable. User approved committing/pushing the combined table contribution and opening a PR against UI main. Implementation commit after rebase: `7713e7f9c5bd9b76e92c0bcbdd654bb3c89e6de2`. Worktree preserved. No merge or package publication.
 - Browser evidence is Chromium keyboard/accessibility-tree/DOM evidence, not a human VoiceOver/NVDA audit or Safari/Firefox coverage.
 - Native Tab traversal covers mounted controls; no grid/spreadsheet contract or automatic inventory-wide keyboard traversal. Disclosure recovery requires the provided toggle or documented marker; without one, the viewport is the fallback.
 - Detail-local state intentionally resets on collapse/virtual unmount. Persistent query/cache/detail ownership remains the consumer's responsibility.

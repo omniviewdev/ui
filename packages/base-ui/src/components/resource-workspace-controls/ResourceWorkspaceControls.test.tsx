@@ -1,5 +1,5 @@
 /// <reference lib="es2024.promise" />
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -308,6 +308,21 @@ describe('resource workspace controls', () => {
       'Host results',
     );
     expect(screen.getByRole('textbox', { name: 'Host editor' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Host save' })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('group', { name: 'Explore save actions' })).getByRole('button', {
+        name: 'Host save',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('omits the save actions group when the host supplies no save controls', () => {
+    renderWithTheme(
+      <ExploreWorkspace
+        scope={<span>Scope control</span>}
+        query={<input aria-label="Host editor" />}
+        results={<span>Host results</span>}
+      />,
+    );
+    expect(screen.queryByRole('group', { name: 'Explore save actions' })).not.toBeInTheDocument();
   });
 });

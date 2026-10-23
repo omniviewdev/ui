@@ -129,6 +129,143 @@ func TestLSPDocumentsAndSemanticResults(t *testing.T) {
 	}
 }
 
+// Catches ignored hover preferences, Markdown leaking into plain text, and
+// hover negotiation accidentally changing completion/signature documentation.
+func TestLSPHTTPHoverContentFormats(t *testing.T) {
+	for _, tc := range []struct {
+		name, capabilities, kind, value string
+	}{
+		{"markdown", `{"textDocument":{"hover":{"contentFormat":["markdown","plaintext"]}}}`, "markdown", "**cpuCount**: `int`\n\nVirtual CPUs."},
+		{"plaintext preferred", `{"textDocument":{"hover":{"contentFormat":["plaintext","markdown"]}}}`, "plaintext", "cpuCount: int\n\nVirtual CPUs."},
+		{"plaintext only", `{"textDocument":{"hover":{"contentFormat":["plaintext"]}}}`, "plaintext", "cpuCount: int\n\nVirtual CPUs."},
+		{"no hover capabilities", `{}`, "plaintext", "cpuCount: int\n\nVirtual CPUs."},
+		{"empty formats", `{"textDocument":{"hover":{"contentFormat":[]}}}`, "plaintext", "cpuCount: int\n\nVirtual CPUs."},
+		{"unsupported formats", `{"textDocument":{"hover":{"contentFormat":["html"]}}}`, "plaintext", "cpuCount: int\n\nVirtual CPUs."},
+		{"skip unsupported format", `{"textDocument":{"hover":{"contentFormat":["html","markdown"]}}}`, "markdown", "**cpuCount**: `int`\n\nVirtual CPUs."},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			server := httptest.NewServer(testService(t).Handler())
+			defer server.Close()
+			token := ""
+			post := func(id int, method string, params interface{}, result interface{}) {
+				t.Helper()
+				message := map[string]interface{}{"jsonrpc": "2.0", "method": method, "params": params}
+				if id != 0 {
+					message["id"] = id
+				}
+				body, err := json.Marshal(message)
+				if err != nil {
+					t.Fatal(err)
+				}
+				req, err := http.NewRequest(http.MethodPost, server.URL+"/lsp", bytes.NewReader(body))
+				if err != nil {
+					t.Fatal(err)
+				}
+				req.Header.Set("Content-Type", "application/json")
+				if token != "" {
+					req.Header.Set(lspSessionHeader, token)
+				}
+				resp, err := server.Client().Do(req)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer resp.Body.Close()
+				if id == 0 {
+					if resp.StatusCode != http.StatusNoContent {
+						t.Fatalf("%s: HTTP %d", method, resp.StatusCode)
+					}
+					return
+				}
+				if resp.StatusCode != http.StatusOK {
+					t.Fatalf("%s: HTTP %d", method, resp.StatusCode)
+				}
+				if method == "initialize" {
+					token = resp.Header.Get(lspSessionHeader)
+					if token == "" {
+						t.Fatal("missing session token")
+					}
+				}
+				var reply struct {
+					Result json.RawMessage `json:"result"`
+					Error  json.RawMessage `json:"error"`
+				}
+				if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
+					t.Fatal(err)
+				}
+				if len(reply.Error) != 0 {
+					t.Fatalf("%s: %s", method, reply.Error)
+				}
+				if result != nil {
+					if err := json.Unmarshal(reply.Result, result); err != nil {
+						t.Fatal(err)
+					}
+				}
+			}
+			post(1, "initialize", map[string]interface{}{"capabilities": json.RawMessage(tc.capabilities), "initializationOptions": map[string]string{"profileId": "cloud"}}, nil)
+			post(0, "initialized", map[string]interface{}{}, nil)
+			open := func(text string) {
+				post(0, "textDocument/didOpen", map[string]interface{}{"textDocument": map[string]interface{}{"uri": "file:///hover", "languageId": "cel", "version": 1, "text": text}}, nil)
+			}
+			position := func(character int) interface{} {
+				return map[string]interface{}{"textDocument": map[string]string{"uri": "file:///hover"}, "position": map[string]int{"line": 0, "character": character}}
+			}
+			type content struct{ Kind, Value string }
+			var hover struct {
+				Contents content
+				Range    struct{ Start, End lspPosition }
+			}
+			open("resource.cpuCount > 0")
+			post(2, "textDocument/hover", position(12), &hover)
+			if hover.Contents.Kind != tc.kind || hover.Contents.Value != tc.value {
+				t.Fatalf("hover contents: %+v", hover.Contents)
+			}
+			if hover.Range.Start != (lspPosition{0, 9}) || hover.Range.End != (lspPosition{0, 17}) {
+				t.Fatalf("hover range: %+v", hover.Range)
+			}
+			post(0, "textDocument/didClose", map[string]interface{}{"textDocument": map[string]string{"uri": "file:///hover"}}, nil)
+			open("cp")
+			var completion struct {
+				Items []struct {
+					Label         string
+					Documentation content
+				}
+			}
+			post(3, "textDocument/completion", position(2), &completion)
+			found := false
+			for _, item := range completion.Items {
+				if item.Label == "cpuCount" {
+					found = true
+					if item.Documentation != (content{"plaintext", "Virtual CPUs."}) {
+						t.Fatalf("completion documentation: %+v", item.Documentation)
+					}
+				}
+			}
+			if !found {
+				t.Fatal("missing cpuCount completion")
+			}
+			post(0, "textDocument/didClose", map[string]interface{}{"textDocument": map[string]string{"uri": "file:///hover"}}, nil)
+			open("resource.state.startsWith(")
+			var signature struct {
+				Signatures []struct {
+					Documentation content
+					Parameters    []struct{ Documentation content }
+				}
+			}
+			post(4, "textDocument/signatureHelp", position(26), &signature)
+			if len(signature.Signatures) != 1 || signature.Signatures[0].Documentation.Kind != "plaintext" {
+				t.Fatalf("signature documentation: %+v", signature)
+			}
+			for _, parameter := range signature.Signatures[0].Parameters {
+				if parameter.Documentation.Kind != "plaintext" {
+					t.Fatalf("parameter documentation: %+v", parameter)
+				}
+			}
+			post(5, "shutdown", nil, nil)
+			post(0, "exit", nil, nil)
+		})
+	}
+}
+
 // Catches byte/UTF16 confusion, split surrogate positions and CRLF newline drift.
 func TestLSPPositionBoundaries(t *testing.T) {
 	text := "é😀x\r\nz"

@@ -134,7 +134,7 @@ func TestContextualCompletions(t *testing.T) {
 func TestHoverAndSignatureUseRealDeclarations(t *testing.T) {
 	s := testService(t)
 	r := s.Hover(context.Background(), request("resource.status.phase", "pod"))
-	if r.Hover == nil || !strings.Contains(r.Hover.Contents, "string") {
+	if r.Hover == nil || r.Hover.Name != "phase" || r.Hover.Type != "string" || r.Hover.Documentation == "" {
 		t.Fatalf("hover %+v", r)
 	}
 	q := s.Signature(context.Background(), request(`resource.status.phase.startsWith(`, "pod"))

@@ -87,13 +87,14 @@ type lspSession struct {
 	profile     string
 	snippets    bool
 	encoding    string
+	hoverFormat string
 	documents   map[string]lspDocument
 	pending     map[string]context.CancelFunc
 	generation  uint64
 }
 
 func newLSPSession(service *Service) *lspSession {
-	return &lspSession{service: service, encoding: "utf-16", documents: make(map[string]lspDocument), pending: make(map[string]context.CancelFunc)}
+	return &lspSession{service: service, encoding: "utf-16", hoverFormat: "plaintext", documents: make(map[string]lspDocument), pending: make(map[string]context.CancelFunc)}
 }
 func (s *lspSession) close() { s.mu.Lock(); defer s.mu.Unlock(); s.closeLocked() }
 func (s *lspSession) closeLocked() {
@@ -179,6 +180,9 @@ func (s *lspSession) prepare(parent context.Context, data []byte) func() []byte 
 							SnippetSupport bool `json:"snippetSupport"`
 						} `json:"completionItem"`
 					} `json:"completion"`
+					Hover struct {
+						ContentFormat []string `json:"contentFormat"`
+					} `json:"hover"`
 				} `json:"textDocument"`
 			} `json:"capabilities"`
 			Options *struct {
@@ -192,6 +196,12 @@ func (s *lspSession) prepare(parent context.Context, data []byte) func() []byte 
 		for _, enc := range p.Capabilities.General.PositionEncodings {
 			if enc == "utf-8" || enc == "utf-16" {
 				s.encoding = enc
+				break
+			}
+		}
+		for _, format := range p.Capabilities.TextDocument.Hover.ContentFormat {
+			if format == "markdown" || format == "plaintext" {
+				s.hoverFormat = format
 				break
 			}
 		}
@@ -344,6 +354,7 @@ func (s *lspSession) prepare(parent context.Context, data []byte) func() []byte 
 	req := Request{Document: Document{doc.text, doc.version}, Cursor: Cursor{offset, "utf8-byte"}, FixtureProfile: s.profile}
 	encoding := s.encoding
 	snippets := s.snippets
+	hoverFormat := s.hoverFormat
 	uri := p.Document.URI
 	return func() []byte {
 		defer cancel()
@@ -387,13 +398,13 @@ func (s *lspSession) prepare(parent context.Context, data []byte) func() []byte 
 		if stale {
 			return rpcFailure(m.ID, -32801, "Document changed during request")
 		}
-		return rpcResult(m.ID, lspSemanticResult(m.Method, doc.text, encoding, response))
+		return rpcResult(m.ID, lspSemanticResult(m.Method, doc.text, encoding, hoverFormat, response))
 	}
 }
 func markup(value string) map[string]string {
 	return map[string]string{"kind": "plaintext", "value": value}
 }
-func lspSemanticResult(method, text, encoding string, r Response) interface{} {
+func lspSemanticResult(method, text, encoding, hoverFormat string, r Response) interface{} {
 	switch method {
 	case "textDocument/completion":
 		items := make([]interface{}, 0, len(r.Completions))
@@ -432,7 +443,13 @@ func lspSemanticResult(method, text, encoding string, r Response) interface{} {
 		if r.Hover == nil {
 			return nil
 		}
-		return map[string]interface{}{"contents": markup(r.Hover.Contents), "range": wireRange(text, r.Hover.Range, encoding)}
+		// Render the same semantic fields in either format, rather than stripping
+		// Markdown from documentation or repeating type inference in the adapter.
+		value := r.Hover.Name + ": " + r.Hover.Type + "\n\n" + r.Hover.Documentation
+		if hoverFormat == "markdown" {
+			value = "**" + r.Hover.Name + "**: `" + r.Hover.Type + "`\n\n" + r.Hover.Documentation
+		}
+		return map[string]interface{}{"contents": map[string]string{"kind": hoverFormat, "value": value}, "range": wireRange(text, r.Hover.Range, encoding)}
 	case "textDocument/signatureHelp":
 		if r.Signature == nil {
 			return nil

@@ -37,7 +37,11 @@ export function ExploreWorkspace({
         <h1 id={`${id}-title`} className={styles.Title}>
           {title}
         </h1>
-        {saveActions ? <div aria-label="Explore save actions">{saveActions}</div> : null}
+        {saveActions ? (
+          <div role="group" aria-label="Explore save actions">
+            {saveActions}
+          </div>
+        ) : null}
       </header>
       <a className={styles.SkipLink} href={`#${id}-results`}>
         Skip to results

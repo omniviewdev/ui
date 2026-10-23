@@ -567,7 +567,7 @@ func (s *Service) Hover(ctx context.Context, r Request) Response {
 				doc = fieldDocumentation(s.catalog, parent, last.text)
 			}
 		}
-		out.Hover = &Hover{rng(last.start, last.end), "**" + last.text + "**: `" + typ.String() + "`\n\n" + doc}
+		out.Hover = &Hover{Range: rng(last.start, last.end), Name: last.text, Type: typ.String(), Documentation: doc}
 	}
 	return out
 }

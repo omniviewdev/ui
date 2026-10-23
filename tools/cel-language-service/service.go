@@ -60,8 +60,10 @@ type Diagnostic struct {
 	Range    Range  `json:"range"`
 }
 type Hover struct {
-	Range    Range  `json:"range"`
-	Contents string `json:"contents"`
+	Range         Range  `json:"range"`
+	Name          string `json:"name"`
+	Type          string `json:"type"`
+	Documentation string `json:"documentation"`
 }
 type SignatureParameter struct {
 	Label         string `json:"label"`

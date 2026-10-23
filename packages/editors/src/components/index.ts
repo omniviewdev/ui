@@ -28,3 +28,6 @@ export type { CommandPaletteProps, CommandItem } from './command-palette';
 
 export { ObjectInspector } from './object-inspector';
 export type { ObjectInspectorProps, InspectorFormat } from './object-inspector';
+
+export { CelQueryEditor } from './cel-query-editor';
+export type { CelQueryEditorProps } from './cel-query-editor';

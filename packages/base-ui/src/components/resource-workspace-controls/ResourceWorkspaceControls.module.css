@@ -1,0 +1,129 @@
+.Root,
+.Main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-sm);
+  min-width: 0;
+  margin: 0;
+  padding: var(--ov-space-stack-sm);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-body);
+}
+
+.Root {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md);
+}
+
+.Panel,
+.Dimension {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-xs);
+  min-width: 0;
+  margin: 0;
+  padding: var(--ov-space-stack-sm);
+  border: 1px solid var(--ov-color-border-default);
+}
+
+.Description,
+.Reason {
+  margin: 0;
+  font-size: var(--ov-font-size-caption);
+  color: var(--ov-color-fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.Reason,
+.Root [role='alert'] {
+  color: var(--ov-color-warning);
+}
+
+.Actions,
+.Header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+}
+
+.Header {
+  justify-content: space-between;
+}
+
+.Label,
+.Heading {
+  font-weight: var(--ov-font-weight-label);
+  font-size: var(--ov-font-size-body);
+  margin: 0;
+}
+
+.Title {
+  font-size: var(--ov-font-size-title);
+  margin: 0;
+}
+
+.Select,
+.Textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2rem;
+  padding: var(--ov-space-stack-xs);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-md);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font: inherit;
+}
+
+.Textarea {
+  resize: vertical;
+  font-family: var(--ov-font-mono);
+}
+
+.Select:focus-visible,
+.Textarea:focus-visible,
+.SkipLink:focus-visible {
+  outline: 2px solid var(--ov-color-fg-default);
+  outline-offset: 2px;
+}
+
+.Order {
+  margin: 0;
+  padding-inline-start: var(--ov-space-stack-md);
+}
+
+.Order li {
+  padding-block: var(--ov-space-stack-xs);
+}
+
+.Workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-md);
+  min-width: 0;
+  color: var(--ov-color-fg-default);
+}
+
+.Columns {
+  display: grid;
+  grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+  gap: var(--ov-space-stack-md);
+  align-items: start;
+}
+
+.Columns:has(> aside:last-child:not(:first-child)) {
+  grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr) minmax(12rem, 20rem);
+}
+
+.SkipLink {
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-caption);
+}
+
+@media (max-width: 800px) {
+  .Columns,
+  .Columns:has(> aside:last-child:not(:first-child)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -32,6 +32,17 @@
 
 ## Unreleased
 
+### Minor Changes
+
+- Add controlled provider-neutral query authoring, typed completion/diagnostic edits with UTF-8/DOM and CRLF mapping, callback-driven code/builder conversion, grouped clauses and typed variable controls. Semantic validation and execution remain host responsibilities.
+- Add a controlled `QueryAuthoring.renderEditor` composition slot and presentation contracts for completion filtering/ranking/snippets, hover and signature help. Monaco remains in the editors package; base-ui does not depend on it.
+- Allow an optional document URI in query-language requests so external language-service sessions can isolate editor models; native controls without model URIs remain supported.
+- Add externally controlled table state and manual row-model modes, selection-eligibility invalidation, stable keyed virtual expanded-content slots and independently measured arbitrary details.
+- Add prepared-value visualization panels, opaque field bindings and controlled keyboard/pointer view-layout editing.
+- Add explicit resource scope/grouping controls, recoverable saved query/view/preset management with confirmed deletion, context-preserving navigation, externally ranked search results and Explore composition.
+- Add host-supplied query explain/index inventory/advice, explicit index action approvals and relationship-rule/preview controls with visible coverage, denied/unavailable states, cancellation and stale-response protection.
+- Retain focused query, prepared-table and visualization Storybooks and behavioral regression coverage. Remove workspace, admission and inspector composition showcases from the catalog without removing their component APIs or tests. These are reusable UI contracts, not a connected resource query engine, persisted saved-view service or production permission boundary.
+
 ### Patch Changes
 
 - Add `DataTable.ExpansionToggle`: a native, row-labeled disclosure with accurate expanded state and Enter/Space operation. Virtual row callbacks ignore interactive descendants and nested tables. Both bodies recover focus after DOM removal/movement to the same mounted element, the parent disclosure, or the table viewport without scrolling; unrelated focused controls are left alone. Detail content still mounts only while expanded and virtually visible, and local detail state resets after unmount. Includes explicitly prepared cloud/container/hypervisor keyboard fixtures; no host/live-result integration or production performance claim.

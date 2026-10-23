@@ -51,6 +51,7 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@omniviewdev/base-ui': path.resolve(__dirname, '../packages/base-ui/src/index.ts'),
+      '@omniviewdev/editors': path.resolve(__dirname, '../packages/editors/src/index.ts'),
     };
 
     // --- Monaco optimizations (from editors config) ---

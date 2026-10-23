@@ -18,13 +18,17 @@
 
 - Updated dependencies [[`74e3d0b`](https://github.com/omniviewdev/ui/commit/74e3d0bb267a235d27e29a0499c66d150e74cc25), [`3c5b5fc`](https://github.com/omniviewdev/ui/commit/3c5b5fc0cb50bef541b536e865b5aceabb667d9a)]:
   - @omniviewdev/base-ui@0.5.0
-
 ## Unreleased
 
 ### Minor Changes
 
 - Improve `CommandPalette` input/list/active-option accessibility, IME-safe keyboard handling, Tab containment, active-item scrolling and opener focus restoration. Execute only current enabled results, preserve caller order across interleaved groups, and keep disabled commands hidden. Existing required props and the dialog ref remain compatible.
 - Add optional caller-controlled `loading` and `error` presentation to `CommandPalette`; an error takes precedence over loading, and either state suppresses executable results. This is reusable command/search UI preparation, not production command registration, settings/navigation integration or resource search.
+- Add `CelQueryEditor`, a compact Monaco-backed CEL editor with lexical syntax highlighting, type-aware completion presentation, exact UTF-8 edit mapping, snippets, semantic diagnostics, hover documentation and signature help.
+- Schedule automatic language requests after a 250 ms pause, reject stale document/context responses, and support immediate explicit completion without enabling unrelated Monaco word suggestions. Editor providers and models are isolated and disposed with their owners.
+- Replace the integrated workbench's fixed suggestion list and Run counter with an actual loopback Go CEL development adapter, realistic Pod examples and provider-neutral cloud/VM profiles. Parsing, checking, evaluation, schema/receiver context and typed bindings execute outside JavaScript.
+- Standardize editor authoring on a focused LSP 3.17 adapter with document synchronization, completion, pull diagnostics, hover, signatures and cancellation. Support bounded stdio and loopback HTTP JSON-RPC sessions over the existing CEL engine; keep evaluation/catalog separate and remove obsolete custom authoring routes. Preserve per-model cleanup and reusable adapter disposal across effect replay.
+- Keep the development service and its adapter outside production package exports. Its documented integer-only profile, fixture scope and unavailable builder conversion are not claims of production query-engine integration.
 
 ## 3.0.3
 

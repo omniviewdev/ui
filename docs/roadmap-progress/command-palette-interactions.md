@@ -63,4 +63,6 @@ P42/P43: reusable CommandPalette interaction/accessibility preparation **verifie
 
 ## Feature commit / PR
 
-None yet. No push, PR, merge, publication or central-ledger modification performed.
+- Verified feature commit: `d523e106664d3eb21ad798d65601c8a0217b029c` (`fix(editors): improve command palette interactions and accessibility`).
+- The subsequent receipt-only commit records that existing feature SHA. For integration, take the feature and receipt commits only; `e849d8d0958c22d39bfcd37efabc92554831e000` is a source-baseline snapshot of other ongoing work, not this feature's delivery.
+- Worktree/branch preserved. No push, PR, merge, package publication or central-ledger modification performed.

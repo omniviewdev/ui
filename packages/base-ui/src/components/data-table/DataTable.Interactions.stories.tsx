@@ -37,7 +37,15 @@ const columns: ColumnDef<Resource, unknown>[] = [
           checked={row.getIsSelected()}
           onChange={row.getToggleSelectedHandler()}
         />
-        <DataTable.ExpansionToggle row={row} label={row.original.name} />
+        <DataTable.ExpansionToggle
+          row={row}
+          label={row.original.name}
+          getAccessibleLabel={
+            row.original.kind === 'Container'
+              ? (expanded, label) => `${expanded ? 'Contraer' : 'Expandir'} ${label}`
+              : undefined
+          }
+        />
       </>
     ),
   },

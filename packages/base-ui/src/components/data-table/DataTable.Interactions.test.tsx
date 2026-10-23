@@ -251,6 +251,34 @@ it('operates the labeled expansion control with Enter/Space and respects control
   expect(screen.getByRole('button', { name: 'Expand Virtual machine' })).toBeDisabled();
 });
 
+it('updates a localized disclosure name across keyboard expansion and collapse', async () => {
+  function Fixture() {
+    const table = useDataTable({
+      data,
+      columns,
+      getRowId: (row) => row.id,
+      features: { rowExpansion: true },
+      getRowCanExpand: () => true,
+    });
+    return (
+      <DataTable.ExpansionToggle
+        row={table.getRow('cloud:1')}
+        label="Instancia"
+        getAccessibleLabel={(expanded, label) => `${expanded ? 'Contraer' : 'Expandir'} ${label}`}
+      />
+    );
+  }
+  renderWithTheme(<Fixture />);
+  const user = userEvent.setup();
+  await user.tab();
+  await user.keyboard('{Enter}');
+  const toggle = screen.getByRole('button', { name: 'Contraer Instancia' });
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await user.keyboard(' ');
+  expect(screen.getByRole('button', { name: 'Expandir Instancia' })).toBe(toggle);
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+});
+
 it('does not use a nested table disclosure as the parent row focus fallback', async () => {
   function Fixture({ showAction }: { showAction: boolean }) {
     const table = useDataTable({

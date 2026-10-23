@@ -87,3 +87,13 @@ packages/base-ui/src/components/data-table/types.ts
 > P23/P24 (and P30 expanded presentation), presentation-only interaction subset verified in UI worktree `table-interactions`, branch `feature/resource-intelligence-table-interactions`; receipt `docs/roadmap-progress/table-interactions.md`. Reused controlled/manual keyed virtual table; added native labeled disclosures, interactive/nested row-action boundaries and mounted-DOM focus recovery across collapse/reorder/removal/scroll. Scoped table suite 50/50 and base-ui typecheck pass; Storybook Chromium keyboard/DOM smoke verifies independent nested behavior and bounded detail mounts with 2,000 prepared fixtures. Independent review Important findings resolved. Not host/live backend integration, authoritative grouping execution or production performance acceptance; P23/P24/P30 remain incomplete.
 
 Central tracking documents were read only. This is a proposed receipt, not an applied ledger update.
+
+## PR management receipt
+
+- PR: https://github.com/omniviewdev/ui/pull/59. User authorized automatic fixes and merge after checks/review.
+- Initial CI failed the required Changesets gate. Added `.changeset/prepared-table-interactions.md`; committed changeset validation passes. This is release metadata only, not package publication.
+- CI on `14fb24a`: changeset check, benchmarks, CodSpeed analysis and Storybook deploy-preview passed. CodeRabbit initially rate-limited; requested review after reset.
+- CodeRabbit completed with one Minor finding: accessible disclosure prefixes could not be localized. Added optional `getAccessibleLabel(expanded, label)`; English default preserved, resolver consumed rather than forwarded to DOM.
+- Added failing-before/passing-after localized keyboard regression to `DataTable.Interactions.test.tsx`; latest affected suite **51/51 passed**, base-ui typecheck passed.
+- Updated focused interaction story to demonstrate Spanish disclosure verbs for container fixtures. Storybook on port 6423: Chromium Enter produced `Contraer Container 1` / expanded=true; Space restored `Expandir Container 1` / expanded=false. No browser errors.
+- Final CI/review on the localization fix and merge receipt pending. Central ledgers unchanged; production packet boundaries remain unchanged.

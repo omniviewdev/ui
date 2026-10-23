@@ -10,12 +10,15 @@ export interface DataTableExpansionToggleProps<TData> extends Omit<
   row: Row<TData>;
   /** Row-specific accessible name, e.g. the displayed resource name. */
   label: string;
+  /** Localize the complete accessible name; defaults to English Expand/Collapse plus label. */
+  getAccessibleLabel?: (expanded: boolean, label: string) => string;
 }
 
 /** Native Tab/Enter/Space behavior; does not turn the table into a grid. */
 export function DataTableExpansionToggle<TData>({
   row,
   label,
+  getAccessibleLabel,
   className,
   children,
   disabled,
@@ -30,7 +33,9 @@ export function DataTableExpansionToggle<TData>({
       type="button"
       className={cn(styles.ExpandToggle, className)}
       disabled={disabled || !row.getCanExpand()}
-      aria-label={`${expanded ? 'Collapse' : 'Expand'} ${label}`}
+      aria-label={
+        getAccessibleLabel?.(expanded, label) ?? `${expanded ? 'Collapse' : 'Expand'} ${label}`
+      }
       aria-expanded={expanded}
       data-ov-expanded={expanded ? 'true' : 'false'}
       data-ov-expansion-toggle=""

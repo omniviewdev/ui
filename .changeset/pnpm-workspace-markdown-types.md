@@ -9,3 +9,5 @@ Keep the shared Markdown remark plugin list compatible with react-markdown's mut
 Emit complete declaration trees into isolated build outputs without reading or writing the active dist entry; keep rolled declarations for standalone publishing. Fail the build on declaration compiler errors instead of reporting successful output.
 
 Keep calendar focus and its displayed month synchronized during navigation without reciprocal update effects. Focus editable-list fields when editing starts so a deferred animation frame cannot interrupt input in another field.
+
+Retain pnpm's 24-hour release-age protection for third-party registry packages, exempting only the coordinated `@omniviewdev/*` release cohort.

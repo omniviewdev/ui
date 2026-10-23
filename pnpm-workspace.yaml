@@ -5,7 +5,8 @@ linkWorkspacePackages: false
 shamefullyHoist: true
 strictPeerDependencies: true
 pmOnFail: error
-# Preserve pnpm 10's immediate-release install behavior explicitly.
-minimumReleaseAge: 0
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - '@omniviewdev/*'
 allowBuilds:
   esbuild: true

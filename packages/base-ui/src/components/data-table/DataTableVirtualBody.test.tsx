@@ -39,7 +39,7 @@ const columns: ColumnDef<Pod, unknown>[] = [
 
 let setPods: (pods: Pod[]) => void = () => {};
 
-function PodTable(bodyProps: DataTableVirtualBodyProps) {
+function PodTable(bodyProps: DataTableVirtualBodyProps<Pod>) {
   const [pods, _setPods] = useState(initialPods);
   setPods = _setPods;
   const table = useDataTable({
@@ -52,7 +52,7 @@ function PodTable(bodyProps: DataTableVirtualBodyProps) {
     <DataTable.Root table={table}>
       <DataTable.Container>
         <DataTable.Header />
-        <DataTable.VirtualBody fixedRowHeight estimateRowSize={32} {...bodyProps} />
+        <DataTable.VirtualBody<Pod> fixedRowHeight estimateRowSize={32} {...bodyProps} />
       </DataTable.Container>
     </DataTable.Root>
   );

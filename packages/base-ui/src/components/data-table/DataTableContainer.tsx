@@ -4,7 +4,9 @@ import { useDataTableContext } from './context/DataTableContext';
 import { ScrollElementProvider } from './context/DataTableContext';
 import { useColumnSizeVars } from './hooks/useColumnSizeVars';
 import styles from './DataTable.module.css';
+import { useTableFocusRecovery } from './hooks/useTableFocusRecovery';
 
+/** Supply aria-label/aria-labelledby to name the viewport focus fallback. */
 export interface DataTableContainerProps extends HTMLAttributes<HTMLDivElement> {
   height?: number | string;
   maxHeight?: number | string;
@@ -20,6 +22,7 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
     const { table } = useDataTableContext();
     const columnSizeVars = useColumnSizeVars(table);
     const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
+    useTableFocusRecovery(scrollElement);
 
     // Callback ref: sets both the state (triggers re-render for virtualizer)
     // and forwards to the consumer's ref.
@@ -44,6 +47,8 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
         className={cn(styles.Container, className)}
         style={containerStyle}
         {...props}
+        tabIndex={props.tabIndex ?? -1}
+        data-ov-table-container=""
       >
         <ScrollElementProvider element={scrollElement}>
           <table

@@ -1,20 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   useReactTable,
+  functionalUpdate,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getExpandedRowModel,
-  type ColumnOrderState,
-  type ColumnPinningState,
-  type ColumnSizingState,
-  type ExpandedState,
-  type PaginationState,
-  type RowSelectionState,
-  type SortingState,
   type Table,
-  type VisibilityState,
+  type TableState,
+  type Updater,
 } from '@tanstack/react-table';
 import type { UseDataTableOptions } from '../types';
 import {
@@ -24,184 +19,110 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '../constants';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useDataTable<TData = any>(options: UseDataTableOptions<TData>): Table<TData> {
-  'use no memo'; // TanStack Table returns a stable ref — Compiler can't track internal state changes
-  const {
-    data,
-    columns,
-    features: featuresProp,
-    initialState,
-    getRowId,
-    getSubRows,
-    onRowSelectionChange: onRowSelectionChangeProp,
-    onSortingChange: onSortingChangeProp,
-    onColumnVisibilityChange: onColumnVisibilityChangeProp,
-    onColumnOrderChange: onColumnOrderChangeProp,
-    onColumnSizingChange: onColumnSizingChangeProp,
-    onExpandedChange: onExpandedChangeProp,
-    onPaginationChange: onPaginationChangeProp,
-    onColumnPinningChange: onColumnPinningChangeProp,
-    getRowCanExpand,
-    defaultColumn,
-    meta,
-    enableMultiSort = false,
-    manualSorting = false,
-    manualFiltering = false,
-    manualPagination = false,
-    pageCount,
-    globalFilterFn = 'auto',
-  } = options;
+export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData>): Table<TData> {
+  'use no memo'; // TanStack Table v8 mutates its stable instance.
+  const features = { ...DEFAULT_FEATURES, ...options.features };
+  const [internalState, setInternalState] = useState<Partial<TableState>>(() => ({
+    sorting: [],
+    grouping: [],
+    globalFilter: '',
+    columnFilters: [],
+    columnVisibility: {},
+    columnOrder: [],
+    columnSizing: {},
+    columnPinning: {},
+    rowSelection: {},
+    expanded: {},
+    pagination: { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE },
+    ...options.initialState,
+  }));
+  const pendingState = useRef(internalState);
+  pendingState.current = internalState;
 
-  const features = { ...DEFAULT_FEATURES, ...featuresProp };
-
-  // Internal state
-  const [sorting, setSorting] = useState<SortingState>(initialState?.sorting ?? []);
-  const [globalFilter, setGlobalFilter] = useState<string>(
-    (initialState?.globalFilter as string) ?? '',
-  );
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    initialState?.columnVisibility ?? {},
-  );
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(initialState?.columnOrder ?? []);
-  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(
-    initialState?.columnSizing ?? {},
-  );
-  const [columnPinning, setColumnPinning] = useState<ColumnPinningState>(
-    initialState?.columnPinning ?? {},
-  );
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
-    initialState?.rowSelection ?? {},
-  );
-  const [expanded, setExpanded] = useState<ExpandedState>(initialState?.expanded ?? {});
-  const [pagination, setPagination] = useState<PaginationState>(
-    initialState?.pagination ?? { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE },
-  );
+  // Notify outside a state updater: React may replay updaters in Strict Mode.
+  // Controlled edits never mutate local state or optimistically alter host order.
+  function change<K extends keyof TableState>(
+    key: K,
+    updater: Updater<TableState[K]>,
+    notify?: (value: TableState[K]) => void,
+  ) {
+    const controlled = options.state?.[key] !== undefined;
+    const current =
+      !controlled && Object.hasOwn(pendingState.current, key)
+        ? (pendingState.current[key] as TableState[K])
+        : table.getState()[key];
+    const next = functionalUpdate(updater, current);
+    if (!controlled) {
+      // Advance synchronously so batched edits compose before React rerenders.
+      pendingState.current = { ...pendingState.current, [key]: next };
+      setInternalState(pendingState.current);
+    }
+    notify?.(next);
+  }
 
   const table = useReactTable({
-    data,
-    columns,
+    data: options.data,
+    columns: options.columns,
+    initialState: options.initialState,
     defaultColumn: {
       minSize: DEFAULT_COLUMN_MIN_SIZE,
       maxSize: DEFAULT_COLUMN_MAX_SIZE,
-      ...defaultColumn,
+      ...options.defaultColumn,
     },
-    state: {
-      sorting,
-      globalFilter: features.globalFilter ? globalFilter : undefined,
-      columnVisibility,
-      columnOrder,
-      columnSizing,
-      columnPinning,
-      rowSelection,
-      expanded,
-      pagination: features.pagination ? pagination : undefined,
-    },
-    getRowId,
-    getSubRows: features.rowExpansion ? getSubRows : undefined,
-    getRowCanExpand: features.rowExpansion ? getRowCanExpand : undefined,
-    meta,
-
-    // Sorting
+    state: { ...internalState, ...options.state },
+    getRowId: options.getRowId,
+    getSubRows: features.rowExpansion ? options.getSubRows : undefined,
+    getRowCanExpand: features.rowExpansion ? options.getRowCanExpand : undefined,
+    meta: options.meta,
     enableSorting: !!features.sorting,
-    enableMultiSort,
-    manualSorting,
-    onSortingChange: (updater) => {
-      setSorting((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onSortingChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Filtering
+    enableMultiSort: options.enableMultiSort ?? false,
     enableFilters: !!(features.filtering || features.globalFilter),
-    manualFiltering,
     enableGlobalFilter: !!features.globalFilter,
-    globalFilterFn,
-    onGlobalFilterChange: setGlobalFilter,
-
-    // Column sizing
+    globalFilterFn: options.globalFilterFn ?? 'auto',
     columnResizeMode: features.columnResizing ? 'onChange' : undefined,
-    onColumnSizingChange: (updater) => {
-      setColumnSizing((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onColumnSizingChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Column visibility
-    onColumnVisibilityChange: (updater) => {
-      setColumnVisibility((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onColumnVisibilityChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Column ordering
-    onColumnOrderChange: (updater) => {
-      setColumnOrder((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onColumnOrderChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Column pinning
-    onColumnPinningChange: (updater) => {
-      setColumnPinning((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onColumnPinningChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Row selection
-    enableRowSelection: features.rowSelection === 'multi' || features.rowSelection === 'single',
+    enableRowSelection:
+      features.rowSelection === 'multi' || features.rowSelection === 'single'
+        ? (options.getRowCanSelect ?? true)
+        : false,
     enableMultiRowSelection: features.rowSelection === 'multi',
-    onRowSelectionChange: (updater) => {
-      setRowSelection((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onRowSelectionChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Expansion
-    onExpandedChange: (updater) => {
-      setExpanded((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onExpandedChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Pagination
-    manualPagination,
-    pageCount,
-    onPaginationChange: (updater) => {
-      setPagination((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater;
-        onPaginationChangeProp?.(next);
-        return next;
-      });
-    },
-
-    // Row models - conditionally enabled
+    manualSorting: options.manualSorting,
+    manualFiltering: options.manualFiltering,
+    manualPagination: options.manualPagination,
+    manualGrouping: options.manualGrouping,
+    manualExpanding: options.manualExpanding,
+    pageCount: options.pageCount,
+    rowCount: options.rowCount,
+    // Stable keyed expansion/selection survive immutable host patches/reorders.
+    autoResetExpanded: false,
+    onSortingChange: (updater) => change('sorting', updater, options.onSortingChange),
+    onGroupingChange: (updater) => change('grouping', updater, options.onGroupingChange),
+    onGlobalFilterChange: (updater) =>
+      change('globalFilter', updater, options.onGlobalFilterChange),
+    onColumnFiltersChange: (updater) =>
+      change('columnFilters', updater, options.onColumnFiltersChange),
+    onColumnSizingChange: (updater) =>
+      change('columnSizing', updater, options.onColumnSizingChange),
+    onColumnVisibilityChange: (updater) =>
+      change('columnVisibility', updater, options.onColumnVisibilityChange),
+    onColumnOrderChange: (updater) => change('columnOrder', updater, options.onColumnOrderChange),
+    onColumnPinningChange: (updater) =>
+      change('columnPinning', updater, options.onColumnPinningChange),
+    onRowSelectionChange: (updater) =>
+      change('rowSelection', updater, options.onRowSelectionChange),
+    onExpandedChange: (updater) => change('expanded', updater, options.onExpandedChange),
+    onPaginationChange: (updater) => change('pagination', updater, options.onPaginationChange),
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: features.sorting ? getSortedRowModel() : undefined,
+    getSortedRowModel: features.sorting && !options.manualSorting ? getSortedRowModel() : undefined,
     getFilteredRowModel:
-      features.filtering || features.globalFilter ? getFilteredRowModel() : undefined,
-    getPaginationRowModel: features.pagination ? getPaginationRowModel() : undefined,
-    getExpandedRowModel: features.rowExpansion ? getExpandedRowModel() : undefined,
+      (features.filtering || features.globalFilter) && !options.manualFiltering
+        ? getFilteredRowModel()
+        : undefined,
+    getPaginationRowModel:
+      features.pagination && !options.manualPagination ? getPaginationRowModel() : undefined,
+    getExpandedRowModel:
+      features.rowExpansion && !options.manualExpanding ? getExpandedRowModel() : undefined,
   });
 
-  // useReactTable returns a stable reference that mutates internally.
-  // React Compiler in consumer components memoizes JSX based on reference
-  // identity, so a stable ref means children never re-render on state changes.
-  // Spreading into a new object gives consumers a fresh identity on each
-  // render, preserving the full Table<TData> API.
-  return { ...table } as Table<TData>;
+  // The compiler needs a fresh facade to observe the mutable TanStack instance.
+  return { ...table };
 }

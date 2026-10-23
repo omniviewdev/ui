@@ -16,6 +16,7 @@
 
 ### Patch Changes
 
+- Add `DataTable.ExpansionToggle`: a native, row-labeled disclosure with accurate expanded state and Enter/Space operation. Virtual row callbacks ignore interactive descendants and nested tables. Both bodies recover focus after DOM removal/movement to the same mounted element, the parent disclosure, or the table viewport without scrolling; unrelated focused controls are left alone. Detail content still mounts only while expanded and virtually visible, and local detail state resets after unmount. Includes explicitly prepared cloud/container/hypervisor keyboard fixtures; no host/live-result integration or production performance claim.
 - Align Button, IconButton, Input, SearchInput, TextField, Select, MultiSelect, TagInput, and NumberInput to one five-tier height scale per density. Keep field heights stable when clearing, typing, or selecting; fit nested affordances inside their parent, retain intentional tag wrapping, and scroll narrow selected-chip rows without overlapping neighboring controls. SearchInput now supports every public size and semantic color.
 - Match resting field surfaces for every public color and variant while retaining semantic accents and popup selection-state colors.
 - Preserve explicit library size, color, and variant props on elements rendered by `Popover.Trigger` and `Tooltip.Trigger`; explicit trigger props take precedence over valid rendered-element style props, then inherited context. Unrelated native or generic props do not override inherited styling.

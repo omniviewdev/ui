@@ -18,6 +18,7 @@ import { DataTableColumnVisibility } from './DataTableColumnVisibility';
 import { DataTablePagination } from './DataTablePagination';
 import { DataTableEmpty } from './DataTableEmpty';
 import { DataTableLoading } from './DataTableLoading';
+import { DataTableExpansionToggle } from './DataTableExpansionToggle';
 
 // ---------------------------------------------------------------------------
 // Root
@@ -90,6 +91,7 @@ type DataTableCompound = typeof DataTableRoot & {
   Pagination: typeof DataTablePagination;
   Empty: typeof DataTableEmpty;
   Loading: typeof DataTableLoading;
+  ExpansionToggle: typeof DataTableExpansionToggle;
 };
 
 // ---------------------------------------------------------------------------
@@ -114,4 +116,5 @@ export const DataTable = Object.assign(DataTableRoot, {
   Pagination: DataTablePagination,
   Empty: DataTableEmpty,
   Loading: DataTableLoading,
+  ExpansionToggle: DataTableExpansionToggle,
 }) as DataTableCompound;

@@ -41,7 +41,9 @@ describe('Calendar', () => {
 
   it('Home moves to first day of week; End moves to last day of week', async () => {
     const user = userEvent.setup();
-    render(<Calendar value={ANCHOR} onChange={() => {}} locale="en-US" weekStartsOn={0} autoFocus />);
+    render(
+      <Calendar value={ANCHOR} onChange={() => {}} locale="en-US" weekStartsOn={0} autoFocus />,
+    );
     screen.getByRole('gridcell', { selected: true }).focus();
     await user.keyboard('{Home}');
     expect(document.activeElement?.textContent).toContain('12');
@@ -54,8 +56,25 @@ describe('Calendar', () => {
     render(<Calendar value={ANCHOR} onChange={() => {}} locale="en-US" autoFocus />);
     screen.getByRole('gridcell', { selected: true }).focus();
     await user.keyboard('{PageDown}');
-    const focused = document.activeElement as HTMLElement;
-    expect(focused.getAttribute('data-date')).toBe('2026-05-15');
+    expect(document.activeElement).toHaveAttribute('data-date', '2026-05-15');
+    await user.keyboard('{PageUp}');
+    expect(document.activeElement).toHaveAttribute('data-date', '2026-04-15');
+  });
+
+  it('header navigation keeps a focused day in the displayed month and clamps month ends', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Calendar value={new Date(2026, 0, 31)} onChange={onChange} locale="en-US" />);
+
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+    expect(screen.getByRole('status')).toHaveTextContent('February 2026');
+    expect(document.activeElement).toHaveAttribute('data-date', '2026-02-28');
+    expect(document.activeElement).toHaveAttribute('tabindex', '0');
+
+    await user.click(screen.getByRole('button', { name: 'Previous month' }));
+    expect(screen.getByRole('status')).toHaveTextContent('January 2026');
+    expect(document.activeElement).toHaveAttribute('data-date', '2026-01-28');
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('Shift+PageUp/Shift+PageDown navigate years', async () => {
@@ -81,8 +100,7 @@ describe('Calendar', () => {
     const min = new Date(2026, 3, 10);
     const max = new Date(2026, 3, 20);
     render(<Calendar value={ANCHOR} onChange={() => {}} locale="en-US" min={min} max={max} />);
-    const cellFor = (day: number) =>
-      screen.getByRole('gridcell', { name: new RegExp(`^${day}`) });
+    const cellFor = (day: number) => screen.getByRole('gridcell', { name: new RegExp(`^${day}`) });
     expect(cellFor(5)).toHaveAttribute('aria-disabled', 'true');
     expect(cellFor(15)).not.toHaveAttribute('aria-disabled');
     expect(cellFor(25)).toHaveAttribute('aria-disabled', 'true');
@@ -98,10 +116,7 @@ describe('Calendar', () => {
         isDateDisabled={isDateDisabled}
       />,
     );
-    expect(screen.getByRole('gridcell', { name: /^14/ })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    expect(screen.getByRole('gridcell', { name: /^14/ })).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('marks today with aria-current="date"', () => {
@@ -116,7 +131,7 @@ describe('Calendar', () => {
 
 describe('Calendar range mode', () => {
   const START = new Date(2026, 3, 10); // April 10
-  const END = new Date(2026, 3, 15);   // April 15
+  const END = new Date(2026, 3, 15); // April 15
 
   it('renders both start and end with aria-selected=true', () => {
     render(

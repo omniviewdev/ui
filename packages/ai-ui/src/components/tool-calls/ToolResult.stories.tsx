@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ToolResult } from './ToolResult';
 
-const meta = {
+const meta: Meta<typeof ToolResult> = {
   title: 'AI/ToolCalls/ToolResult',
   component: ToolResult,
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ToolResult>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

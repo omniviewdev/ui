@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatBubble } from './ChatBubble';
 import { ChatAvatar } from './ChatAvatar';
 
-const meta = {
+const meta: Meta<typeof ChatBubble> = {
   title: 'AI/Chat/ChatBubble',
   component: ChatBubble,
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ChatBubble>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

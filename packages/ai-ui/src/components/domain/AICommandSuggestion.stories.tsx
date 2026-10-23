@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AICommandSuggestion } from './AICommandSuggestion';
 
-const meta = {
+const meta: Meta<typeof AICommandSuggestion> = {
   title: 'AI/Domain/AICommandSuggestion',
   component: AICommandSuggestion,
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AICommandSuggestion>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

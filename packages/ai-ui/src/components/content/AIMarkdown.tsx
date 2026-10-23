@@ -9,7 +9,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const REMARK_PLUGINS = [remarkGfm] as const;
+const REMARK_PLUGINS = [remarkGfm];
 import {
   Blockquote,
   Checkbox,

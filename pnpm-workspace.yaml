@@ -1,3 +1,12 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+linkWorkspacePackages: false
+shamefullyHoist: true
+strictPeerDependencies: true
+pmOnFail: error
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - '@omniviewdev/*'
+allowBuilds:
+  esbuild: true

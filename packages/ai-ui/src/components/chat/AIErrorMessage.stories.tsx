@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIErrorMessage } from './AIErrorMessage';
 
-const meta = {
+const meta: Meta<typeof AIErrorMessage> = {
   title: 'AI/Chat/AIErrorMessage',
   component: AIErrorMessage,
   tags: ['autodocs'],
@@ -15,7 +15,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AIErrorMessage>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

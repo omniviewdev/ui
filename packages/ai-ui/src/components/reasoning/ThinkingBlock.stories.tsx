@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThinkingBlock } from './ThinkingBlock';
 
-const meta = {
+const meta: Meta<typeof ThinkingBlock> = {
   title: 'AI/Reasoning/ThinkingBlock',
   component: ThinkingBlock,
   tags: ['autodocs'],
@@ -24,7 +24,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ThinkingBlock>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIAttachment } from './AIAttachment';
 
-const meta = {
+const meta: Meta<typeof AIAttachment> = {
   title: 'AI/Chat/AIAttachment',
   component: AIAttachment,
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AIAttachment>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

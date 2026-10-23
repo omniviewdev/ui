@@ -69,10 +69,12 @@ P42/P43: reusable CommandPalette interaction/accessibility preparation **verifie
 - Main's declared manager retained: `npx --yes pnpm@10.6.2 install --frozen-lockfile` passed; no shared configuration, package manifest or lockfile changes.
 - Main-based verification: `npx --yes pnpm@10.6.2 --filter @omniviewdev/base-ui build` passed; `npx --yes pnpm@10.6.2 --filter @omniviewdev/editors test` passed **169 tests across 8 files**, including all 22 palette regressions; `npx --yes pnpm@10.6.2 --filter @omniviewdev/editors typecheck` passed. Existing Terminal mock emitted a Vitest constructor warning; API Extractor reported its older bundled TS compiler; no failures.
 - Actual main-based Chromium Storybook on unique port **64129** confirmed named input/list/active-option relationships, interleaved order, Arrow navigation, live replacement activation, disabled replacement preventing execution, Escape dismissal and opener focus restoration. Error presentation visually inspected. Earlier comprehensive port-64127 evidence remains applicable to identical component source.
-- Main-based feature commit: `bbec7ee` (cherry-pick of `d523e106664d3eb21ad798d65601c8a0217b029c`); receipt cherry-pick: `11b1776`. PR publication pending.
+- Main-based feature commit: `bbec7ee` (cherry-pick of `d523e106664d3eb21ad798d65601c8a0217b029c`); receipt cherry-pick: `11b1776`. Main verification/release metadata commit: `d4ba560`.
+- `npx --yes pnpm@10.6.2 changeset status --since=3e55d761ca6c53413c27c8c924168185373d3607`: passed; only `@omniviewdev/editors` scheduled for a minor release.
+- PR opened against main: https://github.com/omniviewdev/ui/pull/58 . No prerequisite PR required. CI results remain separate from the local verification above.
 
 ## Feature commit / PR
 
 - Original verified feature commit: `d523e106664d3eb21ad798d65601c8a0217b029c` (`fix(editors): improve command palette interactions and accessibility`).
 - Use the clean main-based PR branch for integration. `e849d8d0958c22d39bfcd37efabc92554831e000` is a preserved source-baseline snapshot of other ongoing work and is not part of the PR.
-- Worktree/branch preserved. No push, PR, merge, package publication or central-ledger modification performed.
+- PR branch pushed with user approval; both isolated worktrees/branches preserved. No merge, package publication or central-ledger modification performed. The integration owner still owns applying the proposed ledger update.

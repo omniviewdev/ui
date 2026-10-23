@@ -1,395 +1,248 @@
+import { StrictMode, createRef, useState } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CommandPalette, type CommandItem } from './CommandPalette';
 
-// ---------------------------------------------------------------------------
-// Mock @omniviewdev/base-ui — CommandList compound component
-// ---------------------------------------------------------------------------
-
-vi.mock('@omniviewdev/base-ui', async () => {
-  const React = await vi.importActual<typeof import('react')>('react');
-
-  // Simple CommandList mock that renders items directly and supports filtering
-  function MockRoot({
-    items,
-    itemKey,
-    renderItem,
-    filterFn,
-    groupBy,
-    onAction,
-    onDismiss,
-    placeholder,
-    children,
-  }: {
-    items: CommandItem[];
-    itemKey: (item: CommandItem) => string;
-    renderItem: (item: CommandItem, meta: { key: string; isActive: boolean; isDisabled: boolean }) => React.ReactNode;
-    filterFn?: (item: CommandItem, query: string) => boolean;
-    groupBy?: (item: CommandItem) => string;
-    onAction?: (key: string, item: CommandItem) => void;
-    onDismiss?: () => void;
-    placeholder?: string;
-    children?: React.ReactNode;
-  }) {
-    const [query, setQuery] = React.useState('');
-    const [activeIndex, setActiveIndex] = React.useState(0);
-
-    const filtered = React.useMemo(() => {
-      if (!query || !filterFn) return items;
-      return items.filter((item) => filterFn(item, query));
-    }, [items, query, filterFn]);
-
-    // Group items
-    const groups = React.useMemo(() => {
-      if (!groupBy) return new Map([['', filtered]]);
-      const map = new Map<string, CommandItem[]>();
-      for (const item of filtered) {
-        const group = groupBy(item);
-        const list = map.get(group);
-        if (list) list.push(item);
-        else map.set(group, [item]);
-      }
-      return map;
-    }, [filtered, groupBy]);
-
-    const handleKeyDown = React.useCallback(
-      (e: React.KeyboardEvent) => {
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            setActiveIndex((i: number) => (i + 1) % Math.max(filtered.length, 1));
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            setActiveIndex((i: number) => (i - 1 + filtered.length) % Math.max(filtered.length, 1));
-            break;
-          case 'Enter': {
-            e.preventDefault();
-            const selected = filtered[activeIndex];
-            if (selected && onAction) onAction(itemKey(selected), selected);
-            break;
-          }
-          case 'Escape':
-            e.preventDefault();
-            onDismiss?.();
-            break;
-        }
-      },
-      [filtered, activeIndex, onAction, onDismiss, itemKey],
-    );
-
-    // Provide context to children via data attributes on root
-    const contextValue = React.useMemo(
-      () => ({ query, setQuery, setActiveIndex, handleKeyDown, placeholder }),
-      [query, handleKeyDown, placeholder],
-    );
-
-    let flatIndex = 0;
-
-    // Build results content
-    const resultsContent = filtered.length > 0 ? (
-      Array.from(groups.entries()).map(([group, groupItems]: [string, CommandItem[]]) => (
-        <div key={group}>
-          {group && <div>{group}</div>}
-          {groupItems.map((item: CommandItem) => {
-            const idx = flatIndex++;
-            return renderItem(item, {
-              key: itemKey(item),
-              isActive: idx === activeIndex,
-              isDisabled: false,
-            });
-          })}
-        </div>
-      ))
-    ) : null;
-
-    return (
-      <MockRootContext.Provider value={contextValue}>
-        <div>
-          {React.Children.map(children, (child: React.ReactNode) => {
-            if (!React.isValidElement(child)) return child;
-            const displayName = (child.type as { displayName?: string })?.displayName;
-            if (displayName === 'CommandList.Input') return child;
-            if (displayName === 'CommandList.Results') {
-              const childProps = child.props as Record<string, unknown>;
-              return resultsContent ? (
-                <div {...childProps}>{resultsContent}</div>
-              ) : null;
-            }
-            if (displayName === 'CommandList.Empty') {
-              return filtered.length === 0 ? child : null;
-            }
-            return child;
-          })}
-        </div>
-      </MockRootContext.Provider>
-    );
-  }
-  MockRoot.displayName = 'CommandList.Root';
-
-  const MockRootContext = React.createContext<{
-    query: string;
-    setQuery: (q: string) => void;
-    setActiveIndex: (i: number) => void;
-    handleKeyDown: (e: React.KeyboardEvent) => void;
-    placeholder?: string;
-  } | null>(null);
-
-  function MockInput(props: Record<string, unknown>) {
-    const ctx = React.useContext(MockRootContext);
-    return (
-      <input
-        type="text"
-        value={ctx?.query ?? ''}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          ctx?.setQuery(e.target.value);
-          ctx?.setActiveIndex(0);
-        }}
-        onKeyDown={ctx?.handleKeyDown}
-        placeholder={ctx?.placeholder}
-        {...props}
-      />
-    );
-  }
-  MockInput.displayName = 'CommandList.Input';
-
-  function MockResults(props: Record<string, unknown>) {
-    return <div role="listbox" {...props} />;
-  }
-  MockResults.displayName = 'CommandList.Results';
-
-  function MockItem({ children, itemKey: _itemKey, ...props }: Record<string, unknown>) {
-    return (
-      <div role="option" tabIndex={0} aria-selected={props['data-active'] === true} {...props}>
-        {children as React.ReactNode}
-      </div>
-    );
-  }
-  MockItem.displayName = 'CommandList.Item';
-
-  function MockItemIcon({ children, ...props }: Record<string, unknown>) {
-    return <span {...props}>{children as React.ReactNode}</span>;
-  }
-  MockItemIcon.displayName = 'CommandList.ItemIcon';
-
-  function MockItemLabel({ children, ...props }: Record<string, unknown>) {
-    return <span {...props}>{children as React.ReactNode}</span>;
-  }
-  MockItemLabel.displayName = 'CommandList.ItemLabel';
-
-  function MockItemDescription({ children, ...props }: Record<string, unknown>) {
-    return <span {...props}>{children as React.ReactNode}</span>;
-  }
-  MockItemDescription.displayName = 'CommandList.ItemDescription';
-
-  function MockItemShortcut({ children, ...props }: Record<string, unknown>) {
-    return <kbd {...props}>{children as React.ReactNode}</kbd>;
-  }
-  MockItemShortcut.displayName = 'CommandList.ItemShortcut';
-
-  function MockEmpty({ children, ...props }: Record<string, unknown>) {
-    return <div {...props}>{children as React.ReactNode}</div>;
-  }
-  MockEmpty.displayName = 'CommandList.Empty';
-
-  function MockLoading({ children, ...props }: Record<string, unknown>) {
-    return <div {...props}>{children as React.ReactNode}</div>;
-  }
-  MockLoading.displayName = 'CommandList.Loading';
-
-  const CommandList = Object.assign(MockRoot, {
-    Root: MockRoot,
-    Input: MockInput,
-    Results: MockResults,
-    Item: MockItem,
-    ItemIcon: MockItemIcon,
-    ItemLabel: MockItemLabel,
-    ItemDescription: MockItemDescription,
-    ItemShortcut: MockItemShortcut,
-    Empty: MockEmpty,
-    Loading: MockLoading,
-  });
-
-  return { CommandList };
-});
-
-// ---------------------------------------------------------------------------
-// Test data
-// ---------------------------------------------------------------------------
-
 const commands: CommandItem[] = [
   { id: 'open', label: 'Open File', shortcut: 'Ctrl+O', group: 'File' },
-  { id: 'save', label: 'Save File', shortcut: 'Ctrl+S', group: 'File' },
-  { id: 'find', label: 'Find in Files', shortcut: 'Ctrl+Shift+F', group: 'Search' },
-  {
-    id: 'terminal',
-    label: 'Toggle Terminal',
-    shortcut: 'Ctrl+`',
-    group: 'View',
-    description: 'Show or hide the integrated terminal',
-  },
   { id: 'disabled', label: 'Disabled Command', disabled: true },
+  { id: 'find', label: 'Find in Files', group: 'Search' },
+  { id: 'save', label: 'Save File', group: 'File' },
+  { id: 'terminal', label: 'Toggle Terminal', description: 'Show the integrated terminal', group: 'View' },
 ];
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+function setup(items = commands) {
+  const onSelect = vi.fn();
+  const onClose = vi.fn();
+  const props = { open: true, commands: items, onSelect, onClose };
+  const view = render(<CommandPalette {...props} />);
+  return { ...view, props, onSelect, onClose, input: screen.getByTestId('command-palette-input') };
+}
 
-describe('CommandPalette', () => {
-  const defaultProps = {
-    open: true,
-    onClose: vi.fn(),
-    commands,
-    onSelect: vi.fn(),
-  };
+function activeOption(input: HTMLElement) {
+  const id = input.getAttribute('aria-activedescendant');
+  return id ? document.getElementById(id) : null;
+}
 
-  it('renders when open', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.getByTestId('command-palette')).toBeInTheDocument();
+function Launcher() {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState('');
+  return <>
+    <button onClick={() => setOpen(true)}>Open palette</button>
+    <button>Outside</button>
+    <output>{selected}</output>
+    <CommandPalette open={open} commands={commands} onClose={() => setOpen(false)} onSelect={(command) => setSelected(command.id)} />
+  </>;
+}
+
+describe('CommandPalette real interactions', () => {
+  it('links the focused, named combobox to its named list and selected option', () => {
+    const { input } = setup();
+    expect(screen.getByRole('combobox', { name: 'Search commands' })).toBe(input);
+    expect(input).toHaveFocus();
+    expect(input).toHaveAttribute('aria-expanded', 'true');
+    const list = screen.getByRole('listbox', { name: 'Commands' });
+    expect(input).toHaveAttribute('aria-controls', list.id);
+    expect(activeOption(input)).toBe(screen.getByRole('option', { name: /Open File/ }));
+    expect(activeOption(input)).toHaveAttribute('aria-selected', 'true');
+    expect(list).toContainElement(activeOption(input));
   });
 
-  it('does not render when closed', () => {
-    render(<CommandPalette {...defaultProps} open={false} />);
-    expect(screen.queryByTestId('command-palette')).not.toBeInTheDocument();
-  });
-
-  it('shows command items', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.getByTestId('command-item-open')).toBeInTheDocument();
-    expect(screen.getByTestId('command-item-save')).toBeInTheDocument();
-    expect(screen.getByTestId('command-item-find')).toBeInTheDocument();
-  });
-
-  it('filters out disabled commands', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.queryByTestId('command-item-disabled')).not.toBeInTheDocument();
-  });
-
-  it('filters commands by search text', async () => {
-    const user = userEvent.setup();
-    render(<CommandPalette {...defaultProps} />);
-    const input = screen.getByTestId('command-palette-input');
-    await user.type(input, 'terminal');
-    expect(screen.getByTestId('command-item-terminal')).toBeInTheDocument();
-    expect(screen.queryByTestId('command-item-open')).not.toBeInTheDocument();
-  });
-
-  it('filters by description', async () => {
-    const user = userEvent.setup();
-    render(<CommandPalette {...defaultProps} />);
-    await user.type(screen.getByTestId('command-palette-input'), 'integrated');
-    expect(screen.getByTestId('command-item-terminal')).toBeInTheDocument();
-  });
-
-  it('filters by group name', async () => {
-    const user = userEvent.setup();
-    render(<CommandPalette {...defaultProps} />);
-    await user.type(screen.getByTestId('command-palette-input'), 'search');
-    expect(screen.getByTestId('command-item-find')).toBeInTheDocument();
-  });
-
-  it('shows empty state when no matches', async () => {
-    const user = userEvent.setup();
-    render(<CommandPalette {...defaultProps} />);
-    await user.type(screen.getByTestId('command-palette-input'), 'zzzzz');
-    expect(screen.getByTestId('command-palette-empty')).toBeInTheDocument();
-  });
-
-  it('selects command on Enter after arrow navigation', () => {
-    const onSelect = vi.fn();
-    const onClose = vi.fn();
-    render(<CommandPalette {...defaultProps} onSelect={onSelect} onClose={onClose} />);
-    const input = screen.getByTestId('command-palette-input');
+  it('keeps interleaved groups in caller order for display and Arrow/Enter activation', () => {
+    const { input, onSelect, onClose } = setup();
+    expect(screen.getAllByRole('option').map((item) => item.textContent)).toEqual([
+      expect.stringContaining('Open File'), expect.stringContaining('Find in Files'),
+      expect.stringContaining('Save File'), expect.stringContaining('Toggle Terminal'),
+    ]);
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'save' }));
-    expect(onClose).toHaveBeenCalled();
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[2]);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('closes on Escape', () => {
-    const onClose = vi.fn();
-    render(<CommandPalette {...defaultProps} onClose={onClose} />);
-    fireEvent.keyDown(screen.getByTestId('command-palette-input'), { key: 'Escape' });
-    expect(onClose).toHaveBeenCalled();
+  it('wraps ArrowUp/Down and never executes a disabled command', () => {
+    const { input, onSelect } = setup();
+    expect(screen.queryByText('Disabled Command')).not.toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    expect(activeOption(input)).toHaveTextContent('Toggle Terminal');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(activeOption(input)).toHaveTextContent('Open File');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[2]);
   });
 
-  it('closes on overlay click', () => {
-    const onClose = vi.fn();
-    render(<CommandPalette {...defaultProps} onClose={onClose} />);
-    fireEvent.click(screen.getByTestId('command-palette-overlay'));
-    expect(onClose).toHaveBeenCalled();
+  it.each(['integrated', 'view', 'tgt'])('matches static description/group/subsequence input: %s', async (query) => {
+    const user = userEvent.setup();
+    const { input, onSelect } = setup();
+    await user.type(input, query);
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[4]);
   });
 
-  it('does not propagate click from dialog to overlay', () => {
-    const onClose = vi.fn();
-    render(<CommandPalette {...defaultProps} onClose={onClose} />);
-    fireEvent.click(screen.getByTestId('command-palette'));
+  it('replaces an active result with current data and a valid current selection', () => {
+    const { input, props, rerender, onSelect } = setup();
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    const replacement = [{ id: 'new', label: 'New action' }];
+    rerender(<CommandPalette {...props} commands={replacement} />);
+    expect(activeOption(input)).toBe(screen.getByRole('option', { name: 'New action' }));
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(replacement[0]);
+  });
+
+  it('uses the replacement object for a reused ID, and drops it when disabled', () => {
+    const { input, props, rerender, onSelect } = setup();
+    const current = { id: 'open', label: 'Current Open' };
+    rerender(<CommandPalette {...props} commands={[current]} />);
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(current);
+    onSelect.mockClear();
+    rerender(<CommandPalette {...props} commands={[{ ...current, disabled: true }]} />);
+    expect(activeOption(input)).toBeNull();
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it('clears the active descendant for empty results and recovers when results return', () => {
+    const { input, props, rerender, onSelect } = setup();
+    rerender(<CommandPalette {...props} commands={[]} />);
+    expect(input).not.toHaveAttribute('aria-activedescendant');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(screen.getByRole('status')).toBeVisible();
+    rerender(<CommandPalette {...props} commands={commands} />);
+    expect(activeOption(input)).toHaveTextContent('Open File');
+  });
+
+  it('distinguishes loading, error and empty, blocking old results while unavailable', () => {
+    const { input, props, rerender, onSelect } = setup();
+    rerender(<CommandPalette {...props} {...{ loading: true }} />);
+    expect(screen.getByRole('listbox')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByRole('status')).toHaveTextContent(/loading/i);
+    expect(screen.queryAllByRole('option')).toEqual([]);
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).not.toHaveBeenCalled();
+    rerender(<CommandPalette {...props} {...{ loading: true, error: 'Commands unavailable. Try again.' }} />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Commands unavailable. Try again.');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).not.toHaveBeenCalled();
+    rerender(<CommandPalette {...props} commands={[]} />);
+    expect(screen.getByRole('status')).not.toHaveTextContent(/loading/i);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it.each(['Enter', 'Escape', 'ArrowDown'])('ignores %s during composition and Safari IME keycode 229', (key) => {
+    const { input, onSelect, onClose } = setup();
+    fireEvent.compositionStart(input);
+    fireEvent.keyDown(input, { key });
+    fireEvent.compositionEnd(input);
+    fireEvent.keyDown(input, { key, isComposing: true });
+    fireEvent.keyDown(input, { key, keyCode: 229 });
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[0]);
+  });
+
+  it.each(['Escape', 'Enter', 'backdrop'])('restores opener focus after %s dismissal, including effect replay', async (key) => {
+    const user = userEvent.setup();
+    render(<StrictMode><Launcher /></StrictMode>);
+    const opener = screen.getByRole('button', { name: 'Open palette' });
+    await user.click(opener);
+    expect(screen.getByTestId('command-palette-input')).toHaveFocus();
+    if (key === 'backdrop') await user.click(screen.getByTestId('command-palette-overlay'));
+    else await user.keyboard(`{${key}}`);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
+  });
+
+  it('keeps keyboard navigation and Escape working after clicking a group heading', async () => {
+    const user = userEvent.setup();
+    render(<Launcher />);
+    const opener = screen.getByRole('button', { name: 'Open palette' });
+    await user.click(opener);
+    const input = screen.getByTestId('command-palette-input');
+    await user.click(screen.getAllByText('File')[0]!);
+    expect(input).toHaveFocus();
+    await user.keyboard('{ArrowDown}');
+    expect(activeOption(input)).toHaveTextContent('Find in Files');
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
+  });
+
+  it('contains Tab focus and resets query/selection on reopen', async () => {
+    const user = userEvent.setup();
+    render(<Launcher />);
+    await user.click(screen.getByRole('button', { name: 'Open palette' }));
+    const input = screen.getByTestId('command-palette-input');
+    await user.tab({ shift: true });
+    expect(screen.getByRole('dialog')).toContainElement(document.activeElement as HTMLElement);
+    await user.tab();
+    expect(input).toHaveFocus();
+    await user.type(input, 'terminal');
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: 'Open palette' }));
+    expect(screen.getByTestId('command-palette-input')).toHaveValue('');
+    expect(activeOption(screen.getByTestId('command-palette-input'))).toHaveTextContent('Open File');
+  });
+
+  it('lets Enter activate Clear search rather than the current command', async () => {
+    const user = userEvent.setup();
+    const { input, onSelect, onClose } = setup();
+    await user.type(input, 'terminal');
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Clear search' })).toHaveFocus();
+    await user.tab();
+    expect(input).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Clear search' })).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(input).toHaveValue('');
+    expect(input).toHaveFocus();
+    expect(onSelect).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('renders group labels', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.getByText('File')).toBeInTheDocument();
-    expect(screen.getByText('Search')).toBeInTheDocument();
-    expect(screen.getByText('View')).toBeInTheDocument();
+  it('restores focus on controlled close and unmount with a callback ref', () => {
+    const opener = document.createElement('button');
+    document.body.append(opener);
+    opener.focus();
+    const ref = vi.fn();
+    const props = { open: true, commands, onSelect: vi.fn(), onClose: vi.fn(), ref };
+    const { rerender, unmount } = render(<CommandPalette {...props} />);
+    rerender(<CommandPalette {...props} open={false} />);
+    expect(opener).toHaveFocus();
+    rerender(<CommandPalette {...props} />);
+    unmount();
+    expect(opener).toHaveFocus();
+    expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement));
+    opener.remove();
   });
 
-  it('displays keyboard shortcuts', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.getByText('Ctrl+O')).toBeInTheDocument();
-  });
-
-  it('shows description text for items that have one', () => {
-    render(<CommandPalette {...defaultProps} />);
-    expect(screen.getByText('Show or hide the integrated terminal')).toBeInTheDocument();
-  });
-
-  it('uses custom placeholder text', () => {
-    render(<CommandPalette {...defaultProps} placeholder="Search resources…" />);
-    expect(screen.getByPlaceholderText('Search resources…')).toBeInTheDocument();
-  });
-
-  it('has proper dialog accessibility attributes', () => {
-    render(<CommandPalette {...defaultProps} />);
-    const dialog = screen.getByTestId('command-palette');
-    expect(dialog).toHaveAttribute('role', 'dialog');
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(dialog).toHaveAttribute('aria-label', 'Command palette');
-  });
-
-  it('handles empty commands array', () => {
-    render(<CommandPalette {...defaultProps} commands={[]} />);
-    expect(screen.getByTestId('command-palette-empty')).toBeInTheDocument();
-  });
-
-  it('wraps ArrowDown from last to first item', () => {
-    const onSelect = vi.fn();
-    render(<CommandPalette {...defaultProps} onSelect={onSelect} />);
-    const input = screen.getByTestId('command-palette-input');
-    // 4 non-disabled commands, press down 4 times to wrap
-    for (let i = 0; i < 4; i++) {
-      fireEvent.keyDown(input, { key: 'ArrowDown' });
-    }
+  it('does not steal deliberate destination focus after command execution', () => {
+    const destination = document.createElement('button');
+    document.body.append(destination);
+    const { input, props, rerender } = setup();
+    rerender(<CommandPalette {...props} onSelect={() => destination.focus()} />);
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'open' }));
+    rerender(<CommandPalette {...props} open={false} />);
+    expect(destination).toHaveFocus();
+    destination.remove();
   });
 
-  it('wraps ArrowUp from first to last item', () => {
-    const onSelect = vi.fn();
-    render(<CommandPalette {...defaultProps} onSelect={onSelect} />);
-    const input = screen.getByTestId('command-palette-input');
-    fireEvent.keyDown(input, { key: 'ArrowUp' });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'terminal' }));
-  });
-
-  it('does not call onSelect on Enter with empty results', async () => {
+  it('keeps the public ref on the dialog and pointer activation single-shot', async () => {
     const user = userEvent.setup();
+    const ref = createRef<HTMLDivElement>();
     const onSelect = vi.fn();
-    render(<CommandPalette {...defaultProps} onSelect={onSelect} />);
-    await user.type(screen.getByTestId('command-palette-input'), 'zzzzz');
-    fireEvent.keyDown(screen.getByTestId('command-palette-input'), { key: 'Enter' });
-    expect(onSelect).not.toHaveBeenCalled();
+    const onClose = vi.fn();
+    render(<CommandPalette ref={ref} open commands={commands} onSelect={onSelect} onClose={onClose} />);
+    expect(ref.current).toBe(screen.getByRole('dialog'));
+    await user.click(screen.getByRole('option', { name: /Find in Files/ }));
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[2]);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

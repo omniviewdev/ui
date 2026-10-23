@@ -1,5 +1,12 @@
 # @omniviewdev/editors
 
+## Unreleased
+
+### Minor Changes
+
+- Improve `CommandPalette` input/list/active-option accessibility, IME-safe keyboard handling, Tab containment, active-item scrolling and opener focus restoration. Execute only current enabled results, preserve caller order across interleaved groups, and keep disabled commands hidden. Existing required props and the dialog ref remain compatible.
+- Add optional caller-controlled `loading` and `error` presentation to `CommandPalette`; an error takes precedence over loading, and either state suppresses executable results. This is reusable command/search UI preparation, not production command registration, settings/navigation integration or resource search.
+
 ## 3.0.3
 
 ### Patch Changes

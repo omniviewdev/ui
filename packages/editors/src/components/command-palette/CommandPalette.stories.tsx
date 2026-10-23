@@ -44,11 +44,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function PlaygroundStory(args: CommandPaletteProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [lastSelected, setLastSelected] = useState<string | null>(null);
   return (
     <div>
       <button type="button" onClick={() => setOpen(true)}>Open Command Palette</button>
+      <p>Arrow keys navigate, Enter selects, Escape dismisses. Focus returns here when closed.</p>
       {lastSelected && (
         <p style={{ marginTop: 8, fontSize: 13, opacity: 0.7 }}>Last selected: {lastSelected}</p>
       )}
@@ -150,7 +151,8 @@ export const WithDescriptions: Story = {
 
 /** Demonstrates disabled commands being filtered out. */
 function WithDisabledStory(args: CommandPaletteProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [lastSelected, setLastSelected] = useState('None');
   const commands: CommandItem[] = [
     { id: 'save', label: 'Save', shortcut: 'Ctrl+S', group: 'File' },
     { id: 'save-as', label: 'Save As…', shortcut: 'Ctrl+Shift+S', group: 'File' },
@@ -163,12 +165,14 @@ function WithDisabledStory(args: CommandPaletteProps) {
   return (
     <div>
       <button type="button" onClick={() => setOpen(true)}>Open (disabled items hidden)</button>
+      <p>Revert, Deploy and Publish are disabled and remain hidden.</p>
+      <p aria-live="polite">Last selected: {lastSelected}</p>
       <CommandPalette
         {...args}
         commands={commands}
         open={open}
         onClose={() => setOpen(false)}
-        onSelect={() => setOpen(false)}
+        onSelect={(command) => setLastSelected(command.label)}
       />
     </div>
   );
@@ -237,7 +241,7 @@ function CustomPlaceholderStory(args: CommandPaletteProps) {
       <button type="button" onClick={() => setOpen(true)}>Open</button>
       <CommandPalette
         {...args}
-        placeholder="Search Kubernetes resources…"
+        placeholder="Find an action…"
         open={open}
         onClose={() => setOpen(false)}
         onSelect={() => setOpen(false)}
@@ -248,4 +252,67 @@ function CustomPlaceholderStory(args: CommandPaletteProps) {
 
 export const CustomPlaceholder: Story = {
   render: (args) => <CustomPlaceholderStory {...args} />,
+};
+
+/** Caller-controlled replacement only: no resource acquisition or search engine. */
+function ChangingResultsStory(args: CommandPaletteProps) {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(0);
+  const [lastSelected, setLastSelected] = useState('None');
+  const scenarios = ['Ordered commands', 'Replaced results', 'All disabled', 'Loading', 'Error', 'Empty'];
+  const ordered: CommandItem[] = [
+    { id: 'alpha', label: 'Alpha action', group: 'File' },
+    { id: 'beta', label: 'Beta action', group: 'Search' },
+    { id: 'gamma', label: 'Gamma action', group: 'File' },
+    { id: 'blocked', label: 'Unavailable action', disabled: true },
+  ];
+  const results = step === 0 ? ordered
+    : step === 1 ? [{ id: 'replacement', label: 'Replacement action', group: 'Updated' }]
+    : step === 2 ? [{ id: 'replacement', label: 'Replacement action', disabled: true }]
+    : step === 5 ? [] : ordered;
+
+  return (
+    <div onKeyDownCapture={(event) => {
+      if (event.altKey && event.key.toLowerCase() === 'r') {
+        event.preventDefault();
+        event.stopPropagation();
+        setStep((current) => (current + 1) % scenarios.length);
+      }
+    }}>
+      <button type="button" onClick={() => setOpen(true)}>Open Changing Results</button>
+      <p>While open, Alt+R advances: ordered → replaced → all disabled → loading → error → empty.</p>
+      <p>Scenario: {scenarios[step]}</p>
+      <p aria-live="polite">Last selected: {lastSelected}</p>
+      <CommandPalette
+        {...args}
+        open={open}
+        commands={results}
+        loading={step === 3}
+        error={step === 4 ? 'Commands unavailable. Close and try again.' : undefined}
+        onClose={() => setOpen(false)}
+        onSelect={(command) => setLastSelected(command.label)}
+      />
+    </div>
+  );
+}
+
+export const ChangingResults: Story = {
+  render: (args) => <ChangingResultsStory {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Component-only result lifecycle. Alt+R replaces caller results while the input stays focused; no backend or production command registration.',
+      },
+    },
+  },
+};
+
+export const Loading: Story = {
+  args: { loading: true },
+  render: (args) => <PlaygroundStory {...args} />,
+};
+
+export const Error: Story = {
+  args: { error: 'Commands unavailable. Close and try again.' },
+  render: (args) => <PlaygroundStory {...args} />,
 };

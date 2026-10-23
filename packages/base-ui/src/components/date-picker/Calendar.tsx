@@ -16,14 +16,9 @@ import {
   isDateInRange,
   isSameDay,
   startOfDay,
-  startOfMonth,
   type WeekStart,
 } from './dateUtils';
-import {
-  formatMonthYear,
-  getWeekStartsOnForLocale,
-  getWeekdayLabels,
-} from './formatters';
+import { formatMonthYear, getWeekStartsOnForLocale, getWeekdayLabels } from './formatters';
 
 type CalendarBaseProps = {
   min?: Date;
@@ -72,26 +67,21 @@ function isStrictlyBetween(d: Date, a: Date, b: Date): boolean {
 }
 
 export function Calendar(props: CalendarProps) {
-  const {
-    min,
-    max,
-    isDateDisabled,
-    locale,
-    weekStartsOn,
-    autoFocus,
-    className,
-  } = props;
+  const { min, max, isDateDisabled, locale, weekStartsOn, autoFocus, className } = props;
 
   const isRangeMode = props.mode === 'range';
 
   // Derive the "anchor" date for initial focus/view.
-  const anchorDate = isRangeMode
-    ? (props.startDate ?? new Date())
-    : (props.value ?? new Date());
+  const anchorDate = isRangeMode ? (props.startDate ?? new Date()) : (props.value ?? new Date());
 
   const resolvedWeekStart = weekStartsOn ?? getWeekStartsOnForLocale(locale);
   const [focusedDate, setFocusedDate] = useState<Date>(() => anchorDate);
-  const [viewMonth, setViewMonth] = useState<Date>(() => startOfMonth(anchorDate));
+  const focusedYear = focusedDate.getFullYear();
+  const focusedMonth = focusedDate.getMonth();
+  const viewMonth = useMemo(
+    () => new Date(focusedYear, focusedMonth, 1),
+    [focusedYear, focusedMonth],
+  );
   // Hover state for range preview (range mode only)
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -100,39 +90,6 @@ export function Calendar(props: CalendarProps) {
   useEffect(() => {
     if (autoFocus) rovingRef.current?.focus();
   }, [autoFocus]);
-
-  useEffect(() => {
-    setViewMonth((prev) =>
-      prev.getMonth() === focusedDate.getMonth() &&
-      prev.getFullYear() === focusedDate.getFullYear()
-        ? prev
-        : startOfMonth(focusedDate),
-    );
-  }, [focusedDate]);
-
-  // When viewMonth changes independently of focusedDate (e.g. the header
-  // prev/next buttons), clamp focusedDate into the new month so the roving
-  // tabindex always points to a visible cell. Without this, clicking the
-  // header arrows would leave no cell with tabIndex=0.
-  useEffect(() => {
-    if (
-      viewMonth.getMonth() === focusedDate.getMonth() &&
-      viewMonth.getFullYear() === focusedDate.getFullYear()
-    ) {
-      return;
-    }
-    // Preserve the day-of-month when possible; clamp to the last day of the
-    // new month if the original day exceeds it.
-    const daysInTarget = new Date(
-      viewMonth.getFullYear(),
-      viewMonth.getMonth() + 1,
-      0,
-    ).getDate();
-    const clampedDay = Math.min(focusedDate.getDate(), daysInTarget);
-    setFocusedDate(
-      new Date(viewMonth.getFullYear(), viewMonth.getMonth(), clampedDay),
-    );
-  }, [viewMonth, focusedDate]);
 
   const matrix = useMemo(
     () => getMonthMatrix(viewMonth, resolvedWeekStart),
@@ -153,10 +110,6 @@ export function Calendar(props: CalendarProps) {
     [min, max, isDateDisabled],
   );
 
-  const moveFocus = useCallback((next: Date) => {
-    setFocusedDate(next);
-  }, []);
-
   // Focus the cell after the DOM has committed (handles cross-month navigation
   // where the new cell doesn't exist until the re-render completes).
   useLayoutEffect(() => {
@@ -171,7 +124,6 @@ export function Calendar(props: CalendarProps) {
         (props as CalendarSingleProps).onChange(date);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isRangeMode, props],
   );
 
@@ -198,7 +150,6 @@ export function Calendar(props: CalendarProps) {
       }
       setHoveredDate(null);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isRangeMode, props],
   );
 
@@ -218,10 +169,18 @@ export function Calendar(props: CalendarProps) {
     const current = focusedDate;
     let next: Date | null = null;
     switch (e.key) {
-      case 'ArrowRight': next = addDays(current, 1); break;
-      case 'ArrowLeft':  next = addDays(current, -1); break;
-      case 'ArrowDown':  next = addDays(current, 7); break;
-      case 'ArrowUp':    next = addDays(current, -7); break;
+      case 'ArrowRight':
+        next = addDays(current, 1);
+        break;
+      case 'ArrowLeft':
+        next = addDays(current, -1);
+        break;
+      case 'ArrowDown':
+        next = addDays(current, 7);
+        break;
+      case 'ArrowUp':
+        next = addDays(current, -7);
+        break;
       case 'Home': {
         const diff = (current.getDay() - resolvedWeekStart + 7) % 7;
         next = addDays(current, -diff);
@@ -248,7 +207,7 @@ export function Calendar(props: CalendarProps) {
     }
     if (next) {
       e.preventDefault();
-      moveFocus(next);
+      setFocusedDate(next);
     }
   };
 
@@ -257,9 +216,7 @@ export function Calendar(props: CalendarProps) {
   const selectedEnd = isRangeMode ? (props as CalendarRangeProps).endDate : null;
 
   // Effective preview end: actual end if set, otherwise hovered date (range mode only)
-  const previewEnd = isRangeMode
-    ? (selectedEnd ?? (selectedStart ? hoveredDate : null))
-    : null;
+  const previewEnd = isRangeMode ? (selectedEnd ?? (selectedStart ? hoveredDate : null)) : null;
 
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')}>
@@ -267,21 +224,17 @@ export function Calendar(props: CalendarProps) {
         <button
           type="button"
           aria-label="Previous month"
-          onClick={() => setViewMonth((v) => addMonths(v, -1))}
+          onClick={() => setFocusedDate(addMonths(focusedDate, -1))}
         >
           ‹
         </button>
-        <span
-          className={styles.monthLabel}
-          aria-live="polite"
-          role="status"
-        >
+        <span className={styles.monthLabel} aria-live="polite" role="status">
           {formatMonthYear(viewMonth, locale)}
         </span>
         <button
           type="button"
           aria-label="Next month"
-          onClick={() => setViewMonth((v) => addMonths(v, 1))}
+          onClick={() => setFocusedDate(addMonths(focusedDate, 1))}
         >
           ›
         </button>

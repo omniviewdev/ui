@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -181,6 +181,32 @@ describe('EditableList', () => {
       name: 'API_PORT',
       value: '8080',
     });
+  });
+
+  it('autofocus does not steal focus from another field on the next frame', async () => {
+    vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'cancelAnimationFrame'] });
+    try {
+      const user = userEvent.setup();
+      const onCommit = vi.fn();
+      renderWithTheme(<TestList onCommit={onCommit} />);
+
+      await user.dblClick(screen.getByText('PORT').closest('[role="option"]')!);
+      const inputs = screen.getAllByRole('textbox');
+      await user.clear(inputs[0]!);
+      await user.type(inputs[0]!, 'API_PORT');
+      await user.clear(inputs[1]!);
+
+      act(() => vi.advanceTimersToNextFrame());
+      expect(inputs[1]).toHaveFocus();
+      await user.keyboard('8080{Enter}');
+
+      expect(onCommit).toHaveBeenCalledWith('2', {
+        name: 'API_PORT',
+        value: '8080',
+      });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('Tab cycles focus between fields within editor', async () => {

@@ -530,10 +530,8 @@ const EditableListItemField = forwardRef<HTMLInputElement, EditableListItemField
       if (!input) return;
       input.value = defaultValue;
       if (autoFocus) {
-        requestAnimationFrame(() => {
-          input.focus();
-          input.select();
-        });
+        input.focus();
+        input.select();
       }
     }, [defaultValue, autoFocus]);
 

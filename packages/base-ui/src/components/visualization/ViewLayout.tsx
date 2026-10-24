@@ -1,5 +1,6 @@
 import {
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -42,6 +43,10 @@ export interface ViewLayoutProps<TItem extends ViewLayoutItem = ViewLayoutItem> 
   renderItem: (item: TItem) => ReactNode;
   onConfigure?: (id: string) => void;
   editing?: boolean;
+  /** Prevent layout/configuration changes without disabling rendered panel content. */
+  disabled?: boolean;
+  /** Keep editing controls discoverable, but prevent layout/configuration changes. */
+  readOnly?: boolean;
   columns?: 1 | 2 | 3 | 4 | 6 | 12;
   rowHeight?: number;
   maxRowSpan?: number;
@@ -53,12 +58,13 @@ interface LayoutPanelProps<TItem extends ViewLayoutItem> {
   index: number;
   count: number;
   editing: boolean;
+  mutable: boolean;
   columns: number;
   rowHeight: number;
   maxRowSpan: number;
   renderItem: (item: TItem) => ReactNode;
   onMove: (id: string, target: number) => void;
-  onResize: (id: string, columns: number, rows: number) => void;
+  onResize: (id: string, columns: number, rows: number) => TItem | undefined;
   onRemove: (id: string) => void;
   onConfigure?: (id: string) => void;
 }
@@ -67,6 +73,7 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
   index,
   count,
   editing,
+  mutable,
   columns,
   rowHeight,
   maxRowSpan,
@@ -76,9 +83,17 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
   onRemove,
   onConfigure,
 }: LayoutPanelProps<TItem>) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: item.id,
-    disabled: !editing,
+    disabled: !mutable,
   });
   const titleId = useId();
   const resizeHelpId = useId();
@@ -88,9 +103,17 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
     columns: number;
     rows: number;
     columnWidth: number;
+    expectedItem: TItem;
+    pointerId: number;
   } | null>(null);
   const columnSpan = Math.max(1, Math.min(columns, item.columnSpan));
   const rowSpan = Math.max(1, Math.min(maxRowSpan, item.rowSpan));
+  useLayoutEffect(() => {
+    if (resize.current && (!mutable || resize.current.expectedItem !== item)) resize.current = null;
+  }, [item, mutable]);
+  useLayoutEffect(() => {
+    resize.current = null;
+  }, [columns, maxRowSpan, rowHeight]);
   const geometryVariables = {
     '--_ov-view-row-span': rowSpan,
     '--_ov-view-drag-transform': CSS.Transform.toString(transform) ?? 'none',
@@ -105,7 +128,12 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
       className={styles.Item}
       data-ov-dragging={isDragging || undefined}
     >
-      <article aria-labelledby={titleId} className={styles.Panel}>
+      <article
+        aria-labelledby={titleId}
+        className={styles.Panel}
+        tabIndex={-1}
+        data-ov-layout-panel={item.id}
+      >
         <header className={styles.Header}>
           <h3 id={titleId}>{item.title}</h3>
           {editing && (
@@ -115,6 +143,7 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
               aria-label={`${item.title} layout controls`}
             >
               <Button
+                ref={setActivatorNodeRef}
                 type="button"
                 size="xs"
                 variant="ghost"
@@ -122,6 +151,8 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                 {...listeners}
                 aria-label={`Drag ${item.title}`}
                 className={styles.Drag}
+                disabled={!mutable}
+                focusableWhenDisabled
               >
                 Drag
               </Button>
@@ -130,7 +161,8 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                 size="xs"
                 variant="ghost"
                 aria-label={`Move ${item.title} earlier`}
-                disabled={index === 0}
+                disabled={!mutable || index === 0}
+                focusableWhenDisabled
                 onClick={() => onMove(item.id, index - 1)}
               >
                 Earlier
@@ -140,7 +172,8 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                 size="xs"
                 variant="ghost"
                 aria-label={`Move ${item.title} later`}
-                disabled={index === count - 1}
+                disabled={!mutable || index === count - 1}
+                focusableWhenDisabled
                 onClick={() => onMove(item.id, index + 1)}
               >
                 Later
@@ -151,6 +184,8 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                   size="xs"
                   variant="ghost"
                   aria-label={`Configure ${item.title}`}
+                  disabled={!mutable}
+                  focusableWhenDisabled
                   onClick={() => onConfigure(item.id)}
                 >
                   Configure
@@ -161,6 +196,8 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                 size="xs"
                 variant="ghost"
                 aria-label={`Remove ${item.title}`}
+                disabled={!mutable}
+                focusableWhenDisabled
                 onClick={() => onRemove(item.id)}
               >
                 Remove
@@ -184,7 +221,10 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
               className={styles.Resize}
               aria-label={`Resize ${item.title}`}
               aria-describedby={resizeHelpId}
+              disabled={!mutable}
+              focusableWhenDisabled
               onKeyDown={(event) => {
+                if (!mutable) return;
                 const dx = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
                 const dy = event.key === 'ArrowDown' ? 1 : event.key === 'ArrowUp' ? -1 : 0;
                 if (dx || dy) {
@@ -197,7 +237,7 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                 }
               }}
               onPointerDown={(event) => {
-                if (event.button !== 0) return;
+                if (!mutable || event.button !== 0 || resize.current) return;
                 const panel = event.currentTarget.closest('article');
                 if (!panel) return;
                 resize.current = {
@@ -205,13 +245,27 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                   y: event.clientY,
                   columns: columnSpan,
                   rows: rowSpan,
-                  columnWidth: panel.getBoundingClientRect().width / columnSpan,
+                  columnWidth:
+                    (panel.getBoundingClientRect().width +
+                      Number.parseFloat(
+                        getComputedStyle(panel.parentElement!.parentElement!).columnGap || '0',
+                      )) /
+                    columnSpan,
+                  expectedItem: item,
+                  pointerId: event.pointerId,
                 };
                 event.currentTarget.setPointerCapture(event.pointerId);
               }}
               onPointerMove={(event) => {
                 const start = resize.current;
-                if (!start || start.columnWidth <= 0) return;
+                if (
+                  !mutable ||
+                  !start ||
+                  start.expectedItem !== item ||
+                  start.pointerId !== event.pointerId ||
+                  start.columnWidth <= 0
+                )
+                  return;
                 const nextColumns = Math.max(
                   1,
                   Math.min(
@@ -226,8 +280,10 @@ function LayoutPanel<TItem extends ViewLayoutItem>({
                     start.rows + Math.round((event.clientY - start.y) / rowHeight),
                   ),
                 );
-                if (nextColumns !== columnSpan || nextRows !== rowSpan)
-                  onResize(item.id, nextColumns, nextRows);
+                if (nextColumns !== columnSpan || nextRows !== rowSpan) {
+                  const requested = onResize(item.id, nextColumns, nextRows);
+                  if (requested) start.expectedItem = requested;
+                }
               }}
               onPointerUp={() => {
                 resize.current = null;
@@ -258,19 +314,45 @@ export function ViewLayout<TItem extends ViewLayoutItem>({
   renderItem,
   onConfigure,
   editing = false,
+  disabled = false,
+  readOnly = false,
   columns = 12,
   rowHeight = 120,
   maxRowSpan = 12,
   emptyContent,
   className,
+  onFocusCapture,
   ...props
 }: ViewLayoutProps<TItem>) {
   const [announcement, setAnnouncement] = useState('');
+  const mutable = editing && !disabled && !readOnly;
+  const root = useRef<HTMLDivElement>(null);
+  const focused = useRef<{ id: string; index: number; element: HTMLElement } | null>(null);
+  const dragItems = useRef<readonly TItem[] | null>(null);
+  useLayoutEffect(() => {
+    dragItems.current = null;
+  }, [items, mutable, columns, maxRowSpan, rowHeight]);
+  useLayoutEffect(() => {
+    const previous = focused.current;
+    if (!previous || !root.current) return;
+    const index = items.findIndex((item) => item.id === previous.id);
+    if (previous.element.isConnected) {
+      if (index >= 0) previous.index = index;
+      return;
+    }
+    focused.current = null;
+    // Only recover a removed focus target. Never pull focus back from a host control.
+    if (document.activeElement !== document.body) return;
+    const panels = root.current.querySelectorAll<HTMLElement>('[data-ov-layout-panel]');
+    const target = panels[index >= 0 ? index : Math.min(previous.index, items.length - 1)];
+    (target ?? root.current).focus();
+  });
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const move = (id: string, target: number) => {
+    if (!mutable) return;
     const source = items.findIndex((item) => item.id === id);
     if (source < 0 || target < 0 || target >= items.length || target === source) return;
     const next = [...items];
@@ -281,12 +363,38 @@ export function ViewLayout<TItem extends ViewLayoutItem>({
     setAnnouncement(`${item.title} moved to position ${target + 1}`);
   };
   return (
-    <div {...props} className={cn(styles.Root, className)} data-ov-editing={editing}>
+    <div
+      role="group"
+      {...props}
+      ref={root}
+      tabIndex={props.tabIndex ?? -1}
+      aria-label={props['aria-label'] ?? 'View layout'}
+      className={cn(styles.Root, className)}
+      data-ov-editing={editing}
+      data-ov-disabled={disabled || undefined}
+      data-ov-readonly={readOnly || undefined}
+      onFocusCapture={(event) => {
+        onFocusCapture?.(event);
+        const element = event.target as HTMLElement;
+        const panel = element.closest<HTMLElement>('[data-ov-layout-panel]');
+        const id = panel?.dataset.ovLayoutPanel;
+        focused.current =
+          id == null ? null : { id, index: items.findIndex((item) => item.id === id), element };
+      }}
+    >
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={() => {
+          dragItems.current = items;
+        }}
+        onDragCancel={() => {
+          dragItems.current = null;
+        }}
         onDragEnd={({ active, over }) => {
-          if (editing && over)
+          const current = dragItems.current === items;
+          dragItems.current = null;
+          if (mutable && current && over)
             move(
               String(active.id),
               items.findIndex((item) => item.id === over.id),
@@ -307,6 +415,7 @@ export function ViewLayout<TItem extends ViewLayoutItem>({
                 index={index}
                 count={items.length}
                 editing={editing}
+                mutable={mutable}
                 columns={columns}
                 rowHeight={rowHeight}
                 maxRowSpan={maxRowSpan}
@@ -314,16 +423,17 @@ export function ViewLayout<TItem extends ViewLayoutItem>({
                 onConfigure={onConfigure}
                 onMove={move}
                 onResize={(id, columnSpan, rowSpan) => {
-                  onItemsChange(
-                    items.map((current) =>
-                      current.id === id ? { ...current, columnSpan, rowSpan } : current,
-                    ),
-                  );
+                  if (!mutable || (columnSpan === item.columnSpan && rowSpan === item.rowSpan))
+                    return;
+                  const resized = { ...item, columnSpan, rowSpan };
+                  onItemsChange(items.map((current) => (current.id === id ? resized : current)));
                   setAnnouncement(
                     `${item.title} resized to ${columnSpan} columns and ${rowSpan} rows`,
                   );
+                  return resized;
                 }}
                 onRemove={(id) => {
+                  if (!mutable) return;
                   onItemsChange(items.filter((current) => current.id !== id));
                   setAnnouncement(`${item.title} removed`);
                 }}

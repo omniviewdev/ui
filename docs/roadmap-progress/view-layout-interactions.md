@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented, reverified on merged `main`, independently reviewed, and **In Review** in [UI PR #71](https://github.com/omniviewdev/ui/pull/71). This is the bounded [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67), not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze. The PR is open, not merged; remote CI/review acceptance is separate from the exercised local evidence below.
+Implemented, reverified on merged `main`, independently reviewed, and delivered through [UI PR #71](https://github.com/omniviewdev/ui/pull/71). The PR and [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67) record the authoritative review/merge state. This is a bounded presentation/interaction subset, not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze.
 
 ## Current source, ownership and integration
 
@@ -59,12 +59,20 @@ Browser scripts awaited sensor/collision updates and used normal-duration keyboa
 
 ## Tracking and proposed central-ledger reconciliation
 
-- [Delivery project](https://github.com/orgs/omniviewdev/projects/13), [parent roadmap](https://github.com/omniviewdev/omniview/issues/78), and [UI-LAYOUT](https://github.com/omniviewdev/ui/issues/67) track this bounded slice. Reconciliation replaces stale unassigned/Ready wording with actual ownership, verified acceptance and [PR #71](https://github.com/omniviewdev/ui/pull/71) review state. Keep the bounded issue open/In Review until the focused PR is accepted/merged; do not mark the production packet Done.
+- [Delivery project](https://github.com/orgs/omniviewdev/projects/13), [parent roadmap](https://github.com/omniviewdev/omniview/issues/78), and [UI-LAYOUT](https://github.com/omniviewdev/ui/issues/67) track this bounded slice. Reconciliation replaces stale unassigned/Ready wording with actual ownership, verified acceptance and [PR #71](https://github.com/omniviewdev/ui/pull/71) evidence. Close only the bounded issue after the focused PR is accepted/merged; do not mark the production packet Done.
 - Issue-named [ui-layout.md](ui-layout.md) points to this canonical receipt rather than duplicating it.
 - Read the latest host work-package/readiness and remote-index tracking rules. Only the integration owner writes the central host ledgers; no other worktree was edited.
-- Proposed C10 / P33 ledger update: PR #69 provides merged visualization/binding/layout primitives; open PR #71 adds verified accessible focus/controlled-state interaction hardening. Record its actual PR/merge state and verification, not full P33 acceptance. Current registry integration, authoritative binding/schema validation, versioned saved documents/migrations, resource-context defaults and actual host consumers remain unresolved.
+- Proposed C10 / P33 ledger update: PR #69 provides merged visualization/binding/layout primitives; PR #71 adds verified accessible focus/controlled-state interaction hardening. Record its actual PR/merge state and verification, not full P33 acceptance. Current registry integration, authoritative binding/schema validation, versioned saved documents/migrations, resource-context defaults and actual host consumers remain unresolved.
 - P32/P33/P34 stay open with their actual blockers; production acceptance checkboxes and native dependency readiness are not advanced by fixture-only UI evidence.
 
 ## Release boundary
 
-No persistence, resource acquisition, query execution/subscriptions, registry/plugin loading, user-JavaScript execution, generated bindings or backend changes. Provider-neutral presentation only. A patch changeset is included; no package publication or merge is authorized by the PR-creation request. Preserve both own worktrees.
+No persistence, resource acquisition, query execution/subscriptions, registry/plugin loading, user-JavaScript execution, generated bindings or backend changes. Provider-neutral presentation only. A patch changeset is included. The owner subsequently authorized following PR #71 through to merge; package publication and CI-policy weakening are not authorized. Preserve both own worktrees.
+
+## Final merge follow-through
+
+- Repeated final-head verification: 19 visualization tests passed; base-ui typecheck and production/declaration build passed. No unchanged Calendar test was rerun simply to confirm it.
+- Merge policy inspection found no required-check or approval rule on `main`; effective repository rules protect deletion and non-fast-forward updates. Use an ordinary squash merge with an exact head match, not an administrative bypass.
+- CodSpeed's organization-billing action requirement and queued benchmarks remain non-passing infrastructure evidence, not a performance result. Do not change billing/workflow policy or manufacture a benchmark result.
+- CodeRabbit initially reported its free-review capacity limit. Retry a full review after the stated reset; PR #71 records the actual automated-review result and any subsequent corrections. A success status saying “Review rate limited” is not accepted review evidence.
+- After confirmed merge, mark only UI-LAYOUT Done/closed, link immutable merged-source evidence, and keep P32/P33/P34 production blockers and acceptance intact. The integration owner remains responsible for central-ledger reconciliation.

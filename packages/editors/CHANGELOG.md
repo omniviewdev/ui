@@ -1,5 +1,18 @@
 # @omniviewdev/editors
 
+## 5.0.0
+
+### Minor Changes
+
+- [#69](https://github.com/omniviewdev/ui/pull/69) [`229a060`](https://github.com/omniviewdev/ui/commit/229a060885acea203410b1b113c68e4016d81b97) Thanks [@joshuapare](https://github.com/joshuapare)! - Add provider-neutral controlled query authoring, typed variable controls, visualization/binding/layout primitives and resource workspace/inspection controls. Add a compact Monaco CEL editor with contextual completion, diagnostics, hover, signature help and cancellation.
+
+  Keep resource/query semantics outside generic UI packages. The accompanying Go CEL and LSP workbench is development-only, fixture-backed and explicitly integer-only; it is not production resource acquisition, live query transport, persistence or permission enforcement. Retain the existing prepared-table and command-palette improvements already merged into main.
+
+### Patch Changes
+
+- Updated dependencies [[`229a060`](https://github.com/omniviewdev/ui/commit/229a060885acea203410b1b113c68e4016d81b97), [`6c046bf`](https://github.com/omniviewdev/ui/commit/6c046bf19e332e8250d3aa66daaf5f092e600c5e)]:
+  - @omniviewdev/base-ui@0.6.0
+
 ## 4.0.0
 
 ### Minor Changes
@@ -18,6 +31,7 @@
 
 - Updated dependencies [[`74e3d0b`](https://github.com/omniviewdev/ui/commit/74e3d0bb267a235d27e29a0499c66d150e74cc25), [`3c5b5fc`](https://github.com/omniviewdev/ui/commit/3c5b5fc0cb50bef541b536e865b5aceabb667d9a)]:
   - @omniviewdev/base-ui@0.5.0
+
 ## Unreleased
 
 ### Minor Changes

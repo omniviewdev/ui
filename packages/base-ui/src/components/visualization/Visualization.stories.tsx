@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   VisualizationFields,
@@ -224,20 +224,69 @@ const initialPanels: Panel[] = [
 function LayoutBuilder() {
   const [items, setItems] = useState(initialPanels);
   const [editing, setEditing] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
+  const [acceptEdits, setAcceptEdits] = useState(true);
+  const [rendererAvailable, setRendererAvailable] = useState(true);
+  const configureTrigger = useRef<HTMLElement | null>(null);
   const [selected, setSelected] = useState<string>();
   const [saved, setSaved] = useState(initialPanels);
   const [nextId, setNextId] = useState(1);
+  const hostUpdateTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => clearTimeout(hostUpdateTimer.current), []);
+  const applyHostUpdate = () => {
+    setItems((current) =>
+      current
+        .map((item) => (item.id === 'capacity' ? { ...item, columnSpan: 4, rowSpan: 2 } : item))
+        .reverse(),
+    );
+  };
   const panel = items.find((item) => item.id === selected);
+  // Selection belongs to this host fixture, not to the layout primitive.
+  if (selected && !panel) setSelected(undefined);
+  const mutable = editing && !disabled && !readOnly;
   return (
     <div style={{ display: 'grid', gap: 16 }}>
       <p>
         Fixture-only arrangement. Drag handles work with pointer or Space/arrow keys; resize handles
-        use pointer or arrow keys. Panel actions remain usable in preview. Save/reset here retain
+        use pointer or arrow keys. Earlier/Later also work with Enter. Width is bounded to 1–6
+        columns; height to 1–4 rows. Disabled/read-only affect layout controls, not panel content.
+        Host updates replace controlled state and invalidate active gestures. Save/reset here retain
         fixture state only, not persisted user documents.
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         <Button onClick={() => setEditing((current) => !current)}>
           {editing ? 'Preview' : 'Edit layout'}
+        </Button>
+        <Button aria-pressed={disabled} onClick={() => setDisabled((value) => !value)}>
+          Layout disabled
+        </Button>
+        <Button aria-pressed={readOnly} onClick={() => setReadOnly((value) => !value)}>
+          Layout read-only
+        </Button>
+        <Button aria-pressed={acceptEdits} onClick={() => setAcceptEdits((value) => !value)}>
+          Accept layout edits
+        </Button>
+        <Button onClick={() => setRendererAvailable((value) => !value)}>
+          {rendererAvailable
+            ? 'Remove Capacity renderer fixture'
+            : 'Restore Capacity renderer fixture'}
+        </Button>
+        <Button onClick={applyHostUpdate}>Apply host layout update</Button>
+        <Button
+          onClick={() => {
+            clearTimeout(hostUpdateTimer.current);
+            hostUpdateTimer.current = window.setTimeout(applyHostUpdate, 2000);
+          }}
+        >
+          Schedule host update (2s)
+        </Button>
+        <Button
+          disabled={!panel}
+          focusableWhenDisabled
+          onClick={() => setItems((current) => current.filter((item) => item.id !== selected))}
+        >
+          Remove selected from host
         </Button>
         <Button
           onClick={() => {
@@ -255,18 +304,18 @@ function LayoutBuilder() {
             ]);
             setNextId((id) => id + 1);
           }}
-          disabled={!editing}
+          disabled={!mutable}
         >
           Add component
         </Button>
-        <Button onClick={() => setSaved(items)} disabled={!editing}>
+        <Button onClick={() => setSaved(items)} disabled={!mutable}>
           Save fixture layout
         </Button>
-        <Button onClick={() => setItems(saved)} disabled={!editing}>
+        <Button onClick={() => setItems(saved)} disabled={!mutable}>
           Reset to saved fixture
         </Button>
       </div>
-      {editing && panel && (
+      {mutable && panel && (
         <section aria-label="Component configuration" style={{ maxWidth: 640 }}>
           <FormField label="Component title" htmlFor="fixture-panel-title">
             <Input.Control
@@ -303,16 +352,31 @@ function LayoutBuilder() {
                 );
             }}
           />
-          <Button onClick={() => setSelected(undefined)}>Close configuration</Button>
+          <Button
+            onClick={() => {
+              setSelected(undefined);
+              if (configureTrigger.current?.isConnected) configureTrigger.current.focus();
+            }}
+          >
+            Close configuration
+          </Button>
         </section>
       )}
       <ViewLayout
         items={items}
-        onItemsChange={setItems}
+        onItemsChange={(next) => {
+          if (acceptEdits) setItems(next);
+        }}
         editing={editing}
+        disabled={disabled}
+        readOnly={readOnly}
         columns={6}
         rowHeight={160}
-        onConfigure={setSelected}
+        maxRowSpan={4}
+        onConfigure={(id) => {
+          configureTrigger.current = document.activeElement as HTMLElement;
+          setSelected(id);
+        }}
         renderItem={(item) => {
           const preparedFields: VisualizationField[] = Object.entries(item.bindings).map(
             ([slot, id]) => ({
@@ -327,19 +391,35 @@ function LayoutBuilder() {
           return (
             <VisualizationPanel
               title={`${item.title} result`}
-              status={item.status}
+              status={item.id === 'capacity' && !rendererAvailable ? 'unavailable' : item.status}
               description={
-                item.status === 'denied'
-                  ? 'This scope is not permitted; neighboring panels stay usable.'
-                  : undefined
+                item.id === 'capacity' && !rendererAvailable
+                  ? 'Renderer fixture is unavailable. Layout and bindings are retained.'
+                  : item.status === 'denied'
+                    ? 'This scope is not permitted; neighboring panels stay usable.'
+                    : undefined
               }
               detail="Host-provided fixture status"
+              actions={
+                <Button
+                  size="xs"
+                  onClick={(event) => {
+                    configureTrigger.current = event.currentTarget;
+                    setSelected(item.id);
+                  }}
+                >
+                  Inspect panel
+                </Button>
+              }
             >
               <VisualizationFields presentation={item.kind} fields={preparedFields} />
             </VisualizationPanel>
           );
         }}
       />
+      <output aria-label="Selected panel">
+        {panel ? `Selected: ${panel.title}` : 'No panel selected'}
+      </output>
       <details>
         <summary>Controlled layout data</summary>
         <pre>{JSON.stringify(items, null, 2)}</pre>

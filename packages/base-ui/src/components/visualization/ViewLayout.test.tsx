@@ -35,7 +35,7 @@ describe('ViewLayout', () => {
     await user.keyboard('{Enter}');
     expect(screen.getAllByRole('article')[0]).toHaveAccessibleName('Inventory');
     expect(screen.getByText('b content')).toBe(original);
-    expect(screen.getByText('Inventory moved to position 1')).toHaveAttribute('role', 'status');
+    expect(move).toHaveFocus();
   });
 
   it('resizes with accessible keyboard controls within geometry bounds', async () => {
@@ -52,7 +52,7 @@ describe('ViewLayout', () => {
     expect(
       screen.getByText(/"columnSpan":4,"rowSpan":2/, { selector: 'output' }),
     ).toBeInTheDocument();
-    expect(resize).toHaveAccessibleDescription(/Arrow keys/);
+    expect(resize).toHaveFocus();
   });
 
   it('applies geometry beyond six rows through the configured maximum', () => {
@@ -120,5 +120,111 @@ describe('ViewLayout', () => {
       within(screen.getByRole('article', { name: 'Capacity' })).getByRole('button'),
     );
     expect(action).toHaveBeenCalledOnce();
+  });
+
+  it('recovers focus to the next panel, previous panel, then empty layout after accepted removals', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<Example />);
+    await user.click(screen.getByRole('button', { name: 'Remove Capacity' }));
+    expect(screen.getByRole('article', { name: 'Inventory' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Drag Inventory' })).toHaveFocus();
+    await user.click(screen.getByRole('button', { name: 'Remove Inventory' }));
+    expect(screen.getByLabelText('View layout')).toHaveFocus();
+  });
+
+  it('recovers focus on external removal without stealing focus from outside the layout', () => {
+    const onItemsChange = vi.fn();
+    const view = (items: ViewLayoutItem[]) => (
+      <>
+        <button>Outside</button>
+        <ViewLayout items={items} onItemsChange={onItemsChange} editing renderItem={() => null} />
+      </>
+    );
+    const { rerender } = renderWithTheme(view(initial));
+    screen.getByRole('button', { name: 'Resize Inventory' }).focus();
+    rerender(view([initial[0]!]));
+    expect(screen.getByRole('article', { name: 'Capacity' })).toHaveFocus();
+    screen.getByRole('button', { name: 'Outside' }).focus();
+    rerender(view([]));
+    expect(screen.getByRole('button', { name: 'Outside' })).toHaveFocus();
+  });
+
+  it('does not emit a resize request at a bound', () => {
+    const onItemsChange = vi.fn();
+    renderWithTheme(
+      <ViewLayout
+        items={[{ ...initial[0]!, columnSpan: 4 }]}
+        columns={4}
+        onItemsChange={onItemsChange}
+        editing
+        renderItem={() => null}
+      />,
+    );
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Resize Capacity' }), {
+      key: 'ArrowRight',
+    });
+    expect(onItemsChange).not.toHaveBeenCalled();
+  });
+
+  it.each(['disabled', 'readOnly'] as const)(
+    'prevents layout mutation when %s while preserving content navigation',
+    async (mode) => {
+      const onItemsChange = vi.fn();
+      const onConfigure = vi.fn();
+      renderWithTheme(
+        <ViewLayout
+          items={initial}
+          onItemsChange={onItemsChange}
+          onConfigure={onConfigure}
+          editing
+          {...{ [mode]: true }}
+          renderItem={() => <button>Inspect result</button>}
+        />,
+      );
+      const resize = screen.getByRole('button', { name: 'Resize Capacity' });
+      resize.focus();
+      fireEvent.keyDown(resize, { key: 'ArrowRight' });
+      await userEvent.click(screen.getByRole('button', { name: 'Remove Capacity' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Move Capacity later' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Configure Capacity' }));
+      expect(onItemsChange).not.toHaveBeenCalled();
+      expect(onConfigure).not.toHaveBeenCalled();
+      const content = within(screen.getByRole('article', { name: 'Capacity' })).getByRole(
+        'button',
+        { name: 'Inspect result' },
+      );
+      content.focus();
+      expect(content).toHaveFocus();
+    },
+  );
+
+  it('abandons an in-flight resize after newer external geometry arrives', () => {
+    const onItemsChange = vi.fn();
+    const view = (items: ViewLayoutItem[]) => (
+      <ViewLayout
+        items={items}
+        columns={4}
+        editing
+        onItemsChange={onItemsChange}
+        renderItem={() => null}
+      />
+    );
+    const { rerender } = renderWithTheme(view(initial));
+    const resize = screen.getByRole('button', { name: 'Resize Capacity' });
+    // jsdom has no pointer capture or layout. Only those browser boundaries are supplied.
+    resize.setPointerCapture = vi.fn();
+    vi.spyOn(
+      screen.getByRole('article', { name: 'Capacity' }),
+      'getBoundingClientRect',
+    ).mockReturnValue({ width: 400 } as DOMRect);
+    fireEvent(
+      resize,
+      new MouseEvent('pointerdown', { bubbles: true, button: 0, clientX: 100, clientY: 100 }),
+    );
+    rerender(view([{ ...initial[0]!, columnSpan: 3, rowSpan: 4 }, initial[1]!]));
+    fireEvent(resize, new MouseEvent('pointermove', { bubbles: true, clientX: 300, clientY: 100 }));
+    expect(onItemsChange).not.toHaveBeenCalled();
+    expect(screen.getByText('3 / 4 columns · 4 rows')).toBeInTheDocument();
   });
 });

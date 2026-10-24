@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented, reverified on merged `main`, and independently reviewed; preparing the approved focused PR. This is the bounded [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67), not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze.
+Implemented, reverified on merged `main`, independently reviewed, and **In Review** in [UI PR #71](https://github.com/omniviewdev/ui/pull/71). This is the bounded [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67), not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze. The PR is open, not merged; remote CI/review acceptance is separate from the exercised local evidence below.
 
 ## Current source, ownership and integration
 
@@ -25,6 +25,7 @@ The original integrated `feature/resource-intelligence-table-ui` checkout had un
 - `npx --yes pnpm@12.14.0 --filter @omniviewdev/base-ui typecheck`: passed.
 - Scoped ESLint on the three modified visualization TSX files: zero errors, one existing `prefer-memo-leaf-component` advisory on the exported generic container. No suppression or memo framework introduced.
 - `npx --yes pnpm@12.14.0 --filter @omniviewdev/base-ui build`: passed, including declaration generation. API Extractor reported its bundled TypeScript 5.8.2 is older than the project's 5.9.3; build succeeded.
+- `npx --yes pnpm@12.14.0 exec changeset status --since=origin/main`: passed; base-ui patch with dependent-package patch propagation. No package publication performed.
 - No full repository-suite, benchmark, screen-reader, touch-device or desktop-host certification. The known unchanged Calendar failure was not rerun simply to confirm it.
 
 ### Actual Chromium Storybook
@@ -58,10 +59,10 @@ Browser scripts awaited sensor/collision updates and used normal-duration keyboa
 
 ## Tracking and proposed central-ledger reconciliation
 
-- [Delivery project](https://github.com/orgs/omniviewdev/projects/13), [parent roadmap](https://github.com/omniviewdev/omniview/issues/78), and [UI-LAYOUT](https://github.com/omniviewdev/ui/issues/67) track this bounded slice. The issue's stale unassigned/Ready statement is being reconciled with the actual agent ownership, verified evidence and PR review state. Keep the issue open until the focused PR is accepted/merged.
+- [Delivery project](https://github.com/orgs/omniviewdev/projects/13), [parent roadmap](https://github.com/omniviewdev/omniview/issues/78), and [UI-LAYOUT](https://github.com/omniviewdev/ui/issues/67) track this bounded slice. Reconciliation replaces stale unassigned/Ready wording with actual ownership, verified acceptance and [PR #71](https://github.com/omniviewdev/ui/pull/71) review state. Keep the bounded issue open/In Review until the focused PR is accepted/merged; do not mark the production packet Done.
 - Issue-named [ui-layout.md](ui-layout.md) points to this canonical receipt rather than duplicating it.
 - Read the latest host work-package/readiness and remote-index tracking rules. Only the integration owner writes the central host ledgers; no other worktree was edited.
-- Proposed C10 / P33 ledger update: PR #69 provides merged visualization/binding/layout primitives; this follow-up adds verified accessible focus/controlled-state interaction hardening. Record its actual PR/merge state and verification, not full P33 acceptance. Current registry integration, authoritative binding/schema validation, versioned saved documents/migrations, resource-context defaults and actual host consumers remain unresolved.
+- Proposed C10 / P33 ledger update: PR #69 provides merged visualization/binding/layout primitives; open PR #71 adds verified accessible focus/controlled-state interaction hardening. Record its actual PR/merge state and verification, not full P33 acceptance. Current registry integration, authoritative binding/schema validation, versioned saved documents/migrations, resource-context defaults and actual host consumers remain unresolved.
 - P32/P33/P34 stay open with their actual blockers; production acceptance checkboxes and native dependency readiness are not advanced by fixture-only UI evidence.
 
 ## Release boundary

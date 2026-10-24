@@ -364,6 +364,7 @@ export function ViewLayout<TItem extends ViewLayoutItem>({
   };
   return (
     <div
+      role="group"
       {...props}
       ref={root}
       tabIndex={props.tabIndex ?? -1}

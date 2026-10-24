@@ -36,6 +36,10 @@ describe('ViewLayout', () => {
     expect(screen.getAllByRole('article')[0]).toHaveAccessibleName('Inventory');
     expect(screen.getByText('b content')).toBe(original);
     expect(move).toHaveFocus();
+    const announcement = screen
+      .getAllByRole('status')
+      .find((status) => status.textContent?.includes('Inventory'));
+    expect(announcement).toHaveTextContent(/\b1\b/);
   });
 
   it('resizes with accessible keyboard controls within geometry bounds', async () => {
@@ -130,7 +134,7 @@ describe('ViewLayout', () => {
     await user.tab();
     expect(screen.getByRole('button', { name: 'Drag Inventory' })).toHaveFocus();
     await user.click(screen.getByRole('button', { name: 'Remove Inventory' }));
-    expect(screen.getByLabelText('View layout')).toHaveFocus();
+    expect(screen.getByRole('group', { name: 'View layout' })).toHaveFocus();
   });
 
   it('recovers focus on external removal without stealing focus from outside the layout', () => {

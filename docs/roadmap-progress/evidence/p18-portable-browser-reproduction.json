@@ -1,0 +1,58 @@
+{
+  "scope": "Actual original-cohort Wails browser host; portable bootstrap reproducibility only, not full UI61 acceptance",
+  "status": "completed without recorded failure",
+  "commandWallSeconds": 41.28,
+  "workspaceID": "37c896d0-54e7-45d9-9d88-8d258efdb484",
+  "generation": "34afb19c-61e8-4a6a-803f-170a375a3a3c",
+  "sourceCohort": {
+    "host": "fd50802230bd2df7f101c23fd85061c11dcd9aa8",
+    "sdk": "1e92fb518b117814acb504aaae1772ff39abcdef",
+    "ui": "229a060885acea203410b1b113c68e4016d81b97"
+  },
+  "automationVersion": "Playwright 1.50.1",
+  "browserVersion": "Chromium 133.0.6943.16",
+  "hostMode": "browser, mcp=false, watch=false, live-frontend=false",
+  "rawResultSHA256": "a60ad9d06884b872b93adc79002694f53bd59d3d47c2f9b2981e74acf4ce9c20",
+  "rawResultDisclosure": "Private mode0600 output; this allowlisted summary contains no raw request/resource URLs, headers, tokens or private filesystem paths",
+  "historicalArchiveSHA256": "af5a426899347589cfa197e7a36ebca72a26d0bc123605f091833eed8f0ea2b2",
+  "candidates": {
+    "lightweight": {
+      "firstCycles": 1,
+      "warmCycles": 20,
+      "freshHeapBatches": [20, 20],
+      "firstMountToVisibleMs": 26.6,
+      "warmMountMedianP95Ms": [32.3, 34.2],
+      "warmFocusMedianP95Ms": [4.4, 5.7],
+      "heapBeforeAfter20After40Bytes": [22396112, 24807148, 23750836],
+      "heapPageAdapterDisposals": 40,
+      "heapPageDocumentCloseCallbacks": 0,
+      "finalMonacoModelCount": 0,
+      "workerConstructCalls": 0,
+      "workerTerminateCalls": 0
+    },
+    "monaco": {
+      "firstCycles": 1,
+      "warmCycles": 20,
+      "freshHeapBatches": [20, 20],
+      "firstMountToVisibleMs": 815.4,
+      "warmMountMedianP95Ms": [35.7, 40.6],
+      "warmFocusMedianP95Ms": [1.9, 2.2],
+      "heapBeforeAfter20After40Bytes": [22395868, 28004288, 28853592],
+      "heapPageAdapterDisposals": 40,
+      "heapPageDocumentCloseCallbacks": 40,
+      "finalMonacoModelCount": 0,
+      "workerConstructCalls": 81,
+      "workerTerminateCalls": 79
+    }
+  },
+  "method": "Unchanged archived helpers through supplied standalone adapter; real cloud-fixture LSP suggestions required each cycle; separate fresh browser contexts for latency and two 20-cycle heap batches per candidate; disposal callbacks awaited before forced-GC samples",
+  "quietScope": "Coordinator confirmed parent heavy commands finished and other runtime/check owners held; not whole-OS isolation",
+  "limitations": [
+    "New optimized Chromium133/Playwright observations are not timing-equivalent to historical Chrome150/browser-Eval development observations",
+    "Loaded-shell first mount is not cold application startup; script focus is not OS focus or paint",
+    "Worker construction/explicit terminate calls are not a count of live workers or proof of automatic termination",
+    "Heap samples and zero live models do not prove a leak-free retained-memory plateau",
+    "No new native, OS IME, clipboard, VoiceOver, OS accessibility, theme/overlay recording or production authoring semantics acceptance",
+    "Original full evidence ZIP remains unchanged; this is an additional summarized execution receipt, not a replacement archive"
+  ]
+}

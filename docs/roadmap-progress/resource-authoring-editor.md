@@ -58,7 +58,7 @@ After measurement, the actual workspace was stopped before removing the exact di
 
 #### Portable reproduction prerequisites and sequence
 
-Run only under an explicit coordinator verification/quiet grant. Use a **new owned, plugin-free CLI workspace**, not a reset of the preserved measured workspace. Select the exact host/SDK/UI commits above; source preparation, native pnpm12.14.0, Node, Go, Task and host prerequisites must already be available. The bootstrap resolves `@playwright/test` from the selected host's `e2e/package.json`, not a globally installed/new package. That historical checkout pins Playwright1.50.1; use its installed Chromium or supply an explicit owned executable as the optional final argument and retain the reported version. Do not silently reuse an authenticated user browser.
+Run only under an explicit coordinator verification/quiet grant. Use a **new owned, plugin-free CLI workspace**, not a reset of the preserved measured workspace. Select the exact host/SDK/UI commits above; source preparation, native pnpm12.14.0, Node, Go, Task and host prerequisites must already be available. The bootstrap resolves `@playwright/test` from the selected host's `e2e/package.json`, not a globally installed/new package. That historical checkout pins Playwright1.50.1; set `CHROMIUM_EXECUTABLE` to the absolute path of its reviewed, operator-owned Chromium before isolating `HOME`, and pass it explicitly below. Retain the reported version. Do not silently reuse an authenticated user browser.
 
 The historical `baseline-env` and actual successful link-protocol report were local operational prerequisites, **not members of the ZIP**. The following credential-cleared equivalent replaces the machine-specific wrapper. Resolve only reviewed tool binaries from the operator's PATH; `pnpm` must be the actual canonical native12.14.0 executable, not Corepack/a shell launcher. No ambient credential, proxy, kubeconfig, npm token, SSH agent, `GOFLAGS` or `go.work` selection is copied:
 
@@ -101,7 +101,7 @@ p18env "$DEV" workspace up --workspace "$WORKSPACE" --mode browser --mcp=false \
   --link-evidence "$LINK_EVIDENCE" --timeout 20m --json
 p18env "$DEV" workspace inspect --workspace "$WORKSPACE" --json > "$RUN/fresh-inspect.json"
 p18env "$NODE" "$BOOTSTRAP" "$HOST/e2e/package.json" "$BUNDLE" \
-  "$RUN/fresh-inspect.json" "$RUN/new-browser-observations.json"
+  "$RUN/fresh-inspect.json" "$RUN/new-browser-observations.json" "$CHROMIUM_EXECUTABLE"
 ```
 
 Use the fresh **workspace inspect envelope**, not an archived descriptor or `instance inspect`'s different response shape. The runner navigates only the actual descriptor browser endpoint plus the saved hash route, never a guessed Vite URL. Each candidate gets one fresh context for first + 20 warm cycles and a different fresh context for before/after20/after40 forced-GC samples. Real fixture completion must become visible every cycle; unavailable service/identity/disposal is a failure, not a fallback. Worker records cover construction and explicit `terminate()` calls; CDP live targets are separate and do not prove automatic worker termination or a heap plateau.

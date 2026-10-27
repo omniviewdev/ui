@@ -92,7 +92,9 @@ The job pins `ubuntu-24.04` with CodSpeed's **CPU simulation** instrument, not w
 
 CPU simulation measures estimated user-space CPU cost, including simulated cache and memory access. It excludes time spent in system calls and is not browser latency or elapsed render time. This avoids noisy walltime comparisons on shared GitHub-hosted runners without requiring unavailable `codspeed-macro` runners. Do not compare simulation values directly with historical walltime values; establish a simulation baseline on `main` (or backtest the base revision) before interpreting PR deltas.
 
-CodSpeed uploads measurements and supplies comparison reports through its GitHub integration. Regression thresholds and PR comment behavior depend on the repository's CodSpeed settings. Benchmark and upload failures fail the job; empty measurements are not allowed. Each run also uploads a `codspeed-simulation-<run-id>-<attempt>` artifact containing benchmark stdout/stderr, including partial output if the benchmark command fails. If setup fails before benchmarks start, use the Actions job logs instead. The log artifact is execution evidence, not a standalone performance comparison report.
+The full suite runs in four native Vitest shards within one workflow, with fail-fast disabled. Each benchmark file belongs to exactly one shard; the matrix does not drop benchmarks or run duplicate configurations. This bounds per-job CPU-simulation startup cost after the serial suite exceeded its 30-minute deadline while still completing measurements. CodSpeed aggregates the four jobs as one workflow run.
+
+CodSpeed uploads measurements and supplies comparison reports through its GitHub integration. Regression thresholds and PR comment behavior depend on the repository's CodSpeed settings. Benchmark and upload failures fail the job; empty measurements are not allowed. Each shard also uploads a `codspeed-simulation-<run-id>-<attempt>-<shard>` artifact containing benchmark stdout/stderr, including partial output if the benchmark command fails. If setup fails before benchmarks start, use the Actions job logs instead. The log artifact is execution evidence, not a standalone performance comparison report.
 
 ### Validation
 
@@ -100,6 +102,13 @@ After installing workspace dependencies, smoke-test the CI-enabled plugin and on
 
 ```bash
 CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx
+```
+
+To verify shard partitioning locally without running the full suite, supply two files to complementary shards. Their union must execute both files once; the Vitest sequencer determines which shard owns each file:
+
+```bash
+CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx src/base-ui/Input.bench.tsx --shard=1/2
+CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx src/base-ui/Input.bench.tsx --shard=2/2
 ```
 
 Outside the CodSpeed runner this checks harness execution only; it does not produce CPU simulation measurements. Run the full GitHub workflow to validate instrumentation, upload, and report generation:

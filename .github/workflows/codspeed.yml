@@ -24,9 +24,15 @@ concurrency:
 
 jobs:
   benchmarks:
+    name: benchmarks (${{ matrix.shard }}/4)
     # CodSpeed runner v4 rejects Ubuntu 26.04, now selected by ubuntu-latest.
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        shard: [1, 2, 3, 4]
     permissions:
       contents: read
       id-token: write
@@ -57,12 +63,12 @@ jobs:
           mode: simulation
           run: |
             mkdir -p packages/benchmarks/results
-            bash -o pipefail -c 'pnpm bench 2>&1 | tee packages/benchmarks/results/codspeed-simulation.log'
+            bash -o pipefail -c 'pnpm bench --shard=${{ matrix.shard }}/4 2>&1 | tee packages/benchmarks/results/codspeed-simulation.log'
 
       - name: Upload benchmark execution log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: codspeed-simulation-${{ github.run_id }}-${{ github.run_attempt }}
+          name: codspeed-simulation-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.shard }}
           path: packages/benchmarks/results/codspeed-simulation.log
           if-no-files-found: warn

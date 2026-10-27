@@ -16,6 +16,7 @@ on:
       - 'packages/benchmarks/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/codspeed.yml'
+  workflow_dispatch:
 
 concurrency:
   group: benchmarks-${{ github.ref }}
@@ -23,7 +24,7 @@ concurrency:
 
 jobs:
   benchmarks:
-    runs-on: codspeed-macro
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
@@ -47,7 +48,20 @@ jobs:
 
       - run: pnpm --filter @omniviewdev/editors build
 
-      - uses: CodSpeedHQ/action@v4
+      # CPU simulation gives stable comparisons on shared GitHub-hosted runners.
+      # Walltime requires dedicated macro runners for reliable measurements.
+      - name: Run CPU simulation benchmarks
+        uses: CodSpeedHQ/action@v4
         with:
-          mode: walltime
-          run: pnpm bench
+          mode: simulation
+          run: |
+            mkdir -p packages/benchmarks/results
+            bash -o pipefail -c 'pnpm bench 2>&1 | tee packages/benchmarks/results/codspeed-simulation.log'
+
+      - name: Upload benchmark execution log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codspeed-simulation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: packages/benchmarks/results/codspeed-simulation.log
+          if-no-files-found: warn

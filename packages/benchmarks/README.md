@@ -88,7 +88,7 @@ Results are written to `results/competitive/report.md` with per-component overhe
 
 CodSpeed runs automatically on PRs that touch component or benchmark code and on matching pushes to `main`. The workflow also supports manual dispatch for backtesting.
 
-The job uses `ubuntu-latest` with CodSpeed's **CPU simulation** instrument, not walltime. The existing `@codspeed/vitest-plugin` integration remains enabled in CI. Node 20 is intentional: the installed CodSpeed 5.x integration supports Node 20, while Node 22/24 require CodSpeed 6.x.
+The job pins `ubuntu-24.04` with CodSpeed's **CPU simulation** instrument, not walltime. The existing `@codspeed/vitest-plugin` integration remains enabled in CI. Node 20 is intentional: the installed CodSpeed 5.x integration supports Node 20, while Node 22/24 require CodSpeed 6.x. Do not replace the image pin with `ubuntu-latest` without verifying runner support: the October 2026 Ubuntu 26.04 image failed before benchmark startup with CodSpeed runner v4.19.1 reporting `Unsupported system`.
 
 CPU simulation measures estimated user-space CPU cost, including simulated cache and memory access. It excludes time spent in system calls and is not browser latency or elapsed render time. This avoids noisy walltime comparisons on shared GitHub-hosted runners without requiring unavailable `codspeed-macro` runners. Do not compare simulation values directly with historical walltime values; establish a simulation baseline on `main` (or backtest the base revision) before interpreting PR deltas.
 
@@ -112,6 +112,6 @@ gh run view <run-id> --log
 gh run download <run-id> --pattern 'codspeed-simulation-*'
 ```
 
-Manual dispatch requires the workflow to exist on the default branch; before then, push changes to the PR branch to trigger the `pull_request` workflow. Confirm the run uses `ubuntu-latest`, executes the benchmark suite, uploads measurements successfully, and exposes both the log artifact and CodSpeed report. A successful local smoke alone does not prove CI reporting works.
+Manual dispatch requires the workflow to exist on the default branch; before then, push changes to the PR branch to trigger the `pull_request` workflow. Confirm the run uses `ubuntu-24.04`, executes the benchmark suite, uploads measurements successfully, and exposes both the log artifact and CodSpeed report. A successful local smoke alone does not prove CI reporting works.
 
 References: [CPU simulation](https://codspeed.io/docs/instruments/cpu), [Vitest integration](https://codspeed.io/docs/benchmarks/nodejs/vitest), [supported Node versions](https://codspeed.io/docs/benchmarks/nodejs/overview#supported-node-js-versions), [GitHub Actions configuration](https://codspeed.io/docs/integrations/ci/github-actions/configuration), and [v4 action inputs](https://github.com/CodSpeedHQ/action/blob/v4/action.yml).

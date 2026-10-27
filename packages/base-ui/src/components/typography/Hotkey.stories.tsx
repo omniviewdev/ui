@@ -30,3 +30,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+export const Chord: Story = {
+  args: { children: undefined, keys: ['Meta', 'K'] },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Pass keys for a chord with normalized modifier glyphs and a default plus separator. Plain children remain available for single keys or custom content.',
+      },
+    },
+  },
+};
+
+export const ControlChord: Story = {
+  args: { children: undefined, keys: ['Control', 'K'] },
+};

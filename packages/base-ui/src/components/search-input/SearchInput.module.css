@@ -15,3 +15,30 @@
 .ClearButton:hover {
   color: var(--ov-color-fg-default);
 }
+
+.Trigger {
+  --_ov-shortcut-inset: calc(var(--ov-space-stack-xs) / 2);
+  padding-block: 0;
+  text-align: start;
+  cursor: pointer;
+}
+
+.Trigger:has(> .TriggerShortcut) {
+  padding-inline-end: var(--_ov-shortcut-inset);
+}
+
+.TriggerShortcut {
+  --_ov-hotkey-height: calc(var(--_ov-input-interior-height) - 2 * var(--_ov-shortcut-inset));
+  --_ov-hotkey-padding-block: 0px;
+  --_ov-hotkey-font-size: min(
+    var(--ov-size-typography-text-sm),
+    calc(var(--_ov-hotkey-height) - 2px)
+  );
+}
+
+.TriggerPlaceholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--_ov-placeholder);
+}

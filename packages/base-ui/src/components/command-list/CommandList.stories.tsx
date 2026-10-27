@@ -630,6 +630,93 @@ export const CustomRenderItem: StoryObj = {
   ),
 };
 
+/** Shared row slots at normal and narrow widths, without consumer row styling. */
+export const CompoundRows: StoryObj = {
+  render: () => {
+    const items = [
+      { id: 'navigation', label: 'Open Settings', icon: <LuSettings /> },
+      {
+        id: 'setting',
+        label: 'Editor font size',
+        icon: <LuCode />,
+        breadcrumb: 'Settings › Appearance',
+        description: 'Set the font size used in the editor.',
+        shortcut: '⌘,',
+      },
+      {
+        id: 'no-icon',
+        label: 'Open workspace settings',
+        breadcrumb: 'Settings › Workspace',
+        shortcut: '⌘⇧,',
+        description: 'Configure preferences for the current workspace without a leading icon.',
+      },
+      {
+        id: 'disabled',
+        label: 'Restart cluster',
+        icon: <LuTerminal />,
+        description: 'Restart the selected cluster.',
+        reason: 'Connect to a cluster before running this command.',
+      },
+      {
+        id: 'long',
+        label: 'A very long setting title that must leave room for its breadcrumb',
+        icon: <LuPalette />,
+        breadcrumb: 'Settings › Application › Appearance',
+        shortcut: '⌘⇧P',
+        description:
+          'Choose the appearance of every editor and terminal across all connected environments, including inherited workspace preferences.',
+      },
+    ];
+    return (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--ov-space-inline-control)' }}>
+        {[520, 280].map((width) => (
+          <div
+            key={width}
+            style={{ width, maxWidth: '100%', border: '1px solid var(--ov-color-border-default)' }}
+          >
+            <CommandList.Root
+              aria-label={`Command rows at ${width} pixels`}
+              items={items}
+              itemKey={(item) => item.id}
+              getTextValue={(item) => item.label}
+              disabledKeys={['disabled']}
+              virtualized={false}
+              renderItem={(item, meta) => (
+                <CommandList.Item itemKey={meta.key}>
+                  {item.icon && (
+                    <CommandList.ItemIcon aria-hidden="true">{item.icon}</CommandList.ItemIcon>
+                  )}
+                  <CommandList.ItemContent>
+                    <CommandList.ItemLabel highlights={meta.highlights}>
+                      {item.label}
+                    </CommandList.ItemLabel>
+                    {item.breadcrumb && (
+                      <CommandList.ItemMeta>{item.breadcrumb}</CommandList.ItemMeta>
+                    )}
+                    {item.description && (
+                      <CommandList.ItemDescription>{item.description}</CommandList.ItemDescription>
+                    )}
+                    {item.reason && (
+                      <CommandList.ItemDisabledReason>{item.reason}</CommandList.ItemDisabledReason>
+                    )}
+                  </CommandList.ItemContent>
+                  {item.shortcut && (
+                    <CommandList.ItemShortcut>{item.shortcut}</CommandList.ItemShortcut>
+                  )}
+                </CommandList.Item>
+              )}
+            >
+              <CommandList.Input autoFocus={false} />
+              <CommandList.Results />
+              <CommandList.Empty>No matching destinations.</CommandList.Empty>
+            </CommandList.Root>
+          </div>
+        ))}
+      </div>
+    );
+  },
+};
+
 // ---------------------------------------------------------------------------
 // 11. HybridSearch
 // ---------------------------------------------------------------------------

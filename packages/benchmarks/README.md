@@ -34,7 +34,8 @@ describe('MyComponent', () => {
   benchRender('mount', () => <MyComponent />);
 
   // Measure prop-change reconciliation
-  benchRerender('prop update',
+  benchRerender(
+    'prop update',
     { initialProps: { variant: 'solid' }, updatedProps: { variant: 'outlined' } },
     (props) => <MyComponent {...props} />,
   );
@@ -54,11 +55,11 @@ describe('MyComponent', () => {
 
 ## Utilities
 
-| Function | Measures | Per-iteration behavior |
-|----------|----------|----------------------|
-| `benchRender(name, fn)` | Mount + unmount | render() → cleanup() |
-| `benchRerender(name, config, fn)` | Prop change cost | rerender(new) → rerender(old) |
-| `benchMountMany(name, count, factory)` | Scaling | render(N children) → cleanup() |
+| Function                               | Measures         | Per-iteration behavior         |
+| -------------------------------------- | ---------------- | ------------------------------ |
+| `benchRender(name, fn)`                | Mount + unmount  | render() → cleanup()           |
+| `benchRerender(name, config, fn)`      | Prop change cost | rerender(new) → rerender(old)  |
+| `benchMountMany(name, count, factory)` | Scaling          | render(N children) → cleanup() |
 
 ## Agent Workflow
 
@@ -85,4 +86,41 @@ Results are written to `results/competitive/report.md` with per-component overhe
 
 ## CI
 
-CodSpeed runs automatically on PRs that touch component or benchmark code. It comments on PRs with performance diffs and flags regressions > 5%.
+CodSpeed runs automatically on PRs that touch component or benchmark code and on matching pushes to `main`. The workflow also supports manual dispatch for backtesting.
+
+The job pins `ubuntu-24.04` with CodSpeed's **CPU simulation** instrument, not walltime. The existing `@codspeed/vitest-plugin` integration remains enabled in CI. Node 20 is intentional: the installed CodSpeed 5.x integration supports Node 20, while Node 22/24 require CodSpeed 6.x. Do not replace the image pin with `ubuntu-latest` without verifying runner support: the October 2026 Ubuntu 26.04 image failed before benchmark startup with CodSpeed runner v4.19.1 reporting `Unsupported system`.
+
+CPU simulation measures estimated user-space CPU cost, including simulated cache and memory access. It excludes time spent in system calls and is not browser latency or elapsed render time. This avoids noisy walltime comparisons on shared GitHub-hosted runners without requiring unavailable `codspeed-macro` runners. Do not compare simulation values directly with historical walltime values; establish a simulation baseline on `main` (or backtest the base revision) before interpreting PR deltas.
+
+The full suite runs in four native Vitest shards within one workflow, with fail-fast disabled. Each benchmark file belongs to exactly one shard; the matrix does not drop benchmarks or run duplicate configurations. This bounds per-job CPU-simulation startup cost after the serial suite exceeded its 30-minute deadline while still completing measurements. CodSpeed aggregates the four jobs as one workflow run.
+
+CodSpeed uploads measurements and supplies comparison reports through its GitHub integration. Regression thresholds and PR comment behavior depend on the repository's CodSpeed settings. Benchmark and upload failures fail the job; empty measurements are not allowed. Each shard also uploads a `codspeed-simulation-<run-id>-<attempt>-<shard>` artifact containing benchmark stdout/stderr, including partial output if the benchmark command fails. If setup fails before benchmarks start, use the Actions job logs instead. The log artifact is execution evidence, not a standalone performance comparison report.
+
+### Validation
+
+After installing workspace dependencies, smoke-test the CI-enabled plugin and one benchmark from the repository root:
+
+```bash
+CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx
+```
+
+To verify shard partitioning locally without running the full suite, supply two files to complementary shards. Their union must execute both files once; the Vitest sequencer determines which shard owns each file:
+
+```bash
+CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx src/base-ui/Input.bench.tsx --shard=1/2
+CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx src/base-ui/Input.bench.tsx --shard=2/2
+```
+
+Outside the CodSpeed runner this checks harness execution only; it does not produce CPU simulation measurements. Run the full GitHub workflow to validate instrumentation, upload, and report generation:
+
+```bash
+gh workflow run codspeed.yml --ref <branch>
+gh run list --workflow codspeed.yml --branch <branch> --limit 5
+gh run watch <run-id> --exit-status
+gh run view <run-id> --log
+gh run download <run-id> --pattern 'codspeed-simulation-*'
+```
+
+Manual dispatch requires the workflow to exist on the default branch; before then, push changes to the PR branch to trigger the `pull_request` workflow. Confirm the run uses `ubuntu-24.04`, executes the benchmark suite, uploads measurements successfully, and exposes both the log artifact and CodSpeed report. A successful local smoke alone does not prove CI reporting works.
+
+References: [CPU simulation](https://codspeed.io/docs/instruments/cpu), [Vitest integration](https://codspeed.io/docs/benchmarks/nodejs/vitest), [supported Node versions](https://codspeed.io/docs/benchmarks/nodejs/overview#supported-node-js-versions), [GitHub Actions configuration](https://codspeed.io/docs/integrations/ci/github-actions/configuration), and [v4 action inputs](https://github.com/CodSpeedHQ/action/blob/v4/action.yml).

@@ -52,6 +52,12 @@ type RenderItemFn = (key: Key, meta: CommandItemMeta) => ReactNode;
 
 const RenderItemContext = createContext<RenderItemFn | null>(null);
 
+const PointerMotionContext = createContext<RefObject<{
+  x: number;
+  y: number;
+  moved: boolean;
+} | null> | null>(null);
+
 function useRenderItem(): RenderItemFn {
   const ctx = useContext(RenderItemContext);
   if (!ctx) {
@@ -83,6 +89,7 @@ function CommandListRootImpl<TItem>(
     size,
     children,
     onKeyDown,
+    onMouseMoveCapture,
     // Extract managed props so they don't spread to DOM
     items,
     itemKey,
@@ -141,6 +148,7 @@ function CommandListRootImpl<TItem>(
   const listId = useId();
   const resultsId = `${listId}-results`;
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
+  const pointerMotion = useRef<{ x: number; y: number; moved: boolean } | null>(null);
 
   // Build renderItem closure that captures TItem
   const itemsMap = useMemo(() => {
@@ -186,22 +194,35 @@ function CommandListRootImpl<TItem>(
         <CommandListConfigContext.Provider value={fullConfig}>
           <CommandListStoreContext.Provider value={store}>
             <CommandListActionsContext.Provider value={actions}>
-              <div
-                ref={ref}
-                role="combobox"
-                aria-expanded="true"
-                aria-haspopup="listbox"
-                aria-owns={resultsId}
-                aria-activedescendant={activeDescendantId}
-                className={cn(styles.Root, className)}
-                data-ov-density={fullConfig.density}
-                data-ov-list-id={listId}
-                onKeyDown={combinedKeyDown}
-                {...styleDataAttributes({ variant, color, size })}
-                {...domProps}
-              >
-                {children}
-              </div>
+              <PointerMotionContext.Provider value={pointerMotion}>
+                <div
+                  ref={ref}
+                  role="combobox"
+                  aria-expanded="true"
+                  aria-haspopup="listbox"
+                  aria-owns={resultsId}
+                  aria-activedescendant={activeDescendantId}
+                  className={cn(styles.Root, className)}
+                  data-ov-density={fullConfig.density}
+                  data-ov-list-id={listId}
+                  onKeyDown={combinedKeyDown}
+                  onMouseMoveCapture={(event) => {
+                    const previous = pointerMotion.current;
+                    pointerMotion.current = {
+                      x: event.clientX,
+                      y: event.clientY,
+                      moved:
+                        previous !== null &&
+                        (previous.x !== event.clientX || previous.y !== event.clientY),
+                    };
+                    onMouseMoveCapture?.(event);
+                  }}
+                  {...styleDataAttributes({ variant, color, size })}
+                  {...domProps}
+                >
+                  {children}
+                </div>
+              </PointerMotionContext.Provider>
             </CommandListActionsContext.Provider>
           </CommandListStoreContext.Provider>
         </CommandListConfigContext.Provider>
@@ -417,6 +438,7 @@ const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(functio
   const actions = useCommandListActions();
   const config = useCommandListConfig();
   const itemState = useCommandListItemHook(store, itemKey);
+  const pointerMotion = useContext(PointerMotionContext);
 
   const isDisabled = disabled || itemState.isDisabled;
 
@@ -433,10 +455,12 @@ const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(functio
   );
 
   const handleMouseMove = useCallback(() => {
-    if (!isDisabled && !itemState.isActive) {
+    // Scrolling can move rows beneath a stationary pointer. Only real movement
+    // transfers the active item back from keyboard navigation to the pointer.
+    if (pointerMotion?.current?.moved && !isDisabled && !itemState.isActive) {
       store.setActiveKey(itemKey);
     }
-  }, [isDisabled, itemState.isActive, store, itemKey]);
+  }, [pointerMotion, isDisabled, itemState.isActive, store, itemKey]);
 
   return (
     <div
@@ -554,6 +578,26 @@ const CommandListItemLabel = forwardRef<HTMLSpanElement, CommandListItemLabelPro
 const CommandListItemDescription = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
   function CommandListItemDescription({ className, ...props }, ref) {
     return <span ref={ref} className={cn(styles.ItemDescription, className)} {...props} />;
+  },
+);
+
+/** Compound item layout: label, metadata, and shortcut first, description below. */
+const CommandListItemContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  function CommandListItemContent({ className, ...props }, ref) {
+    return <div ref={ref} className={cn(styles.ItemContent, className)} {...props} />;
+  },
+);
+
+const CommandListItemMeta = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
+  function CommandListItemMeta({ className, ...props }, ref) {
+    return <span ref={ref} className={cn(styles.ItemMeta, className)} {...props} />;
+  },
+);
+
+/** Unlike descriptions, disabled reasons wrap so the explanation stays visible. */
+const CommandListItemDisabledReason = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
+  function CommandListItemDisabledReason({ className, ...props }, ref) {
+    return <span ref={ref} className={cn(styles.ItemDisabledReason, className)} {...props} />;
   },
 );
 
@@ -689,6 +733,9 @@ CommandListItem.displayName = 'CommandList.Item';
 CommandListItemIcon.displayName = 'CommandList.ItemIcon';
 CommandListItemLabel.displayName = 'CommandList.ItemLabel';
 CommandListItemDescription.displayName = 'CommandList.ItemDescription';
+CommandListItemContent.displayName = 'CommandList.ItemContent';
+CommandListItemMeta.displayName = 'CommandList.ItemMeta';
+CommandListItemDisabledReason.displayName = 'CommandList.ItemDisabledReason';
 CommandListItemShortcut.displayName = 'CommandList.ItemShortcut';
 CommandListEmpty.displayName = 'CommandList.Empty';
 CommandListLoading.displayName = 'CommandList.Loading';
@@ -705,6 +752,9 @@ type CommandListCompound = typeof CommandListRoot & {
   ItemIcon: typeof CommandListItemIcon;
   ItemLabel: typeof CommandListItemLabel;
   ItemDescription: typeof CommandListItemDescription;
+  ItemContent: typeof CommandListItemContent;
+  ItemMeta: typeof CommandListItemMeta;
+  ItemDisabledReason: typeof CommandListItemDisabledReason;
   ItemShortcut: typeof CommandListItemShortcut;
   Empty: typeof CommandListEmpty;
   Loading: typeof CommandListLoading;
@@ -718,6 +768,9 @@ export const CommandList = Object.assign(CommandListRoot, {
   ItemIcon: CommandListItemIcon,
   ItemLabel: CommandListItemLabel,
   ItemDescription: CommandListItemDescription,
+  ItemContent: CommandListItemContent,
+  ItemMeta: CommandListItemMeta,
+  ItemDisabledReason: CommandListItemDisabledReason,
   ItemShortcut: CommandListItemShortcut,
   Empty: CommandListEmpty,
   Loading: CommandListLoading,

@@ -230,9 +230,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--ov-size-typography-hotkey-min-height);
-  min-width: var(--ov-size-typography-hotkey-min-height);
-  padding: var(--ov-size-typography-hotkey-padding-block)
+  min-height: var(--_ov-hotkey-height, var(--ov-size-typography-hotkey-min-height));
+  min-width: var(--_ov-hotkey-height, var(--ov-size-typography-hotkey-min-height));
+  padding: var(--_ov-hotkey-padding-block, var(--ov-size-typography-hotkey-padding-block))
     var(--ov-size-typography-hotkey-padding-inline);
   border-radius: var(--ov-size-typography-hotkey-radius);
   border: 1px solid var(--ov-color-border-default);
@@ -244,20 +244,58 @@
   box-shadow: inset 0 -1px 0 var(--ov-color-border-muted);
   font-weight: var(--ov-font-weight-label);
   text-align: center;
+  font-size: var(--_ov-hotkey-font-size, var(--ov-size-typography-text-sm));
+  gap: var(--ov-space-stack-xs);
 }
 
 .Hotkey[data-ov-size='sm'] {
-  min-height: calc(var(--ov-size-typography-hotkey-min-height) - 2px);
-  min-width: calc(var(--ov-size-typography-hotkey-min-height) - 2px);
-  padding: calc(var(--ov-size-typography-hotkey-padding-block) - 1px)
+  min-height: var(--_ov-hotkey-height, calc(var(--ov-size-typography-hotkey-min-height) - 2px));
+  min-width: var(--_ov-hotkey-height, calc(var(--ov-size-typography-hotkey-min-height) - 2px));
+  padding: var(
+      --_ov-hotkey-padding-block,
+      calc(var(--ov-size-typography-hotkey-padding-block) - 1px)
+    )
     calc(var(--ov-size-typography-hotkey-padding-inline) - 1px);
 }
 
 .Hotkey[data-ov-size='lg'] {
-  min-height: calc(var(--ov-size-typography-hotkey-min-height) + 2px);
-  min-width: calc(var(--ov-size-typography-hotkey-min-height) + 2px);
-  padding: calc(var(--ov-size-typography-hotkey-padding-block) + 1px)
+  min-height: var(--_ov-hotkey-height, calc(var(--ov-size-typography-hotkey-min-height) + 2px));
+  min-width: var(--_ov-hotkey-height, calc(var(--ov-size-typography-hotkey-min-height) + 2px));
+  padding: var(
+      --_ov-hotkey-padding-block,
+      calc(var(--ov-size-typography-hotkey-padding-block) + 1px)
+    )
     calc(var(--ov-size-typography-hotkey-padding-inline) + 1px);
+}
+
+.HotkeyKey,
+.HotkeySeparator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.HotkeyKey > svg {
+  inline-size: 1em;
+  block-size: 1em;
+}
+
+.HotkeySeparator > svg {
+  inline-size: 0.65em;
+  block-size: 0.65em;
+}
+
+.SrOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .Em {

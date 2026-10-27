@@ -8,6 +8,7 @@ export type DataTableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
 
 export const DataTableFooter = forwardRef<HTMLTableSectionElement, DataTableFooterProps>(
   function DataTableFooter({ className, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table } = useDataTableContext();
     const footerGroups = table.getFooterGroups();
 

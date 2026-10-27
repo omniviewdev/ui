@@ -9,6 +9,7 @@ export interface DataTableLoadingProps extends HTMLAttributes<HTMLTableSectionEl
 
 export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoadingProps>(
   function DataTableLoading({ className, rows = 8, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table } = useDataTableContext();
     const visibleColumns = table.getVisibleLeafColumns();
 

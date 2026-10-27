@@ -1,10 +1,17 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
-import type { ColumnDef } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+} from '@tanstack/react-table';
 
 interface Person {
   id: string;
@@ -195,5 +202,113 @@ describe('DataTable features', () => {
     expect(screen.getByText('Alice')).toBeInTheDocument();
     expect(screen.queryByText('Bob')).not.toBeInTheDocument();
     expect(screen.queryByText('Charlie')).not.toBeInTheDocument();
+  });
+});
+
+const reactivePeople = [...sampleData].reverse();
+const reactiveFeatures = {
+  sorting: true,
+  globalFilter: true,
+  filtering: true,
+  pagination: true,
+};
+
+function ReactiveTable({ rows = reactivePeople, pageSize = 1 }: { rows?: Person[]; pageSize?: number }) {
+  const table = useReactTable({
+    data: rows,
+    columns,
+    getRowId: (row) => row.id,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageIndex: 0, pageSize } },
+  });
+
+  return (
+    <DataTable.Root table={table} features={reactiveFeatures}>
+      <DataTable.Toolbar />
+      <DataTable.Container>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+      <DataTable.Pagination />
+    </DataTable.Root>
+  );
+}
+
+describe('stable table controller reactivity', () => {
+  it('replaces visible rows when the caller supplies filtered data', () => {
+    const { rerender } = renderWithTheme(<ReactiveTable pageSize={3} />);
+
+    rerender(<ReactiveTable rows={sampleData.slice(1, 2)} pageSize={3} />);
+
+    expect(screen.getByRole('cell', { name: 'Bob' })).toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: 'Alice' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: 'Charlie' })).not.toBeInTheDocument();
+    expect(screen.getByText('1 rows')).toBeInTheDocument();
+  });
+
+  it('filters and restores visible rows and page controls through the toolbar', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<ReactiveTable />);
+
+    const search = screen.getByPlaceholderText('Search...');
+    await user.type(search, 'Bob');
+
+    expect(screen.getByRole('cell', { name: 'Bob' })).toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: 'Charlie' })).not.toBeInTheDocument();
+    expect(screen.getByText('Page 1 of 1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
+
+    await user.clear(search);
+
+    expect(screen.getByRole('cell', { name: 'Charlie' })).toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: 'Bob' })).not.toBeInTheDocument();
+    expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next page' })).toBeEnabled();
+  });
+
+  it('updates row order and the accessible sort direction on repeated header activation', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<ReactiveTable pageSize={3} />);
+
+    await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
+
+    expect(
+      within(screen.getByRole('table')).getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
+        .map((cell) => cell.textContent),
+    ).toEqual(['Alice', 'Bob', 'Charlie']);
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'ascending');
+
+    await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
+
+    expect(
+      within(screen.getByRole('table')).getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
+        .map((cell) => cell.textContent),
+    ).toEqual(['Charlie', 'Bob', 'Alice']);
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'descending');
+  });
+
+  it('moves between page windows and updates navigation availability', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<ReactiveTable />);
+
+    await user.click(screen.getByRole('button', { name: 'Next page' }));
+
+    expect(screen.getByRole('cell', { name: 'Bob' })).toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: 'Charlie' })).not.toBeInTheDocument();
+    expect(screen.getByText('Page 2 of 3')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Previous page' })).toBeEnabled();
+
+    await user.click(screen.getByRole('button', { name: 'Last page' }));
+
+    expect(screen.getByRole('cell', { name: 'Alice' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
+
+    await user.click(screen.getByRole('button', { name: 'First page' }));
+
+    expect(screen.getByRole('cell', { name: 'Charlie' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
   });
 });

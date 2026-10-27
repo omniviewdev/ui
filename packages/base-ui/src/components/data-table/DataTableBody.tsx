@@ -13,6 +13,7 @@ export interface DataTableBodyProps extends HTMLAttributes<HTMLTableSectionEleme
 
 export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyProps>(
   function DataTableBody({ className, renderExpandedRow, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table, features } = useDataTableContext();
     const rows = table.getRowModel().rows;
     const isResizing = table.getState().columnSizingInfo.isResizingColumn;

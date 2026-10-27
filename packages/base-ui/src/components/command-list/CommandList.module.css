@@ -131,10 +131,6 @@
     color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.Item:hover {
-  background: var(--_ov-highlight-bg);
-}
-
 .Item[data-ov-active='true'] {
   background: var(--_ov-highlight-bg);
 }
@@ -184,6 +180,64 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Center the full row block; keep the icon in the title's grid row. */
+.Item:has(> .ItemContent) {
+  --_ov-content-column: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) fit-content(45%);
+  align-content: center;
+  align-items: center;
+  row-gap: var(--ov-space-stack-xs);
+  flex-shrink: 0;
+  padding-block: var(--ov-space-stack-xs);
+}
+
+.Item:has(> .ItemContent):has(> .ItemIcon) {
+  --_ov-content-column: 2;
+  grid-template-columns: var(--_ov-icon-size) minmax(0, 1fr) fit-content(45%);
+}
+
+.Item:has(> .ItemContent) > .ItemIcon {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.ItemContent {
+  display: contents;
+}
+
+.ItemContent > .ItemLabel {
+  grid-column: var(--_ov-content-column);
+  grid-row: 1;
+  font-weight: var(--ov-font-weight-label);
+  line-height: max(var(--_ov-icon-size), 1.25em);
+}
+
+.ItemMeta {
+  grid-column: -2 / -1;
+  grid-row: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+
+.ItemContent > .ItemDescription,
+.ItemContent > .ItemDisabledReason {
+  grid-column: var(--_ov-content-column) / -1;
+  min-inline-size: 0;
+}
+
+.ItemDisabledReason {
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .ItemShortcut {

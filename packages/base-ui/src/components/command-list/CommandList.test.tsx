@@ -223,6 +223,70 @@ describe('CommandList', () => {
   // -------------------------------------------------------------------------
 
   describe('Keyboard navigation', () => {
+    it('keeps one active item when keyboard navigation scrolls beneath a stationary pointer', async () => {
+      const user = userEvent.setup();
+      const onAction = vi.fn();
+      renderWithTheme(<TestCommandList onAction={onAction} />);
+      const options = screen.getAllByRole('option');
+
+      fireEvent.mouseMove(screen.getByRole('option', { name: /Find in Files/ }), {
+        clientX: 40,
+        clientY: 100,
+      });
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+      await user.keyboard('{ArrowDown}{ArrowDown}{ArrowUp}');
+      expect(options[3]).toHaveAttribute('aria-selected', 'true');
+
+      // Layout changes can dispatch movement at the same screen position.
+      fireEvent.mouseMove(screen.getByRole('option', { name: /Save File/ }), {
+        clientX: 40,
+        clientY: 100,
+      });
+      expect(options[3]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getAllByRole('option', { selected: true })).toHaveLength(1);
+
+      fireEvent.mouseMove(screen.getByRole('option', { name: /Save File/ }), {
+        clientX: 41,
+        clientY: 100,
+      });
+      expect(options[1]).toHaveAttribute('aria-selected', 'true');
+      await user.keyboard('{ArrowDown}{Enter}');
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+      expect(onAction).toHaveBeenCalledWith('find', commands[2]);
+    });
+
+    it('retains full row text and skips disabled compound rows', async () => {
+      const user = userEvent.setup();
+      const reason = 'Connect to a cluster before changing this setting.';
+      const description =
+        'A long setting description that remains available to assistive technology even when visually truncated.';
+      renderWithTheme(
+        <TestCommandList
+          disabledKeys={['save']}
+          renderItem={(item, meta) => (
+            <CommandList.Item itemKey={meta.key}>
+              <CommandList.ItemIcon aria-hidden="true">★</CommandList.ItemIcon>
+              <CommandList.ItemContent>
+                <CommandList.ItemLabel>{item.label}</CommandList.ItemLabel>
+                <CommandList.ItemMeta>Settings › Application</CommandList.ItemMeta>
+                <CommandList.ItemDescription>{description}</CommandList.ItemDescription>
+                {item.id === 'save' && (
+                  <CommandList.ItemDisabledReason>{reason}</CommandList.ItemDisabledReason>
+                )}
+              </CommandList.ItemContent>
+            </CommandList.Item>
+          )}
+        />,
+      );
+      const options = screen.getAllByRole('option');
+      expect(options[1]).toHaveAccessibleName(
+        `Save File Settings › Application ${description} ${reason}`,
+      );
+      expect(options[1]).toHaveAttribute('aria-disabled', 'true');
+      await user.keyboard('{ArrowDown}');
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+    });
+
     it('first item is active by default', () => {
       renderWithTheme(<TestCommandList />);
       const options = screen.getAllByRole('option');

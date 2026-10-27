@@ -185,8 +185,9 @@
 /* Center the full row block; keep the icon in the title's grid row. */
 .Item:has(> .ItemContent) {
   --_ov-content-column: 1;
+  --_ov-trailing-columns: [meta shortcut] fit-content(45%);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) fit-content(45%);
+  grid-template-columns: minmax(0, 1fr) var(--_ov-trailing-columns);
   align-content: center;
   align-items: center;
   row-gap: var(--ov-space-stack-xs);
@@ -196,7 +197,16 @@
 
 .Item:has(> .ItemContent):has(> .ItemIcon) {
   --_ov-content-column: 2;
-  grid-template-columns: var(--_ov-icon-size) minmax(0, 1fr) fit-content(45%);
+  grid-template-columns: var(--_ov-icon-size) minmax(0, 1fr) var(--_ov-trailing-columns);
+}
+
+.Item:has(> .ItemContent):has(.ItemMeta):has(.ItemShortcut) {
+  --_ov-trailing-columns: [meta] fit-content(35%) [shortcut] auto;
+}
+
+.Item:has(> .ItemContent) .ItemShortcut {
+  grid-column: shortcut;
+  grid-row: 1;
 }
 
 .Item:has(> .ItemContent) > .ItemIcon {
@@ -216,7 +226,7 @@
 }
 
 .ItemMeta {
-  grid-column: -2 / -1;
+  grid-column: meta;
   grid-row: 1;
   min-inline-size: 0;
   overflow: hidden;

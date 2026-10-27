@@ -229,6 +229,7 @@ describe('CommandList', () => {
       renderWithTheme(<TestCommandList onAction={onAction} />);
       const options = screen.getAllByRole('option');
 
+      fireEvent.mouseMove(options[0]!, { clientX: 39, clientY: 100 });
       fireEvent.mouseMove(screen.getByRole('option', { name: /Find in Files/ }), {
         clientX: 40,
         clientY: 100,
@@ -255,6 +256,25 @@ describe('CommandList', () => {
       expect(onAction).toHaveBeenCalledWith('find', commands[2]);
     });
 
+    it('keeps keyboard selection when the first mouse event only establishes a pointer baseline', async () => {
+      const user = userEvent.setup();
+      renderWithTheme(<TestCommandList />);
+      const options = screen.getAllByRole('option');
+
+      await user.keyboard('{ArrowDown}{ArrowDown}');
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+
+      fireEvent.mouseMove(options[1]!, { clientX: 40, clientY: 100 });
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+      fireEvent.mouseMove(options[1]!, { clientX: 40, clientY: 100 });
+      expect(options[2]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getAllByRole('option', { selected: true })).toHaveLength(1);
+
+      fireEvent.mouseMove(options[1]!, { clientX: 41, clientY: 100 });
+      expect(options[1]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getAllByRole('option', { selected: true })).toHaveLength(1);
+    });
+
     it('retains full row text and skips disabled compound rows', async () => {
       const user = userEvent.setup();
       const reason = 'Connect to a cluster before changing this setting.';
@@ -269,6 +289,7 @@ describe('CommandList', () => {
               <CommandList.ItemContent>
                 <CommandList.ItemLabel>{item.label}</CommandList.ItemLabel>
                 <CommandList.ItemMeta>Settings › Application</CommandList.ItemMeta>
+                <CommandList.ItemShortcut keys={['F5']} />
                 <CommandList.ItemDescription>{description}</CommandList.ItemDescription>
                 {item.id === 'save' && (
                   <CommandList.ItemDisabledReason>{reason}</CommandList.ItemDisabledReason>
@@ -280,7 +301,7 @@ describe('CommandList', () => {
       );
       const options = screen.getAllByRole('option');
       expect(options[1]).toHaveAccessibleName(
-        `Save File Settings › Application ${description} ${reason}`,
+        `Save File Settings › Application F5 ${description} ${reason}`,
       );
       expect(options[1]).toHaveAttribute('aria-disabled', 'true');
       await user.keyboard('{ArrowDown}');
@@ -563,11 +584,13 @@ describe('CommandList', () => {
       expect(onAction).toHaveBeenCalledWith('save', commands[1]);
     });
 
-    it('activates item on mouse move', () => {
+    it('activates item only after the pointer moves from its initial baseline', () => {
       renderWithTheme(<TestCommandList />);
 
       const options = screen.getAllByRole('option');
-      fireEvent.mouseMove(options[2]!);
+      fireEvent.mouseMove(options[2]!, { clientX: 40, clientY: 100 });
+      expect(options[0]).toHaveAttribute('data-ov-active', 'true');
+      fireEvent.mouseMove(options[2]!, { clientX: 41, clientY: 100 });
 
       expect(options[2]).toHaveAttribute('data-ov-active', 'true');
     });

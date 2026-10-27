@@ -212,9 +212,8 @@ function CommandListRootImpl<TItem>(
                       x: event.clientX,
                       y: event.clientY,
                       moved:
-                        previous === null ||
-                        previous.x !== event.clientX ||
-                        previous.y !== event.clientY,
+                        previous !== null &&
+                        (previous.x !== event.clientX || previous.y !== event.clientY),
                     };
                     onMouseMoveCapture?.(event);
                   }}
@@ -582,7 +581,7 @@ const CommandListItemDescription = forwardRef<HTMLSpanElement, HTMLAttributes<HT
   },
 );
 
-/** Two-line item layout: label and metadata first, description below. */
+/** Compound item layout: label, metadata, and shortcut first, description below. */
 const CommandListItemContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   function CommandListItemContent({ className, ...props }, ref) {
     return <div ref={ref} className={cn(styles.ItemContent, className)} {...props} />;

@@ -641,6 +641,14 @@ export const CompoundRows: StoryObj = {
         icon: <LuCode />,
         breadcrumb: 'Settings › Appearance',
         description: 'Set the font size used in the editor.',
+        shortcut: '⌘,',
+      },
+      {
+        id: 'no-icon',
+        label: 'Open workspace settings',
+        breadcrumb: 'Settings › Workspace',
+        shortcut: '⌘⇧,',
+        description: 'Configure preferences for the current workspace without a leading icon.',
       },
       {
         id: 'disabled',
@@ -654,6 +662,7 @@ export const CompoundRows: StoryObj = {
         label: 'A very long setting title that must leave room for its breadcrumb',
         icon: <LuPalette />,
         breadcrumb: 'Settings › Application › Appearance',
+        shortcut: '⌘⇧P',
         description:
           'Choose the appearance of every editor and terminal across all connected environments, including inherited workspace preferences.',
       },
@@ -674,7 +683,9 @@ export const CompoundRows: StoryObj = {
               virtualized={false}
               renderItem={(item, meta) => (
                 <CommandList.Item itemKey={meta.key}>
-                  <CommandList.ItemIcon aria-hidden="true">{item.icon}</CommandList.ItemIcon>
+                  {item.icon && (
+                    <CommandList.ItemIcon aria-hidden="true">{item.icon}</CommandList.ItemIcon>
+                  )}
                   <CommandList.ItemContent>
                     <CommandList.ItemLabel highlights={meta.highlights}>
                       {item.label}
@@ -689,6 +700,9 @@ export const CompoundRows: StoryObj = {
                       <CommandList.ItemDisabledReason>{item.reason}</CommandList.ItemDisabledReason>
                     )}
                   </CommandList.ItemContent>
+                  {item.shortcut && (
+                    <CommandList.ItemShortcut>{item.shortcut}</CommandList.ItemShortcut>
+                  )}
                 </CommandList.Item>
               )}
             >

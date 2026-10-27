@@ -35,7 +35,10 @@ export function Hotkey<E extends HotkeyElement = 'kbd'>({
     label: key === 'Meta' || key === '⌘' ? 'Command' : key === 'Control' ? 'Ctrl' : key,
   }));
   return (
-    <HotkeyPrimitive aria-label={chord?.map(({ label }) => label).join(' + ')} {...props}>
+    <HotkeyPrimitive {...props}>
+      {chord && (
+        <span className={styles.SrOnly}>{chord.map(({ label }) => label).join(' + ')}</span>
+      )}
       {chord
         ? chord.map(({ key, label }, index) => (
             <Fragment key={`${index}:${key}`}>

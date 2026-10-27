@@ -32,6 +32,18 @@ describe('Typography', () => {
     expect(hotkey.tagName).toBe('KBD');
   });
 
+  it.each(['kbd', 'span'] as const)(
+    'keeps chord text readable without naming a generic %s',
+    (as) => {
+      renderWithTheme(<Hotkey as={as} keys={['Meta', 'K']} />);
+
+      const chordText = screen.getByText('Command + K');
+      expect(chordText.closest('[aria-hidden="true"]')).toBeNull();
+      expect(chordText.parentElement).not.toHaveAttribute('aria-label');
+      expect(screen.getByText('K')).toHaveAttribute('aria-hidden', 'true');
+    },
+  );
+
   it('exposes typography compound subcomponents', () => {
     renderWithTheme(
       <>

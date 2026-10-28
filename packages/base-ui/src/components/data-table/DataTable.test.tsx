@@ -237,6 +237,47 @@ function ReactiveTable({ rows = reactivePeople, pageSize = 1 }: { rows?: Person[
   );
 }
 
+const layoutColumns: ColumnDef<Person, unknown>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+    cell: ({ row }) => (
+      <button aria-pressed={row.getIsSelected()} onClick={() => row.toggleSelected()}>
+        {row.original.name}
+      </button>
+    ),
+  },
+  ...columns.slice(1),
+];
+const layoutDefaults = { size: 120 };
+
+function LayoutTable() {
+  const table = useReactTable({
+    data: sampleData,
+    columns: layoutColumns,
+    defaultColumn: layoutDefaults,
+    getRowId: (row) => row.id,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+  });
+
+  return (
+    <>
+      <button onClick={() => table.setColumnPinning({ left: ['name', 'age'] })}>Pin details</button>
+      <button onClick={() => table.setColumnSizing({ name: 240 })}>Widen name</button>
+      <button onClick={() => table.getColumn('name')?.toggleVisibility()}>Toggle name</button>
+      <button onClick={() => table.setColumnPinning({ left: ['age', 'name'] })}>Pin age first</button>
+      <button onClick={() => table.setColumnPinning({ left: [] })}>Unpin details</button>
+      <DataTable.Root table={table}>
+        <DataTable.Container>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Container>
+      </DataTable.Root>
+    </>
+  );
+}
+
 describe('stable table controller reactivity', () => {
   it('replaces visible rows when the caller supplies filtered data', () => {
     const { rerender } = renderWithTheme(<ReactiveTable pageSize={3} />);
@@ -310,5 +351,41 @@ describe('stable table controller reactivity', () => {
 
     expect(screen.getByRole('cell', { name: 'Charlie' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
+  });
+
+  it('reflows pinned cells after sizing, visibility, and pin-order changes', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<LayoutTable />);
+
+    await user.click(screen.getByRole('button', { name: 'Pin details' }));
+    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ position: 'sticky', left: '120px' });
+
+    await user.click(screen.getByRole('button', { name: 'Widen name' }));
+    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '240px' });
+
+    await user.click(screen.getByRole('button', { name: 'Toggle name' }));
+    expect(screen.queryByRole('button', { name: 'Bob' })).not.toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '0px' });
+
+    await user.click(screen.getByRole('button', { name: 'Toggle name' }));
+    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '240px' });
+
+    await user.click(screen.getByRole('button', { name: 'Pin age first' }));
+    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '0px' });
+    expect(screen.getByRole('cell', { name: 'Bob' })).toHaveStyle({ left: '120px' });
+
+    await user.click(screen.getByRole('button', { name: 'Unpin details' }));
+    expect(screen.getByRole('cell', { name: '25' })).not.toHaveStyle({ position: 'sticky' });
+  });
+
+  it('keeps custom cell renderers live when selection changes on existing rows', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<LayoutTable />);
+
+    await user.click(screen.getByRole('button', { name: 'Bob' }));
+    expect(screen.getByRole('button', { name: 'Bob' })).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(screen.getByRole('button', { name: 'Bob' }));
+    expect(screen.getByRole('button', { name: 'Bob' })).toHaveAttribute('aria-pressed', 'false');
   });
 });

@@ -41,6 +41,9 @@ Base UI tests compile library modules with the same React Compiler plugin as
 production builds; test fixtures remain uncompiled. TanStack Table keeps a stable,
 mutable controller, so table renderers that read its live state use the existing
 `use no memo` boundary instead of copying the controller or forcing remounts.
+Body cells share layout styles per visible column, keyed by actual column layout
+state. Do not memoize row models or arbitrary cell-renderer output by the stable
+table reference: those reads must remain live across data and state updates.
 
 ## Future additions (after component implementation starts)
 

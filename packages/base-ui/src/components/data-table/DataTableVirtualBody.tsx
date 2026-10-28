@@ -130,7 +130,7 @@ function VirtualRowInner<TData>({
       ref={measureRef}
       data-index={index}
       data-ov-row-id={row.id}
-      className={cn(styles.Row, className)}
+      className={cn(styles.Row, height != null && styles.FixedRow, className)}
       data-ov-selected={selected ? 'true' : 'false'}
       data-ov-expanded={expanded ? 'true' : 'false'}
       onClick={
@@ -168,7 +168,7 @@ function VirtualRowInner<TData>({
         position: 'absolute',
         transform: `translateY(${start}px)`,
         width: '100%',
-        ...(height == null ? {} : { height, overflow: 'hidden' }),
+        ...(height == null ? {} : { height }),
       }}
     >
       {row.getVisibleCells().map((cell) => (

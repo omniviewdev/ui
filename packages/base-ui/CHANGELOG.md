@@ -1,5 +1,13 @@
 # @omniviewdev/base-ui
 
+## 0.7.1
+
+### Patch Changes
+
+- [#76](https://github.com/omniviewdev/ui/pull/76) [`85f5396`](https://github.com/omniviewdev/ui/commit/85f53969f336f14aff348894f2e83a2ed69a30a0) Thanks [@joshuapare](https://github.com/joshuapare)! - Keep DataTable rows, headers, pagination, filters, column visibility, loading cells, and persisted state reactive when TanStack updates its stable table controller. Use the existing React Compiler opt-out at live table readers instead of copying the controller, and exercise library memoization in interaction tests.
+
+  Share memoized layout styles across cells of each visible column, invalidating on real sizing, pinning, visibility, ordering, grouping, and column-option changes. Row data and custom cell renderers remain live and are never cached by controller identity.
+
 ## 0.7.0
 
 ### Minor Changes

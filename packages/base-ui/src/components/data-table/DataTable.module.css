@@ -337,6 +337,13 @@
   box-sizing: border-box;
 }
 
+/* Clip fixed-height content at cells, not rows: rows must not become scroll
+ * containers between pinned cells and the table's horizontal viewport. */
+.FixedRow > .Cell {
+  height: 100%;
+  min-height: 0;
+}
+
 .Cell[data-ov-align='center'] {
   justify-content: center;
 }

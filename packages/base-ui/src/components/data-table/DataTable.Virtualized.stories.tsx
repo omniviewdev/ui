@@ -226,3 +226,104 @@ function LiveUpdatesStory() {
 export const LiveUpdates: Story = {
   render: () => <LiveUpdatesStory />,
 };
+
+const fixedHeightColumns: ColumnDef<LogEntry, unknown>[] = [
+  selectColumn,
+  ...baseLogColumns.map((column) =>
+    'accessorKey' in column && column.accessorKey === 'service'
+      ? {
+          ...column,
+          cell: ({ row }: { row: { original: LogEntry } }) => (
+            <div style={{ height: 90 }} data-tall-cell="">
+              {row.original.service}
+              <br />
+              Tall content must stay inside its 30px row.
+            </div>
+          ),
+        }
+      : column,
+  ),
+  actionsColumn,
+];
+
+function FixedHeightPinnedColumnsStory() {
+  const table = useDataTable({
+    data: tenKData,
+    columns: fixedHeightColumns,
+    features: virtualizedFeatures,
+    getRowId: (row) => row.id,
+    initialState: { columnPinning: { left: ['select'], right: ['actions'] } },
+  });
+
+  return (
+    <div style={{ width: 600, maxWidth: '100%' }}>
+      <p>
+        Scroll horizontally: selection and actions must stay at opposite edges.
+        Tall service content must not overlap the next fixed-height row.
+      </p>
+      <DataTable.Root table={table} features={virtualizedFeatures} variant="soft" size="sm">
+        <DataTable.Container height={300}>
+          <DataTable.Header />
+          <DataTable.VirtualBody fixedRowHeight estimateRowSize={30} overscan={3} />
+        </DataTable.Container>
+      </DataTable.Root>
+    </div>
+  );
+}
+
+export const FixedHeightPinnedColumns: Story = {
+  render: () => <FixedHeightPinnedColumnsStory />,
+  play: async ({ canvasElement }) => {
+    const viewport = canvasElement.querySelector<HTMLElement>('[data-ov-table-container]');
+    if (!viewport) throw new Error('Fixed-height pinning viewport did not render');
+    const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    // The virtualizer receives its viewport through a callback ref and ResizeObserver.
+    for (let attempt = 0; attempt < 60 && !viewport.querySelector('tbody tr'); attempt += 1) {
+      await nextFrame();
+    }
+    const row = viewport.querySelector<HTMLElement>('tbody tr');
+    const left = row?.querySelector<HTMLElement>('[data-ov-pinned="left"]');
+    const right = row?.querySelector<HTMLElement>('[data-ov-pinned="right"]');
+    const tall = row?.querySelector<HTMLElement>('[data-tall-cell]');
+    if (!row || !left || !right || !tall) throw new Error('Fixed-height pinning cells did not render');
+    const assertNear = (actual: number, expected: number, label: string) => {
+      if (Math.abs(actual - expected) > 1) {
+        throw new Error(`${label}: expected ${expected}, received ${actual}`);
+      }
+    };
+    assertNear(row.getBoundingClientRect().height, 30, 'Fixed row height');
+    for (const cell of row.querySelectorAll('td')) {
+      assertNear(cell.getBoundingClientRect().height, 30, 'Fixed cell height');
+    }
+    const tallCell = tall.closest('td')!;
+    const cellBounds = tallCell.getBoundingClientRect();
+    const belowCell = canvasElement.ownerDocument.elementFromPoint(
+      cellBounds.left + cellBounds.width / 2,
+      cellBounds.bottom + 2,
+    );
+    if (!belowCell || tallCell.contains(belowCell)) {
+      throw new Error('Tall cell content must be clipped before the next row');
+    }
+    const assertPinned = () => {
+      const bounds = viewport.getBoundingClientRect();
+      const viewportLeft = bounds.left + viewport.clientLeft;
+      assertNear(left.getBoundingClientRect().left, viewportLeft, 'Left pinned cell');
+      assertNear(
+        right.getBoundingClientRect().right,
+        viewportLeft + viewport.clientWidth,
+        'Right pinned cell',
+      );
+    };
+    if (viewport.scrollWidth <= viewport.clientWidth) {
+      throw new Error('Fixed-height pinning regression requires horizontal overflow');
+    }
+    assertPinned();
+    for (const position of [250, viewport.scrollWidth - viewport.clientWidth, 0]) {
+      viewport.scrollLeft = position;
+      viewport.dispatchEvent(new Event('scroll'));
+      await nextFrame();
+      assertNear(viewport.scrollLeft, position, 'Outer viewport horizontal scroll');
+      assertPinned();
+    }
+  },
+};

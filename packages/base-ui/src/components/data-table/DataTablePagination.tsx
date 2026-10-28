@@ -9,6 +9,7 @@ export type DataTablePaginationProps = HTMLAttributes<HTMLDivElement>;
 
 export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginationProps>(
   function DataTablePagination({ className, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table } = useDataTableContext();
     const pageIndex = table.getState().pagination.pageIndex;
     const pageCount = table.getPageCount();

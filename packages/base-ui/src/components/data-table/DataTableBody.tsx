@@ -1,4 +1,4 @@
-import { forwardRef, Fragment, memo, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, Fragment, memo, useMemo, type HTMLAttributes, type ReactNode } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -13,9 +13,41 @@ export interface DataTableBodyProps extends HTMLAttributes<HTMLTableSectionEleme
 
 export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyProps>(
   function DataTableBody({ className, renderExpandedRow, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table, features } = useDataTableContext();
     const rows = table.getRowModel().rows;
-    const isResizing = table.getState().columnSizingInfo.isResizingColumn;
+    const state = table.getState();
+    const isResizing = state.columnSizingInfo.isResizingColumn;
+    // Column layout is shared by every row and does not change with row data.
+    // Keep live row/cell rendering outside this cache: renderers can read table state.
+    const columnLayouts = useMemo(
+      () => new Map(table.getVisibleLeafColumns().map((column) => {
+        const meta = column.columnDef.meta as Record<string, unknown> | undefined;
+        return [column, {
+          style: {
+            ...getCellSizeStyles(column),
+            ...getPinningStyles(column),
+          },
+          pinned: column.getIsPinned() || undefined,
+          align: meta?.align as string | undefined,
+        }];
+      })),
+      [
+        table,
+        table.options.columns,
+        table.options.enableColumnResizing,
+        table.options.defaultColumn?.enableResizing,
+        table.options.defaultColumn?.size,
+        table.options.defaultColumn?.minSize,
+        table.options.defaultColumn?.maxSize,
+        table.options.groupedColumnMode,
+        state.grouping,
+        state.columnVisibility,
+        state.columnOrder,
+        state.columnPinning,
+        state.columnSizing,
+      ],
+    );
 
     if (rows.length === 0) return null;
 
@@ -32,21 +64,16 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
             data-ov-expanded={isExpanded ? 'true' : 'false'}
           >
             {row.getVisibleCells().map((cell) => {
-              const pinningStyles = getPinningStyles(cell.column);
-              const sizeStyles = getCellSizeStyles(cell.column);
-              const meta = cell.column.columnDef.meta as Record<string, unknown> | undefined;
-              const align = meta?.align as string | undefined;
+              // Visible cells and layout entries use the same current column objects.
+              const layout = columnLayouts.get(cell.column)!;
 
               return (
                 <td
                   key={cell.id}
                   className={styles.Cell}
-                  style={{
-                    ...sizeStyles,
-                    ...pinningStyles,
-                  }}
-                  data-ov-pinned={cell.column.getIsPinned() || undefined}
-                  data-ov-align={align}
+                  style={layout.style}
+                  data-ov-pinned={layout.pinned}
+                  data-ov-align={layout.align}
                 >
                   <span className={styles.CellContent}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

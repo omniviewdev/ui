@@ -10,6 +10,7 @@ export type DataTableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
 
 export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHeaderProps>(
   function DataTableHeader({ className, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table, features } = useDataTableContext();
     const isResizing = table.getState().columnSizingInfo.isResizingColumn;
 

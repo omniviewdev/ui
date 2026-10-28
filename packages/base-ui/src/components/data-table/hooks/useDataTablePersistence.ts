@@ -14,6 +14,7 @@ interface PersistableState {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useDataTablePersistence(table: Table<any>, key: string | undefined) {
+  'use no memo'; // Persist snapshots from the stable, mutable TanStack instance.
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Restore on mount

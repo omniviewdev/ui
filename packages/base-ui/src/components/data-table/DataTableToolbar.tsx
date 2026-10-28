@@ -13,6 +13,7 @@ export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps
     { className, searchPlaceholder = 'Search...', children, ...props },
     ref,
   ) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table, features } = useDataTableContext();
     const handleGlobalFilter = useCallback(
       (value: string) => table.setGlobalFilter(value),

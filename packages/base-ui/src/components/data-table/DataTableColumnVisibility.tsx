@@ -11,6 +11,7 @@ export type DataTableColumnVisibilityProps = HTMLAttributes<HTMLDivElement>;
 
 export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableColumnVisibilityProps>(
   function DataTableColumnVisibility({ className, ...props }, ref) {
+    'use no memo'; // TanStack Table mutates its stable instance between renders.
     const { table } = useDataTableContext();
 
     const allColumns = table.getAllLeafColumns().filter((col) => col.getCanHide());

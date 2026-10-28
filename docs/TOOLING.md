@@ -29,6 +29,13 @@ pnpm build-storybook
 2. Prettier enforces formatting and minimizes stylistic diffs.
 3. Prettier-compatible ESLint config avoids rule conflicts.
 
+## Benchmark fixtures
+
+Use `packages/benchmarks/src/utils/bench-render.ts` for component benchmarks. Rerender fixtures require both Tinybench `setup`/`teardown` options (native Vitest and CodSpeed walltime) and isolated Vitest `beforeAll`/`afterAll` hooks (CodSpeed 5 simulation). Initial mounts and normal cleanup must stay outside the measured rerender callback.
+
+Use Node 20 and the [benchmark validation commands](../packages/benchmarks/README.md#validation) to smoke-test both actual runners. `CI=true` alone does not activate CodSpeed's analysis runner locally; the documented simulation command explicitly selects it. The lifecycle regression benchmark runs in the normal CI shards without mocking the runner. Local lifecycle success does not certify simulation measurements or uploads.
+
+
 ## Future additions (after component implementation starts)
 
 1. Add CSS linting (`stylelint`) for token and module CSS files.

@@ -61,6 +61,18 @@ describe('MyComponent', () => {
 | `benchRerender(name, config, fn)`      | Prop change cost | rerender(new) → rerender(old)  |
 | `benchMountMany(name, count, factory)` | Scaling          | render(N children) → cleanup() |
 
+### Rerender fixture lifecycle
+
+The installed runners use different lifecycle APIs. Vitest 4.0.18 forwards benchmark `setup`/`teardown` options to Tinybench 2.9.0, outside the timed loop. CodSpeed 5.2.0's simulation/analysis runner instead invokes Vitest suite hooks and calls the benchmark function directly; it never reads those Tinybench options. Its `beforeAll`/`afterAll` hooks surround the optimization and measured calls.
+
+`benchRerender` therefore registers the same setup/cleanup with both APIs, inside a dedicated `describe(name)` scope. The native runner uses the Tinybench callbacks; simulation uses the suite hooks. Do not move mounting into the measured callback, register these hooks in the containing component suite, or return cleanup from `beforeAll`: CodSpeed 5 does not consume returned cleanup callbacks. Explicit `afterAll` handles normal completion; setup and benchmark errors clean up before rethrowing because CodSpeed 5 does not reach `afterAll` on failure.
+
+The isolated suite adds `::rerender` to rerender benchmark identities (for example, `Button::variant change::rerender`). Treat these as new series; mount identities stay unchanged. Comparison helpers only benchmark mount/unmount and need no fixture lifecycle.
+
+`src/utils/bench-render.lifecycle.bench.tsx` exercises the real helper through the selected benchmark runner. Two sibling fixtures must mount before updates, restore initial props, and unmount before the following mount benchmark. Its assertions validate the harness, not component performance.
+
+Pinned API evidence: [Vitest 4.0.18 benchmark options](https://github.com/vitest-dev/vitest/blob/v4.0.18/docs/api/index.md#bench), [native benchmark runner](https://github.com/vitest-dev/vitest/blob/v4.0.18/packages/vitest/src/runtime/runners/benchmark.ts), [CodSpeed 5.2.0 analysis runner](https://github.com/CodSpeedHQ/codspeed-node/blob/v5.2.0/packages/vitest-plugin/src/analysis.ts), and [CodSpeed suite-hook dispatch](https://github.com/CodSpeedHQ/codspeed-node/blob/v5.2.0/packages/vitest-plugin/src/common.ts).
+
 ## Agent Workflow
 
 For AI agents running optimization sprints:
@@ -98,11 +110,14 @@ CodSpeed uploads measurements and supplies comparison reports through its GitHub
 
 ### Validation
 
-After installing workspace dependencies, smoke-test the CI-enabled plugin and one benchmark from the repository root:
+After installing workspace dependencies, use Node 20 for these smoke commands from the repository root. First check native Vitest/Tinybench, then explicitly select CodSpeed's analysis runner:
 
 ```bash
-CI=true pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/base-ui/Button.bench.tsx
+pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/utils/bench-render.lifecycle.bench.tsx src/base-ui/Button.bench.tsx
+CI=true CODSPEED_ENV=local CODSPEED_RUNNER_MODE=simulation pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/utils/bench-render.lifecycle.bench.tsx src/base-ui/Button.bench.tsx
 ```
+
+`CI=true` alone loads the plugin but does not select its analysis runner outside CodSpeed. `CODSPEED_ENV` enables runner selection; `CODSPEED_RUNNER_MODE=simulation` selects analysis. Without CodSpeed instrumentation the second command warns about missing instrumentation and only validates actual analysis-runner lifecycle execution, not CPU simulation measurements.
 
 To verify shard partitioning locally without running the full suite, supply two files to complementary shards. Their union must execute both files once; the Vitest sequencer determines which shard owns each file:
 

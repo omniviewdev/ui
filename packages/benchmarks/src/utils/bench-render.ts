@@ -1,4 +1,4 @@
-import { bench } from 'vitest';
+import { afterAll, beforeAll, bench, describe } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { createElement, type ReactElement } from 'react';
 import { ThemeProvider } from '@omniviewdev/base-ui';
@@ -39,8 +39,8 @@ export function benchRender(
 /**
  * Benchmark a component's re-render (prop change reconciliation) cost.
  *
- * Renders once with initialProps, then each iteration: rerender with
- * updatedProps → rerender back to initialProps. Cleanup runs once after.
+ * Renders with initialProps before each runner's benchmark cycle, then each
+ * iteration: updatedProps → initialProps. Cleanup runs outside measurement.
  *
  * @example
  * benchRerender('variant change',
@@ -57,30 +57,47 @@ export function benchRerender<P extends Record<string, unknown>>(
   const opts = resolveOptions(options);
   const { initialProps, updatedProps } = config;
 
-  let rerenderFn: ((ui: ReactElement) => void) | undefined;
+  describe(name, () => {
+    let rerenderFn: ((ui: ReactElement) => void) | undefined;
 
-  bench(
-    name,
-    () => {
-      if (!rerenderFn) {
-        throw new Error('benchRerender: setup did not run');
+    const teardown = () => {
+      rerenderFn = undefined;
+      cleanup();
+    };
+    const setup = () => {
+      cleanup();
+      try {
+        rerenderFn = render(wrapWithTheme(renderFn(initialProps))).rerender;
+      } catch (error) {
+        teardown();
+        throw error;
       }
-      rerenderFn(wrapWithTheme(renderFn(updatedProps)));
-      rerenderFn(wrapWithTheme(renderFn(initialProps)));
-    },
-    {
-      ...opts,
-      setup: () => {
-        cleanup();
-        const result = render(wrapWithTheme(renderFn(initialProps)));
-        rerenderFn = result.rerender;
+    };
+
+    // CodSpeed 5's analysis runner calls suite hooks, not Tinybench options.
+    // Native Vitest (including CodSpeed walltime) does the opposite.
+    // Scope both lifecycles to this fixture so sibling mounts cannot clean it up.
+    beforeAll(setup);
+    afterAll(teardown);
+
+    bench(
+      'rerender',
+      () => {
+        try {
+          if (!rerenderFn) {
+            throw new Error('benchRerender: setup did not run');
+          }
+          rerenderFn(wrapWithTheme(renderFn(updatedProps)));
+          rerenderFn(wrapWithTheme(renderFn(initialProps)));
+        } catch (error) {
+          // CodSpeed 5 does not call afterAll when the benchmark throws.
+          teardown();
+          throw error;
+        }
       },
-      teardown: () => {
-        cleanup();
-        rerenderFn = undefined;
-      },
-    },
-  );
+      { ...opts, setup, teardown },
+    );
+  });
 }
 
 /**

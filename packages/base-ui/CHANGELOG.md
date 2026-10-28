@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.7.2
+
+### Patch Changes
+
+- [#79](https://github.com/omniviewdev/ui/pull/79) [`33d4122`](https://github.com/omniviewdev/ui/commit/33d412248ef4c39409e94087d976fc9621517d58) Thanks [@joshuapare](https://github.com/joshuapare)! - Fix left- and right-pinned columns in fixed-height virtual tables by keeping horizontal scrolling on the table viewport. Preserve exact row heights and clip oversized content within each cell instead of the row. Add a browser regression story covering both pinned edges, horizontal scrolling, and oversized cell content.
+
 ## 0.7.1
 
 ### Patch Changes

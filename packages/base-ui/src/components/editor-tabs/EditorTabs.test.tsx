@@ -88,6 +88,22 @@ describe('EditorTabs', () => {
     expect(onActiveChange).not.toHaveBeenCalled();
   });
 
+  it('names each tab list so strips on one page can be told apart', () => {
+    renderWithTheme(
+      <>
+        <EditorTabs aria-label="Page tabs" tabs={[{ id: 'home', title: 'Home' }]} />
+        <EditorTabs aria-label="Terminal tabs" tabs={[{ id: 'shell', title: 'zsh' }]} />
+      </>,
+    );
+
+    expect(
+      screen.getByRole('tab', { name: 'zsh' }).closest('[role="tablist"]'),
+    ).toBe(screen.getByRole('tablist', { name: 'Terminal tabs' }));
+    expect(screen.getByRole('tablist', { name: 'Page tabs' })).toContainElement(
+      screen.getByRole('tab', { name: 'Home' }),
+    );
+  });
+
   it('renders pinned segment separately', () => {
     const tabs: TabDescriptor[] = [
       { id: 'pinned1', title: 'Pinned', pinned: true },

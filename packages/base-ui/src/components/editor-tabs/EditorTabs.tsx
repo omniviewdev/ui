@@ -74,6 +74,9 @@ export interface EditorTabsProps extends Omit<StyledComponentProps, 'variant'> {
    */
   onTabTransferred?: (commit: TabTransferCommit) => void;
   className?: string;
+  /** Accessible name of the tab list. Give one of these when a page has more than one strip. */
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /** CSS custom properties scoped to .Root that need snapshotting for DragOverlay portal. */
@@ -122,6 +125,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     color,
     size,
     className,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
   },
   ref,
 ) {
@@ -360,6 +365,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           className={cn(styles.Root, className)}
           role="tablist"
           aria-orientation="horizontal"
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           {...styleDataAttributes({ variant: variant as StyledComponentProps['variant'], color, size })}
         >
           <EditorTabScrollButton direction="left" />

@@ -9,6 +9,18 @@
 - Share immutable virtual-column layout snapshots across cells so compiler caches cannot retain stale pin styles after unpinning. Compute mutable column geometry once per visible column inside the existing virtualizer boundary, without another compiler opt-out. Extend the browser regression story to cover live unpinning and repinning.
 - Use native TypeScript 7 for source checks and TypeScript 6's JavaScript API for declarations. Production declarations exclude tests and stories; test programs remain checked separately.
 
+## 0.8.0
+
+### Minor Changes
+
+- [#81](https://github.com/omniviewdev/ui/pull/81) [`bc10c70`](https://github.com/omniviewdev/ui/commit/bc10c70bdff94ea943aa2b098cb740d2b62ea60b) Thanks [@joshuapare](https://github.com/joshuapare)! - Upgrade the shared frontend packages to React 19.3.1 and require React and React DOM ^19.3.1. AI UI now also requires react-icons ^5.7.0. These are minor releases under the project's release policy; consumers must upgrade these peers together and account for the narrower peer contracts.
+
+  Migrate base UI DataTable from TanStack Table 8 to 9.3.1. This is a breaking pre-1.0 API change: use the exported DataTableColumnDef, DataTableInstance, DataTableRow, and DataTableColumn types instead of Table 8 types. DataTableFeatures now describes the TanStack feature registry; use DataTableFeatureFlags for presentation toggles. Update controlled state and persisted column pinning from left/right to start/end, and columnSizingInfo to columnResizing. Consumers that use TanStack APIs directly must migrate those calls to Table 9 as well.
+
+  Use Table 9 state subscriptions and shared feature definitions to keep sorting, filtering, grouping, selection, expansion, pagination, and column visibility reactive under the React Compiler. Preserve virtualized row updates and pinned-column geometry through resizing, unpinning, and repinning.
+
+  Upgrade AI UI and editors Markdown rendering to react-markdown 10.1.0. Keep reasoning-stream state, editor sizing, and object-inspector search expansion synchronized with React 19 rendering. Retain Monaco 0.52.2 while updating its worker imports for the upgraded build toolchain.
+
 ## 0.7.2
 
 ### Patch Changes

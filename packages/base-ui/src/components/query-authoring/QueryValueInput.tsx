@@ -31,19 +31,28 @@ export function QueryValueInput({
   const id = useId();
   const [search, setSearch] = useState('');
   const [response, setResponse] = useState<QueryOptionResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(Boolean(definition.loadOptions && !disabled));
   const [item, setItem] = useState('');
   const sequence = useRef(0);
   const load = definition.loadOptions;
+  // Clear stale options before descendants can act on a changed request context.
+  const [optionInputs, setOptionInputs] = useState(() => ({ contextKey, search, load, disabled }));
+  if (
+    optionInputs.contextKey !== contextKey ||
+    optionInputs.search !== search ||
+    optionInputs.load !== load ||
+    optionInputs.disabled !== disabled
+  ) {
+    setOptionInputs({ contextKey, search, load, disabled });
+    setResponse(null);
+    setLoading(Boolean(load && !disabled));
+  }
   useEffect(() => {
     const generation = ++sequence.current;
     const abort = new AbortController();
-    setResponse(null);
     if (!load || disabled) {
-      setLoading(false);
       return () => abort.abort();
     }
-    setLoading(true);
     const timer = setTimeout(async () => {
       try {
         const result = await load({ contextKey, search, signal: abort.signal });

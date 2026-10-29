@@ -1,4 +1,4 @@
-import { bench } from 'vitest';
+import { test } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { createElement, type ReactElement } from 'react';
 import { resolveOptions, type BenchRenderOptions } from './bench-options';
@@ -22,16 +22,15 @@ export function benchCompare(
 ): void {
   const opts = resolveOptions(options);
 
-  for (const [label, renderFn] of Object.entries(implementations)) {
-    bench(
-      `${suiteName} [${label}]`,
-      () => {
+  test(suiteName, async ({ bench }) => {
+    const registrations = Object.entries(implementations).map(([label, renderFn]) =>
+      bench(`${suiteName} [${label}]`, () => {
         render(renderFn());
         cleanup();
-      },
-      opts,
+      }),
     );
-  }
+    await bench.compare(...registrations, opts);
+  });
 }
 
 /**
@@ -47,7 +46,7 @@ export function benchCompareMany(
 ): void {
   const opts = resolveOptions(options);
 
-  for (const [label, factory] of Object.entries(implementations)) {
+  const variants = Object.entries(implementations).map(([label, factory]) => {
     // Element creation is intentionally outside the bench callback so we
     // measure only React mount/reconciliation cost, not JS array/createElement
     // overhead. This mirrors benchMountMany's design.
@@ -55,13 +54,16 @@ export function benchCompareMany(
     const wrap = wrappers[label] ?? ((el: ReactElement) => el);
     const wrapped = wrap(createElement('div', null, ...children));
 
-    bench(
-      `${suiteName} [${label}]`,
-      () => {
+    return { label, wrapped };
+  });
+
+  test(suiteName, async ({ bench }) => {
+    const registrations = variants.map(({ label, wrapped }) =>
+      bench(`${suiteName} [${label}]`, () => {
         render(wrapped);
         cleanup();
-      },
-      opts,
+      }),
     );
-  }
+    await bench.compare(...registrations, opts);
+  });
 }

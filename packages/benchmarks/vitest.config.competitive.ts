@@ -1,17 +1,16 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Competitive benchmarks: cross-library comparisons (vs MUI, raw HTML).
 // Separate config so `pnpm bench` (regression) never pulls in MUI.
 
 export default defineConfig(async () => {
   const plugins = [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
   ];
 
   return {
@@ -31,14 +30,13 @@ export default defineConfig(async () => {
       setupFiles: ['./src/setup.ts'],
       pool: 'forks',
       fileParallelism: false,
-      forks: {
-        execArgv: [
-          '--expose-gc',
-          '--hash-seed=1',
-          '--random-seed=1',
-          '--max-old-space-size=4096',
-        ],
-      },
+      testTimeout: 60_000,
+      execArgv: [
+        '--expose-gc',
+        '--hash-seed=1',
+        '--random-seed=1',
+        '--max-old-space-size=4096',
+      ],
     },
   };
 });

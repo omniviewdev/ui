@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 
 export type DrawerAnchor = 'left' | 'right' | 'top' | 'bottom';
 
@@ -20,7 +20,9 @@ export function useDrawerResize(
   options: UseDrawerResizeOptions,
 ): void {
   const optsRef = useRef(options);
-  optsRef.current = options;
+  useLayoutEffect(() => {
+    optsRef.current = options;
+  }, [options]);
 
   useEffect(() => {
     const handle = handleRef.current;

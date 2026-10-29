@@ -147,81 +147,77 @@ export default function AiChatDemo() {
 
   const totalCount = staticMessages.length + replayItems.length;
 
-  const renderItem = useCallback(
-    (index: number) => {
-      if (index < staticMessages.length) {
-        const msg = staticMessages[index];
-        if (!msg) return null;
-        return (
-          <div className={styles.MessageItem}>
-            <MessageRenderer
-              message={msg}
-              onCopy={(content) => void navigator.clipboard.writeText(content)}
+  const renderItem = (index: number) => {
+    if (index < staticMessages.length) {
+      const msg = staticMessages[index];
+      if (!msg) return null;
+      return (
+        <div className={styles.MessageItem}>
+          <MessageRenderer
+            message={msg}
+            onCopy={(content) => void navigator.clipboard.writeText(content)}
+          />
+        </div>
+      );
+    }
+  
+    const replayIndex = index - staticMessages.length;
+    const replayItem = replayItems[replayIndex];
+  
+    if (!replayItem) return null;
+  
+    if (replayItem.type === 'user-replay') {
+      return (
+        <div className={styles.MessageItem}>
+          <MessageRenderer message={replayItem.message} />
+        </div>
+      );
+    }
+  
+    if (replayItem.type === 'typing') {
+      return (
+        <div className={styles.TypingRow}>
+          <TypingIndicator label="Claude is thinking..." />
+        </div>
+      );
+    }
+  
+    if (replayItem.type === 'assistant-replay') {
+      return (
+        <div className={styles.MessageItem}>
+          {showThinking && (
+            <ThinkingBlock
+              content={state.thinkingText}
+              streaming={state.phase === 'thinking'}
+              duration={state.phase !== 'thinking' ? 2100 : undefined}
             />
-          </div>
-        );
-      }
-
-      const replayIndex = index - staticMessages.length;
-      const replayItem = replayItems[replayIndex];
-
-      if (!replayItem) return null;
-
-      if (replayItem.type === 'user-replay') {
-        return (
-          <div className={styles.MessageItem}>
-            <MessageRenderer message={replayItem.message} />
-          </div>
-        );
-      }
-
-      if (replayItem.type === 'typing') {
-        return (
-          <div className={styles.TypingRow}>
-            <TypingIndicator label="Claude is thinking..." />
-          </div>
-        );
-      }
-
-      if (replayItem.type === 'assistant-replay') {
-        return (
-          <div className={styles.MessageItem}>
-            {showThinking && (
-              <ThinkingBlock
-                content={state.thinkingText}
-                streaming={state.phase === 'thinking'}
-                duration={state.phase !== 'thinking' ? 2100 : undefined}
-              />
-            )}
-            {showToolCall && (
-              <div className={styles.ReplayRow}>
-                <ToolCall
-                  name="write_file"
-                  status={state.toolCallStatus}
-                  duration={state.toolCallStatus === 'success' ? 1200 : undefined}
-                  arguments={{ filename: 'fibonacci.py' }}
-                >
-                  {state.toolCallStatus === 'success' && (
-                    <ToolResult content="File written successfully." status="success" />
-                  )}
-                </ToolCall>
-              </div>
-            )}
-            {showStreaming && (
-              <AIMarkdown
-                content={state.streamedText}
-                streaming={state.phase === 'streaming'}
-              />
-            )}
-          </div>
-        );
-      }
-
-      return null;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [staticMessages, replayItems, showThinking, showToolCall, showStreaming, state],
-  );
+          )}
+          {showToolCall && (
+            <div className={styles.ReplayRow}>
+              <ToolCall
+                name="write_file"
+                status={state.toolCallStatus}
+                duration={state.toolCallStatus === 'success' ? 1200 : undefined}
+                arguments={{ filename: 'fibonacci.py' }}
+              >
+                {state.toolCallStatus === 'success' && (
+                  <ToolResult content="File written successfully." status="success" />
+                )}
+              </ToolCall>
+            </div>
+          )}
+          {showStreaming && (
+            <AIMarkdown
+              content={state.streamedText}
+              streaming={state.phase === 'streaming'}
+            />
+          )}
+        </div>
+      );
+    }
+  
+    return null;
+  };
 
   const isStreaming = state.phase === 'streaming' || state.phase === 'typing' || state.phase === 'thinking' || state.phase === 'tool-call';
 

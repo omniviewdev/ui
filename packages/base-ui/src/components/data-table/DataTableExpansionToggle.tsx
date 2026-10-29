@@ -1,13 +1,15 @@
 import type { ButtonHTMLAttributes } from 'react';
-import type { Row } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
+import type { DataTableRow } from './types';
+import { useDataTableContext } from './context/DataTableContext';
 import { cn } from '../../system/classnames';
 import styles from './DataTable.module.css';
 
-export interface DataTableExpansionToggleProps<TData> extends Omit<
+export interface DataTableExpansionToggleProps<TData extends RowData> extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'aria-label' | 'aria-expanded'
 > {
-  row: Row<TData>;
+  row: DataTableRow<TData>;
   /** Row-specific accessible name, e.g. the displayed resource name. */
   label: string;
   /** Localize the complete accessible name; defaults to English Expand/Collapse plus label. */
@@ -15,7 +17,7 @@ export interface DataTableExpansionToggleProps<TData> extends Omit<
 }
 
 /** Native Tab/Enter/Space behavior; does not turn the table into a grid. */
-export function DataTableExpansionToggle<TData>({
+export function DataTableExpansionToggle<TData extends RowData>({
   row,
   label,
   getAccessibleLabel,
@@ -25,14 +27,17 @@ export function DataTableExpansionToggle<TData>({
   onClick,
   ...props
 }: DataTableExpansionToggleProps<TData>) {
-  'use no memo'; // The TanStack row reads mutable controlled table state.
+  useDataTableContext();
+  // Row identity stays stable while controlled options and expansion state change.
+  // Read current values on every context render rather than caching by row identity.
+  const canExpand = row.getCanExpand();
   const expanded = row.getIsExpanded();
   return (
     <button
       {...props}
       type="button"
       className={cn(styles.ExpandToggle, className)}
-      disabled={disabled || !row.getCanExpand()}
+      disabled={disabled || !canExpand}
       aria-label={
         getAccessibleLabel?.(expanded, label) ?? `${expanded ? 'Collapse' : 'Expand'} ${label}`
       }

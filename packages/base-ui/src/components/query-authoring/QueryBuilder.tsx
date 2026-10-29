@@ -356,16 +356,25 @@ export function QueryBuilder({
     contextKey: string;
     result: QueryBuilderAnalysis;
   } | null>(null);
-  const [loading, setLoading] = useState(false);
   const blocked = disabled || Boolean(availability && availability.status !== 'ready');
+  const [loading, setLoading] = useState(Boolean(analyze && !blocked));
+  // Invalidate request presentation with its inputs; effects only own the remote request.
+  const [analysisInputs, setAnalysisInputs] = useState(() => ({ value, contextKey, analyze, blocked }));
+  if (
+    analysisInputs.value !== value ||
+    analysisInputs.contextKey !== contextKey ||
+    analysisInputs.analyze !== analyze ||
+    analysisInputs.blocked !== blocked
+  ) {
+    setAnalysisInputs({ value, contextKey, analyze, blocked });
+    setLoading(Boolean(analyze && !blocked));
+  }
   useEffect(() => {
     const generation = ++sequence.current;
     const abort = new AbortController();
     if (!analyze || blocked) {
-      setLoading(false);
       return () => abort.abort();
     }
-    setLoading(true);
     const timer = setTimeout(async () => {
       try {
         const result = await analyze(value, { contextKey, signal: abort.signal });

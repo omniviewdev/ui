@@ -223,21 +223,6 @@ class EditorSchemaRegistryImpl {
           }) => void;
         };
       };
-      // Fallback for pre-0.55 (languages.json.jsonDefaults)
-      languages?: {
-        json?: {
-          jsonDefaults?: {
-            setDiagnosticsOptions: (opts: {
-              validate: boolean;
-              schemas: Array<{
-                uri: string;
-                fileMatch: string[];
-                schema: Record<string, unknown>;
-              }>;
-            }) => void;
-          };
-        };
-      };
     };
 
     const diagnosticsOptions = {
@@ -249,8 +234,7 @@ class EditorSchemaRegistryImpl {
       })),
     };
 
-    // 0.55+ top-level namespace
-    const jsonDefaults = m.json?.jsonDefaults ?? m.languages?.json?.jsonDefaults;
+    const jsonDefaults = m.json?.jsonDefaults;
     log('applyJsonSchemas() —', this.schemas.length, 'schemas, jsonDefaults available:',
       !!jsonDefaults);
     jsonDefaults?.setDiagnosticsOptions(diagnosticsOptions);

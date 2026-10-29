@@ -6,18 +6,34 @@ maintainers (or a potential fork) have full context.
 
 ---
 
-## Version Matrix (as of March 2025)
+## Version Matrix (as of October 2026)
 
-| Package                | Version  | Notes                                           |
-| ---------------------- | -------- | ----------------------------------------------- |
-| `monaco-editor`        | `0.52.2` | Latest in the 0.52 line; **required** for yaml  |
-| `monaco-yaml`          | `5.4.1`  | Peer dep says `>=0.36` but only tested on 0.52  |
-| `monaco-worker-manager`| `2.0.1`  | Transitive dep of `monaco-yaml`                 |
+| Package                 | Version  | Notes                                            |
+| ----------------------- | -------- | ------------------------------------------------ |
+| `monaco-editor`         | `0.52.2` | Retained compatibility baseline                 |
+| `monaco-yaml`           | `5.5.1`  | YAML integration; retains worker-manager below   |
+| `monaco-worker-manager` | `2.0.1`  | Uses the legacy worker creation/startup contract |
 
-## Why Not Monaco 0.55?
+### Upgrade boundary
 
-Monaco 0.55 introduced two breaking changes that are **fundamentally
-incompatible** with `monaco-yaml@5.4.1` (via `monaco-worker-manager@2.0.1`):
+Monaco `0.57.0` was built and exercised in a real browser during the frontend
+upgrade. Resolving the worker import path was insufficient: YAML validation
+failed with `Missing requestHandler or method: doValidation`. The manager still
+passes `moduleId` and `createData`, while newer Monaco expects an explicit
+`Worker`. Monaco `0.55.1` already uses that incompatible API, so it is not a safe
+intermediate target.
+
+Keep `0.52.2` until the maintained YAML fork below supports the new worker API.
+
+The editor test resolver includes the `module` package field explicitly because
+Monaco 0.52 has no `main` or `exports` entry. This uses its declared ESM entry,
+not a private API alias or a worker monkey-patch.
+Temporary import resolvers and dependency patches are not retained.
+
+## Historical Monaco 0.55 / monaco-yaml 5.4.1 Issues
+
+The older failures below identify the same unsupported worker contract; a
+constructor-only workaround does not establish validation or completion support.
 
 ### 1. `WebWorker` constructor crash
 
@@ -48,8 +64,8 @@ initialization paths compete:
   message from `WebWorkerClient` is therefore never processed by
   `WebWorkerServer`, causing the proxy to hang forever at "Loading...".
 
-**This is not patchable.** The worker initialization protocol in 0.55 is
-structurally incompatible with how `monaco-worker-manager` bootstraps workers.
+At the time, changing only the worker constructor did not fix the observed
+initialization protocol mismatch.
 
 ### Summary
 
@@ -60,7 +76,7 @@ monaco-editor@0.52 + monaco-yaml@5.4.1 = working (completions + validation)
 
 ## Page-global theme model
 
-Monaco 0.52 stores themes and the active theme at page scope. Passing a theme
+Monaco stores themes and the active theme at page scope. Passing a theme
 through `editor.create(...)` or `editor.updateOptions({ theme })` does not
 isolate it to that editor. `CodeEditor` and `DiffViewer` therefore share the
 single `ov-theme` registration and activate it with `monaco.editor.setTheme`.
@@ -142,9 +158,19 @@ uri: `https://omniview.dev/schemas/k8s/core::v1::Pod`
 uri: `https://omniview.dev/schemas/k8s/${encodeURIComponent('core::v1::Pod')}`
 ```
 
-## If We Fork `monaco-yaml`
+## Tracked follow-up: maintained YAML fork
 
-Key areas to consider:
+Deferred from this frontend upgrade by explicit decision. No fork is created
+in this change.
+
+- [ ] Create an Omniview-maintained fork of `monaco-yaml`.
+- [ ] Remove `monaco-worker-manager`; support explicit native worker injection
+  and configuration/startup for the selected Monaco version.
+- [ ] Verify real browser validation, schema completion, live schema updates,
+  idle recreation, and disposal in both Vite dev and bundled-worker delivery.
+- [ ] Publish the fork and upgrade host, UI libraries, and Kubernetes together.
+
+Implementation considerations:
 
 1. **Drop `monaco-worker-manager` dependency** — use Monaco's built-in
    `createWebWorker` directly with explicit worker injection. This would fix

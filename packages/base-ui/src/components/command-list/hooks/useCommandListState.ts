@@ -141,43 +141,29 @@ export function useCommandListState<TItem>(
     return result;
   }, [groups]);
 
-  // Render-time syncs use `silent: true` to update refs + snapshot without
-  // notifying listeners. This avoids the React warning "Cannot update a
-  // component while rendering a different component". After commit, the
-  // useEffect below flushes a notification so useSyncExternalStore consumers
-  // (Results, Item) pick up the new snapshot.
-  const needsNotifyRef = useRef(false);
+  // Publish only committed inputs. Batch writes before notifying subscribers.
   const prevItemsRef = useRef<typeof flatItems | null>(null);
   const prevQueryRef = useRef<typeof query | null>(null);
   const prevLoadingRef = useRef<typeof loading | null>(null);
-
-  if (prevItemsRef.current !== flatItems) {
-    prevItemsRef.current = flatItems;
-    store.setItems(flatItems, true);
-    needsNotifyRef.current = true;
-  }
-
-  if (prevQueryRef.current !== query) {
-    prevQueryRef.current = query;
-    store.setQuery(query, true);
-    needsNotifyRef.current = true;
-  }
-
-  if (prevLoadingRef.current !== loading) {
-    prevLoadingRef.current = loading;
-    store.setLoading(loading, true);
-    needsNotifyRef.current = true;
-  }
-
-  // Flush deferred snapshot rebuild + listener notification after DOM mutations.
-  // useLayoutEffect fires synchronously after commit but before paint, avoiding
-  // both the "Cannot update while rendering" warning and act() warnings in tests.
   useLayoutEffect(() => {
-    if (needsNotifyRef.current) {
-      needsNotifyRef.current = false;
-      store.emit();
+    let changed = false;
+    if (prevItemsRef.current !== flatItems) {
+      prevItemsRef.current = flatItems;
+      store.setItems(flatItems, true);
+      changed = true;
     }
-  });
+    if (prevQueryRef.current !== query) {
+      prevQueryRef.current = query;
+      store.setQuery(query, true);
+      changed = true;
+    }
+    if (prevLoadingRef.current !== loading) {
+      prevLoadingRef.current = loading;
+      store.setLoading(loading, true);
+      changed = true;
+    }
+    if (changed) store.emit();
+  }, [flatItems, query, loading, store]);
 
   // Stable ref for items lookup in actions
   const itemsMap = useMemo(() => {
@@ -186,7 +172,9 @@ export function useCommandListState<TItem>(
     return m;
   }, [items, itemKey]);
   const itemsMapRef = useRef(itemsMap);
-  itemsMapRef.current = itemsMap;
+  useLayoutEffect(() => {
+    itemsMapRef.current = itemsMap;
+  }, [itemsMap]);
 
   // -----------------------------------------------------------------------
   // Actions

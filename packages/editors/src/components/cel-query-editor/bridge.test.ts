@@ -34,7 +34,7 @@ function harness(text = 'cp', identity = 'one') {
   const hideHover = vi.fn();
   const editor = {
     getModel: () => model,
-    getContribution: () => ({ _hideWidgets: hideHover }),
+    getContribution: () => ({ hideContentHover: hideHover }),
     getPosition: () => position,
     hasTextFocus: () => true,
     trigger,

@@ -716,11 +716,11 @@ describe('TreeList', () => {
     // /src is depth 0, components is depth 1
     const src = screen.getByText('src').closest('[role="treeitem"]');
     const srcIndent = src?.querySelector('[class*="ItemIndent"]');
-    expect(srcIndent).toHaveStyle({ '--tree-depth': '0' });
+    expect(srcIndent).toHaveStyle('--tree-depth: 0');
 
     const components = screen.getByText('components').closest('[role="treeitem"]');
     const compIndent = components?.querySelector('[class*="ItemIndent"]');
-    expect(compIndent).toHaveStyle({ '--tree-depth': '1' });
+    expect(compIndent).toHaveStyle('--tree-depth: 1');
   });
 
   // -------------------------------------------------------------------------
@@ -830,10 +830,9 @@ describe('TreeList', () => {
         );
         const row = screen.getByText('App.tsx').closest('[role="treeitem"]')!;
         expect(guidesFor('App.tsx')).toHaveLength(0);
-        expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle({
-          '--tree-depth': '2',
-          '--_ov-tree-indent': '24px',
-        });
+        expect(row.querySelector('[class*="ItemIndent"]')).toHaveStyle(
+          '--tree-depth: 2; --_ov-tree-indent: 24px',
+        );
       },
     );
 

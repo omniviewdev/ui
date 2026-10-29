@@ -45,7 +45,7 @@ export const SavingState: Story = {
 };
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [editing, setEditing] = useState(true);
     const [message, setMessage] = useState('What are the best practices for pod security?');
 

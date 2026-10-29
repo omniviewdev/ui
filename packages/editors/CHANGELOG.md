@@ -1,5 +1,10 @@
 # @omniviewdev/editors
 
+## Unreleased
+
+- Retain Monaco 0.52.2 because current monaco-yaml worker creation and startup are incompatible with newer Monaco. Remove the attempted import resolver; track the maintained YAML fork and coordinated upgrade in `docs/MONACO_YAML_COMPAT.md`.
+- Preserve worker staging, schema registration, and editor draft ownership across the React 19.3.1 compiler upgrade. Include JSON schemas in production declarations without including tests or stories.
+
 ## 6.0.2
 
 ### Patch Changes

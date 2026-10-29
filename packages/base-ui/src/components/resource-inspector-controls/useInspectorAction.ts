@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { InspectorAsyncContext } from './types';
 
 /** UI request state only; cancellation does not claim that host-owned work has stopped. */
 export function useInspectorAction(contextKey: string) {
   const active = useRef<{ controller: AbortController; key: string } | null>(null);
   const currentKey = useRef(contextKey);
-  currentKey.current = contextKey;
+  useLayoutEffect(() => {
+    currentKey.current = contextKey;
+  }, [contextKey]);
   const [state, setState] = useState<{ key: string; pending?: string; error?: string }>({
     key: contextKey,
   });

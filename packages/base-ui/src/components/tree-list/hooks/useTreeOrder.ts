@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { moveSibling } from '../order';
 import type { Key, TreeOrder, TreeReorderEvent } from '../types';
 
@@ -28,11 +28,13 @@ export function useTreeOrder({
   const currentOrder = isControlled ? order : internalOrder;
 
   const currentOrderRef = useRef(currentOrder);
-  currentOrderRef.current = currentOrder;
   const isControlledRef = useRef(isControlled);
-  isControlledRef.current = isControlled;
   const onOrderChangeRef = useRef(onOrderChange);
-  onOrderChangeRef.current = onOrderChange;
+  useLayoutEffect(() => {
+    currentOrderRef.current = currentOrder;
+    isControlledRef.current = isControlled;
+    onOrderChangeRef.current = onOrderChange;
+  }, [currentOrder, isControlled, onOrderChange]);
 
   const proposeMove = useCallback(
     (siblingKeys: readonly Key[], parentKey: Key | null, activeKey: Key, overKey: Key) => {

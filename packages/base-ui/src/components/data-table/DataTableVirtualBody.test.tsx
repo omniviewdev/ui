@@ -1,7 +1,7 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { useState } from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -11,15 +11,21 @@ import type { DataTableVirtualBodyProps } from './DataTableVirtualBody';
 // nothing. Give every element a fixed size so a handful of rows are visible.
 const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
 const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+const originalClientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight');
+const originalClientWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth');
 
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, get: () => 400 });
   Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get: () => 800 });
+  Object.defineProperty(Element.prototype, 'clientHeight', { configurable: true, get: () => 400 });
+  Object.defineProperty(Element.prototype, 'clientWidth', { configurable: true, get: () => 800 });
 });
 
 afterAll(() => {
   if (originalOffsetHeight) Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
   if (originalOffsetWidth) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth);
+  if (originalClientHeight) Object.defineProperty(Element.prototype, 'clientHeight', originalClientHeight);
+  if (originalClientWidth) Object.defineProperty(Element.prototype, 'clientWidth', originalClientWidth);
 });
 
 interface Pod {
@@ -59,11 +65,11 @@ function PodTable(bodyProps: DataTableVirtualBodyProps<Pod>) {
 }
 
 describe('DataTable.VirtualBody', () => {
-  it('re-renders cells when a row is updated in place with a stable row id', () => {
+  it('re-renders cells when a row is updated in place with a stable row id', async () => {
     renderWithTheme(<PodTable />);
     expect(screen.getByText('Pending')).toBeInTheDocument();
 
-    act(() => {
+    await act(async () => {
       setPods([{ ...pod0, phase: 'Running' }, pod1]);
     });
 
@@ -121,7 +127,6 @@ describe('DataTable.VirtualBody', () => {
     const row = screen.getByLabelText('pod api-0');
     expect(row).toHaveClass('custom-row');
     expect(row.style.cursor).toBe('pointer');
-    expect(row.style.position).toBe('absolute');
 
     fireEvent.click(row);
     expect(onClick).toHaveBeenCalledTimes(1);

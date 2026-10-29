@@ -123,7 +123,14 @@ export function VisualizationBindingEditor({
               <Select.Root
                 value={selectedId ?? null}
                 disabled={disabled}
-                onValueChange={(fieldId) => onChange({ ...value, [slot.id]: fieldId ?? undefined })}
+                onValueChange={(fieldId, details) => {
+                  // Clearing belongs to the explicit Clear control, not a select transition.
+                  if (fieldId == null) {
+                    details.cancel();
+                    return;
+                  }
+                  onChange({ ...value, [slot.id]: fieldId });
+                }}
               >
                 <Select.Trigger
                   id={id}

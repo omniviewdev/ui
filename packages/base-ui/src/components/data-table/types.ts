@@ -1,5 +1,8 @@
 import type {
   ColumnDef,
+  Column,
+  Row,
+  ReactTable,
   ColumnOrderState,
   ColumnPinningState,
   ColumnSizingState,
@@ -10,14 +13,22 @@ import type {
   RowSelectionState,
   SortingState,
   TableState,
-  VisibilityState,
+  ColumnVisibilityState,
+  RowData,
 } from '@tanstack/react-table';
+import type { dataTableFeatures } from './constants';
+
+export type DataTableFeatures = typeof dataTableFeatures;
+export type DataTableRow<TData extends RowData> = Row<DataTableFeatures, TData>;
+export type DataTableColumnDef<TData extends RowData, TValue = unknown> = ColumnDef<DataTableFeatures, TData, TValue>;
+export type DataTableColumn<TData extends RowData, TValue = unknown> = Column<DataTableFeatures, TData, TValue>;
+export type DataTableInstance<TData extends RowData> = ReactTable<DataTableFeatures, TData>;
 
 // ---------------------------------------------------------------------------
 // Feature flags
 // ---------------------------------------------------------------------------
 
-export interface DataTableFeatures {
+export interface DataTableFeatureFlags {
   sorting?: boolean;
   filtering?: boolean;
   globalFilter?: boolean;
@@ -34,13 +45,13 @@ export interface DataTableFeatures {
 // useDataTable options
 // ---------------------------------------------------------------------------
 
-export interface UseDataTableOptions<TData> {
+export interface UseDataTableOptions<TData extends RowData> {
   data: TData[];
-  columns: ColumnDef<TData, unknown>[];
-  features?: DataTableFeatures;
-  initialState?: Partial<TableState>;
+  columns: DataTableColumnDef<TData, unknown>[];
+  features?: DataTableFeatureFlags;
+  initialState?: Partial<TableState<DataTableFeatures>>;
   /** Controlled slices override internal state. Callbacks request host edits. */
-  state?: Partial<TableState>;
+  state?: Partial<TableState<DataTableFeatures>>;
   getRowId?: (row: TData, index: number) => string;
   getSubRows?: (row: TData) => TData[] | undefined;
   getRowCanExpand?: (row: { original: TData; depth: number }) => boolean;
@@ -51,13 +62,13 @@ export interface UseDataTableOptions<TData> {
   onGlobalFilterChange?: (filter: string) => void;
   onColumnFiltersChange?: (filters: ColumnFiltersState) => void;
   onGroupingChange?: (grouping: GroupingState) => void;
-  onColumnVisibilityChange?: (visibility: VisibilityState) => void;
+  onColumnVisibilityChange?: (visibility: ColumnVisibilityState) => void;
   onColumnOrderChange?: (order: ColumnOrderState) => void;
   onColumnSizingChange?: (sizing: ColumnSizingState) => void;
   onExpandedChange?: (expanded: ExpandedState) => void;
   onPaginationChange?: (pagination: PaginationState) => void;
   onColumnPinningChange?: (pinning: ColumnPinningState) => void;
-  defaultColumn?: Partial<ColumnDef<TData, unknown>>;
+  defaultColumn?: Partial<DataTableColumnDef<TData, unknown>>;
   meta?: Record<string, unknown>;
   enableMultiSort?: boolean;
   manualSorting?: boolean;

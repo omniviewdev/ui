@@ -3,7 +3,6 @@ import {
   forwardRef,
   useCallback,
   useContext,
-  useEffect,
   useState,
   type HTMLAttributes,
   type ReactNode,
@@ -67,9 +66,9 @@ export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
     const isControlled = openProp !== undefined;
     const open = isControlled ? openProp : internalOpen;
 
-    useEffect(() => {
-      if (isControlled) setInternalOpen(openProp);
-    }, [isControlled, openProp]);
+    if (isControlled && internalOpen !== openProp) {
+      setInternalOpen(openProp);
+    }
 
     const toggle = useCallback(() => {
       if (disabled) return;

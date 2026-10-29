@@ -38,8 +38,9 @@ export interface FileTableColumnProps<T extends FileTableItem = FileTableItem> {
 }
 
 export function FileTableColumn<T extends FileTableItem = FileTableItem>(
-  _props: FileTableColumnProps<T>,
-): null {
+  props: FileTableColumnProps<T>,
+): null;
+export function FileTableColumn(): null {
   return null;
 }
 

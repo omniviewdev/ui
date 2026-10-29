@@ -8,6 +8,7 @@ import {
   useRef,
   useSyncExternalStore,
   Fragment,
+  type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent,
   type MouseEvent,
@@ -23,7 +24,6 @@ import type {
   CommandItemMeta,
   CommandGroup,
   HighlightRange,
-  Key,
 } from './types';
 import { useCommandListState } from './hooks/useCommandListState';
 import { useCommandListItem as useCommandListItemHook } from './hooks/useCommandListItem';
@@ -45,10 +45,10 @@ import styles from './CommandList.module.css';
 
 // ---------------------------------------------------------------------------
 // RenderItem context — typed without TItem. Root closes over the generic;
-// Results only sees (key, meta) → ReactNode.
+// Results only sees (item, meta) → ReactNode.
 // ---------------------------------------------------------------------------
 
-type RenderItemFn = (key: Key, meta: CommandItemMeta) => ReactNode;
+type RenderItemFn = (item: unknown, meta: CommandItemMeta) => ReactNode;
 
 const RenderItemContext = createContext<RenderItemFn | null>(null);
 
@@ -150,21 +150,11 @@ function CommandListRootImpl<TItem>(
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
   const pointerMotion = useRef<{ x: number; y: number; moved: boolean } | null>(null);
 
-  // Build renderItem closure that captures TItem
-  const itemsMap = useMemo(() => {
-    const m = new Map<Key, TItem>();
-    for (const item of items) m.set(itemKey(item), item);
-    return m;
-  }, [items, itemKey]);
-
-  const itemsMapRef = useRef(itemsMap);
-  itemsMapRef.current = itemsMap;
-
+  // Pass each render's item directly; keep the callback independent of item updates.
   const renderItemFn: RenderItemFn = useCallback(
-    (key: Key, meta: CommandItemMeta) => {
-      const item = itemsMapRef.current.get(key);
+    (item: unknown, meta: CommandItemMeta) => {
       if (item === undefined) return null;
-      return renderItem(item, meta);
+      return renderItem(item as TItem, meta);
     },
     [renderItem],
   );
@@ -333,7 +323,10 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
           className={cn(styles.Results, className)}
           {...props}
         >
-          <div style={{ height: virtualizer.totalSize, position: 'relative' }}>
+          <div
+            className={styles.VirtualContent}
+            style={{ '--_command-list-height': `${virtualizer.totalSize}px` } as CSSProperties}
+          >
             {virtualizer.virtualItems.map((virtualItem) => {
               const procItem = allItems[virtualItem.index];
               if (!procItem) return null;
@@ -350,15 +343,10 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                   key={procItem.key}
                   ref={virtualizer.measureElement}
                   data-index={virtualItem.index}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualItem.start}px)`,
-                  }}
+                  className={styles.VirtualItem}
+                  style={{ '--_command-list-offset': `${virtualItem.start}px` } as CSSProperties}
                 >
-                  {renderItem(procItem.key, meta)}
+                  {renderItem(procItem.item, meta)}
                 </div>
               );
             })}
@@ -404,7 +392,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                       score: procItem.score,
                       highlights: procItem.highlights,
                     };
-                    return <Fragment key={procItem.key}>{renderItem(procItem.key, meta)}</Fragment>;
+                    return <Fragment key={procItem.key}>{renderItem(procItem.item, meta)}</Fragment>;
                   })}
                 </div>
               );
@@ -418,7 +406,7 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                 score: procItem.score,
                 highlights: procItem.highlights,
               };
-              return <Fragment key={procItem.key}>{renderItem(procItem.key, meta)}</Fragment>;
+              return <Fragment key={procItem.key}>{renderItem(procItem.item, meta)}</Fragment>;
             })}
         {children}
       </div>
@@ -438,7 +426,7 @@ const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(functio
   const actions = useCommandListActions();
   const config = useCommandListConfig();
   const itemState = useCommandListItemHook(store, itemKey);
-  const pointerMotion = useContext(PointerMotionContext);
+  const pointerMotionRef = useContext(PointerMotionContext);
 
   const isDisabled = disabled || itemState.isDisabled;
 
@@ -457,10 +445,10 @@ const CommandListItem = forwardRef<HTMLDivElement, CommandListItemProps>(functio
   const handleMouseMove = useCallback(() => {
     // Scrolling can move rows beneath a stationary pointer. Only real movement
     // transfers the active item back from keyboard navigation to the pointer.
-    if (pointerMotion?.current?.moved && !isDisabled && !itemState.isActive) {
+    if (pointerMotionRef?.current?.moved && !isDisabled && !itemState.isActive) {
       store.setActiveKey(itemKey);
     }
-  }, [pointerMotion, isDisabled, itemState.isActive, store, itemKey]);
+  }, [pointerMotionRef, isDisabled, itemState.isActive, store, itemKey]);
 
   return (
     <div

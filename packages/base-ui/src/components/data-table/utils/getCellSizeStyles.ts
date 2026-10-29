@@ -1,29 +1,26 @@
 import type { CSSProperties } from 'react';
-import type { Column } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
+import type { DataTableColumn } from '../types';
 
 /**
- * Returns inline styles for cell sizing using CSS variable column widths.
+ * Returns CSS custom properties for column sizing.
  * Columns that can resize get flex-grow proportional to their size (fills available space).
  * Fixed columns (enableResizing: false) do NOT flex-grow — they stay at their declared size.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getHeaderSizeStyles(headerId: string, column: Column<any, unknown>): CSSProperties {
+export function getHeaderSizeStyles<TData extends RowData>(headerId: string, column: DataTableColumn<TData, unknown>): CSSProperties {
   const canGrow = column.getCanResize();
   return {
-    flex: canGrow
-      ? `var(--header-${headerId}-size) 0 0px`
-      : `0 0 calc(var(--header-${headerId}-size) * 1px)`,
-    width: `calc(var(--header-${headerId}-size) * 1px)`,
-  };
+    '--_dt-cell-grow': canGrow ? `var(--header-${headerId}-size)` : 0,
+    '--_dt-cell-basis': canGrow ? '0px' : `calc(var(--header-${headerId}-size) * 1px)`,
+    '--_dt-cell-size': `var(--header-${headerId}-size)`,
+  } as CSSProperties;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getCellSizeStyles(column: Column<any, unknown>): CSSProperties {
+export function getCellSizeStyles<TData extends RowData>(column: DataTableColumn<TData, unknown>): CSSProperties {
   const canGrow = column.getCanResize();
   return {
-    flex: canGrow
-      ? `var(--col-${column.id}-size) 0 0px`
-      : `0 0 calc(var(--col-${column.id}-size) * 1px)`,
-    width: `calc(var(--col-${column.id}-size) * 1px)`,
-  };
+    '--_dt-cell-grow': canGrow ? `var(--col-${column.id}-size)` : 0,
+    '--_dt-cell-basis': canGrow ? '0px' : `calc(var(--col-${column.id}-size) * 1px)`,
+    '--_dt-cell-size': `var(--col-${column.id}-size)`,
+  } as CSSProperties;
 }

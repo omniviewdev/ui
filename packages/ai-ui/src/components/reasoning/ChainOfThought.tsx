@@ -4,7 +4,6 @@ import {
   memo,
   useCallback,
   useContext,
-  useEffect,
   useState,
   type ComponentType,
   type HTMLAttributes,
@@ -35,6 +34,7 @@ interface ChainOfThoughtContextValue {
 }
 
 const ChainOfThoughtContext = createContext<ChainOfThoughtContextValue | null>(null);
+ChainOfThoughtContext.displayName = 'ChainOfThoughtContext';
 
 function useChainOfThought() {
   const ctx = useContext(ChainOfThoughtContext);
@@ -94,9 +94,11 @@ export const ChainOfThought = forwardRef<HTMLDivElement, ChainOfThoughtProps>(
     ref,
   ) {
     const [isOpen, setIsOpen] = useState(openProp ?? defaultOpen);
-    useEffect(() => {
+    const [previousOpen, setPreviousOpen] = useState(openProp);
+    if (previousOpen !== openProp) {
+      setPreviousOpen(openProp);
       if (openProp !== undefined) setIsOpen(openProp);
-    }, [openProp]);
+    }
 
     const toggle = useCallback(() => setIsOpen((v) => !v), []);
 

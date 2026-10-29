@@ -13,10 +13,10 @@ task bench:report                       # Compare latest vs baseline
 
 # Using pnpm directly
 pnpm bench                              # Run all benchmarks (JSDOM)
-pnpm bench -- --filter "Button"         # Run one component
+pnpm bench Button                       # Run one component
 pnpm bench:deterministic                # Reproducible results (slow)
 pnpm bench:browser                      # Run in Chromium
-pnpm bench:trace -- --filter "DataTable" # CDP profiling
+pnpm bench:trace DataTable              # CDP profiling
 ```
 
 ## Adding a Benchmark
@@ -52,6 +52,10 @@ describe('MyComponent', () => {
 - Every component gets at minimum one `benchRender` (mount cost)
 - Data-heavy components: add `benchMountMany` with realistic counts
 - Interactive components: add `benchRerender` for common state changes
+- `benchmark.include` selects benchmark files; `vitest bench` runs their isolated benchmark project, not ordinary tests.
+- Helpers keep their registration signatures and create `test(name, async ({ bench }) => ...)` internally.
+- Timing, iteration, and warmup options use Vitest's `BenchRunOptions` and go to `.run(options)` or `bench.compare(...registrations, options)`.
+- Competitive helpers compare all implementations in one test with interleaved measurements. Element construction stays outside the timed callback for bulk mounts.
 
 ## Utilities
 
@@ -63,15 +67,13 @@ describe('MyComponent', () => {
 
 ### Rerender fixture lifecycle
 
-The installed runners use different lifecycle APIs. Vitest 4.0.18 forwards benchmark `setup`/`teardown` options to Tinybench 2.9.0, outside the timed loop. CodSpeed 5.2.0's simulation/analysis runner instead invokes Vitest suite hooks and calls the benchmark function directly; it never reads those Tinybench options. Its `beforeAll`/`afterAll` hooks surround the optimization and measured calls.
+Vitest 5 and CodSpeed 6's benchmark provider both support per-function `beforeAll`/`afterAll` options passed as `bench(name, fnOptions, fn)`. `benchRerender` mounts before each warmup or measurement phase, then measures updated props → initial props without mount/unmount inside the timed callback. Cleanup runs after each phase; a `finally` block also cleans up when the provider or measured function throws.
 
-`benchRerender` therefore registers the same setup/cleanup with both APIs, inside a dedicated `describe(name)` scope. The native runner uses the Tinybench callbacks; simulation uses the suite hooks. Do not move mounting into the measured callback, register these hooks in the containing component suite, or return cleanup from `beforeAll`: CodSpeed 5 does not consume returned cleanup callbacks. Explicit `afterAll` handles normal completion; setup and benchmark errors clean up before rethrowing because CodSpeed 5 does not reach `afterAll` on failure.
+The helper retains its dedicated `describe(name)` scope and `rerender` registration (for example, `Button::variant change::rerender`). Mount and competitive registration names remain unchanged. Vitest 5 now nests benchmark registrations under their test case; CodSpeed identities include that test case, so establish a new CI baseline after upgrading.
 
-The isolated suite adds `::rerender` to rerender benchmark identities (for example, `Button::variant change::rerender`). Treat these as new series; mount identities stay unchanged. Comparison helpers only benchmark mount/unmount and need no fixture lifecycle.
+`src/utils/bench-render.lifecycle.bench.tsx` exercises the real helper through the selected benchmark provider. Two sibling fixtures must mount before updates, restore initial props, and unmount before the following mount benchmark. Its assertions validate the harness, not component performance.
 
-`src/utils/bench-render.lifecycle.bench.tsx` exercises the real helper through the selected benchmark runner. Two sibling fixtures must mount before updates, restore initial props, and unmount before the following mount benchmark. Its assertions validate the harness, not component performance.
-
-Pinned API evidence: [Vitest 4.0.18 benchmark options](https://github.com/vitest-dev/vitest/blob/v4.0.18/docs/api/index.md#bench), [native benchmark runner](https://github.com/vitest-dev/vitest/blob/v4.0.18/packages/vitest/src/runtime/runners/benchmark.ts), [CodSpeed 5.2.0 analysis runner](https://github.com/CodSpeedHQ/codspeed-node/blob/v5.2.0/packages/vitest-plugin/src/analysis.ts), and [CodSpeed suite-hook dispatch](https://github.com/CodSpeedHQ/codspeed-node/blob/v5.2.0/packages/vitest-plugin/src/common.ts).
+API evidence: [Vitest benchmark fixtures, hooks, and run options](https://vitest.dev/guide/benchmarking.md), [Vitest migration guide](https://vitest.dev/guide/migration.md).
 
 ## Agent Workflow
 
@@ -83,6 +85,8 @@ For AI agents running optimization sprints:
 4. `task bench:json` → read `results/comparison.json`
 5. `task bench:report` → generate PR summary
 
+Vitest 5 removed `benchmark.outputJson`/`--outputJson`. JSON commands use `--reporter=default --reporter=json --outputFile=results/latest.json` (or `results/competitive/latest.json`). Measurements live at `testResults[].assertionResults[].benchmarks[].tasks[]`; reports read throughput in ops/s and latency in milliseconds from their native statistics. Recreate the baseline with Vitest 5 before comparing results: old `files[].groups[].benchmarks[]` snapshots use a different schema and throughput estimator.
+
 ## Competitive Benchmarks
 
 Compare @omniviewdev/base-ui against MUI and raw HTML:
@@ -91,7 +95,7 @@ Compare @omniviewdev/base-ui against MUI and raw HTML:
 task bench:competitive                      # Run all competitive benchmarks
 task bench:competitive:json                 # JSON output
 task bench:competitive:report               # Generate comparison report
-pnpm bench:competitive -- --filter "Button" # Single component
+pnpm bench:competitive Button             # Single component
 ```
 
 Results are written to `results/competitive/report.md` with per-component overhead multipliers vs raw HTML.
@@ -100,24 +104,29 @@ Results are written to `results/competitive/report.md` with per-component overhe
 
 CodSpeed runs automatically on PRs that touch component or benchmark code and on matching pushes to `main`. The workflow also supports manual dispatch for backtesting.
 
-The job pins `ubuntu-24.04` with CodSpeed's **CPU simulation** instrument, not walltime. The existing `@codspeed/vitest-plugin` integration remains enabled in CI. Node 20 is intentional: the installed CodSpeed 5.x integration supports Node 20, while Node 22/24 require CodSpeed 6.x. Do not replace the image pin with `ubuntu-latest` without verifying runner support: the October 2026 Ubuntu 26.04 image failed before benchmark startup with CodSpeed runner v4.19.1 reporting `Unsupported system`.
+The job pins Node 26.13.0 and `ubuntu-24.04` with CodSpeed's **CPU simulation** instrument, not walltime. The `@codspeed/vitest-plugin` integration remains enabled in CI. Do not replace the image pin with `ubuntu-latest` without verifying runner support: the October 2026 Ubuntu 26.04 image failed before benchmark startup with CodSpeed runner v4.19.1 reporting `Unsupported system`.
 
 CPU simulation measures estimated user-space CPU cost, including simulated cache and memory access. It excludes time spent in system calls and is not browser latency or elapsed render time. This avoids noisy walltime comparisons on shared GitHub-hosted runners without requiring unavailable `codspeed-macro` runners. Do not compare simulation values directly with historical walltime values; establish a simulation baseline on `main` (or backtest the base revision) before interpreting PR deltas.
 
 The full suite runs in four native Vitest shards within one workflow, with fail-fast disabled. Each benchmark file belongs to exactly one shard; the matrix does not drop benchmarks or run duplicate configurations. This bounds per-job CPU-simulation startup cost after the serial suite exceeded its 30-minute deadline while still completing measurements. CodSpeed aggregates the four jobs as one workflow run.
 
+Vitest 5 executes benchmark registrations inside ordinary test cases. The CodSpeed command explicitly passes `--testTimeout=600000` for a bounded 10-minute per-case timeout; native commands retain 60 seconds. This does not depend on runner environment variables being available while Vite loads configuration. The unchanged 100-instance Combobox workload completed measurement in 411 seconds under simulation, exceeding the old test timeout despite finishing successfully. This runner budget does not change instance counts, iterations, measurement boundaries, or CodSpeed regression thresholds. The existing 30-minute shard deadline still bounds total CI work.
+
 CodSpeed uploads measurements and supplies comparison reports through its GitHub integration. Regression thresholds and PR comment behavior depend on the repository's CodSpeed settings. Benchmark and upload failures fail the job; empty measurements are not allowed. Each shard also uploads a `codspeed-simulation-<run-id>-<attempt>-<shard>` artifact containing benchmark stdout/stderr, including partial output if the benchmark command fails. If setup fails before benchmarks start, use the Actions job logs instead. The log artifact is execution evidence, not a standalone performance comparison report.
 
 ### Validation
 
-After installing workspace dependencies, use Node 20 for these smoke commands from the repository root. First check native Vitest/Tinybench, then explicitly select CodSpeed's analysis runner:
+After installing workspace dependencies, use Node 26.13.0 for these smoke commands from the repository root. First check native Vitest/Tinybench, then explicitly select CodSpeed's benchmark provider:
 
 ```bash
 pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/utils/bench-render.lifecycle.bench.tsx src/base-ui/Button.bench.tsx
 CI=true CODSPEED_ENV=local CODSPEED_RUNNER_MODE=simulation pnpm --filter @omniviewdev/benchmarks exec vitest bench --run src/utils/bench-render.lifecycle.bench.tsx src/base-ui/Button.bench.tsx
+pnpm --filter @omniviewdev/benchmarks exec vitest bench --config vitest.config.browser.ts --run src/utils/bench-render.lifecycle.bench.tsx src/base-ui/Button.bench.tsx
+pnpm --filter @omniviewdev/benchmarks exec vitest bench --config vitest.config.competitive.ts --run src/competitive/Button.competitive.tsx --reporter=default --reporter=json --outputFile=results/competitive/latest.json
+pnpm --filter @omniviewdev/benchmarks exec node scripts/generate-competitive-report.js
 ```
 
-`CI=true` alone loads the plugin but does not select its analysis runner outside CodSpeed. `CODSPEED_ENV` enables runner selection; `CODSPEED_RUNNER_MODE=simulation` selects analysis. Without CodSpeed instrumentation the second command warns about missing instrumentation and only validates actual analysis-runner lifecycle execution, not CPU simulation measurements.
+`CI=true` alone loads the plugin but does not select its provider outside CodSpeed. `CODSPEED_ENV` enables provider selection; `CODSPEED_RUNNER_MODE=simulation` selects CPU analysis. Without CodSpeed instrumentation the second command warns about missing instrumentation and validates provider lifecycle execution only, not CPU simulation measurements. CodSpeed's simulation provider reports zero-valued timing statistics because CPU measurements are uploaded separately; use native or browser runs, not simulation JSON, for local throughput reports.
 
 To verify shard partitioning locally without running the full suite, supply two files to complementary shards. Their union must execute both files once; the Vitest sequencer determines which shard owns each file:
 

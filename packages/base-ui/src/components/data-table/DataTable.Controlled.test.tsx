@@ -1,8 +1,10 @@
+import { Subscribe } from '@tanstack/react-table';
 import { act, fireEvent, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { StrictMode, useEffect, useState } from 'react';
+import { StrictMode, useEffect, useMemo, useState } from 'react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import type { ColumnDef, ExpandedState, TableState } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef, DataTableFeatures } from './types';
+import type { ExpandedState, TableState } from '@tanstack/react-table';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -15,6 +17,8 @@ const data: Item[] = [
 const columns: ColumnDef<Item, unknown>[] = [{ accessorKey: 'name', header: 'Name' }];
 const height = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
 const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+const clientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight');
+const clientWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth');
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
     configurable: true,
@@ -24,14 +28,25 @@ beforeAll(() => {
     configurable: true,
     get: () => 800,
   });
+  // Virtual measures the scroll viewport through client dimensions, not row offsets.
+  Object.defineProperty(Element.prototype, 'clientHeight', {
+    configurable: true,
+    get: () => 400,
+  });
+  Object.defineProperty(Element.prototype, 'clientWidth', {
+    configurable: true,
+    get: () => 800,
+  });
 });
 afterAll(() => {
   if (height) Object.defineProperty(HTMLElement.prototype, 'offsetHeight', height);
   if (width) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', width);
+  if (clientHeight) Object.defineProperty(Element.prototype, 'clientHeight', clientHeight);
+  if (clientWidth) Object.defineProperty(Element.prototype, 'clientWidth', clientWidth);
 });
 
 describe('host-prepared table state', () => {
-  it('requests grouping changes while retaining host-prepared rows and group state', () => {
+  it('requests grouping changes while retaining host-prepared rows and group state', async () => {
     const onGroupingChange = vi.fn();
     const { result } = renderHook(() =>
       useDataTable({
@@ -42,9 +57,9 @@ describe('host-prepared table state', () => {
         onGroupingChange,
       }),
     );
-    act(() => result.current.setGrouping(['name']));
+    await act(async () => result.current.setGrouping(['name']));
     expect(onGroupingChange).toHaveBeenCalledWith(['name']);
-    expect(result.current.getState().grouping).toEqual([]);
+    expect(result.current.state.grouping).toEqual([]);
     expect(result.current.getRowModel().rows.map((row) => row.original.id)).toEqual(['b', 'a']);
   });
   it('preserves host order and window despite active sort, filter and pagination state', () => {
@@ -70,7 +85,7 @@ describe('host-prepared table state', () => {
     expect(result.current.getPageCount()).toBe(100);
   });
 
-  it('composes batched functional edits and notifies once per edit in Strict Mode', () => {
+  it('composes batched functional edits and notifies once per edit in Strict Mode', async () => {
     const onRowSelectionChange = vi.fn();
     const { result } = renderHook(
       () =>
@@ -83,14 +98,14 @@ describe('host-prepared table state', () => {
         }),
       { wrapper: StrictMode },
     );
-    act(() => {
+    await act(async () => {
       result.current.getRow('b').toggleSelected(true);
       result.current.getRow('a').toggleSelected(true);
       result.current.setColumnVisibility((previous) => ({ ...previous, name: false }));
       result.current.setColumnVisibility((previous) => ({ ...previous, another: false }));
     });
-    expect(result.current.getState().rowSelection).toEqual({ b: true, a: true });
-    expect(result.current.getState().columnVisibility).toEqual({ name: false, another: false });
+    expect(result.current.state.rowSelection).toEqual({ b: true, a: true });
+    expect(result.current.state.columnVisibility).toEqual({ name: false, another: false });
     expect(onRowSelectionChange.mock.calls).toEqual([[{ b: true }], [{ b: true, a: true }]]);
   });
 
@@ -127,11 +142,11 @@ describe('host-prepared table state', () => {
     expect(screen.getByRole('button', { name: 'Select Beta' })).toBeDisabled();
   });
 
-  it('emits controlled edits without changing state until the host replaces it', () => {
+  it('emits controlled edits without changing state until the host replaces it', async () => {
     const onExpandedChange = vi.fn();
     const onGlobalFilterChange = vi.fn();
     const onColumnFiltersChange = vi.fn();
-    const initial: Partial<TableState> = { expanded: {}, globalFilter: '', columnFilters: [] };
+    const initial: Partial<TableState<DataTableFeatures>> = { expanded: {}, globalFilter: '', columnFilters: [] };
     const { result, rerender } = renderHook(
       ({ state }) =>
         useDataTable({
@@ -147,7 +162,7 @@ describe('host-prepared table state', () => {
         }),
       { initialProps: { state: initial } },
     );
-    act(() => {
+    await act(async () => {
       result.current.getRow('b').toggleExpanded();
       result.current.setGlobalFilter('Beta');
       result.current.getColumn('name')?.setFilterValue('Beta');
@@ -167,16 +182,15 @@ describe('host-prepared table state', () => {
     const preparedColumns: ColumnDef<Prepared, unknown>[] = [
       {
         id: 'content',
-        cell: ({ row }) =>
-          row.original.group ? (
-            <button aria-expanded={row.getIsExpanded()} onClick={() => row.toggleExpanded()}>
-              {row.original.name} ({row.original.count})
-            </button>
-          ) : (
-            <button aria-pressed={row.getIsSelected()} onClick={() => row.toggleSelected()}>
-              Select {row.original.name}
-            </button>
-          ),
+        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => (row.original.group ? (
+          <button aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])} onClick={() => row.toggleExpanded()}>
+            {row.original.name} ({row.original.count})
+          </button>
+        ) : (
+          <button aria-pressed={!!snapshot.selection[row.id]} onClick={() => row.toggleSelected()}>
+            Select {row.original.name}
+          </button>
+        ))}</Subscribe>),
       },
     ];
     function PreparedGroups() {
@@ -196,7 +210,7 @@ describe('host-prepared table state', () => {
       return (
         <>
           <output>
-            Selected: {Object.values(table.getState().rowSelection).filter(Boolean).length}
+            Selected: {Object.values(table.state.rowSelection).filter(Boolean).length}
           </output>
           <DataTable.Root table={table}>
             <DataTable.Container>
@@ -241,24 +255,24 @@ function Detail({ name, onLifetime }: { name: string; onLifetime: (mounted: bool
 const interactiveColumns: ColumnDef<Item, unknown>[] = [
   {
     id: 'controls',
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
       <>
         <button
           aria-label={`Expand ${row.original.name}`}
-          aria-expanded={row.getIsExpanded()}
+          aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
           onClick={() => row.toggleExpanded()}
         >
           Details
         </button>
         <button
           aria-label={`Select ${row.original.name}`}
-          aria-pressed={row.getIsSelected()}
+          aria-pressed={!!snapshot.selection[row.id]}
           onClick={() => row.toggleSelected()}
         >
           Select
         </button>
       </>
-    ),
+    ))}</Subscribe>),
   },
   ...columns,
 ];
@@ -316,9 +330,9 @@ describe('virtual arbitrary details', () => {
     expect(lifetime.mock.calls.map(([mounted]) => mounted)).toEqual([true, false]);
   });
 
-  it('retains expanded identity across host reorder and immutable updates', () => {
+  it('retains expanded identity across host reorder and immutable updates', async () => {
     const { rerender } = renderWithTheme(<InteractiveTable />);
-    fireEvent.click(screen.getByRole('button', { name: 'Expand Beta' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Expand Beta' }));
     rerender(<InteractiveTable items={[data[1]!, { id: 'b', name: 'Beta patched' }]} />);
     expect(screen.getByRole('region', { name: 'Detail Beta patched' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Expand Beta patched' })).toHaveAttribute(
@@ -341,7 +355,7 @@ describe('virtual arbitrary details', () => {
       })),
     ];
     const { rerender } = renderWithTheme(<InteractiveTable items={many} onLifetime={lifetime} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Expand Beta' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Expand Beta' }));
     expect(screen.getByRole('region', { name: 'Detail Beta' })).toBeInTheDocument();
     const scroller = screen.getByRole('table').parentElement!;
     fireEvent.scroll(scroller, { target: { scrollTop: 16000 } });
@@ -366,5 +380,125 @@ describe('virtual arbitrary details', () => {
       'true',
     );
     expect(lifetime.mock.calls.map(([mounted]) => mounted)).toEqual([true, false, true]);
+  });
+});
+
+describe.each([false, true])('mounted row freshness (virtual=%s)', (virtual) => {
+  function FreshnessTable({
+    items,
+    onInspect,
+  }: {
+    items: Item[];
+    onInspect: (item: Item) => void;
+  }) {
+    const liveColumns = useMemo<ColumnDef<Item, unknown>[]>(
+      () => [
+        ...columns,
+        {
+          id: 'actions',
+          cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
+            <>
+              <button
+                aria-pressed={!!snapshot.selection[row.id]}
+                onClick={() => row.toggleSelected()}
+              >
+                Select {row.original.name}
+              </button>
+              <button onClick={() => onInspect(row.original)}>
+                Inspect {row.original.name}
+              </button>
+            </>
+          ))}</Subscribe>),
+        },
+      ],
+      [onInspect],
+    );
+    const table = useDataTable({
+      data: items,
+      columns: liveColumns,
+      getRowId: (row) => row.id,
+      features: { sorting: true, globalFilter: true, rowSelection: 'multi' },
+    });
+    return (
+      <DataTable.Root table={table} features={{ sorting: true, globalFilter: true }}>
+        <DataTable.Toolbar searchPlaceholder="Filter live rows" />
+        <DataTable.Container height={400}>
+          <DataTable.Header />
+          {virtual ? (
+            <DataTable.VirtualBody<Item>
+              fixedRowHeight
+              estimateRowSize={32}
+              onRowClick={(row) => onInspect(row.original)}
+            />
+          ) : (
+            <DataTable.Body />
+          )}
+        </DataTable.Container>
+      </DataTable.Root>
+    );
+  }
+
+  it('refreshes same-ID values, derived state and callbacks without remounting the table', async () => {
+    const user = userEvent.setup();
+    const onInspect = vi.fn();
+    const { rerender } = renderWithTheme(
+      <FreshnessTable items={data} onInspect={onInspect} />,
+    );
+    const bodyNames = () =>
+      screen.getAllByRole('row')
+        .filter((row) => row.querySelector('td'))
+        .map((row) => row.querySelector('td')!.textContent);
+
+    await user.click(screen.getByRole('button', { name: 'Select Beta' }));
+    await user.click(screen.getByRole('button', { name: /sort by name/i }));
+    expect(bodyNames()).toEqual(['Alpha', 'Beta']);
+
+    const patched = { id: 'b', name: 'Aardvark' };
+    rerender(<FreshnessTable items={[patched, data[1]!]} onInspect={onInspect} />);
+    expect(bodyNames()).toEqual(['Aardvark', 'Alpha']);
+    expect(screen.queryByText('Beta', { exact: true })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select Aardvark' })).toHaveAttribute(
+      'aria-pressed', 'true',
+    );
+    await user.click(screen.getByRole('button', { name: 'Inspect Aardvark' }));
+    expect(onInspect).toHaveBeenLastCalledWith(patched);
+    expect(onInspect.mock.lastCall![0]).toBe(patched);
+
+    await user.click(screen.getByRole('button', { name: 'Select Aardvark' }));
+    expect(screen.getByRole('button', { name: 'Select Aardvark' })).toHaveAttribute(
+      'aria-pressed', 'false',
+    );
+    await user.click(screen.getByRole('button', { name: /sort by name/i }));
+    expect(bodyNames()).toEqual(['Alpha', 'Aardvark']);
+    const search = screen.getByPlaceholderText('Filter live rows');
+    await user.type(search, 'Aardvark');
+    expect(bodyNames()).toEqual(['Aardvark']);
+
+    const replacement = { id: 'b', name: 'Zeta' };
+    rerender(<FreshnessTable items={[replacement, data[1]!]} onInspect={onInspect} />);
+    expect(screen.queryByText('Aardvark', { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByText('Zeta', { exact: true })).not.toBeInTheDocument();
+    await user.clear(search);
+    expect(bodyNames()).toEqual(['Zeta', 'Alpha']);
+    await user.click(screen.getByRole('button', { name: 'Inspect Zeta' }));
+    expect(onInspect.mock.lastCall![0]).toBe(replacement);
+
+    const nextInspect = vi.fn();
+    rerender(<FreshnessTable items={[replacement, data[1]!]} onInspect={nextInspect} />);
+    onInspect.mockClear();
+    await user.click(screen.getByRole('button', { name: 'Inspect Zeta' }));
+    expect(nextInspect.mock.lastCall![0]).toBe(replacement);
+    if (virtual) {
+      await user.click(screen.getByText('Zeta', { exact: true }));
+      expect(nextInspect).toHaveBeenCalledTimes(2);
+      expect(nextInspect.mock.lastCall![0]).toBe(replacement);
+    }
+    expect(onInspect).not.toHaveBeenCalled();
+
+    rerender(<FreshnessTable items={[data[1]!]} onInspect={nextInspect} />);
+    expect(bodyNames()).toEqual(['Alpha']);
+    expect(screen.queryByRole('button', { name: 'Inspect Zeta' })).not.toBeInTheDocument();
+    rerender(<FreshnessTable items={[]} onInspect={nextInspect} />);
+    expect(screen.queryAllByRole('cell')).toHaveLength(0);
   });
 });

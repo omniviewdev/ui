@@ -20,6 +20,26 @@ pnpm validate
 pnpm storybook
 ```
 
+## Frontend compatibility checks
+
+Use Node.js 26.13.0 LTS and pnpm 12.14.0. Library and showcase builds enable the
+React Compiler. Source checks use native TypeScript 7; JavaScript tooling uses
+the TypeScript 6 compatibility API.
+
+In a standalone checkout, `pnpm --filter @omniviewdev/showcase build` checks the
+showcase and builds its workspace dependencies. Do not run independent installs
+inside roots linked by a managed Omniview workspace.
+
+After dependency changes, exercise browser tab creation, last-tab replacement
+and reordering; chat reactions and sending; AI replay tool completion; and
+container selection, filtering, and empty-state recovery. Keep tab ID generation
+out of replayable state updaters. Place `DataTable.Empty` outside the table
+container and render it only when data is empty.
+
+The chat, AI, container, and file-explorer demos use fixtures; they do not prove
+real backend or cloud integration. Host-owned Playwright acceptance remains
+separate.
+
 ## Key docs
 
 - `docs/REPOSITORY_GUIDELINES.md`

@@ -1,28 +1,25 @@
 import type { CSSProperties } from 'react';
-import type { Column } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
+import type { DataTableColumn } from '../types';
 
 /**
- * Returns inline styles for a pinned column cell (header or body).
- * Uses sticky positioning with computed left/right offsets from TanStack.
- * Adds inset box-shadows at the pinned boundary for visual separation.
+ * Returns CSS custom properties for pinned column offsets and boundary shadows.
+ * Data attributes select sticky positioning in the table stylesheet.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getPinningStyles(column: Column<any, unknown>): CSSProperties {
+export function getPinningStyles<TData extends RowData>(column: DataTableColumn<TData, unknown>): CSSProperties {
   const isPinned = column.getIsPinned();
   if (!isPinned) return {};
 
-  const isLastLeft = isPinned === 'left' && column.getIsLastColumn('left');
-  const isFirstRight = isPinned === 'right' && column.getIsFirstColumn('right');
+  const isLastLeft = isPinned === 'start' && column.getIsLastColumn('start');
+  const isFirstRight = isPinned === 'end' && column.getIsFirstColumn('end');
 
   return {
-    position: 'sticky',
-    left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
-    right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
-    zIndex: 1,
-    boxShadow: isLastLeft
-      ? '-4px 0 4px -4px rgb(0 0 0 / 0.12) inset'
+    '--_dt-pin-start': isPinned === 'start' ? `${column.getStart('start')}px` : undefined,
+    '--_dt-pin-end': isPinned === 'end' ? `${column.getAfter('end')}px` : undefined,
+    '--_dt-pin-shadow': isLastLeft
+      ? 'var(--_dt-pin-shadow-start)'
       : isFirstRight
-        ? '4px 0 4px -4px rgb(0 0 0 / 0.12) inset'
+        ? 'var(--_dt-pin-shadow-end)'
         : undefined,
-  };
+  } as CSSProperties;
 }

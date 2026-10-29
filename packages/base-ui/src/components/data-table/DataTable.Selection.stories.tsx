@@ -1,5 +1,6 @@
+import { Subscribe } from '@tanstack/react-table';
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
 import type { DataTableRootProps } from './DataTable';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -31,23 +32,23 @@ const podData: Pod[] = Array.from({ length: 8 }, (_, i) => ({
 
 const selectColumn: ColumnDef<Pod, unknown> = {
   id: 'select',
-  header: ({ table }) => (
+  header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ state, all: table.getIsAllRowsSelected(), some: table.getIsSomeRowsSelected(), allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
     <Checkbox
-      checked={table.getIsAllRowsSelected()}
-      indeterminate={table.getIsSomeRowsSelected()}
+      checked={selection.all}
+      indeterminate={selection.some}
       onCheckedChange={() => table.toggleAllRowsSelected()}
       size="sm"
       aria-label="Select all rows"
     />
-  ),
-  cell: ({ row }) => (
+  ))}</Subscribe>),
+  cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
     <Checkbox
-      checked={row.getIsSelected()}
+      checked={!!snapshot.selection[row.id]}
       onCheckedChange={() => row.toggleSelected()}
       size="sm"
       aria-label={`Select row ${row.index + 1}`}
     />
-  ),
+  ))}</Subscribe>),
   size: 40,
   enableSorting: false,
   enableResizing: false,

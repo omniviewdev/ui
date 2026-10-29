@@ -5,6 +5,7 @@ import {
   useImperativeHandle,
   useRef,
   useState,
+  type CSSProperties,
   type HTMLAttributes,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -127,7 +128,7 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
         >
           <div
             className={styles.Inner}
-            style={{ height: `${virtualizer.getTotalSize()}px` }} // eslint-disable-line react/forbid-component-props -- required by virtualizer
+            style={{ '--_chat-list-height': `${virtualizer.getTotalSize()}px` } as CSSProperties}
           >
             {virtualizer.getVirtualItems().map((item) => (
               <div
@@ -135,13 +136,7 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
                 className={styles.Item}
                 data-index={item.index}
                 ref={virtualizer.measureElement}
-                style={{ // eslint-disable-line react/forbid-component-props -- required by virtualizer
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${item.start}px)`,
-                }}
+                style={{ '--_chat-list-offset': `${item.start}px` } as CSSProperties}
               >
                 {renderItem(item.index)}
               </div>

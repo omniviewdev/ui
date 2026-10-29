@@ -217,7 +217,6 @@ export function FilePane({ title, subtitle, root, side, searchQuery }: FilePaneP
             <IconButton
               variant="ghost"
               size="sm"
-              dense
               aria-label={isRemote ? 'Download' : 'Upload'}
               onClick={(e) => {
                 e.stopPropagation();
@@ -233,28 +232,28 @@ export function FilePane({ title, subtitle, root, side, searchQuery }: FilePaneP
 
       {/* Action bar */}
       <div className={styles.actionBar}>
-        <IconButton variant="ghost" size="sm" dense aria-label={isRemote ? 'Download' : 'Upload'} onClick={() => handleAction(isRemote ? 'Download' : 'Upload')}>
+        <IconButton variant="ghost" size="sm" aria-label={isRemote ? 'Download' : 'Upload'} onClick={() => handleAction(isRemote ? 'Download' : 'Upload')}>
           {isRemote ? <LuDownload size={13} /> : <LuUpload size={13} />}
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Edit" onClick={() => handleAction('Edit')}>
+        <IconButton variant="ghost" size="sm" aria-label="Edit" onClick={() => handleAction('Edit')}>
           <LuPencil size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Rename" onClick={() => handleAction('Rename')}>
+        <IconButton variant="ghost" size="sm" aria-label="Rename" onClick={() => handleAction('Rename')}>
           <LuTextCursor size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Delete" onClick={() => handleAction('Delete')}>
+        <IconButton variant="ghost" size="sm" aria-label="Delete" onClick={() => handleAction('Delete')}>
           <LuTrash2 size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Copy" onClick={() => handleAction('Copy')}>
+        <IconButton variant="ghost" size="sm" aria-label="Copy" onClick={() => handleAction('Copy')}>
           <LuCopy size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Paste" onClick={() => handleAction('Paste')}>
+        <IconButton variant="ghost" size="sm" aria-label="Paste" onClick={() => handleAction('Paste')}>
           <LuClipboardPaste size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="New Folder" onClick={() => handleAction('New Folder')}>
+        <IconButton variant="ghost" size="sm" aria-label="New Folder" onClick={() => handleAction('New Folder')}>
           <LuFolderPlus size={13} />
         </IconButton>
-        <IconButton variant="ghost" size="sm" dense aria-label="Refresh" onClick={() => handleAction('Refresh')}>
+        <IconButton variant="ghost" size="sm" aria-label="Refresh" onClick={() => handleAction('Refresh')}>
           <LuRefreshCw size={13} />
         </IconButton>
       </div>

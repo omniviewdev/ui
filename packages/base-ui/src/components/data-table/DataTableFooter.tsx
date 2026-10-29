@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -8,12 +8,17 @@ export type DataTableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
 
 export const DataTableFooter = forwardRef<HTMLTableSectionElement, DataTableFooterProps>(
   function DataTableFooter({ className, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table } = useDataTableContext();
-    const footerGroups = table.getFooterGroups();
+    const { table, state, options } = useDataTableContext();
+    const footerGroups = useMemo(() => table.getFooterGroups().map((group) => ({
+      ...group,
+      headers: group.headers.map((header) => ({
+        header,
+        content: header.isPlaceholder ? null : flexRender(header.column.columnDef.footer, header.getContext()),
+      })),
+    })), [table, state, options]);
 
     const hasFooterContent = footerGroups.some((group) =>
-      group.headers.some((header) => header.column.columnDef.footer),
+      group.headers.some(({ header }) => header.column.columnDef.footer),
     );
     if (!hasFooterContent) return null;
 
@@ -21,18 +26,15 @@ export const DataTableFooter = forwardRef<HTMLTableSectionElement, DataTableFoot
       <tfoot ref={ref} className={cn(styles.Footer, className)} {...props}>
         {footerGroups.map((footerGroup) => (
           <tr key={footerGroup.id} className={styles.FooterRow}>
-            {footerGroup.headers.map((header) => (
+            {footerGroup.headers.map(({ header, content }) => (
               <td
                 key={header.id}
                 className={styles.FooterCell}
                 style={{
-                  flex: `var(--col-${header.column.id}-size) 0 0px`,
-                  width: `calc(var(--col-${header.column.id}-size) * 1px)`,
-                }}
+                  '--_dt-cell-size': `var(--col-${header.column.id}-size)`,
+                } as CSSProperties}
               >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(header.column.columnDef.footer, header.getContext())}
+                {content}
               </td>
             ))}
           </tr>

@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>;
 
 // Basic interactive example
 export const Playground: Story = {
-  render: () => {
+  render: function Render() {
     const [active, setActive] = useState(0);
     return (
       <AIBranch count={3} active={active} onChange={setActive}>
@@ -54,7 +54,7 @@ export const Playground: Story = {
 
 // Two branches (regenerate scenario)
 export const Regenerate: Story = {
-  render: () => {
+  render: function Render() {
     const [active, setActive] = useState(0);
     return (
       <AIBranch count={2} active={active} onChange={setActive}>
@@ -76,7 +76,7 @@ export const Regenerate: Story = {
 
 // Custom selector layout
 export const CustomSelector: Story = {
-  render: () => {
+  render: function Render() {
     const [active, setActive] = useState(1);
     return (
       <AIBranch count={4} active={active} onChange={setActive}>

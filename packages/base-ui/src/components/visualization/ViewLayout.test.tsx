@@ -39,7 +39,7 @@ describe('ViewLayout', () => {
     const announcement = screen
       .getAllByRole('status')
       .find((status) => status.textContent?.includes('Inventory'));
-    expect(announcement).toHaveTextContent(/\b1\b/);
+    expect(announcement?.textContent).toMatch(/\b1\b/);
   });
 
   it('resizes with accessible keyboard controls within geometry bounds', async () => {

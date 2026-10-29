@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from '../data-table/types';
 import { LuChevronDown } from 'react-icons/lu';
 import { Badge } from '../badge';
 import { Button } from '../button';

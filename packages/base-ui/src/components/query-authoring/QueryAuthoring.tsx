@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../button';
 import { QueryInput, type QueryInputProps } from './QueryInput';
 import { QueryBuilder, type QueryBuilderProps } from './QueryBuilder';
@@ -95,12 +95,27 @@ export function QueryAuthoring({
   const [notice, setNotice] = useState<string>();
   const blocked = disabled || Boolean(availability && availability.status !== 'ready');
   const latest = useRef({ value, contextKey, blocked });
-  latest.current = { value, contextKey, blocked };
+  useLayoutEffect(() => {
+    latest.current = { value, contextKey, blocked };
+  }, [value, contextKey, blocked]);
+  // Reset presentation during the input transition, not after a stale frame commits.
+  const [conversionInputs, setConversionInputs] = useState(() => ({
+    value, contextKey, toBuilder, toCode, blocked,
+  }));
+  if (
+    conversionInputs.value !== value ||
+    conversionInputs.contextKey !== contextKey ||
+    conversionInputs.toBuilder !== toBuilder ||
+    conversionInputs.toCode !== toCode ||
+    conversionInputs.blocked !== blocked
+  ) {
+    setConversionInputs({ value, contextKey, toBuilder, toCode, blocked });
+    setConverting(false);
+    setNotice(undefined);
+  }
   useEffect(() => {
     active.current?.abort.abort();
     active.current = null;
-    setConverting(false);
-    setNotice(undefined);
     return () => {
       active.current?.abort.abort();
     };

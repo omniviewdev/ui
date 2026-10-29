@@ -1,8 +1,10 @@
+import { Subscribe } from '@tanstack/react-table';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { flushSync } from 'react-dom';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import type { ColumnDef, ExpandedState } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
+import type { ExpandedState } from '@tanstack/react-table';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -16,14 +18,14 @@ const columns: ColumnDef<Item, unknown>[] = [
   {
     id: 'controls',
     header: 'Controls',
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
       <>
         <button aria-haspopup="menu" aria-expanded="false">
           Actions {row.original.name}
         </button>
         <button
           data-ov-expansion-toggle=""
-          aria-expanded={row.getIsExpanded()}
+          aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
           onClick={() => row.toggleExpanded()}
         >
           Details {row.original.name}
@@ -44,12 +46,14 @@ const columns: ColumnDef<Item, unknown>[] = [
           </tbody>
         </table>
       </>
-    ),
+    ))}</Subscribe>),
   },
   { accessorKey: 'name', header: 'Name' },
 ];
 const height = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
 const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+const clientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight');
+const clientWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth');
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
     configurable: true,
@@ -59,10 +63,20 @@ beforeAll(() => {
     configurable: true,
     get: () => 800,
   });
+  Object.defineProperty(Element.prototype, 'clientHeight', {
+    configurable: true,
+    get: () => 400,
+  });
+  Object.defineProperty(Element.prototype, 'clientWidth', {
+    configurable: true,
+    get: () => 800,
+  });
 });
 afterAll(() => {
   if (height) Object.defineProperty(HTMLElement.prototype, 'offsetHeight', height);
   if (width) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', width);
+  if (clientHeight) Object.defineProperty(Element.prototype, 'clientHeight', clientHeight);
+  if (clientWidth) Object.defineProperty(Element.prototype, 'clientWidth', clientWidth);
 });
 
 function Harness({
@@ -191,8 +205,9 @@ describe.each([false, true])('focus recovery (virtual=%s)', (virtual) => {
     screen.getByLabelText('Detail Cloud instance').focus();
     const outside = screen.getByRole('button', { name: 'Outside table' });
     outside.focus();
-    rerender(<Harness virtual={virtual} items={[]} />);
-    await act(async () => {});
+    await act(async () => {
+      rerender(<Harness virtual={virtual} items={[]} />);
+    });
     expect(outside).toHaveFocus();
   });
 
@@ -207,8 +222,9 @@ describe.each([false, true])('focus recovery (virtual=%s)', (virtual) => {
     );
     const other = screen.getByRole('button', { name: 'Select Virtual machine' });
     other.focus();
-    rerender(<Harness virtual={virtual} expanded={{ 'cloud:1': true }} />);
-    await act(async () => {});
+    await act(async () => {
+      rerender(<Harness virtual={virtual} expanded={{ 'cloud:1': true }} />);
+    });
     expect(other).toHaveFocus();
   });
 });
@@ -261,11 +277,13 @@ it('updates a localized disclosure name across keyboard expansion and collapse',
       getRowCanExpand: () => true,
     });
     return (
-      <DataTable.ExpansionToggle
-        row={table.getRow('cloud:1')}
-        label="Instancia"
-        getAccessibleLabel={(expanded, label) => `${expanded ? 'Contraer' : 'Expandir'} ${label}`}
-      />
+      <DataTable.Root table={table}>
+        <DataTable.ExpansionToggle
+          row={table.getRow('cloud:1')}
+          label="Instancia"
+          getAccessibleLabel={(expanded, label) => `${expanded ? 'Contraer' : 'Expandir'} ${label}`}
+        />
+      </DataTable.Root>
     );
   }
   renderWithTheme(<Fixture />);

@@ -1,7 +1,8 @@
+import { Subscribe } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import type { DataTableColumnDef as ColumnDef } from './types';
 import type {
-  ColumnDef,
   ExpandedState,
   RowSelectionState,
   SortingState,
@@ -48,17 +49,17 @@ const columns: ColumnDef<RecordRow, unknown>[] = [
     header: 'Selection / details',
     enableSorting: false,
     size: 180,
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
       <>
         <Checkbox
           aria-label={`Select ${row.original.name}`}
           disabled={!row.getCanSelect()}
-          checked={row.getIsSelected()}
+          checked={!!snapshot.selection[row.id]}
           onCheckedChange={() => row.toggleSelected()}
         />
         <DataTable.ExpansionToggle row={row} label={row.original.name} />
       </>
-    ),
+    ))}</Subscribe>),
   },
   { accessorKey: 'name', header: 'Name', size: 220, meta: { dataTableCellDependencies: 'data' } },
   {
@@ -306,26 +307,25 @@ function PreparedGroups() {
         id: 'label',
         header: 'Host-prepared groups and members',
         size: 460,
-        cell: ({ row }) =>
-          row.original.kind === 'group' ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-expanded={row.getIsExpanded()}
-              onClick={() => row.toggleExpanded()}
-            >
-              {row.original.label} ({row.original.count})
-            </Button>
-          ) : (
-            <span style={{ paddingInlineStart: 24 }}>
-              <Checkbox
-                aria-label={`Select ${row.id}`}
-                checked={row.getIsSelected()}
-                onCheckedChange={() => row.toggleSelected()}
-              />{' '}
-              {row.original.label}
-            </span>
-          ),
+        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => (row.original.kind === 'group' ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
+            onClick={() => row.toggleExpanded()}
+          >
+            {row.original.label} ({row.original.count})
+          </Button>
+        ) : (
+          <span style={{ paddingInlineStart: 24 }}>
+            <Checkbox
+              aria-label={`Select ${row.id}`}
+              checked={!!snapshot.selection[row.id]}
+              onCheckedChange={() => row.toggleSelected()}
+            />{' '}
+            {row.original.label}
+          </span>
+        ))}</Subscribe>),
       },
     ],
     [],
@@ -434,7 +434,7 @@ function BatchedStaticEdits() {
         Select first two together
       </Button>
       <output>
-        Selected static rows: {Object.values(table.getState().rowSelection).filter(Boolean).length}
+        Selected static rows: {Object.values(table.state.rowSelection).filter(Boolean).length}
       </output>
       <DataTable.Root table={table} features={features}>
         <DataTable.Container height={240}>

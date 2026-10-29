@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 
 interface DebouncedFunction<TArgs extends unknown[], TReturn> {
   (...args: TArgs): void;
@@ -19,7 +19,9 @@ export function useDebouncedCallback<TArgs extends unknown[], TReturn>(
   const pendingArgsRef = useRef<TArgs | undefined>(undefined);
 
   // Keep callback ref fresh without re-creating the debounced function
-  callbackRef.current = callback;
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
 
   const cancel = useCallback(() => {
     if (timerRef.current !== undefined) {
@@ -46,8 +48,8 @@ export function useDebouncedCallback<TArgs extends unknown[], TReturn>(
   // Cancel pending timers synchronously when delay changes
   useLayoutEffect(() => cancel, [delay, cancel]);
 
-  const debounced = useCallback(
-    (...args: TArgs) => {
+  return useMemo(() => {
+    const debounced = (...args: TArgs) => {
       pendingArgsRef.current = args;
       if (timerRef.current !== undefined) {
         clearTimeout(timerRef.current);
@@ -57,12 +59,9 @@ export function useDebouncedCallback<TArgs extends unknown[], TReturn>(
         pendingArgsRef.current = undefined;
         callbackRef.current(...args);
       }, delay);
-    },
-    [delay],
-  ) as DebouncedFunction<TArgs, TReturn>;
-
-  debounced.cancel = cancel;
-  debounced.flush = flush;
-
-  return debounced;
+    };
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+    return debounced;
+  }, [delay, cancel, flush]);
 }

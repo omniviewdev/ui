@@ -113,7 +113,7 @@ StatusBarItem.displayName = 'StatusBar.Item';
 // StatusBar.Indicator — wraps StatusDot for status display in the bar
 // ---------------------------------------------------------------------------
 
-export interface StatusBarIndicatorProps extends Omit<StatusDotProps, 'size'> {}
+export type StatusBarIndicatorProps = Omit<StatusDotProps, 'size'>;
 
 const StatusBarIndicator = forwardRef<HTMLSpanElement, StatusBarIndicatorProps>(
   function StatusBarIndicator({ className, ...props }, ref) {

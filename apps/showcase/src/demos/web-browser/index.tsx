@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { LuPlus } from 'react-icons/lu';
 import { EditorTabs, IconButton, Progress } from '@omniviewdev/base-ui';
-import type { TabDescriptor, ReorderMeta } from '@omniviewdev/base-ui';
+import type { TabDescriptor } from '@omniviewdev/base-ui';
 import { useBrowser } from './hooks/useBrowser';
 import { BrowserToolbar } from './components/BrowserToolbar';
 import { BookmarksBar } from './components/BookmarksBar';
@@ -11,6 +11,7 @@ import styles from './index.module.css';
 
 export default function WebBrowser() {
   const browser = useBrowser();
+  const { addTab, reorderTabs } = browser;
 
   // Map BrowserTab[] → TabDescriptor[] for EditorTabs
   const tabDescriptors: TabDescriptor[] = useMemo(
@@ -26,15 +27,15 @@ export default function WebBrowser() {
 
   // Handle tab reorder from EditorTabs
   const handleReorder = useCallback(
-    (nextTabs: TabDescriptor[], _meta: ReorderMeta) => {
-      browser.reorderTabs(nextTabs.map((t) => t.id));
+    (nextTabs: TabDescriptor[]) => {
+      reorderTabs(nextTabs.map((t) => t.id));
     },
-    [browser.reorderTabs],
+    [reorderTabs],
   );
 
   const handleNewTab = useCallback(() => {
-    browser.addTab();
-  }, [browser.addTab]);
+    addTab();
+  }, [addTab]);
 
   return (
     <div className={styles.browser}>
@@ -53,7 +54,6 @@ export default function WebBrowser() {
         <IconButton
           variant="ghost"
           size="sm"
-          dense
           aria-label="New tab"
           onClick={handleNewTab}
           className={styles.newTabButton}

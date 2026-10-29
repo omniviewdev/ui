@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [filters, setFilters] = useState([
       'Namespace: default',
       'Status: Running',
@@ -43,7 +43,7 @@ export const Playground: Story = {
 
 export const KubernetesFilters: Story = {
   name: 'Kubernetes resource filters',
-  render: (args) => {
+  render: function Render(args) {
     const allFilters = [
       { key: 'ns', label: 'Namespace: default' },
       { key: 'status', label: 'Status: Running' },

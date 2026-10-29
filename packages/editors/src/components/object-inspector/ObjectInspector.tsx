@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useMemo, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import styles from './ObjectInspector.module.css';
 
 export type InspectorFormat = 'json' | 'yaml';
@@ -122,33 +122,26 @@ function TreeNode({
     () => isExpandable && !isCircular && shouldExpand(defaultExpanded, depth),
   );
 
-  // Track whether the node was force-expanded by search so we can restore
-  // the exact pre-search state when the search is cleared.
-  const searchExpandedRef = useRef(false);
-  const preSearchExpandedRef = useRef(false);
-
+  const [searchExpansion, setSearchExpansion] = useState<{
+    active: boolean;
+    previous: boolean;
+  }>({ active: false, previous: false });
   // Auto-expand when search matches a descendant
   const hasDescendantMatch = useMemo(
     () => searchQuery ? subtreeMatches(value, searchQuery, ancestors, searchCache) : false,
     [searchQuery, value, ancestors, searchCache],
   );
 
-  // Force expand when search finds matches in descendants
-  useEffect(() => {
-    if (searchQuery && hasDescendantMatch && isExpandable && !isCircular && !expanded) {
-      // Only snapshot pre-search state the first time we force-open
-      if (!searchExpandedRef.current) {
-        preSearchExpandedRef.current = expanded;
-      }
-      searchExpandedRef.current = true;
-      setExpanded(true);
+  const forceExpanded = Boolean(searchQuery && hasDescendantMatch && isExpandable && !isCircular);
+  if (forceExpanded && !expanded) {
+    if (!searchExpansion.active) {
+      setSearchExpansion({ active: true, previous: expanded });
     }
-    // Restore pre-search state when search clears OR node stops matching
-    if (searchExpandedRef.current && (!searchQuery || !hasDescendantMatch)) {
-      searchExpandedRef.current = false;
-      setExpanded(preSearchExpandedRef.current);
-    }
-  }, [searchQuery, hasDescendantMatch, isExpandable, isCircular, expanded]);
+    setExpanded(true);
+  } else if (searchExpansion.active && (!searchQuery || !hasDescendantMatch)) {
+    setSearchExpansion({ active: false, previous: false });
+    setExpanded(searchExpansion.previous);
+  }
 
   // Create a new ancestors set that includes this value for children.
   // WeakSet doesn't support iteration, so we use a duck-typed wrapper

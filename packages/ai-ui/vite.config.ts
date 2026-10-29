@@ -1,24 +1,27 @@
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
-import { DiagnosticCategory } from 'typescript';
+import { DiagnosticCategory, getDefaultLibFilePath } from 'typescript';
 
 const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     dts({
-      outDir: outputDirectory,
+      tsconfigPath: './tsconfig.build.json',
+      outDirs: outputDirectory,
       entryRoot: 'src',
       // Rolled declarations follow package.json's active dist entry.
-      rollupTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
+      bundleTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY && {
+        invokeOptions: {
+          // Compiler aliases can contain only forwarding modules, not standard library declarations.
+          typescriptCompilerFolder: dirname(dirname(getDefaultLibFilePath({}))),
+        },
+      },
       afterDiagnostic(diagnostics) {
         for (const diagnostic of diagnostics) {
           if (diagnostic.category === DiagnosticCategory.Error) {
@@ -39,8 +42,8 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        'react',
-        'react-dom',
+        /^react(?:\/|$)/,
+        /^react-dom(?:\/|$)/,
         /^@omniviewdev\/base-ui/,
         /^@omniviewdev\/editors/,
       ],

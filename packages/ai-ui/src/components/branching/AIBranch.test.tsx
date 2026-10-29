@@ -6,8 +6,6 @@ import {
   AIBranch,
   AIBranchContent,
   AIBranchSelector,
-  AIBranchPrevious,
-  AIBranchNext,
   AIBranchIndicator,
 } from './AIBranch';
 

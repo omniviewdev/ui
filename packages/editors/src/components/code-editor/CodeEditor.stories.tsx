@@ -388,11 +388,12 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
 
   // Clean up only URIs registered by this story on unmount
   useEffect(() => {
+    const uris = registeredUris.current;
     return () => {
-      for (const uri of registeredUris.current) {
+      for (const uri of uris) {
         editorSchemas.unregister(uri);
       }
-      registeredUris.current.clear();
+      uris.clear();
     };
   }, []);
 

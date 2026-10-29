@@ -1,6 +1,6 @@
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
 import { LuCheck, LuChevronDown, LuSearch, LuX } from 'react-icons/lu';
-import { useCallback, useMemo, useRef, type PointerEvent, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react';
 import { Chip } from '../chip';
 import { IconButton } from '../icon-button';
 import { cn, withBaseClassName } from '../../system/classnames';
@@ -163,18 +163,14 @@ export function MultiSelect<Item = string>({
     ? Math.max(0, Math.floor(maxVisibleChips))
     : Number.MAX_SAFE_INTEGER;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderClearButton = useCallback(
-    (clearProps: any) => (
+    (clearProps: ComponentPropsWithRef<'button'>) => (
       <IconButton
         {...clearProps}
         variant="ghost"
         color={color}
         size={size}
-        className={cn(
-          styles.Clear,
-          typeof clearProps.className === 'string' ? clearProps.className : undefined,
-        )}
+        className={cn(styles.Clear, clearProps.className)}
       >
         {clearDecorator ?? <LuX aria-hidden />}
       </IconButton>
@@ -182,18 +178,14 @@ export function MultiSelect<Item = string>({
     [color, size, clearDecorator],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderTriggerButton = useCallback(
-    (triggerProps: any) => (
+    (triggerProps: ComponentPropsWithRef<'button'>) => (
       <IconButton
         {...triggerProps}
         variant="ghost"
         color={color}
         size={size}
-        className={cn(
-          styles.Trigger,
-          typeof triggerProps.className === 'string' ? triggerProps.className : undefined,
-        )}
+        className={cn(styles.Trigger, triggerProps.className)}
       >
         <LuChevronDown aria-hidden />
       </IconButton>

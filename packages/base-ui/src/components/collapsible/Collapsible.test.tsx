@@ -76,6 +76,16 @@ describe('Collapsible', () => {
     expect(screen.getByTestId('root')).toHaveAttribute('data-ov-open', 'false');
   });
 
+  it('keeps the last controlled value when control is released', async () => {
+    const { rerender } = render(<TestCollapsible open={false} data-testid="root" />);
+    rerender(<TestCollapsible open data-testid="root" />);
+    rerender(<TestCollapsible data-testid="root" />);
+
+    expect(screen.getByTestId('root')).toHaveAttribute('data-ov-open', 'true');
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle' }));
+    expect(screen.getByTestId('root')).toHaveAttribute('data-ov-open', 'false');
+  });
+
   it('prevents toggle when disabled', async () => {
     render(<TestCollapsible disabled data-testid="root" />);
     await userEvent.click(screen.getByRole('button'));

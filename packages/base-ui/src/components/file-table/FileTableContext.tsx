@@ -14,9 +14,9 @@ export interface FileTableItem {
 export interface FileTableColumnConfig {
   id: string;
   header: ReactNode;
-  accessor: (item: any) => ReactNode;
-  sortAccessor?: (item: any) => string | number | Date | undefined;
-  sortFn?: (a: any, b: any) => number;
+  accessor: (item: FileTableItem) => ReactNode;
+  sortAccessor?: (item: FileTableItem) => string | number | Date | undefined;
+  sortFn?: (a: FileTableItem, b: FileTableItem) => number;
   width?: number | string;
   sortable?: boolean;
   mono?: boolean;

@@ -1,41 +1,32 @@
 import { describe } from 'vitest';
-import {
-  useReactTable,
-  getCoreRowModel,
-  createColumnHelper,
-  type ColumnDef,
-} from '@tanstack/react-table';
-import { DataTable } from '@omniviewdev/base-ui';
+import { DataTable, useDataTable, type DataTableColumnDef } from '@omniviewdev/base-ui';
 import { benchRender, benchRerender } from '../utils/bench-render';
 import { TIER_1_OPTIONS } from '../utils/bench-options';
 import { makeRows, type Row } from '../utils/factories';
 
-const columnHelper = createColumnHelper<Row>();
-
-const columns: ColumnDef<Row, unknown>[] = [
-  columnHelper.accessor('id', { header: 'ID' }),
-  columnHelper.accessor('name', { header: 'Name' }),
-  columnHelper.accessor('status', { header: 'Status' }),
-  columnHelper.accessor('value', { header: 'Value' }),
+const columns: DataTableColumnDef<Row>[] = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'value', header: 'Value' },
 ];
 
 const rows100 = makeRows(100);
 const rows200 = makeRows(200);
 
 function DataTableBench({ data }: { data: Row[] }) {
-  const table = useReactTable({
+  const table = useDataTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <DataTable table={table}>
+    <DataTable.Root table={table}>
       <DataTable.Container>
         <DataTable.Header />
         <DataTable.Body />
       </DataTable.Container>
-    </DataTable>
+    </DataTable.Root>
   );
 }
 

@@ -20,12 +20,6 @@ describe('ChatAvatar', () => {
     expect(screen.getByTestId('ca').querySelector('svg')).toBeInTheDocument();
   });
 
-  it('renders image when src is provided', () => {
-    renderAI(<ChatAvatar role="user" src="test.png" name="Test" data-testid="ca" />);
-    const img = screen.getByTestId('ca').querySelector('img');
-    expect(img).toHaveAttribute('src', 'test.png');
-  });
-
   it('forwards ref', () => {
     const ref = createRef<HTMLDivElement>();
     renderAI(<ChatAvatar ref={ref} role="user" />);

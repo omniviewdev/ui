@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
@@ -90,7 +91,9 @@ const EditableListRoot = forwardRef<HTMLDivElement, EditableListRootProps>(
     const rootWrapperRef = useRef<HTMLDivElement>(null);
     const commitInFlightRef = useRef(false);
     const editingKeyRef = useRef(editingKey);
-    editingKeyRef.current = editingKey;
+    useLayoutEffect(() => {
+      editingKeyRef.current = editingKey;
+    }, [editingKey]);
 
     const registerField = useCallback((name: string, el: FieldElement) => {
       fieldRefsMap.current.set(name, el);

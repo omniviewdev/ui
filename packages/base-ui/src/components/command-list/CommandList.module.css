@@ -26,6 +26,19 @@
   outline: none;
 }
 
+.VirtualContent {
+  position: relative;
+  height: var(--_command-list-height);
+}
+
+.VirtualItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(var(--_command-list-offset));
+}
+
 /* --- Density variants ----------------------------------------------------- */
 
 .Root[data-ov-density='compact'] {

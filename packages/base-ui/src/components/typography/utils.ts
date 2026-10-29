@@ -101,7 +101,10 @@ export function createTypographyPrimitive<
 > {
   // Intentional: forwardRef cannot express this polymorphic signature directly;
   // the cast below re-establishes the exported generic component type.
-  const Primitive = forwardRef<any, any>(function TypographyPrimitive(rawProps, ref) {
+  const Primitive = forwardRef<
+    unknown,
+    TypographyPrimitiveSharedProps & { as?: AllowedAs; className?: string; style?: CSSProperties }
+  >(function TypographyPrimitive(rawProps, ref) {
     const {
       as,
       className: classNameProp,
@@ -110,7 +113,7 @@ export function createTypographyPrimitive<
       truncate = false,
       style,
       ...props
-    } = rawProps as PolymorphicComponentProps<AllowedAs, TypographyPrimitiveSharedProps>;
+    } = rawProps;
 
     return createElement(as ?? defaultAs, {
       ref,

@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useLayoutEffect,
   useState,
   type HTMLAttributes,
   type ReactNode,
@@ -27,6 +28,7 @@ interface ThinkingContextValue {
 }
 
 const ThinkingContext = createContext<ThinkingContextValue | null>(null);
+ThinkingContext.displayName = 'ThinkingContext';
 
 function useThinking() {
   const ctx = useContext(ThinkingContext);
@@ -93,11 +95,20 @@ export const ThinkingBlock = forwardRef<HTMLDivElement, ThinkingBlockProps>(
   ) {
     // --- Stream consumption ---
     const [streamedContent, setStreamedContent] = useState('');
-    const [streamActive, setStreamActive] = useState(false);
+    const [streamActive, setStreamActive] = useState(Boolean(stream));
     const [streamDuration, setStreamDuration] = useState(0);
+    const [previousStream, setPreviousStream] = useState(stream);
+    if (previousStream !== stream) {
+      setPreviousStream(stream);
+      setStreamActive(Boolean(stream));
+      setStreamedContent('');
+      setStreamDuration(0);
+    }
 
     const onCompleteRef = useRef(onComplete);
-    onCompleteRef.current = onComplete;
+    useLayoutEffect(() => {
+      onCompleteRef.current = onComplete;
+    }, [onComplete]);
 
     useEffect(() => {
       if (!stream) return;
@@ -107,10 +118,6 @@ export const ThinkingBlock = forwardRef<HTMLDivElement, ThinkingBlockProps>(
       let rafId: number | null = null;
       let pendingFlush = false;
       const start = Date.now();
-
-      setStreamActive(true);
-      setStreamedContent('');
-      setStreamDuration(0);
 
       const flush = () => {
         if (!cancelled) {
@@ -156,33 +163,33 @@ export const ThinkingBlock = forwardRef<HTMLDivElement, ThinkingBlockProps>(
     const resolvedDuration = durationProp ?? (stream ? streamDuration : 0);
 
     // --- Expand / collapse state ---
-    const [isOpen, setIsOpen] = useState(defaultExpanded);
+    const [isOpen, setIsOpen] = useState(defaultExpanded || streaming);
     const [measuredDuration, setMeasuredDuration] = useState(resolvedDuration);
-    const startTimeRef = useRef<number | null>(null);
+    const [previousStreaming, setPreviousStreaming] = useState(streaming);
+    const [previousDuration, setPreviousDuration] = useState(resolvedDuration);
     const hasAutoClosedRef = useRef(false);
 
-    // Track streaming duration for the `streaming` prop API (non-stream)
-    useEffect(() => {
-      if (streaming) {
-        if (startTimeRef.current === null) {
-          startTimeRef.current = Date.now();
-          setIsOpen(true);
-        }
-      } else if (startTimeRef.current !== null) {
-        const elapsed = Date.now() - startTimeRef.current;
-        setMeasuredDuration(elapsed);
-        startTimeRef.current = null;
-      }
-    }, [streaming]);
-
-    // Sync resolved duration into measuredDuration
-    useEffect(() => {
+    if (previousStreaming !== streaming) {
+      setPreviousStreaming(streaming);
+      if (streaming) setIsOpen(true);
+    }
+    if (previousDuration !== resolvedDuration) {
+      setPreviousDuration(resolvedDuration);
       if (resolvedDuration > 0) setMeasuredDuration(resolvedDuration);
-    }, [resolvedDuration]);
+    }
+
+    // Measure the committed streaming interval against the external clock.
+    useEffect(() => {
+      if (!streaming) return;
+      const start = Date.now();
+      return () => {
+        setMeasuredDuration(Date.now() - start);
+      };
+    }, [streaming]);
 
     // Auto-close after streaming finishes
     useEffect(() => {
-      if (autoClose && !streaming && isOpen && !hasAutoClosedRef.current && startTimeRef.current === null && measuredDuration > 0) {
+      if (autoClose && !streaming && isOpen && !hasAutoClosedRef.current && measuredDuration > 0) {
         const timer = setTimeout(() => {
           setIsOpen(false);
           hasAutoClosedRef.current = true;

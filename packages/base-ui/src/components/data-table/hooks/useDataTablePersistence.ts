@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { Table } from '@tanstack/react-table';
+import type { DataTableInstance } from '../types';
 
 interface PersistableState {
   columnSizing?: Record<string, number>;
@@ -13,9 +13,8 @@ interface PersistableState {
  * Restores on mount. Only persists column sizing, visibility, order, and sorting.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useDataTablePersistence(table: Table<any>, key: string | undefined) {
-  'use no memo'; // Persist snapshots from the stable, mutable TanStack instance.
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+export function useDataTablePersistence(table: DataTableInstance<any>, key: string | undefined) {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Restore on mount
   useEffect(() => {
@@ -45,28 +44,32 @@ export function useDataTablePersistence(table: Table<any>, key: string | undefin
   // Persist on change (debounced)
   useEffect(() => {
     if (!key) return;
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      const state: PersistableState = {
-        columnSizing: table.getState().columnSizing,
-        columnVisibility: table.getState().columnVisibility,
-        columnOrder: table.getState().columnOrder,
-        sorting: table.getState().sorting,
-      };
-      try {
-        localStorage.setItem(`ov-datatable-${key}`, JSON.stringify(state));
-      } catch {
-        // Quota exceeded, ignore
-      }
-    }, 300);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+    const schedulePersist = () => {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        const state: PersistableState = {
+          columnSizing: table.atoms.columnSizing.get(),
+          columnVisibility: table.atoms.columnVisibility.get(),
+          columnOrder: table.atoms.columnOrder.get(),
+          sorting: table.atoms.sorting.get(),
+        };
+        try {
+          localStorage.setItem(`ov-datatable-${key}`, JSON.stringify(state));
+        } catch {
+          // Quota exceeded, ignore
+        }
+      }, 300);
     };
-  }, [
-    key,
-    table.getState().columnSizing,
-    table.getState().columnVisibility,
-    table.getState().columnOrder,
-    table.getState().sorting,
-  ]);
+    const subscriptions = [
+      table.atoms.columnSizing.subscribe(schedulePersist),
+      table.atoms.columnVisibility.subscribe(schedulePersist),
+      table.atoms.columnOrder.subscribe(schedulePersist),
+      table.atoms.sorting.subscribe(schedulePersist),
+    ];
+    schedulePersist();
+    return () => {
+      for (const subscription of subscriptions) subscription.unsubscribe();
+      clearTimeout(timerRef.current);
+    };
+  }, [key, table]);
 }

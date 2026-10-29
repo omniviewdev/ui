@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
+import { useState, useCallback, type KeyboardEvent } from 'react';
 import {
   LuArrowLeft,
   LuArrowRight,
@@ -31,10 +31,11 @@ export function BrowserToolbar({
   const displayUrl = url === NEW_TAB_URL ? '' : url;
   const [inputValue, setInputValue] = useState(displayUrl);
 
-  // Sync input when URL changes externally (tab switch, bookmark click)
-  useEffect(() => {
+  const [previousDisplayUrl, setPreviousDisplayUrl] = useState(displayUrl);
+  if (previousDisplayUrl !== displayUrl) {
+    setPreviousDisplayUrl(displayUrl);
     setInputValue(displayUrl);
-  }, [displayUrl]);
+  }
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {

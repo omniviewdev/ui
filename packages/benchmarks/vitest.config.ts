@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import codspeed from '@codspeed/vitest-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const isCI = !!process.env.CI;
 const isDeterministic = !!process.env.DETERMINISTIC;
@@ -23,20 +27,14 @@ const deterministicExecArgv = [
   '--max-old-space-size=4096',
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineConfig(async () => {
   const plugins = [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
   ];
 
   if (isCI) {
-    const { default: codspeed } = await import('@codspeed/vitest-plugin');
-    // `as never` — codspeed returns its own Plugin type which doesn't match Vite 7's
-    // stricter PluginOption. The cast is safe; the plugin works at runtime.
+    // CodSpeed 6 selects a Vitest 5 benchmark provider when instrumented.
+    // Its bundled Vite Plugin type differs from this workspace's Vite type.
     plugins.push(codspeed() as never);
   }
 
@@ -64,6 +62,7 @@ export default defineConfig(async () => {
       setupFiles: ['./src/setup.ts'],
       pool: 'forks',
       fileParallelism: false,
+      testTimeout: 60_000,
       execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
     },
   };

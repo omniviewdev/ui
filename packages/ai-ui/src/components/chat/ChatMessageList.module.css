@@ -16,9 +16,15 @@
 .Inner {
   position: relative;
   width: 100%;
+  height: var(--_chat-list-height);
 }
 
 .Item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(var(--_chat-list-offset));
   display: flex;
   flex-direction: column;
   padding: 0 var(--ov-space-3, 12px);

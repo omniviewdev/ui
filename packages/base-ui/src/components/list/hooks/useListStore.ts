@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type { Key, ListStore, ListStoreSnapshot, ItemState } from '../types';
 
 /**
@@ -19,19 +19,10 @@ export function useListStore(disabledKeys: Set<Key>): ListStore {
   const snapshotRef = useRef<ListStoreSnapshot>({
     selectedKeys: new Set(),
     activeKey: null,
-    disabledKeys: new Set(),
+    disabledKeys: new Set(disabledKeys),
     registeredKeys: [],
   });
 
-  // Sync disabledKeys into refs and snapshot when they change
-  if (disabledKeysRef.current !== disabledKeys) {
-    disabledKeysRef.current = disabledKeys;
-    snapshotRef.current = {
-      ...snapshotRef.current,
-      disabledKeys: new Set(disabledKeys),
-    };
-    versionRef.current += 1;
-  }
 
   const emit = useCallback(() => {
     versionRef.current += 1;
@@ -43,6 +34,14 @@ export function useListStore(disabledKeys: Set<Key>): ListStore {
     };
     listenersRef.current.forEach((l) => l());
   }, []);
+
+  // Publish prop changes only after commit, then notify every subscriber.
+  useLayoutEffect(() => {
+    if (disabledKeysRef.current !== disabledKeys) {
+      disabledKeysRef.current = disabledKeys;
+      emit();
+    }
+  }, [disabledKeys, emit]);
 
   const subscribe = useCallback((listener: () => void) => {
     listenersRef.current.add(listener);
@@ -103,8 +102,8 @@ export function useListStore(disabledKeys: Set<Key>): ListStore {
     return textValuesRef.current.get(key);
   }, []);
 
-  // Stable ref so the store identity never changes
-  const storeRef = useRef<ListStore>({
+  // Keep the store identity stable for external-store subscriptions.
+  const [store] = useState<ListStore>(() => ({
     subscribe,
     getSnapshot,
     getItemState,
@@ -113,7 +112,7 @@ export function useListStore(disabledKeys: Set<Key>): ListStore {
     registerItem,
     getRegisteredKeys,
     getTextValue,
-  });
+  }));
 
-  return storeRef.current;
+  return store;
 }

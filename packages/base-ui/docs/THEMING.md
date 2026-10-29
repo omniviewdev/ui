@@ -63,7 +63,7 @@ removes theme attributes, inline token overrides, and `color-scheme` while
 leaving unrelated host-owned styles intact.
 
 Xterm terminals resolve tokens independently from their nearest themed
-ancestor. Monaco 0.52 has one page-global theme, so the last `CodeEditor` or
+ancestor. Monaco 0.57 has one page-global theme, so the last `CodeEditor` or
 `DiffViewer` to mount or receive a theme update rebuilds that shared theme from
 its nearest themed ancestor for every Monaco editor. Separate roots cannot
 display different Monaco palettes at the same time.

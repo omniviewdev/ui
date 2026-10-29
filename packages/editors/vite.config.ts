@@ -4,11 +4,26 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { DiagnosticCategory, getDefaultLibFilePath } from 'typescript';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+
+// The Omniview dev workspace supervisor owns node_modules and refuses changes
+// it did not write. Keep Vitest's result and module caches outside it.
+const testCache = path.join(
+  tmpdir(),
+  'omniview-vitest',
+  createHash('sha256')
+    .update(import.meta.dirname)
+    .digest('hex')
+    .slice(0, 16),
+);
 
 const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 
 export default defineConfig({
-  cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
+  cacheDir:
+    process.env.OMNIVIEW_VITE_CACHE_DIRECTORY ?? (process.env.VITEST ? testCache : undefined),
   plugins: [
     react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     dts({
@@ -62,6 +77,7 @@ export default defineConfig({
     ],
   },
   test: {
+    fsModuleCachePath: path.join(testCache, 'modules'),
     environment: 'jsdom',
     globals: true,
     setupFiles: './vitest.setup.ts',

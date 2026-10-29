@@ -3,6 +3,19 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import codspeed from '@codspeed/vitest-plugin';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
+
+// The Omniview dev workspace supervisor owns node_modules and refuses changes
+// it did not write. Keep Vitest's result and module caches outside it.
+const testCache = path.join(
+  tmpdir(),
+  'omniview-vitest',
+  createHash('sha256')
+    .update(import.meta.dirname)
+    .digest('hex')
+    .slice(0, 16),
+);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -39,6 +52,7 @@ export default defineConfig(async () => {
   }
 
   return {
+    cacheDir: testCache,
     plugins,
     resolve: {
       alias: [
@@ -55,6 +69,7 @@ export default defineConfig(async () => {
       ],
     },
     test: {
+      fsModuleCachePath: path.join(testCache, 'modules'),
       benchmark: {
         include: ['src/**/*.bench.{ts,tsx}'],
       },

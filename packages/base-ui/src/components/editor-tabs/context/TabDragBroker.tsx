@@ -12,6 +12,7 @@ import { createPortal } from 'react-dom';
 import type {
   AttachCommit,
   RemoteTabDragEvent,
+  RemoteTabDropResult,
   TabDescriptor,
   TabDragPayload,
   TabDragPointer,
@@ -396,7 +397,11 @@ export function TabDragBrokerProvider({
         }
 
         source.phase = 'dropping';
-        void transportAtRelease.drop(source.id, pointer).then(
+        // The executor turns a synchronous throw from the transport into a rejection,
+        // so every failure settles the session and the broker accepts new drags.
+        void new Promise<RemoteTabDropResult>((resolve) => {
+          resolve(transportAtRelease.drop(source.id, pointer));
+        }).then(
           (result) => {
             if (!isMountedRef.current) {
               settleSourceSession(source, null);
@@ -413,7 +418,7 @@ export function TabDragBrokerProvider({
           },
           (error: unknown) => {
             settleSourceSession(source, isMountedRef.current ? { type: 'cancelled' } : null);
-            throw error;
+            console.error('TabDragTransport.drop failed', error);
           },
         );
       };

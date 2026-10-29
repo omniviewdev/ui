@@ -80,7 +80,13 @@ export function useTabDetach({
       const hysteresis = threshold / 2;
 
       const onPointerMove = (e: PointerEvent) => {
-        pointerRef.current = { screenX: e.screenX, screenY: e.screenY, clientX: e.clientX, clientY: e.clientY };
+        const pointer: TabDragPointer = {
+          screenX: e.screenX,
+          screenY: e.screenY,
+          clientX: e.clientX,
+          clientY: e.clientY,
+        };
+        pointerRef.current = pointer;
         const rect = stripRectRef.current;
         if (!rect) return;
 
@@ -95,7 +101,7 @@ export function useTabDetach({
 
         if (currentMode === 'reorder' && (above || below || pastLeft || pastRight)) {
           updateMode('detach-armed');
-          onDetachArmed?.(activeIdRef.current!, e);
+          onDetachArmed?.(activeIdRef.current!, pointer);
         } else if (currentMode === 'detach-armed') {
           // Hysteresis: must come back within half-threshold on BOTH axes to revert.
           const withinY =

@@ -521,6 +521,46 @@ describe('TabDragBroker', () => {
       });
     });
 
+    it.each([
+      [
+        'throws synchronously',
+        () => {
+          throw new Error('bridge unavailable');
+        },
+      ],
+      ['rejects', () => Promise.reject(new Error('bridge unavailable'))],
+    ])('cancels and accepts a new session when the transport drop %s', async (_, failingDrop) => {
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const onCancel = vi.fn();
+      const onOutcome = vi.fn();
+      const { transport } = createFakeTabDragTransport();
+      transport.drop.mockImplementation(failingDrop);
+      const { result } = renderBroker({ onCancel, transport });
+
+      act(() => {
+        result.current.beginSession(
+          { tab: fakeTab, sourceInstanceId: 'src', allowTearOff: true, onOutcome },
+          startPointer,
+        );
+      });
+      firePointer('pointerup', { clientX: 2000, clientY: 50 });
+      await act(async () => {});
+
+      expect(onOutcome).toHaveBeenCalledExactlyOnceWith({ type: 'cancelled' });
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(consoleError).toHaveBeenCalledWith(
+        'TabDragTransport.drop failed',
+        new Error('bridge unavailable'),
+      );
+
+      act(() => {
+        result.current.beginSession({ tab: fakeTab, sourceInstanceId: 'src' }, startPointer);
+      });
+      expect(transport.begin).toHaveBeenCalledTimes(2);
+      expect(result.current.activeSession).not.toBeNull();
+      consoleError.mockRestore();
+    });
+
     it('drops the outcome when the provider unmounts while the drop is pending', async () => {
       const onOutcome = vi.fn();
       const { transport } = createFakeTabDragTransport();

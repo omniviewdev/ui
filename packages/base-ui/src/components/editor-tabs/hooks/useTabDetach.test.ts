@@ -143,10 +143,13 @@ describe('useTabDetach', () => {
       );
     });
 
-    expect(onDetachArmed).toHaveBeenCalledWith(
-      'tab1',
-      expect.objectContaining({ clientX: 40, clientY: 81, screenX: 500, screenY: 200 }),
-    );
+    // Strict equality fails for a live PointerEvent, whose coordinates are prototype getters.
+    expect(onDetachArmed).toHaveBeenCalledWith('tab1', {
+      clientX: 40,
+      clientY: 81,
+      screenX: 500,
+      screenY: 200,
+    });
   });
 
   it('transitions to detach-armed when pointer exceeds threshold above strip', () => {

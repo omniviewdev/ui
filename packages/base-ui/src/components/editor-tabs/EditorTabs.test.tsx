@@ -1,8 +1,10 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
+import { createFakeTabDragTransport } from '../../test/fakeTabDragTransport';
 import { EditorTabs } from './EditorTabs';
-import type { TabDescriptor, TabGroupDescriptor } from './types';
+import { TabDragBrokerProvider } from './context/TabDragBroker';
+import type { TabDescriptor, TabGroupDescriptor, TabDragTransport } from './types';
 
 const OriginalResizeObserver = globalThis.ResizeObserver;
 const OriginalMatchMedia = window.matchMedia;
@@ -292,5 +294,156 @@ describe('EditorTabs', () => {
     // No detach artifacts without an active drag
     expect(document.querySelector('[data-detach-source]')).not.toBeInTheDocument();
     expect(onDetachCommit).not.toHaveBeenCalled();
+  });
+
+  describe('broker mode', () => {
+    const sourceTabs: TabDescriptor[] = [
+      { id: 'file1', title: 'index.ts', payload: { path: '/src/index.ts' } },
+      { id: 'file2', title: 'App.tsx' },
+    ];
+    const targetTabs: TabDescriptor[] = [{ id: 'other1', title: 'README.md' }];
+
+    function renderSourceAndTarget({
+      transport,
+      targetDragType,
+    }: { transport?: TabDragTransport; targetDragType?: string } = {}) {
+      const callbacks = {
+        onCancel: vi.fn(),
+        onDetachCommit: vi.fn(),
+        onTabTransferred: vi.fn(),
+        onAttachTab: vi.fn(),
+      };
+      renderWithTheme(
+        <TabDragBrokerProvider onCancel={callbacks.onCancel} transport={transport}>
+          <EditorTabs
+            tabs={sourceTabs}
+            activeId="file1"
+            instanceId="source"
+            detachToBroker
+            onDetachCommit={callbacks.onDetachCommit}
+            onTabTransferred={callbacks.onTabTransferred}
+          />
+          <EditorTabs
+            tabs={targetTabs}
+            activeId="other1"
+            instanceId="target"
+            dragType={targetDragType}
+            onAttachTab={callbacks.onAttachTab}
+          />
+        </TabDragBrokerProvider>,
+      );
+
+      // jsdom has no layout: place the target strip's viewport at y=300..330.
+      const targetTab = screen.getByRole('tab', { name: 'README.md' });
+      const targetViewport = Array.from(targetTab.closest('[role="tablist"]')!.children).find(
+        (child) => child.contains(targetTab),
+      )!;
+      targetViewport.getBoundingClientRect = () =>
+        ({ left: 0, top: 300, right: 800, bottom: 330, width: 800, height: 30 }) as DOMRect;
+
+      return callbacks;
+    }
+
+    /** Drags `index.ts` far enough below its strip to arm the broker session. */
+    function dragSourceTabOut() {
+      const tab = screen.getByRole('tab', { name: 'index.ts' });
+      const pointer = { pointerId: 1, isPrimary: true, button: 0 };
+      fireEvent.pointerDown(tab, { ...pointer, clientX: 10, clientY: 10 });
+      // Passes dnd-kit's 6px activation distance.
+      fireEvent.pointerMove(document, { ...pointer, clientX: 10, clientY: 20 });
+      // Passes the detach threshold: the broker session starts.
+      fireEvent.pointerMove(document, { ...pointer, clientX: 100, clientY: 200 });
+    }
+
+    function release(init: PointerEventInit) {
+      fireEvent.pointerUp(document, { pointerId: 1, isPrimary: true, button: 0, ...init });
+    }
+
+    it('local attach fires onAttachTab on the target and onTabTransferred on the source', () => {
+      const callbacks = renderSourceAndTarget();
+
+      dragSourceTabOut();
+      release({ clientX: 100, clientY: 310 });
+
+      expect(callbacks.onAttachTab).toHaveBeenCalledExactlyOnceWith({
+        tab: sourceTabs[0],
+        sourceInstanceId: 'source',
+        insertIndex: 1,
+      });
+      expect(callbacks.onTabTransferred).toHaveBeenCalledExactlyOnceWith({
+        id: 'file1',
+        targetInstanceId: 'target',
+      });
+      expect(callbacks.onDetachCommit).not.toHaveBeenCalled();
+      expect(callbacks.onCancel).not.toHaveBeenCalled();
+    });
+
+    it('does not attach to a strip of another drag type', () => {
+      const callbacks = renderSourceAndTarget({ targetDragType: 'other-type' });
+
+      dragSourceTabOut();
+      release({ clientX: 100, clientY: 310, screenX: 1100, screenY: 1310 });
+
+      expect(callbacks.onAttachTab).not.toHaveBeenCalled();
+      expect(callbacks.onTabTransferred).not.toHaveBeenCalled();
+      expect(callbacks.onDetachCommit).toHaveBeenCalledTimes(1);
+    });
+
+    it('remote acceptance fires onTabTransferred with the remote instance id', async () => {
+      const { transport } = createFakeTabDragTransport({ targetInstanceId: 'remote-strip' });
+      const callbacks = renderSourceAndTarget({ transport });
+
+      dragSourceTabOut();
+      release({ clientX: 500, clientY: 600, screenX: 2500, screenY: 600 });
+      await act(async () => {});
+
+      expect(transport.begin).toHaveBeenCalledTimes(1);
+      expect(transport.drop).toHaveBeenCalledWith(transport.begin.mock.calls[0]![0], {
+        clientX: 500,
+        clientY: 600,
+        screenX: 2500,
+        screenY: 600,
+      });
+      expect(callbacks.onTabTransferred).toHaveBeenCalledExactlyOnceWith({
+        id: 'file1',
+        targetInstanceId: 'remote-strip',
+      });
+      expect(callbacks.onDetachCommit).not.toHaveBeenCalled();
+      expect(callbacks.onCancel).not.toHaveBeenCalled();
+    });
+
+    it('releasing over nothing fires onDetachCommit with the release point', async () => {
+      const { transport } = createFakeTabDragTransport(null);
+      const callbacks = renderSourceAndTarget({ transport });
+
+      dragSourceTabOut();
+      release({ clientX: 500, clientY: 600, screenX: 1500, screenY: 1600 });
+      await act(async () => {});
+
+      expect(callbacks.onDetachCommit).toHaveBeenCalledExactlyOnceWith({
+        id: 'file1',
+        payload: { path: '/src/index.ts' },
+        clientX: 500,
+        clientY: 600,
+        screenX: 1500,
+        screenY: 1600,
+      });
+      expect(callbacks.onTabTransferred).not.toHaveBeenCalled();
+      expect(callbacks.onCancel).not.toHaveBeenCalled();
+    });
+
+    it('Escape cancels: only onCancel fires', async () => {
+      const callbacks = renderSourceAndTarget();
+
+      dragSourceTabOut();
+      fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+      release({ clientX: 100, clientY: 310 });
+      await act(async () => {});
+
+      expect(callbacks.onCancel).toHaveBeenCalledTimes(1);
+      expect(callbacks.onAttachTab).not.toHaveBeenCalled();
+      expect(callbacks.onTabTransferred).not.toHaveBeenCalled();
+      expect(callbacks.onDetachCommit).not.toHaveBeenCalled();
+    });
   });
 });

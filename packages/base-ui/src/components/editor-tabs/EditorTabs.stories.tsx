@@ -21,7 +21,20 @@ import {
 import { EditorTabs } from './EditorTabs';
 import { ContextMenu } from '../context-menu';
 import { TabDragBrokerProvider } from './context/TabDragBroker';
-import type { TabDescriptor, TabGroupDescriptor, TabGroupId, TabId, AttachCommit } from './types';
+import type {
+  TabDescriptor,
+  TabGroupDescriptor,
+  TabGroupId,
+  TabId,
+  AttachCommit,
+  DetachCommit,
+  RemoteTabDragEvent,
+  RemoteTabDropResult,
+  TabDragPayload,
+  TabDragTransport,
+  TabDragType,
+  TabTransferCommit,
+} from './types';
 
 // ---------------------------------------------------------------------------
 // Meta
@@ -782,22 +795,65 @@ export const DetachDisabled: StoryObj<typeof EditorTabs> = {
 // Cross-window attach stories
 // ---------------------------------------------------------------------------
 
+function insertTabAt(tabs: TabDescriptor[], tab: TabDescriptor, index: number): TabDescriptor[] {
+  const next = tabs.filter((t) => t.id !== tab.id);
+  next.splice(Math.min(index, next.length), 0, tab);
+  return next;
+}
+
+/** Tab list + active tab of one strip, with the broker callbacks every strip needs. */
+interface StripTabs {
+  tabs: TabDescriptor[];
+  setTabs: React.Dispatch<React.SetStateAction<TabDescriptor[]>>;
+  activeId: TabId | undefined;
+  setActiveId: React.Dispatch<React.SetStateAction<TabId | undefined>>;
+  attachTab: (commit: AttachCommit) => void;
+  removeTab: (id: TabId) => void;
+}
+
+function useStripTabs(initialTabs: TabDescriptor[]): StripTabs {
+  const [tabs, setTabs] = useState(initialTabs);
+  const [activeId, setActiveId] = useState<TabId | undefined>(initialTabs[0]?.id);
+
+  const attachTab = (commit: AttachCommit) => {
+    setTabs((prev) => insertTabAt(prev, commit.tab, commit.insertIndex));
+    setActiveId(commit.tab.id);
+  };
+
+  const removeTab = (id: TabId) => {
+    setTabs((prev) => prev.filter((t) => t.id !== id));
+    setActiveId((current) => (current === id ? tabs.find((t) => t.id !== id)?.id : current));
+  };
+
+  return { tabs, setTabs, activeId, setActiveId, attachTab, removeTab };
+}
+
+type BrokerWindow = { id: string; tabs: TabDescriptor[]; x: number; y: number };
+
 function BrokerFakeWindow({
-  tab,
   instanceId,
+  tabs,
   x,
   y,
   onClose,
-  onRemoveTab,
+  onReorder,
+  onAttachTab,
+  onTabTransferred,
+  onDetachCommit,
 }: {
-  tab: TabDescriptor;
   instanceId: string;
+  tabs: TabDescriptor[];
   x: number;
   y: number;
   onClose: () => void;
-  onRemoveTab: (tabId: string) => void;
+  onReorder: (nextTabs: TabDescriptor[]) => void;
+  onAttachTab: (commit: AttachCommit) => void;
+  onTabTransferred: (commit: TabTransferCommit) => void;
+  onDetachCommit: (commit: DetachCommit) => void;
 }) {
   const [pos, setPos] = useState({ x, y });
+  const [selectedId, setSelectedId] = useState<TabId | undefined>(tabs[0]?.id);
+  const activeTab = tabs.find((t) => t.id === selectedId) ?? tabs[0];
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -890,7 +946,7 @@ function BrokerFakeWindow({
           <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
         </div>
         <span style={{ flex: 1, textAlign: 'center', opacity: 0.8, fontSize: 12 }}>
-          {tab.title}
+          {activeTab?.title}
         </span>
       </div>
       <div
@@ -900,14 +956,19 @@ function BrokerFakeWindow({
         }}
       >
         <EditorTabs
-          tabs={[{ ...tab, closable: false }]}
-          defaultActiveId={tab.id}
+          tabs={tabs}
+          activeId={activeTab?.id}
+          onActiveChange={setSelectedId}
           detachable={true}
           detachToBroker={true}
           instanceId={instanceId}
-          onDetachCommit={(commit) => {
-            onRemoveTab(commit.id);
+          onReorder={onReorder}
+          onAttachTab={(commit) => {
+            onAttachTab(commit);
+            setSelectedId(commit.tab.id);
           }}
+          onTabTransferred={onTabTransferred}
+          onDetachCommit={onDetachCommit}
         />
       </div>
       <div
@@ -922,22 +983,26 @@ function BrokerFakeWindow({
           overflow: 'auto',
         }}
       >
-        {fileContents[tab.title] ?? `// ${tab.title}\n// No preview available`}
+        {activeTab
+          ? (fileContents[activeTab.title] ?? `// ${activeTab.title}\n// No preview available`)
+          : null}
       </div>
     </div>
   );
 }
 
 /**
- * Cross-window attach: Detach a tab to spawn a FakeWindow, then drag a tab
- * from the FakeWindow back onto the main strip (or another window).
+ * Cross-window attach: every strip (main and each FakeWindow) is both a drag
+ * source and a drop target on one shared TabDragBrokerProvider.
  *
  * **Demo flow:**
- * 1. Drag a tab downward from the main strip to detach → FakeWindow spawns
- * 2. Drag a tab downward from a FakeWindow → ghost follows pointer
- * 3. Move ghost over the main strip → strip highlights with insertion indicator
- * 4. Release → tab attaches at that position
- * 5. Release elsewhere → tab returns to its source FakeWindow
+ * 1. Drag a tab out of any strip and release over nothing → a FakeWindow opens
+ *    at the release point holding that tab (tear-off).
+ * 2. Drag a tab onto another strip (main or a window) → the strip highlights
+ *    with an insertion indicator; release attaches it there and the source
+ *    removes it (`onTabTransferred`).
+ * 3. A window whose last tab leaves closes. Press Escape mid-drag to cancel:
+ *    the tab never leaves its strip.
  */
 export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
   args: {
@@ -971,89 +1036,148 @@ export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
         payload: { path: '/vite.config.ts' },
       },
     ],
-    defaultActiveId: 'file1',
     detachable: true,
     detachThresholdPx: 18,
+    detachToBroker: true,
   },
   render: function CrossWindowAttachRender(args) {
-    const [tabs, setTabs] = useState(args.tabs);
-    const [windows, setWindows] = useState<DetachedWindow[]>([]);
-    const lastPointerRef = useRef({ x: 0, y: 0 });
+    const main = useStripTabs(args.tabs);
+    const [windows, setWindows] = useState<BrokerWindow[]>([]);
 
-    const handlePointerMove = useCallback((e: React.PointerEvent) => {
-      lastPointerRef.current = { x: e.clientX, y: e.clientY };
-    }, []);
+    const openWindowAtRelease = (tab: TabDescriptor, commit: DetachCommit) => {
+      const { clientX, clientY } = commit;
+      setWindows((prev) => [
+        ...prev,
+        // Center the window horizontally under the release point.
+        { id: `window-${tab.id}-${Date.now()}`, tabs: [tab], x: clientX - 210, y: clientY - 16 },
+      ]);
+    };
 
-    const handleAttachTab = useCallback((commit: AttachCommit) => {
-      // Remove from source window if it came from one
-      setWindows((prev) => prev.filter((w) => w.tab.id !== commit.tab.id));
-      // Insert at the specified position
-      setTabs((prev) => {
-        const filtered = prev.filter((t) => t.id !== commit.tab.id);
-        const idx = Math.min(commit.insertIndex, filtered.length);
-        const next = [...filtered];
-        next.splice(idx, 0, commit.tab);
-        return next;
-      });
-    }, []);
-
-    const handleCancel = useCallback(
-      (session: { tab: TabDescriptor; sourceInstanceId: string }) => {
-        // Only re-create FakeWindow if the source was a window (not the main strip)
-        if (!session.sourceInstanceId.startsWith('window-')) return;
-        setWindows((prev) => {
-          if (prev.some((w) => w.tab.id === session.tab.id)) return prev;
-          return [...prev, { id: session.tab.id, tab: session.tab, x: 200, y: 200 }];
-        });
-      },
-      [],
-    );
+    /** Applies `update` to a window's tabs; a window left without tabs closes. */
+    const updateWindowTabs = (
+      windowId: string,
+      update: (tabs: TabDescriptor[]) => TabDescriptor[],
+    ) => {
+      setWindows((prev) =>
+        prev.flatMap((w) => {
+          if (w.id !== windowId) return [w];
+          const nextTabs = update(w.tabs);
+          return nextTabs.length > 0 ? [{ ...w, tabs: nextTabs }] : [];
+        }),
+      );
+    };
 
     return (
-      <TabDragBrokerProvider onCancel={handleCancel}>
-        <div onPointerMove={handlePointerMove} style={{ position: 'relative' }}>
-          <EditorTabs
-            {...args}
-            tabs={tabs}
-            instanceId="main"
-            onReorder={(nextTabs) => setTabs(nextTabs)}
-            onAttachTab={handleAttachTab}
+      <TabDragBrokerProvider>
+        <EditorTabs
+          {...args}
+          tabs={main.tabs}
+          activeId={main.activeId}
+          onActiveChange={main.setActiveId}
+          instanceId="main"
+          onReorder={(nextTabs) => main.setTabs(nextTabs)}
+          onAttachTab={main.attachTab}
+          onTabTransferred={(commit) => main.removeTab(commit.id)}
+          onDetachCommit={(commit) => {
+            const tab = main.tabs.find((t) => t.id === commit.id);
+            if (!tab) return;
+            main.removeTab(commit.id);
+            openWindowAtRelease(tab, commit);
+          }}
+        />
+        {windows.map((w) => (
+          <BrokerFakeWindow
+            key={w.id}
+            instanceId={w.id}
+            tabs={w.tabs}
+            x={w.x}
+            y={w.y}
+            onReorder={(nextTabs) => updateWindowTabs(w.id, () => nextTabs)}
+            onAttachTab={(commit) =>
+              updateWindowTabs(w.id, (tabs) => insertTabAt(tabs, commit.tab, commit.insertIndex))
+            }
+            onTabTransferred={(commit) =>
+              updateWindowTabs(w.id, (tabs) => tabs.filter((t) => t.id !== commit.id))
+            }
             onDetachCommit={(commit) => {
-              const tab = tabs.find((t) => t.id === commit.id);
+              const tab = w.tabs.find((t) => t.id === commit.id);
               if (!tab) return;
-              setWindows((prev) => [
-                ...prev,
-                {
-                  id: commit.id,
-                  tab,
-                  x: lastPointerRef.current.x - 210,
-                  y: lastPointerRef.current.y + 8,
-                },
-              ]);
-              setTabs((prev) => prev.filter((t) => t.id !== commit.id));
+              updateWindowTabs(w.id, (tabs) => tabs.filter((t) => t.id !== commit.id));
+              openWindowAtRelease(tab, commit);
+            }}
+            onClose={() => {
+              setWindows((prev) => prev.filter((p) => p.id !== w.id));
+              main.setTabs((prev) => [...prev, ...w.tabs]);
             }}
           />
-          {windows.map((w) => (
-            <BrokerFakeWindow
-              key={w.id}
-              tab={w.tab}
-              instanceId={`window-${w.id}`}
-              x={w.x}
-              y={w.y}
-              onRemoveTab={(tabId) => {
-                setWindows((prev) => prev.filter((p) => p.tab.id !== tabId));
-              }}
-              onClose={() => {
-                setWindows((prev) => prev.filter((p) => p.id !== w.id));
-                setTabs((prev) => [...prev, w.tab]);
-              }}
-            />
-          ))}
-        </div>
+        ))}
       </TabDragBrokerProvider>
     );
   },
 };
+
+/** One tab strip with a header label and the active tab's content below it. */
+function StripPane({
+  label,
+  instanceId,
+  strip,
+  dragType,
+}: {
+  label: string;
+  instanceId: string;
+  strip: StripTabs;
+  dragType?: TabDragType;
+}) {
+  const activeTab = strip.tabs.find((t) => t.id === strip.activeId) ?? strip.tabs[0];
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        border: '1px solid var(--ov-color-border-default, #333)',
+        borderRadius: 4,
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          padding: '4px 8px',
+          fontSize: 11,
+          opacity: 0.6,
+          background: 'var(--ov-color-bg-surface-raised, #252526)',
+        }}
+      >
+        {label}
+      </div>
+      <EditorTabs
+        tabs={strip.tabs}
+        activeId={activeTab?.id}
+        onActiveChange={strip.setActiveId}
+        detachable={true}
+        detachToBroker={true}
+        instanceId={instanceId}
+        dragType={dragType}
+        onReorder={(nextTabs) => strip.setTabs(nextTabs)}
+        onAttachTab={strip.attachTab}
+        onTabTransferred={(commit) => strip.removeTab(commit.id)}
+      />
+      <div
+        style={{
+          padding: '12px 16px',
+          fontSize: 12,
+          fontFamily: 'var(--ov-font-mono, monospace)',
+          color: 'var(--ov-color-fg-default, #d4d4d4)',
+          minHeight: 120,
+          whiteSpace: 'pre',
+        }}
+      >
+        {activeTab
+          ? (fileContents[activeTab.title] ?? `// ${activeTab.title}`)
+          : '// No files open'}
+      </div>
+    </div>
+  );
+}
 
 /**
  * Split pane attach: Two EditorTabs side by side. Drag a tab vertically from
@@ -1063,227 +1187,234 @@ export const CrossWindowAttach: StoryObj<typeof EditorTabs> = {
  * 1. Drag a tab downward from the left pane → ghost follows pointer
  * 2. Move ghost over the right pane → right strip highlights with insertion indicator
  * 3. Release → tab moves from left to right pane at the drop position
- * 4. Works in both directions
+ * 4. Works in both directions; releasing over nothing leaves the tab where it was
  */
 export const SplitPaneAttach: StoryObj<typeof EditorTabs> = {
   render: function SplitPaneAttachRender() {
-    const [leftTabs, setLeftTabs] = useState<TabDescriptor[]>([
+    const left = useStripTabs([
       { id: 'l1', title: 'index.ts', icon: <LuFileCode /> },
       { id: 'l2', title: 'App.tsx', icon: <LuCode /> },
       { id: 'l3', title: 'styles.css', icon: <LuFileType /> },
     ]);
-    const [rightTabs, setRightTabs] = useState<TabDescriptor[]>([
+    const right = useStripTabs([
       { id: 'r1', title: 'README.md', icon: <LuFileText /> },
       { id: 'r2', title: 'vite.config.ts', icon: <LuSettings /> },
     ]);
-    const [leftActiveId, setLeftActiveId] = useState<string | undefined>('l1');
-    const [rightActiveId, setRightActiveId] = useState<string | undefined>('r1');
-
-    const handleLeftAttach = useCallback((commit: AttachCommit) => {
-      setRightTabs((prev) => prev.filter((t) => t.id !== commit.tab.id));
-      setLeftTabs((prev) => {
-        const filtered = prev.filter((t) => t.id !== commit.tab.id);
-        const idx = Math.min(commit.insertIndex, filtered.length);
-        const next = [...filtered];
-        next.splice(idx, 0, commit.tab);
-        return next;
-      });
-      // Activate the dropped tab
-      setLeftActiveId(commit.tab.id);
-    }, []);
-
-    const handleRightAttach = useCallback((commit: AttachCommit) => {
-      setLeftTabs((prev) => prev.filter((t) => t.id !== commit.tab.id));
-      setRightTabs((prev) => {
-        const filtered = prev.filter((t) => t.id !== commit.tab.id);
-        const idx = Math.min(commit.insertIndex, filtered.length);
-        const next = [...filtered];
-        next.splice(idx, 0, commit.tab);
-        return next;
-      });
-      // Activate the dropped tab
-      setRightActiveId(commit.tab.id);
-    }, []);
-
-    const handleLeftDetach = useCallback((commit: { id: string }) => {
-      setLeftTabs((prev) => {
-        const remaining = prev.filter((t) => t.id !== commit.id);
-        // If we detached the active tab, select a neighbor
-        setLeftActiveId((current) => {
-          if (current !== commit.id) return current;
-          return remaining[0]?.id;
-        });
-        return remaining;
-      });
-    }, []);
-
-    const handleRightDetach = useCallback((commit: { id: string }) => {
-      setRightTabs((prev) => {
-        const remaining = prev.filter((t) => t.id !== commit.id);
-        setRightActiveId((current) => {
-          if (current !== commit.id) return current;
-          return remaining[0]?.id;
-        });
-        return remaining;
-      });
-    }, []);
-
-    const handleCancel = useCallback(
-      (session: { tab: TabDescriptor; sourceInstanceId: string }) => {
-        if (session.sourceInstanceId === 'left') {
-          setLeftTabs((prev) =>
-            prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
-          );
-        } else if (session.sourceInstanceId === 'right') {
-          setRightTabs((prev) =>
-            prev.some((t) => t.id === session.tab.id) ? prev : [...prev, session.tab],
-          );
-        }
-      },
-      [],
-    );
 
     return (
-      <TabDragBrokerProvider onCancel={handleCancel}>
-        <SplitPaneInner
-          leftTabs={leftTabs}
-          rightTabs={rightTabs}
-          leftActiveId={leftActiveId}
-          rightActiveId={rightActiveId}
-          setLeftActiveId={setLeftActiveId}
-          setRightActiveId={setRightActiveId}
-          setLeftTabs={setLeftTabs}
-          setRightTabs={setRightTabs}
-          onLeftAttach={handleLeftAttach}
-          onRightAttach={handleRightAttach}
-          onLeftDetach={handleLeftDetach}
-          onRightDetach={handleRightDetach}
-        />
+      <TabDragBrokerProvider>
+        <div style={{ display: 'flex', gap: 2 }}>
+          <StripPane label="Left Pane" instanceId="left" strip={left} />
+          <StripPane label="Right Pane" instanceId="right" strip={right} />
+        </div>
       </TabDragBrokerProvider>
     );
   },
 };
 
-function SplitPaneInner({
-  leftTabs,
-  rightTabs,
-  leftActiveId,
-  rightActiveId,
-  setLeftActiveId,
-  setRightActiveId,
-  setLeftTabs,
-  setRightTabs,
-  onLeftAttach,
-  onRightAttach,
-  onLeftDetach,
-  onRightDetach,
+// ---------------------------------------------------------------------------
+// Cross-document transport story
+// ---------------------------------------------------------------------------
+
+type InMemoryDocument = {
+  element: HTMLElement | null;
+  handlers: Set<(event: RemoteTabDragEvent) => void>;
+};
+
+type InMemoryDragSession = {
+  sourceDocument: string;
+  payload: TabDragPayload;
+  hoverDocument: string | null;
+};
+
+interface InMemoryTabDragHub {
+  createTransport: (documentName: string) => TabDragTransport;
+  setDocumentElement: (documentName: string, element: HTMLElement | null) => void;
+}
+
+/**
+ * Plays the role of the native window service for documents simulated as
+ * panes of one page: routes each broker's drag to the pane under the pointer,
+ * found by the pane's bounding rect.
+ */
+function createInMemoryTabDragHub(): InMemoryTabDragHub {
+  const documents = new Map<string, InMemoryDocument>();
+  const sessions = new Map<string, InMemoryDragSession>();
+
+  const getDocument = (name: string) => {
+    let simulatedDocument = documents.get(name);
+    if (!simulatedDocument) {
+      simulatedDocument = { element: null, handlers: new Set() };
+      documents.set(name, simulatedDocument);
+    }
+    return simulatedDocument;
+  };
+
+  const emit = (documentName: string, event: RemoteTabDragEvent) => {
+    for (const handler of getDocument(documentName).handlers) handler(event);
+  };
+
+  /** The other pane whose rect contains the client point, if any. */
+  const findTargetDocument = (session: InMemoryDragSession, clientX: number, clientY: number) => {
+    for (const [name, simulatedDocument] of documents) {
+      if (name === session.sourceDocument) continue;
+      const rect = simulatedDocument.element?.getBoundingClientRect();
+      if (!rect) continue;
+      if (
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+      ) {
+        return name;
+      }
+    }
+    return null;
+  };
+
+  const endSession = (sessionId: string) => {
+    sessions.delete(sessionId);
+    for (const name of documents.keys()) emit(name, { type: 'end', sessionId });
+  };
+
+  const createTransport = (documentName: string): TabDragTransport => ({
+    begin(sessionId, payload) {
+      sessions.set(sessionId, { sourceDocument: documentName, payload, hoverDocument: null });
+    },
+    move(sessionId, pointer) {
+      const session = sessions.get(sessionId);
+      if (!session) return;
+      const { clientX, clientY } = pointer;
+      const target = findTargetDocument(session, clientX, clientY);
+      if (session.hoverDocument && session.hoverDocument !== target) {
+        emit(session.hoverDocument, { type: 'leave', sessionId });
+      }
+      session.hoverDocument = target;
+      if (target) {
+        emit(target, { type: 'hover', sessionId, payload: session.payload, clientX, clientY });
+      }
+    },
+    drop(sessionId, pointer) {
+      const session = sessions.get(sessionId);
+      if (!session) return Promise.resolve(null);
+      const { clientX, clientY } = pointer;
+      const target = findTargetDocument(session, clientX, clientY);
+      if (!target) {
+        endSession(sessionId);
+        return Promise.resolve(null);
+      }
+      return new Promise<RemoteTabDropResult>((respond) => {
+        emit(target, {
+          type: 'drop',
+          sessionId,
+          payload: session.payload,
+          clientX,
+          clientY,
+          respond,
+        });
+      }).finally(() => endSession(sessionId));
+    },
+    cancel(sessionId) {
+      if (sessions.has(sessionId)) endSession(sessionId);
+    },
+    subscribe(handler) {
+      const { handlers } = getDocument(documentName);
+      handlers.add(handler);
+      return () => {
+        handlers.delete(handler);
+      };
+    },
+  });
+
+  const setDocumentElement = (documentName: string, element: HTMLElement | null) => {
+    getDocument(documentName).element = element;
+  };
+
+  return { createTransport, setDocumentElement };
+}
+
+function SimulatedDocumentPane({
+  hub,
+  documentName,
+  initialEditorTabs,
+  initialOtherTypeTabs,
 }: {
-  leftTabs: TabDescriptor[];
-  rightTabs: TabDescriptor[];
-  leftActiveId: string | undefined;
-  rightActiveId: string | undefined;
-  setLeftActiveId: (id: string) => void;
-  setRightActiveId: (id: string) => void;
-  setLeftTabs: React.Dispatch<React.SetStateAction<TabDescriptor[]>>;
-  setRightTabs: React.Dispatch<React.SetStateAction<TabDescriptor[]>>;
-  onLeftAttach: (commit: AttachCommit) => void;
-  onRightAttach: (commit: AttachCommit) => void;
-  onLeftDetach: (commit: { id: string }) => void;
-  onRightDetach: (commit: { id: string }) => void;
+  hub: InMemoryTabDragHub;
+  documentName: string;
+  initialEditorTabs: TabDescriptor[];
+  initialOtherTypeTabs: TabDescriptor[];
 }) {
-  const leftActiveTab = leftTabs.find((t) => t.id === leftActiveId) ?? leftTabs[0];
-  const rightActiveTab = rightTabs.find((t) => t.id === rightActiveId) ?? rightTabs[0];
+  const [transport] = useState(() => hub.createTransport(documentName));
+  const editorStrip = useStripTabs(initialEditorTabs);
+  const otherTypeStrip = useStripTabs(initialOtherTypeTabs);
 
   return (
-    <div style={{ display: 'flex', gap: 2 }}>
-      <div
-        style={{
-          flex: 1,
-          border: '1px solid var(--ov-color-border-default, #333)',
-          borderRadius: 4,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            padding: '4px 8px',
-            fontSize: 11,
-            opacity: 0.6,
-            background: 'var(--ov-color-bg-surface-raised, #252526)',
-          }}
-        >
-          Left Pane
-        </div>
-        <EditorTabs
-          tabs={leftTabs}
-          activeId={leftActiveId}
-          onActiveChange={setLeftActiveId}
-          detachable={true}
-          detachToBroker={true}
-          instanceId="left"
-          onReorder={(nextTabs) => setLeftTabs(nextTabs)}
-          onAttachTab={onLeftAttach}
-          onDetachCommit={onLeftDetach}
+    <div
+      ref={(element) => hub.setDocumentElement(documentName, element)}
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+        padding: 8,
+        border: '1px dashed var(--ov-color-border-default, #555)',
+        borderRadius: 6,
+      }}
+    >
+      <div style={{ fontSize: 12, opacity: 0.7 }}>Simulated window “{documentName}”</div>
+      <TabDragBrokerProvider transport={transport}>
+        <StripPane
+          label="editor-tab strip"
+          instanceId={`${documentName}-editor`}
+          strip={editorStrip}
         />
-        <div
-          style={{
-            padding: '12px 16px',
-            fontSize: 12,
-            fontFamily: 'var(--ov-font-mono, monospace)',
-            color: 'var(--ov-color-fg-default, #d4d4d4)',
-            minHeight: 120,
-            whiteSpace: 'pre',
-          }}
-        >
-          {leftActiveTab
-            ? (fileContents[leftActiveTab.title] ?? `// ${leftActiveTab.title}`)
-            : '// No files open'}
-        </div>
-      </div>
-      <div
-        style={{
-          flex: 1,
-          border: '1px solid var(--ov-color-border-default, #333)',
-          borderRadius: 4,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            padding: '4px 8px',
-            fontSize: 11,
-            opacity: 0.6,
-            background: 'var(--ov-color-bg-surface-raised, #252526)',
-          }}
-        >
-          Right Pane
-        </div>
-        <EditorTabs
-          tabs={rightTabs}
-          activeId={rightActiveId}
-          onActiveChange={setRightActiveId}
-          detachable={true}
-          detachToBroker={true}
-          instanceId="right"
-          onReorder={(nextTabs) => setRightTabs(nextTabs)}
-          onAttachTab={onRightAttach}
-          onDetachCommit={onRightDetach}
+        <StripPane
+          label="other-type strip (accepts only other-type tabs)"
+          instanceId={`${documentName}-other`}
+          strip={otherTypeStrip}
+          dragType="other-type"
         />
-        <div
-          style={{
-            padding: '12px 16px',
-            fontSize: 12,
-            fontFamily: 'var(--ov-font-mono, monospace)',
-            color: 'var(--ov-color-fg-default, #d4d4d4)',
-            minHeight: 120,
-            whiteSpace: 'pre',
-          }}
-        >
-          {rightActiveTab
-            ? (fileContents[rightActiveTab.title] ?? `// ${rightActiveTab.title}`)
-            : '// No files open'}
-        </div>
-      </div>
+      </TabDragBrokerProvider>
     </div>
   );
 }
+
+/**
+ * Cross-document transport: two independent TabDragBrokerProviders side by
+ * side stand in for two OS windows. They share no React state; tabs cross
+ * between them only through an in-memory `TabDragTransport` pair, the same
+ * contract the desktop app implements over native windows.
+ *
+ * **Demo flow:**
+ * 1. Drag a tab from the left editor strip into the right pane → the right
+ *    pane renders the ghost and highlights its editor strip.
+ * 2. Release → the right pane attaches the tab (from its serialized payload,
+ *    so without its icon) and the left strip removes it.
+ * 3. The other-type strips only exchange tabs with each other; editor tabs
+ *    released over them stay in their source strip.
+ */
+export const CrossDocumentTransport: StoryObj<typeof EditorTabs> = {
+  render: function CrossDocumentTransportRender() {
+    const [hub] = useState(() => createInMemoryTabDragHub());
+
+    return (
+      <div style={{ display: 'flex', gap: 24 }}>
+        <SimulatedDocumentPane
+          hub={hub}
+          documentName="left"
+          initialEditorTabs={[
+            { id: 'doc-l1', title: 'index.ts', icon: <LuFileCode /> },
+            { id: 'doc-l2', title: 'App.tsx', icon: <LuCode /> },
+          ]}
+          initialOtherTypeTabs={[{ id: 'doc-lo1', title: 'terminal 1' }]}
+        />
+        <SimulatedDocumentPane
+          hub={hub}
+          documentName="right"
+          initialEditorTabs={[{ id: 'doc-r1', title: 'README.md', icon: <LuFileText /> }]}
+          initialOtherTypeTabs={[{ id: 'doc-ro1', title: 'terminal 2' }]}
+        />
+      </div>
+    );
+  },
+};

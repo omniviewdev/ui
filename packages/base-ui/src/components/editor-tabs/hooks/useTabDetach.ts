@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
-import type { TabDescriptor, DetachCommit, DragMode, TabId } from '../types';
+import type { TabDescriptor, DetachCommit, DragMode, TabId, TabDragPointer } from '../types';
 
 export interface UseTabDetachOptions {
   detachable: boolean;
@@ -8,8 +8,8 @@ export interface UseTabDetachOptions {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   tabs: TabDescriptor[];
   onDetachCommit?: (commit: DetachCommit) => void;
-  /** Called when transitioning to detach-armed (pointer still down). Uses client coords for positioning. */
-  onDetachArmed?: (tabId: TabId, clientX: number, clientY: number) => void;
+  /** Called when transitioning to detach-armed (pointer still down), with client and screen coords. */
+  onDetachArmed?: (tabId: TabId, pointer: TabDragPointer) => void;
   /** Called when reverting from detach-armed back to reorder (hysteresis). */
   onDetachReverted?: () => void;
 }
@@ -34,7 +34,7 @@ export function useTabDetach({
   const [dragMode, setDragMode] = useState<DragMode>('idle');
   const dragModeRef = useRef<DragMode>('idle');
   const stripRectRef = useRef<DOMRect | null>(null);
-  const pointerRef = useRef<{ screenX: number; screenY: number }>({ screenX: 0, screenY: 0 });
+  const pointerRef = useRef<TabDragPointer>({ screenX: 0, screenY: 0, clientX: 0, clientY: 0 });
   const activeIdRef = useRef<TabId | null>(null);
   const rafRef = useRef<number>(0);
   const listenerRef = useRef<((e: PointerEvent) => void) | null>(null);
@@ -64,7 +64,11 @@ export function useTabDetach({
     (event: DragStartEvent) => {
       if (!detachable) return;
 
-      activeIdRef.current = String(event.active.id);
+      const activeId = String(event.active.id);
+      // A tab can opt out of detaching while the strip allows it; it stays reorder-only.
+      if (tabs.find((t) => t.id === activeId)?.detachable === false) return;
+
+      activeIdRef.current = activeId;
       const viewport = viewportRef.current;
       if (!viewport) return;
 
@@ -76,7 +80,7 @@ export function useTabDetach({
       const hysteresis = threshold / 2;
 
       const onPointerMove = (e: PointerEvent) => {
-        pointerRef.current = { screenX: e.screenX, screenY: e.screenY };
+        pointerRef.current = { screenX: e.screenX, screenY: e.screenY, clientX: e.clientX, clientY: e.clientY };
         const rect = stripRectRef.current;
         if (!rect) return;
 
@@ -91,7 +95,7 @@ export function useTabDetach({
 
         if (currentMode === 'reorder' && (above || below || pastLeft || pastRight)) {
           updateMode('detach-armed');
-          onDetachArmed?.(activeIdRef.current!, e.clientX, e.clientY);
+          onDetachArmed?.(activeIdRef.current!, e);
         } else if (currentMode === 'detach-armed') {
           // Hysteresis: must come back within half-threshold on BOTH axes to revert.
           const withinY =
@@ -108,7 +112,7 @@ export function useTabDetach({
       listenerRef.current = onPointerMove;
       document.addEventListener('pointermove', onPointerMove);
     },
-    [detachable, detachThresholdPx, viewportRef, updateMode, onDetachArmed, onDetachReverted],
+    [detachable, detachThresholdPx, viewportRef, tabs, updateMode, onDetachArmed, onDetachReverted],
   );
 
   // Tear down listener and pending rAF if the component unmounts mid-drag.
@@ -121,8 +125,7 @@ export function useTabDetach({
         onDetachCommit({
           id: activeIdRef.current,
           payload: tab?.payload,
-          screenX: pointerRef.current.screenX,
-          screenY: pointerRef.current.screenY,
+          ...pointerRef.current,
         });
       }
       cleanup();

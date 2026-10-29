@@ -25,4 +25,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Verify changeset exists for publishable changes
+        # The official version PR consumes the changesets it releases.
+        if: >-
+          ${{ github.head_ref != 'changeset-release/main'
+            || github.event.pull_request.head.repo.full_name != github.repository
+            || github.event.pull_request.user.login != 'github-actions[bot]' }}
         run: pnpm changeset status --since=origin/main

@@ -70,8 +70,16 @@ Use logical inline offsets for pinned cells. React synchronizes plain
 subscription source. Subscribe to table state for state edits, and let owning
 renders propagate changed data, columns, and selection predicates.
 
+## Release checks
+
+Source PRs that change publishable packages must include a changeset. The
+same-repository `changeset-release/main` PR authored by `github-actions[bot]`
+has already consumed those changesets, so only its changeset-presence step is
+exempt. Frozen installation and the existing preview's build, lint, native
+typechecks, component tests, and showcase validation still run. Forks and
+similarly named human-authored branches do not receive this exemption.
+
 ## Future additions (after component implementation starts)
 
 1. Add CSS linting (`stylelint`) for token and module CSS files.
 2. Add TypeScript project references for type-aware linting in package workspaces.
-3. Add CI gates for `pnpm validate`.

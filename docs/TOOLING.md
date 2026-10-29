@@ -31,7 +31,7 @@ pnpm build-storybook
 
 ## Benchmark fixtures
 
-Use `packages/benchmarks/src/utils/bench-render.ts` for component benchmarks. Rerender fixtures require both Tinybench `setup`/`teardown` options (native Vitest and CodSpeed walltime) and isolated Vitest `beforeAll`/`afterAll` hooks (CodSpeed 5 simulation). Initial mounts and normal cleanup must stay outside the measured rerender callback.
+Use `packages/benchmarks/src/utils/bench-render.ts` for component benchmarks. Vitest 5 and CodSpeed 6 use per-function `beforeAll`/`afterAll` options for rerender fixtures. Initial mounts and normal cleanup must stay outside the measured rerender callback. CPU simulation has a 10-minute per-case runner budget; native runs retain 60 seconds. Workloads and regression thresholds remain unchanged.
 
 Use Node 26.13.0 and the [benchmark validation commands](../packages/benchmarks/README.md#validation) to smoke-test both actual runners. `CI=true` alone does not activate CodSpeed's analysis runner locally; the documented simulation command explicitly selects it. The lifecycle regression benchmark runs in the normal CI shards without mocking the runner. Local lifecycle success does not certify simulation measurements or uploads.
 

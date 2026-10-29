@@ -110,6 +110,8 @@ CPU simulation measures estimated user-space CPU cost, including simulated cache
 
 The full suite runs in four native Vitest shards within one workflow, with fail-fast disabled. Each benchmark file belongs to exactly one shard; the matrix does not drop benchmarks or run duplicate configurations. This bounds per-job CPU-simulation startup cost after the serial suite exceeded its 30-minute deadline while still completing measurements. CodSpeed aggregates the four jobs as one workflow run.
 
+Vitest 5 executes benchmark registrations inside ordinary test cases. CPU simulation therefore has a bounded 10-minute per-case timeout; native runs retain 60 seconds. The unchanged 100-instance Combobox workload completed measurement in 411 seconds under simulation, exceeding the old test timeout despite finishing successfully. This runner budget does not change instance counts, iterations, measurement boundaries, or CodSpeed regression thresholds. The existing 30-minute shard deadline still bounds total CI work.
+
 CodSpeed uploads measurements and supplies comparison reports through its GitHub integration. Regression thresholds and PR comment behavior depend on the repository's CodSpeed settings. Benchmark and upload failures fail the job; empty measurements are not allowed. Each shard also uploads a `codspeed-simulation-<run-id>-<attempt>-<shard>` artifact containing benchmark stdout/stderr, including partial output if the benchmark command fails. If setup fails before benchmarks start, use the Actions job logs instead. The log artifact is execution evidence, not a standalone performance comparison report.
 
 ### Validation

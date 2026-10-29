@@ -101,6 +101,57 @@ describe('useTabDetach', () => {
     expect(addSpy).toHaveBeenCalledWith('pointermove', expect.any(Function));
   });
 
+  it('stays idle for a tab that opts out of detaching', () => {
+    const viewportRef = createMockViewportRef();
+    const tabsWithPendingTab: TabDescriptor[] = [
+      { id: 'pending-1', title: 'Connecting…', detachable: false },
+      { id: 'tab2', title: 'Tab 2' },
+    ];
+    const { result } = renderHook(() =>
+      useTabDetach({
+        detachable: true,
+        detachThresholdPx: 18,
+        viewportRef,
+        tabs: tabsWithPendingTab,
+      }),
+    );
+
+    act(() => {
+      result.current.handleDetachDragStart(makeDragStartEvent('pending-1'));
+    });
+
+    expect(result.current.dragMode).toBe('idle');
+    expect(addSpy).not.toHaveBeenCalledWith('pointermove', expect.any(Function));
+  });
+
+  it('passes client and screen coordinates to onDetachArmed', () => {
+    const viewportRef = createMockViewportRef({ top: 100, bottom: 140 });
+    const onDetachArmed = vi.fn();
+    const { result } = renderHook(() =>
+      useTabDetach({ detachable: true, detachThresholdPx: 18, viewportRef, tabs, onDetachArmed }),
+    );
+
+    act(() => {
+      result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
+    });
+    const pointerMoveHandler = addSpy.mock.calls.find(
+      (call: unknown[]) => call[0] === 'pointermove',
+    )?.[1] as EventListener;
+    act(() => {
+      pointerMoveHandler(
+        new PointerEvent('pointermove', { clientX: 40, clientY: 81, screenX: 500, screenY: 200 }),
+      );
+    });
+
+    // Strict equality fails for a live PointerEvent, whose coordinates are prototype getters.
+    expect(onDetachArmed).toHaveBeenCalledWith('tab1', {
+      clientX: 40,
+      clientY: 81,
+      screenX: 500,
+      screenY: 200,
+    });
+  });
+
   it('transitions to detach-armed when pointer exceeds threshold above strip', () => {
     const viewportRef = createMockViewportRef({ top: 100, bottom: 140 });
     const { result } = renderHook(() =>
@@ -181,6 +232,8 @@ describe('useTabDetach', () => {
     expect(onDetachCommit).toHaveBeenCalledWith({
       id: 'tab1',
       payload: { file: 'a.ts' },
+      clientX: 0,
+      clientY: 50,
       screenX: 500,
       screenY: 200,
     });

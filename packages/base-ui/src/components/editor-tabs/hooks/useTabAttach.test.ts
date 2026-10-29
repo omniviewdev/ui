@@ -124,7 +124,10 @@ describe('useTabAttach', () => {
 
     // Start a broker session from a different instance
     act(() => {
-      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 30, 15);
+      result.current.broker!.beginSession(
+        { tab: fakeTab, sourceInstanceId: 'other' },
+        { clientX: 30, clientY: 15, screenX: 30, screenY: 15 },
+      );
     });
 
     // Grab handlers the broker registered
@@ -235,7 +238,10 @@ describe('useTabAttach', () => {
 
     // Session 1: drop at x=60
     act(() => {
-      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 60, 15);
+      result.current.broker!.beginSession(
+        { tab: fakeTab, sourceInstanceId: 'other' },
+        { clientX: 60, clientY: 15, screenX: 60, screenY: 15 },
+      );
     });
 
     const moveCall1 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');
@@ -259,7 +265,10 @@ describe('useTabAttach', () => {
     // Session 2: drop at x=160
     addSpy.mockClear();
     act(() => {
-      result.current.broker!.beginSession({ tab: fakeTab, sourceInstanceId: 'other' }, 160, 15);
+      result.current.broker!.beginSession(
+        { tab: fakeTab, sourceInstanceId: 'other' },
+        { clientX: 160, clientY: 15, screenX: 160, screenY: 15 },
+      );
     });
 
     const moveCall2 = addSpy.mock.calls.find((c) => c[0] === 'pointermove');

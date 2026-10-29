@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useTabDragBroker } from '../context/TabDragBroker';
-import type { AttachCommit } from '../types';
+import type { AttachCommit, TabDragType } from '../types';
 
 export interface UseTabAttachOptions {
   instanceId: string;
   viewportRef: React.RefObject<HTMLDivElement | null>;
   onAttachTab?: (commit: AttachCommit) => void;
+  /** Only sessions of this type can drop here. Defaults to `'editor-tab'`. */
+  dragType?: TabDragType;
 }
 
 export interface UseTabAttachReturn {
@@ -17,6 +19,7 @@ export function useTabAttach({
   instanceId,
   viewportRef,
   onAttachTab,
+  dragType,
 }: UseTabAttachOptions): UseTabAttachReturn {
   const broker = useTabDragBroker();
   const registerDropZone = broker?.registerDropZone;
@@ -31,20 +34,17 @@ export function useTabAttach({
       getRect: () => viewportRef.current?.getBoundingClientRect() ?? null,
       getElement: () => viewportRef.current,
       onAttach: onAttachTab,
+      dragType,
     });
 
     return () => {
       unregisterDropZone(instanceId);
     };
-  }, [registerDropZone, unregisterDropZone, instanceId, viewportRef, onAttachTab]);
+  }, [registerDropZone, unregisterDropZone, instanceId, viewportRef, onAttachTab, dragType]);
 
-  const isDropTarget = broker?.hoverInstanceId === instanceId;
-
-  const insertIndex = isDropTarget ? (broker?.hoverInsertIndex ?? null) : null;
-
-  if (!broker) {
+  if (!broker || broker.hoverInstanceId !== instanceId) {
     return { isDropTarget: false, insertIndex: null };
   }
 
-  return { isDropTarget, insertIndex };
+  return { isDropTarget: true, insertIndex: broker.hoverInsertIndex };
 }

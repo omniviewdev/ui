@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useId, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -10,7 +10,11 @@ import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
 import { EditorTabsContext } from './context/EditorTabsContext';
-import { useTabDragBroker } from './context/TabDragBroker';
+import {
+  DEFAULT_TAB_DRAG_TYPE,
+  useTabDragBroker,
+  type TabDragOutcome,
+} from './context/TabDragBroker';
 import { useTabScroll } from './hooks/useTabScroll';
 import { useTabReorder } from './hooks/useTabReorder';
 import { useTabDetach } from './hooks/useTabDetach';
@@ -33,6 +37,8 @@ import type {
   ReorderMeta,
   DetachCommit,
   AttachCommit,
+  TabDragType,
+  TabTransferCommit,
 } from './types';
 import styles from './EditorTabs.module.css';
 
@@ -53,13 +59,24 @@ export interface EditorTabsProps extends Omit<StyledComponentProps, 'variant'> {
   allowReorderAcrossGroups?: boolean;
   detachable?: boolean;
   detachThresholdPx?: number;
+  /** Fired when a tab is released outside the strip. In broker mode, only when it lands on no target. */
   onDetachCommit?: (commit: DetachCommit) => void;
   instanceId?: string;
   onAttachTab?: (commit: AttachCommit) => void;
   /** When true and a TabDragBrokerProvider is present, vertical detach starts a
    *  broker session instead of the default Phase 3 flow. */
   detachToBroker?: boolean;
+  /** Strips only exchange tabs with strips of the same type. Defaults to `'editor-tab'`. */
+  dragType?: TabDragType;
+  /**
+   * Broker mode: fired once when a tab dragged from this strip was attached to
+   * another strip (in this document or another one). Remove the tab here.
+   */
+  onTabTransferred?: (commit: TabTransferCommit) => void;
   className?: string;
+  /** Accessible name of the tab list. Give one of these when a page has more than one strip. */
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /** CSS custom properties scoped to .Root that need snapshotting for DragOverlay portal. */
@@ -102,10 +119,14 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     instanceId: instanceIdProp,
     onAttachTab,
     detachToBroker = false,
+    dragType = DEFAULT_TAB_DRAG_TYPE,
+    onTabTransferred,
     variant,
     color,
     size,
     className,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
   },
   ref,
 ) {
@@ -165,15 +186,47 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     cssVarSnapshotRef.current = snapshot;
   }, []);
 
+  // Broker outcomes can arrive after the drag (remote drops are async): report
+  // them through the latest callbacks.
+  const onDetachCommitRef = useRef(onDetachCommit);
+  const onTabTransferredRef = useRef(onTabTransferred);
+  useLayoutEffect(() => {
+    onDetachCommitRef.current = onDetachCommit;
+    onTabTransferredRef.current = onTabTransferred;
+  }, [onDetachCommit, onTabTransferred]);
+
+  const reportBrokerOutcome = useCallback((tab: TabDescriptor, outcome: TabDragOutcome) => {
+    switch (outcome.type) {
+      case 'transferred':
+        onTabTransferredRef.current?.({ id: tab.id, targetInstanceId: outcome.targetInstanceId });
+        return;
+      case 'torn-off':
+        onDetachCommitRef.current?.({
+          id: tab.id,
+          payload: tab.payload,
+          screenX: outcome.screenX,
+          screenY: outcome.screenY,
+          clientX: outcome.clientX,
+          clientY: outcome.clientY,
+        });
+        return;
+      case 'cancelled':
+        return;
+    }
+  }, []);
+
+  const isBrokerMode = broker !== null && detachToBroker;
+
   const detach = useTabDetach({
     detachable,
     detachThresholdPx,
     viewportRef,
     tabs,
-    onDetachCommit,
+    // In broker mode the broker owns the outcome; the dnd-kit drag end never commits a detach.
+    onDetachCommit: isBrokerMode ? undefined : onDetachCommit,
     onDetachArmed:
       broker && detachToBroker
-        ? (tabId, clientX, clientY) => {
+        ? (tabId, pointer) => {
             const tab = tabs.find((t) => t.id === tabId);
             if (!tab) return;
             snapshotCssVars();
@@ -182,10 +235,12 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
               {
                 tab,
                 sourceInstanceId: instanceId,
+                dragType,
                 ghostStyle: cssVarSnapshotRef.current ?? undefined,
+                allowTearOff: onDetachCommit !== undefined,
+                onOutcome: (outcome) => reportBrokerOutcome(tab, outcome),
               },
-              clientX,
-              clientY,
+              pointer,
             );
           }
         : undefined,
@@ -193,14 +248,14 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       broker && detachToBroker
         ? () => {
             if (brokerSessionStarted.current) {
-              broker.clearSession();
+              broker.cancelSession();
               brokerSessionStarted.current = false;
             }
           }
         : undefined,
   });
 
-  const attach = useTabAttach({ instanceId, viewportRef, onAttachTab });
+  const attach = useTabAttach({ instanceId, viewportRef, onAttachTab, dragType });
 
   const dndModifiers = useMemo(
     () => [createDetachAwareModifier(detach.dragModeRef)],
@@ -224,9 +279,9 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
       } else {
         reorder.handleDragEnd(event);
         detach.handleDetachDragCancel();
-        // If broker was started but user reverted to reorder, clear it
+        // If broker was started but user reverted to reorder, cancel it
         if (brokerSessionStarted.current && broker) {
-          broker.clearSession();
+          broker.cancelSession();
         }
       }
       brokerSessionStarted.current = false;
@@ -238,7 +293,7 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
     reorder.handleDragCancel();
     detach.handleDetachDragCancel();
     if (brokerSessionStarted.current && broker) {
-      broker.clearSession();
+      broker.cancelSession();
     }
     brokerSessionStarted.current = false;
   }, [reorder, detach, broker]);
@@ -310,6 +365,8 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           className={cn(styles.Root, className)}
           role="tablist"
           aria-orientation="horizontal"
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           {...styleDataAttributes({ variant: variant as StyledComponentProps['variant'], color, size })}
         >
           <EditorTabScrollButton direction="left" />

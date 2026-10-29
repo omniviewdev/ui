@@ -19,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [query, setQuery] = useState('apiVersion');
     const [caseSensitive, setCaseSensitive] = useState(false);
     const [regex, setRegex] = useState(false);
@@ -52,7 +52,7 @@ export const Playground: Story = {
 
 export const WithReplace: Story = {
   name: 'With replace',
-  render: (args) => {
+  render: function Render(args) {
     const [query, setQuery] = useState('v1beta1');
     const [replaceText, setReplaceText] = useState('v1');
     const [caseSensitive, setCaseSensitive] = useState(false);
@@ -88,7 +88,7 @@ export const WithReplace: Story = {
 
 export const NoMatches: Story = {
   name: 'No matches',
-  render: (args) => {
+  render: function Render(args) {
     const [query, setQuery] = useState('nonexistent');
 
     return (
@@ -106,7 +106,7 @@ export const NoMatches: Story = {
 
 export const Closable: Story = {
   name: 'Open / Close',
-  render: () => {
+  render: function Render() {
     const [open, setOpen] = useState(true);
     const [query, setQuery] = useState('');
 

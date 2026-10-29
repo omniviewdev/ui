@@ -3,13 +3,16 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import type { AttachCommit, TabDescriptor } from '../types';
 import { DetachGhostTab } from '../DetachGhostTab';
+import styles from '../EditorTabs.module.css';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -37,6 +40,7 @@ export interface TabDragBrokerValue {
   registerDropZone: (reg: DropZoneRegistration) => void;
   unregisterDropZone: (instanceId: string) => void;
   hoverInstanceId: string | null;
+  hoverInsertIndex: number | null;
   pointerX: number;
   pointerY: number;
 }
@@ -78,6 +82,7 @@ function hitTestZone(rect: DOMRect, clientX: number, clientY: number): boolean {
 export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProviderProps) {
   const [activeSession, setActiveSession] = useState<TabDragSession | null>(null);
   const [hoverInstanceId, setHoverInstanceId] = useState<string | null>(null);
+  const [hoverInsertIndex, setHoverInsertIndex] = useState<number | null>(null);
   const [pointerX, setPointerX] = useState(0);
   const [pointerY, setPointerY] = useState(0);
 
@@ -87,7 +92,9 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
   const moveListenerRef = useRef<((e: PointerEvent) => void) | null>(null);
   const upListenerRef = useRef<((e: PointerEvent) => void) | null>(null);
   const onCancelRef = useRef(onCancel);
-  onCancelRef.current = onCancel;
+  useLayoutEffect(() => {
+    onCancelRef.current = onCancel;
+  }, [onCancel]);
 
   const cleanup = useCallback(() => {
     if (moveListenerRef.current) {
@@ -102,6 +109,7 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
     sessionRef.current = null;
     setActiveSession(null);
     setHoverInstanceId(null);
+    setHoverInsertIndex(null);
   }, []);
 
   const computeInsertIndex = useCallback((zone: DropZoneRegistration, clientX: number): number => {
@@ -143,16 +151,19 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
           setPointerY(e.clientY);
 
           let foundId: string | null = null;
+          let foundIndex: number | null = null;
           for (const [id, zone] of dropZonesRef.current) {
             if (id === sessionRef.current?.sourceInstanceId) continue;
             const rect = zone.getRect();
             if (!rect) continue;
             if (hitTestZone(rect, e.clientX, e.clientY)) {
               foundId = id;
+              foundIndex = computeInsertIndex(zone, e.clientX);
               break;
             }
           }
           setHoverInstanceId(foundId);
+          setHoverInsertIndex(foundIndex);
         });
       };
 
@@ -223,6 +234,7 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
     registerDropZone,
     unregisterDropZone,
     hoverInstanceId,
+    hoverInsertIndex,
     pointerX,
     pointerY,
   };
@@ -233,15 +245,12 @@ export function TabDragBrokerProvider({ children, onCancel }: TabDragBrokerProvi
       {activeSession &&
         createPortal(
           <div
+            className={styles.DragBrokerGhost}
             style={{
-              position: 'fixed',
-              left: pointerX,
-              top: pointerY,
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none',
-              zIndex: 99999,
+              '--_tab-drag-x': `${pointerX}px`,
+              '--_tab-drag-y': `${pointerY}px`,
               ...activeSession.ghostStyle,
-            }}
+            } as CSSProperties}
           >
             <DetachGhostTab tab={activeSession.tab} style={activeSession.ghostStyle} />
           </div>,

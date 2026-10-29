@@ -46,7 +46,7 @@ export const WithIcons: Story = {
 
 export const Controlled: Story = {
   name: 'Controlled',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('yaml');
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

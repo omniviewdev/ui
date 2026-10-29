@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type * as Monaco from 'monaco-editor';
 import type {
@@ -33,9 +33,12 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
     minHeight = 52, maxHeight = 180, className,
   } = props;
   const latest = useRef(props);
-  latest.current = props;
+  useLayoutEffect(() => {
+    latest.current = props;
+  }, [props]);
   const [filename] = useState(() => `cel-query-${++nextEditorId}:///query.cel`);
-  const [height, setHeight] = useState(minHeight);
+  const [contentHeight, setContentHeight] = useState(minHeight);
+  const height = Math.max(minHeight, Math.min(maxHeight, contentHeight));
   const [message, setMessage] = useState<string>();
   const [instance, setInstance] = useState<{
     editor: Monaco.editor.IStandaloneCodeEditor;
@@ -52,9 +55,7 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
     const { editor, monaco } = instance;
     const bridge = attachCelBridge(editor, monaco, () => latest.current, setMessage);
     bridgeRef.current = bridge;
-    const updateHeight = () => setHeight(Math.max(latest.current.minHeight ?? 52,
-      Math.min(latest.current.maxHeight ?? 180, editor.getContentHeight())));
-    updateHeight();
+    const updateHeight = () => setContentHeight(editor.getContentHeight());
     const sizeSubscription = editor.onDidContentSizeChange(updateHeight);
     return () => {
       sizeSubscription.dispose();
@@ -72,12 +73,12 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
     const editor = instance?.editor;
     if (!editor?.getModel()) return;
     editor.updateOptions({ ariaLabel: label });
-    setHeight(Math.max(minHeight, Math.min(maxHeight, editor.getContentHeight())));
-  }, [label, minHeight, maxHeight, instance]);
+  }, [label, instance]);
 
   function mount(editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco) {
+    setContentHeight(editor.getContentHeight());
     setInstance({ editor, monaco });
-    latest.current.onMount?.(editor, monaco);
+    props.onMount?.(editor, monaco);
   }
 
   return (

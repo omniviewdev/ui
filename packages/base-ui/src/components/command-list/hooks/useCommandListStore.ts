@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
   Key,
   CommandListStore,
@@ -133,11 +133,11 @@ export function useCommandListStore(): CommandListStore {
     return itemsRef.current[index];
   }, []);
 
-  // Stable ref so the store identity never changes across renders.
+  // Stable state keeps the store identity unchanged across renders.
   // All callbacks below are created with useCallback and have stable deps
   // (only referencing other stable refs/callbacks). Any future changes to
   // these callbacks must preserve stability to avoid stale closures.
-  const storeRef = useRef<CommandListStore>({
+  const [store] = useState<CommandListStore>(() => ({
     subscribe,
     getSnapshot,
     getItemState,
@@ -149,7 +149,7 @@ export function useCommandListStore(): CommandListStore {
     getItems,
     getItemByIndex,
     emit,
-  });
+  }));
 
-  return storeRef.current;
+  return store;
 }

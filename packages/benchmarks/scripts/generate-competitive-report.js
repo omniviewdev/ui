@@ -12,7 +12,7 @@ function loadJSON(filepath) {
   try {
     return JSON.parse(readFileSync(filepath, 'utf-8'));
   } catch (err) {
-    throw new Error(`Failed to parse JSON in ${filepath}: ${err.message}`);
+    throw new Error(`Failed to parse JSON in ${filepath}: ${err.message}`, { cause: err });
   }
 }
 
@@ -28,29 +28,30 @@ function formatOverhead(raw, lib) {
 }
 
 /**
- * Extract benchmarks from Vitest 4.x JSON, parsing the [label] suffix
+ * Extract Vitest 5 JSON reporter measurements, parsing the [label] suffix
  * to separate implementation name from benchmark name.
  *
  * Bench names look like: "mount [raw]", "mount [@omniviewdev/base-ui]", "mount [@mui/material]"
  */
 function extractCompetitiveBenchmarks(data) {
   const results = [];
-  for (const file of data.files ?? []) {
-    for (const group of file.groups ?? []) {
-      const parts = (group.fullName ?? '').split(' > ');
-      const suite = parts[parts.length - 1] || 'unknown';
+  for (const file of data.testResults ?? []) {
+    for (const test of file.assertionResults ?? []) {
+      const suite = test.ancestorTitles?.at(-1) || 'unknown';
 
-      for (const bench of group.benchmarks ?? []) {
-        // Parse "mount [raw]" → benchName="mount", impl="raw"
-        const match = bench.name.match(/^(.+?)\s+\[(.+)]$/);
-        if (!match) continue;
+      for (const group of test.benchmarks ?? []) {
+        for (const bench of group.tasks ?? []) {
+          // Parse "mount [raw]" → benchName="mount", impl="raw"
+          const match = bench.name.match(/^(.+?)\s+\[(.+)]$/);
+          if (!match) continue;
 
-        results.push({
-          suite: suite.replace(' competitive', ''),
-          benchName: match[1],
-          impl: match[2],
-          hz: bench.hz,
-        });
+          results.push({
+            suite: suite.replace(' competitive', ''),
+            benchName: match[1],
+            impl: match[2],
+            hz: bench.throughput.mean,
+          });
+        }
       }
     }
   }
@@ -71,7 +72,7 @@ function generateReport(data) {
   const lines = [
     '# Competitive Benchmark Report\n',
     `**Date:** ${new Date().toISOString()}`,
-    `**Environment:** JSDOM, Vitest ${data.version || 'unknown'}\n`,
+    '**Environment:** JSDOM, Vitest JSON reporter\n',
     '| Component | Metric | Raw (ops/s) | @omniview | overhead | @mui | overhead |',
     '|-----------|--------|-------------|-----------|----------|------|----------|',
   ];

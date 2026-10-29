@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { Table } from '@tanstack/react-table';
+import type { DataTableInstance } from '../types';
 import type { DragEndEvent } from '@dnd-kit/core';
 
 /**
@@ -7,14 +7,14 @@ import type { DragEndEvent } from '@dnd-kit/core';
  * Used with @dnd-kit/core DndContext in the DataTable root.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useColumnDnd(table: Table<any>) {
+export function useColumnDnd(table: DataTableInstance<any>) {
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
       if (!over || active.id === over.id) return;
 
-      const currentOrder = table.getState().columnOrder.length
-        ? table.getState().columnOrder
+      const currentOrder = table.atoms.columnOrder.get().length
+        ? table.atoms.columnOrder.get()
         : table.getAllLeafColumns().map((c) => c.id);
 
       const oldIndex = currentOrder.indexOf(active.id as string);

@@ -1,21 +1,20 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import codspeed from '@codspeed/vitest-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const isCI = !!process.env.CI;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineConfig(async () => {
   const plugins = [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
   ];
 
   if (isCI) {
-    const { default: codspeed } = await import('@codspeed/vitest-plugin');
     plugins.push(codspeed() as never);
   }
 
@@ -33,7 +32,7 @@ export default defineConfig(async () => {
       },
       browser: {
         enabled: true,
-        provider: 'playwright',
+        provider: playwright(),
         instances: [
           {
             browser: 'chromium',

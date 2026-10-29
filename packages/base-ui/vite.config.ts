@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { DiagnosticCategory } from 'typescript';
@@ -8,17 +8,14 @@ const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     dts({
+      tsconfigPath: './tsconfig.build.json',
       include: ['src'],
-      outDir: outputDirectory,
+      outDirs: outputDirectory,
       entryRoot: 'src',
       // Rolled declarations follow package.json's active dist entry.
-      rollupTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
+      bundleTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
       afterDiagnostic(diagnostics) {
         for (const diagnostic of diagnostics) {
           if (diagnostic.category === DiagnosticCategory.Error) {
@@ -36,7 +33,7 @@ export default defineConfig({
       fileName: () => 'index.js',
     },
     rollupOptions: {
-      external: ['react', 'react-dom', /^@base-ui\/react/],
+      external: [/^react(?:\/|$)/, /^react-dom(?:\/|$)/, /^@base-ui\/react/],
     },
     sourcemap: true,
   },

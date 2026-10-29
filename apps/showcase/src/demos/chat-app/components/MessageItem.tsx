@@ -131,8 +131,8 @@ function HoverActions({
       </IconButton>
       <Menu.Root>
         <Menu.Trigger
-          render={({ color: _, ...props }) => (
-            <IconButton {...props} variant="ghost" size="sm" aria-label="More actions">
+          render={(props) => (
+            <IconButton {...props} color="neutral" variant="ghost" size="sm" aria-label="More actions">
               <LuEllipsis size={14} />
             </IconButton>
           )}

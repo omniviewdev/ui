@@ -92,7 +92,6 @@ export const Playground: Story = {};
 export const Variants: Story = {
   render: (args) => {
     const buttonArgs: ButtonProps = {
-      children: args.children,
       color: args.color,
       disabled: args.disabled,
       size: args.size,

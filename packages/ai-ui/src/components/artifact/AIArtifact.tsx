@@ -90,7 +90,7 @@ export const AIArtifactDescription = forwardRef<HTMLParagraphElement, AIArtifact
 /*  AIArtifactClose                                                           */
 /* -------------------------------------------------------------------------- */
 
-export interface AIArtifactCloseProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'color'> {}
+export type AIArtifactCloseProps = Omit<HTMLAttributes<HTMLButtonElement>, 'color'>;
 
 export const AIArtifactClose = forwardRef<HTMLButtonElement, AIArtifactCloseProps>(
   function AIArtifactClose({ className, ...rest }, ref) {

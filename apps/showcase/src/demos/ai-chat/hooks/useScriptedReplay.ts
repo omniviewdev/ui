@@ -106,7 +106,7 @@ export function useScriptedReplay(options: UseScriptedReplayOptions) {
     // Phase: done
     schedule(() => {
       setState((s) => ({ ...s, phase: 'done' }));
-    }, (elapsed += 300));
+    }, elapsed + 300);
   }, [options, schedule, clearAllTimeouts]);
 
   const reset = useCallback(() => {

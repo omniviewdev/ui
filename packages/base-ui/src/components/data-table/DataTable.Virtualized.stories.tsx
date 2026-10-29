@@ -1,6 +1,7 @@
+import { Subscribe } from '@tanstack/react-table';
 import { useCallback, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
 import { LuEllipsisVertical } from 'react-icons/lu';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -58,23 +59,23 @@ const baseLogColumns: ColumnDef<LogEntry, unknown>[] = [
 
 const selectColumn: ColumnDef<LogEntry, unknown> = {
   id: 'select',
-  header: ({ table }) => (
+  header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ state, all: table.getIsAllRowsSelected(), some: table.getIsSomeRowsSelected(), allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
     <Checkbox
-      checked={table.getIsAllRowsSelected()}
-      indeterminate={table.getIsSomeRowsSelected()}
+      checked={selection.all}
+      indeterminate={selection.some}
       onCheckedChange={() => table.toggleAllRowsSelected()}
       size="sm"
       aria-label="Select all rows"
     />
-  ),
-  cell: ({ row }) => (
+  ))}</Subscribe>),
+  cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
     <Checkbox
-      checked={row.getIsSelected()}
+      checked={!!snapshot.selection[row.id]}
       onCheckedChange={() => row.toggleSelected()}
       size="sm"
       aria-label={`Select row ${row.index + 1}`}
     />
-  ),
+  ))}</Subscribe>),
   size: 40,
   enableSorting: false,
   enableResizing: false,
@@ -122,10 +123,7 @@ function TenThousandRowsStory() {
     features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {
-      columnPinning: {
-        left: ['select'],
-        right: ['actions'],
-      },
+      columnPinning: { start: ['select'], end: ['actions'] },
     },
   });
 
@@ -149,10 +147,7 @@ function FiftyThousandRowsStory() {
     features: virtualizedFeatures,
     getRowId: (row) => row.id,
     initialState: {
-      columnPinning: {
-        left: ['select'],
-        right: ['actions'],
-      },
+      columnPinning: { start: ['select'], end: ['actions'] },
     },
   });
 
@@ -252,7 +247,7 @@ function FixedHeightPinnedColumnsStory() {
     columns: fixedHeightColumns,
     features: virtualizedFeatures,
     getRowId: (row) => row.id,
-    initialState: { columnPinning: { left: ['select'], right: ['actions'] } },
+    initialState: { columnPinning: { start: ['select'], end: ['actions'] } },
   });
 
   return (
@@ -261,6 +256,22 @@ function FixedHeightPinnedColumnsStory() {
         Scroll horizontally: selection and actions must stay at opposite edges.
         Tall service content must not overlap the next fixed-height row.
       </p>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+        <button
+          type="button"
+          data-unpin-columns=""
+          onClick={() => table.setColumnPinning({ start: [], end: [] })}
+        >
+          Unpin columns
+        </button>
+        <button
+          type="button"
+          data-pin-columns=""
+          onClick={() => table.setColumnPinning({ start: ['select'], end: ['actions'] })}
+        >
+          Pin columns
+        </button>
+      </div>
       <DataTable.Root table={table} features={virtualizedFeatures} variant="soft" size="sm">
         <DataTable.Container height={300}>
           <DataTable.Header />
@@ -282,8 +293,8 @@ export const FixedHeightPinnedColumns: Story = {
       await nextFrame();
     }
     const row = viewport.querySelector<HTMLElement>('tbody tr');
-    const left = row?.querySelector<HTMLElement>('[data-ov-pinned="left"]');
-    const right = row?.querySelector<HTMLElement>('[data-ov-pinned="right"]');
+    const left = row?.querySelector<HTMLElement>('[data-ov-pinned="start"]');
+    const right = row?.querySelector<HTMLElement>('[data-ov-pinned="end"]');
     const tall = row?.querySelector<HTMLElement>('[data-tall-cell]');
     if (!row || !left || !right || !tall) throw new Error('Fixed-height pinning cells did not render');
     const assertNear = (actual: number, expected: number, label: string) => {
@@ -325,5 +336,29 @@ export const FixedHeightPinnedColumns: Story = {
       assertNear(viewport.scrollLeft, position, 'Outer viewport horizontal scroll');
       assertPinned();
     }
+    const unpin = canvasElement.querySelector<HTMLButtonElement>('[data-unpin-columns]');
+    const pin = canvasElement.querySelector<HTMLButtonElement>('[data-pin-columns]');
+    if (!unpin || !pin) throw new Error('Pinning controls did not render');
+    unpin.click();
+    await nextFrame();
+    await nextFrame();
+    viewport.scrollLeft = 200;
+    viewport.dispatchEvent(new Event('scroll'));
+    await nextFrame();
+    const unpinnedLeft = viewport.getBoundingClientRect().left + viewport.clientLeft;
+    assertNear(left.getBoundingClientRect().left, unpinnedLeft - viewport.scrollLeft, 'Unpinned selection cell');
+    assertNear(
+      right.getBoundingClientRect().right,
+      unpinnedLeft + viewport.scrollWidth - viewport.scrollLeft,
+      'Unpinned actions cell',
+    );
+    pin.click();
+    await nextFrame();
+    await nextFrame();
+    assertPinned();
+    viewport.scrollLeft = 0;
+    viewport.dispatchEvent(new Event('scroll'));
+    await nextFrame();
+    assertPinned();
   },
 };

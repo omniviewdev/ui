@@ -1,4 +1,3 @@
-'use no memo';
 
 import { memo, type ReactNode } from 'react';
 

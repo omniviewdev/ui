@@ -40,7 +40,9 @@ export function createThemeRegistry(): ThemeRegistry {
     });
     const summaries: readonly Readonly<ThemeSummary>[] = Object.freeze([
       ...BUILT_IN_THEMES,
-      ...custom.map(({ definition: _definition, ...summary }) => Object.freeze(summary)),
+      ...custom.map(({ id, name, base, appearance, description, builtIn, owner }) =>
+        Object.freeze({ id, name, base, appearance, description, builtIn, owner }),
+      ),
     ]);
     return Object.freeze({ themes: summaries });
   };

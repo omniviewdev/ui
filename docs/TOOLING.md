@@ -33,7 +33,7 @@ pnpm build-storybook
 
 Use `packages/benchmarks/src/utils/bench-render.ts` for component benchmarks. Rerender fixtures require both Tinybench `setup`/`teardown` options (native Vitest and CodSpeed walltime) and isolated Vitest `beforeAll`/`afterAll` hooks (CodSpeed 5 simulation). Initial mounts and normal cleanup must stay outside the measured rerender callback.
 
-Use Node 20 and the [benchmark validation commands](../packages/benchmarks/README.md#validation) to smoke-test both actual runners. `CI=true` alone does not activate CodSpeed's analysis runner locally; the documented simulation command explicitly selects it. The lifecycle regression benchmark runs in the normal CI shards without mocking the runner. Local lifecycle success does not certify simulation measurements or uploads.
+Use Node 26.13.0 and the [benchmark validation commands](../packages/benchmarks/README.md#validation) to smoke-test both actual runners. `CI=true` alone does not activate CodSpeed's analysis runner locally; the documented simulation command explicitly selects it. The lifecycle regression benchmark runs in the normal CI shards without mocking the runner. Local lifecycle success does not certify simulation measurements or uploads.
 
 ## Compiler-sensitive component tests
 
@@ -44,6 +44,12 @@ mutable controller, so table renderers that read its live state use the existing
 Body cells share layout styles per visible column, keyed by actual column layout
 state. Do not memoize row models or arbitrary cell-renderer output by the stable
 table reference: those reads must remain live across data and state updates.
+
+TanStack Table 9 uses complete `{ start: [], end: [] }` column-pinning state.
+Use logical inline offsets for pinned cells. React synchronizes plain
+`table.options` during render; `optionsStore` is optional and is not a React
+subscription source. Subscribe to table state for state edits, and let owning
+renders propagate changed data, columns, and selection predicates.
 
 ## Future additions (after component implementation starts)
 

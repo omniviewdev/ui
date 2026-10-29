@@ -9,16 +9,13 @@ const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     dts({
-      outDir: outputDirectory,
+      tsconfigPath: './tsconfig.build.json',
+      outDirs: outputDirectory,
       entryRoot: 'src',
       // Rolled declarations follow package.json's active dist entry.
-      rollupTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
+      bundleTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
       afterDiagnostic(diagnostics) {
         for (const diagnostic of diagnostics) {
           if (diagnostic.category === DiagnosticCategory.Error) {
@@ -39,8 +36,8 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        'react',
-        'react-dom',
+        /^react(?:\/|$)/,
+        /^react-dom(?:\/|$)/,
         /^@omniviewdev\/base-ui/,
         /^monaco-editor/,
         /^@xterm/,
@@ -52,12 +49,10 @@ export default defineConfig({
     sourcemap: true,
   },
   resolve: {
+    // Monaco 0.52 publishes its ESM entry through module, not main.
+    mainFields: ['module', 'main'],
     alias: [
       { find: '@omniviewdev/base-ui', replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)) },
-      // monaco-editor@0.52 only has "module" (no "exports"), which Vite 7
-      // can't resolve. Exact-match alias avoids clobbering subpath imports
-      // like monaco-editor/esm/vs/language/json/json.worker.js.
-      { find: /^monaco-editor$/, replacement: 'monaco-editor/esm/vs/editor/editor.main.js' },
     ],
   },
   test: {

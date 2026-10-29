@@ -1,6 +1,8 @@
+import { Subscribe } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ColumnDef, ExpandedState } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
+import type { ExpandedState } from '@tanstack/react-table';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
 
@@ -29,12 +31,12 @@ const columns: ColumnDef<Resource, unknown>[] = [
     id: 'actions',
     header: 'Selection / details',
     size: 160,
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
       <>
         <input
           type="checkbox"
           aria-label={`Select ${row.original.name}`}
-          checked={row.getIsSelected()}
+          checked={!!snapshot.selection[row.id]}
           onChange={row.getToggleSelectedHandler()}
         />
         <DataTable.ExpansionToggle
@@ -47,7 +49,7 @@ const columns: ColumnDef<Resource, unknown>[] = [
           }
         />
       </>
-    ),
+    ))}</Subscribe>),
   },
   {
     accessorKey: 'name',
@@ -73,14 +75,14 @@ const diskColumns: ColumnDef<(typeof disks)[number], unknown>[] = [
   {
     id: 'select',
     header: 'Nested selection',
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
       <input
         type="checkbox"
         aria-label="Select prepared disk"
-        checked={row.getIsSelected()}
+        checked={!!snapshot.selection[row.id]}
         onChange={row.getToggleSelectedHandler()}
       />
-    ),
+    ))}</Subscribe>),
   },
 ];
 

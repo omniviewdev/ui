@@ -64,7 +64,7 @@ export const EditorTabItem = memo(
         const currentIndex = allTabs.indexOf(tab.id);
         if (currentIndex === -1) return;
 
-        let targetIndex: number | null = null;
+        let targetIndex: number;
 
         switch (e.key) {
           case 'ArrowRight':

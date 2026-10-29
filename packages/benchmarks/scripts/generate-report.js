@@ -12,7 +12,7 @@ function loadJSON(filepath) {
   try {
     return JSON.parse(readFileSync(filepath, 'utf-8'));
   } catch (err) {
-    throw new Error(`Failed to parse JSON in ${filepath}: ${err.message}`);
+    throw new Error(`Failed to parse JSON in ${filepath}: ${err.message}`, { cause: err });
   }
 }
 
@@ -23,33 +23,35 @@ function formatHz(hz) {
 }
 
 /**
- * Extract flat benchmark list from Vitest 4.x benchmark JSON output.
- * Format: files[].groups[].benchmarks[] with { name, hz, mean, rme, sampleCount }
- * The group's fullName contains the suite (e.g., "src/base-ui/Button.bench.tsx > Button")
+ * Extract measurements from Vitest 5's JSON reporter.
+ * Format: testResults[].assertionResults[].benchmarks[].tasks[].
+ * Keep suite and registration names separate to preserve report identities.
  */
 function extractBenchmarks(data) {
   const results = [];
-  for (const file of data.files ?? []) {
-    for (const group of file.groups ?? []) {
-      // Extract suite name from fullName (e.g., "src/base-ui/Button.bench.tsx > Button" → "Button")
-      const parts = (group.fullName ?? '').split(' > ');
-      const suite = parts[parts.length - 1] || group.fullName || 'unknown';
+  for (const file of data.testResults ?? []) {
+    const normalizedPath = file.name.replaceAll('\\', '/');
+    const sourceIndex = normalizedPath.lastIndexOf('/src/');
+    const fileName = sourceIndex < 0 ? normalizedPath : normalizedPath.slice(sourceIndex + 1);
+    for (const test of file.assertionResults ?? []) {
+      const suites = (test.ancestorTitles ?? []).slice(1);
+      const suite = suites.at(-1) || 'unknown';
+      const matchKey = [fileName, ...suites].join(' > ');
 
-      // Use fullName as a stable key for baseline matching (suite is display-only)
-      const matchKey = group.fullName || suite;
-
-      for (const bench of group.benchmarks ?? []) {
-        results.push({
-          matchKey,
-          suite,
-          name: bench.name,
-          hz: bench.hz,
-          mean: bench.mean,
-          median: bench.median,
-          p99: bench.p99,
-          rme: bench.rme,
-          sampleCount: bench.sampleCount,
-        });
+      for (const group of test.benchmarks ?? []) {
+        for (const bench of group.tasks ?? []) {
+          results.push({
+            matchKey,
+            suite,
+            name: bench.name,
+            hz: bench.throughput.mean,
+            mean: bench.latency.mean,
+            median: bench.latency.p50,
+            p99: bench.latency.p99,
+            rme: bench.latency.rme,
+            sampleCount: bench.latency.samplesCount,
+          });
+        }
       }
     }
   }

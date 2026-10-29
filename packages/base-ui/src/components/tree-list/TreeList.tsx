@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   useSyncExternalStore,
   Fragment,
   type CSSProperties,
@@ -307,26 +308,17 @@ function TreeListNodes<TItem>({
     }
     return keys;
   }, [flatNodes, isItemSelectable]);
-  store.setSourceNonSelectableKeys(sourceNonSelectableKeys);
-  const previousNodes = useRef<typeof flatNodes | null>(null);
-  const needsNotify = useRef(false);
-  if (previousNodes.current !== flatNodes) {
-    previousNodes.current = flatNodes;
+  useLayoutEffect(() => {
+    store.setSourceNonSelectableKeys(sourceNonSelectableKeys);
     store.setFlatNodes(flatNodes, true);
-    needsNotify.current = true;
     if (getTextValue) {
       for (const node of flatNodes) {
         const text = getTextValue(node.item as TItem);
         if (text) store.registerTextValue(node.key, text);
       }
     }
-  }
-  useLayoutEffect(() => {
-    if (needsNotify.current) {
-      needsNotify.current = false;
-      store.emit();
-    }
-  });
+    store.emit();
+  }, [store, flatNodes, sourceNonSelectableKeys, getTextValue]);
 
   const nodesByKey = useMemo(() => {
     const map = new Map<Key, FlatNode>();
@@ -395,12 +387,12 @@ function TreeListRootImpl<TItem>(
     props.order !== undefined ||
     props.defaultOrder !== undefined ||
     props.onOrderChange !== undefined;
-  const hasEnabledOrdering = useRef(false);
-  if (isOrdered) hasEnabledOrdering.current = true;
+  const [hasEnabledOrdering, setHasEnabledOrdering] = useState(isOrdered);
+  if (isOrdered && !hasEnabledOrdering) setHasEnabledOrdering(true);
 
   return (
     <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref}>
-      {hasEnabledOrdering.current ? (
+      {hasEnabledOrdering || isOrdered ? (
         <OrderedTreeListNodes {...props} treeState={treeState} />
       ) : (
         <TreeListNodes {...props} treeState={treeState} />

@@ -167,7 +167,7 @@ export function Calendar(props: CalendarProps) {
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const current = focusedDate;
-    let next: Date | null = null;
+    let next: Date;
     switch (e.key) {
       case 'ArrowRight':
         next = addDays(current, 1);

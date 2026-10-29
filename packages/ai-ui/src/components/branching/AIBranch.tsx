@@ -105,7 +105,7 @@ export const AIBranchSelector = forwardRef<HTMLDivElement, AIBranchSelectorProps
 
 // ── AIBranchPrevious ─────────────────────────────────────────────────
 
-export interface AIBranchPreviousProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'color'> {}
+export type AIBranchPreviousProps = Omit<HTMLAttributes<HTMLButtonElement>, 'color'>;
 
 export const AIBranchPrevious = forwardRef<HTMLElement, AIBranchPreviousProps>(
   function AIBranchPrevious(props, ref) {
@@ -131,7 +131,7 @@ export const AIBranchPrevious = forwardRef<HTMLElement, AIBranchPreviousProps>(
 
 // ── AIBranchNext ─────────────────────────────────────────────────────
 
-export interface AIBranchNextProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'color'> {}
+export type AIBranchNextProps = Omit<HTMLAttributes<HTMLButtonElement>, 'color'>;
 
 export const AIBranchNext = forwardRef<HTMLElement, AIBranchNextProps>(
   function AIBranchNext(props, ref) {
@@ -157,7 +157,7 @@ export const AIBranchNext = forwardRef<HTMLElement, AIBranchNextProps>(
 
 // ── AIBranchIndicator ────────────────────────────────────────────────
 
-export interface AIBranchIndicatorProps extends HTMLAttributes<HTMLSpanElement> {}
+export type AIBranchIndicatorProps = HTMLAttributes<HTMLSpanElement>;
 
 export const AIBranchIndicator = forwardRef<HTMLSpanElement, AIBranchIndicatorProps>(
   function AIBranchIndicator({ className, ...rest }, ref) {

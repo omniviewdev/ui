@@ -1,9 +1,6 @@
-import type { BenchOptions } from 'vitest';
+import type { BenchRunOptions } from 'vitest';
 
-export interface BenchRenderOptions extends BenchOptions {
-  /** Number of warmup iterations before measurement. Default: 5 */
-  warmupIterations?: number;
-}
+export type BenchRenderOptions = BenchRunOptions;
 
 const DEFAULT_OPTIONS: BenchRenderOptions = {
   iterations: 100,

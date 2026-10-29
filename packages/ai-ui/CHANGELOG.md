@@ -1,5 +1,11 @@
 # @omniviewdev/ai-ui
 
+## Unreleased
+
+- Upgrade the React 19.3.1 frontend cohort and compile production components in behavior tests.
+- Move reasoning and streaming UI state to explicit committed or derived ownership so the React Compiler can optimize without render-time ref mutation.
+- Emit production declarations independently from test and story sources.
+
 ## 6.0.2
 
 ### Patch Changes

@@ -87,14 +87,13 @@ export function ThemeProvider({
   registry = themeRegistry,
   root,
 }: ThemeProviderProps) {
-  useSyncExternalStore(registry.subscribe, registry.getSnapshot, registry.getSnapshot);
-
-  const requestedTheme = registry.get(themeId);
-  const configuredFallback = registry.get(fallbackThemeId);
-  const defaultFallback = registry.get('void');
-  const activeTheme = requestedTheme ?? configuredFallback ?? defaultFallback;
+  const getActiveTheme = useCallback(
+    () => registry.get(themeId) ?? registry.get(fallbackThemeId) ?? registry.get('void'),
+    [registry, themeId, fallbackThemeId],
+  );
+  const activeTheme = useSyncExternalStore(registry.subscribe, getActiveTheme, getActiveTheme);
   if (!activeTheme) throw new Error('Theme registry must contain the built-in "void" theme');
-  const isFallback = requestedTheme === undefined;
+  const isFallback = activeTheme.id !== themeId;
 
   useInsertionEffect(() => {
     const target = root === undefined
@@ -114,13 +113,13 @@ export function ThemeProvider({
   const [density, setDensity] = useState<ThemeDensity>(initialDensity);
   const [motion, setMotion] = useState<ThemeMotion>(initialMotion);
   const preferenceOwnerRef = useRef<RootPreferenceEntry | null>(null);
-  const preferenceOwner = preferenceOwnerRef.current ?? { density, motion };
-  preferenceOwnerRef.current = preferenceOwner;
   useInsertionEffect(() => {
     const target = root === undefined
       ? (typeof document === 'undefined' ? null : document.documentElement)
       : root;
     if (!target) return;
+    const preferenceOwner = preferenceOwnerRef.current ?? { density, motion };
+    preferenceOwnerRef.current = preferenceOwner;
 
     return applyRootPreferences(target, preferenceOwner, density, motion);
   }, [density, motion, root]);

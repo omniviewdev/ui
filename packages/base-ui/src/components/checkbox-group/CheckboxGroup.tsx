@@ -11,7 +11,7 @@ import {
 import { Checkbox, type CheckboxItemProps } from '../checkbox';
 import styles from './CheckboxGroup.module.css';
 
-interface CheckboxGroupContextValue extends StyledComponentProps {}
+type CheckboxGroupContextValue = StyledComponentProps;
 
 const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
 

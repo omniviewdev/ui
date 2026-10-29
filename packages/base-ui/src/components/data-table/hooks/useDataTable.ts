@@ -1,28 +1,25 @@
 import { useRef, useState } from 'react';
 import {
-  useReactTable,
+  useTable,
   functionalUpdate,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getExpandedRowModel,
-  type Table,
   type TableState,
   type Updater,
+  type RowData,
 } from '@tanstack/react-table';
-import type { UseDataTableOptions } from '../types';
+import type { DataTableFeatures, DataTableInstance, UseDataTableOptions } from '../types';
 import {
+  dataTableFeatures,
   DEFAULT_COLUMN_MAX_SIZE,
   DEFAULT_COLUMN_MIN_SIZE,
   DEFAULT_FEATURES,
   DEFAULT_PAGE_SIZE,
 } from '../constants';
 
-export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData>): Table<TData> {
-  'use no memo'; // TanStack Table v8 mutates its stable instance.
+type DataTableState = TableState<DataTableFeatures>;
+
+export function useDataTable<TData extends RowData = RowData>(options: UseDataTableOptions<TData>): DataTableInstance<TData> {
   const features = { ...DEFAULT_FEATURES, ...options.features };
-  const [internalState, setInternalState] = useState<Partial<TableState>>(() => ({
+  const [internalState, setInternalState] = useState<Partial<DataTableState>>(() => ({
     sorting: [],
     grouping: [],
     globalFilter: '',
@@ -30,27 +27,26 @@ export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData
     columnVisibility: {},
     columnOrder: [],
     columnSizing: {},
-    columnPinning: {},
+    columnPinning: { start: [], end: [] },
     rowSelection: {},
     expanded: {},
     pagination: { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE },
     ...options.initialState,
   }));
   const pendingState = useRef(internalState);
-  pendingState.current = internalState;
 
   // Notify outside a state updater: React may replay updaters in Strict Mode.
   // Controlled edits never mutate local state or optimistically alter host order.
-  function change<K extends keyof TableState>(
+  function change<K extends keyof DataTableState>(
     key: K,
-    updater: Updater<TableState[K]>,
-    notify?: (value: TableState[K]) => void,
+    updater: Updater<DataTableState[K]>,
+    notify?: (value: DataTableState[K]) => void,
   ) {
     const controlled = options.state?.[key] !== undefined;
     const current =
       !controlled && Object.hasOwn(pendingState.current, key)
-        ? (pendingState.current[key] as TableState[K])
-        : table.getState()[key];
+        ? (pendingState.current[key] as DataTableState[K])
+        : table.atoms[key].get();
     const next = functionalUpdate(updater, current);
     if (!controlled) {
       // Advance synchronously so batched edits compose before React rerenders.
@@ -60,7 +56,8 @@ export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData
     notify?.(next);
   }
 
-  const table = useReactTable({
+  const table = useTable<DataTableFeatures, TData>({
+    features: dataTableFeatures,
     data: options.data,
     columns: options.columns,
     initialState: options.initialState,
@@ -85,11 +82,12 @@ export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData
         ? (options.getRowCanSelect ?? true)
         : false,
     enableMultiRowSelection: features.rowSelection === 'multi',
-    manualSorting: options.manualSorting,
-    manualFiltering: options.manualFiltering,
-    manualPagination: options.manualPagination,
+    enableRowRangeSelection: false,
+    manualSorting: options.manualSorting || !features.sorting,
+    manualFiltering: options.manualFiltering || !(features.filtering || features.globalFilter),
+    manualPagination: options.manualPagination || !features.pagination,
     manualGrouping: options.manualGrouping,
-    manualExpanding: options.manualExpanding,
+    manualExpanding: options.manualExpanding || !features.rowExpansion,
     pageCount: options.pageCount,
     rowCount: options.rowCount,
     // Stable keyed expansion/selection survive immutable host patches/reorders.
@@ -111,18 +109,7 @@ export function useDataTable<TData = unknown>(options: UseDataTableOptions<TData
       change('rowSelection', updater, options.onRowSelectionChange),
     onExpandedChange: (updater) => change('expanded', updater, options.onExpandedChange),
     onPaginationChange: (updater) => change('pagination', updater, options.onPaginationChange),
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: features.sorting && !options.manualSorting ? getSortedRowModel() : undefined,
-    getFilteredRowModel:
-      (features.filtering || features.globalFilter) && !options.manualFiltering
-        ? getFilteredRowModel()
-        : undefined,
-    getPaginationRowModel:
-      features.pagination && !options.manualPagination ? getPaginationRowModel() : undefined,
-    getExpandedRowModel:
-      features.rowExpansion && !options.manualExpanding ? getExpandedRowModel() : undefined,
   });
 
-  // The compiler needs a fresh facade to observe the mutable TanStack instance.
-  return { ...table };
+  return table;
 }

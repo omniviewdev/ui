@@ -79,6 +79,30 @@ export function QueryInput({
   const [editError, setEditError] = useState<string>();
   const blocked =
     disabled || readOnly || (availability !== undefined && availability.status !== 'ready');
+  const open = active && !blocked && !ime && Boolean(request);
+  // Keep pending presentation tied to request inputs, including debounce and explicit retries.
+  const [requestInputs, setRequestInputs] = useState(() => ({
+    text: document.text, version: document.version, uri: document.uri,
+    contextKey, request, cursor, open, debounceMs, retry,
+  }));
+  if (
+    requestInputs.text !== document.text ||
+    requestInputs.version !== document.version ||
+    requestInputs.uri !== document.uri ||
+    requestInputs.contextKey !== contextKey ||
+    requestInputs.request !== request ||
+    requestInputs.cursor !== cursor ||
+    requestInputs.open !== open ||
+    requestInputs.debounceMs !== debounceMs ||
+    requestInputs.retry !== retry
+  ) {
+    setRequestInputs({
+      text: document.text, version: document.version, uri: document.uri,
+      contextKey, request, cursor, open, debounceMs, retry,
+    });
+    setLoading(Boolean(open && request));
+    setSelected(0);
+  }
   const current =
     result?.documentVersion === document.version && result.contextKey === contextKey
       ? result
@@ -86,7 +110,6 @@ export function QueryInput({
   const suggestions = (
     !loading && resultCursor === cursor && current?.status === 'ready' ? current.completions : []
   ).slice(0, Math.max(0, maxSuggestions));
-  const open = active && !blocked && !ime && Boolean(request);
   const highlighted = suggestions[selected];
 
   useLayoutEffect(() => {
@@ -102,11 +125,8 @@ export function QueryInput({
     const abort = new AbortController();
     controller.current = abort;
     if (!open || !request) {
-      setLoading(false);
       return () => abort.abort();
     }
-    setLoading(true);
-    setSelected(0);
     const timer = setTimeout(
       async () => {
         try {
@@ -116,7 +136,7 @@ export function QueryInput({
             textareaOffsetToSource(document.text, Math.min(cursor, domLength)),
           );
           const response = await request({
-            document: { ...document },
+            document: { text: document.text, version: document.version, uri: document.uri },
             cursor: { offset, unit: 'utf8-byte' },
             contextKey,
             signal: abort.signal,

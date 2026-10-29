@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
 import styles from './DataTable.module.css';
@@ -9,9 +9,8 @@ export interface DataTableLoadingProps extends HTMLAttributes<HTMLTableSectionEl
 
 export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoadingProps>(
   function DataTableLoading({ className, rows = 8, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table } = useDataTableContext();
-    const visibleColumns = table.getVisibleLeafColumns();
+    const { table, state, options } = useDataTableContext();
+    const visibleColumns = useMemo(() => table.getVisibleLeafColumns(), [table, state, options]);
 
     return (
       <tbody ref={ref} className={cn(styles.Loading, className)} {...props}>
@@ -22,9 +21,8 @@ export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoa
                 key={col.id}
                 className={styles.SkeletonCell}
                 style={{
-                  flex: `var(--col-${col.id}-size) 0 0px`,
-                  width: `calc(var(--col-${col.id}-size) * 1px)`,
-                }}
+                  '--_dt-cell-size': `var(--col-${col.id}-size)`,
+                } as CSSProperties}
               >
                 <div className={styles.SkeletonBar} />
               </td>

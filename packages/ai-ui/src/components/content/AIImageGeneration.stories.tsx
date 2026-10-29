@@ -54,7 +54,7 @@ export const GeneratingWide: Story = {
 
 export const SimulatedGeneration: Story = {
   name: 'Simulated Generation Flow',
-  render: () => {
+  render: function Render() {
     const [loading, setLoading] = useState(true);
     const [src, setSrc] = useState<string | undefined>(undefined);
 

@@ -13,8 +13,7 @@ export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps
     { className, searchPlaceholder = 'Search...', children, ...props },
     ref,
   ) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table, features } = useDataTableContext();
+    const { table, features, state } = useDataTableContext();
     const handleGlobalFilter = useCallback(
       (value: string) => table.setGlobalFilter(value),
       [table],
@@ -25,7 +24,7 @@ export const DataTableToolbar = forwardRef<HTMLDivElement, DataTableToolbarProps
         {features.globalFilter && (
           <SearchInput
             className={styles.ToolbarSearch}
-            value={(table.getState().globalFilter as string) ?? ''}
+            value={(state.globalFilter as string) ?? ''}
             onValueChange={handleGlobalFilter}
             placeholder={searchPlaceholder}
             variant="ghost"

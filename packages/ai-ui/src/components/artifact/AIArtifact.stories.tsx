@@ -71,7 +71,7 @@ spec:
 };
 
 export const Panel: Story = {
-  render: () => {
+  render: function Render() {
     const [open, setOpen] = useState(true);
     if (!open) {
       return <button type="button" onClick={() => setOpen(true)}>Open artifact panel</button>;

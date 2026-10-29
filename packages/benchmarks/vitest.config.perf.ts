@@ -17,11 +17,7 @@ const __dirname = path.dirname(__filename);
  */
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
   ],
   resolve: {
     alias: [

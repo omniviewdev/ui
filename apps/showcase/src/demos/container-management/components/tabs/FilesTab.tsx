@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Key } from '@omniviewdev/base-ui';
 import { TreeList } from '@omniviewdev/base-ui';
 import { LuFolder, LuFolderOpen, LuFile } from 'react-icons/lu';
@@ -16,15 +16,17 @@ function formatSize(bytes?: number): string {
 }
 
 export function FilesTab({ container }: FilesTabProps) {
+  const [containerId, setContainerId] = useState(container.id);
   const [expandedKeys, setExpandedKeys] = useState<ReadonlySet<Key>>(
-    new Set(container.filesystem.map((n) => n.id)),
+    () => new Set(container.filesystem.map((n) => n.id)),
   );
-  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(new Set());
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(() => new Set());
 
-  useEffect(() => {
+  if (containerId !== container.id) {
+    setContainerId(container.id);
     setExpandedKeys(new Set(container.filesystem.map((n) => n.id)));
     setSelectedKeys(new Set());
-  }, [container.id]);
+  }
 
   return (
     <TreeList.Root

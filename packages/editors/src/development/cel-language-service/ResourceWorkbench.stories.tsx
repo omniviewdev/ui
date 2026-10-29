@@ -8,11 +8,11 @@ import {
   QueryVariables,
   VisualizationPanel,
   useDataTable,
+  type DataTableColumnDef,
   type QueryAuthoringValue,
   type QueryGroup,
   type QueryValue,
 } from '@omniviewdev/base-ui';
-import type { ColumnDef } from '@tanstack/react-table';
 import { CelQueryEditor } from '../../components/cel-query-editor';
 import {
   createCelDevelopmentAdapter,
@@ -40,7 +40,7 @@ export default meta;
 type Story = StoryObj;
 const empty: QueryGroup = { kind: 'group', id: 'root', combinator: 'and', children: [] };
 const catalogAdapter = createCelDevelopmentAdapter('pod');
-const columns: ColumnDef<CelEvaluationResult, unknown>[] = [
+const columns: DataTableColumnDef<CelEvaluationResult, unknown>[] = [
   { accessorKey: 'label', header: 'Resource' },
   { accessorKey: 'provider', header: 'Provider' },
   { accessorKey: 'resource', header: 'Type' },

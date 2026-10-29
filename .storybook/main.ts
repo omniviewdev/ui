@@ -48,11 +48,14 @@ const config: StorybookConfig = {
   viteFinal: async (config) => {
     // --- Alias: resolve @omniviewdev/base-ui to source (from ai-ui config) ---
     config.resolve = config.resolve ?? {};
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@omniviewdev/base-ui': path.resolve(__dirname, '../packages/base-ui/src/index.ts'),
-      '@omniviewdev/editors': path.resolve(__dirname, '../packages/editors/src/index.ts'),
-    };
+    const aliases = config.resolve.alias ?? [];
+    config.resolve.alias = [
+      { find: '@omniviewdev/base-ui', replacement: path.resolve(__dirname, '../packages/base-ui/src/index.ts') },
+      { find: '@omniviewdev/editors', replacement: path.resolve(__dirname, '../packages/editors/src/index.ts') },
+      ...(Array.isArray(aliases)
+        ? aliases
+        : Object.entries(aliases).map(([find, replacement]) => ({ find, replacement }))),
+    ];
 
     // --- Monaco optimizations (from editors config) ---
     config.optimizeDeps ??= {};

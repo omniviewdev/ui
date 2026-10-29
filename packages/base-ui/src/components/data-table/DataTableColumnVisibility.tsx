@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useMemo, type HTMLAttributes } from 'react';
 import { LuColumns3 } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -11,10 +11,9 @@ export type DataTableColumnVisibilityProps = HTMLAttributes<HTMLDivElement>;
 
 export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableColumnVisibilityProps>(
   function DataTableColumnVisibility({ className, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table } = useDataTableContext();
+    const { table, state, options } = useDataTableContext();
 
-    const allColumns = table.getAllLeafColumns().filter((col) => col.getCanHide());
+    const allColumns = useMemo(() => table.getAllLeafColumns().filter((col) => col.getCanHide()), [table, state, options]);
 
     return (
       <div ref={ref} className={cn(styles.ColumnVisibility, className)} {...props}>
@@ -39,7 +38,7 @@ export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableCol
                   {allColumns.map((column) => (
                     <Checkbox.Item
                       key={column.id}
-                      checked={column.getIsVisible()}
+                      checked={state.columnVisibility[column.id] !== false}
                       onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
                       size="sm"
                       variant="soft"

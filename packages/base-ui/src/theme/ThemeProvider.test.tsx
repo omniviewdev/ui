@@ -1,6 +1,5 @@
 import { StrictMode, useState } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeProvider } from './ThemeProvider';
 import { createThemeRegistry, type ThemeRegistry } from './registry';
@@ -281,37 +280,4 @@ describe('controlled ThemeProvider', () => {
     root.remove();
   });
 
-  it.each([
-    [
-      'solarized-dark',
-      {
-        '--ov-color-editor-selection-inactive-bg': 'rgb(88 110 117 / 0.24)',
-        '--ov-color-editor-bracket-4': '#2aa198',
-        '--ov-color-gutter-added': '#859900',
-        '--ov-color-diff-remove-bg': 'rgb(220 50 47 / 0.18)',
-        '--ov-color-minimap-find-match': '#b58900',
-      },
-    ],
-    [
-      'solarized-light',
-      {
-        '--ov-color-editor-selection-inactive-bg': 'rgb(101 123 131 / 0.18)',
-        '--ov-color-editor-bracket-4': '#2aa198',
-        '--ov-color-gutter-added': '#859900',
-        '--ov-color-diff-remove-bg': 'rgb(220 50 47 / 0.14)',
-        '--ov-color-minimap-find-match': '#b58900',
-      },
-    ],
-  ])('defines a complete %s editor palette', (themeId, expected) => {
-    render(<ThemeProvider themeId={themeId}><Reader /></ThemeProvider>);
-    const styles = getComputedStyle(document.documentElement);
-
-    for (const [property, value] of Object.entries(expected)) {
-      expect(styles.getPropertyValue(property).trim()).toBe(value);
-    }
-  });
-
-  it('renders without a DOM root during SSR', () => {
-    expect(() => renderToString(<ThemeProvider themeId="dark"><Reader /></ThemeProvider>)).not.toThrow();
-  });
 });

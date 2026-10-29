@@ -152,24 +152,24 @@ export function useBrowser(): UseBrowserReturn {
 
   const closeTab = useCallback(
     (id: string) => {
-      setTabs((prev) => {
-        const next = prev.filter((t) => t.id !== id);
-        // If closing the last tab, open a new one
-        if (next.length === 0) {
-          const newTab = createTab();
-          setActiveTabId(newTab.id);
-          return [newTab];
-        }
-        // If closing active tab, switch to neighbor
-        if (id === activeTabId) {
-          const closedIndex = prev.findIndex((t) => t.id === id);
-          const newActive = next[Math.min(closedIndex, next.length - 1)]!;
-          setActiveTabId(newActive.id);
-        }
-        return next;
-      });
+      const next = tabs.filter((t) => t.id !== id);
+      // If closing the last tab, open a new one
+      if (next.length === 0) {
+        // State updaters may replay; generate the replacement ID only in this event.
+        const newTab = createTab();
+        setTabs([newTab]);
+        setActiveTabId(newTab.id);
+        return;
+      }
+      setTabs(next);
+      // If closing active tab, switch to neighbor
+      if (id === activeTabId) {
+        const closedIndex = tabs.findIndex((t) => t.id === id);
+        const newActive = next[Math.min(closedIndex, next.length - 1)]!;
+        setActiveTabId(newActive.id);
+      }
     },
-    [activeTabId],
+    [tabs, activeTabId],
   );
 
   const reorderTabs = useCallback((orderedIds: string[]) => {

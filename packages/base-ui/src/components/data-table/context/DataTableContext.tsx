@@ -1,32 +1,54 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { Table } from '@tanstack/react-table';
+import type { DataTableInstance } from '../types';
+import type { DataTableFeatureFlags } from '../types';
+import type { RowData, TableState } from '@tanstack/react-table';
 import type { DataTableFeatures } from '../types';
 
-interface DataTableContextValue {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  table: Table<any>;
-  features: DataTableFeatures;
+interface DataTableContextValue<TData extends RowData> {
+  table: DataTableInstance<TData>;
+  features: DataTableFeatureFlags;
+  state: TableState<DataTableFeatures>;
+  options: DataTableInstance<TData>['options'];
   stickyHeader: boolean;
   hoverable: boolean;
   striped: boolean;
 }
 
-const DataTableContext = createContext<DataTableContextValue | null>(null);
+// React contexts cannot quantify over the row type supplied by each Root.
+// Erase only the context payload; providers retain their concrete table type.
+const DataTableContext = createContext<unknown>(null);
 
-export function useDataTableContext(): DataTableContextValue {
-  const ctx = useContext(DataTableContext);
+// Compound children must use the row type of their enclosing Root.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useDataTableContext<TData extends RowData = any>(): DataTableContextValue<TData> {
+  const ctx = useContext(DataTableContext) as DataTableContextValue<TData> | null;
   if (!ctx) {
     throw new Error('DataTable compound components must be used within <DataTable.Root>');
   }
   return ctx;
 }
 
-interface DataTableProviderProps extends DataTableContextValue {
+interface DataTableProviderProps<TData extends RowData>
+  extends Omit<DataTableContextValue<TData>, 'state' | 'options'> {
   children: ReactNode;
 }
 
-export function DataTableProvider({ children, ...value }: DataTableProviderProps) {
-  return <DataTableContext.Provider value={value}>{children}</DataTableContext.Provider>;
+export function DataTableProvider<TData extends RowData>({
+  children,
+  ...value
+}: DataTableProviderProps<TData>) {
+  const { table } = value;
+  // React's table adapter synchronizes plain options during the owning render.
+  // State subscriptions handle edits; provider renders carry new data and columns.
+  return (
+    <table.Subscribe selector={(state) => state}>
+      {(state) => (
+        <DataTableContext.Provider value={{ ...value, state, options: table.options }}>
+          {children}
+        </DataTableContext.Provider>
+      )}
+    </table.Subscribe>
+  );
 }
 
 // ---------------------------------------------------------------------------

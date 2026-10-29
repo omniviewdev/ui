@@ -19,8 +19,8 @@ function toDimension(value?: number | string): string | undefined {
 
 export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerProps>(
   function DataTableContainer({ className, height, maxHeight, style, children, ...props }, ref) {
-    const { table } = useDataTableContext();
-    const columnSizeVars = useColumnSizeVars(table);
+    const { table, state, options } = useDataTableContext();
+    const columnSizeVars = useColumnSizeVars(table, state, options);
     const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
     useTableFocusRecovery(scrollElement);
 

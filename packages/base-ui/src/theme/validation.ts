@@ -26,7 +26,7 @@ export class ThemeValidationError extends Error {
   }
 }
 
-const ID_PATTERN = /^[A-Za-z0-9._~%/:\-]+$/;
+const ID_PATTERN = /^[A-Za-z0-9._~%/:-]+$/;
 const CSS_NUMBER = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?$/i;
 const CSS_PERCENTAGE = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?%$/i;
 const CSS_ANGLE =

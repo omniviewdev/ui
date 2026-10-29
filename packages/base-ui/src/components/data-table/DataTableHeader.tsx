@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -10,20 +10,28 @@ export type DataTableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
 
 export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHeaderProps>(
   function DataTableHeader({ className, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table, features } = useDataTableContext();
-    const isResizing = table.getState().columnSizingInfo.isResizingColumn;
+    const { table, features, state, options } = useDataTableContext();
+    const isResizing = state.columnResizing.isResizingColumn;
+
+    const headers = useMemo(() => table.getHeaderGroups().map((group) => ({
+      ...group,
+      headers: group.headers.map((header) => ({
+        header,
+        content: flexRender(header.column.columnDef.header, header.getContext()),
+        canSort: features.sorting && header.column.getCanSort(),
+        sorted: header.column.getIsSorted(),
+        canResize: features.columnResizing && header.column.getCanResize(),
+        pinningStyles: getPinningStyles(header.column),
+        sizeStyles: getHeaderSizeStyles(header.id, header.column),
+        pinned: header.column.getIsPinned() || undefined,
+      })),
+    })), [table, state, options, features.sorting, features.columnResizing]);
 
     return (
       <thead ref={ref} className={cn(styles.Header, className)} {...props}>
-        {table.getHeaderGroups().map((headerGroup) => (
+        {headers.map((headerGroup) => (
           <tr key={headerGroup.id} className={styles.HeaderRow}>
-            {headerGroup.headers.map((header) => {
-              const canSort = features.sorting && header.column.getCanSort();
-              const sorted = header.column.getIsSorted();
-              const canResize = features.columnResizing && header.column.getCanResize();
-              const pinningStyles = getPinningStyles(header.column);
-              const sizeStyles = getHeaderSizeStyles(header.id, header.column);
+            {headerGroup.headers.map(({ header, canSort, sorted, canResize, pinningStyles, sizeStyles, pinned, content }) => {
               const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
               const align = meta?.align as string | undefined;
 
@@ -54,10 +62,10 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                   style={{
                     ...sizeStyles,
                     ...pinningStyles,
-                  }}
+                  } as CSSProperties}
                   aria-sort={ariaSortValue}
                   data-ov-sortable={canSort ? 'true' : 'false'}
-                  data-ov-pinned={header.column.getIsPinned() || undefined}
+                  data-ov-pinned={pinned}
                   data-ov-align={align}
                 >
                   {header.isPlaceholder ? null : canSort ? (
@@ -67,7 +75,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       onClick={header.column.getToggleSortingHandler()}
                       aria-label={sortAriaLabel ? `Sort by ${sortAriaLabel}` : undefined}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {content}
 
                       {/* Intentional: only render the sort indicator when actively sorted.
                           Sortable-but-unsorted columns rely on the cursor/hover style
@@ -80,7 +88,7 @@ export const DataTableHeader = forwardRef<HTMLTableSectionElement, DataTableHead
                       )}
                     </button>
                   ) : (
-                    flexRender(header.column.columnDef.header, header.getContext())
+                    content
                   )}
 
                   {canResize && (

@@ -33,7 +33,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('');
     const submit = () => {
       if (value.trim()) {
@@ -73,7 +73,7 @@ export const Default: Story = {
 
 export const WithSendButton: Story = {
   name: 'With Send Button',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('');
     const submit = () => {
       if (value.trim()) {
@@ -112,7 +112,7 @@ export const WithSendButton: Story = {
 
 export const FullToolbar: Story = {
   name: 'Full Toolbar (Attach + Send/Stop)',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('');
     const [streaming, setStreaming] = useState(false);
     const submit = () => {
@@ -170,7 +170,7 @@ export const FullToolbar: Story = {
 
 export const WithModelSelector: Story = {
   name: 'With Model Selector',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('');
     const [model, setModel] = useState('claude-sonnet-4');
     const submit = () => { setValue(''); };
@@ -229,7 +229,7 @@ export const WithModelSelector: Story = {
 
 export const Streaming: Story = {
   name: 'Streaming State (Stop Button)',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('');
     return (
       <ChatInput
@@ -266,7 +266,7 @@ export const Streaming: Story = {
 
 export const Multiline: Story = {
   name: 'Multiline Content',
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState('Can you help me refactor this function?\n\nIt currently has too many parameters and the logic is hard to follow.\n\nHere is the code:\nfunction process(a, b, c, d, e) { ... }');
     const submit = () => { setValue(''); };
     return (

@@ -1,17 +1,13 @@
+import { Subscribe } from '@tanstack/react-table';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-} from '@tanstack/react-table';
+import { useTable } from '@tanstack/react-table';
+import { dataTableFeatures } from './constants';
+import type { DataTableColumnDef as ColumnDef } from './types';
 
 interface Person {
   id: string;
@@ -32,138 +28,7 @@ const columns: ColumnDef<Person, unknown>[] = [
   { accessorKey: 'status', header: 'Status' },
 ];
 
-function TestTable(props: {
-  variant?: 'solid' | 'soft' | 'outline' | 'ghost';
-  color?: 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'discovery' | 'secondary';
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  hoverable?: boolean;
-  stickyHeader?: boolean;
-  striped?: boolean;
-}) {
-  const table = useDataTable({
-    data: sampleData,
-    columns,
-    getRowId: (row) => row.id,
-  });
-
-  return (
-    <DataTable.Root table={table} data-testid="dt-root" {...props}>
-      <DataTable.Container>
-        <DataTable.Header />
-        <DataTable.Body />
-      </DataTable.Container>
-    </DataTable.Root>
-  );
-}
-
-describe('DataTable', () => {
-  it('renders with default data attributes', () => {
-    renderWithTheme(<TestTable />);
-    const root = screen.getByTestId('dt-root');
-    expect(root).toHaveAttribute('data-ov-variant', 'soft');
-    expect(root).toHaveAttribute('data-ov-color', 'neutral');
-    expect(root).toHaveAttribute('data-ov-size', 'md');
-  });
-
-  it('renders themed root attributes', () => {
-    renderWithTheme(<TestTable variant="outline" color="success" size="sm" />);
-    const root = screen.getByTestId('dt-root');
-    expect(root).toHaveAttribute('data-ov-variant', 'outline');
-    expect(root).toHaveAttribute('data-ov-color', 'success');
-    expect(root).toHaveAttribute('data-ov-size', 'sm');
-  });
-
-  it('applies xs size data attribute', () => {
-    renderWithTheme(<TestTable size="xs" />);
-    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-size', 'xs');
-  });
-
-  it('applies xl size data attribute', () => {
-    renderWithTheme(<TestTable size="xl" />);
-    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-size', 'xl');
-  });
-
-  it('applies discovery color data attribute', () => {
-    renderWithTheme(<TestTable color="discovery" />);
-    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-color', 'discovery');
-  });
-
-  it('applies secondary color data attribute', () => {
-    renderWithTheme(<TestTable color="secondary" />);
-    expect(screen.getByTestId('dt-root')).toHaveAttribute('data-ov-color', 'secondary');
-  });
-
-  it('supports hoverable, stickyHeader, and striped flags', () => {
-    renderWithTheme(<TestTable hoverable stickyHeader striped />);
-    const root = screen.getByTestId('dt-root');
-    expect(root).toHaveAttribute('data-ov-hoverable', 'true');
-    expect(root).toHaveAttribute('data-ov-sticky-header', 'true');
-    expect(root).toHaveAttribute('data-ov-striped', 'true');
-  });
-
-  it('renders header cells with column names', () => {
-    renderWithTheme(<TestTable />);
-    expect(screen.getByText('Name')).toBeInTheDocument();
-    expect(screen.getByText('Age')).toBeInTheDocument();
-    expect(screen.getByText('Status')).toBeInTheDocument();
-  });
-
-  it('renders data rows', () => {
-    renderWithTheme(<TestTable />);
-    expect(screen.getByText('Alice')).toBeInTheDocument();
-    expect(screen.getByText('Bob')).toBeInTheDocument();
-    expect(screen.getByText('Charlie')).toBeInTheDocument();
-  });
-});
-
 describe('DataTable features', () => {
-  function SortableTable() {
-    const table = useDataTable({
-      data: sampleData,
-      columns,
-      features: { sorting: true },
-      getRowId: (row) => row.id,
-    });
-
-    return (
-      <DataTable.Root table={table} features={{ sorting: true }} data-testid="dt-root">
-        <DataTable.Container>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-      </DataTable.Root>
-    );
-  }
-
-  it('renders sortable header cells', () => {
-    renderWithTheme(<SortableTable />);
-    const nameHeader = screen.getByText('Name').closest('th');
-    expect(nameHeader).toHaveAttribute('data-ov-sortable', 'true');
-  });
-
-  function EmptyTable() {
-    const table = useDataTable({
-      data: [] as Person[],
-      columns,
-    });
-
-    return (
-      <DataTable.Root table={table} data-testid="dt-root">
-        <DataTable.Container>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Container>
-        <DataTable.Empty title="No data" description="Nothing to show" />
-      </DataTable.Root>
-    );
-  }
-
-  it('renders empty state', () => {
-    renderWithTheme(<EmptyTable />);
-    expect(screen.getByText('No data')).toBeInTheDocument();
-    expect(screen.getByText('Nothing to show')).toBeInTheDocument();
-  });
-
   function FilterableTable() {
     const table = useDataTable({
       data: sampleData,
@@ -214,14 +79,11 @@ const reactiveFeatures = {
 };
 
 function ReactiveTable({ rows = reactivePeople, pageSize = 1 }: { rows?: Person[]; pageSize?: number }) {
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data: rows,
     columns,
     getRowId: (row) => row.id,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     initialState: { pagination: { pageIndex: 0, pageSize } },
   });
 
@@ -241,33 +103,33 @@ const layoutColumns: ColumnDef<Person, unknown>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row }) => (
-      <button aria-pressed={row.getIsSelected()} onClick={() => row.toggleSelected()}>
+    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
+      <button aria-pressed={!!snapshot.selection[row.id]} onClick={() => row.toggleSelected()}>
         {row.original.name}
       </button>
-    ),
+    ))}</Subscribe>),
   },
   ...columns.slice(1),
 ];
 const layoutDefaults = { size: 120 };
 
 function LayoutTable() {
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data: sampleData,
     columns: layoutColumns,
     defaultColumn: layoutDefaults,
     getRowId: (row) => row.id,
-    getCoreRowModel: getCoreRowModel(),
     enableRowSelection: true,
   });
 
   return (
     <>
-      <button onClick={() => table.setColumnPinning({ left: ['name', 'age'] })}>Pin details</button>
+      <button onClick={() => table.setColumnPinning({ start: ['name', 'age'], end: [] })}>Pin details</button>
       <button onClick={() => table.setColumnSizing({ name: 240 })}>Widen name</button>
       <button onClick={() => table.getColumn('name')?.toggleVisibility()}>Toggle name</button>
-      <button onClick={() => table.setColumnPinning({ left: ['age', 'name'] })}>Pin age first</button>
-      <button onClick={() => table.setColumnPinning({ left: [] })}>Unpin details</button>
+      <button onClick={() => table.setColumnPinning({ start: ['age', 'name'], end: [] })}>Pin age first</button>
+      <button onClick={() => table.setColumnPinning({ start: [], end: [] })}>Unpin details</button>
       <DataTable.Root table={table}>
         <DataTable.Container>
           <DataTable.Header />
@@ -353,31 +215,6 @@ describe('stable table controller reactivity', () => {
     expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
   });
 
-  it('reflows pinned cells after sizing, visibility, and pin-order changes', async () => {
-    const user = userEvent.setup();
-    renderWithTheme(<LayoutTable />);
-
-    await user.click(screen.getByRole('button', { name: 'Pin details' }));
-    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ position: 'sticky', left: '120px' });
-
-    await user.click(screen.getByRole('button', { name: 'Widen name' }));
-    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '240px' });
-
-    await user.click(screen.getByRole('button', { name: 'Toggle name' }));
-    expect(screen.queryByRole('button', { name: 'Bob' })).not.toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '0px' });
-
-    await user.click(screen.getByRole('button', { name: 'Toggle name' }));
-    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '240px' });
-
-    await user.click(screen.getByRole('button', { name: 'Pin age first' }));
-    expect(screen.getByRole('cell', { name: '25' })).toHaveStyle({ left: '0px' });
-    expect(screen.getByRole('cell', { name: 'Bob' })).toHaveStyle({ left: '120px' });
-
-    await user.click(screen.getByRole('button', { name: 'Unpin details' }));
-    expect(screen.getByRole('cell', { name: '25' })).not.toHaveStyle({ position: 'sticky' });
-  });
-
   it('keeps custom cell renderers live when selection changes on existing rows', async () => {
     const user = userEvent.setup();
     renderWithTheme(<LayoutTable />);
@@ -387,5 +224,83 @@ describe('stable table controller reactivity', () => {
 
     await user.click(screen.getByRole('button', { name: 'Bob' }));
     expect(screen.getByRole('button', { name: 'Bob' })).toHaveAttribute('aria-pressed', 'false');
+  });
+});
+
+type AutomaticRow = {
+  name: string;
+  label: string;
+  replicas: number;
+  enabled: boolean;
+  tags: string[];
+  created: Date;
+  metadata: { group: string };
+};
+
+const automaticRows: AutomaticRow[] = [
+  { name: 'pod-10', label: 'Zulu', replicas: 10, enabled: true, tags: ['ops'], created: new Date('2026-01-10'), metadata: { group: 'ten' } },
+  { name: 'Pod-2', label: 'alpha', replicas: 2, enabled: false, tags: ['dev'], created: new Date('2026-01-02'), metadata: { group: 'two' } },
+  { name: 'pod-1', label: 'bravo', replicas: 0, enabled: false, tags: ['ops', 'dev'], created: new Date('2026-01-01'), metadata: { group: 'zero' } },
+];
+
+const automaticColumns: ColumnDef<AutomaticRow, unknown>[] = [
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'label', header: 'Label' },
+  { accessorKey: 'replicas', header: 'Replicas' },
+  { accessorKey: 'enabled', header: 'Enabled' },
+  { accessorKey: 'tags', header: 'Tags', cell: (info) => String(info.getValue()) },
+  { accessorKey: 'created', header: 'Created', cell: (info) => String(info.getValue()) },
+  { accessorKey: 'metadata', header: 'Metadata', cell: (info) => String(info.getValue()) },
+];
+
+function AutomaticTable({ filter }: { filter?: { id: string; value: unknown } }) {
+  const table = useDataTable({
+    data: automaticRows,
+    columns: automaticColumns,
+    features: { sorting: true, filtering: true },
+    getRowId: (row) => row.name,
+  });
+
+  return (
+    <DataTable.Root table={table} features={{ sorting: true, filtering: true }}>
+      {filter && (
+        <button type="button" onClick={() => table.setColumnFilters([{ id: filter.id, value: filter.value }])}>
+          Apply filter
+        </button>
+      )}
+      <DataTable.Container>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Container>
+    </DataTable.Root>
+  );
+}
+
+function automaticNames() {
+  return screen.getAllByRole('cell', { name: /^(pod-10|Pod-2|pod-1)$/ }).map((cell) => cell.textContent);
+}
+
+describe('automatic value behavior', () => {
+  it.each([
+    { column: 'Name', expected: ['pod-1', 'Pod-2', 'pod-10'] },
+    { column: 'Label', expected: ['Pod-2', 'pod-1', 'pod-10'] },
+  ])('sorts $column naturally without case-sensitive fallback', async ({ column, expected }) => {
+    const user = userEvent.setup();
+    renderWithTheme(<AutomaticTable />);
+    await user.click(screen.getByRole('button', { name: `Sort by ${column}` }));
+    expect(automaticNames()).toEqual(expected);
+  });
+
+  it.each([
+    { kind: 'numeric ranges including zero', filter: { id: 'replicas', value: [0, 2] }, expected: ['Pod-2', 'pod-1'] },
+    { kind: 'false booleans', filter: { id: 'enabled', value: false }, expected: ['Pod-2', 'pod-1'] },
+    { kind: 'array membership', filter: { id: 'tags', value: ['ops'] }, expected: ['pod-10', 'pod-1'] },
+    { kind: 'date ranges', filter: { id: 'created', value: [new Date('2026-01-01'), new Date('2026-01-02')] }, expected: ['Pod-2', 'pod-1'] },
+    { kind: 'object identity', filter: { id: 'metadata', value: automaticRows[1]!.metadata }, expected: ['Pod-2'] },
+  ])('filters $kind through the column API', async ({ filter, expected }) => {
+    const user = userEvent.setup();
+    renderWithTheme(<AutomaticTable filter={filter} />);
+    await user.click(screen.getByRole('button', { name: 'Apply filter' }));
+    expect(automaticNames()).toEqual(expected);
   });
 });

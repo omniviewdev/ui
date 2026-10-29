@@ -9,16 +9,13 @@ const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 export default defineConfig({
   cacheDir: process.env.OMNIVIEW_VITE_CACHE_DIRECTORY,
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', {}]],
-      },
-    }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     dts({
-      outDir: outputDirectory,
+      tsconfigPath: './tsconfig.build.json',
+      outDirs: outputDirectory,
       entryRoot: 'src',
       // Rolled declarations follow package.json's active dist entry.
-      rollupTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
+      bundleTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY,
       afterDiagnostic(diagnostics) {
         for (const diagnostic of diagnostics) {
           if (diagnostic.category === DiagnosticCategory.Error) {
@@ -39,8 +36,8 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        'react',
-        'react-dom',
+        /^react(?:\/|$)/,
+        /^react-dom(?:\/|$)/,
         /^@omniviewdev\/base-ui/,
         /^@omniviewdev\/editors/,
       ],

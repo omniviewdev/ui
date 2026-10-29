@@ -21,7 +21,7 @@ tasks:
     desc: Run benchmarks for a specific component (COMPONENT=Name)
     deps: [bench:setup]
     cmds:
-      - pnpm bench -- --filter "{{.COMPONENT}}"
+      - pnpm bench "{{.COMPONENT}}"
 
   bench:browser:
     desc: Run all benchmarks in Chromium
@@ -33,7 +33,7 @@ tasks:
     desc: Deep profile a component with CDP tracing (COMPONENT=Name)
     deps: [bench:setup]
     cmds:
-      - pnpm bench:trace -- --filter "{{.COMPONENT}}"
+      - pnpm bench:trace "{{.COMPONENT}}"
 
   bench:deterministic:
     desc: Run with full deterministic V8 flags for reproducible comparison

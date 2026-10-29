@@ -167,4 +167,26 @@ describe('useDebouncedCallback', () => {
     expect(fn1).not.toHaveBeenCalled();
     expect(fn2).toHaveBeenCalledWith('test');
   });
+
+  it('keeps the callable and methods stable when the callback changes', () => {
+    const first = vi.fn();
+    const next = vi.fn();
+    const { result, rerender } = renderHook(({ cb }) => useDebouncedCallback(cb, 300), {
+      initialProps: { cb: first },
+    });
+    const debounced = result.current;
+    const { cancel, flush } = debounced;
+
+    rerender({ cb: next });
+
+    expect(result.current).toBe(debounced);
+    expect(result.current.cancel).toBe(cancel);
+    expect(result.current.flush).toBe(flush);
+    act(() => {
+      debounced('latest');
+      flush();
+    });
+    expect(first).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith('latest');
+  });
 });

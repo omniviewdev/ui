@@ -207,6 +207,37 @@
   width: 100%;
 }
 
+.HeaderCell,
+.Cell,
+.FooterCell,
+.SkeletonCell {
+  width: calc(var(--_dt-cell-size) * 1px);
+}
+
+.HeaderCell,
+.Cell {
+  flex: var(--_dt-cell-grow) 0 var(--_dt-cell-basis);
+}
+
+.FooterCell,
+.SkeletonCell {
+  flex: var(--_dt-cell-size) 0 0px;
+}
+
+.HeaderCell[data-ov-pinned],
+.Cell[data-ov-pinned] {
+  --_dt-pin-start: initial;
+  --_dt-pin-end: initial;
+  --_dt-pin-shadow: initial;
+  --_dt-pin-shadow-start: -4px 0 4px -4px var(--_ov-dt-pinned-shadow) inset;
+  --_dt-pin-shadow-end: 4px 0 4px -4px var(--_ov-dt-pinned-shadow) inset;
+  position: sticky;
+  inset-inline-start: var(--_dt-pin-start, auto);
+  inset-inline-end: var(--_dt-pin-end, auto);
+  z-index: 1;
+  box-shadow: var(--_dt-pin-shadow, none);
+}
+
 .HeaderCell {
   display: flex;
   align-items: center;
@@ -295,6 +326,26 @@
 }
 
 /* --- Body --- */
+
+.VirtualBody {
+  position: relative;
+  height: var(--_dt-body-height);
+}
+
+.VirtualRow,
+.VirtualExpandedRow {
+  position: absolute;
+  transform: translateY(var(--_dt-row-offset));
+}
+
+.VirtualRow[data-ov-fixed-height='true'] {
+  height: var(--_dt-row-height);
+}
+
+.VirtualExpandedRowContent {
+  width: 100%;
+  min-width: 0;
+}
 
 .Body {
   display: grid;
@@ -578,9 +629,6 @@
   background: var(--_ov-dt-pinned-bg);
 }
 
-.HeaderCell[data-ov-pinned] {
-  z-index: 3;
-}
 
 .Root[data-ov-hoverable='true'] .Row:hover > .Cell[data-ov-pinned] {
   background: var(--_ov-dt-row-hover);

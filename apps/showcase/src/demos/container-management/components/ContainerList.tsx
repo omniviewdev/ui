@@ -1,5 +1,6 @@
-import { useMemo, useCallback, useRef, useState } from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
+import { Subscribe } from '@tanstack/react-table';
+import { useMemo, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import type { DataTableColumnDef as ColumnDef } from '@omniviewdev/base-ui';
 import {
   DataTable,
   FilterBar,
@@ -56,9 +57,11 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
 
   // Stable refs so columns never recompute on callback identity changes
   const toastRef = useRef(toast);
-  toastRef.current = toast;
   const onSelectRef = useRef(onSelectContainer);
-  onSelectRef.current = onSelectContainer;
+  useLayoutEffect(() => {
+    toastRef.current = toast;
+    onSelectRef.current = onSelectContainer;
+  }, [toast, onSelectContainer]);
 
   // Filter data client-side
   const filteredData = useMemo(() => {
@@ -76,30 +79,25 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
     () => [
       {
         id: 'select',
-        header: ({ table }) => (
+        header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
           <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected()
-                ? true
-                : table.getIsSomePageRowsSelected()
-                  ? true
-                  : false
-            }
+            checked={selection.allPage}
+            indeterminate={selection.somePage && !selection.allPage}
             onCheckedChange={() => table.toggleAllPageRowsSelected()}
             variant="outline"
             size="sm"
             aria-label="Select all"
           />
-        ),
-        cell: ({ row }) => (
+        ))}</Subscribe>),
+        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
           <Checkbox
-            checked={row.getIsSelected()}
+            checked={!!snapshot.selection[row.id]}
             onCheckedChange={() => row.toggleSelected()}
             variant="outline"
             size="sm"
             aria-label={`Select ${row.original.name}`}
           />
-        ),
+        ))}</Subscribe>),
         size: 36,
         enableSorting: false,
         enableResizing: false,
@@ -206,7 +204,6 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
               <IconButton
                 variant="ghost"
                 size="sm"
-                dense
                 aria-label={isRunning ? `Stop ${row.name}` : `Start ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -218,7 +215,6 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
               <IconButton
                 variant="ghost"
                 size="sm"
-                dense
                 aria-label={`Restart ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -230,7 +226,6 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
               <IconButton
                 variant="ghost"
                 size="sm"
-                dense
                 color="danger"
                 aria-label={`Delete ${row.name}`}
                 onClick={(e) => {
@@ -258,7 +253,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
     getRowId: (row) => row.id,
   });
 
-  const selectedCount = Object.keys(table.getState().rowSelection).length;
+  const selectedCount = Object.keys(table.state.rowSelection).length;
 
   const handleClearFilters = useCallback(() => {
     setStatusFilter(null);
@@ -345,8 +340,10 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
           <DataTable.Container height="100%">
             <DataTable.Header />
             <DataTable.VirtualBody estimateRowSize={ROW_HEIGHT.md} overscan={5} fixedRowHeight />
-            <DataTable.Empty>No containers match your filters.</DataTable.Empty>
           </DataTable.Container>
+          {filteredData.length === 0 && (
+            <DataTable.Empty>No containers match your filters.</DataTable.Empty>
+          )}
         </DataTable.Root>
       </div>
     </div>

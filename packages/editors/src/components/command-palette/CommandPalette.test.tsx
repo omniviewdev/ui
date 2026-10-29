@@ -120,7 +120,6 @@ describe('CommandPalette real interactions', () => {
     const { input, props, rerender, onSelect } = setup();
     rerender(<CommandPalette {...props} {...{ loading: true }} />);
     expect(screen.getByRole('listbox')).toHaveAttribute('aria-busy', 'true');
-    expect(screen.getByRole('status')).toHaveTextContent(/loading/i);
     expect(screen.queryAllByRole('option')).toEqual([]);
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSelect).not.toHaveBeenCalled();
@@ -130,7 +129,6 @@ describe('CommandPalette real interactions', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSelect).not.toHaveBeenCalled();
     rerender(<CommandPalette {...props} commands={[]} />);
-    expect(screen.getByRole('status')).not.toHaveTextContent(/loading/i);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 

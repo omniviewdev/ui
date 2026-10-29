@@ -1,9 +1,9 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { type HTMLAttributes, type RefAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
-import type { Table } from '@tanstack/react-table';
-import type { DataTableFeatures } from './types';
+import type { RowData } from '@tanstack/react-table';
+import type { DataTableInstance, DataTableFeatureFlags } from './types';
 import { DEFAULT_FEATURES } from './constants';
 import { DataTableProvider } from './context/DataTableContext';
 import styles from './DataTable.module.css';
@@ -24,17 +24,17 @@ import { DataTableExpansionToggle } from './DataTableExpansionToggle';
 // Root
 // ---------------------------------------------------------------------------
 
-export interface DataTableRootProps
+export interface DataTableRootProps<TData extends RowData = RowData>
   extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, StyledComponentProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  table: Table<any>;
-  features?: DataTableFeatures;
+  table: DataTableInstance<TData>;
+  features?: DataTableFeatureFlags;
   stickyHeader?: boolean;
   hoverable?: boolean;
   striped?: boolean;
+  ref?: RefAttributes<HTMLDivElement>['ref'];
 }
 
-const DataTableRoot = forwardRef<HTMLDivElement, DataTableRootProps>(function DataTableRoot(
+function DataTableRoot<TData extends RowData>(
   {
     className,
     variant,
@@ -46,9 +46,9 @@ const DataTableRoot = forwardRef<HTMLDivElement, DataTableRootProps>(function Da
     hoverable = false,
     striped = false,
     children,
+    ref,
     ...props
-  },
-  ref,
+  }: DataTableRootProps<TData>,
 ) {
   const features = { ...DEFAULT_FEATURES, ...featuresProp };
 
@@ -73,7 +73,7 @@ const DataTableRoot = forwardRef<HTMLDivElement, DataTableRootProps>(function Da
       </div>
     </DataTableProvider>
   );
-});
+}
 
 // ---------------------------------------------------------------------------
 // Compound type

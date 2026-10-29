@@ -77,6 +77,7 @@ describe('Popover', () => {
         HTMLInputElement,
         ComponentPropsWithoutRef<'input'> & { variant: string }
       >(function GenericInput({ variant: _variant, ...props }, ref) {
+        void _variant;
         return <input ref={ref} {...props} />;
       });
 

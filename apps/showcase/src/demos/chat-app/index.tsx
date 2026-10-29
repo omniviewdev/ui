@@ -1,5 +1,4 @@
 // apps/showcase/src/demos/chat-app/index.tsx
-import { useCallback } from 'react';
 import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { useChat } from './hooks/useChat';
 import { WorkspaceRail } from './components/WorkspaceRail';
@@ -13,13 +12,6 @@ import styles from './index.module.css';
 
 export default function ChatAppDemo() {
   const chat = useChat();
-
-  const handleToggleReaction = useCallback(
-    (messageId: string, emoji: string) => {
-      chat.toggleReaction(messageId, emoji);
-    },
-    [chat.toggleReaction],
-  );
 
   return (
     <div className={styles.shell}>
@@ -61,7 +53,7 @@ export default function ChatAppDemo() {
                 users={chat.activeWorkspace.users}
                 currentUserId={chat.currentUser.id}
                 threadReplies={chat.allThreadReplies}
-                onToggleReaction={handleToggleReaction}
+                onToggleReaction={chat.toggleReaction}
                 onOpenThread={chat.openThread}
               />
               <TypingIndicator users={chat.typingUsers} />
@@ -78,7 +70,7 @@ export default function ChatAppDemo() {
               currentUserId={chat.currentUser.id}
               onClose={chat.closeThread}
               onSendReply={chat.sendThreadReply}
-              onToggleReaction={handleToggleReaction}
+              onToggleReaction={chat.toggleReaction}
             />
           </ResizableSplitPane>
         ) : (
@@ -89,7 +81,7 @@ export default function ChatAppDemo() {
               users={chat.activeWorkspace.users}
               currentUserId={chat.currentUser.id}
               threadReplies={chat.allThreadReplies}
-              onToggleReaction={handleToggleReaction}
+              onToggleReaction={chat.toggleReaction}
               onOpenThread={chat.openThread}
             />
             <TypingIndicator users={chat.typingUsers} />

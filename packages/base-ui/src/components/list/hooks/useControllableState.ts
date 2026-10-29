@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 /**
  * Generic hook for controlled/uncontrolled state patterns.
@@ -15,11 +15,13 @@ export function useControllableState<T>(
 
   // Keep refs so the setter callback identity is stable
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
 
-  // Always reflects the latest value for resolving functional updates
+  // Resolve updates against committed state, never an abandoned render.
   const currentValueRef = useRef(value);
-  currentValueRef.current = value;
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange;
+    currentValueRef.current = value;
+  }, [onChange, value]);
 
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {

@@ -113,9 +113,9 @@ export const Range: Story = {
         aria-labelledby="slider-range-label"
       >
         <Slider.Label id="slider-range-label">Workspace memory window</Slider.Label>
-        <Slider.Value
-          children={(formattedValues) => `${formattedValues[0]} GB - ${formattedValues[1]} GB`}
-        />
+        <Slider.Value>
+          {(formattedValues) => `${formattedValues[0]} GB - ${formattedValues[1]} GB`}
+        </Slider.Value>
         <Slider.Control>
           <Slider.Track>
             <Slider.Indicator />
@@ -143,7 +143,7 @@ export const SteppedValues: Story = {
         aria-labelledby="slider-step-label"
       >
         <Slider.Label id="slider-step-label">Delay until repeat</Slider.Label>
-        <Slider.Value children={(_, values) => `${values[0]} ticks`} />
+        <Slider.Value>{(_, values) => `${values[0]} ticks`}</Slider.Value>
         <Slider.Control>
           <Slider.Track>
             <StepMarks min={0} max={5} step={1} />
@@ -180,9 +180,9 @@ export const Vertical: Story = {
         aria-labelledby="slider-vertical-label"
       >
         <Slider.Label id="slider-vertical-label">Brightness window</Slider.Label>
-        <Slider.Value
-          children={(formattedValues) => `${formattedValues[0]}% - ${formattedValues[1]}%`}
-        />
+        <Slider.Value>
+          {(formattedValues) => `${formattedValues[0]}% - ${formattedValues[1]}%`}
+        </Slider.Value>
         <Slider.Control style={{ height: 190 }}>
           <Slider.Track>
             <Slider.Indicator />

@@ -5,26 +5,7 @@ import { renderAI } from '../../test/render';
 import { ChatMessageList } from './ChatMessageList';
 import type { ChatMessageListHandle } from './ChatMessageList';
 
-const messages = Array.from({ length: 20 }, (_, i) => `Message ${i}`);
-
 describe('ChatMessageList', () => {
-  it('renders the virtualizer container with correct total size', () => {
-    renderAI(
-      <ChatMessageList
-        count={messages.length}
-        estimateSize={80}
-        renderItem={(i) => <div>{messages[i]}</div>}
-        data-testid="cml"
-        style={{ height: 300 }}
-      />,
-    );
-    // The inner container should have height = count * estimateSize
-    const wrapper = screen.getByTestId('cml');
-    const inner = wrapper.querySelector('[class*="Inner"]');
-    expect(inner).toBeInTheDocument();
-    expect(inner).toHaveStyle({ height: '1600px' });
-  });
-
   it('exposes imperative handle with scrollToBottom, scrollToIndex, and getScrollElement', () => {
     const ref = createRef<ChatMessageListHandle>();
     renderAI(

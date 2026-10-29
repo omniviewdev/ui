@@ -1,5 +1,14 @@
 # @omniviewdev/base-ui
 
+## Unreleased
+
+- Upgrade the frontend cohort to React 19.3.1 and TanStack Table 9.3.1. `DataTableFeatures` now names the TanStack feature registry; use `DataTableFeatureFlags` for presentation toggles and `DataTableColumnDef<T>` for matching column definitions.
+- Use native Table 9 state subscriptions, the shared grouping row model, and `start`/`end` column pinning. Keep same-ID row updates, replacement cell renderers, controlled selection, sorting, and filtering live under the React Compiler.
+- Register the individual functions required by Table 9 automatic sorting and filtering. Preserve case-insensitive natural name sorting and numeric, boolean, array, date, and object filters without bundling unused built-in function collections.
+- Remove the table-wide compiler opt-out. Retain a function-scoped opt-out only around the mutable virtualizer. Preserve virtual row keys and current table facades when rendering cells.
+- Share immutable virtual-column layout snapshots across cells so compiler caches cannot retain stale pin styles after unpinning. Compute mutable column geometry once per visible column inside the existing virtualizer boundary, without another compiler opt-out. Extend the browser regression story to cover live unpinning and repinning.
+- Use native TypeScript 7 for source checks and TypeScript 6's JavaScript API for declarations. Production declarations exclude tests and stories; test programs remain checked separately.
+
 ## 0.7.2
 
 ### Patch Changes

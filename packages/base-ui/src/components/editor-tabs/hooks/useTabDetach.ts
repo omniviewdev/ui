@@ -115,7 +115,7 @@ export function useTabDetach({
   useEffect(() => cleanup, [cleanup]);
 
   const handleDetachDragEnd = useCallback(
-    (_event: DragEndEvent) => {
+    () => {
       if (dragModeRef.current === 'detach-armed' && activeIdRef.current && onDetachCommit) {
         const tab = tabs.find((t) => t.id === activeIdRef.current);
         onDetachCommit({

@@ -115,47 +115,13 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     };
   }, [filterFnProp, getTextValue]);
 
-  // Sync state to store synchronously during render so that
-  // the Viewport's useSyncExternalStore sees the data on the first render pass.
-  // This mirrors how the List store syncs disabledKeys in its render body.
-  const prevExpandedKeysRef = useRef<typeof expandedKeys | null>(null);
-  const prevSelectedKeysRef = useRef<typeof selectedKeys | null>(null);
-  const prevActiveKeyRef = useRef<typeof activeKey | undefined>(undefined);
-
-  // Render-time syncs use `silent: true` to update refs + snapshot without
-  // notifying listeners. This avoids the React warning "Cannot update a
-  // component while rendering a different component". After commit, the
-  // useEffect below flushes a notification so useSyncExternalStore consumers
-  // (Viewport, Item, ItemToggle) pick up the new snapshot.
-  const needsNotifyRef = useRef(false);
-
-  if (prevExpandedKeysRef.current !== expandedKeys) {
-    prevExpandedKeysRef.current = expandedKeys;
-    store.setExpandedKeys(expandedKeys, true);
-    needsNotifyRef.current = true;
-  }
-
-  if (prevSelectedKeysRef.current !== selectedKeys) {
-    prevSelectedKeysRef.current = selectedKeys;
-    store.setSelectedKeys(selectedKeys, true);
-    needsNotifyRef.current = true;
-  }
-
-  if (prevActiveKeyRef.current !== activeKey) {
-    prevActiveKeyRef.current = activeKey;
-    store.setActiveKey(activeKey, true);
-    needsNotifyRef.current = true;
-  }
-
-  // Flush deferred snapshot rebuild + listener notification after DOM mutations.
-  // useLayoutEffect fires synchronously after commit but before paint, avoiding
-  // both the "Cannot update while rendering" warning and act() warnings in tests.
+  // Commit controlled state together before notifying external-store readers.
   useLayoutEffect(() => {
-    if (needsNotifyRef.current) {
-      needsNotifyRef.current = false;
-      store.emit();
-    }
-  });
+    store.setExpandedKeys(expandedKeys, true);
+    store.setSelectedKeys(selectedKeys, true);
+    store.setActiveKey(activeKey, true);
+    store.emit();
+  }, [expandedKeys, selectedKeys, activeKey, store]);
 
   // Anchor for range selection
   const anchorKeyRef = useRef<Key | null>(null);

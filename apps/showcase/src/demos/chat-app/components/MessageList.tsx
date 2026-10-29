@@ -54,16 +54,14 @@ export function MessageList({
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
-  let lastDateKey = '';
-
   return (
     <div className={styles.messageList}>
       {messages.map((msg, i) => {
         const dateKey = getDateKey(msg.timestamp);
-        const showDateSep = dateKey !== lastDateKey;
-        lastDateKey = dateKey;
+        const previousMessage = messages[i - 1];
+        const showDateSep = !previousMessage || dateKey !== getDateKey(previousMessage.timestamp);
 
-        const showHeader = shouldShowHeader(msg, messages[i - 1]);
+        const showHeader = shouldShowHeader(msg, previousMessage);
 
         return (
           <div key={msg.id}>

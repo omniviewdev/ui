@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { DataTableColumnDef as ColumnDef } from './types';
 
 // ---------------------------------------------------------------------------
 // Shared fixtures

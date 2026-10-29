@@ -13,13 +13,11 @@ export interface DataTableBodyProps extends HTMLAttributes<HTMLTableSectionEleme
 
 export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyProps>(
   function DataTableBody({ className, renderExpandedRow, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table, features } = useDataTableContext();
-    const rows = table.getRowModel().rows;
-    const state = table.getState();
-    const isResizing = state.columnSizingInfo.isResizingColumn;
+    const { table, features, state, options } = useDataTableContext();
+    const rows = useMemo(() => table.getRowModel().rows, [table, state, options]);
+    const isResizing = state.columnResizing.isResizingColumn;
     // Column layout is shared by every row and does not change with row data.
-    // Keep live row/cell rendering outside this cache: renderers can read table state.
+    // Keep live row/cell rendering outside this cache: renderers can read state.
     const columnLayouts = useMemo(
       () => new Map(table.getVisibleLeafColumns().map((column) => {
         const meta = column.columnDef.meta as Record<string, unknown> | undefined;
@@ -34,13 +32,13 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
       })),
       [
         table,
-        table.options.columns,
-        table.options.enableColumnResizing,
-        table.options.defaultColumn?.enableResizing,
-        table.options.defaultColumn?.size,
-        table.options.defaultColumn?.minSize,
-        table.options.defaultColumn?.maxSize,
-        table.options.groupedColumnMode,
+        options.columns,
+        options.enableColumnResizing,
+        options.defaultColumn?.enableResizing,
+        options.defaultColumn?.size,
+        options.defaultColumn?.minSize,
+        options.defaultColumn?.maxSize,
+        options.groupedColumnMode,
         state.grouping,
         state.columnVisibility,
         state.columnOrder,
@@ -49,9 +47,8 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
       ],
     );
 
-    if (rows.length === 0) return null;
 
-    const rowElements = rows.map((row) => {
+    const rowElements = useMemo(() => rows.map((row) => {
       const isSelected = row.getIsSelected();
       const isExpanded = row.getIsExpanded();
 
@@ -91,7 +88,8 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
           )}
         </Fragment>
       );
-    });
+    }), [rows, state, options, columnLayouts, features.rowExpansion, renderExpandedRow]);
+    if (rows.length === 0) return null;
 
     if (isResizing) {
       return (

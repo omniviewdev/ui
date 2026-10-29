@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type {
   Key,
   TreeStore,
@@ -30,22 +30,13 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   const snapshotRef = useRef<TreeStoreSnapshot>({
     selectedKeys: new Set(),
     activeKey: null,
-    disabledKeys: new Set(),
+    disabledKeys: new Set(disabledKeys),
     expandedKeys: new Set(),
     loadingKeys: new Set(),
     flattenedKeys: [],
     visibleCount: 0,
   });
 
-  // Sync disabledKeys into refs and snapshot when they change
-  if (disabledKeysRef.current !== disabledKeys) {
-    disabledKeysRef.current = disabledKeys;
-    snapshotRef.current = {
-      ...snapshotRef.current,
-      disabledKeys: new Set(disabledKeys),
-    };
-    versionRef.current += 1;
-  }
 
   // Internal: rebuild the snapshot object from current refs.
   const rebuildSnapshot = useCallback(() => {
@@ -202,7 +193,7 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   // must remain referentially stable (empty dependency arrays) — adding
   // changing deps to any of them will silently break useSyncExternalStore
   // consumers that hold the initial store reference.
-  const storeRef = useRef<TreeStore>({
+  const [store] = useState<TreeStore>(() => ({
     subscribe,
     getSnapshot,
     getItemState,
@@ -220,7 +211,14 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     getTextValue,
     getRegisteredKeys,
     emit,
-  });
+  }));
 
-  return storeRef.current;
+  useLayoutEffect(() => {
+    if (disabledKeysRef.current !== disabledKeys) {
+      disabledKeysRef.current = disabledKeys;
+      emit();
+    }
+  }, [disabledKeys, emit]);
+
+  return store;
 }

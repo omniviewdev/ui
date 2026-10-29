@@ -32,9 +32,9 @@ interface ResponseEnvelope {
   message?: string;
 }
 
-/** Monaco 0.52 has no hide-hover command; its editor-scoped controller owns dismissal. */
-interface Monaco052ContentHoverController extends Monaco.editor.IEditorContribution {
-  _hideWidgets: () => void;
+/** Monaco's editor-scoped controller owns hover dismissal. */
+interface MonacoContentHoverController extends Monaco.editor.IEditorContribution {
+  hideContentHover: () => void;
 }
 
 export function attachCelBridge(
@@ -69,7 +69,7 @@ export function attachCelBridge(
 
   function dismissSemanticWidgets() {
     editor.trigger('cel', 'closeParameterHints', {});
-    editor.getContribution<Monaco052ContentHoverController>('editor.contrib.contentHover')?._hideWidgets();
+    editor.getContribution<MonacoContentHoverController>('editor.contrib.contentHover')?.hideContentHover();
   }
 
   function range(source: string, value: QueryRange): Monaco.IRange {

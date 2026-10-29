@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, type HTMLAttributes } from 'react';
+import { forwardRef, useMemo, useCallback, type HTMLAttributes } from 'react';
 import { LuChevronsLeft, LuChevronLeft, LuChevronRight, LuChevronsRight } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -9,11 +9,10 @@ export type DataTablePaginationProps = HTMLAttributes<HTMLDivElement>;
 
 export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginationProps>(
   function DataTablePagination({ className, ...props }, ref) {
-    'use no memo'; // TanStack Table mutates its stable instance between renders.
-    const { table } = useDataTableContext();
-    const pageIndex = table.getState().pagination.pageIndex;
-    const pageCount = table.getPageCount();
-    const totalRows = table.getRowCount();
+    const { table, state, options } = useDataTableContext();
+    const pageIndex = state.pagination.pageIndex;
+    const pageCount = useMemo(() => table.getPageCount(), [table, state, options]);
+    const totalRows = useMemo(() => table.getRowCount(), [table, state, options]);
 
     const handleFirstPage = useCallback(() => table.firstPage(), [table]);
     const handlePreviousPage = useCallback(() => table.previousPage(), [table]);
@@ -35,7 +34,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             color="neutral"
             size="sm"
             onClick={handleFirstPage}
-            disabled={!table.getCanPreviousPage()}
+            disabled={pageIndex <= 0}
             aria-label="First page"
           >
             <LuChevronsLeft />
@@ -45,7 +44,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             color="neutral"
             size="sm"
             onClick={handlePreviousPage}
-            disabled={!table.getCanPreviousPage()}
+            disabled={pageIndex <= 0}
             aria-label="Previous page"
           >
             <LuChevronLeft />
@@ -55,7 +54,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             color="neutral"
             size="sm"
             onClick={handleNextPage}
-            disabled={!table.getCanNextPage()}
+            disabled={pageCount !== -1 && (pageCount === 0 || pageIndex >= pageCount - 1)}
             aria-label="Next page"
           >
             <LuChevronRight />
@@ -65,7 +64,7 @@ export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginatio
             color="neutral"
             size="sm"
             onClick={handleLastPage}
-            disabled={!table.getCanNextPage()}
+            disabled={pageCount !== -1 && (pageCount === 0 || pageIndex >= pageCount - 1)}
             aria-label="Last page"
           >
             <LuChevronsRight />

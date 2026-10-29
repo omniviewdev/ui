@@ -123,7 +123,6 @@ function SearchPanel({ onOpenFile }: SearchPanelProps) {
         {filtered.map((result, i) => (
           <button
             type="button"
-            // eslint-disable-next-line react/no-array-index-key
             key={`${result.file}-${result.line}-${i}`}
             className={styles.resultItem}
             onClick={() => { const id = resolveFileId(result.file); if (id) onOpenFile(id); }}

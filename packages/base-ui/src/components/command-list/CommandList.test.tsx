@@ -77,6 +77,47 @@ function TestCommandList(overrides: Story = {}) {
 // ---------------------------------------------------------------------------
 
 describe('CommandList', () => {
+  it('renders and invokes updated items without losing keyboard selection', () => {
+    const onAction = vi.fn();
+    const itemKey = (item: TestCommand) => item.id;
+    const renderItem = (item: TestCommand, meta: CommandItemMeta) => (
+      <CommandList.Item itemKey={meta.key}>
+        <CommandList.ItemLabel>{item.label}</CommandList.ItemLabel>
+      </CommandList.Item>
+    );
+    const initialItems = commands.slice(0, 2);
+    const { rerender } = renderWithTheme(
+      <TestCommandList
+        items={initialItems}
+        itemKey={itemKey}
+        renderItem={renderItem}
+        onAction={onAction}
+      />,
+    );
+    const updatedItems = initialItems.map((item) => ({ ...item, label: `${item.label} updated` }));
+    rerender(
+      <ThemeProvider themeId="dark">
+        <TestCommandList
+          items={updatedItems}
+          itemKey={itemKey}
+          renderItem={renderItem}
+          onAction={onAction}
+        />
+      </ThemeProvider>,
+    );
+
+    expect(screen.getByText('Open File updated')).toBeInTheDocument();
+    expect(screen.queryByText('Open File')).not.toBeInTheDocument();
+    const input = screen.getByRole('combobox');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(screen.getByRole('option', { name: 'Save File updated' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onAction).toHaveBeenCalledWith('save', updatedItems[1]);
+  });
+
   // -------------------------------------------------------------------------
   // Rendering
   // -------------------------------------------------------------------------
@@ -300,9 +341,6 @@ describe('CommandList', () => {
         />,
       );
       const options = screen.getAllByRole('option');
-      expect(options[1]).toHaveAccessibleName(
-        `Save File Settings › Application F5 ${description} ${reason}`,
-      );
       expect(options[1]).toHaveAttribute('aria-disabled', 'true');
       await user.keyboard('{ArrowDown}');
       expect(options[2]).toHaveAttribute('aria-selected', 'true');

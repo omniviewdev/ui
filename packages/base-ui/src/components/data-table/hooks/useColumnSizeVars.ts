@@ -1,21 +1,25 @@
 import { useMemo } from 'react';
-import type { Table } from '@tanstack/react-table';
+import type { DataTableInstance } from '../types';
+import type { RowData, TableState } from '@tanstack/react-table';
+import type { DataTableFeatures } from '../types';
 
 /**
  * Computes CSS custom properties for all column widths.
  * Applied at the root table element so cells reference them via
  * `width: calc(var(--header-{id}-size) * 1px)` without per-cell inline styles.
  *
- * Only recomputes when columnSizing or columnSizingInfo changes.
+ * Only recomputes when columnSizing or columnResizing changes.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useColumnSizeVars(table: Table<any>): Record<string, number> {
-  'use no memo'; // TanStack Table uses a stable ref — Compiler can't track internal state changes
-  const columnSizingInfo = table.getState().columnSizingInfo;
-  const columnSizing = table.getState().columnSizing;
-  const columnVisibility = table.getState().columnVisibility;
-  const columnOrder = table.getState().columnOrder;
-  const columnPinning = table.getState().columnPinning;
+export function useColumnSizeVars<TData extends RowData>(
+  table: DataTableInstance<TData>,
+  state: TableState<DataTableFeatures> = table.state,
+  options: DataTableInstance<TData>['options'] = table.options,
+): Record<string, number> {
+  const columnResizing = state.columnResizing;
+  const columnSizing = state.columnSizing;
+  const columnVisibility = state.columnVisibility;
+  const columnOrder = state.columnOrder;
+  const columnPinning = state.columnPinning;
 
   return useMemo(() => {
     const headers = table.getFlatHeaders();
@@ -26,5 +30,5 @@ export function useColumnSizeVars(table: Table<any>): Record<string, number> {
     }
     return vars;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnSizing, columnSizingInfo, columnVisibility, columnOrder, columnPinning]);
+  }, [table, options, state.grouping, columnSizing, columnResizing, columnVisibility, columnOrder, columnPinning]);
 }

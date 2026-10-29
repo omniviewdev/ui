@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, bench, describe } from 'vitest';
+import { describe, test } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { createElement, type ReactElement } from 'react';
 import { ThemeProvider } from '@omniviewdev/base-ui';
@@ -26,14 +26,12 @@ export function benchRender(
 ): void {
   const opts = resolveOptions(options);
 
-  bench(
-    name,
-    () => {
+  test(name, async ({ bench }) => {
+    await bench(name, () => {
       render(wrapWithTheme(renderFn()));
       cleanup();
-    },
-    opts,
-  );
+    }).run(opts);
+  });
 }
 
 /**
@@ -74,29 +72,24 @@ export function benchRerender<P extends Record<string, unknown>>(
       }
     };
 
-    // CodSpeed 5's analysis runner calls suite hooks, not Tinybench options.
-    // Native Vitest (including CodSpeed walltime) does the opposite.
-    // Scope both lifecycles to this fixture so sibling mounts cannot clean it up.
-    beforeAll(setup);
-    afterAll(teardown);
-
-    bench(
-      'rerender',
-      () => {
-        try {
-          if (!rerenderFn) {
-            throw new Error('benchRerender: setup did not run');
-          }
-          rerenderFn(wrapWithTheme(renderFn(updatedProps)));
-          rerenderFn(wrapWithTheme(renderFn(initialProps)));
-        } catch (error) {
-          // CodSpeed 5 does not call afterAll when the benchmark throws.
-          teardown();
-          throw error;
-        }
-      },
-      { ...opts, setup, teardown },
-    );
+    test('rerender', async ({ bench }) => {
+      try {
+        await bench(
+          'rerender',
+          { beforeAll: setup, afterAll: teardown },
+          () => {
+            if (!rerenderFn) {
+              throw new Error('benchRerender: setup did not run');
+            }
+            rerenderFn(wrapWithTheme(renderFn(updatedProps)));
+            rerenderFn(wrapWithTheme(renderFn(initialProps)));
+          },
+        ).run(opts);
+      } finally {
+        // Also clean up when setup, measurement, or a provider hook throws.
+        teardown();
+      }
+    });
   });
 }
 
@@ -121,12 +114,10 @@ export function benchMountMany(
   const children = Array.from({ length: count }, (_, i) => factory(i));
   const wrapper = createElement('div', null, ...children);
 
-  bench(
-    name,
-    () => {
+  test(name, async ({ bench }) => {
+    await bench(name, () => {
       render(wrapWithTheme(wrapper));
       cleanup();
-    },
-    opts,
-  );
+    }).run(opts);
+  });
 }

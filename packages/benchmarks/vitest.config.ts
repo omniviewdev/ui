@@ -62,9 +62,7 @@ export default defineConfig(async () => {
       setupFiles: ['./src/setup.ts'],
       pool: 'forks',
       fileParallelism: false,
-      // CPU simulation completed the bulk Combobox case in 411 seconds.
-      // This bounds runner overhead, not component latency or regression thresholds.
-      testTimeout: process.env.CODSPEED_RUNNER_MODE === 'simulation' ? 600_000 : 60_000,
+      testTimeout: 60_000,
       execArgv: isDeterministic ? deterministicExecArgv : defaultExecArgv,
     },
   };

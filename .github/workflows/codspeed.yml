@@ -61,9 +61,10 @@ jobs:
         uses: CodSpeedHQ/action@v4
         with:
           mode: simulation
+          # Simulation overhead needs a runner budget, not the native 60-second limit.
           run: |
             mkdir -p packages/benchmarks/results
-            bash -o pipefail -c 'pnpm bench --shard=${{ matrix.shard }}/4 2>&1 | tee packages/benchmarks/results/codspeed-simulation.log'
+            bash -o pipefail -c 'pnpm bench --testTimeout=600000 --shard=${{ matrix.shard }}/4 2>&1 | tee packages/benchmarks/results/codspeed-simulation.log'
 
       - name: Upload benchmark execution log
         if: always()

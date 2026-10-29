@@ -79,6 +79,17 @@ exempt. Frozen installation and the existing preview's build, lint, native
 typechecks, component tests, and showcase validation still run. Forks and
 similarly named human-authored branches do not receive this exemption.
 
+Changelog-only housekeeping does not change the published package artifacts
+and is excluded by `changedFilePatterns`. Source, dependency, and package
+configuration edits still require a changeset.
+
+Changesets CLI 3 requires action 2's structured `CHANGESETS_OUTPUT` handoff.
+Keep custom publish/version scripts inheriting that environment. Pass GitHub
+authentication through `github-token`; retain `GITHUB_TOKEN` for the GitHub
+changelog formatter, not as a substitute action input. Verify registry
+publication, source provenance, pushed package tags, and GitHub releases:
+action 1 can publish CLI 3 packages without recognizing them for tag/release creation.
+
 ## Future additions (after component implementation starts)
 
 1. Add CSS linting (`stylelint`) for token and module CSS files.

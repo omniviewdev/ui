@@ -36,11 +36,13 @@ jobs:
 
       - name: Create Release PR or Publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: pnpm release
-          version: pnpm version-packages
-          title: "chore: version packages"
-          commit: "chore: version packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish-script: pnpm release
+          version-script: pnpm version-packages
+          pr-title: "chore: version packages"
+          commit-message: "chore: version packages"
         env:
+          # The GitHub changelog formatter reads this in the version script.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

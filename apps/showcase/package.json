@@ -8,7 +8,7 @@
     "build:deps": "pnpm --filter \"@omniviewdev/showcase^...\" build",
     "dev": "pnpm build:deps && vite",
     "dev:fast": "vite",
-    "build": "pnpm build:deps && tsc -p tsconfig.json --noEmit && vite build",
+    "build": "pnpm build:deps && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

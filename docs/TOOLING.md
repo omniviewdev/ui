@@ -35,6 +35,25 @@ Use `packages/benchmarks/src/utils/bench-render.ts` for component benchmarks. Re
 
 Use Node 26.13.0 and the [benchmark validation commands](../packages/benchmarks/README.md#validation) to smoke-test both actual runners. `CI=true` alone does not activate CodSpeed's analysis runner locally; the documented simulation command explicitly selects it. The lifecycle regression benchmark runs in the normal CI shards without mocking the runner. Local lifecycle success does not certify simulation measurements or uploads.
 
+## Declaration builds
+
+Published library builds roll declarations with API Extractor. Each library passes
+`typescriptCompilerFolder` through `bundleTypes.invokeOptions`, derived from the
+active JavaScript compiler's `getDefaultLibFilePath`. The TypeScript 6 compatibility
+package forwards its JavaScript API to the underlying compiler; its own package
+directory does not contain standard library declarations. Using that alias
+directory loses globals such as `Omit` during extraction.
+
+Keep this path derived from the compiler API rather than pinning an internal
+package path or disabling declaration diagnostics. Managed output-directory builds
+emit unbundled declarations; smoke-test default `dist` builds without
+`OMNIVIEW_BUILD_OUTPUT_DIRECTORY` to exercise the published declaration path.
+
+Library typechecks and the showcase build invoke `@typescript/native/bin/tsc`
+explicitly. Do not replace these with the JavaScript compiler alias: native
+TypeScript 7 checks source, while the compatible TypeScript 6 JavaScript API
+serves declaration tooling.
+
 ## Compiler-sensitive component tests
 
 Base UI tests compile library modules with the same React Compiler plugin as

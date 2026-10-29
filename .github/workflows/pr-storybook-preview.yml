@@ -8,6 +8,13 @@ on:
       - '.storybook/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - 'apps/**'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'tsconfig*.json'
+      - 'eslint.config.mjs'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/pr-storybook-preview.yml'
 
 permissions:
   id-token: write
@@ -25,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
 
@@ -39,6 +47,18 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Build libraries and integrated showcase
+        run: pnpm showcase:build
+
+      - name: Lint source without modifying it
+        run: pnpm lint
+
+      - name: Check source and test types
+        run: pnpm typecheck
+
+      - name: Run component behavior tests
+        run: pnpm test
 
       - name: Build Storybook with PR base path
         run: pnpm build-storybook

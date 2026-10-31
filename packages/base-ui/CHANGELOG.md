@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.9.1
+
+### Patch Changes
+
+- [#87](https://github.com/omniviewdev/ui/pull/87) [`21ae88e`](https://github.com/omniviewdev/ui/commit/21ae88e3cf3ffe24290c1e4466151c058f2180c2) Thanks [@joshuapare](https://github.com/joshuapare)! - Unify neutral buttons and labeled selection controls with quiet decorative borders and opaque resting, hover, and pressed surfaces. Preserve semantic accents, keyboard focus, required input/choice boundaries, and high-contrast themes. Expose shared control-surface and decorative-border theme tokens, and document the native-control design language with contrast measurements and live workspace screenshots.
+
 ## 0.9.0
 
 ### Minor Changes

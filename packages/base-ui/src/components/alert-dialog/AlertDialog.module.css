@@ -102,10 +102,10 @@
   --_ov-height: var(--ov-size-button-height-md);
   --_ov-padding-inline: var(--ov-size-button-padding-inline-md);
   --_ov-font-size: var(--ov-size-button-font-size-md);
-  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-bg: var(--ov-color-bg-control);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
-  --_ov-border: var(--ov-color-border-control);
+  --_ov-border: var(--ov-color-border-chrome);
   --_ov-fg: var(--ov-color-fg-default);
 
   display: inline-flex;
@@ -202,8 +202,8 @@
 
 .Trigger[data-ov-variant='solid'],
 .Close[data-ov-variant='solid'] {
-  --_ov-bg: var(--ov-color-bg-surface-raised);
-  --_ov-border: var(--ov-color-border-control);
+  --_ov-bg: var(--ov-color-bg-control);
+  --_ov-border: var(--ov-color-border-chrome);
 }
 
 .Trigger[data-ov-variant='soft'],
@@ -223,13 +223,21 @@
   --_ov-border: transparent;
 }
 
-.Trigger:hover,
-.Close:hover {
+.Trigger[data-ov-color='neutral']:not([data-ov-variant='ghost']),
+.Close[data-ov-color='neutral']:not([data-ov-variant='ghost']) {
+  --_ov-bg: var(--ov-color-bg-control);
+  --_ov-border: var(--ov-color-border-chrome);
+  --_ov-bg-hover: var(--ov-color-bg-control-hover);
+  --_ov-bg-pressed: var(--ov-color-bg-control-pressed);
+}
+
+.Trigger:not([disabled]):not([data-disabled]):hover,
+.Close:not([disabled]):not([data-disabled]):hover {
   background: var(--_ov-bg-hover);
 }
 
-.Trigger:active,
-.Close:active {
+.Trigger:not([disabled]):not([data-disabled]):active,
+.Close:not([disabled]):not([data-disabled]):active {
   background: var(--_ov-bg-pressed);
 }
 

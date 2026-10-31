@@ -83,8 +83,8 @@
 .meridiem {
   min-width: 3.5ch;
   margin-inline-start: var(--ov-space-inline-xs);
-  background: var(--ov-color-bg-surface-raised);
-  border: 1px solid var(--ov-color-border-control);
+  background: var(--ov-color-bg-control);
+  border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-control);
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
@@ -96,8 +96,12 @@
   line-height: 1.4;
 }
 
-.meridiem:hover {
-  background: var(--ov-color-state-hover);
+.meridiem:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+
+.meridiem:not(:disabled):active {
+  background: var(--ov-color-bg-control-pressed);
 }
 
 /* ─── Right-side clock icon button ───────────────────────────────────────── */

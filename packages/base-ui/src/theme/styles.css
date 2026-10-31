@@ -551,6 +551,13 @@
   --ov-color-border-overlay: var(--ov-color-border-default);
   --ov-color-border-focus: #7a96db;
 
+  /* Decorative chrome for controls identified by a label or icon. Required
+     boundaries keep border-control; aliases preserve each theme's contrast. */
+  --ov-color-border-chrome: var(--ov-color-border-default);
+  --ov-color-bg-control: var(--ov-color-bg-surface-raised);
+  --ov-color-bg-control-hover: color-mix(in srgb, var(--ov-color-bg-control) 90%, var(--ov-color-fg-default) 10%);
+  --ov-color-bg-control-pressed: color-mix(in srgb, var(--ov-color-bg-control) 84%, var(--ov-color-fg-default) 16%);
+
   --ov-color-brand-500: #5a7fe2;
   --ov-color-brand-400: #7092e8;
   --ov-color-brand-300: #89a7ee;

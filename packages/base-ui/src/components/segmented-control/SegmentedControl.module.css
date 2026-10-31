@@ -6,6 +6,7 @@
   padding: 2px;
   border-radius: var(--ov-radius-md);
   background: var(--ov-color-bg-inset);
+  box-shadow: inset 0 0 0 1px var(--ov-color-border-chrome);
 }
 
 .Root[data-ov-size='xs'] {
@@ -55,11 +56,13 @@
 
 .Item[data-ov-active='true'] {
   background: var(--ov-color-bg-default);
-  box-shadow: var(--ov-shadow-sm);
+  box-shadow:
+    inset 0 0 0 1px var(--ov-color-border-chrome),
+    var(--ov-shadow-sm);
 }
 
 .Item:not([data-ov-active='true']):hover:not([data-ov-disabled='true']) {
-  background: color-mix(in srgb, var(--ov-color-bg-default) 50%, transparent 50%);
+  background: var(--ov-color-bg-control-hover);
 }
 
 .Item[data-ov-disabled='true'] {

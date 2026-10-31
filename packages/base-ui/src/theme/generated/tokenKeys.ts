@@ -23,11 +23,15 @@ export type ThemeTokenKey =
   | 'color.ansi.white'
   | 'color.ansi.yellow'
   | 'color.bg.base'
+  | 'color.bg.control'
+  | 'color.bg.control.hover'
+  | 'color.bg.control.pressed'
   | 'color.bg.elevated'
   | 'color.bg.inset'
   | 'color.bg.surface'
   | 'color.bg.surface.overlay'
   | 'color.bg.surface.raised'
+  | 'color.border.chrome'
   | 'color.border.control'
   | 'color.border.default'
   | 'color.border.focus'
@@ -179,11 +183,15 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.ansi.white': { cssVariable: '--ov-color-ansi-white', valueKind: 'color' },
   'color.ansi.yellow': { cssVariable: '--ov-color-ansi-yellow', valueKind: 'color' },
   'color.bg.base': { cssVariable: '--ov-color-bg-base', valueKind: 'color' },
+  'color.bg.control': { cssVariable: '--ov-color-bg-control', valueKind: 'color' },
+  'color.bg.control.hover': { cssVariable: '--ov-color-bg-control-hover', valueKind: 'color' },
+  'color.bg.control.pressed': { cssVariable: '--ov-color-bg-control-pressed', valueKind: 'color' },
   'color.bg.elevated': { cssVariable: '--ov-color-bg-elevated', valueKind: 'color' },
   'color.bg.inset': { cssVariable: '--ov-color-bg-inset', valueKind: 'color' },
   'color.bg.surface': { cssVariable: '--ov-color-bg-surface', valueKind: 'color' },
   'color.bg.surface.overlay': { cssVariable: '--ov-color-bg-surface-overlay', valueKind: 'color' },
   'color.bg.surface.raised': { cssVariable: '--ov-color-bg-surface-raised', valueKind: 'color' },
+  'color.border.chrome': { cssVariable: '--ov-color-border-chrome', valueKind: 'color' },
   'color.border.control': { cssVariable: '--ov-color-border-control', valueKind: 'color' },
   'color.border.default': { cssVariable: '--ov-color-border-default', valueKind: 'color' },
   'color.border.focus': { cssVariable: '--ov-color-border-focus', valueKind: 'color' },

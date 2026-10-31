@@ -65,16 +65,20 @@
   width: calc(var(--_ov-item-height) - 8px);
   height: calc(var(--_ov-item-height) - 8px);
   padding: 0;
-  border: 1px solid var(--ov-color-border-control);
+  border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-sm, 4px);
-  background: transparent;
+  background: var(--ov-color-bg-control);
   color: var(--ov-color-fg-default);
   font-size: var(--ov-font-size-caption);
   cursor: pointer;
 }
 
-.ActionButton:hover {
-  background: var(--ov-color-state-hover, var(--_ov-highlight-bg));
+.ActionButton:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+
+.ActionButton:not(:disabled):active {
+  background: var(--ov-color-bg-control-pressed);
 }
 
 .ActionButton:focus-visible {

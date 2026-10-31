@@ -44,9 +44,9 @@
   min-height: var(--_ov-item-height);
   min-width: var(--_ov-item-min-width);
   padding: 0 var(--ov-space-stack-xs);
-  border: 1px solid var(--ov-color-border-control);
+  border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-control);
-  background: var(--ov-color-bg-surface-raised);
+  background: var(--ov-color-bg-control);
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
   font-size: var(--_ov-font-size);
@@ -67,11 +67,11 @@
 }
 
 .Item:not(:disabled, [data-ov-active='true']):hover {
-  background: var(--ov-color-state-hover);
+  background: var(--ov-color-bg-control-hover);
 }
 
 .Item:not(:disabled, [data-ov-active='true']):active {
-  background: var(--ov-color-state-pressed);
+  background: var(--ov-color-bg-control-pressed);
 }
 
 /* Active (current page) */

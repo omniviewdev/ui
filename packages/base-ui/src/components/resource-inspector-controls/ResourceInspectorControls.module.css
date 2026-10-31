@@ -97,6 +97,16 @@
   color: var(--ov-color-fg-default);
   font: inherit;
 }
+.Select {
+  border-color: var(--ov-color-border-chrome);
+  background: var(--ov-color-bg-control);
+}
+.Select:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+.Select:not(:disabled):active {
+  background: var(--ov-color-bg-control-pressed);
+}
 .Select:focus-visible,
 .TextInput:focus-visible {
   outline: 2px solid var(--ov-color-brand);

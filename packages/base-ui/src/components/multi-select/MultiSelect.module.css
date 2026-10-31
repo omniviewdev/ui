@@ -146,6 +146,8 @@
 .Control[data-ov-variant='ghost'] {
   --_ov-bg: transparent;
   --_ov-border: transparent;
+  --_ov-bg-hover: var(--ov-color-state-hover);
+  --_ov-bg-pressed: var(--ov-color-state-pressed);
 }
 
 .Control[data-ov-variant='soft'] {

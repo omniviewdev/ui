@@ -212,6 +212,12 @@ local design choices, not Apple-prescribed colors. Apple allows appropriate
 macOS transparency; opaque fills here provide predictable contrast across our
 layered, themeable desktop UI. Preserve intentional transparent/ghost variants.
 
+Define these aliases on both `:root` and every `[data-ov-theme]` root so nested
+themes resolve their own palette instead of inheriting resolved parent colors.
+Selected segments use the pressed control fill, distinct from inactive hover.
+Ghost Select and MultiSelect controls remain transparent at rest and use the
+unmixed hover/pressed state tokens for visible interaction feedback.
+
 ### Default dark contrast measurements
 
 Snapshot: 2026-10-31, values from

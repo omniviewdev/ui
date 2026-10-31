@@ -1,4 +1,13 @@
 :root,
+[data-ov-theme] {
+  /* Resolve aliases locally so nested theme roots use their own palette. */
+  --ov-color-border-chrome: var(--ov-color-border-default);
+  --ov-color-bg-control: var(--ov-color-bg-surface-raised);
+  --ov-color-bg-control-hover: color-mix(in srgb, var(--ov-color-bg-control) 90%, var(--ov-color-fg-default) 10%);
+  --ov-color-bg-control-pressed: color-mix(in srgb, var(--ov-color-bg-control) 84%, var(--ov-color-fg-default) 16%);
+}
+
+:root,
 [data-ov-theme='dark'] {
   --ov-primitive-gray-0: #090a0c;
   --ov-primitive-gray-50: #111214;

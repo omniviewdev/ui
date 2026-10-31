@@ -146,12 +146,11 @@ intentionally grow when tags wrap. Narrow MultiSelect chip rows scroll
 horizontally, keeping removal controls keyboard-reachable without overlapping
 the clear button, trigger, or neighboring fields.
 
-Resting field surfaces agree for the same color and variant: soft mixes the
-raised surface with the accent's soft color, solid mixes the surface with the
-accent, and outline/ghost stay transparent. Neutral fields use neutral hover
-and control-boundary colors rather than selection-state blue. Popup selections
-retain their semantic accents. TagInput uses the neutral soft surface without
-adding a variant prop.
+Neutral buttons and labeled selection triggers use the shared opaque control
+surface for filled and outline variants; ghost variants stay transparent.
+Text-entry fields keep their existing variant surfaces and required boundaries.
+Explicit semantic colors and popup selections retain their accents. TagInput
+uses the neutral soft surface without adding a variant prop.
 
 Checkbox and radio marks, switch tracks, chips, and badge markers intentionally
 use compact scales rather than full field heights. Their visual tiers must still
@@ -173,6 +172,113 @@ Unrelated native or generic props (such as an input's numeric `size`) remain
 unchanged and do not override inherited styling. Render functions keep the
 existing resolved-props and state contract.
 
+## Native control language
+
+Buttons, dropdown triggers, menu items, and selection controls share one visual
+hierarchy. Ordinary actions use neutral content and surfaces; primary actions,
+selection, focus, and semantic status retain their dedicated accents. Do not
+make every idle outline, hover, or press blue. Preserve destructive semantics
+rather than promoting a destructive action to the primary role.
+
+Apple's [button guidance](https://developer.apple.com/design/human-interface-guidelines/buttons)
+supports clear labels/icons, explicit press feedback, and prominence through
+style rather than size. Its [color guidance](https://developer.apple.com/design/human-interface-guidelines/color)
+supports consistent semantic roles and restrained emphasis. Our application
+uses these principles, not a pixel-perfect imitation of AppKit or Liquid Glass.
+Reference screenshots are inspiration, not a native platform specification.
+Keep existing heights, padding, radii, density tiers, hit areas, and public APIs
+unchanged in this visual refinement.
+
+### Quiet chrome, identifiable controls
+
+Use `--ov-color-border-chrome` for decorative control outlines only when a
+visible label or sufficiently contrasting icon independently identifies the
+control. It aliases `--ov-color-border-default`, so each theme, including
+high-contrast variants, retains its own boundary treatment. A nearby field
+label alone does not identify an otherwise invisible empty editing area.
+
+Keep `--ov-color-border-control` for required boundaries: empty inputs,
+unchecked checkboxes/radios, and any selector or choice whose presence/state
+depends on its edge. Keep identifying checkmarks, arrows, switch thumbs,
+selected-state cues, and keyboard focus visible. Quiet chrome must not replace
+those cues or weaken high-contrast variants.
+
+Neutral filled controls use `--ov-color-bg-control` (raised surface),
+`--ov-color-bg-control-hover` (90% control surface, 10% default foreground), and
+`--ov-color-bg-control-pressed` (84% control surface, 16% default foreground).
+These sRGB mixes produce opaque fills for opaque theme inputs, avoiding
+background-dependent alpha overlays. These weights and palette values are
+local design choices, not Apple-prescribed colors. Apple allows appropriate
+macOS transparency; opaque fills here provide predictable contrast across our
+layered, themeable desktop UI. Preserve intentional transparent/ghost variants.
+
+Define these aliases on both `:root` and every `[data-ov-theme]` root so nested
+themes resolve their own palette instead of inheriting resolved parent colors.
+Selected segments use the pressed control fill, distinct from inactive hover.
+Ghost Select and MultiSelect controls remain transparent at rest and use the
+unmixed hover/pressed state tokens for visible interaction feedback.
+
+### Default dark contrast measurements
+
+Snapshot: 2026-10-31, values from
+[`styles.css`](../packages/base-ui/src/theme/styles.css), default `:root`/dark
+palette. This is a local before/after comparison, not a second theme catalog.
+Replacing the strong outline on a decorative edge reduces its contrast as follows:
+
+| Adjacent surface | Surface color | Required-boundary color `#6c7788` | Decorative chrome `#343840` |
+| ---------------- | ------------- | -------------------------------- | -------------------------- |
+| Base | `#181a1c` | 3.85:1 | 1.48:1 |
+| Surface / overlay | `#1f2125` | 3.56:1 | 1.37:1 |
+| Raised / control | `#272a30` | 3.17:1 | 1.22:1 |
+| Inset | `#131416` | 4.07:1 | 1.57:1 |
+| Elevated | `#2e323a` | 2.84:1 | 1.09:1 |
+
+The quiet outline intentionally does not meet 3:1 and cannot identify a control
+by itself. The strong token also falls below 3:1 against the elevated surface
+(unrounded 2.835539830484767:1); retaining its name/value is not proof of
+compliance. Required boundaries there need a compliant surface pairing or
+another sufficient identifying cue.
+
+| Neutral state | Opaque sRGB fill, channels on 0–255 scale | Default text `#cccccc` | Muted icon `#9d9d9d` | Focus `#7a96db` against fill |
+| ------------- | --------------------------------------- | ---------------------- | -------------------- | -------------------------- |
+| Rest | `(39, 42, 48)` | 8.96:1 | 5.30:1 | 4.94:1 |
+| Hover | `(55.5, 58.2, 63.6)` | 7.08:1 | 4.19:1 | 3.90:1 |
+| Pressed | `(65.4, 67.92, 72.96)` | 6.09:1 | 3.60:1 | 3.36:1 |
+
+Calculated with an sRGB evaluation script: normalize channels to 0–1, linearize
+with `c / 12.92` when `c <= 0.04045`, otherwise `((c + 0.055) / 1.055) ** 2.4`;
+then `L = 0.2126 R + 0.7152 G + 0.0722 B` and contrast is
+`(Llighter + 0.05) / (Ldarker + 0.05)`. Mix channels in sRGB before linearizing;
+retain fractional channels and compare unrounded ratios to thresholds. Tables
+round only for display. These calculations are not rendered-component evidence
+or a claim that every accent, theme, icon, or focus placement passes.
+
+### Rendered workspace evidence
+
+Captured on 2026-10-31 using the real browser-mode host and managed Kubernetes
+plugin in `omniview-dev` workspace `native-controls-20261031`. Host, UI, plugin,
+and SDK worktrees started from freshly fetched `origin/main`. These are actual
+application screenshots, not static mockups or browser-injected style previews.
+
+- [Dashboard and namespace selector, Dark](native-controls-dashboard-dark.png).
+- [Pod toolbar and selected node filter, Dark](native-controls-pods-dark.png).
+- [Pod toolbar, Light](native-controls-pods-light.png).
+- [Pod toolbar, High Contrast Dark](native-controls-pods-hc-dark.png).
+- [Primary and secondary dialog actions, Dark](native-controls-actions-dark.png).
+
+The managed build completed for shared UI packages, runtime, host, and plugin.
+Browser smoke exercised dropdown opening, keyboard node selection, persisted
+filter chips, theme switching, and dialog opening/cancellation. No resource was
+created or changed. Rendered neutral-outline button assertions confirmed
+`rgb(39, 42, 48)` resting fill, `rgb(52, 56, 64)` idle border, distinct opaque
+hover/pressed fills, and `rgb(122, 150, 219)` keyboard focus border/ring.
+High Contrast Dark retained its `rgb(240, 240, 240)` button boundary.
+
+The development badge showed “Stale” after documentation/screenshot writes.
+The cause was not independently isolated. The state assertions above verified
+the changed CSS in the running application despite that badge.
+Native AppKit rendering and every custom theme were not verified.
+
 ## Boundary design
 
 Choose a boundary by its job, not by the brightness of nearby text. The CSS
@@ -185,6 +291,7 @@ palette rather than duplicating per-theme colors.
 | Quiet structural rule                    | `--ov-color-border-muted`                                | Table row rule, separator, subsection divider                        |
 | Ordinary passive enclosure               | `--ov-color-border-default`                              | Card or panel perimeter when a frame is necessary                    |
 | Intentional structural emphasis          | `--ov-color-border-strong`                               | Deliberately emphasized structural edge, not every nested box        |
+| Decorative control chrome                | `--ov-color-border-chrome`                               | Outline redundant with a visible identifying label or icon           |
 | Necessary control-identification outline | `--ov-color-border-control`                              | Input, selector trigger, or choice control identified by its outline |
 | Overlay perimeter                        | `--ov-color-border-overlay`                              | Open selector/menu popup, popover, dialog perimeter                  |
 | Keyboard focus                           | `--ov-color-border-focus`, `--ov-color-state-focus-ring` | Visible keyboard focus cue, separate from an idle outline            |
@@ -220,9 +327,11 @@ gain an outline solely because a control token exists.
 Required control-identification cues and non-text state indicators, including
 author-supplied focus indicators, must achieve at least 3:1 against the applicable
 adjacent colors under WCAG 1.4.11. Inspect the actual component surface and state,
-not just a token swatch on the page background. Text has its own contrast
-requirements. Keep keyboard focus visible and distinct from selection, hover,
-and status; a selected row is not necessarily keyboard-focused.
+not just a token swatch on the page background. Normal-size active control
+labels require at least 4.5:1 against their actual fill under WCAG 1.4.3.
+Decorative-outline exemption applies only when independently identifying
+content remains sufficient. Keep keyboard focus visible and distinct from
+selection, hover, and status; a selected row is not necessarily keyboard-focused.
 
 There is no universal 3:1 floor for decorative card outlines, table rules, or
 redundant separators. A line becomes meaningful rather than decorative when it
@@ -265,6 +374,21 @@ node --test scripts/audit/scanners/custom-property-cycles.test.mjs scripts/audit
 - [W3C: Understanding Non-text Contrast, including boundaries and focus](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html):
   distinguishes necessary control/state information from optional boundaries;
   does not require every control to have an outline.
+- [W3C: Understanding Contrast (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html):
+  normal text requires 4.5:1; large text has a separate 3:1 threshold.
+- [W3C: Understanding Focus Visible](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html):
+  keyboard focus must remain visible; a decorative border is not its substitute.
+  [Focus Appearance](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html)
+  additionally defines area and same-pixel focused/unfocused contrast at AAA;
+  do not mislabel that criterion as an AA requirement.
+- [Apple HIG: Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons),
+  [Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode),
+  and [Color](https://developer.apple.com/design/human-interface-guidelines/color):
+  use semantic, appearance-adaptive roles and explicit state feedback. Review
+  light/dark appearances and increased contrast; Dark Mode recommends 4.5:1
+  foreground/background contrast and aiming for 7:1 with custom colors,
+  especially small text. This does not prescribe our hex values or require
+  every decorative outline to reach text contrast.
 - [Carbon: role-based color tokens](https://www.carbondesignsystem.com/building-blocks/foundations/color/overview)
   and [layering guidance](https://www.carbondesignsystem.com/building-blocks/foundations/color/guidelines):
   pair surface, field, and border roles with their actual layer. This informs

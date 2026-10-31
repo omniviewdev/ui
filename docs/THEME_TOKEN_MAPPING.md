@@ -19,6 +19,9 @@ Use these sources together:
 
 For theme JSON, `color.border.control` maps to `--ov-color-border-control`,
 and `color.border.overlay` maps to `--ov-color-border-overlay`.
+`color.border.chrome` maps to `--ov-color-border-chrome` for decorative control
+edges. `color.bg.control`, `color.bg.control.hover`, and
+`color.bg.control.pressed` define opaque neutral interaction surfaces.
 Regenerate the public catalog with
 `pnpm --filter @omniviewdev/base-ui generate:token-keys` when variables change.
 
@@ -26,8 +29,9 @@ Regenerate the public catalog with
 
 Use `border-muted` for structural hairlines and row rules, `border-default`
 for passive enclosures, and `border-strong` for intentional structural emphasis.
-Necessary control-identification outlines use `border-control`; overlay
-perimeters use `border-overlay`. Keyboard focus remains `border-focus` /
+Necessary control-identification outlines use `border-control`; decorative
+control edges use `border-chrome` only when labels or icons identify the control.
+Overlay perimeters use `border-overlay`. Keyboard focus remains `border-focus` /
 `state-focus-ring`. Selection and status use their own semantic roles.
 No neutral boundary role derives from foreground/text colors.
 

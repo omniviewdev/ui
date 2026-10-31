@@ -57,3 +57,27 @@
   --_ov-bg: var(--_ov-toggle-selected-bg);
   --_ov-fg: var(--_ov-toggle-selected-fg);
 }
+
+.Root[data-ov-color='neutral'][data-pressed] {
+  --_ov-bg: var(--ov-color-bg-control-pressed);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-control);
+  --_ov-bg-hover: color-mix(
+    in srgb,
+    var(--ov-color-bg-control-pressed) 94%,
+    var(--ov-color-fg-default) 6%
+  );
+  --_ov-bg-pressed: color-mix(
+    in srgb,
+    var(--ov-color-bg-control-pressed) 90%,
+    var(--ov-color-fg-default) 10%
+  );
+
+  box-shadow: inset 0 0 0 1px var(--ov-color-border-control);
+}
+
+.Root[data-ov-color='neutral'][data-pressed]:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px var(--ov-color-border-control),
+    0 0 0 1px var(--ov-color-state-focus-ring);
+}

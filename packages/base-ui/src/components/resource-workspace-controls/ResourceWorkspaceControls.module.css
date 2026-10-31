@@ -76,6 +76,19 @@
   font: inherit;
 }
 
+.Select {
+  border-color: var(--ov-color-border-chrome);
+  background: var(--ov-color-bg-control);
+}
+
+.Select:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+
+.Select:not(:disabled):active {
+  background: var(--ov-color-bg-control-pressed);
+}
+
 .Textarea {
   resize: vertical;
   font-family: var(--ov-font-mono);

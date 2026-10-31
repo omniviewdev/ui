@@ -207,12 +207,18 @@
 .ValueControl select {
   max-inline-size: 100%;
   min-block-size: var(--ov-size-button-height-sm);
-  border: 1px solid var(--ov-color-border-control);
+  border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-sm);
-  background: var(--ov-color-bg-surface-raised);
+  background: var(--ov-color-bg-control);
   color: var(--ov-color-fg-default);
   font: inherit;
   padding: var(--ov-space-stack-xs) var(--ov-space-stack-sm);
+}
+:is(.Authoring, .Builder, .Variables, .ValueControl) select:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+:is(.Authoring, .Builder, .Variables, .ValueControl) select:not(:disabled):active {
+  background: var(--ov-color-bg-control-pressed);
 }
 .Authoring select:focus-visible,
 .Builder select:focus-visible,

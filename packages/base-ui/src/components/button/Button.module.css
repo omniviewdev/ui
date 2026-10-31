@@ -4,11 +4,11 @@
   --_ov-font-size: var(--ov-size-button-font-size-md);
   --_ov-content-gap: var(--ov-space-stack-sm);
   --_ov-decorator-size: var(--ov-size-icon-button-icon-md);
-  --_ov-bg: var(--ov-color-bg-surface-raised);
+  --_ov-bg: var(--ov-color-bg-control);
   --_ov-fg: var(--ov-color-fg-default);
-  --_ov-border: var(--ov-color-border-control);
-  --_ov-bg-hover: var(--ov-color-state-hover);
-  --_ov-bg-pressed: var(--ov-color-state-pressed);
+  --_ov-border: var(--ov-color-border-chrome);
+  --_ov-bg-hover: var(--ov-color-bg-control-hover);
+  --_ov-bg-pressed: var(--ov-color-bg-control-pressed);
 
   display: inline-flex;
   align-items: center;
@@ -86,9 +86,9 @@
 }
 
 .Root[data-ov-color='neutral'] {
-  --_ov-accent-bg: var(--ov-color-bg-surface-raised);
+  --_ov-accent-bg: var(--ov-color-bg-control);
   --_ov-accent-fg: var(--ov-color-fg-default);
-  --_ov-accent-border: var(--ov-color-border-control);
+  --_ov-accent-border: var(--ov-color-border-chrome);
   --_ov-accent-soft-bg: var(--ov-color-state-hover);
   --_ov-accent-soft-fg: var(--ov-color-fg-default);
   --_ov-accent-ghost-fg: var(--ov-color-fg-muted);
@@ -187,6 +187,14 @@
   --_ov-border: transparent;
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
+}
+
+.Root[data-ov-color='neutral']:not([data-ov-variant='ghost']) {
+  --_ov-bg: var(--ov-color-bg-control);
+  --_ov-fg: var(--ov-color-fg-default);
+  --_ov-border: var(--ov-color-border-chrome);
+  --_ov-bg-hover: var(--ov-color-bg-control-hover);
+  --_ov-bg-pressed: var(--ov-color-bg-control-pressed);
 }
 
 .Decorator {

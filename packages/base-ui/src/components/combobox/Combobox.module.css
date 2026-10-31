@@ -309,8 +309,8 @@
 .Trigger,
 .Clear {
   --_ov-control-height: var(--ov-control-height-md);
-  --_ov-bg: var(--ov-color-bg-surface-raised);
-  --_ov-border: var(--ov-color-border-control);
+  --_ov-bg: var(--ov-color-bg-control);
+  --_ov-border: var(--ov-color-border-chrome);
   --_ov-fg: var(--ov-color-fg-muted);
   --_ov-bg-hover: var(--ov-color-state-hover);
   --_ov-bg-pressed: var(--ov-color-state-pressed);
@@ -415,6 +415,14 @@
   --_ov-border: transparent;
 }
 
+.Trigger[data-ov-color='neutral']:not([data-ov-variant='ghost']),
+.Clear[data-ov-color='neutral']:not([data-ov-variant='ghost']) {
+  --_ov-bg: var(--ov-color-bg-control);
+  --_ov-border: var(--ov-color-border-chrome);
+  --_ov-bg-hover: var(--ov-color-bg-control-hover);
+  --_ov-bg-pressed: var(--ov-color-bg-control-pressed);
+}
+
 .Trigger:focus-visible,
 .Clear:focus-visible,
 .ChipRemove:focus-visible {
@@ -423,15 +431,15 @@
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
 }
 
-.Trigger:hover,
-.Clear:hover,
-.ChipRemove:hover {
+.Trigger:not([disabled]):not([data-disabled]):hover,
+.Clear:not([disabled]):not([data-disabled]):hover,
+.ChipRemove:not([disabled]):not([data-disabled]):hover {
   background: var(--_ov-bg-hover);
 }
 
-.Trigger:active,
-.Clear:active,
-.ChipRemove:active {
+.Trigger:not([disabled]):not([data-disabled]):is(:active, [data-popup-open]),
+.Clear:not([disabled]):not([data-disabled]):active,
+.ChipRemove:not([disabled]):not([data-disabled]):active {
   background: var(--_ov-bg-pressed);
 }
 

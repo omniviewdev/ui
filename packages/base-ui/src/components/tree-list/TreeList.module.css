@@ -108,6 +108,15 @@
   scrollbar-gutter: stable;
 }
 
+/* One inherited CSS-size probe updates virtual estimates without scanning rows. */
+.SizeProbe {
+  position: absolute;
+  block-size: var(--_ov-item-height);
+  inline-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .Viewport::-webkit-scrollbar {
   width: var(--ov-size-scrollarea-scrollbar-sm);
 }

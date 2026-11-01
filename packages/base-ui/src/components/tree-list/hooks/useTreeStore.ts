@@ -8,6 +8,9 @@ import type {
   FlatNode,
 } from '../types';
 
+const EMPTY_TREE_NODES: readonly FlatNode[] = [];
+const EMPTY_TREE_META: ReadonlyMap<Key, TreeNodeMeta> = new Map();
+
 /**
  * Creates a lightweight external store for tree state.
  * Items subscribe via useSyncExternalStore to their own key's slice,
@@ -43,6 +46,8 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     expandedKeys: new Set(),
     loadingKeys: new Set(),
     flattenedKeys: [],
+    flatNodes: EMPTY_TREE_NODES,
+    nodeMetaByKey: EMPTY_TREE_META,
     visibleCount: 0,
   });
 
@@ -51,6 +56,20 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   const rebuildSnapshot = useCallback(() => {
     const previous = snapshotRef.current;
     const dirty = dirtySetsRef.current;
+    if (dirty.expanded || dirty.loading) {
+      let nextMetadata: Map<Key, TreeNodeMeta> | undefined;
+      for (const [key, metadata] of nodeMetaMapRef.current) {
+        const index = nodeIndexRef.current.get(key);
+        const isExpanded =
+          (index === undefined ? undefined : flatNodesRef.current[index]?.filterExpanded) ??
+          expandedKeysRef.current.has(key);
+        const isLoading = loadingKeysRef.current.has(key);
+        if (metadata.isExpanded === isExpanded && metadata.isLoading === isLoading) continue;
+        if (!nextMetadata) nextMetadata = new Map(nodeMetaMapRef.current);
+        nextMetadata.set(key, { ...metadata, isExpanded, isLoading });
+      }
+      if (nextMetadata) nodeMetaMapRef.current = nextMetadata;
+    }
     snapshotRef.current = {
       selectedKeys: dirty.selected ? new Set(selectedKeysRef.current) : previous.selectedKeys,
       activeKey: activeKeyRef.current,
@@ -60,6 +79,8 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
       expandedKeys: dirty.expanded ? new Set(expandedKeysRef.current) : previous.expandedKeys,
       loadingKeys: dirty.loading ? new Set(loadingKeysRef.current) : previous.loadingKeys,
       flattenedKeys: flattenedKeysRef.current,
+      flatNodes: flatNodesRef.current,
+      nodeMetaByKey: nodeMetaMapRef.current,
       visibleCount: flatNodesRef.current.length,
     };
     dirty.selected = false;
@@ -132,19 +153,10 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     return next;
   }, []);
 
-  const getNodeMeta = useCallback((key: Key): TreeNodeMeta | undefined => {
-    const cached = nodeMetaMapRef.current.get(key);
-    if (!cached) return undefined;
-    const index = nodeIndexRef.current.get(key);
-    const isExpanded =
-      (index === undefined ? undefined : flatNodesRef.current[index]?.filterExpanded) ??
-      expandedKeysRef.current.has(key);
-    const isLoading = loadingKeysRef.current.has(key);
-    if (cached.isExpanded === isExpanded && cached.isLoading === isLoading) return cached;
-    const next = { ...cached, isExpanded, isLoading };
-    nodeMetaMapRef.current.set(key, next);
-    return next;
-  }, []);
+  const getNodeMeta = useCallback(
+    (key: Key): TreeNodeMeta | undefined => snapshotRef.current.nodeMetaByKey.get(key),
+    [],
+  );
 
   const getFlatNodes = useCallback((): readonly FlatNode[] => {
     return flatNodesRef.current;

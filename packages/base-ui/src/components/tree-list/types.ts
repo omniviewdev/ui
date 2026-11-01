@@ -85,6 +85,8 @@ export interface TreeStoreSnapshot {
   expandedKeys: ReadonlySet<Key>;
   loadingKeys: ReadonlySet<Key>;
   flattenedKeys: readonly Key[];
+  flatNodes: readonly FlatNode[];
+  nodeMetaByKey: ReadonlyMap<Key, TreeNodeMeta>;
   visibleCount: number;
 }
 
@@ -225,7 +227,7 @@ export interface TreeListRootProps<TItem = unknown>
   /** Extra rows rendered on each side of the scroll window. Defaults to 10.
    * The active row remains mounted even when outside that window. */
   overscan?: number;
-  /** Initial row height in pixels, before measurement. Defaults to 36. */
+  /** Initial row estimate in pixels; defaults to the rendered size/density token. */
   estimatedItemSize?: number;
 
   // Filtering

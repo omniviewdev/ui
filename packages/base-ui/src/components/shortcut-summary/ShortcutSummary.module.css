@@ -1,0 +1,105 @@
+.Root {
+  --_ov-shortcut-font-size: var(--ov-primitive-font-size-12);
+  --_ov-shortcut-row-gap: 10px;
+  color: var(--ov-color-fg-default);
+  font-size: var(--_ov-shortcut-font-size);
+  line-height: 1.5;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-shortcut-font-size: var(--ov-primitive-font-size-11);
+  --_ov-shortcut-row-gap: 6px;
+}
+
+.Root[data-ov-size='md'] {
+  --_ov-shortcut-font-size: var(--ov-primitive-font-size-13);
+}
+
+.Root[data-ov-size='lg'],
+.Root[data-ov-size='xl'] {
+  --_ov-shortcut-font-size: var(--ov-primitive-font-size-14);
+  --_ov-shortcut-row-gap: 12px;
+}
+
+.Title {
+  margin: 0 0 16px;
+  color: var(--ov-color-fg-muted);
+  font-size: inherit;
+  font-weight: var(--ov-font-weight-label, 500);
+}
+
+.List {
+  display: grid;
+  gap: var(--_ov-shortcut-row-gap);
+  margin: 0;
+  padding: 0;
+}
+
+.Item {
+  display: grid;
+  grid-template-columns: minmax(0, 185px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.Keys,
+.Chord {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.Keys {
+  min-width: 0;
+}
+
+.Chord {
+  font-size: var(--_ov-shortcut-font-size, var(--ov-primitive-font-size-12));
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.Key {
+  box-sizing: border-box;
+  min-width: 22px;
+  padding: 2px 6px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm, 4px);
+  background: var(--ov-color-bg-surface-raised);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-mono);
+  font-size: inherit;
+  font-weight: 400;
+  line-height: inherit;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.Join,
+.Or {
+  color: var(--ov-color-fg-muted);
+  font-size: inherit;
+}
+
+.Description {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@container (max-width: 360px) {
+  .Item {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+@container (max-width: 240px) {
+  .Item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}

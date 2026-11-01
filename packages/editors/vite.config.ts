@@ -22,6 +22,9 @@ const testCache = path.join(
 const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 
 export default defineConfig({
+  // Library workers must resolve beside the package, not against the consuming app's root.
+  base: './',
+  worker: { format: 'es' },
   cacheDir:
     process.env.OMNIVIEW_VITE_CACHE_DIRECTORY ?? (process.env.VITEST ? testCache : undefined),
   plugins: [
@@ -73,7 +76,10 @@ export default defineConfig({
     // Monaco 0.52 publishes its ESM entry through module, not main.
     mainFields: ['module', 'main'],
     alias: [
-      { find: '@omniviewdev/base-ui', replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)) },
+      {
+        find: '@omniviewdev/base-ui',
+        replacement: fileURLToPath(new URL('../base-ui/src/index.ts', import.meta.url)),
+      },
     ],
   },
   test: {

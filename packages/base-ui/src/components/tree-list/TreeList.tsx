@@ -63,6 +63,7 @@ import styles from './TreeList.module.css';
 type RenderNodeFn = (key: Key, node: TreeNodeMeta) => ReactNode;
 
 const RenderNodeContext = createContext<RenderNodeFn | null>(null);
+const RevealActiveContext = createContext<RefObject<(() => void) | null> | null>(null);
 
 function useRenderNode(): RenderNodeFn {
   const ctx = useContext(RenderNodeContext);
@@ -178,6 +179,7 @@ function TreeListRootContent<TItem>({
 
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
+  const revealActiveRef = useRef<(() => void) | null>(null);
 
   const { handleKeyDown } = useTreeFocus({ config: fullConfig, actions, store });
 
@@ -246,8 +248,22 @@ function TreeListRootContent<TItem>({
       handleKeyDown(event);
       handleTypeahead(event);
       onKeyDown?.(event);
+      if (
+        config.virtualized &&
+        (event.key.startsWith('Arrow') ||
+          event.key === 'Home' ||
+          event.key === 'End' ||
+          (config.typeahead &&
+            event.key.length === 1 &&
+            !event.ctrlKey &&
+            !event.metaKey &&
+            !event.altKey))
+      ) {
+        // A repeated Home/End may keep the same key after manual scrolling.
+        revealActiveRef.current?.();
+      }
     },
-    [handleKeyDown, handleTypeahead, onKeyDown],
+    [config.virtualized, config.typeahead, handleKeyDown, handleTypeahead, onKeyDown],
   );
 
   return (
@@ -267,7 +283,9 @@ function TreeListRootContent<TItem>({
             {...styleDataAttributes({ variant, color, size })}
             {...domProps}
           >
-            {children}
+            <RevealActiveContext.Provider value={revealActiveRef}>
+              {children}
+            </RevealActiveContext.Provider>
           </div>
         </TreeActionsContext.Provider>
       </TreeStoreContext.Provider>
@@ -482,11 +500,37 @@ const TreeListRow = memo(function TreeListRow({ itemKey }: { itemKey: Key }) {
 });
 
 const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
-  function TreeListViewport({ className, children, ...props }, ref) {
+  function TreeListViewport({ className, children, onScroll, ...props }, ref) {
     const config = useTreeConfig();
     const store = useTreeStoreContext();
+    const storeRef = useRef(store);
+    useLayoutEffect(() => {
+      storeRef.current = store;
+    }, [store]);
     const scrollRef = useRef<HTMLDivElement>(null);
-    const flatNodes = useSyncExternalStore(store.subscribe, store.getFlatNodes, store.getFlatNodes);
+    const sizeProbeRef = useRef<HTMLDivElement>(null);
+    const [renderedItemSize, setRenderedItemSize] = useState<number>();
+
+    // A single CSS-sized probe follows density, theme, rem and media changes.
+    useLayoutEffect(() => {
+      const probe = sizeProbeRef.current;
+      if (!config.virtualized || config.estimatedItemSize !== undefined || !probe) return;
+      const updateSize = () => {
+        const height = probe.getBoundingClientRect().height;
+        if (height > 0) setRenderedItemSize(height);
+      };
+      updateSize();
+      if (typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(updateSize);
+      observer.observe(probe);
+      return () => observer.disconnect();
+    }, [config.virtualized, config.estimatedItemSize, config.density]);
+    const revealActiveRef = useContext(RevealActiveContext);
+    const flatNodes = useSyncExternalStore(
+      store.subscribe,
+      () => store.getSnapshot().flatNodes,
+      () => store.getSnapshot().flatNodes,
+    );
     const activeKey = useSyncExternalStore(
       store.subscribe,
       () => store.getSnapshot().activeKey,
@@ -509,26 +553,62 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
       count: flatNodes.length,
       scrollRef,
       enabled: config.virtualized,
-      estimatedItemSize: config.estimatedItemSize,
+      estimatedItemSize: config.estimatedItemSize ?? renderedItemSize,
       overscan: config.overscan,
       getItemKey,
       activeIndex,
       draggedIndex,
     });
     const { scrollToIndex } = virtualizer;
+    const revealRequestRef = useRef(0);
+    const pendingNavigationRef = useRef(false);
+    const revealActive = useCallback(
+      (navigation = true) => {
+        if (navigation) pendingNavigationRef.current = true;
+        const request = ++revealRequestRef.current;
+        queueMicrotask(() => {
+          if (request !== revealRequestRef.current) return;
+          pendingNavigationRef.current = false;
+          const currentStore = storeRef.current;
+          const key = currentStore.getSnapshot().activeKey;
+          const index = key == null ? -1 : currentStore.getNodeIndex(key);
+          if (index < 0 || (key != null && currentStore.isDisabled(key))) return;
+          if (config.virtualized) {
+            scrollToIndex(index);
+          } else {
+            const element = scrollRef.current?.ownerDocument.getElementById(
+              `${config.listId}-item-${key}`,
+            );
+            if (element && scrollRef.current?.contains(element)) {
+              element.scrollIntoView?.({ block: 'nearest' });
+            }
+          }
+        });
+      },
+      [config.virtualized, config.listId, scrollToIndex],
+    );
+    // Measurements alone must not reveal an active row after manual scrolling.
     useLayoutEffect(() => {
-      if (activeIndex < 0) return;
-      if (config.virtualized) {
-        scrollToIndex(activeIndex);
-      } else {
-        const element = scrollRef.current?.ownerDocument.getElementById(
-          `${config.listId}-item-${activeKey}`,
-        );
-        if (element && scrollRef.current?.contains(element)) {
-          element.scrollIntoView?.({ block: 'nearest' });
-        }
-      }
-    }, [activeKey, activeIndex, config.virtualized, config.listId, scrollToIndex]);
+      revealActive(false);
+      return () => {
+        revealRequestRef.current += 1;
+      };
+    }, [activeKey, activeIndex, revealActive]);
+    useLayoutEffect(() => {
+      if (!revealActiveRef) return;
+      revealActiveRef.current = revealActive;
+      return () => {
+        revealActiveRef.current = null;
+      };
+    }, [revealActiveRef, revealActive]);
+    const handleScroll = useCallback<NonNullable<TreeListViewportProps['onScroll']>>(
+      (event) => {
+        // Manual scrolling overrides queued state reveals, not keyboard navigation.
+        if (!pendingNavigationRef.current) revealRequestRef.current += 1;
+        onScroll?.(event);
+      },
+      [onScroll],
+    );
 
     const mergedRef = mergeRefs(scrollRef, ref);
 
@@ -543,13 +623,14 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           ref={mergedRef}
           role="presentation"
           className={cn(styles.Viewport, className)}
+          onScroll={handleScroll}
           {...props}
         >
+          <div ref={sizeProbeRef} className={styles.SizeProbe} aria-hidden="true" />
           <div style={virtualContentStyle}>
             {virtualizer.virtualItems.map((virtualItem) => {
               const node = flatNodes[virtualItem.index];
               if (!node) return null;
-              if (!store.getNodeMeta(node.key)) return null;
               const virtualItemStyle: CSSProperties = {
                 position: 'absolute',
                 top: 0,
@@ -580,6 +661,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
         ref={mergedRef}
         role="presentation"
         className={cn(styles.Viewport, className)}
+        onScroll={handleScroll}
         {...props}
       >
         {flatNodes.map((node) => (

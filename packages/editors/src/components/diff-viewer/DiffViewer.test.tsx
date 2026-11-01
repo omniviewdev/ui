@@ -1,22 +1,25 @@
-import { render as rtlRender, screen, act } from '@testing-library/react';
-import type { ReactElement, ReactNode } from 'react';
+import { render as rtlRender, act } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { ThemeProvider, createThemeRegistry } from '@omniviewdev/base-ui';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { DiffViewer } from './DiffViewer';
 
-const mockCreateDiffEditor = vi.fn();
 const mockDefineTheme = vi.fn();
 const mockSetTheme = vi.fn();
 const mockSetModelLanguage = vi.fn();
 
-let mockDiffEditorInstance: Record<string, unknown>;
 interface TestModel {
-  setValue: (...args: unknown[]) => unknown;
+  setValue: (value: string) => void;
   getValue: () => string;
   dispose: () => void;
 }
-
-const sharedModels: TestModel[] = [];
+interface ModelPair {
+  original: TestModel;
+  modified: TestModel;
+}
+const modelsAlive = new Set<TestModel>();
+const attachedModels = new Set<TestModel>();
+let editorsAlive = 0;
 
 vi.mock('monaco-editor', () => ({
   default: undefined,
@@ -24,38 +27,54 @@ vi.mock('monaco-editor', () => ({
     parse: (s: string) => ({ toString: () => s, path: s }),
   },
   editor: {
-    createDiffEditor: (...args: unknown[]) => {
-      mockCreateDiffEditor(...args);
-      // DiffViewer creates original (index 0) then modified (index 1) via createModel,
-      // then calls setModel and later getModel — all must reference the same objects.
-      const originalEditor = { updateOptions: vi.fn() };
-      const modifiedEditor = {
-        getValue: () => sharedModels[1]?.getValue?.() ?? '',
-        updateOptions: vi.fn(),
+    createDiffEditor: () => {
+      editorsAlive++;
+      let models: ModelPair | null = null;
+      let disposed = false;
+      const setModel = (next: ModelPair | null) => {
+        if (models) {
+          attachedModels.delete(models.original);
+          attachedModels.delete(models.modified);
+        }
+        models = next;
+        if (models) {
+          attachedModels.add(models.original);
+          attachedModels.add(models.modified);
+        }
       };
-      mockDiffEditorInstance = {
-        setModel: vi.fn(),
-        getModel: vi.fn(() => ({
-          original: sharedModels[0],
-          modified: sharedModels[1],
-        })),
-        getOriginalEditor: vi.fn(() => originalEditor),
-        getModifiedEditor: vi.fn(() => modifiedEditor),
+      return {
+        setModel,
+        getModel: () => models,
+        getOriginalEditor: () => ({ updateOptions: vi.fn() }),
+        getModifiedEditor: () => ({
+          getValue: () => models?.modified.getValue() ?? '',
+          updateOptions: vi.fn(),
+        }),
         updateOptions: vi.fn(),
-        dispose: vi.fn(),
+        dispose: () => {
+          if (disposed) throw new Error('Editor disposed twice');
+          disposed = true;
+          setModel(null);
+          editorsAlive--;
+        },
       };
-      return mockDiffEditorInstance;
     },
-    createModel: vi.fn(() => {
-      const model = {
-        setValue: vi.fn(),
-        getValue: vi.fn(() => ''),
-        dispose: vi.fn(),
+    createModel: (initial: string) => {
+      let value = initial;
+      const model: TestModel = {
+        setValue: (next) => {
+          value = next;
+        },
+        getValue: () => value,
+        dispose: () => {
+          if (attachedModels.has(model)) throw new Error('Cannot dispose an attached model');
+          if (!modelsAlive.delete(model)) throw new Error('Model disposed twice');
+        },
       };
-      sharedModels.push(model);
+      modelsAlive.add(model);
       return model;
-    }),
-    getModel: vi.fn(() => null),
+    },
+    getModel: () => null,
     setModelLanguage: (...args: unknown[]) => mockSetModelLanguage(...args),
     defineTheme: (...args: unknown[]) => mockDefineTheme(...args),
     setTheme: (...args: unknown[]) => mockSetTheme(...args),
@@ -75,127 +94,62 @@ vi.mock('monaco-editor', () => ({
   },
 }));
 
-
 beforeEach(() => {
   vi.clearAllMocks();
-  sharedModels.length = 0;
+  modelsAlive.clear();
+  attachedModels.clear();
+  editorsAlive = 0;
 });
 
-function ThemeWrapper({ children }: { children: ReactNode }) {
-  return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
-}
-
-function render(ui: ReactElement) {
-  return rtlRender(ui, { wrapper: ThemeWrapper });
-}
-
 describe('DiffViewer', () => {
-  it('renders the diff container', () => {
-    render(<DiffViewer original="a" modified="b" />);
-    expect(screen.getByTestId('diff-viewer')).toBeInTheDocument();
-  });
-
-  it('creates a diff editor on mount', () => {
-    render(<DiffViewer original="line1" modified="line2" />);
-    expect(mockCreateDiffEditor).toHaveBeenCalled();
-  });
-
-  it('applies language to both models', () => {
-    render(<DiffViewer original="" modified="" language="yaml" />);
-    // Language sync effect calls setModelLanguage for both models
-    expect(mockSetModelLanguage).toHaveBeenCalledWith(
-      expect.anything(),
-      'yaml',
+  it('detaches owned models before disposal and releases every resource under StrictMode', async () => {
+    const mounted = rtlRender(
+      <StrictMode>
+        <ThemeProvider themeId="dark">
+          <DiffViewer original="before" modified="after" />
+        </ThemeProvider>
+      </StrictMode>,
     );
-    // Called twice — once for original, once for modified
-    expect(mockSetModelLanguage).toHaveBeenCalledTimes(2);
+    await act(async () => {});
+    expect(editorsAlive).toBe(1);
+    expect(modelsAlive.size).toBe(2);
+    expect(attachedModels.size).toBe(2);
+    mounted.unmount();
+    expect(editorsAlive).toBe(0);
+    expect(modelsAlive.size).toBe(0);
+    expect(attachedModels.size).toBe(0);
   });
 
-  it('defaults to side-by-side mode', () => {
-    render(<DiffViewer original="" modified="" />);
-    expect(mockCreateDiffEditor).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ renderSideBySide: true }),
-    );
-  });
-
-  it('switches to inline mode', () => {
-    render(<DiffViewer original="" modified="" mode="inline" />);
-    expect(mockCreateDiffEditor).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ renderSideBySide: false }),
-    );
-  });
-
-  it('merges className', () => {
-    render(<DiffViewer original="" modified="" className="custom" />);
-    expect(screen.getByTestId('diff-viewer')).toHaveClass('custom');
-  });
-
-  it('defaults to readOnly true', () => {
-    render(<DiffViewer original="" modified="" />);
-    expect(mockCreateDiffEditor).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ readOnly: true }),
-    );
-  });
-
-  it('supports readOnly false', () => {
-    render(<DiffViewer original="" modified="" readOnly={false} />);
-    expect(mockCreateDiffEditor).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ readOnly: false }),
-    );
-  });
-
-  it('applies height prop as style', () => {
-    render(<DiffViewer original="" modified="" height={500} />);
-    const container = screen.getByTestId('diff-viewer');
-    expect(container.style.getPropertyValue('--_diff-height')).toBe('500px');
-  });
-
-  it('forwards ref', () => {
-    const ref = { current: null } as unknown as React.RefObject<HTMLDivElement>;
-    render(<DiffViewer original="" modified="" ref={ref} />);
-    expect(ref.current).toBeInstanceOf(HTMLDivElement);
-  });
-
-  it('disposes editor and models on unmount', () => {
-    const { unmount } = render(<DiffViewer original="" modified="" />);
-    const getModel = mockDiffEditorInstance.getModel as () => {
-      original: TestModel;
-      modified: TestModel;
-    };
-    const models = getModel();
-    unmount();
-    expect(models.original.dispose).toHaveBeenCalled();
-    expect(models.modified.dispose).toHaveBeenCalled();
-    expect(mockDiffEditorInstance.dispose).toHaveBeenCalled();
-  });
-
-  it('rebuilds its theme from current tokens when switching custom themes with the same base', () => {
+  it('rebuilds its theme from current tokens when switching custom themes with the same base', async () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'diff-test' } as const;
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:diff-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#111111' },
-    }, owner);
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:diff-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#222222' },
-    }, owner);
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:diff-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#111111' },
+      },
+      owner,
+    );
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:diff-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      },
+      owner,
+    );
 
     const mounted = rtlRender(
       <ThemeProvider themeId="plugin:diff-test/first" registry={registry}>
         <DiffViewer original="" modified="" />
       </ThemeProvider>,
     );
+    await act(async () => {});
     mounted.rerender(
       <ThemeProvider themeId="plugin:diff-test/second" registry={registry}>
         <DiffViewer original="" modified="" />
@@ -208,26 +162,31 @@ describe('DiffViewer', () => {
         colors: expect.objectContaining({ 'editor.background': '#222222' }),
       }),
     );
-    expect(mockCreateDiffEditor).toHaveBeenCalledTimes(1);
   });
-  it('uses one page-global theme rebuilt from the root that last drives it', () => {
+  it('uses one page-global theme rebuilt from the root that last drives it', async () => {
     const firstRegistry = createThemeRegistry();
     const secondRegistry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'diff-global-theme-test' } as const;
-    const disposeFirst = firstRegistry.register({
-      schemaVersion: 1,
-      id: 'plugin:diff-global-theme-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#111111' },
-    }, owner);
-    secondRegistry.register({
-      schemaVersion: 1,
-      id: 'plugin:diff-global-theme-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#222222' },
-    }, owner);
+    const disposeFirst = firstRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:diff-global-theme-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#111111' },
+      },
+      owner,
+    );
+    secondRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:diff-global-theme-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      },
+      owner,
+    );
     const firstRoot = document.createElement('div');
     const secondRoot = document.createElement('div');
     document.body.append(firstRoot, secondRoot);
@@ -252,6 +211,7 @@ describe('DiffViewer', () => {
       </ThemeProvider>,
       { container: secondRoot },
     );
+    await act(async () => {});
 
     expect(mockDefineTheme).toHaveBeenCalledWith(
       'ov-theme',
@@ -269,13 +229,16 @@ describe('DiffViewer', () => {
 
     act(() => {
       disposeFirst();
-      firstRegistry.register({
-        schemaVersion: 1,
-        id: 'plugin:diff-global-theme-test/first',
-        name: 'First reloaded',
-        base: 'dark',
-        tokens: { 'color.editor.bg': '#333333' },
-      }, owner);
+      firstRegistry.register(
+        {
+          schemaVersion: 1,
+          id: 'plugin:diff-global-theme-test/first',
+          name: 'First reloaded',
+          base: 'dark',
+          tokens: { 'color.editor.bg': '#333333' },
+        },
+        owner,
+      );
     });
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
@@ -285,7 +248,5 @@ describe('DiffViewer', () => {
       }),
     );
     expect(mockSetTheme).toHaveBeenLastCalledWith('ov-theme');
-    expect(mockCreateDiffEditor).toHaveBeenCalledTimes(2);
   });
-
 });

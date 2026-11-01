@@ -136,6 +136,7 @@ export function FileTree<TMetadata = unknown>({
       return (
         <TreeList.Item
           itemKey={node.id}
+          data-file-node-id={node.id}
           textValue={node.name}
           aria-setsize={setSize}
           onDoubleClick={() => onOpen?.(node)}
@@ -234,14 +235,12 @@ export function FileTree<TMetadata = unknown>({
           onActiveKeyChange?.(next);
         }}
         onKeyDown={(event) => {
-          if (
-            event.key !== 'Enter' ||
-            event.target !== event.currentTarget ||
-            !onOpen ||
-            currentActive === null
-          )
-            return;
-          const node = index.byId.get(currentActive);
+          if (event.key !== 'Enter' || event.target !== event.currentTarget || !onOpen) return;
+          // Controlled focus may be declined or filtered out; use the committed descendant.
+          const activeId = event.currentTarget.getAttribute('aria-activedescendant');
+          const row = activeId ? event.currentTarget.ownerDocument.getElementById(activeId) : null;
+          const id = row && event.currentTarget.contains(row) ? row.dataset.fileNodeId : undefined;
+          const node = id ? index.byId.get(id) : undefined;
           if (node) onOpen(node);
         }}
         selectionMode={selectionMode}

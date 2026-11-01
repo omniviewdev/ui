@@ -90,22 +90,27 @@ export function useTreeFlattener<TItem>(
           const isLast = i === visible.length - 1;
           const branch = isBranch(item);
 
-          result.push({
+          const node: FlatNode<TItem> = {
             key,
             item,
             depth,
             parentKey,
             isBranch: branch,
+            posInSet: i + 1,
+            setSize: visible.length,
             isLastChild: isLast,
             ancestorIsLast: [...ancestorIsLast],
-          });
+          };
+          result.push(node);
 
           // Auto-expand: always recurse into branches when filtering
           if (branch) {
+            const childStart = result.length;
             const children = getChildren(item);
             if (children && children.length > 0) {
               walkFiltered(children, depth + 1, key, [...ancestorIsLast, isLast]);
             }
+            node.filterExpanded = result.length > childStart;
           }
         }
       }
@@ -130,21 +135,26 @@ export function useTreeFlattener<TItem>(
           const isLast = i === visible.length - 1;
           const branch = isBranch(item);
 
-          result.push({
+          const node: FlatNode<TItem> = {
             key,
             item,
             depth,
             parentKey,
             isBranch: branch,
+            posInSet: i + 1,
+            setSize: visible.length,
             isLastChild: isLast,
             ancestorIsLast: [...ancestorIsLast],
-          });
+          };
+          result.push(node);
 
           if (branch) {
+            const childStart = result.length;
             const children = getChildren(item);
             if (children && children.length > 0) {
               walkFilteredOrdered(children, depth + 1, key, [...ancestorIsLast, isLast]);
             }
+            node.filterExpanded = result.length > childStart;
           }
         }
       }
@@ -179,6 +189,8 @@ export function useTreeFlattener<TItem>(
           depth,
           parentKey,
           isBranch: branch,
+          posInSet: i + 1,
+          setSize: siblings.length,
           isLastChild: isLast,
           ancestorIsLast: [...ancestorIsLast],
         });
@@ -210,6 +222,8 @@ export function useTreeFlattener<TItem>(
           depth,
           parentKey,
           isBranch: branch,
+          posInSet: i + 1,
+          setSize: orderedSiblings.length,
           isLastChild: isLast,
           ancestorIsLast: [...ancestorIsLast],
         });

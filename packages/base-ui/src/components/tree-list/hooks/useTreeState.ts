@@ -19,6 +19,7 @@ export interface TreeStateReturn<TItem> {
   config: Omit<TreeConfigContextValue, 'listId'>;
   store: TreeStore;
   actions: TreeActionsContextValue;
+  activeKey: Key | null;
   expandedKeys: Set<Key>;
   filterText: string;
   filterFn: TreeListRootProps<TItem>['filterFn'];
@@ -43,6 +44,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     selectedKeys: selectedKeysProp,
     defaultSelectedKeys,
     onSelectedKeysChange,
+    onAction,
     activeKey: activeKeyProp,
     defaultActiveKey = null,
     onActiveKeyChange,
@@ -64,6 +66,10 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     filterFn: filterFnProp,
     onLoadError,
   } = props;
+  const onActionRef = useRef(onAction);
+  useLayoutEffect(() => {
+    onActionRef.current = onAction;
+  }, [onAction]);
 
   const disabledKeys = useMemo(() => new Set(disabledKeysProp ?? []), [disabledKeysProp]);
 
@@ -72,7 +78,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     (item: TItem): boolean => {
       if (isBranchProp) return isBranchProp(item);
       const children = getChildren(item);
-      return children !== undefined && children !== null;
+      return children != null && children.length > 0;
     },
     [isBranchProp, getChildren],
   );
@@ -117,11 +123,18 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     };
   }, [filterFnProp, getTextValue]);
 
-  // Commit controlled state together before notifying external-store readers.
+  // Commit only changed slices before the batched notification. In particular,
+  // focus changes must not mark unchanged selection/expansion sets dirty.
   useLayoutEffect(() => {
     store.setExpandedKeys(expandedKeys, true);
+  }, [expandedKeys, store]);
+  useLayoutEffect(() => {
     store.setSelectedKeys(selectedKeys, true);
+  }, [selectedKeys, store]);
+  useLayoutEffect(() => {
     store.setActiveKey(activeKey, true);
+  }, [activeKey, store]);
+  useLayoutEffect(() => {
     store.emit();
   }, [expandedKeys, selectedKeys, activeKey, store]);
 
@@ -134,7 +147,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
   const select = useCallback(
     (key: Key) => {
-      if (selectionMode === 'none' || disabledKeys.has(key) || !store.isSelectable(key)) return;
+      if (selectionMode === 'none' || store.isDisabled(key) || !store.isSelectable(key)) return;
       if (selectionMode === 'single') {
         setSelectedKeys(new Set([key]));
         anchorKeyRef.current = key;
@@ -147,23 +160,24 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         anchorKeyRef.current = key;
       }
     },
-    [selectionMode, selectionBehavior, disabledKeys, store, setSelectedKeys],
+    [selectionMode, selectionBehavior, store, setSelectedKeys],
   );
 
   const deselect = useCallback(
     (key: Key) => {
+      if (store.isDisabled(key)) return;
       setSelectedKeys((prev) => {
         const next = new Set(prev);
         next.delete(key);
         return next;
       });
     },
-    [setSelectedKeys],
+    [setSelectedKeys, store],
   );
 
   const toggle = useCallback(
     (key: Key) => {
-      if (selectionMode === 'none' || disabledKeys.has(key) || !store.isSelectable(key)) return;
+      if (selectionMode === 'none' || store.isDisabled(key) || !store.isSelectable(key)) return;
       if (selectionMode === 'single') {
         setSelectedKeys((prev) => (prev.has(key) ? new Set() : new Set([key])));
         anchorKeyRef.current = key;
@@ -180,36 +194,36 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         anchorKeyRef.current = key;
       }
     },
-    [selectionMode, disabledKeys, store, setSelectedKeys],
+    [selectionMode, store, setSelectedKeys],
   );
 
   const selectRange = useCallback(
     (toKey: Key) => {
-      if (selectionMode !== 'multiple') return;
+      if (selectionMode !== 'multiple' || store.isDisabled(toKey)) return;
       const keys = store.getRegisteredKeys();
       const anchor = anchorKeyRef.current;
-      const fromIndex = anchor != null ? keys.indexOf(anchor) : 0;
-      const toIndex = keys.indexOf(toKey);
+      const fromIndex = anchor != null ? store.getNodeIndex(anchor) : 0;
+      const toIndex = store.getNodeIndex(toKey);
       if (fromIndex === -1 || toIndex === -1) return;
 
       const start = Math.min(fromIndex, toIndex);
       const end = Math.max(fromIndex, toIndex);
       const rangeKeys = keys
         .slice(start, end + 1)
-        .filter((k) => !disabledKeys.has(k) && store.isSelectable(k));
+        .filter((k) => !store.isDisabled(k) && store.isSelectable(k));
 
       setSelectedKeys(new Set(rangeKeys));
     },
-    [selectionMode, disabledKeys, store, setSelectedKeys],
+    [selectionMode, store, setSelectedKeys],
   );
 
   const selectAll = useCallback(() => {
     if (selectionMode !== 'multiple') return;
     const keys = store
       .getRegisteredKeys()
-      .filter((k) => !disabledKeys.has(k) && store.isSelectable(k));
+      .filter((k) => !store.isDisabled(k) && store.isSelectable(k));
     setSelectedKeys(new Set(keys));
-  }, [selectionMode, disabledKeys, store, setSelectedKeys]);
+  }, [selectionMode, store, setSelectedKeys]);
 
   const clearSelection = useCallback(() => {
     setSelectedKeys(new Set());
@@ -218,47 +232,57 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
 
   const setActiveKeyAction = useCallback(
     (key: Key | null) => {
+      if (key != null && store.isDisabled(key)) return;
       setActiveKey(key);
     },
-    [setActiveKey],
+    [setActiveKey, store],
+  );
+
+  const activate = useCallback(
+    (key: Key) => {
+      if (store.getNodeIndex(key) !== -1 && !store.isDisabled(key)) onActionRef.current?.(key);
+    },
+    [store],
   );
 
   // -----------------------------------------------------------------------
   // Tree expansion actions
   // -----------------------------------------------------------------------
 
+  const loadBranch = useCallback(
+    (key: Key, item: TItem) => {
+      if (!loadChildren || store.getSnapshot().loadingKeys.has(key)) return;
+      store.setLoadingKey(key, true);
+      loadChildren(key, item).then(
+        () => {
+          const disabled = store.isDisabled(key);
+          store.setLoadingKey(key, false, !disabled);
+          if (disabled) return;
+          setExpandedKeys((prev) => {
+            const next = new Set(prev);
+            next.add(key);
+            return next;
+          });
+        },
+        (err) => {
+          store.setLoadingKey(key, false);
+          onLoadError?.(err, key, item);
+        },
+      );
+    },
+    [loadChildren, onLoadError, store, setExpandedKeys],
+  );
+
   const expand = useCallback(
     (key: Key) => {
-      const flatNode = store.getFlatNodes().find((n) => n.key === key);
-      if (!flatNode) return;
+      if (store.isDisabled(key)) return;
+      const flatNode = store.getFlatNodes()[store.getNodeIndex(key)];
+      if (!flatNode?.isBranch) return;
 
       const item = flatNode.item as TItem;
-      const children = getChildren(item);
-      // undefined = children not yet loaded; [] = loaded but empty.
-      // Only trigger loadChildren when children are truly unknown.
-      const notYetLoaded = children === undefined || children === null;
-
-      if (loadChildren && isBranch(item) && notYetLoaded) {
-        // Guard against duplicate concurrent loads
-        if (store.getSnapshot().loadingKeys.has(key)) return;
-        store.setLoadingKey(key, true);
-        loadChildren(key, item).then(
-          () => {
-            // Use silent mode — the setExpandedKeys below triggers a React
-            // re-render which picks up the loading state change, and the
-            // useEffect notification flushes any remaining subscribers.
-            store.setLoadingKey(key, false, true);
-            setExpandedKeys((prev) => {
-              const next = new Set(prev);
-              next.add(key);
-              return next;
-            });
-          },
-          (err) => {
-            store.setLoadingKey(key, false);
-            onLoadError?.(err, key, item);
-          },
-        );
+      // Unknown children load lazily; an empty array is already loaded.
+      if (loadChildren && getChildren(item) == null) {
+        loadBranch(key, item);
       } else {
         setExpandedKeys((prev) => {
           const next = new Set(prev);
@@ -267,40 +291,75 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         });
       }
     },
-    [getChildren, isBranch, loadChildren, onLoadError, store, setExpandedKeys],
+    [getChildren, loadChildren, loadBranch, store, setExpandedKeys],
+  );
+
+  const expandSiblings = useCallback(
+    (key: Key) => {
+      if (store.isDisabled(key)) return;
+      const activeMeta = store.getNodeMeta(key);
+      if (!activeMeta) return;
+      const loadedKeys: Key[] = [];
+      for (const node of store.getFlatNodes()) {
+        if (
+          node.parentKey !== activeMeta.parentKey ||
+          node.depth !== activeMeta.depth ||
+          !node.isBranch ||
+          store.isDisabled(node.key)
+        ) {
+          continue;
+        }
+        const item = node.item as TItem;
+        if (loadChildren && getChildren(item) == null) {
+          loadBranch(node.key, item);
+        } else {
+          loadedKeys.push(node.key);
+        }
+      }
+      if (loadedKeys.length === 0) return;
+      setExpandedKeys((prev) => {
+        const next = new Set(prev);
+        for (const siblingKey of loadedKeys) next.add(siblingKey);
+        return next;
+      });
+    },
+    [getChildren, loadChildren, loadBranch, store, setExpandedKeys],
   );
 
   const collapse = useCallback(
     (key: Key) => {
+      if (store.isDisabled(key)) return;
       setExpandedKeys((prev) => {
         const next = new Set(prev);
         next.delete(key);
         return next;
       });
     },
-    [setExpandedKeys],
+    [setExpandedKeys, store],
   );
 
   const toggleExpanded = useCallback(
     (key: Key) => {
+      if (store.isDisabled(key)) return;
       if (expandedKeys.has(key)) {
         collapse(key);
       } else {
         expand(key);
       }
     },
-    [expandedKeys, expand, collapse],
+    [expandedKeys, expand, collapse, store],
   );
 
   // NOTE: expandAll performs a synchronous full-tree traversal. For trees
   // with 10k+ nodes this may cause a noticeable frame drop. Prefer
   // expandAllAsync for very large datasets.
   const expandAll = useCallback(() => {
-    const allBranchKeys = new Set<Key>();
+    const allBranchKeys = new Set([...expandedKeys].filter((key) => store.isDisabled(key)));
     function walk(siblings: readonly TItem[]) {
       for (const item of siblings) {
         if (isBranch(item)) {
-          allBranchKeys.add(itemKey(item));
+          const key = itemKey(item);
+          if (!store.isDisabled(key)) allBranchKeys.add(key);
           const children = getChildren(item);
           if (children) walk(children);
         }
@@ -308,12 +367,12 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     }
     walk(items);
     setExpandedKeys(allBranchKeys);
-  }, [items, itemKey, getChildren, isBranch, setExpandedKeys]);
+  }, [items, itemKey, getChildren, isBranch, expandedKeys, store, setExpandedKeys]);
 
   const expandAllAsync = useCallback(
     () =>
       new Promise<void>((resolve) => {
-        const allBranchKeys = new Set<Key>();
+        const allBranchKeys = new Set([...expandedKeys].filter((key) => store.isDisabled(key)));
         const stack: (readonly TItem[])[] = [items];
         function chunk() {
           const deadline = performance.now() + 4; // ~4ms budget per frame
@@ -321,7 +380,8 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
             const siblings = stack.pop()!;
             for (const item of siblings) {
               if (isBranch(item)) {
-                allBranchKeys.add(itemKey(item));
+                const key = itemKey(item);
+                if (!store.isDisabled(key)) allBranchKeys.add(key);
                 const children = getChildren(item);
                 if (children && children.length > 0) stack.push(children);
               }
@@ -336,12 +396,12 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
         }
         chunk();
       }),
-    [items, itemKey, getChildren, isBranch, setExpandedKeys],
+    [items, itemKey, getChildren, isBranch, expandedKeys, store, setExpandedKeys],
   );
 
   const collapseAll = useCallback(() => {
-    setExpandedKeys(new Set());
-  }, [setExpandedKeys]);
+    setExpandedKeys((prev) => new Set([...prev].filter((key) => store.isDisabled(key))));
+  }, [setExpandedKeys, store]);
 
   // -----------------------------------------------------------------------
   // Return
@@ -383,7 +443,9 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
       selectAll,
       clearSelection,
       setActiveKey: setActiveKeyAction,
+      activate,
       expand,
+      expandSiblings,
       collapse,
       toggleExpanded,
       expandAll,
@@ -398,7 +460,9 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
       selectAll,
       clearSelection,
       setActiveKeyAction,
+      activate,
       expand,
+      expandSiblings,
       collapse,
       toggleExpanded,
       expandAll,
@@ -411,6 +475,7 @@ export function useTreeState<TItem>(props: TreeListRootProps<TItem>): TreeStateR
     config,
     store,
     actions,
+    activeKey,
     expandedKeys,
     filterText,
     filterFn: resolvedFilterFn,

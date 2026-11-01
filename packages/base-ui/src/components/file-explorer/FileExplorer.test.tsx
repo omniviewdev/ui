@@ -44,6 +44,53 @@ const nodes: readonly FileNode<{ visible: boolean }>[] = [
 ];
 
 describe('FileTree', () => {
+  it('does not open a controlled active entry hidden by the current filter', () => {
+    function Harness() {
+      const [opened, setOpened] = useState('');
+      return (
+        <>
+          <FileTree
+            nodes={nodes}
+            activeKey="yes"
+            filterText="secret"
+            virtualized={false}
+            onOpen={(node) => setOpened(node.id)}
+          />
+          <output aria-label="Opened file">{opened}</output>
+        </>
+      );
+    }
+    renderWithTheme(<Harness />);
+    expect(screen.queryByRole('treeitem', { name: /match\.ts/ })).not.toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('tree'), { key: 'Enter' });
+    expect(screen.getByLabelText('Opened file')).toBeEmptyDOMElement();
+  });
+
+  it('selects on click and opens once per Enter or double-click after navigation integration', () => {
+    function Harness() {
+      const [opened, setOpened] = useState<string[]>([]);
+      return (
+        <>
+          <FileTree
+            nodes={nodes}
+            virtualized={false}
+            defaultExpandedKeys={new Set(['root'])}
+            onOpen={(node) => setOpened((previous) => [...previous, node.id])}
+          />
+          <output aria-label="Opened files">{opened.join(',')}</output>
+        </>
+      );
+    }
+    renderWithTheme(<Harness />);
+    const row = screen.getByRole('treeitem', { name: /match\.ts/ });
+    fireEvent.click(row);
+    expect(screen.getByLabelText('Opened files')).toBeEmptyDOMElement();
+    fireEvent.keyDown(screen.getByRole('tree'), { key: 'Enter' });
+    expect(screen.getByLabelText('Opened files').textContent).toBe('yes');
+    fireEvent.doubleClick(row);
+    expect(screen.getByLabelText('Opened files').textContent).toBe('yes,yes');
+  });
+
   it('reports unknown sibling totals until a paged listing becomes complete', () => {
     const listed: FileNode[] = ['first', 'second'].map((name) => ({
       id: name,

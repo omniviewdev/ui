@@ -24,7 +24,7 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
       const keys = snapshot.flattenedKeys as Key[];
       if (keys.length === 0) return;
 
-      const currentIndex = snapshot.activeKey != null ? keys.indexOf(snapshot.activeKey) : -1;
+      const currentIndex = snapshot.activeKey != null ? store.getNodeIndex(snapshot.activeKey) : -1;
 
       const findNextEnabled = (startIndex: number, direction: 1 | -1): Key | null => {
         let idx = startIndex;
@@ -37,7 +37,7 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
             return null;
           }
           const candidate = keys[idx]!;
-          if (!snapshot.disabledKeys.has(candidate)) {
+          if (!store.isDisabled(candidate)) {
             return candidate;
           }
         }
@@ -45,14 +45,14 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
       };
 
       const findFirstEnabled = (): Key | null => {
-        const found = keys.find((k) => !snapshot.disabledKeys.has(k));
+        const found = keys.find((k) => !store.isDisabled(k));
         return found !== undefined ? found : null;
       };
 
       const findLastEnabled = (): Key | null => {
         for (let i = keys.length - 1; i >= 0; i--) {
           const k = keys[i]!;
-          if (!snapshot.disabledKeys.has(k)) return k;
+          if (!store.isDisabled(k)) return k;
         }
         return null;
       };
@@ -84,20 +84,20 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
 
         case 'ArrowRight': {
           event.preventDefault();
-          if (snapshot.activeKey == null) break;
+          if (snapshot.activeKey == null || store.isDisabled(snapshot.activeKey)) break;
           const nodeMeta = store.getNodeMeta(snapshot.activeKey);
           if (!nodeMeta?.isBranch) break;
 
-          if (!snapshot.expandedKeys.has(snapshot.activeKey)) {
+          if (!nodeMeta.isExpanded) {
             // Collapsed branch → expand
             actions.expand(snapshot.activeKey);
           } else {
-            // Only enter this branch's enabled direct children.
+            // Skip disabled children and their descendants, stopping before a sibling.
             const nodes = store.getFlatNodes();
             for (let index = currentIndex + 1; index < nodes.length; index++) {
               const child = nodes[index]!;
               if (child.depth <= nodeMeta.depth) break;
-              if (child.parentKey === snapshot.activeKey && !snapshot.disabledKeys.has(child.key)) {
+              if (child.parentKey === snapshot.activeKey && !store.isDisabled(child.key)) {
                 actions.setActiveKey(child.key);
                 break;
               }
@@ -108,13 +108,13 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
 
         case 'ArrowLeft': {
           event.preventDefault();
-          if (snapshot.activeKey == null) break;
+          if (snapshot.activeKey == null || store.isDisabled(snapshot.activeKey)) break;
           const nodeMeta = store.getNodeMeta(snapshot.activeKey);
 
-          if (nodeMeta?.isBranch && snapshot.expandedKeys.has(snapshot.activeKey)) {
+          if (nodeMeta?.isBranch && nodeMeta.isExpanded) {
             // Expanded branch → collapse
             actions.collapse(snapshot.activeKey);
-          } else if (nodeMeta?.parentKey != null) {
+          } else if (nodeMeta?.parentKey != null && !store.isDisabled(nodeMeta.parentKey)) {
             // Move to parent
             actions.setActiveKey(nodeMeta.parentKey);
           }
@@ -138,12 +138,15 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
         case 'Enter':
         case ' ': {
           event.preventDefault();
-          if (snapshot.activeKey != null && config.selectionMode !== 'none') {
-            if (config.selectionMode === 'multiple') {
-              actions.toggle(snapshot.activeKey);
-            } else {
-              actions.select(snapshot.activeKey);
+          if (snapshot.activeKey != null && !store.isDisabled(snapshot.activeKey)) {
+            if (config.selectionMode !== 'none') {
+              if (config.selectionMode === 'multiple') {
+                actions.toggle(snapshot.activeKey);
+              } else {
+                actions.select(snapshot.activeKey);
+              }
             }
+            actions.activate(snapshot.activeKey);
           }
           break;
         }
@@ -159,21 +162,8 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
 
         case '*': {
           event.preventDefault();
-          // Expand all siblings at the current depth
-          if (snapshot.activeKey == null) break;
-          const activeMeta = store.getNodeMeta(snapshot.activeKey);
-          if (!activeMeta) break;
-
-          const flatNodes = store.getFlatNodes();
-          for (const node of flatNodes) {
-            if (
-              node.depth === activeMeta.depth &&
-              node.parentKey === activeMeta.parentKey &&
-              node.isBranch
-            ) {
-              actions.expand(node.key);
-            }
-          }
+          if (snapshot.activeKey == null || store.isDisabled(snapshot.activeKey)) break;
+          actions.expandSiblings(snapshot.activeKey);
           break;
         }
 

@@ -39,6 +39,7 @@ export function SmallTree() {
 - IDs must be unique, nonempty, and source-scoped; parent relationships must form an acyclic tree. Do not use paths as IDs when confirmed moves must preserve focus and selection.
 - Supply flat nodes with `parentId`; the displayed root defaults to `null`. `rootId` selects another parent boundary.
 - Sibling order follows the supplied node projection. Supply an ordered projection for custom grouping or sorting.
+- `onOpen` handles Enter for the committed active row and double-click, not selection clicks. It deliberately does not use TreeList's click-activated `onAction`; filtered-out or declined controlled focus cannot open an invisible entry.
 - Incomplete, unloaded, or failed sibling listings expose unknown ARIA set size (`-1`); complete listings expose the visible sibling total.
 - Metadata is typed and consumer-owned. The component does not interpret layers, credentials, comparison presence, or authorization.
 - `filter(node)` provides controlled metadata scope, including when `filterText` is empty. Ancestors remain visible for matching descendants.

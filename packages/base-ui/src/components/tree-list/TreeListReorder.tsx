@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, type ReactNode } from 'react';
+import { memo, useCallback, useMemo, useState, type ReactNode } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -7,6 +7,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -34,7 +35,7 @@ export const handleTreeDragEnd = (
   const activeKey = event.active.id;
   const overKey = over.id;
   if (activeKey === overKey || disabledKeys.has(activeKey) || disabledKeys.has(overKey)) return;
-  // Item-local disabled props are not part of the root store's disabledKeys.
+  // Also honor the drag sensor's current disabled state.
   if (event.active.data?.current?.disabled || over.data?.current?.disabled) return;
 
   const activeNode = getNodeMeta(activeKey);
@@ -69,9 +70,16 @@ function TreeListReorderImpl({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const sortableItems = useMemo(() => flatNodes.map((node) => node.key), [flatNodes]);
-  const contextValue = useMemo(() => ({ store, proposeMove }), [store, proposeMove]);
+  const [draggedKey, setDraggedKey] = useState<Key | null>(null);
+  const contextValue = useMemo(
+    () => ({ store, proposeMove, draggedKey }),
+    [store, proposeMove, draggedKey],
+  );
+  const onDragStart = useCallback((event: DragStartEvent) => setDraggedKey(event.active.id), []);
+  const onDragCancel = useCallback(() => setDraggedKey(null), []);
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
+      setDraggedKey(null);
       const snapshot = store.getSnapshot();
       handleTreeDragEnd(event, {
         visibleKeys: snapshot.flattenedKeys,
@@ -87,7 +95,13 @@ function TreeListReorderImpl({
 
   return (
     <TreeReorderContext.Provider value={contextValue}>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={onDragStart}
+        onDragCancel={onDragCancel}
+        onDragEnd={onDragEnd}
+      >
         <SortableContext items={sortableItems} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>

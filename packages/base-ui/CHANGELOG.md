@@ -1,5 +1,34 @@
 # @omniviewdev/base-ui
 
+## 0.10.0
+
+### Minor Changes
+
+- [#91](https://github.com/omniviewdev/ui/pull/91) [`0c00dc1`](https://github.com/omniviewdev/ui/commit/0c00dc1bb776626a1fc8059239914f6ba360affa) Thanks [@joshuapare](https://github.com/joshuapare)! - Improve TreeList rendering, virtualization, keyboard focus, and accessibility:
+
+  - Isolate custom row rendering from unrelated focus and selection updates while retaining live expansion and loading metadata.
+  - Index visible keys for keyboard movement and add `expandSiblings` to batch loaded sibling expansion while preserving lazy loading.
+  - Honor `overscan` and `estimatedItemSize`, key virtual measurements by node identity, and keep keyboard-active rows mounted and scrolled into view.
+  - Prevent flex layouts from shrinking the virtual spacer and truncating the native scroll range.
+  - Keep the drag source mounted independently of keyboard focus while scrolling a virtualized tree; release its pin after drop or cancellation.
+  - Repair focus after collapse, filtering, removal, or disabled-state changes. Invalid controlled active keys request correction without exposing a dangling active descendant.
+  - Preserve manual scroll across unrelated source replacements and subscribe active/drag indices to structural store changes so React Compiler cannot cache stale positions.
+  - Add `posInSet` and `setSize` to flattened nodes and render metadata, with corresponding treeitem ARIA attributes.
+  - Keep filtered expansion metadata consistent with displayed children without changing saved expansion.
+  - Restrict ArrowRight to enabled direct children and honor item-local disabled state for keyboard, selection, and expansion actions. Use root `disabledKeys` for rows that have never mounted.
+  - Treat known empty child arrays as leaves unless `isBranch` explicitly declares a branch.
+  - Add `onAction` for enabled mouse and Enter/Space activation, independent of selection. Non-selectable groups and repeated activation of the selected destination use the same callback.
+
+  The shared list virtualizer also accepts stable item keys and optional active and dragged indices, and exposes `scrollToIndex`.
+
+### Patch Changes
+
+- [#89](https://github.com/omniviewdev/ui/pull/89) [`1a1cb32`](https://github.com/omniviewdev/ui/commit/1a1cb321741b29849e35084b890f1f8f7b6b88dd) Thanks [@joshuapare](https://github.com/joshuapare)! - Align flat content tabs with IDE navigation: transparent surfaces, square corners, bottom selection stripes, shared tab tokens, and independent keyboard focus. Keep enclosed tab variants fitted to compact view controls. Document the distinction from document tabs and add examples for both navigation roles.
+
+  Resolve tab palette aliases locally for nested themes and preserve the selected stripe during keyboard focus even when no indicator is rendered.
+
+- [#91](https://github.com/omniviewdev/ui/pull/91) [`0c00dc1`](https://github.com/omniviewdev/ui/commit/0c00dc1bb776626a1fc8059239914f6ba360affa) Thanks [@joshuapare](https://github.com/joshuapare)! - Avoid rebuilding flattened tree keys and copying unchanged state sets on focus and selection updates. Preserve immutable published snapshots and batched state notifications while committing only changed selection, expansion, and active-state slices.
+
 ## 0.9.1
 
 ### Patch Changes

@@ -124,8 +124,12 @@ describe('Calendar', () => {
     try {
       const today = new Date(2026, 10, 1);
       vi.setSystemTime(today);
-      render(<Calendar value={today} onChange={() => {}} locale="en-US" />);
-      expect(screen.getByRole('gridcell', { selected: true })).toHaveAttribute('aria-current', 'date');
+      render(<Calendar value={new Date(2026, 10, 2)} onChange={() => {}} locale="en-US" />);
+      expect(screen.getByRole('gridcell', { current: 'date' })).toHaveAttribute(
+        'data-date',
+        '2026-11-01',
+      );
+      expect(screen.getByRole('gridcell', { selected: true })).not.toHaveAttribute('aria-current');
     } finally {
       vi.useRealTimers();
     }

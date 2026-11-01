@@ -10,6 +10,7 @@ Improve TreeList rendering, virtualization, keyboard focus, and accessibility:
 - Prevent flex layouts from shrinking the virtual spacer and truncating the native scroll range.
 - Keep the drag source mounted independently of keyboard focus while scrolling a virtualized tree; release its pin after drop or cancellation.
 - Repair focus after collapse, filtering, removal, or disabled-state changes. Invalid controlled active keys request correction without exposing a dangling active descendant.
+- Preserve manual scroll across unrelated source replacements and subscribe active/drag indices to structural store changes so React Compiler cannot cache stale positions.
 - Add `posInSet` and `setSize` to flattened nodes and render metadata, with corresponding treeitem ARIA attributes.
 - Keep filtered expansion metadata consistent with displayed children without changing saved expansion.
 - Restrict ArrowRight to enabled direct children and honor item-local disabled state for keyboard, selection, and expansion actions. Use root `disabledKeys` for rows that have never mounted.

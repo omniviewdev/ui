@@ -74,3 +74,46 @@ it('keeps the drag source and keyboard-active row mounted until drag cancellatio
   await waitFor(() => expect(screen.queryByRole('button', { name: 'Move 1' })).toBeNull());
   expect(document.getElementById(activeId!)).toHaveAttribute('aria-label', '0');
 });
+
+it('preserves manual scroll until a source change moves the active key', async () => {
+  const items = Array.from({ length: 100 }, (_, index) => ({ id: String(index) }));
+  function Example({ items }: { items: Array<{ id: string }> }) {
+    return (
+      <TreeList
+        items={items}
+        itemKey={(item) => item.id}
+        getChildren={() => undefined}
+        renderItem={(item) => (
+          <TreeList.Item itemKey={item.id} aria-label={item.id}>
+            <TreeList.ItemLabel>{item.id}</TreeList.ItemLabel>
+          </TreeList.Item>
+        )}
+        virtualized
+        overscan={0}
+        estimatedItemSize={28}
+        defaultActiveKey="0"
+      >
+        <TreeList.Viewport data-testid="viewport" />
+      </TreeList>
+    );
+  }
+  const { rerender } = renderWithTheme(<Example items={items} />);
+  const viewport = screen.getByTestId('viewport');
+  viewport.scrollTop = 1400;
+  fireEvent.scroll(viewport);
+  await screen.findByRole('treeitem', { name: '50' });
+
+  rerender(<Example items={[...items, { id: '100' }]} />);
+
+  await waitFor(() =>
+    expect(screen.getByRole('treeitem', { name: '0' })).toHaveAttribute('aria-setsize', '101'),
+  );
+  expect(viewport.scrollTop).toBe(1400);
+
+  rerender(<Example items={[{ id: 'before' }, ...items, { id: '100' }]} />);
+
+  await waitFor(() => expect(viewport.scrollTop).toBeLessThan(viewport.clientHeight));
+  expect(screen.getByRole('treeitem', { name: '0' })).toHaveAttribute('aria-posinset', '2');
+  const activeId = screen.getByRole('tree').getAttribute('aria-activedescendant');
+  expect(document.getElementById(activeId!)).toHaveAttribute('aria-label', '0');
+});

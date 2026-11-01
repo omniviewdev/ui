@@ -59,7 +59,7 @@ These first-increment checks establish store allocation behavior, not browser re
 
 Verification:
 
-- Base-ui suite: 143 files and 1,618 tests passed. Initial regressions reproduced dangling focus and incorrect filtered expansion; later regressions cover stable-row sibling metadata and drag-source lifetime across virtual scrolling.
+- Base-ui suite: 143 files and 1,619 tests passed. Initial regressions reproduced dangling focus and incorrect filtered expansion; later regressions cover stable-row sibling metadata, drag-source lifetime, and scroll behavior across structural updates.
 - Base-ui typecheck and production bundle build passed.
 - Changed-file lint: zero errors; TanStack Virtual's `react-hooks/incompatible-library` warning remains. No warning suppression was added.
 - Browser DOM/geometry smoke used both source components and the shipped compiled bundle/styles with 10,000 variable-height rows.
@@ -74,6 +74,8 @@ Virtualized pointer and keyboard reorder both changed the actual order in the 1,
 The stress check also exposed a flex-layout defect: the virtual spacer declared 282,595px but computed to the 554px viewport height. Its flex shrink is now disabled so native scrolling can reach the full catalog without relying on an offscreen focused row to extend overflow.
 
 After rebuilding through the workspace CLI, the same viewport measured 554px with a 282,659px spacer and scroll range. The baseline fixture mounted 34 rows. End reached `Kind 99-99` about 282,000px down with 36 rows mounted. At a 4,934px scroll offset during keyboard drag, the source remained mounted alongside the new window; cancellation removed its offscreen pin. Pointer reorder and reset also changed/restored the adapter order. A keyboard drop after both a watch-error update and a new catalog group retained the new group and reordered only the original siblings. Switching alpha/beta fixture connections restored their separate expansion state.
+
+PR review exposed an unrelated-source scroll jump: appending a node reset a manually scrolled viewport from 1,400px to zero even though its active key and index did not change. Scrolling now responds to active-key/index changes rather than every flattened-array replacement. A browser check also exposed React Compiler caching direct mutable-store index reads across structural changes. Active and dragged indices now use external-store snapshots. In the compiled Storybook scenario, appending preserved 1,222px exactly; prepending changed the active index, scrolled to 30px, and kept the active descendant mounted and visible.
 
 ## 4. Activation and section representation
 

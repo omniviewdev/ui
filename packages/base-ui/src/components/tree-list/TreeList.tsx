@@ -492,9 +492,18 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
       () => store.getSnapshot().activeKey,
       () => null,
     );
-    const activeIndex = activeKey == null ? -1 : store.getNodeIndex(activeKey);
+    const activeIndex = useSyncExternalStore(
+      store.subscribe,
+      () => (activeKey == null ? -1 : store.getNodeIndex(activeKey)),
+      () => -1,
+    );
     const reorder = useContext(TreeReorderContext);
-    const draggedIndex = reorder?.draggedKey == null ? -1 : store.getNodeIndex(reorder.draggedKey);
+    const draggedKey = reorder?.draggedKey;
+    const draggedIndex = useSyncExternalStore(
+      store.subscribe,
+      () => (draggedKey == null ? -1 : store.getNodeIndex(draggedKey)),
+      () => -1,
+    );
     const getItemKey = useCallback((index: number) => flatNodes[index]!.key, [flatNodes]);
     const virtualizer = useListVirtualizer({
       count: flatNodes.length,
@@ -519,7 +528,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           element.scrollIntoView?.({ block: 'nearest' });
         }
       }
-    }, [activeKey, activeIndex, config.virtualized, config.listId, scrollToIndex, flatNodes]);
+    }, [activeKey, activeIndex, config.virtualized, config.listId, scrollToIndex]);
 
     const mergedRef = mergeRefs(scrollRef, ref);
 

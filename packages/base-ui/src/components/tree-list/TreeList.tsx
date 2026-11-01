@@ -564,7 +564,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     const pendingNavigationRef = useRef(false);
     const revealActive = useCallback(
       (navigation = true) => {
-        pendingNavigationRef.current ||= navigation;
+        if (navigation) pendingNavigationRef.current = true;
         const request = ++revealRequestRef.current;
         queueMicrotask(() => {
           if (request !== revealRequestRef.current) return;

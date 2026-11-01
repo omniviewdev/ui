@@ -168,7 +168,13 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
         stale = true;
       } else {
         const node = nodes.get(change.id);
-        if (!node) continue;
+        if (!node) {
+          if (listedParents.has(change.parentId)) {
+            invalidate(change.parentId);
+            stale = true;
+          }
+          continue;
+        }
         if (!listedParents.has(change.parentId)) {
           remove(change.id);
           continue;
@@ -305,7 +311,8 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
         );
         if (disposed || controller.signal.aborted || ownSession !== session || ownEpoch !== epoch)
           return false;
-        if (parentId !== source.rootId && parentId !== null && !nodes.has(parentId)) return false;
+        if (parentId !== source.rootId && parentId !== null && !nodes.has(parentId))
+          throw new Error('Directory is not loaded in this view.');
         // Child pages must belong to the established snapshot, including during refresh.
         const crossedRevision =
           !refreshing &&

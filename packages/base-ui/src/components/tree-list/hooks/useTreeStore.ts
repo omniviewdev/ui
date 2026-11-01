@@ -65,7 +65,7 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
           expandedKeysRef.current.has(key);
         const isLoading = loadingKeysRef.current.has(key);
         if (metadata.isExpanded === isExpanded && metadata.isLoading === isLoading) continue;
-        nextMetadata ??= new Map(nodeMetaMapRef.current);
+        if (!nextMetadata) nextMetadata = new Map(nodeMetaMapRef.current);
         nextMetadata.set(key, { ...metadata, isExpanded, isLoading });
       }
       if (nextMetadata) nodeMetaMapRef.current = nextMetadata;

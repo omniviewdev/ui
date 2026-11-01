@@ -30,6 +30,79 @@ function deferred<T>() {
 }
 
 describe('useFileSystem source and request ownership', () => {
+  it('invalidates a complete destination when an uncached entry moves into it', async () => {
+    const destination: FileNode = { ...file('destination'), kind: 'directory' };
+    const unlisted: FileNode = { ...file('unlisted'), kind: 'directory' };
+    const moved: FileNode = {
+      ...file('moved', 'a.txt', destination.id),
+      path: '/destination/a.txt',
+    };
+    let revision = '0';
+    let emit!: (batch: FileChangeBatch) => void;
+    const requests: (string | null)[] = [];
+    const provider: FileProvider = {
+      listChildren: async ({ parentId }) => {
+        requests.push(parentId);
+        return {
+          nodes: parentId === null ? [destination, unlisted] : revision === '0' ? [] : [moved],
+          revision,
+          complete: true,
+        };
+      },
+      watch: ({ onBatch }) => {
+        emit = onBatch;
+      },
+    };
+    const { result } = renderHook(() => useFileSystem({ provider, source, defaultLive: true }));
+    await waitFor(() => expect(result.current.nodes).toHaveLength(2));
+    await act(() => result.current.loadChildren(destination));
+    revision = '1';
+    act(() =>
+      emit({
+        sourceId: source.id,
+        revision,
+        changes: [
+          {
+            type: 'move',
+            id: moved.id,
+            parentId: destination.id,
+            name: moved.name,
+            path: moved.path,
+          },
+        ],
+      }),
+    );
+    expect(result.current.childrenState.get(destination.id)?.status).toBe('unloaded');
+    expect(result.current.sync.status).toBe('stale');
+    expect(result.current.nodes.some((node) => node.id === moved.id)).toBe(false);
+    expect(requests).toEqual([null, destination.id]);
+    await act(() => result.current.refresh());
+    expect(result.current.nodes.find((node) => node.id === moved.id)).toEqual(moved);
+    expect(result.current.childrenState.get(destination.id)).toMatchObject({
+      status: 'loaded',
+      complete: true,
+    });
+    expect(result.current.sync.status).toBe('live');
+  });
+
+  it('settles an outside-view directory request without leaving permanent loading or changing cached siblings', async () => {
+    const stable = file('stable');
+    const outside: FileNode = { ...file('outside'), kind: 'directory' };
+    const provider: FileProvider = {
+      listChildren: async ({ parentId }) => ({
+        nodes: parentId === null ? [stable] : [file('child', 'child', outside.id)],
+        revision: '0',
+        complete: true,
+      }),
+    };
+    const { result } = renderHook(() => useFileSystem({ provider, source }));
+    await waitFor(() => expect(result.current.nodes).toEqual([stable]));
+    await act(() => result.current.loadChildren(outside));
+    expect(result.current.childrenState.get(outside.id)?.status).toBe('error');
+    expect(result.current.nodes).toEqual([stable]);
+    expect(result.current.loading).toBe(false);
+  });
+
   it.each(['root', 'child'] as const)(
     'retains watch additions while a listed %s continuation page is in flight',
     async (branch) => {

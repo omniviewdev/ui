@@ -50,7 +50,6 @@ const keyLabels: Readonly<Record<string, readonly [string, string]>> = {
   ctrl: ['Ctrl', 'Control'],
   command: ['⌘', 'Command'],
   cmd: ['⌘', 'Command'],
-  meta: ['⌘', 'Command'],
   '⌘': ['⌘', 'Command'],
   shift: ['Shift', 'Shift'],
   '⇧': ['⇧', 'Shift'],
@@ -87,6 +86,12 @@ function keyLabel(key: string, platform: ShortcutPlatform): readonly [string, st
     return ['Ctrl', 'Control'];
   }
   const normalized = key.toLowerCase();
+  if (normalized === 'meta') {
+    if (platform === 'mac') return ['⌘', 'Command'];
+    if (platform === 'windows') return ['Win', 'Windows key'];
+    if (platform === 'linux') return ['Super', 'Super'];
+    return ['Meta', 'Meta'];
+  }
   return Object.prototype.hasOwnProperty.call(keyLabels, normalized)
     ? keyLabels[normalized]!
     : [key, key];

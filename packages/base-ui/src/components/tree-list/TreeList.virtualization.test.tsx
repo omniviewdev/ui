@@ -180,6 +180,54 @@ describe('TreeList virtualized navigation', () => {
     await waitFor(() => expect(content.style.height).toBe('3400px'));
   });
 
+  it.each(['CSS', 'explicit'] as const)(
+    'keeps the active row pinned without revealing it after %s sizing changes',
+    async (sizing) => {
+      const { rerender } = await renderVirtualTree();
+      const tree = screen.getByRole('tree');
+      const viewport = screen.getByTestId('viewport');
+      await act(async () => {
+        fireEvent.keyDown(tree, { key: 'End' });
+      });
+      await waitFor(() => expect(viewport.scrollTop).toBeGreaterThan(0));
+      const activeId = screen.getByText('File 99').id;
+      await act(async () => {
+        viewport.scrollTop = 0;
+        fireEvent.scroll(viewport);
+      });
+      expect(viewport.scrollTop).toBe(0);
+
+      const probe = viewport.querySelector('[aria-hidden="true"]')!;
+      const content = probe.nextElementSibling as HTMLElement;
+      rowHeight = 34;
+      await act(async () => {
+        if (sizing === 'CSS') {
+          const observation = observers.get(probe)!;
+          observation.callback([], observation.observer);
+        } else {
+          rerender(<VirtualTree estimatedItemSize={34} />);
+        }
+      });
+      await waitFor(() => expect(content.style.height).toBe('3400px'));
+      expect(viewport.scrollTop).toBe(0);
+      expect(screen.getByText('File 99')).toHaveAttribute('id', activeId);
+      expect(tree).toHaveAttribute('aria-activedescendant', activeId);
+
+      // Repeated navigation must still reveal the pinned target with its new size.
+      await act(async () => {
+        fireEvent.keyDown(tree, { key: 'End' });
+      });
+      await waitFor(() => expect(viewport.scrollTop).toBe(3400 - 66));
+      await act(async () => {
+        viewport.scrollTop = 0;
+        fireEvent.scroll(viewport);
+        fireEvent.keyDown(tree, { key: 'ArrowUp' });
+      });
+      await waitFor(() => expect(viewport.scrollTop).toBe(99 * 34 - 66));
+      expect(tree).toHaveAttribute('aria-activedescendant', screen.getByText('File 98').id);
+    },
+  );
+
   it('honors caller overscan and explicit estimates instead of the CSS default', async () => {
     const { rerender } = await renderVirtualTree();
     const originalCount = screen.getAllByRole('treeitem').length;

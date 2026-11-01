@@ -39,6 +39,8 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
   let searchSource: FileSource | undefined;
   const childIds = new Map<string | null, Set<string>>();
   const childStates = new Map<string | null, FileChildrenState>();
+  // Listing coverage survives transient pagination loading/errors, unlike row status.
+  const listedParents = new Set<string | null>();
   let childrenDirty = true;
   const listeners = new Set<() => void>();
   const listings = new Map<
@@ -133,6 +135,7 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
       nodes.delete(key);
       childIds.delete(key);
       childStates.delete(key);
+      listedParents.delete(key);
       childrenDirty = true;
       listings.get(key)?.controller.abort();
       listings.delete(key);
@@ -142,12 +145,23 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
   function invalidate(parentId: string | null) {
     listings.get(parentId)?.controller.abort();
     listings.delete(parentId);
+    listedParents.delete(parentId);
     setChildrenState(parentId, { status: 'unloaded' });
+  }
+
+  function applyUpsert(node: FileNode<T>) {
+    // Watch events describe individual entries, not a listing of an unknown branch.
+    // Evict the old location too; a later listing restores the same provider-owned IDs.
+    if (!listedParents.has(node.parentId)) {
+      remove(node.id);
+      return;
+    }
+    upsert(node);
   }
 
   function apply(batch: FileChangeBatch<T>) {
     for (const change of batch.changes) {
-      if (change.type === 'upsert') upsert(change.node);
+      if (change.type === 'upsert') applyUpsert(change.node);
       else if (change.type === 'remove') remove(change.id);
       else if (change.type === 'invalidate') {
         invalidate(change.parentId);
@@ -155,6 +169,10 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
       } else {
         const node = nodes.get(change.id);
         if (!node) continue;
+        if (!listedParents.has(change.parentId)) {
+          remove(change.id);
+          continue;
+        }
         // Providers must include descendant upserts for opaque path moves.
         const separator = source.pathStyle === 'windows' ? '\\' : '/';
         const prefix = node.path.endsWith(separator) ? node.path : node.path + separator;
@@ -298,7 +316,10 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
           page.revision !== currentSource.revision;
         if (crossedRevision || mismatchedPage) {
           if (!crossedRevision) latestRevision = page.revision;
-          setChildrenState(parentId, { status: 'unloaded' });
+          setChildrenState(parentId, {
+            status: 'error',
+            error: new Error('Files changed. Refresh to see updates.'),
+          });
           gap();
           return false;
         }
@@ -307,6 +328,7 @@ function createFileSystem<T>(options: UseFileSystemOptions<T>) {
           for (const id of [...(childIds.get(parentId) ?? [])]) if (!incoming.has(id)) remove(id);
         }
         for (const node of page.nodes) upsert(node);
+        listedParents.add(parentId);
         setChildrenState(parentId, {
           status: 'loaded',
           complete: page.complete,

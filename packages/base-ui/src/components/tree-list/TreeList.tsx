@@ -508,6 +508,8 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     });
 
     const scrollToIndex = virtualizer.scrollToIndex;
+    // Reveal navigation targets, not sizing updates after the user scrolls away.
+    // The bridge refreshes its measurements before this queued reveal runs.
     useLayoutEffect(() => {
       if (!config.virtualized || activeIndex === undefined) return;
       let cancelled = false;
@@ -517,13 +519,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
       return () => {
         cancelled = true;
       };
-    }, [
-      config.virtualized,
-      activeIndex,
-      scrollToIndex,
-      config.estimatedItemSize,
-      renderedItemSize,
-    ]);
+    }, [config.virtualized, activeIndex, scrollToIndex]);
     useLayoutEffect(() => {
       if (!revealActiveRef || !config.virtualized) return;
       revealActiveRef.current = () => {

@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { useFileSystem } from './useFileSystem';
 import type {
   FileChangeBatch,
@@ -29,6 +30,289 @@ function deferred<T>() {
 }
 
 describe('useFileSystem source and request ownership', () => {
+  it.each(['root', 'child'] as const)(
+    'retains watch additions while a listed %s continuation page is in flight',
+    async (branch) => {
+      const directory: FileNode = { ...file('folder'), kind: 'directory' };
+      const parentId = branch === 'root' ? null : directory.id;
+      const first = file('first', 'first', parentId);
+      const added = file('added', 'added', parentId);
+      const later = file('later', 'later', parentId);
+      const continuation = deferred<{ nodes: FileNode[]; revision: string; complete: boolean }>();
+      const requests: { parentId: string | null; cursor?: string }[] = [];
+      let emit!: (batch: FileChangeBatch) => void;
+      const provider: FileProvider = {
+        listChildren: ({ parentId: requestedParent, cursor }) => {
+          requests.push({ parentId: requestedParent, cursor });
+          if (requestedParent !== parentId) {
+            return Promise.resolve({ nodes: [directory], revision: '0', complete: true });
+          }
+          return cursor
+            ? continuation.promise
+            : Promise.resolve({
+                nodes: [first],
+                revision: '0',
+                complete: false,
+                nextCursor: 'page2',
+              });
+        },
+        watch: ({ onBatch }) => {
+          emit = onBatch;
+        },
+      };
+      const { result } = renderHook(() => useFileSystem({ provider, source, defaultLive: true }));
+      await waitFor(() => expect(result.current.childrenState.get(null)?.status).toBe('loaded'));
+      if (branch === 'child') await act(() => result.current.loadChildren(directory));
+      expect(result.current.childrenState.get(parentId)).toMatchObject({
+        status: 'loaded',
+        complete: false,
+        nextCursor: 'page2',
+      });
+      let loading!: Promise<void>;
+      act(() => {
+        loading = result.current.loadMore(branch === 'root' ? null : directory);
+      });
+      expect(result.current.childrenState.get(parentId)?.status).toBe('loading');
+      act(() =>
+        emit({
+          sourceId: source.id,
+          revision: '1',
+          changes: [{ type: 'upsert', node: added }],
+        }),
+      );
+      expect(result.current.nodes.filter((node) => node.parentId === parentId)).toEqual([
+        first,
+        added,
+      ]);
+      await act(async () => {
+        continuation.resolve({ nodes: [later], revision: '1', complete: true });
+        await loading;
+      });
+      expect(result.current.nodes.filter((node) => node.parentId === parentId)).toEqual([
+        first,
+        added,
+        later,
+      ]);
+      expect(result.current.childrenState.get(parentId)).toMatchObject({
+        status: 'loaded',
+        complete: true,
+      });
+      expect(requests.at(-1)).toEqual({ parentId, cursor: 'page2' });
+      expect(result.current.sync.status).toBe('live');
+    },
+  );
+
+  it('keeps watch upserts beneath an unseen parent unknown until its complete listing arrives', async () => {
+    const directory: FileNode = { ...file('folder'), kind: 'directory' };
+    const first = file('first', 'first', directory.id);
+    const second = file('second', 'second', directory.id);
+    let revision = '0';
+    const requests: (string | null)[] = [];
+    let emit!: (batch: FileChangeBatch) => void;
+    const provider: FileProvider = {
+      listChildren: async ({ parentId }) => {
+        requests.push(parentId);
+        return {
+          nodes: parentId === null ? [directory] : [first, second],
+          revision,
+          complete: true,
+        };
+      },
+      watch: ({ onBatch }) => {
+        emit = onBatch;
+      },
+    };
+    const { result } = renderHook(() => useFileSystem({ provider, source, defaultLive: true }));
+    await waitFor(() => expect(result.current.nodes).toEqual([directory]));
+    revision = '1';
+    act(() => emit({ sourceId: source.id, revision, changes: [{ type: 'upsert', node: first }] }));
+    expect(result.current.nodes).toEqual([directory]);
+    expect(result.current.childrenState.has(directory.id)).toBe(false);
+    expect(requests).toEqual([null]);
+    await act(() => result.current.loadChildren(directory));
+    expect(result.current.nodes).toEqual([directory, first, second]);
+    expect(result.current.childrenState.get(directory.id)).toMatchObject({
+      status: 'loaded',
+      complete: true,
+    });
+    expect(requests).toEqual([null, directory.id]);
+  });
+
+  it.each(['upsert', 'move'] as const)(
+    'evicts an obsolete loaded subtree when %s changes its parent to an unknown branch',
+    async (type) => {
+      const destination: FileNode = { ...file('destination'), kind: 'directory' };
+      const directory: FileNode = { ...file('folder'), kind: 'directory' };
+      const child = { ...file('child', 'child', directory.id), path: '/folder/child' };
+      const moved = { ...directory, parentId: destination.id, path: '/destination/folder' };
+      let revision = '0';
+      let emit!: (batch: FileChangeBatch) => void;
+      const provider: FileProvider = {
+        listChildren: async ({ parentId }) => ({
+          nodes:
+            parentId === null
+              ? revision === '0'
+                ? [directory, destination]
+                : [destination]
+              : parentId === destination.id
+                ? [moved]
+                : [{ ...child, path: '/destination/folder/child' }],
+          revision,
+          complete: true,
+        }),
+        watch: ({ onBatch }) => {
+          emit = onBatch;
+        },
+      };
+      const { result } = renderHook(() => useFileSystem({ provider, source, defaultLive: true }));
+      await waitFor(() => expect(result.current.nodes).toHaveLength(2));
+      await act(() => result.current.loadChildren(directory));
+      expect(result.current.nodes.some((node) => node.id === child.id)).toBe(true);
+      revision = '1';
+      act(() =>
+        emit({
+          sourceId: source.id,
+          revision,
+          changes: [
+            type === 'upsert'
+              ? { type, node: moved }
+              : {
+                  type,
+                  id: moved.id,
+                  parentId: moved.parentId,
+                  path: moved.path,
+                  name: moved.name,
+                },
+          ],
+        }),
+      );
+      expect(result.current.nodes).toEqual([destination]);
+      expect(result.current.childrenState.has(destination.id)).toBe(false);
+      expect(result.current.childrenState.has(directory.id)).toBe(false);
+      await act(() => result.current.loadChildren(destination));
+      expect(result.current.nodes).toEqual([destination, moved]);
+      await act(() => result.current.loadChildren(moved));
+      expect(result.current.nodes.find((node) => node.id === child.id)?.path).toBe(
+        '/destination/folder/child',
+      );
+    },
+  );
+
+  it('preserves loaded descendants when moving into a loaded destination', async () => {
+    const directory: FileNode = { ...file('folder'), kind: 'directory' };
+    const destination: FileNode = { ...file('destination'), kind: 'directory' };
+    const child = { ...file('child', 'child', directory.id), path: '/folder/child' };
+    let emit!: (batch: FileChangeBatch) => void;
+    const provider: FileProvider = {
+      listChildren: async ({ parentId }) => ({
+        nodes:
+          parentId === null ? [directory, destination] : parentId === directory.id ? [child] : [],
+        revision: '0',
+        complete: true,
+      }),
+      watch: ({ onBatch }) => {
+        emit = onBatch;
+      },
+    };
+    const { result } = renderHook(() => useFileSystem({ provider, source, defaultLive: true }));
+    await waitFor(() => expect(result.current.nodes).toHaveLength(2));
+    await act(() => result.current.loadChildren(directory));
+    await act(() => result.current.loadChildren(destination));
+    act(() =>
+      emit({
+        sourceId: source.id,
+        revision: '1',
+        changes: [
+          {
+            type: 'move',
+            id: directory.id,
+            parentId: destination.id,
+            name: directory.name,
+            path: '/destination/folder',
+          },
+        ],
+      }),
+    );
+    expect(result.current.nodes.find((node) => node.id === directory.id)?.parentId).toBe(
+      destination.id,
+    );
+    expect(result.current.nodes.find((node) => node.id === child.id)?.path).toBe(
+      '/destination/folder/child',
+    );
+    expect(result.current.childrenState.get(directory.id)?.status).toBe('loaded');
+    expect(result.current.childrenState.get(destination.id)?.status).toBe('loaded');
+  });
+
+  it.each(['paused', 'gapped'] as const)(
+    'bounds expanded-directory auto-loading after a %s revision mismatch and recovers on Refresh',
+    async (mode) => {
+      const directory: FileNode = { ...file('folder'), kind: 'directory' };
+      const child = file('child', 'child', directory.id);
+      let revision = '0';
+      let emit!: (batch: FileChangeBatch) => void;
+      let onGap!: () => void;
+      const requests: (string | null)[] = [];
+      const provider: FileProvider = {
+        listChildren: async ({ parentId }) => {
+          requests.push(parentId);
+          return { nodes: parentId === null ? [directory] : [child], revision, complete: true };
+        },
+        watch: (request) => {
+          emit = request.onBatch;
+          onGap = request.onGap;
+        },
+      };
+      vi.useFakeTimers();
+      const { result, unmount } = renderHook(() => {
+        const filesystem = useFileSystem({ provider, source, defaultLive: true });
+        useEffect(() => {
+          const timer = setInterval(() => {
+            const state = filesystem.childrenState.get(directory.id);
+            if (!state || state.status === 'unloaded') void filesystem.loadChildren(directory);
+          }, 140);
+          return () => clearInterval(timer);
+        }, [filesystem]);
+        return filesystem;
+      });
+      await act(async () => {});
+      expect(result.current.nodes).toEqual([directory]);
+      try {
+        revision = '1';
+        act(() => {
+          if (mode === 'paused') {
+            result.current.sync.onEnabledChange(false);
+            emit({ sourceId: source.id, revision, changes: [{ type: 'upsert', node: child }] });
+          } else onGap();
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(140);
+        });
+        expect(result.current.sync.status).toBe('stale');
+        expect(result.current.childrenState.get(directory.id)?.status).toBe('error');
+        expect(result.current.nodes).toEqual([directory]);
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(1400);
+        });
+        expect(requests).toEqual([null, directory.id]);
+        await act(() => result.current.refresh());
+        expect(requests).toEqual([null, directory.id, null, directory.id]);
+        expect(result.current.childrenState.get(directory.id)).toMatchObject({
+          status: 'loaded',
+          complete: true,
+        });
+        expect(result.current.nodes).toEqual([directory, child]);
+        expect(result.current.sync.status).toBe(mode === 'paused' ? 'idle' : 'live');
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(1400);
+        });
+        expect(requests).toHaveLength(4);
+      } finally {
+        unmount();
+        vi.useRealTimers();
+      }
+    },
+  );
+
   it('accepts a listing that has caught up to the current watch revision', async () => {
     const page = deferred<{ nodes: FileNode[]; revision: string; complete: boolean }>();
     const directory: FileNode = { ...file('folder'), kind: 'directory' };

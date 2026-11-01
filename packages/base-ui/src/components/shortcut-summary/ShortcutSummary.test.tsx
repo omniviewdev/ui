@@ -24,6 +24,16 @@ describe('KeyChord', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
+  it.each([
+    ['mac', 'Command plus K', '⌘'],
+    ['windows', 'Windows key plus K', 'Win'],
+    ['linux', 'Super plus K', 'Super'],
+  ] as const)('resolves the literal Meta key for %s', (platform, label, modifier) => {
+    renderWithTheme(<KeyChord keys={['Meta', 'K']} platform={platform} />);
+    expect(screen.getByRole('group', { name: label })).toBeInTheDocument();
+    expect(screen.getByText(modifier)).toBeInTheDocument();
+  });
+
   it('speaks symbolic navigation keys and preserves custom labels', () => {
     const { rerender } = renderWithTheme(<KeyChord keys={['↑', 'Space']} />);
     expect(screen.getByRole('group', { name: 'Up arrow plus Space' })).toBeInTheDocument();

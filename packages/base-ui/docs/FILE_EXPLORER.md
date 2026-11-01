@@ -103,8 +103,10 @@ Render content through `FileExplorer.preview` and `FilePreview.children`. Conten
 - `refresh()` reconciles root and loaded branches, drains queued changes, refreshes content, and restarts the subscription. It does not enable Live sync.
 - A denied child branch remains a local error after reconciliation; healthy branches continue receiving live updates. Live status describes the subscription, not complete filesystem coverage.
 - A gap, incompatible page revision, invalidation, or queue overflow marks data stale. Further patches do not silently claim freshness; Refresh reconciles it.
+- An incompatible page leaves its branch in an error state requiring explicit Refresh, not an unloaded state eligible for automatic expansion retries.
 - A watch adapter must resume from the supplied source revision or report `onGap` when it cannot bridge that revision.
-- Batches support upsert, remove, confirmed move, and branch invalidation. Supply descendant upserts when opaque paths change. A remove does not invent rename identity or historical content.
+- Batches support upsert, remove, confirmed move, and branch invalidation. An upsert describes one entry; use `move` to relocate cached directories and rebase their descendant paths. Supply descendant upserts when opaque paths change. A remove does not invent rename identity or historical content.
+- Watch upserts and moves only populate branches with an established listing, including partial listings while continuation pages load or fail. Removing or invalidating a branch clears that listing coverage. Events targeting an unknown branch evict any cached old location and descendants; listing that branch restores provider-owned IDs without claiming partial watch data is a complete listing. Moves between listed branches retain loaded descendants.
 - Use stable source-scoped entry IDs and ordered cursors; batch related changes before publishing. The normalized cache publishes one node projection per applied batch; row content reads remain separate.
 
 The component is not a filesystem snapshot engine. Providers own non-atomic runtime snapshots, mounts, layer reconstruction, OCI whiteouts, comparison provenance (`present` / `absent` / `unknown`), symlink boundaries, and permissions. Credentials must not be placed in file metadata.
@@ -137,7 +139,7 @@ export function SaveHint() {
 }
 ```
 
-`Mod` becomes Command on macOS and Control on Windows/Linux. Explicit `platform` values produce deterministic output. Automatic platform detection uses a hydration-safe snapshot. Descriptions accept React content; alternate chords share the same keycap and spoken-label formatting. No keyboard handlers or global listeners are registered.
+`Mod` becomes Command on macOS and Control on Windows/Linux. `Meta` identifies Command on macOS, the Windows key on Windows, and Super on Linux; explicit Command/Ctrl names remain literal. Explicit `platform` values produce deterministic output. Automatic platform detection uses a hydration-safe snapshot. Descriptions accept React content; alternate chords share the same keycap and spoken-label formatting. No keyboard handlers or global listeners are registered.
 
 ## Verification surfaces
 

@@ -120,12 +120,15 @@ describe('Calendar', () => {
   });
 
   it('marks today with aria-current="date"', () => {
-    const today = new Date();
-    render(<Calendar value={today} onChange={() => {}} locale="en-US" />);
-    const todayCell = screen.getByRole('gridcell', {
-      name: new RegExp(`^${today.getDate()}`),
-    });
-    expect(todayCell).toHaveAttribute('aria-current', 'date');
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      const today = new Date(2026, 10, 1);
+      vi.setSystemTime(today);
+      render(<Calendar value={today} onChange={() => {}} locale="en-US" />);
+      expect(screen.getByRole('gridcell', { selected: true })).toHaveAttribute('aria-current', 'date');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

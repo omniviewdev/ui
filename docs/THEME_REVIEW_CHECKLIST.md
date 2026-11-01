@@ -33,6 +33,8 @@ Use this checklist to review token system changes during implementation.
 - [ ] Reserve filled or outlined tab variants for compact groups of related view choices. Their enclosure fits the controls rather than stretching across a page.
 - [ ] Use `EditorTabs` for open documents and workspace pages; do not reproduce document chrome inside content navigation.
 - [ ] Use shared tab foreground, hover, and boundary tokens. Keep keyboard focus distinct from the active selection stripe.
+- [ ] Resolve tab aliases on every theme root so nested light/dark providers use their own palette and inline custom-theme values still win.
+- [ ] Verify the selected stripe remains visible during keyboard focus even without `Tabs.Indicator`.
 - [ ] Give each content region one padding owner. Use divider rows instead of nested cards for simple release history.
 - [ ] Verify narrow panes, panel scrolling, keyboard activation, and light/dark themes in the running host.
 

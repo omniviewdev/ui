@@ -9,7 +9,7 @@
   --_ov-tab-fg-hover: var(--ov-color-fg-default);
   --_ov-tab-bg-hover: var(--ov-color-state-hover);
   --_ov-tab-bg-active: var(--ov-color-state-selected);
-  --_ov-indicator: var(--ov-color-brand-400);
+  --_ov-indicator: var(--ov-color-tab-active-border);
 
   display: grid;
   gap: var(--ov-space-stack-md);
@@ -113,13 +113,18 @@
 .Root[data-ov-variant='flat'] {
   --_ov-list-bg: transparent;
   --_ov-list-border: transparent;
+  --_ov-tab-fg: var(--ov-color-tab-inactive-fg);
+  --_ov-tab-fg-active: var(--ov-color-tab-active-fg);
+  --_ov-tab-fg-hover: var(--ov-color-tab-hover-fg);
+  --_ov-tab-bg-hover: var(--ov-color-tab-hover-bg);
   --_ov-tab-bg-active: transparent;
 }
 
 .Root[data-ov-variant='flat'] .List {
+  justify-self: stretch;
   border-radius: 0;
   padding: 0;
-  border-bottom: 1px solid var(--ov-color-border-muted);
+  border-bottom: 1px solid var(--ov-color-tab-border);
 }
 
 .Root[data-ov-variant='flat'] .Tab {
@@ -128,28 +133,32 @@
 }
 
 .Root[data-ov-variant='flat'] .Tab[data-active] {
-  background: var(--ov-color-bg-surface-raised);
+  background: var(--_ov-tab-bg-active);
   color: var(--_ov-tab-fg-active);
-  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
-  box-shadow: inset 0 2px 0 var(--_ov-indicator);
+  box-shadow: inset 0 -2px 0 var(--_ov-indicator);
+}
+
+.Root[data-ov-variant='flat'] .Tab:focus-visible {
+  outline-offset: -4px;
 }
 
 .Root[data-ov-variant='flat'] .Indicator {
-  border-radius: var(--ov-primitive-radius-sm) var(--ov-primitive-radius-sm) 0 0;
+  border-radius: 0;
   height: 2px;
-  top: 0;
-  bottom: auto;
+  bottom: 0;
 }
 
 .Root[data-ov-variant='flat'] .Panel {
   border: none;
   border-radius: 0;
+  background: transparent;
 }
 
 .List {
   position: relative;
   display: inline-flex;
   align-items: stretch;
+  justify-self: start;
   border: 1px solid var(--_ov-list-border);
   background: var(--_ov-list-bg);
   border-radius: var(--ov-radius-control);
@@ -191,7 +200,8 @@
 }
 
 .Tab:focus-visible {
-  box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
 }
 
 .TabDecorator {
@@ -205,6 +215,7 @@
 
 .Indicator {
   position: absolute;
+  pointer-events: none;
   bottom: 0;
   height: 2px;
   background: var(--_ov-indicator);

@@ -5,6 +5,15 @@
   --ov-color-bg-control: var(--ov-color-bg-surface-raised);
   --ov-color-bg-control-hover: color-mix(in srgb, var(--ov-color-bg-control) 90%, var(--ov-color-fg-default) 10%);
   --ov-color-bg-control-pressed: color-mix(in srgb, var(--ov-color-bg-control) 84%, var(--ov-color-fg-default) 16%);
+  --ov-color-tab-fg: var(--ov-color-fg-muted);
+  --ov-color-tab-border: var(--ov-color-border-muted);
+  --ov-color-tab-active-bg: var(--ov-color-bg-surface); /* matches editor content */
+  --ov-color-tab-active-fg: var(--ov-color-fg-default);
+  --ov-color-tab-active-border: var(--ov-color-brand-400);
+  --ov-color-tab-inactive-fg: var(--ov-color-fg-muted);
+  --ov-color-tab-hover-bg: var(--ov-color-state-hover);
+  --ov-color-tab-hover-fg: var(--ov-color-fg-default);
+  --ov-color-tab-modified-border: var(--ov-color-warning);
 }
 
 :root,
@@ -586,16 +595,7 @@
   --ov-color-state-focus-ring: #7a96db;
 
   --ov-color-tab-bg: transparent;
-  --ov-color-tab-fg: var(--ov-color-fg-muted);
-  --ov-color-tab-border: var(--ov-color-border-muted);
-  --ov-color-tab-active-bg: var(--ov-color-bg-surface); /* matches editor content */
-  --ov-color-tab-active-fg: var(--ov-color-fg-default);
-  --ov-color-tab-active-border: var(--ov-color-brand-400);
   --ov-color-tab-inactive-bg: transparent;
-  --ov-color-tab-inactive-fg: var(--ov-color-fg-muted);
-  --ov-color-tab-hover-bg: var(--ov-color-state-hover);
-  --ov-color-tab-hover-fg: var(--ov-color-fg-default);
-  --ov-color-tab-modified-border: var(--ov-color-warning);
   --ov-color-editor-group-bg: var(--ov-color-bg-surface);
   --ov-color-editor-group-border: var(--ov-color-border-default);
   --ov-color-editor-group-header-bg: var(--ov-color-bg-base); /* tab bar = chrome level */

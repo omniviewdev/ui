@@ -6,7 +6,7 @@ const meta = {
   component: Tabs.Root,
   tags: ['autodocs'],
   args: {
-    variant: 'soft',
+    variant: 'flat',
     color: 'brand',
     size: 'md',
   },
@@ -34,6 +34,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+export const ContentNavigation: Story = {
+  args: { variant: 'flat' },
+};
+
+export const GroupedViews: Story = {
+  args: { variant: 'soft', color: 'neutral' },
+};
 
 export const WithBadges: Story = {
   render: (args) => (

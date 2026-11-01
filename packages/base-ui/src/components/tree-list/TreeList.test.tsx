@@ -1339,6 +1339,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: false,
             ancestorIsLast: [],
+            posInSet: 1,
+            setSize: 2,
           },
         ],
         [
@@ -1352,6 +1354,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: true,
             ancestorIsLast: [],
+            posInSet: 2,
+            setSize: 2,
           },
         ],
         [
@@ -1365,6 +1369,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: true,
             ancestorIsLast: [false],
+            posInSet: 1,
+            setSize: 1,
           },
         ],
       ]);
@@ -1406,6 +1412,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: false,
             ancestorIsLast: [],
+            posInSet: 1,
+            setSize: 2,
           },
         ],
         [
@@ -1419,6 +1427,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: true,
             ancestorIsLast: [false],
+            posInSet: 1,
+            setSize: 1,
           },
         ],
         [
@@ -1432,6 +1442,8 @@ describe('TreeList', () => {
             isLoading: false,
             isLastChild: true,
             ancestorIsLast: [],
+            posInSet: 2,
+            setSize: 2,
           },
         ],
       ]);

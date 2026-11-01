@@ -37,6 +37,10 @@ export interface FlatNode<TItem = unknown> {
   isBranch: boolean;
   isLastChild: boolean;
   ancestorIsLast: boolean[];
+  posInSet: number;
+  setSize: number;
+  /** Displayed expansion while a filter reveals descendants. */
+  filterExpanded?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -52,6 +56,8 @@ export interface TreeNodeMeta {
   isLoading: boolean;
   isLastChild: boolean;
   ancestorIsLast: boolean[];
+  posInSet: number;
+  setSize: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -88,6 +94,9 @@ export interface TreeStore {
   getItemState: (key: Key) => TreeItemState;
   getNodeMeta: (key: Key) => TreeNodeMeta | undefined;
   getFlatNodes: () => readonly FlatNode[];
+  getNodeIndex: (key: Key) => number;
+  isDisabled: (key: Key) => boolean;
+  registerDisabled: (key: Key, disabled: boolean) => void;
 
   // Mutations — pass `silent: true` during render to update refs only (no
   // snapshot rebuild, no listener notification). This avoids the React warning
@@ -122,6 +131,8 @@ export interface TreeConfigContextValue {
   typeahead: boolean;
   loopFocus: boolean;
   virtualized: boolean;
+  overscan?: number;
+  estimatedItemSize?: number;
   indentation: number;
   indentGuide: TreeIndentGuide;
 }
@@ -135,8 +146,11 @@ export interface TreeActionsContextValue {
   selectAll: () => void;
   clearSelection: () => void;
   setActiveKey: (key: Key | null) => void;
+  activate: (key: Key) => void;
   // Tree-specific
   expand: (key: Key) => void;
+  /** Expand enabled branches beside this row in one loaded-state update. */
+  expandSiblings: (key: Key) => void;
   collapse: (key: Key) => void;
   toggleExpanded: (key: Key) => void;
   expandAll: () => void;
@@ -157,6 +171,7 @@ export interface TreeListRootProps<TItem = unknown>
   /** Return the children array, or `undefined` if children haven't been loaded yet.
    *  An empty array `[]` means "loaded, no children" and will NOT trigger `loadChildren`. */
   getChildren: (item: TItem) => readonly TItem[] | undefined;
+  /** Defaults to non-empty known children. Declare lazy branches explicitly. */
   isBranch?: (item: TItem) => boolean;
   /** Source-level selection eligibility, including never-mounted virtualized rows.
    * Returning false overrides Item selectable; Item selectable=false may further restrict it. */
@@ -187,11 +202,19 @@ export interface TreeListRootProps<TItem = unknown>
   selectedKeys?: ReadonlySet<Key>;
   defaultSelectedKeys?: Iterable<Key>;
   onSelectedKeysChange?: (keys: ReadonlySet<Key>) => void;
+  /** Enabled row activation by click or Enter/Space, independent of selection.
+   * Fires for non-selectable groups and repeated activation of the selected row. */
+  onAction?: (key: Key) => void;
 
+  /** Controlled keyboard focus. Hidden/removed/disabled rows request a visible
+   * replacement through onActiveKeyChange; an invalid controlled key has no
+   * aria-activedescendant until the owner accepts a valid key. */
   activeKey?: Key | null;
   defaultActiveKey?: Key | null;
   onActiveKeyChange?: (key: Key | null) => void;
 
+  /** Source-level disabled rows, including rows that have never mounted.
+   * Item disabled additionally restricts mounted rows and survives virtual unmounts. */
   disabledKeys?: Iterable<Key>;
   loopFocus?: boolean;
   typeahead?: boolean;
@@ -199,7 +222,10 @@ export interface TreeListRootProps<TItem = unknown>
 
   // Virtualization
   virtualized?: boolean;
+  /** Extra rows rendered on each side of the scroll window. Defaults to 10.
+   * The active row remains mounted even when outside that window. */
   overscan?: number;
+  /** Initial row height in pixels, before measurement. Defaults to 36. */
   estimatedItemSize?: number;
 
   // Filtering

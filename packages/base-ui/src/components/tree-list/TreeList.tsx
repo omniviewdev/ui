@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
-  Fragment,
+  memo,
   type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent,
@@ -107,6 +107,7 @@ function TreeListRootContent<TItem>({
   selectedKeys: selectedKeysProp,
   defaultSelectedKeys,
   onSelectedKeysChange,
+  onAction,
   activeKey: activeKeyProp,
   defaultActiveKey,
   onActiveKeyChange,
@@ -150,6 +151,7 @@ function TreeListRootContent<TItem>({
   void selectedKeysProp;
   void defaultSelectedKeys;
   void onSelectedKeysChange;
+  void onAction;
   void activeKeyProp;
   void defaultActiveKey;
   void onActiveKeyChange;
@@ -189,7 +191,7 @@ function TreeListRootContent<TItem>({
           selectedKeys: snap.selectedKeys,
           activeKey: snap.activeKey,
           disabledKeys: snap.disabledKeys,
-          registeredKeys: [...snap.flattenedKeys],
+          registeredKeys: snap.flattenedKeys as Key[],
         };
       },
       getTextValue: store.getTextValue,
@@ -226,7 +228,12 @@ function TreeListRootContent<TItem>({
     store.subscribe,
     () => {
       const snapshot = store.getSnapshot();
-      return snapshot.activeKey != null ? `${listId}-item-${snapshot.activeKey}` : undefined;
+      return !error &&
+        snapshot.activeKey != null &&
+        !store.isDisabled(snapshot.activeKey) &&
+        store.getNodeIndex(snapshot.activeKey) !== -1
+        ? `${listId}-item-${snapshot.activeKey}`
+        : undefined;
     },
     () => undefined,
   );
@@ -289,7 +296,12 @@ function TreeListNodes<TItem>({
   proposeMove,
   getSiblingKeys,
 }: TreeListNodesProps<TItem>) {
-  const { store, isBranch, expandedKeys, filterText, filterFn } = treeState;
+  const { store, actions, activeKey, isBranch, expandedKeys, filterText, filterFn } = treeState;
+  const disabledKeys = useSyncExternalStore(
+    store.subscribe,
+    () => store.getSnapshot().disabledKeys,
+    () => store.getSnapshot().disabledKeys,
+  );
   const flatNodes = useTreeFlattener(
     items,
     itemKey,
@@ -325,6 +337,38 @@ function TreeListNodes<TItem>({
     for (const node of flatNodes) map.set(node.key, node);
     return map;
   }, [flatNodes]);
+  const previousNodesRef = useRef<readonly FlatNode[]>([]);
+  const previousNodesByKeyRef = useRef<ReadonlyMap<Key, FlatNode>>(new Map());
+  useLayoutEffect(() => {
+    if (activeKey != null && (!nodesByKey.has(activeKey) || disabledKeys.has(activeKey))) {
+      let parentKey = previousNodesByKeyRef.current.get(activeKey)?.parentKey ?? null;
+      while (parentKey != null && (!nodesByKey.has(parentKey) || store.isDisabled(parentKey))) {
+        parentKey = previousNodesByKeyRef.current.get(parentKey)?.parentKey ?? null;
+      }
+      let replacement = parentKey;
+      if (replacement == null) {
+        const oldIndex = previousNodesRef.current.findIndex((node) => node.key === activeKey);
+        const start = Math.max(0, Math.min(oldIndex, flatNodes.length - 1));
+        for (let index = start; index < flatNodes.length; index += 1) {
+          if (!store.isDisabled(flatNodes[index]!.key)) {
+            replacement = flatNodes[index]!.key;
+            break;
+          }
+        }
+        if (replacement == null) {
+          for (let index = start - 1; index >= 0; index -= 1) {
+            if (!store.isDisabled(flatNodes[index]!.key)) {
+              replacement = flatNodes[index]!.key;
+              break;
+            }
+          }
+        }
+      }
+      actions.setActiveKey(replacement);
+    }
+    previousNodesRef.current = flatNodes;
+    previousNodesByKeyRef.current = nodesByKey;
+  }, [activeKey, actions, flatNodes, nodesByKey, store, disabledKeys]);
   const renderNode: RenderNodeFn = useCallback(
     (key, node) => {
       const flat = nodesByKey.get(key);
@@ -427,27 +471,55 @@ function mergeRefs<T>(
   };
 }
 
+// Subscribe custom row rendering to metadata, not unrelated focus/selection.
+// Item itself owns its interaction-state subscription.
+const TreeListRow = memo(function TreeListRow({ itemKey }: { itemKey: Key }) {
+  const store = useTreeStoreContext();
+  const renderNode = useRenderNode();
+  const getMetadata = useCallback(() => store.getNodeMeta(itemKey), [store, itemKey]);
+  const metadata = useSyncExternalStore(store.subscribe, getMetadata, getMetadata);
+  return metadata ? renderNode(itemKey, metadata) : null;
+});
+
 const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
   function TreeListViewport({ className, children, ...props }, ref) {
     const config = useTreeConfig();
     const store = useTreeStoreContext();
     const scrollRef = useRef<HTMLDivElement>(null);
-    const renderNode = useRenderNode();
-
-    // Subscribe to the full snapshot so the Viewport re-renders when any
-    // store state changes (loading, expanded, selection) — not only when
-    // flatNodes changes. This ensures renderItem sees live nodeMeta flags.
-    const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
-    const flatNodes = store.getFlatNodes();
-    // Reference snapshot to prevent tree-shaking / unused-var lint
-    void snapshot;
-
+    const flatNodes = useSyncExternalStore(store.subscribe, store.getFlatNodes, store.getFlatNodes);
+    const activeKey = useSyncExternalStore(
+      store.subscribe,
+      () => store.getSnapshot().activeKey,
+      () => null,
+    );
+    const activeIndex = activeKey == null ? -1 : store.getNodeIndex(activeKey);
+    const reorder = useContext(TreeReorderContext);
+    const draggedIndex = reorder?.draggedKey == null ? -1 : store.getNodeIndex(reorder.draggedKey);
+    const getItemKey = useCallback((index: number) => flatNodes[index]!.key, [flatNodes]);
     const virtualizer = useListVirtualizer({
       count: flatNodes.length,
       scrollRef,
       enabled: config.virtualized,
-      estimatedItemSize: 36,
+      estimatedItemSize: config.estimatedItemSize,
+      overscan: config.overscan,
+      getItemKey,
+      activeIndex,
+      draggedIndex,
     });
+    const { scrollToIndex } = virtualizer;
+    useLayoutEffect(() => {
+      if (activeIndex < 0) return;
+      if (config.virtualized) {
+        scrollToIndex(activeIndex);
+      } else {
+        const element = scrollRef.current?.ownerDocument.getElementById(
+          `${config.listId}-item-${activeKey}`,
+        );
+        if (element && scrollRef.current?.contains(element)) {
+          element.scrollIntoView?.({ block: 'nearest' });
+        }
+      }
+    }, [activeKey, activeIndex, config.virtualized, config.listId, scrollToIndex, flatNodes]);
 
     const mergedRef = mergeRefs(scrollRef, ref);
 
@@ -455,6 +527,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
       const virtualContentStyle: CSSProperties = {
         height: virtualizer.totalSize,
         position: 'relative',
+        flexShrink: 0,
       };
       return (
         <div
@@ -467,8 +540,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
             {virtualizer.virtualItems.map((virtualItem) => {
               const node = flatNodes[virtualItem.index];
               if (!node) return null;
-              const nodeMeta = store.getNodeMeta(node.key);
-              if (!nodeMeta) return null;
+              if (!store.getNodeMeta(node.key)) return null;
               const virtualItemStyle: CSSProperties = {
                 position: 'absolute',
                 top: 0,
@@ -483,7 +555,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
                   data-index={virtualItem.index}
                   style={virtualItemStyle}
                 >
-                  {renderNode(node.key, nodeMeta)}
+                  <TreeListRow itemKey={node.key} />
                 </div>
               );
             })}
@@ -501,11 +573,9 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
         className={cn(styles.Viewport, className)}
         {...props}
       >
-        {flatNodes.map((node) => {
-          const nodeMeta = store.getNodeMeta(node.key);
-          if (!nodeMeta) return null;
-          return <Fragment key={node.key}>{renderNode(node.key, nodeMeta)}</Fragment>;
-        })}
+        {flatNodes.map((node) => (
+          <TreeListRow key={node.key} itemKey={node.key} />
+        ))}
         {children}
       </div>
     );
@@ -535,8 +605,12 @@ function useTreeListItemBehavior({
   const actions = useTreeActions();
   const config = useTreeConfig();
   const itemState = useTreeItemHook(store, itemKey, textValue, selectable);
-  const nodeMeta = store.getNodeMeta(itemKey);
+  const getMetadata = useCallback(() => store.getNodeMeta(itemKey), [store, itemKey]);
+  const nodeMeta = useSyncExternalStore(store.subscribe, getMetadata, getMetadata);
   const isDisabled = disabled || itemState.isDisabled;
+  useLayoutEffect(() => {
+    store.registerDisabled(itemKey, disabled);
+  }, [store, itemKey, disabled]);
 
   const handleClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -559,6 +633,7 @@ function useTreeListItemBehavior({
         }
       }
 
+      actions.activate(itemKey);
       onClick?.(event);
     },
     [
@@ -617,6 +692,8 @@ const TreeListItemImplementation = forwardRef<HTMLDivElement, TreeListItemImplem
         aria-disabled={isDisabled || undefined}
         aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
         aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
+        aria-posinset={nodeMeta?.posInSet}
+        aria-setsize={nodeMeta?.setSize}
         className={cn(styles.Item, className)}
         data-ov-selected={itemState.isSelected}
         data-ov-active={itemState.isActive}
@@ -894,6 +971,7 @@ const TreeListItemToggle = forwardRef<HTMLButtonElement, TreeListItemToggleProps
         type="button"
         tabIndex={-1}
         className={cn(styles.ItemToggle, className)}
+        disabled={itemState.isDisabled}
         data-ov-expanded={isExpanded}
         data-ov-leaf={!isBranch || undefined}
         data-ov-loading={isLoading || undefined}

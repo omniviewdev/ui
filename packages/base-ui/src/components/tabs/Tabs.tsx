@@ -8,6 +8,7 @@ import styles from './Tabs.module.css';
 export type TabsVariant = 'solid' | 'soft' | 'outline' | 'ghost' | 'flat';
 
 export interface TabsRootProps extends BaseTabs.Root.Props, Omit<StyledComponentProps, 'variant'> {
+  /** Use flat for content navigation; filled variants group compact, related views. */
   variant?: TabsVariant;
 }
 export type TabsListProps = BaseTabs.List.Props;

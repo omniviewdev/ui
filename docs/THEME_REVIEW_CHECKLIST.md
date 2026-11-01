@@ -27,6 +27,15 @@ Use this checklist to review token system changes during implementation.
 - [ ] Normal themes retain quiet structural roles; high-contrast themes retain intentional stronger boundaries.
 - [ ] Palette values come from `packages/base-ui/src/theme/styles.css`, public keys from the generated catalog, and built-in IDs from the registry catalog—not another manual theme list/table.
 
+## Content navigation and segmented controls
+
+- [ ] Use `Tabs.Root variant="flat"` for page sections, plugin details, cluster views, and inspector navigation. Flat tabs share the surrounding surface, use a bottom selection stripe, and leave panels unframed.
+- [ ] Reserve filled or outlined tab variants for compact groups of related view choices. Their enclosure fits the controls rather than stretching across a page.
+- [ ] Use `EditorTabs` for open documents and workspace pages; do not reproduce document chrome inside content navigation.
+- [ ] Use shared tab foreground, hover, and boundary tokens. Keep keyboard focus distinct from the active selection stripe.
+- [ ] Give each content region one padding owner. Use divider rows instead of nested cards for simple release history.
+- [ ] Verify narrow panes, panel scrolling, keyboard activation, and light/dark themes in the running host.
+
 ## IDE surface coverage
 
 - [ ] Window chrome tokens are defined (title bar, status bar, activity bar, side bar, panel).

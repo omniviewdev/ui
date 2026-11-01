@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useLayoutEffect, useSyncExternalStore } from 'react';
 import type { Key, TreeItemState, TreeStore } from '../types';
 
 /**
@@ -13,44 +13,18 @@ export function useTreeItem(
   store: TreeStore,
   key: Key,
   textValue?: string,
-  selectable = true,
+  selectable?: boolean,
 ): TreeItemState {
   // Retain per-key metadata across virtualized/filtered unmounts. Eligibility
   // must be registered before keyboard interaction, not only on row clicks.
   useLayoutEffect(() => {
-    store.registerSelectable(key, selectable);
+    if (selectable !== undefined) store.registerSelectable(key, selectable);
     if (textValue !== undefined) {
       store.registerTextValue(key, textValue);
     }
   }, [store, key, textValue, selectable]);
 
-  const prevRef = useRef<TreeItemState>({
-    isSelected: false,
-    isActive: false,
-    isDisabled: false,
-    isExpanded: false,
-    isBranch: false,
-    isLoading: false,
-    depth: 0,
-  });
-
-  const getSnapshot = useCallback((): TreeItemState => {
-    const next = store.getItemState(key);
-    const prev = prevRef.current;
-    if (
-      prev.isSelected === next.isSelected &&
-      prev.isActive === next.isActive &&
-      prev.isDisabled === next.isDisabled &&
-      prev.isExpanded === next.isExpanded &&
-      prev.isBranch === next.isBranch &&
-      prev.isLoading === next.isLoading &&
-      prev.depth === next.depth
-    ) {
-      return prev;
-    }
-    prevRef.current = next;
-    return next;
-  }, [store, key]);
+  const getSnapshot = useCallback(() => store.getItemState(key), [store, key]);
 
   return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }

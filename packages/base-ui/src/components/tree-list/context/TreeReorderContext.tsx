@@ -4,6 +4,7 @@ import type { Key, TreeStore } from '../types';
 
 export interface TreeReorderContextValue {
   store: TreeStore;
+  draggedKey: Key | null;
   proposeMove: (
     siblingKeys: readonly Key[],
     parentKey: Key | null,

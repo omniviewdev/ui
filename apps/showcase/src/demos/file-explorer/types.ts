@@ -1,41 +1,45 @@
-// apps/showcase/src/demos/file-explorer/types.ts
+import type { FileNode } from '@omniviewdev/base-ui';
 
-export interface FileNode {
-  id: string;
-  name: string;
-  type: 'file' | 'folder';
-  size?: number;         // bytes
-  modified?: string;     // ISO date string
-  permissions?: string;  // e.g. "rw-r--r--"
-  extension?: string;    // e.g. "tsx", "json"
-  children?: FileNode[];
-  content?: string;      // preview content for text files
-  owner?: string;        // e.g. "sftpclient"
-  group?: string;        // e.g. "sftp"
+export const scenarios = [
+  'Browse',
+  'Tree only',
+  'Image layers',
+  'Compare',
+  'Live watch',
+  'States',
+] as const;
+export type Scenario = (typeof scenarios)[number];
+export const providerStates = [
+  'permission',
+  'loading',
+  'empty',
+  'offline',
+  'binary',
+  'large',
+  'missing-tar',
+] as const;
+export type ProviderState = (typeof providerStates)[number];
+export type Presence = 'present' | 'absent' | 'unknown';
+
+export interface FixtureMetadata {
+  readonly layer: number;
+  readonly baseline: Presence;
+  readonly current: Presence;
+  readonly readFrom: 'current' | 'baseline';
+  readonly mount?: string;
 }
 
-export interface FileSelection {
-  pane: 'local' | 'remote';
-  node: FileNode;
-  path: string[];  // breadcrumb segments
+export interface FixtureEntry {
+  readonly node: FileNode<FixtureMetadata>;
+  readonly bytes?: Uint8Array;
+  readonly mimeType?: string;
+  readonly baselineBytes?: Uint8Array;
+  readonly baselineMimeType?: string;
 }
 
-export interface Transfer {
-  id: string;
-  source: string;
-  direction: 'upload' | 'download';
-  destination: string;
-  size: number;
-  priority: number;
-  status: 'queued' | 'processing' | 'completed' | 'failed';
-  remaining?: string;
-  speed?: string;
-  progress: number; // 0-100
-}
-
-export interface LogEntry {
-  id: string;
-  type: 'command' | 'response';
-  message: string;
-  timestamp: string;
+export interface FixtureOptions {
+  readonly scenario: Scenario;
+  readonly state: ProviderState;
+  readonly layer: number;
+  readonly cumulative: boolean;
 }

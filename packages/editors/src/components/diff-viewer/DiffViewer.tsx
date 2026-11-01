@@ -46,34 +46,46 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
 
   // Create editor on mount
   useEffect(() => {
-    if (!containerRef.current) return;
+    let cancelled = false;
+    let disposeEditor: (() => void) | undefined;
+    // StrictMode's discarded setup must not start asynchronous Monaco workers.
+    queueMicrotask(() => {
+      if (cancelled || !containerRef.current) return;
 
-    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-    monaco.editor.setTheme(OV_MONACO_THEME);
+      monaco.editor.defineTheme(
+        OV_MONACO_THEME,
+        buildMonacoTheme(theme.base, containerRef.current),
+      );
+      monaco.editor.setTheme(OV_MONACO_THEME);
 
-    const editor = monaco.editor.createDiffEditor(containerRef.current, {
-      readOnly,
-      renderSideBySide: mode === 'side-by-side',
-      renderValidationDecorations: 'off',
-      scrollBeyondLastLine: false,
-      automaticLayout: true,
-      fontSize: 13,
-      fontFamily: 'var(--ov-font-family-mono, monospace)',
+      const editor = monaco.editor.createDiffEditor(containerRef.current, {
+        readOnly,
+        renderSideBySide: mode === 'side-by-side',
+        renderValidationDecorations: 'off',
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        fontSize: 13,
+        fontFamily: 'var(--ov-font-family-mono, monospace)',
+      });
+
+      const originalModel = monaco.editor.createModel(original, language);
+      const modifiedModel = monaco.editor.createModel(modified, language);
+      editor.setModel({ original: originalModel, modified: modifiedModel });
+
+      editorRef.current = editor;
+      setIsReady(true);
+      disposeEditor = () => {
+        editor.setModel(null);
+        editor.dispose();
+        originalModel.dispose();
+        modifiedModel.dispose();
+        editorRef.current = null;
+        setIsReady(false);
+      };
     });
-
-    const originalModel = monaco.editor.createModel(original, language);
-    const modifiedModel = monaco.editor.createModel(modified, language);
-    editor.setModel({ original: originalModel, modified: modifiedModel });
-
-    editorRef.current = editor;
-    setIsReady(true);
-
     return () => {
-      editor.getModel()?.original?.dispose();
-      editor.getModel()?.modified?.dispose();
-      editor.dispose();
-      editorRef.current = null;
-      setIsReady(false);
+      cancelled = true;
+      disposeEditor?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -119,7 +131,7 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
     if (!isReady) return;
     monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
     monaco.editor.setTheme(OV_MONACO_THEME);
-  }, [isReady, theme.registration]);
+  }, [isReady, theme.base, theme.registration]);
 
   const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
 

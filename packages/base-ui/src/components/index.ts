@@ -95,3 +95,5 @@ export * from './query-authoring';
 export * from './visualization';
 export * from './resource-workspace-controls';
 export * from './resource-inspector-controls';
+export * from './file-explorer';
+export * from './shortcut-summary';

@@ -8,6 +8,9 @@ import type {
   FlatNode,
 } from '../types';
 
+const EMPTY_TREE_NODES: readonly FlatNode[] = [];
+const EMPTY_TREE_META: ReadonlyMap<Key, TreeNodeMeta> = new Map();
+
 /**
  * Creates a lightweight external store for tree state.
  * Items subscribe via useSyncExternalStore to their own key's slice,
@@ -20,13 +23,13 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   const expandedKeysRef = useRef<Set<Key>>(new Set());
   const loadingKeysRef = useRef<Set<Key>>(new Set());
   const flatNodesRef = useRef<FlatNode[]>([]);
+  const flattenedKeysRef = useRef<Key[]>([]);
   const nodeMetaMapRef = useRef(new Map<Key, TreeNodeMeta>());
   const textValuesRef = useRef(new Map<Key, string>());
   const nonSelectableKeysRef = useRef(new Set<Key>());
   const sourceNonSelectableKeysRef = useRef<ReadonlySet<Key> | undefined>(undefined);
   const disabledKeysRef = useRef(disabledKeys);
 
-  const versionRef = useRef(0);
   const snapshotRef = useRef<TreeStoreSnapshot>({
     selectedKeys: new Set(),
     activeKey: null,
@@ -34,13 +37,13 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
     expandedKeys: new Set(),
     loadingKeys: new Set(),
     flattenedKeys: [],
+    flatNodes: EMPTY_TREE_NODES,
+    nodeMetaByKey: EMPTY_TREE_META,
     visibleCount: 0,
   });
 
-
   // Internal: rebuild the snapshot object from current refs.
   const rebuildSnapshot = useCallback(() => {
-    versionRef.current += 1;
     const flatNodes = flatNodesRef.current;
     snapshotRef.current = {
       selectedKeys: new Set(selectedKeysRef.current),
@@ -48,7 +51,9 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
       disabledKeys: new Set(disabledKeysRef.current),
       expandedKeys: new Set(expandedKeysRef.current),
       loadingKeys: new Set(loadingKeysRef.current),
-      flattenedKeys: flatNodes.map((n) => n.key),
+      flattenedKeys: flattenedKeysRef.current,
+      flatNodes,
+      nodeMetaByKey: nodeMetaMapRef.current,
       visibleCount: flatNodes.length,
     };
   }, []);
@@ -140,9 +145,17 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
   const setFlatNodes = useCallback(
     (nodes: FlatNode[], silent?: boolean) => {
       flatNodesRef.current = nodes;
+      flattenedKeysRef.current = nodes.map((node) => node.key);
       // Rebuild node meta map
       const metaMap = new Map<Key, TreeNodeMeta>();
+      const siblingCounts = new Map<Key | null, number>();
+      const siblingPositions = new Map<Key | null, number>();
       for (const node of nodes) {
+        siblingCounts.set(node.parentKey, (siblingCounts.get(node.parentKey) ?? 0) + 1);
+      }
+      for (const node of nodes) {
+        const position = (siblingPositions.get(node.parentKey) ?? 0) + 1;
+        siblingPositions.set(node.parentKey, position);
         metaMap.set(node.key, {
           key: node.key,
           depth: node.depth,
@@ -152,6 +165,8 @@ export function useTreeStore(disabledKeys: Set<Key>): TreeStore {
           isLoading: loadingKeysRef.current.has(node.key),
           isLastChild: node.isLastChild,
           ancestorIsLast: node.ancestorIsLast,
+          posInSet: position,
+          setSize: siblingCounts.get(node.parentKey),
         });
       }
       nodeMetaMapRef.current = metaMap;

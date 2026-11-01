@@ -34,6 +34,7 @@ import type {
   TreeListRootProps,
   TreeNodeMeta,
   TreeOrder,
+  TreeStoreSnapshot,
 } from './types';
 import { useTreeState, type TreeStateReturn } from './hooks/useTreeState';
 import { useTreeOrder } from './hooks/useTreeOrder';
@@ -63,6 +64,17 @@ import styles from './TreeList.module.css';
 type RenderNodeFn = (key: Key, node: TreeNodeMeta) => ReactNode;
 
 const RenderNodeContext = createContext<RenderNodeFn | null>(null);
+const RevealActiveContext = createContext<RefObject<(() => void) | null> | null>(null);
+
+function getRenderedNodeMeta(snapshot: TreeStoreSnapshot, key: Key): TreeNodeMeta | undefined {
+  const node = snapshot.nodeMetaByKey.get(key);
+  if (!node) return undefined;
+  return {
+    ...node,
+    isExpanded: snapshot.expandedKeys.has(key),
+    isLoading: snapshot.loadingKeys.has(key),
+  };
+}
 
 function useRenderNode(): RenderNodeFn {
   const ctx = useContext(RenderNodeContext);
@@ -176,6 +188,7 @@ function TreeListRootContent<TItem>({
 
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
+  const revealActiveRef = useRef<(() => void) | null>(null);
 
   const { handleKeyDown } = useTreeFocus({ config: fullConfig, actions, store });
 
@@ -226,7 +239,9 @@ function TreeListRootContent<TItem>({
     store.subscribe,
     () => {
       const snapshot = store.getSnapshot();
-      return snapshot.activeKey != null ? `${listId}-item-${snapshot.activeKey}` : undefined;
+      return snapshot.activeKey != null && store.getNodeMeta(snapshot.activeKey)
+        ? `${listId}-item-${snapshot.activeKey}`
+        : undefined;
     },
     () => undefined,
   );
@@ -239,8 +254,22 @@ function TreeListRootContent<TItem>({
       handleKeyDown(event);
       handleTypeahead(event);
       onKeyDown?.(event);
+      if (
+        config.virtualized &&
+        (event.key.startsWith('Arrow') ||
+          event.key === 'Home' ||
+          event.key === 'End' ||
+          (config.typeahead &&
+            event.key.length === 1 &&
+            !event.ctrlKey &&
+            !event.metaKey &&
+            !event.altKey))
+      ) {
+        // A repeated Home/End may keep the same key after manual scrolling.
+        queueMicrotask(() => revealActiveRef.current?.());
+      }
     },
-    [handleKeyDown, handleTypeahead, onKeyDown],
+    [config.virtualized, config.typeahead, handleKeyDown, handleTypeahead, onKeyDown],
   );
 
   return (
@@ -260,7 +289,9 @@ function TreeListRootContent<TItem>({
             {...styleDataAttributes({ variant, color, size })}
             {...domProps}
           >
-            {children}
+            <RevealActiveContext.Provider value={revealActiveRef}>
+              {children}
+            </RevealActiveContext.Provider>
           </div>
         </TreeActionsContext.Provider>
       </TreeStoreContext.Provider>
@@ -432,22 +463,78 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     const config = useTreeConfig();
     const store = useTreeStoreContext();
     const scrollRef = useRef<HTMLDivElement>(null);
+    const sizeProbeRef = useRef<HTMLDivElement>(null);
+    const [renderedItemSize, setRenderedItemSize] = useState<number>();
+
+    // A single CSS-sized probe follows density, theme, rem and media changes.
+    // Measuring every visible row just to derive the estimate is unnecessary.
+    useLayoutEffect(() => {
+      const probe = sizeProbeRef.current;
+      if (!config.virtualized || config.estimatedItemSize !== undefined || !probe) return;
+      const updateSize = () => {
+        const height = probe.getBoundingClientRect().height;
+        if (height > 0) setRenderedItemSize(height);
+      };
+      updateSize();
+      if (typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(updateSize);
+      observer.observe(probe);
+      return () => observer.disconnect();
+    }, [config.virtualized, config.estimatedItemSize, config.density]);
     const renderNode = useRenderNode();
+    const revealActiveRef = useContext(RevealActiveContext);
 
     // Subscribe to the full snapshot so the Viewport re-renders when any
     // store state changes (loading, expanded, selection) — not only when
     // flatNodes changes. This ensures renderItem sees live nodeMeta flags.
     const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
-    const flatNodes = store.getFlatNodes();
-    // Reference snapshot to prevent tree-shaking / unused-var lint
-    void snapshot;
+    const flatNodes = snapshot.flatNodes;
+    const indicesByKey = useMemo(() => {
+      if (!config.virtualized) return undefined;
+      const indices = new Map<Key, number>();
+      flatNodes.forEach((node, index) => indices.set(node.key, index));
+      return indices;
+    }, [flatNodes, config.virtualized]);
+    const activeIndex =
+      snapshot.activeKey == null ? undefined : indicesByKey?.get(snapshot.activeKey);
 
     const virtualizer = useListVirtualizer({
       count: flatNodes.length,
       scrollRef,
       enabled: config.virtualized,
-      estimatedItemSize: 36,
+      overscan: config.overscan,
+      estimatedItemSize: config.estimatedItemSize ?? renderedItemSize,
+      pinnedIndex: activeIndex,
     });
+
+    const scrollToIndex = virtualizer.scrollToIndex;
+    useLayoutEffect(() => {
+      if (!config.virtualized || activeIndex === undefined) return;
+      let cancelled = false;
+      queueMicrotask(() => {
+        if (!cancelled) scrollToIndex(activeIndex, { align: 'auto' });
+      });
+      return () => {
+        cancelled = true;
+      };
+    }, [
+      config.virtualized,
+      activeIndex,
+      scrollToIndex,
+      config.estimatedItemSize,
+      renderedItemSize,
+    ]);
+    useLayoutEffect(() => {
+      if (!revealActiveRef || !config.virtualized) return;
+      revealActiveRef.current = () => {
+        const key = store.getSnapshot().activeKey;
+        const index = key == null ? undefined : indicesByKey?.get(key);
+        if (index !== undefined) scrollToIndex(index, { align: 'auto' });
+      };
+      return () => {
+        revealActiveRef.current = null;
+      };
+    }, [revealActiveRef, config.virtualized, indicesByKey, scrollToIndex, store]);
 
     const mergedRef = mergeRefs(scrollRef, ref);
 
@@ -463,11 +550,12 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           className={cn(styles.Viewport, className)}
           {...props}
         >
+          <div ref={sizeProbeRef} className={styles.SizeProbe} aria-hidden="true" />
           <div style={virtualContentStyle}>
             {virtualizer.virtualItems.map((virtualItem) => {
               const node = flatNodes[virtualItem.index];
               if (!node) return null;
-              const nodeMeta = store.getNodeMeta(node.key);
+              const nodeMeta = getRenderedNodeMeta(snapshot, node.key);
               if (!nodeMeta) return null;
               const virtualItemStyle: CSSProperties = {
                 position: 'absolute',
@@ -502,7 +590,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
         {...props}
       >
         {flatNodes.map((node) => {
-          const nodeMeta = store.getNodeMeta(node.key);
+          const nodeMeta = getRenderedNodeMeta(snapshot, node.key);
           if (!nodeMeta) return null;
           return <Fragment key={node.key}>{renderNode(node.key, nodeMeta)}</Fragment>;
         })}
@@ -535,7 +623,11 @@ function useTreeListItemBehavior({
   const actions = useTreeActions();
   const config = useTreeConfig();
   const itemState = useTreeItemHook(store, itemKey, textValue, selectable);
-  const nodeMeta = store.getNodeMeta(itemKey);
+  const getNodeMeta = useCallback(
+    () => store.getSnapshot().nodeMetaByKey.get(itemKey),
+    [store, itemKey],
+  );
+  const nodeMeta = useSyncExternalStore(store.subscribe, getNodeMeta, getNodeMeta);
   const isDisabled = disabled || itemState.isDisabled;
 
   const handleClick = useCallback(
@@ -617,6 +709,8 @@ const TreeListItemImplementation = forwardRef<HTMLDivElement, TreeListItemImplem
         aria-disabled={isDisabled || undefined}
         aria-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
         aria-level={nodeMeta ? nodeMeta.depth + 1 : undefined}
+        aria-posinset={nodeMeta?.posInSet}
+        aria-setsize={nodeMeta?.setSize}
         className={cn(styles.Item, className)}
         data-ov-selected={itemState.isSelected}
         data-ov-active={itemState.isActive}

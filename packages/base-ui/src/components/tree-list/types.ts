@@ -52,6 +52,10 @@ export interface TreeNodeMeta {
   isLoading: boolean;
   isLastChild: boolean;
   ancestorIsLast: boolean[];
+  /** Position among the currently visible siblings (one-based). */
+  posInSet?: number;
+  /** Number of currently visible siblings, including collapsed branches. */
+  setSize?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,6 +83,8 @@ export interface TreeStoreSnapshot {
   expandedKeys: ReadonlySet<Key>;
   loadingKeys: ReadonlySet<Key>;
   flattenedKeys: readonly Key[];
+  flatNodes: readonly FlatNode[];
+  nodeMetaByKey: ReadonlyMap<Key, TreeNodeMeta>;
   visibleCount: number;
 }
 
@@ -122,6 +128,8 @@ export interface TreeConfigContextValue {
   typeahead: boolean;
   loopFocus: boolean;
   virtualized: boolean;
+  overscan?: number;
+  estimatedItemSize?: number;
   indentation: number;
   indentGuide: TreeIndentGuide;
 }
@@ -200,6 +208,7 @@ export interface TreeListRootProps<TItem = unknown>
   // Virtualization
   virtualized?: boolean;
   overscan?: number;
+  /** Initial row estimate in pixels; defaults to the rendered size/density token. */
   estimatedItemSize?: number;
 
   // Filtering

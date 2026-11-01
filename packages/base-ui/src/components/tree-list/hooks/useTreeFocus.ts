@@ -92,10 +92,15 @@ export function useTreeFocus({ config, actions, store }: UseTreeFocusOptions) {
             // Collapsed branch → expand
             actions.expand(snapshot.activeKey);
           } else {
-            // Expanded branch → move to first child
-            const next = findNextEnabled(currentIndex, 1);
-            if (next != null) {
-              actions.setActiveKey(next);
+            // Only enter this branch's enabled direct children.
+            const nodes = store.getFlatNodes();
+            for (let index = currentIndex + 1; index < nodes.length; index++) {
+              const child = nodes[index]!;
+              if (child.depth <= nodeMeta.depth) break;
+              if (child.parentKey === snapshot.activeKey && !snapshot.disabledKeys.has(child.key)) {
+                actions.setActiveKey(child.key);
+                break;
+              }
             }
           }
           break;

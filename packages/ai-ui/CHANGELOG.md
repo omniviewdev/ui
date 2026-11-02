@@ -1,5 +1,16 @@
 # @omniviewdev/ai-ui
 
+## 6.1.4
+
+### Patch Changes
+
+- [#94](https://github.com/omniviewdev/ui/pull/94) [`adec2cd`](https://github.com/omniviewdev/ui/commit/adec2cd2d6e48610088ae2d1eb436a35c1d4c395) Thanks [@joshuapare](https://github.com/joshuapare)! - Make `CodeBlock` use live syntax and semantic CSS tokens instead of fixed light/dark palettes. Custom themes now control highlighted tokens and syntax font styles without remounting code blocks, while preserving code typography, line numbers, and copying.
+
+  Publish AI UI and editors alongside base UI so their workspace peer dependencies target the same compatible base UI release.
+
+- Updated dependencies [[`45ff5db`](https://github.com/omniviewdev/ui/commit/45ff5dbfecb5becbf84a763c22cc028e63071b35), [`adec2cd`](https://github.com/omniviewdev/ui/commit/adec2cd2d6e48610088ae2d1eb436a35c1d4c395)]:
+  - @omniviewdev/base-ui@0.11.0
+
 ## 6.1.3
 
 ### Patch Changes

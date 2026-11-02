@@ -292,6 +292,15 @@ Token font style controls:
 - `--ov-syntax-style-function`
 - `--ov-syntax-style-type`
 
+`CodeBlock` consumes these CSS variables directly through its static Prism style map. JSON keys use
+`--ov-syntax-property`; strings, numbers, booleans, and punctuation use the corresponding string,
+number, keyword, and punctuation tokens. Markup and CSS reuse the same semantic syntax categories.
+Unhighlighted code uses `--ov-color-fg-default` and `--ov-font-mono`; line numbers use
+`--ov-color-fg-subtle`. Diff additions and deletions use the success and danger colors.
+Changing inherited variables updates mounted code blocks without a React render. Comment, keyword,
+function, and type styles accept CSS `font-style` values such as `normal` or `italic`, not compound
+editor font-style strings such as `bold italic`.
+
 ## 13) Notebooks, docs, and rich content
 
 - `--ov-color-notebook-bg`

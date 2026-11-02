@@ -88,7 +88,10 @@ const SYNTAX_STYLE: SyntaxHighlighterStyle = {
     color: 'var(--ov-syntax-class)',
     fontStyle: 'var(--ov-syntax-style-type, normal)' as CSSProperties['fontStyle'],
   },
-  builtin: { color: 'var(--ov-syntax-type)' },
+  builtin: {
+    color: 'var(--ov-syntax-type)',
+    fontStyle: 'var(--ov-syntax-style-type, normal)' as CSSProperties['fontStyle'],
+  },
   namespace: { color: 'var(--ov-syntax-namespace)' },
   regex: { color: 'var(--ov-syntax-regexp)' },
   important: { color: 'var(--ov-syntax-keyword)', fontWeight: 'bold' },

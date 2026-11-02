@@ -1,5 +1,21 @@
 # @omniviewdev/base-ui
 
+## 0.11.0
+
+### Minor Changes
+
+- [#92](https://github.com/omniviewdev/ui/pull/92) [`45ff5db`](https://github.com/omniviewdev/ui/commit/45ff5dbfecb5becbf84a763c22cc028e63071b35) Thanks [@joshuapare](https://github.com/joshuapare)! - Add provider-neutral FileTree, FileExplorer, FilePreview, and optional useFileSystem integration with typed metadata, ancestor-preserving filtering, cancellable paging/search/preview, batched live changes, bounded paused queues, and capability-driven actions. Add reusable ShortcutSummary and KeyChord components with accessible platform-aware keycaps.
+
+  Correct TreeList virtualized keyboard reveal, sibling ARIA metadata, responsive row estimates, active-descendant retention, and caller overscan. Preserve compact explorer density across desktop and phone surfaces, retain manual scroll across sizing-only and append-only updates, and preserve mainline keyboard activation and independent drag-source pinning.
+
+  Fix DiffViewer model ownership and deferred StrictMode resource acquisition. Resolve bundled Monaco workers relative to the editor package instead of the consuming application's root.
+
+### Patch Changes
+
+- [#94](https://github.com/omniviewdev/ui/pull/94) [`adec2cd`](https://github.com/omniviewdev/ui/commit/adec2cd2d6e48610088ae2d1eb436a35c1d4c395) Thanks [@joshuapare](https://github.com/joshuapare)! - Make `CodeBlock` use live syntax and semantic CSS tokens instead of fixed light/dark palettes. Custom themes now control highlighted tokens and syntax font styles without remounting code blocks, while preserving code typography, line numbers, and copying.
+
+  Publish AI UI and editors alongside base UI so their workspace peer dependencies target the same compatible base UI release.
+
 ## 0.10.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @omniviewdev/ai-ui
 
+## 6.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`a792fb9`](https://github.com/omniviewdev/ui/commit/a792fb90285c6dc3cde1f974095e68589cb57031)]:
+  - @omniviewdev/base-ui@0.11.1
+
 ## 6.1.4
 
 ### Patch Changes

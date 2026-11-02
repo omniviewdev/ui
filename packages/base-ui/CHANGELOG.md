@@ -1,5 +1,11 @@
 # @omniviewdev/base-ui
 
+## 0.11.1
+
+### Patch Changes
+
+- [#95](https://github.com/omniviewdev/ui/pull/95) [`a792fb9`](https://github.com/omniviewdev/ui/commit/a792fb90285c6dc3cde1f974095e68589cb57031) Thanks [@joshuapare](https://github.com/joshuapare)! - Let nested popovers and other popup controls consume Escape before the enclosing dialog closes, including when focus remains elsewhere in the dialog. Preserve normal dialog dismissal on the next unhandled Escape.
+
 ## 0.11.0
 
 ### Minor Changes

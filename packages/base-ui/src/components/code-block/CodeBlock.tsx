@@ -1,11 +1,9 @@
 import { useCallback, useMemo, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import { LuCheck, LuCopy } from 'react-icons/lu';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps } from '../../system/types';
-import { useTheme } from '../../theme';
 import { Chip } from '../chip';
 import styles from './CodeBlock.module.css';
 
@@ -34,13 +32,73 @@ const LINE_NUMBER_STYLE: CSSProperties = {
 
 const CODE_TAG_PROPS = { className: styles.Code };
 
-function getSyntaxStyle(appearance: 'dark' | 'light'): SyntaxHighlighterStyle {
-  if (appearance === 'light') {
-    return oneLight as SyntaxHighlighterStyle;
-  }
-
-  return oneDark as SyntaxHighlighterStyle;
-}
+// Keep CSS variables unresolved so theme changes reach mounted tokens without a React render.
+const SYNTAX_STYLE: SyntaxHighlighterStyle = {
+  'code[class*="language-"]': {
+    color: 'var(--ov-color-fg-default)',
+    fontFamily: 'var(--ov-font-mono)',
+    fontSize: 'var(--_ov-font-size)',
+    lineHeight: 'var(--_ov-line-height)',
+  },
+  'pre[class*="language-"]': {
+    color: 'var(--ov-color-fg-default)',
+    fontFamily: 'var(--ov-font-mono)',
+    background: 'transparent',
+  },
+  comment: {
+    color: 'var(--ov-syntax-comment)',
+    fontStyle: 'var(--ov-syntax-style-comment, normal)' as CSSProperties['fontStyle'],
+  },
+  prolog: { color: 'var(--ov-syntax-comment)' },
+  doctype: { color: 'var(--ov-syntax-comment)' },
+  cdata: { color: 'var(--ov-syntax-comment)' },
+  punctuation: { color: 'var(--ov-syntax-punctuation)' },
+  property: { color: 'var(--ov-syntax-property)' },
+  'property-access': { color: 'var(--ov-syntax-property)' },
+  tag: { color: 'var(--ov-syntax-keyword)' },
+  boolean: { color: 'var(--ov-syntax-keyword)' },
+  number: { color: 'var(--ov-syntax-number)' },
+  constant: { color: 'var(--ov-syntax-variable)' },
+  symbol: { color: 'var(--ov-syntax-variable)' },
+  deleted: { color: 'var(--ov-color-danger)' },
+  selector: { color: 'var(--ov-syntax-class)' },
+  'attr-name': { color: 'var(--ov-syntax-property)' },
+  string: { color: 'var(--ov-syntax-string)' },
+  char: { color: 'var(--ov-syntax-string)' },
+  'attr-value': { color: 'var(--ov-syntax-string)' },
+  'template-string': { color: 'var(--ov-syntax-string)' },
+  'template-punctuation': { color: 'var(--ov-syntax-punctuation)' },
+  escape: { color: 'var(--ov-syntax-string-escape)' },
+  inserted: { color: 'var(--ov-color-success)' },
+  operator: { color: 'var(--ov-syntax-operator)' },
+  entity: { color: 'var(--ov-syntax-string-escape)' },
+  url: { color: 'var(--ov-syntax-string)' },
+  atrule: { color: 'var(--ov-syntax-keyword)' },
+  keyword: {
+    color: 'var(--ov-syntax-keyword)',
+    fontStyle: 'var(--ov-syntax-style-keyword, normal)' as CSSProperties['fontStyle'],
+  },
+  function: {
+    color: 'var(--ov-syntax-function)',
+    fontStyle: 'var(--ov-syntax-style-function, normal)' as CSSProperties['fontStyle'],
+  },
+  'function-variable': { color: 'var(--ov-syntax-function)' },
+  method: { color: 'var(--ov-syntax-method)' },
+  'class-name': {
+    color: 'var(--ov-syntax-class)',
+    fontStyle: 'var(--ov-syntax-style-type, normal)' as CSSProperties['fontStyle'],
+  },
+  builtin: { color: 'var(--ov-syntax-type)' },
+  namespace: { color: 'var(--ov-syntax-namespace)' },
+  regex: { color: 'var(--ov-syntax-regexp)' },
+  important: { color: 'var(--ov-syntax-keyword)', fontWeight: 'bold' },
+  variable: { color: 'var(--ov-syntax-variable)' },
+  parameter: { color: 'var(--ov-syntax-parameter)' },
+  decorator: { color: 'var(--ov-syntax-decorator)' },
+  'annotation punctuation': { color: 'var(--ov-syntax-decorator)' },
+  bold: { fontWeight: 'bold' },
+  italic: { fontStyle: 'italic' },
+};
 
 function toCssMaxHeight(maxHeight: number | string | undefined): CSSProperties['maxHeight'] {
   if (maxHeight === undefined) {
@@ -67,9 +125,7 @@ export function CodeBlock({
   ...props
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const { activeTheme } = useTheme();
   const value = code ?? children ?? '';
-  const syntaxStyle = useMemo(() => getSyntaxStyle(activeTheme.appearance), [activeTheme.appearance]);
   const resolvedLanguage = language?.trim().toLowerCase();
   const maxHeightCss = toCssMaxHeight(maxHeight);
   const customStyle = useMemo<CSSProperties>(
@@ -115,7 +171,7 @@ export function CodeBlock({
       <div className={styles.Content}>
         <SyntaxHighlighter
           language={resolvedLanguage}
-          style={syntaxStyle}
+          style={SYNTAX_STYLE}
           showLineNumbers={lineNumbers}
           wrapLongLines={wrap}
           className={styles.Pre}

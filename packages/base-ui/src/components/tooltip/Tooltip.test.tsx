@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { IconButton } from '../icon-button';
 import { Tooltip } from './Tooltip';
+import { Menu } from '../menu';
 
 describe('Tooltip', () => {
   it('preserves explicitly styled rendered triggers and hover interaction', async () => {
@@ -35,61 +36,50 @@ describe('Tooltip', () => {
     expect(await screen.findByText('Reset column widths')).toBeInTheDocument();
   });
 
-  it('prioritizes explicit trigger styles independently of rendered styles', () => {
+  it('applies explicit trigger styles over rendered element data attributes', () => {
     renderWithTheme(
-      <Tooltip.Root size="lg" color="brand" variant="solid">
+      <Tooltip.Root size="sm" color="neutral" variant="ghost">
         <Tooltip.Trigger
-          size="xs"
+          size="lg"
+          color="brand"
+          variant="solid"
           render={
-            <IconButton aria-label="Reset widths" size="sm" variant="outline">
-              <span aria-hidden>Reset</span>
-            </IconButton>
+            <button data-ov-size="sm" data-ov-color="neutral" data-ov-variant="outline">
+              Styled trigger
+            </button>
           }
         />
       </Tooltip.Root>,
     );
 
-    const trigger = screen.getByRole('button', { name: 'Reset widths' });
-    expect(trigger).toHaveAttribute('data-ov-size', 'xs');
-    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
-    expect(trigger).toHaveAttribute('data-ov-variant', 'outline');
-  });
-
-  it('inherits styles without interpreting native input props as library styles', () => {
-    renderWithTheme(
-      <Tooltip.Root size="lg" color="brand" variant="solid">
-        <Tooltip.Trigger render={<input aria-label="Filter columns" size={12} color="#123456" />} />
-      </Tooltip.Root>,
-    );
-
-    const trigger = screen.getByRole('textbox', { name: 'Filter columns' });
-    expect(trigger).toHaveAttribute('size', '12');
+    const trigger = screen.getByRole('button', { name: 'Styled trigger' });
     expect(trigger).toHaveAttribute('data-ov-size', 'lg');
     expect(trigger).toHaveAttribute('data-ov-color', 'brand');
     expect(trigger).toHaveAttribute('data-ov-variant', 'solid');
   });
 
-  it('preserves inherited styling and hover interaction through a render function', async () => {
+  it('preserves a menu trigger control and its click behavior through a tooltip', async () => {
     const user = userEvent.setup();
     renderWithTheme(
-      <Tooltip.Provider delay={0} closeDelay={0}>
-        <Tooltip.Root size="lg" color="brand" variant="solid">
-          <Tooltip.Trigger render={(props) => <button {...props}>Reset widths</button>} />
-          <Tooltip.Portal>
-            <Tooltip.Positioner>
-              <Tooltip.Popup>Reset column widths</Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
-        </Tooltip.Root>
-      </Tooltip.Provider>,
+      <Tooltip.Root size="lg" variant="solid" color="brand">
+        <Menu.Root>
+          <Tooltip.Trigger render={
+            <Menu.Trigger render={<IconButton size="sm" variant="ghost" color="neutral" aria-label="Exec"><span aria-hidden>Exec</span></IconButton>} />
+          } />
+          <Menu.Portal>
+            <Menu.Positioner>
+              <Menu.Popup><Menu.Item>Open console</Menu.Item></Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
+      </Tooltip.Root>,
     );
-
-    const trigger = screen.getByRole('button', { name: 'Reset widths' });
-    expect(trigger).toHaveAttribute('data-ov-size', 'lg');
-    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
-    expect(trigger).toHaveAttribute('data-ov-variant', 'solid');
-    await user.hover(trigger);
-    expect(await screen.findByText('Reset column widths')).toBeInTheDocument();
+    const trigger = screen.getByRole('button', { name: 'Exec' });
+    expect(trigger).toHaveAttribute('data-ov-size', 'sm');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'ghost');
+    expect(trigger).toHaveAttribute('data-ov-color', 'neutral');
+    await user.click(trigger);
+    expect(await screen.findByRole('menuitem', { name: 'Open console' })).toBeVisible();
   });
 
   it('renders neutral color on popup', () => {

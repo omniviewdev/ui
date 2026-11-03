@@ -2,7 +2,9 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
   useMemo,
+  useState,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -33,6 +35,8 @@ export interface SplitButtonMenuProps {
   children: ReactNode;
   /** Accessible label for the menu trigger button. @default 'More actions' */
   menuAriaLabel?: string;
+  /** Disables only the dropdown, without disabling the primary action. */
+  disabled?: boolean;
 }
 
 /* --------------------------------- Context -------------------------------- */
@@ -96,19 +100,25 @@ const SplitButtonAction = forwardRef<HTMLButtonElement, SplitButtonActionProps>(
 /* ---------------------------------- Menu ---------------------------------- */
 
 const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(function SplitButtonMenu(
-  { children, menuAriaLabel = 'More actions' },
+  { children, menuAriaLabel = 'More actions', disabled = false },
   ref,
 ) {
   const ctx = useContext(SplitButtonContext);
-  const isDisabled = ctx?.disabled ?? false;
+  const isDisabled = ctx?.disabled || disabled;
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDisabled) setOpen(false);
+  }, [isDisabled]);
 
   return (
     <div ref={ref} className={styles.MenuContainer}>
-      <Menu>
+      <Menu open={open} onOpenChange={setOpen}>
         <Menu.Trigger
           className={styles.MenuTrigger}
           disabled={isDisabled}
           aria-label={menuAriaLabel}
+          title={menuAriaLabel}
           {...styleDataAttributes({
             variant: ctx?.variant,
             color: ctx?.color,

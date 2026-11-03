@@ -1,8 +1,10 @@
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 import {
+  cloneElement,
   createContext,
   forwardRef,
   useCallback,
+  isValidElement,
   useContext,
   useMemo,
   useState,
@@ -10,7 +12,7 @@ import {
   type ElementRef,
 } from 'react';
 import { withBaseClassName } from '../../system/classnames';
-import { renderedStyleProps, styleDataAttributes } from '../../system/styleProps';
+import { styleDataAttributes } from '../../system/styleProps';
 import {
   DEFAULT_COLOR,
   DEFAULT_SIZE,
@@ -106,21 +108,30 @@ function TooltipRoot<Payload>({
 }
 
 const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(function TooltipTrigger(
-  { className, variant, color, size, ...props },
+  { className, variant, color, size, render, ...props },
   ref,
 ) {
-  const rendered = renderedStyleProps(props.render);
-  const resolved = useResolvedStyleProps({
-    variant: variant ?? rendered?.variant,
-    color: color ?? rendered?.color,
-    size: size ?? rendered?.size,
-  });
+  const resolved = useResolvedStyleProps({ variant, color, size });
+  // A custom trigger owns its styling, including through another trigger wrapper.
+  // Only explicit Tooltip.Trigger overrides may alter that rendered control.
+  const overrides: Record<string, string> = {};
+  if (variant !== undefined) overrides['data-ov-variant'] = variant;
+  if (color !== undefined) overrides['data-ov-color'] = color;
+  if (size !== undefined) overrides['data-ov-size'] = size;
+  // Base UI gives render element props precedence over trigger props.
+  // Put explicit overrides on that element too, without changing its ref or handlers.
+  const triggerRender =
+    isValidElement<Record<string, unknown>>(render) &&
+    (variant !== undefined || color !== undefined || size !== undefined)
+      ? cloneElement(render, overrides)
+      : render;
   return (
     <BaseTooltip.Trigger
       ref={ref}
-      className={withBaseClassName(styles.Trigger, className)}
-      {...styleDataAttributes(resolved)}
+      className={render ? className : withBaseClassName(styles.Trigger, className)}
+      {...(render ? overrides : styleDataAttributes(resolved))}
       {...props}
+      render={triggerRender}
     />
   );
 });

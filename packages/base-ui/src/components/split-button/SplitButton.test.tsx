@@ -1,5 +1,5 @@
 import { createRef } from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { SplitButton } from './SplitButton';
@@ -97,6 +97,61 @@ describe('SplitButton', () => {
       .find((btn) => btn.getAttribute('aria-haspopup') != null);
     expect(trigger).toBeDisabled();
   });
+
+  it('disables only the dropdown when Menu is disabled', () => {
+    const onClick = vi.fn();
+    renderWithTheme(
+      <SplitButton>
+        <SplitButton.Action onClick={onClick}>Save</SplitButton.Action>
+        <SplitButton.Menu disabled menuAriaLabel="Save options">
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Save options' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Save options' }));
+    expect(screen.queryByText('Save as Draft')).not.toBeInTheDocument();
+  });
+
+  it.each(['root', 'menu'] as const)(
+    'closes an open dropdown when %s becomes disabled',
+    async (disabledTarget) => {
+      const onClick = vi.fn();
+      const content = (disabled: boolean) => (
+        <SplitButton disabled={disabledTarget === 'root' && disabled}>
+          <SplitButton.Action onClick={onClick}>Save</SplitButton.Action>
+          <SplitButton.Menu disabled={disabledTarget === 'menu' && disabled}>
+            <Menu.Item>Save as Draft</Menu.Item>
+          </SplitButton.Menu>
+        </SplitButton>
+      );
+      const { rerender } = renderWithTheme(content(false));
+
+      fireEvent.click(screen.getByRole('button', { name: 'More actions' }));
+      expect(screen.getByRole('menuitem', { name: 'Save as Draft' })).toBeInTheDocument();
+
+      rerender(content(true));
+
+      await waitFor(() => {
+        expect(screen.queryByRole('menuitem', { name: 'Save as Draft' })).not.toBeInTheDocument();
+      });
+      expect(screen.getByRole('button', { name: 'More actions' })).toBeDisabled();
+      const action = screen.getByRole('button', { name: 'Save' });
+      if (disabledTarget === 'menu') {
+        expect(action).not.toBeDisabled();
+        fireEvent.click(action);
+        expect(onClick).toHaveBeenCalledTimes(1);
+      } else {
+        expect(action).toBeDisabled();
+      }
+
+      rerender(content(false));
+      expect(screen.queryByRole('menuitem', { name: 'Save as Draft' })).not.toBeInTheDocument();
+    },
+  );
 
   it('merges className on root', () => {
     const { container } = renderWithTheme(

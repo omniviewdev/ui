@@ -53,6 +53,10 @@ Every one of the 115 High finding snippets already exists in the branch's starti
 
 ### Review fixes
 
+- Rounded-rail revision: replaced the narrow pseudo-element strip with a full-radius inset highlight matching the approved mock. Verified all 180 native component/theme/size/density combinations again; all 29 Card tests passed. Browser assertions now require the rail's radius to match the card's nonzero radius. RTL mirrors the inset offset from 3px to -3px without changing geometry.
+
+![Rounded selected rail](evidence/cluster-explorer/card-rounded-rail.png)
+
 - Filtering a manually scrolled suggestion list could leave the active option offscreen. Reproduced with native wheel/type input; the active row was above the popup. Updating the effect dependency restores it into view after filtering.
 - Holding Space on the existing div ActionArea could scroll the page. Repeated activation keys now prevent scrolling without repeating activation.
 - Rapid focus movement between searches exposed the exiting popup's listbox to accessibility queries. Exiting listboxes are now aria-hidden; only the focused search's suggestions remain exposed.

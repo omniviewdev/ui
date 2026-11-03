@@ -261,15 +261,18 @@
 .Root[data-ov-interactive='true']::before {
   content: '';
   position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: var(--ov-size-card-selection-rail);
-  border-start-start-radius: inherit;
-  border-end-start-radius: inherit;
-  background-color: transparent;
+  --_ov-card-rail-offset: var(--ov-size-card-selection-rail);
+
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset var(--_ov-card-rail-offset) 0 transparent;
   pointer-events: none;
   z-index: 3;
-  transition: background-color var(--ov-duration-panel) var(--ov-ease-standard);
+  transition: box-shadow var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-interactive='true']:dir(rtl)::before {
+  --_ov-card-rail-offset: calc(-1 * var(--ov-size-card-selection-rail));
 }
 
 .Root[data-ov-interactive='true']:where(:not([data-ov-disabled='true']):not(:has(.ActionArea[data-ov-disabled='true'])):hover) {
@@ -283,7 +286,7 @@
 }
 
 .Root[data-ov-interactive='true'][data-ov-selected='true']::before {
-  background-color: var(--ov-color-card-selected-border);
+  box-shadow: inset var(--_ov-card-rail-offset) 0 var(--ov-color-card-selected-border);
 }
 
 .Root[data-ov-disabled='true'],

@@ -79,7 +79,10 @@ try {
           size: card.dataset.ovSize,
           width: card.getBoundingClientRect().width,
           height: card.getBoundingClientRect().height,
-          rail: getComputedStyle(card, '::before').width,
+          rail: getComputedStyle(card).getPropertyValue('--ov-size-card-selection-rail').trim(),
+          railShadow: getComputedStyle(card, '::before').boxShadow,
+          railRadius: getComputedStyle(card, '::before').borderRadius,
+          cardRadius: getComputedStyle(card).borderRadius,
           overflow: card.scrollWidth > card.clientWidth + 1,
         })),
       );
@@ -87,7 +90,17 @@ try {
         geometry.map((card) => card.size),
         sizes,
       );
-      assert(geometry.every((card) => card.width > 0 && card.rail === '3px' && !card.overflow));
+      assert(
+        geometry.every(
+          (card) =>
+            card.width > 0 &&
+            card.rail === '3px' &&
+            card.railShadow.includes('inset') &&
+            card.railRadius === card.cardRadius &&
+            card.railRadius !== '0px' &&
+            !card.overflow,
+        ),
+      );
       results.push({ component: 'Card', theme, density, geometry });
       await capture(`cards-${theme}-${density}`);
     }

@@ -94,7 +94,7 @@ Use native `Card.ActionArea as="a"` for navigation or `as="button"` for actions.
 
 Root `disabled` disables primary ActionAreas. Sibling actions remain caller-controlled, allowing settings or recovery actions for an unavailable item. Native buttons use native disabled behavior; disabled anchors suppress navigation and leave the tab order. A disabled card is not a selection state.
 
-The selected surface and leading rail do not change content geometry. The rail uses the logical inline-start edge. Hover, selected and focus are separate: keyboard focus adds a ring without removing the selected rail. Existing motion preferences and `prefers-reduced-motion` disable transitions.
+The selected surface and leading rail do not change content geometry. The rail uses an inset shadow on the logical inline-start edge and inherits the card's full corner radius, so its ends curve smoothly into the outline rather than forming a square vertical strip. Hover, selected and focus are separate: keyboard focus adds a ring without removing the selected rail. Existing motion preferences and `prefers-reduced-motion` disable transitions.
 
 ### Theme contract
 

@@ -59,5 +59,11 @@
     "right": "0px",
     "left": "258.594px",
     "width": "3px"
+  },
+  "roundedRailRevision": {
+    "implementation": "Inset shadow inherits full card radius",
+    "nativeCombinationsPassed": 180,
+    "cardTestsPassed": 29,
+    "rtlShadow": "rgb(137, 167, 238) -3px 0px 0px 0px inset"
   }
 }

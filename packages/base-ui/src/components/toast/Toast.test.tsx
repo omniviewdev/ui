@@ -232,6 +232,23 @@ describe('controlled toast presentation', () => {
     return { api: () => api, ...view };
   }
 
+  it('does not overwrite caller IDs when generating a new toast ID', () => {
+    const { api } = setup();
+    let seed = '';
+    act(() => {
+      seed = api().toast('Seed', { duration: 0 });
+    });
+    const reserved = `ov-toast-${Number(seed.slice('ov-toast-'.length)) + 1}`;
+    let generated = '';
+    act(() => {
+      api().toast('Caller toast', { id: reserved, duration: 0 });
+      generated = api().toast('Generated toast', { duration: 0 });
+    });
+    expect(generated).not.toBe(reserved);
+    expect(screen.getByText('Caller toast')).toBeVisible();
+    expect(screen.getByText('Generated toast')).toBeVisible();
+  });
+
   it('upserts and patches content without moving, remounting, or announcing progress', () => {
     const { api } = setup();
     const card = (count: number) => (

@@ -264,7 +264,12 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
   );
   const toast = useCallback(
     (message: string, options?: ToastOptions) => {
-      const id = options?.id ?? `ov-toast-${++nextId}`;
+      let id = options?.id;
+      if (id === undefined) {
+        do {
+          id = `ov-toast-${++nextId}`;
+        } while (current.current.some((item) => item.id === id));
+      }
       if (!mounted.current) return id;
       if (current.current.some((item) => item.id === id)) {
         update(id, { ...options, message });

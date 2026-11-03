@@ -90,7 +90,7 @@
   height: 100%;
   border-radius: var(--_ov-radius);
   background: var(--_ov-fill);
-  transition: width var(--ov-duration-interactive) var(--ov-ease-standard);
+  transition: width 300ms var(--ov-ease-standard);
 }
 
 .Root[data-ov-indeterminate='true'] .Bar {
@@ -108,6 +108,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .Bar {
+    transition: none;
+  }
   .Root[data-ov-indeterminate='true'] .Bar {
     animation: none;
     width: 100%;

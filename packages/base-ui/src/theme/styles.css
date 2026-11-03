@@ -117,9 +117,6 @@
 
   --ov-font-sans: var(--ov-primitive-font-sans);
   --ov-font-mono: var(--ov-primitive-font-mono);
-  --ov-font-size-caption: var(--ov-primitive-font-size-12);
-  --ov-font-size-body: var(--ov-primitive-font-size-14);
-  --ov-font-size-title: var(--ov-primitive-font-size-18);
   --ov-font-weight-body: var(--ov-primitive-font-weight-regular);
   --ov-font-weight-label: var(--ov-primitive-font-weight-regular);
   --ov-font-weight-title: var(--ov-primitive-font-weight-semibold);
@@ -155,20 +152,7 @@
   --ov-size-button-padding-inline-md: 8px;
   --ov-size-button-padding-inline-lg: 12px;
   --ov-size-button-padding-inline-xl: 16px;
-  --ov-size-button-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-button-font-size-sm: var(--ov-primitive-font-size-12);
-  --ov-size-button-font-size-md: var(--ov-primitive-font-size-13);
-  --ov-size-button-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-button-font-size-xl: var(--ov-primitive-font-size-16);
 
-  /* Generic 5-tier semantic aliases — used by ai-ui and other consumers that
-     don't want to tie to button-specific tokens. Single source of truth: any
-     change to the button-font-size scale propagates here automatically. */
-  --ov-font-size-xs: var(--ov-size-button-font-size-xs);
-  --ov-font-size-sm: var(--ov-size-button-font-size-sm);
-  --ov-font-size-md: var(--ov-size-button-font-size-md);
-  --ov-font-size-lg: var(--ov-size-button-font-size-lg);
-  --ov-font-size-xl: var(--ov-size-button-font-size-xl);
 
   /* Flat-index spacing aliases (numeric scale) — bridge from the
      --ov-primitive-space-N + .5-step values used throughout ai-ui. */
@@ -225,36 +209,11 @@
   --ov-size-card-action-padding-inline-md: 8px;
   --ov-size-card-action-padding-inline-lg: 10px;
   --ov-size-card-action-padding-inline-xl: 16px;
-  --ov-size-card-action-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-card-action-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-card-action-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-card-action-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-card-action-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-card-title-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-card-title-font-size-sm: var(--ov-primitive-font-size-12);
-  --ov-size-card-title-font-size-md: var(--ov-primitive-font-size-13);
-  --ov-size-card-title-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-card-title-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-card-body-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-card-body-font-size-sm: var(--ov-primitive-font-size-12);
-  --ov-size-card-body-font-size-md: var(--ov-primitive-font-size-13);
-  --ov-size-card-body-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-card-body-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-card-description-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-card-description-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-card-description-font-size-md: var(--ov-primitive-font-size-11);
-  --ov-size-card-description-font-size-lg: var(--ov-primitive-font-size-12);
-  --ov-size-card-description-font-size-xl: var(--ov-primitive-font-size-13);
   --ov-size-card-stat-font-size-xs: 0.875rem;
   --ov-size-card-stat-font-size-sm: 1rem;
   --ov-size-card-stat-font-size-md: 1.25rem;
   --ov-size-card-stat-font-size-lg: 1.625rem;
   --ov-size-card-stat-font-size-xl: 2rem;
-  --ov-size-card-eyebrow-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-card-eyebrow-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-card-eyebrow-font-size-md: var(--ov-primitive-font-size-11);
-  --ov-size-card-eyebrow-font-size-lg: var(--ov-primitive-font-size-11);
-  --ov-size-card-eyebrow-font-size-xl: var(--ov-primitive-font-size-12);
   --ov-size-card-indicator-dot-xs: 4px;
   --ov-size-card-indicator-dot-sm: 5px;
   --ov-size-card-indicator-dot-md: 6px;
@@ -286,11 +245,6 @@
   --ov-size-chip-padding-inline-md: 8px;
   --ov-size-chip-padding-inline-lg: 10px;
   --ov-size-chip-padding-inline-xl: 12px;
-  --ov-size-chip-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-chip-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-chip-font-size-md: var(--ov-primitive-font-size-11);
-  --ov-size-chip-font-size-lg: var(--ov-primitive-font-size-12);
-  --ov-size-chip-font-size-xl: var(--ov-primitive-font-size-13);
   --ov-size-chip-gap-xs: 2px;
   --ov-size-chip-gap-sm: 3px;
   --ov-size-chip-gap-md: 4px;
@@ -301,22 +255,11 @@
   --ov-size-chip-icon-size-md: 12px;
   --ov-size-chip-icon-size-lg: 14px;
   --ov-size-chip-icon-size-xl: 16px;
-  --ov-size-typography-text-sm: var(--ov-font-size-caption);
-  --ov-size-typography-text-md: var(--ov-font-size-body);
-  --ov-size-typography-text-lg: var(--ov-primitive-font-size-16);
-  --ov-size-typography-caption-sm: var(--ov-primitive-font-size-11);
-  --ov-size-typography-caption-md: var(--ov-font-size-caption);
-  --ov-size-typography-caption-lg: var(--ov-primitive-font-size-13);
-  --ov-size-typography-overline-sm: var(--ov-primitive-font-size-11);
-  --ov-size-typography-overline-md: var(--ov-font-size-caption);
-  --ov-size-typography-overline-lg: var(--ov-primitive-font-size-13);
   --ov-size-typography-overline-letter-spacing: 0.08em;
   --ov-size-typography-heading-1: 1.75rem;
   --ov-size-typography-heading-2: 1.5rem;
   --ov-size-typography-heading-3: 1.25rem;
   --ov-size-typography-heading-4: 1.125rem;
-  --ov-size-typography-heading-5: var(--ov-size-typography-text-md);
-  --ov-size-typography-heading-6: var(--ov-primitive-font-size-13);
   --ov-size-typography-inline-code-padding-inline: 6px;
   --ov-size-typography-inline-code-padding-block: 2px;
   --ov-size-typography-inline-code-radius: calc(var(--ov-radius-control) - 2px);
@@ -329,11 +272,6 @@
   --ov-size-avatar-md: 26px;
   --ov-size-avatar-lg: 32px;
   --ov-size-avatar-xl: 40px;
-  --ov-size-avatar-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-avatar-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-avatar-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-avatar-font-size-lg: var(--ov-primitive-font-size-13);
-  --ov-size-avatar-font-size-xl: var(--ov-primitive-font-size-14);
   --ov-size-avatar-icon-size-xs: 10px;
   --ov-size-avatar-icon-size-sm: 12px;
   --ov-size-avatar-icon-size-md: 14px;
@@ -393,11 +331,6 @@
   --ov-size-list-item-padding-inline-md: 8px;
   --ov-size-list-item-padding-inline-lg: 10px;
   --ov-size-list-item-padding-inline-xl: 12px;
-  --ov-size-list-group-label-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-list-group-label-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-list-group-label-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-list-group-label-font-size-lg: var(--ov-primitive-font-size-13);
-  --ov-size-list-group-label-font-size-xl: var(--ov-primitive-font-size-14);
   --ov-size-list-group-label-gap-top-xs: 1px;
   --ov-size-list-group-label-gap-top-sm: 2px;
   --ov-size-list-group-label-gap-top-md: 3px;
@@ -418,11 +351,6 @@
   --ov-size-separator-inset-md: 8px;
   --ov-size-separator-inset-lg: 12px;
   --ov-size-separator-inset-xl: 16px;
-  --ov-size-separator-label-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-separator-label-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-separator-label-font-size-md: var(--ov-primitive-font-size-11);
-  --ov-size-separator-label-font-size-lg: var(--ov-primitive-font-size-12);
-  --ov-size-separator-label-font-size-xl: var(--ov-primitive-font-size-13);
   --ov-size-separator-min-block-size: 20px;
   --ov-size-action-list-gap: 4px;
   --ov-size-action-list-item-height-xs: 18px;
@@ -456,21 +384,6 @@
   --ov-size-table-cell-padding-block-md: 6px;
   --ov-size-table-cell-padding-block-lg: 10px;
   --ov-size-table-cell-padding-block-xl: 12px;
-  --ov-size-table-header-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-table-header-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-table-header-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-table-header-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-table-header-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-table-cell-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-table-cell-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-table-cell-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-table-cell-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-table-cell-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-table-caption-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-table-caption-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-table-caption-font-size-md: var(--ov-primitive-font-size-11);
-  --ov-size-table-caption-font-size-lg: var(--ov-primitive-font-size-12);
-  --ov-size-table-caption-font-size-xl: var(--ov-primitive-font-size-13);
   --ov-size-table-row-height-xs: 22px;
   --ov-size-table-row-height-sm: 26px;
   --ov-size-table-row-height-md: 30px;
@@ -511,16 +424,6 @@
   --ov-size-banner-icon-size-md: 16px;
   --ov-size-banner-icon-size-lg: 18px;
   --ov-size-banner-icon-size-xl: 20px;
-  --ov-size-banner-title-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-banner-title-font-size-sm: var(--ov-primitive-font-size-12);
-  --ov-size-banner-title-font-size-md: var(--ov-primitive-font-size-13);
-  --ov-size-banner-title-font-size-lg: var(--ov-primitive-font-size-14);
-  --ov-size-banner-title-font-size-xl: var(--ov-primitive-font-size-16);
-  --ov-size-banner-body-font-size-xs: var(--ov-primitive-font-size-11);
-  --ov-size-banner-body-font-size-sm: var(--ov-primitive-font-size-11);
-  --ov-size-banner-body-font-size-md: var(--ov-primitive-font-size-12);
-  --ov-size-banner-body-font-size-lg: var(--ov-primitive-font-size-13);
-  --ov-size-banner-body-font-size-xl: var(--ov-primitive-font-size-14);
   --ov-size-progress-height-xs: 2px;
   --ov-size-progress-height-sm: 3px;
   --ov-size-progress-height-md: 4px;
@@ -1282,6 +1185,109 @@
   --ov-color-datepicker-cell-fg-other-month: var(--ov-color-fg-muted);
 }
 
+/* Resolve text aliases on each preference root before density-specific overrides. */
+:root,
+[data-ov-theme],
+[data-ov-text-size] {
+  --ov-font-size-caption: var(--ov-primitive-font-size-12);
+  --ov-font-size-body: var(--ov-primitive-font-size-14);
+  --ov-font-size-title: var(--ov-primitive-font-size-18);
+  --ov-size-button-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-button-font-size-sm: var(--ov-primitive-font-size-12);
+  --ov-size-button-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-button-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-button-font-size-xl: var(--ov-primitive-font-size-16);
+  /* Generic 5-tier semantic aliases — used by ai-ui and other consumers that
+     don't want to tie to button-specific tokens. Single source of truth: any
+     change to the button-font-size scale propagates here automatically. */
+  --ov-font-size-xs: var(--ov-size-button-font-size-xs);
+  --ov-font-size-sm: var(--ov-size-button-font-size-sm);
+  --ov-font-size-md: var(--ov-size-button-font-size-md);
+  --ov-font-size-lg: var(--ov-size-button-font-size-lg);
+  --ov-font-size-xl: var(--ov-size-button-font-size-xl);
+  --ov-size-card-action-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-card-action-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-card-action-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-card-action-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-card-action-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-card-title-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-card-title-font-size-sm: var(--ov-primitive-font-size-12);
+  --ov-size-card-title-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-card-title-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-card-title-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-card-body-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-card-body-font-size-sm: var(--ov-primitive-font-size-12);
+  --ov-size-card-body-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-card-body-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-card-body-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-card-description-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-card-description-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-card-description-font-size-md: var(--ov-primitive-font-size-11);
+  --ov-size-card-description-font-size-lg: var(--ov-primitive-font-size-12);
+  --ov-size-card-description-font-size-xl: var(--ov-primitive-font-size-13);
+  --ov-size-card-eyebrow-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-card-eyebrow-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-card-eyebrow-font-size-md: var(--ov-primitive-font-size-11);
+  --ov-size-card-eyebrow-font-size-lg: var(--ov-primitive-font-size-11);
+  --ov-size-card-eyebrow-font-size-xl: var(--ov-primitive-font-size-12);
+  --ov-size-chip-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-chip-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-chip-font-size-md: var(--ov-primitive-font-size-11);
+  --ov-size-chip-font-size-lg: var(--ov-primitive-font-size-12);
+  --ov-size-chip-font-size-xl: var(--ov-primitive-font-size-13);
+  --ov-size-typography-text-sm: var(--ov-font-size-caption);
+  --ov-size-typography-text-md: var(--ov-font-size-body);
+  --ov-size-typography-text-lg: var(--ov-primitive-font-size-16);
+  --ov-size-typography-caption-sm: var(--ov-primitive-font-size-11);
+  --ov-size-typography-caption-md: var(--ov-font-size-caption);
+  --ov-size-typography-caption-lg: var(--ov-primitive-font-size-13);
+  --ov-size-typography-overline-sm: var(--ov-primitive-font-size-11);
+  --ov-size-typography-overline-md: var(--ov-font-size-caption);
+  --ov-size-typography-overline-lg: var(--ov-primitive-font-size-13);
+  --ov-size-typography-heading-5: var(--ov-size-typography-text-md);
+  --ov-size-typography-heading-6: var(--ov-primitive-font-size-13);
+  --ov-size-avatar-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-avatar-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-avatar-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-avatar-font-size-lg: var(--ov-primitive-font-size-13);
+  --ov-size-avatar-font-size-xl: var(--ov-primitive-font-size-14);
+  --ov-size-list-group-label-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-list-group-label-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-list-group-label-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-list-group-label-font-size-lg: var(--ov-primitive-font-size-13);
+  --ov-size-list-group-label-font-size-xl: var(--ov-primitive-font-size-14);
+  --ov-size-separator-label-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-separator-label-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-separator-label-font-size-md: var(--ov-primitive-font-size-11);
+  --ov-size-separator-label-font-size-lg: var(--ov-primitive-font-size-12);
+  --ov-size-separator-label-font-size-xl: var(--ov-primitive-font-size-13);
+  --ov-size-table-header-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-table-header-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-table-header-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-table-header-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-table-header-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-table-cell-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-table-cell-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-table-cell-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-table-cell-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-table-cell-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-table-caption-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-table-caption-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-table-caption-font-size-md: var(--ov-primitive-font-size-11);
+  --ov-size-table-caption-font-size-lg: var(--ov-primitive-font-size-12);
+  --ov-size-table-caption-font-size-xl: var(--ov-primitive-font-size-13);
+  --ov-size-banner-title-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-banner-title-font-size-sm: var(--ov-primitive-font-size-12);
+  --ov-size-banner-title-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-banner-title-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-banner-title-font-size-xl: var(--ov-primitive-font-size-16);
+  --ov-size-banner-body-font-size-xs: var(--ov-primitive-font-size-11);
+  --ov-size-banner-body-font-size-sm: var(--ov-primitive-font-size-11);
+  --ov-size-banner-body-font-size-md: var(--ov-primitive-font-size-12);
+  --ov-size-banner-body-font-size-lg: var(--ov-primitive-font-size-13);
+  --ov-size-banner-body-font-size-xl: var(--ov-primitive-font-size-14);
+}
+
 [data-ov-density='compact'] {
   --ov-control-height-xs: 18px;
   --ov-control-height-sm: 24px;
@@ -1863,23 +1869,37 @@
 [data-ov-text-size='100'],
 [data-ov-text-size='110'],
 [data-ov-text-size='125'] {
-  --ov-primitive-font-size-11: calc(11px * var(--_ov-ui-text-scale, 1));
-  --ov-primitive-font-size-12: calc(12px * var(--_ov-ui-text-scale, 1));
-  --ov-primitive-font-size-13: calc(13px * var(--_ov-ui-text-scale, 1));
-  --ov-primitive-font-size-14: calc(14px * var(--_ov-ui-text-scale, 1));
-  --ov-primitive-font-size-16: calc(16px * var(--_ov-ui-text-scale, 1));
-  --ov-primitive-font-size-18: calc(18px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-11: calc(11rem / 14 * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-12: calc(12rem / 14 * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-13: calc(13rem / 14 * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-14: calc(1rem * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-16: calc(16rem / 14 * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-18: calc(18rem / 14 * var(--_ov-ui-text-scale, 1));
   --ov-size-typography-heading-1: calc(1.75rem * var(--_ov-ui-text-scale, 1));
   --ov-size-typography-heading-2: calc(1.5rem * var(--_ov-ui-text-scale, 1));
   --ov-size-typography-heading-3: calc(1.25rem * var(--_ov-ui-text-scale, 1));
   --ov-size-typography-heading-4: calc(1.125rem * var(--_ov-ui-text-scale, 1));
 }
 
-[data-ov-text-size='80'] { --_ov-ui-text-scale: 0.8; }
-[data-ov-text-size='90'] { --_ov-ui-text-scale: 0.9; }
-[data-ov-text-size='100'] { --_ov-ui-text-scale: 1; }
-[data-ov-text-size='110'] { --_ov-ui-text-scale: 1.1; }
-[data-ov-text-size='125'] { --_ov-ui-text-scale: 1.25; }
+[data-ov-text-size='80'] {
+  --_ov-ui-text-scale: 0.8;
+}
+[data-ov-text-size='90'] {
+  --_ov-ui-text-scale: 0.9;
+}
+[data-ov-text-size='100'] {
+  --_ov-ui-text-scale: 1;
+}
+[data-ov-text-size='110'] {
+  --_ov-ui-text-scale: 1.1;
+}
+[data-ov-text-size='125'] {
+  --_ov-ui-text-scale: 1.25;
+}
+
+[data-ov-text-size]:not(html) {
+  font-size: var(--ov-primitive-font-size-14);
+}
 
 [data-ov-motion='reduced'] {
   --ov-duration-interactive: 0ms;
@@ -1921,9 +1941,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 /* Preserve the existing 14px rem baseline independently of UI text tokens. */
-html { font-size: 87.5%; }
+html {
+  font-size: 87.5%;
+}
 
-body { font-size: var(--ov-font-size-body); }
+body {
+  font-size: var(--ov-font-size-body);
+}
 
 * {
   box-sizing: border-box;

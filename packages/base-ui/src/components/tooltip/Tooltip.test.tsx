@@ -36,6 +36,28 @@ describe('Tooltip', () => {
     expect(await screen.findByText('Reset column widths')).toBeInTheDocument();
   });
 
+  it('applies explicit trigger styles over rendered element data attributes', () => {
+    renderWithTheme(
+      <Tooltip.Root size="sm" color="neutral" variant="ghost">
+        <Tooltip.Trigger
+          size="lg"
+          color="brand"
+          variant="solid"
+          render={
+            <button data-ov-size="sm" data-ov-color="neutral" data-ov-variant="outline">
+              Styled trigger
+            </button>
+          }
+        />
+      </Tooltip.Root>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Styled trigger' });
+    expect(trigger).toHaveAttribute('data-ov-size', 'lg');
+    expect(trigger).toHaveAttribute('data-ov-color', 'brand');
+    expect(trigger).toHaveAttribute('data-ov-variant', 'solid');
+  });
+
   it('preserves a menu trigger control and its click behavior through a tooltip', async () => {
     const user = userEvent.setup();
     renderWithTheme(

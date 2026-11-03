@@ -49,8 +49,11 @@ Sizing contract and browser findings:
 - Comfortable control heights are 18/28/36/44/48px; compact uses 18/24/30/38/40px.
 - Previously, rem typography compounded against the 14px HTML baseline: a
   nominal 14px body token rendered at 12.25px. Preference-root font primitives
-  now use 11/12/13/14/16/18 CSS pixels multiplied by the selected text scale.
-  The 14px root-rem layout baseline stays independent of text size.
+  now use rem values calibrated to 11/12/13/14/16/18px at the browser's default
+  16px font, multiplied by the selected text scale. Larger browser font defaults
+  remain respected. The root-rem layout baseline stays independent of text size.
+  Nested roots resolve text aliases and plain-text font size locally, including
+  light and void themes.
 - Text size scales UI font primitives and typography headings, not root rem,
   density heights, Monaco settings, or terminal settings. Explicit pixel fonts,
   custom theme font overrides, and specialized card-stat rem sizes do not scale.

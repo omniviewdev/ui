@@ -2,7 +2,9 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
   useMemo,
+  useState,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -103,10 +105,15 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
 ) {
   const ctx = useContext(SplitButtonContext);
   const isDisabled = ctx?.disabled || disabled;
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDisabled) setOpen(false);
+  }, [isDisabled]);
 
   return (
     <div ref={ref} className={styles.MenuContainer}>
-      <Menu>
+      <Menu open={open} onOpenChange={setOpen}>
         <Menu.Trigger
           className={styles.MenuTrigger}
           disabled={isDisabled}

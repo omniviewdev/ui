@@ -140,6 +140,32 @@ describe('controlled ThemeProvider', () => {
     root.remove();
   });
 
+  it.each(['dark', 'light', 'void'])('resolves scaled text aliases locally for %s roots', (themeId) => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const mounted = render(
+      <ThemeProvider themeId={themeId} root={root} initialTextSize="125">
+        <Reader />
+      </ThemeProvider>,
+    );
+    const styles = getComputedStyle(root);
+    expect(styles.getPropertyValue('--ov-font-size-body').trim()).toBe(
+      'var(--ov-primitive-font-size-14)',
+    );
+    expect(styles.getPropertyValue('--ov-size-button-font-size-md').trim()).toBe(
+      'var(--ov-primitive-font-size-13)',
+    );
+    expect(styles.getPropertyValue('--ov-font-size-md').trim()).toBe(
+      'var(--ov-size-button-font-size-md)',
+    );
+    expect(styles.getPropertyValue('--ov-primitive-font-size-14').replace(/\s/g, '')).toBe(
+      'calc(1rem*var(--_ov-ui-text-scale,1))',
+    );
+    expect(styles.fontSize).toBe('var(--ov-primitive-font-size-14)');
+    mounted.unmount();
+    root.remove();
+  });
+
   it('removes density and motion attributes when the root changes', () => {
     const firstRoot = document.createElement('div');
     const secondRoot = document.createElement('div');

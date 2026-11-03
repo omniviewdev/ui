@@ -1,8 +1,10 @@
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 import {
+  cloneElement,
   createContext,
   forwardRef,
   useCallback,
+  isValidElement,
   useContext,
   useMemo,
   useState,
@@ -106,7 +108,7 @@ function TooltipRoot<Payload>({
 }
 
 const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(function TooltipTrigger(
-  { className, variant, color, size, ...props },
+  { className, variant, color, size, render, ...props },
   ref,
 ) {
   const resolved = useResolvedStyleProps({ variant, color, size });
@@ -116,12 +118,20 @@ const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(functi
   if (variant !== undefined) overrides['data-ov-variant'] = variant;
   if (color !== undefined) overrides['data-ov-color'] = color;
   if (size !== undefined) overrides['data-ov-size'] = size;
+  // Base UI gives render element props precedence over trigger props.
+  // Put explicit overrides on that element too, without changing its ref or handlers.
+  const triggerRender =
+    isValidElement<Record<string, unknown>>(render) &&
+    (variant !== undefined || color !== undefined || size !== undefined)
+      ? cloneElement(render, overrides)
+      : render;
   return (
     <BaseTooltip.Trigger
       ref={ref}
-      className={props.render ? className : withBaseClassName(styles.Trigger, className)}
-      {...(props.render ? overrides : styleDataAttributes(resolved))}
+      className={render ? className : withBaseClassName(styles.Trigger, className)}
+      {...(render ? overrides : styleDataAttributes(resolved))}
       {...props}
+      render={triggerRender}
     />
   );
 });

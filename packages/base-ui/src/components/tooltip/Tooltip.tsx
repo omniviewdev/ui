@@ -10,7 +10,7 @@ import {
   type ElementRef,
 } from 'react';
 import { withBaseClassName } from '../../system/classnames';
-import { renderedStyleProps, styleDataAttributes } from '../../system/styleProps';
+import { styleDataAttributes } from '../../system/styleProps';
 import {
   DEFAULT_COLOR,
   DEFAULT_SIZE,
@@ -109,17 +109,18 @@ const TooltipTrigger = forwardRef<HTMLButtonElement, TooltipTriggerProps>(functi
   { className, variant, color, size, ...props },
   ref,
 ) {
-  const rendered = renderedStyleProps(props.render);
-  const resolved = useResolvedStyleProps({
-    variant: variant ?? rendered?.variant,
-    color: color ?? rendered?.color,
-    size: size ?? rendered?.size,
-  });
+  const resolved = useResolvedStyleProps({ variant, color, size });
+  // A custom trigger owns its styling, including through another trigger wrapper.
+  // Only explicit Tooltip.Trigger overrides may alter that rendered control.
+  const overrides: Record<string, string> = {};
+  if (variant !== undefined) overrides['data-ov-variant'] = variant;
+  if (color !== undefined) overrides['data-ov-color'] = color;
+  if (size !== undefined) overrides['data-ov-size'] = size;
   return (
     <BaseTooltip.Trigger
       ref={ref}
-      className={withBaseClassName(styles.Trigger, className)}
-      {...styleDataAttributes(resolved)}
+      className={props.render ? className : withBaseClassName(styles.Trigger, className)}
+      {...(props.render ? overrides : styleDataAttributes(resolved))}
       {...props}
     />
   );

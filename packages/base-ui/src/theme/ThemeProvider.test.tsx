@@ -29,10 +29,12 @@ function Reader() {
         isFallback: theme.isFallback,
         density: theme.density,
         motion: theme.motion,
+        textSize: theme.textSize,
       })}</output>
       <button onClick={() => theme.setTheme('light')}>theme</button>
       <button onClick={() => theme.setDensity('compact')}>density</button>
       <button onClick={() => theme.setMotion('reduced')}>motion</button>
+      <button onClick={() => theme.setTextSize('125')}>text size</button>
     </div>
   );
 }
@@ -100,6 +102,38 @@ describe('controlled ThemeProvider', () => {
     expect(read()).toMatchObject({ density: 'compact', motion: 'reduced' });
     expect(document.documentElement.dataset.ovDensity).toBe('compact');
     expect(document.documentElement.dataset.ovMotion).toBe('reduced');
+  });
+
+  it('keeps text size local and restores its root attribute on cleanup', () => {
+    const root = document.createElement('div');
+    const mounted = render(
+      <ThemeProvider themeId="dark" root={root} initialTextSize="110"><Reader /></ThemeProvider>,
+    );
+    expect(root.dataset.ovTextSize).toBe('110');
+    fireEvent.click(screen.getByText('text size'));
+    expect(read()).toMatchObject({ textSize: '125' });
+    expect(root.dataset.ovTextSize).toBe('125');
+    mounted.unmount();
+    expect(root.hasAttribute('data-ov-text-size')).toBe(false);
+  });
+
+  it.each([
+    ['80', '0.8'],
+    ['90', '0.9'],
+    ['100', '1'],
+    ['110', '1.1'],
+    ['125', '1.25'],
+  ] as const)('applies %s percent text without changing density', (textSize, scale) => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const mounted = render(
+      <ThemeProvider themeId="dark" root={root} initialTextSize={textSize}><Reader /></ThemeProvider>,
+    );
+    expect(read()).toMatchObject({ textSize, density: 'comfortable' });
+    expect(root.dataset.ovTextSize).toBe(textSize);
+    expect(getComputedStyle(root).getPropertyValue('--_ov-ui-text-scale').trim()).toBe(scale);
+    mounted.unmount();
+    root.remove();
   });
 
   it('removes density and motion attributes when the root changes', () => {

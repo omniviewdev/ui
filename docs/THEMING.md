@@ -20,9 +20,9 @@ The provider has no storage behavior. The host is responsible for loading and
 saving the selected ID. `useTheme().setTheme(id)` calls `onThemeChange`; it does
 not mutate hidden provider state.
 
-The provider applies `data-ov-theme`, `data-ov-density`, and `data-ov-motion`
-to `document.documentElement` by default. A host can supply another `root`;
-built-in palettes and density/motion selectors apply directly to that element.
+The provider applies `data-ov-theme`, `data-ov-density`, `data-ov-motion`, and
+`data-ov-text-size` to `document.documentElement` by default. A host can supply
+another `root`; built-in palettes and preference selectors apply to that element.
 Providers that share a root form an ordered owner stack: the most recently
 applied provider controls the root, and its cleanup restores the newest
 surviving provider. Cleaning up the last provider removes the theme attributes,
@@ -34,6 +34,48 @@ Xterm resolves tokens per terminal from its nearest themed ancestor. Monaco
 theme from its own nearest themed ancestor when it mounts or updates, and that
 last update changes every Monaco editor on the page. Separate provider roots do
 not isolate simultaneous Monaco palettes.
+
+### Appearance sizing trial
+
+The host persists preferences; the provider only owns runtime state. Supply
+`initialDensity`, `initialMotion`, and `initialTextSize`, then use `setDensity`,
+`setMotion`, and `setTextSize` from `useTheme()` to update them. Text sizes are
+`'80'`, `'90'`, `'100'`, `'110'`, and `'125'`. Density defaults to `comfortable`; text defaults
+to `'100'`. Resolve a host's `system` motion preference through a live
+`prefers-reduced-motion` media query before calling `setMotion`.
+
+Sizing contract and browser findings:
+
+- Comfortable control heights are 18/28/36/44/48px; compact uses 18/24/30/38/40px.
+- Previously, rem typography compounded against the 14px HTML baseline: a
+  nominal 14px body token rendered at 12.25px. Preference-root font primitives
+  now use 11/12/13/14/16/18 CSS pixels multiplied by the selected text scale.
+  The 14px root-rem layout baseline stays independent of text size.
+- Text size scales UI font primitives and typography headings, not root rem,
+  density heights, Monaco settings, or terminal settings. Explicit pixel fonts,
+  custom theme font overrides, and specialized card-stat rem sizes do not scale.
+- CommandList previously selected its own default density. It now inherits
+  provider density unless the caller explicitly supplies a density.
+- The host command palette now uses the existing large SearchInput tier,
+  stronger result-label weight, token-spaced result content, and muted structural
+  separators. Status indicators wrap instead of clipping at larger text sizes.
+  Search grouping, scope handling, result actions, and keyboard handlers are unchanged.
+- CommandList virtualization measures row elements. DataTable measures rows by
+  default; `fixedRowHeight` intentionally uses the caller's estimate as the CSS
+  row height. The host's Kubernetes consumer now uses 30px compact and 36px
+  comfortable fixed rows, with matching skeleton geometry. Its navigation
+  inherits provider density rather than forcing compact.
+
+Reduced motion now stops animations throughout the preference root, including
+hardcoded rotating spinners, while retaining static progress glyphs and status
+text. Token-based transitions use zero duration. Existing component-level OS
+reduced-motion rules remain an accessibility floor even under explicit normal
+motion; normal does not override those local media rules.
+
+Check comfortable/compact at all five text sizes with long result labels,
+multiple search scopes, mixed source statuses, and keyboard-only search. Check
+dynamic virtual rows near the end of a large table. Check reduced motion with
+active search/progress, then change the OS preference while system mode is active.
 
 ## Resolution contract
 
@@ -165,12 +207,14 @@ retain an identifiable edge and stay inside their tracks at both endpoints,
 including transparent variants. Do not weaken global control or focus tokens
 to quiet decorative enclosures.
 
-For `Popover.Trigger` and `Tooltip.Trigger` composition, explicit trigger
-size/color/variant props override valid library style values explicitly supplied
-on a rendered element; remaining values inherit the context/defaults independently.
-Unrelated native or generic props (such as an input's numeric `size`) remain
-unchanged and do not override inherited styling. Render functions keep the
-existing resolved-props and state contract.
+`Popover.Trigger` retains its explicit-trigger/rendered-element style precedence.
+`Tooltip.Trigger` is transparent when `render` is supplied: the rendered control
+owns its size, color, variant, and class, including through a nested Menu trigger.
+Only explicitly supplied Tooltip.Trigger style props override that control.
+Tooltip.Root styling still applies to the tooltip popup; it must not leak
+medium/soft defaults into an unrelated toolbar button. A trigger without a custom
+render continues to use the tooltip context/defaults. Render functions receive
+interaction props and explicit trigger overrides without fallback control styling.
 
 ## Native control language
 

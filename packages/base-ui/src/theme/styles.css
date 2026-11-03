@@ -1857,10 +1857,58 @@
   --ov-size-datepicker-gap: 2px;
 }
 
+/* UI text only: keep rem geometry and editor/terminal font settings unchanged. */
+[data-ov-text-size='80'],
+[data-ov-text-size='90'],
+[data-ov-text-size='100'],
+[data-ov-text-size='110'],
+[data-ov-text-size='125'] {
+  --ov-primitive-font-size-11: calc(11px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-12: calc(12px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-13: calc(13px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-14: calc(14px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-16: calc(16px * var(--_ov-ui-text-scale, 1));
+  --ov-primitive-font-size-18: calc(18px * var(--_ov-ui-text-scale, 1));
+  --ov-size-typography-heading-1: calc(1.75rem * var(--_ov-ui-text-scale, 1));
+  --ov-size-typography-heading-2: calc(1.5rem * var(--_ov-ui-text-scale, 1));
+  --ov-size-typography-heading-3: calc(1.25rem * var(--_ov-ui-text-scale, 1));
+  --ov-size-typography-heading-4: calc(1.125rem * var(--_ov-ui-text-scale, 1));
+}
+
+[data-ov-text-size='80'] { --_ov-ui-text-scale: 0.8; }
+[data-ov-text-size='90'] { --_ov-ui-text-scale: 0.9; }
+[data-ov-text-size='100'] { --_ov-ui-text-scale: 1; }
+[data-ov-text-size='110'] { --_ov-ui-text-scale: 1.1; }
+[data-ov-text-size='125'] { --_ov-ui-text-scale: 1.25; }
+
 [data-ov-motion='reduced'] {
   --ov-duration-interactive: 0ms;
   --ov-duration-panel: 0ms;
 }
+
+/* Keep progress glyphs and status text visible, but remove decorative movement. */
+[data-ov-motion='reduced'],
+[data-ov-motion='reduced'] *,
+[data-ov-motion='reduced'] *::before,
+[data-ov-motion='reduced'] *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-ov-motion='normal']) {
+    --ov-duration-interactive: 0ms;
+    --ov-duration-panel: 0ms;
+  }
+
+  :root:not([data-ov-motion='normal']) *,
+  :root:not([data-ov-motion='normal']) *::before,
+  :root:not([data-ov-motion='normal']) *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 
 html,
 body {
@@ -1868,10 +1916,14 @@ body {
   background: var(--ov-color-bg-base);
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: inherit;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Preserve the existing 14px rem baseline independently of UI text tokens. */
+html { font-size: 87.5%; }
+
+body { font-size: var(--ov-font-size-body); }
 
 * {
   box-sizing: border-box;

@@ -8,6 +8,11 @@
   display: inline-flex;
   align-items: stretch;
   position: relative;
+  border-radius: var(--ov-radius-control);
+}
+
+.Root[data-ov-variant='ghost']:hover {
+  background: var(--ov-color-state-hover);
 }
 
 .Root[data-ov-disabled='true'] {

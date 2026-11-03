@@ -11,13 +11,15 @@ import { createThemeRootApplier } from './applyTheme';
 import { ThemeContext } from './context';
 import { themeRegistry } from './registry';
 import type { ThemeRegistry } from './registry';
-import type { ThemeDensity, ThemeMode, ThemeMotion } from './types';
+import type { ThemeDensity, ThemeMode, ThemeMotion, ThemeTextSize } from './types';
 
 const DENSITY_ATTR = 'data-ov-density';
 const MOTION_ATTR = 'data-ov-motion';
+const TEXT_SIZE_ATTR = 'data-ov-text-size';
 interface RootPreferenceEntry {
   density: ThemeDensity;
   motion: ThemeMotion;
+  textSize: ThemeTextSize;
 }
 
 interface RootPreferenceOwners {
@@ -31,6 +33,7 @@ function applyRootPreferences(
   entry: RootPreferenceEntry,
   density: ThemeDensity,
   motion: ThemeMotion,
+  textSize: ThemeTextSize,
 ): () => void {
   let owners = ROOT_PREFERENCE_OWNERS.get(root);
   if (!owners) {
@@ -42,9 +45,11 @@ function applyRootPreferences(
   if (previousIndex >= 0) owners.entries.splice(previousIndex, 1);
   entry.density = density;
   entry.motion = motion;
+  entry.textSize = textSize;
   owners.entries.push(entry);
   root.setAttribute(DENSITY_ATTR, density);
   root.setAttribute(MOTION_ATTR, motion);
+  root.setAttribute(TEXT_SIZE_ATTR, textSize);
 
   return () => {
     if (ROOT_PREFERENCE_OWNERS.get(root) !== owners) return;
@@ -58,11 +63,13 @@ function applyRootPreferences(
     if (previous) {
       root.setAttribute(DENSITY_ATTR, previous.density);
       root.setAttribute(MOTION_ATTR, previous.motion);
+      root.setAttribute(TEXT_SIZE_ATTR, previous.textSize);
       return;
     }
 
     root.removeAttribute(DENSITY_ATTR);
     root.removeAttribute(MOTION_ATTR);
+    root.removeAttribute(TEXT_SIZE_ATTR);
     ROOT_PREFERENCE_OWNERS.delete(root);
   };
 }
@@ -73,6 +80,7 @@ export interface ThemeProviderProps extends PropsWithChildren {
   fallbackThemeId?: string;
   initialDensity?: ThemeDensity;
   initialMotion?: ThemeMotion;
+  initialTextSize?: ThemeTextSize;
   registry?: ThemeRegistry;
   root?: HTMLElement | null;
 }
@@ -84,6 +92,7 @@ export function ThemeProvider({
   fallbackThemeId = 'void',
   initialDensity = 'comfortable',
   initialMotion = 'normal',
+  initialTextSize = '100',
   registry = themeRegistry,
   root,
 }: ThemeProviderProps) {
@@ -112,17 +121,18 @@ export function ThemeProvider({
 
   const [density, setDensity] = useState<ThemeDensity>(initialDensity);
   const [motion, setMotion] = useState<ThemeMotion>(initialMotion);
+  const [textSize, setTextSize] = useState<ThemeTextSize>(initialTextSize);
   const preferenceOwnerRef = useRef<RootPreferenceEntry | null>(null);
   useInsertionEffect(() => {
     const target = root === undefined
       ? (typeof document === 'undefined' ? null : document.documentElement)
       : root;
     if (!target) return;
-    const preferenceOwner = preferenceOwnerRef.current ?? { density, motion };
+    const preferenceOwner = preferenceOwnerRef.current ?? { density, motion, textSize };
     preferenceOwnerRef.current = preferenceOwner;
 
-    return applyRootPreferences(target, preferenceOwner, density, motion);
-  }, [density, motion, root]);
+    return applyRootPreferences(target, preferenceOwner, density, motion, textSize);
+  }, [density, motion, textSize, root]);
 
   const value = useMemo(
     () => ({
@@ -131,11 +141,13 @@ export function ThemeProvider({
       isFallback,
       density,
       motion,
+      textSize,
       setTheme,
       setDensity,
       setMotion,
+      setTextSize,
     }),
-    [themeId, activeTheme, isFallback, density, motion, setTheme],
+    [themeId, activeTheme, isFallback, density, motion, textSize, setTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

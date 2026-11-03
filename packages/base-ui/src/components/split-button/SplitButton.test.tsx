@@ -98,6 +98,24 @@ describe('SplitButton', () => {
     expect(trigger).toBeDisabled();
   });
 
+  it('disables only the dropdown when Menu is disabled', () => {
+    const onClick = vi.fn();
+    renderWithTheme(
+      <SplitButton>
+        <SplitButton.Action onClick={onClick}>Save</SplitButton.Action>
+        <SplitButton.Menu disabled menuAriaLabel="Save options">
+          <Menu.Item>Save as Draft</Menu.Item>
+        </SplitButton.Menu>
+      </SplitButton>,
+    );
+    expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Save options' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Save options' }));
+    expect(screen.queryByText('Save as Draft')).not.toBeInTheDocument();
+  });
+
   it('merges className on root', () => {
     const { container } = renderWithTheme(
       <SplitButton className="my-custom-class">

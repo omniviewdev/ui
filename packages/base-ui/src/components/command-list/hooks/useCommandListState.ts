@@ -9,13 +9,13 @@ import type {
   CommandGroup,
 } from '../types';
 import {
-  DEFAULT_DENSITY,
   DEFAULT_PLACEHOLDER,
   DEFAULT_OVERSCAN,
   DEFAULT_ESTIMATED_ITEM_SIZE,
 } from '../constants';
 import { useControllableState } from '../../list/hooks/useControllableState';
 import { useCommandListStore } from './useCommandListStore';
+import { useTheme } from '../../../theme/useTheme';
 
 interface CommandListStateReturn {
   config: Omit<CommandListConfigContextValue, 'listId'>;
@@ -32,6 +32,7 @@ interface CommandListStateReturn {
 export function useCommandListState<TItem>(
   props: CommandListRootProps<TItem>,
 ): CommandListStateReturn {
+  const { density: themeDensity } = useTheme();
   const {
     items,
     itemKey,
@@ -49,7 +50,7 @@ export function useCommandListState<TItem>(
     onDismiss,
     loading = false,
     loopFocus = true,
-    density = DEFAULT_DENSITY,
+    density = themeDensity,
     virtualized = false,
     placeholder = DEFAULT_PLACEHOLDER,
     overscan = DEFAULT_OVERSCAN,

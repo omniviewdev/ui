@@ -1,0 +1,186 @@
+.Root {
+  position: relative;
+  min-inline-size: 0;
+}
+
+.Editor {
+  position: relative;
+  min-inline-size: 0;
+}
+
+.Editor .Control {
+  color: transparent;
+  caret-color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-mono);
+}
+
+.Control::selection {
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-state-selected);
+}
+
+.Highlight {
+  position: absolute;
+  inset-block: 1px;
+  inset-inline: calc(var(--_ov-padding-inline) + 1px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-mono);
+  font-size: var(--_ov-font-size);
+  line-height: 1.35;
+}
+
+.HighlightText {
+  flex: none;
+  min-inline-size: 100%;
+  white-space: pre;
+}
+
+.Key {
+  color: var(--ov-syntax-property);
+}
+
+.Colon {
+  color: var(--ov-syntax-punctuation);
+}
+
+.Value {
+  color: var(--ov-syntax-string);
+}
+
+.Token[data-invalid] {
+  text-decoration: underline wavy var(--ov-color-danger);
+  text-underline-offset: var(--ov-space-stack-xs);
+}
+
+.Editor[data-composing] .Control {
+  color: var(--ov-color-fg-default);
+}
+
+.Editor[data-composing] .Highlight {
+  visibility: hidden;
+}
+
+.Editor:has(input:disabled) .Highlight {
+  opacity: var(--ov-opacity-disabled, 0.45);
+}
+
+.Portal {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+}
+
+.Positioner {
+  max-inline-size: var(--available-width);
+}
+
+.Positioner .Suggestions {
+  --_keyed-row-height: var(--ov-size-list-item-height-md);
+  --_keyed-row-padding: var(--ov-size-list-item-padding-inline-md);
+  --_keyed-font-size: var(--ov-size-button-font-size-md);
+
+  inline-size: min(var(--anchor-width), var(--available-width));
+  min-inline-size: 0;
+  max-inline-size: var(--available-width);
+  max-block-size: min(var(--available-height), calc(var(--ov-size-list-item-height-md) * 10));
+  overflow: auto;
+  padding: var(--ov-space-stack-xs);
+  background: var(--ov-color-bg-surface-overlay);
+  color: var(--ov-color-fg-default);
+  border-color: var(--ov-color-border-overlay);
+  border-radius: var(--ov-radius-control);
+  box-shadow: var(--ov-shadow-surface);
+  font-family: var(--ov-font-sans);
+  font-size: var(--_keyed-font-size);
+}
+
+.Suggestions[data-ov-size='xs'] {
+  --_keyed-row-height: var(--ov-size-list-item-height-xs);
+  --_keyed-row-padding: var(--ov-size-list-item-padding-inline-xs);
+  --_keyed-font-size: var(--ov-size-button-font-size-xs);
+}
+
+.Suggestions[data-ov-size='sm'] {
+  --_keyed-row-height: var(--ov-size-list-item-height-sm);
+  --_keyed-row-padding: var(--ov-size-list-item-padding-inline-sm);
+  --_keyed-font-size: var(--ov-size-button-font-size-sm);
+}
+
+.Suggestions[data-ov-size='lg'] {
+  --_keyed-row-height: var(--ov-size-list-item-height-lg);
+  --_keyed-row-padding: var(--ov-size-list-item-padding-inline-lg);
+  --_keyed-font-size: var(--ov-size-button-font-size-lg);
+}
+
+.Suggestions[data-ov-size='xl'] {
+  --_keyed-row-height: var(--ov-size-list-item-height-xl);
+  --_keyed-row-padding: var(--ov-size-list-item-padding-inline-xl);
+  --_keyed-font-size: var(--ov-size-button-font-size-xl);
+}
+
+.Option {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  min-block-size: var(--_keyed-row-height);
+  gap: var(--ov-space-stack-xs) var(--ov-space-stack-sm);
+  padding: var(--ov-space-stack-xs) var(--_keyed-row-padding);
+  border-radius: var(--ov-size-list-item-radius);
+  cursor: pointer;
+}
+
+.Option[aria-selected='true'] {
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-state-selected);
+}
+
+.OptionLabel {
+  font-family: var(--ov-font-mono);
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
+}
+
+.OptionDescription {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+  overflow-wrap: anywhere;
+}
+
+.Hint {
+  padding: var(--ov-space-stack-xs) var(--_keyed-row-padding);
+  border-block-start: 1px solid var(--ov-color-border-muted);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Diagnostics {
+  color: var(--ov-color-danger);
+  font-size: var(--ov-font-size-caption);
+  overflow-wrap: anywhere;
+}
+
+.SrOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  .Editor .Control {
+    color: var(--ov-color-fg-default);
+  }
+
+  .Highlight {
+    display: none;
+  }
+}

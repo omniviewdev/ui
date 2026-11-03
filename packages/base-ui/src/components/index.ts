@@ -37,6 +37,7 @@ export * from './icon-button';
 export * from './image';
 export * from './image-list';
 export * from './input';
+export * from './keyed-search';
 export * from './list';
 export * from './menu';
 export * from './multi-select';

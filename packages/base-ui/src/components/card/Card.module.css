@@ -29,7 +29,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 280px;
+  min-inline-size: 0;
   border-radius: var(--ov-radius-surface);
   border: 1px solid var(--_ov-border);
   background: var(--_ov-bg);
@@ -226,15 +226,16 @@
   --_ov-title-color: var(--_ov-fg);
 }
 
-/* ─── Interactive card (ActionArea) ─── */
+/* ─── Interactive cards ─── */
 
-.Root:has(.ActionArea) {
+.Root:has(.ActionArea),
+.Root[data-ov-interactive='true'] {
   transition:
     border-color var(--ov-duration-panel) var(--ov-ease-standard),
-    background var(--ov-duration-interactive) var(--ov-ease-standard);
+    background-color var(--ov-duration-panel) var(--ov-ease-standard);
 }
 
-.Root:has(.ActionArea:hover) {
+.Root:has(.ActionArea:where(:not([data-ov-disabled='true']):hover)):not([data-ov-interactive='true']) {
   border-color: color-mix(
     in srgb,
     var(--_ov-border) 50%,
@@ -242,26 +243,65 @@
   );
 }
 
-.Root:has(.ActionArea:focus-visible) {
-  box-shadow: 0 0 0 2px var(--ov-color-state-focus-ring);
+.Root:has(.ActionArea:where(:not([data-ov-disabled='true']):active)):not([data-ov-interactive='true']) {
+  background-color: color-mix(in srgb, var(--_ov-bg) 96%, var(--ov-color-state-pressed) 4%);
 }
 
-.Root:has(.ActionArea:active) {
-  background: color-mix(in srgb, var(--_ov-bg) 96%, var(--ov-color-state-pressed) 4%);
+.Root:has(.ActionArea:focus-visible),
+.Root[data-ov-interactive='true']:focus-visible {
+  outline: var(--ov-size-card-focus-ring-width) solid var(--ov-color-state-focus-ring);
+  outline-offset: var(--ov-size-card-focus-ring-width);
 }
 
-.Root:has(.ActionArea[data-ov-disabled='true']) {
-  opacity: 0.5;
+.Root[data-ov-interactive='true'] {
+  background-color: var(--ov-color-card-bg);
+  border-color: var(--ov-color-card-border);
+}
+
+.Root[data-ov-interactive='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--ov-size-card-selection-rail);
+  border-start-start-radius: inherit;
+  border-end-start-radius: inherit;
+  background-color: transparent;
   pointer-events: none;
+  z-index: 3;
+  transition: background-color var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-interactive='true']:where(:not([data-ov-disabled='true']):not(:has(.ActionArea[data-ov-disabled='true'])):hover) {
+  background-color: var(--ov-color-card-hover-bg);
+  border-color: var(--ov-color-card-hover-border);
+}
+
+.Root[data-ov-interactive='true'][data-ov-selected='true'] {
+  background-color: var(--ov-color-card-selected-bg);
+  border-color: var(--ov-color-card-selected-border);
+}
+
+.Root[data-ov-interactive='true'][data-ov-selected='true']::before {
+  background-color: var(--ov-color-card-selected-border);
+}
+
+.Root[data-ov-disabled='true'],
+.Root:has(.ActionArea[data-ov-disabled='true']) {
+  opacity: var(--ov-opacity-disabled, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .Root:has(.ActionArea) {
+  .Root:has(.ActionArea),
+  .Root[data-ov-interactive='true'],
+  .Root[data-ov-interactive='true']::before {
     transition: none;
   }
 }
 
-:root[data-ov-motion='reduced'] .Root:has(.ActionArea) {
+[data-ov-motion='reduced'] .Root:has(.ActionArea),
+[data-ov-motion='reduced'] .Root[data-ov-interactive='true'],
+[data-ov-motion='reduced'] .Root[data-ov-interactive='true']::before {
   transition: none;
 }
 
@@ -300,8 +340,9 @@
 
 .Action {
   position: absolute;
-  top: var(--_ov-padding-block);
-  right: var(--_ov-padding-inline);
+  inset-block-start: var(--_ov-padding-block);
+  inset-inline-end: var(--_ov-padding-inline);
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: var(--_ov-gap);
@@ -558,9 +599,45 @@
   flex: 1;
   cursor: pointer;
   outline: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  border-radius: inherit;
 }
 
 .ActionArea[data-ov-disabled='true'] {
+  cursor: default;
+}
+
+/* Put the primary control inside Card.Title, with Card.Action as its sibling.
+ * The pseudo-element expands the hit target without nesting any controls.
+ */
+.Root:has(.ActionArea[data-ov-stretched='true']) > .Header {
+  position: static;
+  z-index: auto;
+}
+
+.ActionArea[data-ov-stretched='true'] {
+  position: static;
+  display: block;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.ActionArea[data-ov-stretched='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--ov-radius-surface);
+}
+
+.ActionArea[data-ov-stretched='true'][data-ov-disabled='true']::after {
   cursor: default;
 }
 
@@ -598,7 +675,7 @@
 .Group {
   display: grid;
   gap: var(--ov-size-card-group-gap-md);
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
 
 .Group[data-ov-gap='sm'] {
@@ -609,9 +686,9 @@
 }
 
 .Group[data-ov-columns] {
-  grid-template-columns: repeat(var(--_ov-columns), 1fr);
+  grid-template-columns: repeat(var(--_ov-columns), minmax(0, 1fr));
 }
 
 .Group[data-ov-columns='auto'] {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }

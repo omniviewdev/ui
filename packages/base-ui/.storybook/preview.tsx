@@ -34,6 +34,14 @@ const preview: Preview = {
         items: ['normal', 'reduced'],
       },
     },
+    textSize: {
+      name: 'Text size',
+      defaultValue: '100',
+      toolbar: {
+        icon: 'paragraph',
+        items: ['80', '90', '100', '110', '125'],
+      },
+    },
   },
   decorators: [
     (Story, context) => {
@@ -41,12 +49,15 @@ const preview: Preview = {
       const density = context.globals.density;
       const motion = context.globals.motion;
 
+      const textSize = context.globals.textSize;
       return (
         <ThemeProvider
+          key={`${density}:${motion}:${textSize}`}
           themeId={theme}
           onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}
           initialDensity={density}
           initialMotion={motion}
+          initialTextSize={textSize}
         >
           <div
             style={{

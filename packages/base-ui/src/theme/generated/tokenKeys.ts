@@ -41,6 +41,12 @@ export type ThemeTokenKey =
   | 'color.brand.300'
   | 'color.brand.400'
   | 'color.brand.500'
+  | 'color.card.bg'
+  | 'color.card.border'
+  | 'color.card.hover.bg'
+  | 'color.card.hover.border'
+  | 'color.card.selected.bg'
+  | 'color.card.selected.border'
   | 'color.danger'
   | 'color.danger.soft'
   | 'color.datepicker.cell.bg'
@@ -201,6 +207,12 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.brand.300': { cssVariable: '--ov-color-brand-300', valueKind: 'color' },
   'color.brand.400': { cssVariable: '--ov-color-brand-400', valueKind: 'color' },
   'color.brand.500': { cssVariable: '--ov-color-brand-500', valueKind: 'color' },
+  'color.card.bg': { cssVariable: '--ov-color-card-bg', valueKind: 'color' },
+  'color.card.border': { cssVariable: '--ov-color-card-border', valueKind: 'color' },
+  'color.card.hover.bg': { cssVariable: '--ov-color-card-hover-bg', valueKind: 'color' },
+  'color.card.hover.border': { cssVariable: '--ov-color-card-hover-border', valueKind: 'color' },
+  'color.card.selected.bg': { cssVariable: '--ov-color-card-selected-bg', valueKind: 'color' },
+  'color.card.selected.border': { cssVariable: '--ov-color-card-selected-border', valueKind: 'color' },
   'color.danger': { cssVariable: '--ov-color-danger', valueKind: 'color' },
   'color.danger.soft': { cssVariable: '--ov-color-danger-soft', valueKind: 'color' },
   'color.datepicker.cell.bg': { cssVariable: '--ov-color-datepicker-cell-bg', valueKind: 'color' },

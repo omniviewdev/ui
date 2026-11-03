@@ -14,6 +14,14 @@
   --ov-color-tab-hover-bg: var(--ov-color-state-hover);
   --ov-color-tab-hover-fg: var(--ov-color-fg-default);
   --ov-color-tab-modified-border: var(--ov-color-warning);
+  --ov-color-card-bg: var(--ov-color-bg-surface);
+  --ov-color-card-border: var(--ov-color-border-default);
+  --ov-color-card-hover-bg: var(--ov-color-bg-control-hover);
+  --ov-color-card-hover-border: var(--ov-color-border-strong);
+  --ov-color-card-selected-bg: var(--ov-color-state-selected);
+  --ov-color-card-selected-border: var(--ov-color-accent-strong);
+  --ov-size-card-selection-rail: 3px;
+  --ov-size-card-focus-ring-width: 2px;
 }
 
 :root,

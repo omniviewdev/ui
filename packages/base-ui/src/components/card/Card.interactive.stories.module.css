@@ -1,0 +1,54 @@
+.Gallery {
+  display: grid;
+  gap: var(--ov-space-stack-lg);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.Card {
+  block-size: calc(var(--ov-control-height-md) * 6);
+}
+
+.Header {
+  padding-inline-end: calc(var(--ov-control-height-md) + var(--ov-size-card-padding-inline-md));
+}
+
+.Name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Body {
+  flex: 1;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.Note {
+  margin: 0;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Stack {
+  display: grid;
+  gap: var(--ov-space-stack-lg);
+}
+
+.ThemeRoot {
+  padding: var(--ov-space-stack-lg);
+  background: var(--ov-color-bg-base);
+  color: var(--ov-color-fg-default);
+  border-radius: var(--ov-radius-surface);
+}
+
+[data-ov-theme].CustomAliases {
+  --ov-color-card-selected-bg: var(--ov-color-success-soft);
+  --ov-color-card-selected-border: var(--ov-color-success);
+  --ov-color-card-hover-border: var(--ov-color-success);
+}
+
+.Narrow {
+  max-inline-size: calc(var(--ov-control-height-md) * 7);
+}

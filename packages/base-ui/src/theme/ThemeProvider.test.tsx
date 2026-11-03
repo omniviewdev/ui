@@ -107,7 +107,9 @@ describe('controlled ThemeProvider', () => {
   it('keeps text size local and restores its root attribute on cleanup', () => {
     const root = document.createElement('div');
     const mounted = render(
-      <ThemeProvider themeId="dark" root={root} initialTextSize="110"><Reader /></ThemeProvider>,
+      <ThemeProvider themeId="dark" root={root} initialTextSize="110">
+        <Reader />
+      </ThemeProvider>,
     );
     expect(root.dataset.ovTextSize).toBe('110');
     fireEvent.click(screen.getByText('text size'));
@@ -127,7 +129,9 @@ describe('controlled ThemeProvider', () => {
     const root = document.createElement('div');
     document.body.append(root);
     const mounted = render(
-      <ThemeProvider themeId="dark" root={root} initialTextSize={textSize}><Reader /></ThemeProvider>,
+      <ThemeProvider themeId="dark" root={root} initialTextSize={textSize}>
+        <Reader />
+      </ThemeProvider>,
     );
     expect(read()).toMatchObject({ textSize, density: 'comfortable' });
     expect(root.dataset.ovTextSize).toBe(textSize);

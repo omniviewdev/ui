@@ -1,5 +1,5 @@
 ---
-"@omniviewdev/base-ui": minor
+'@omniviewdev/base-ui': minor
 ---
 
 Add independent 80%, 90%, 100%, 110%, and 125% UI text sizing to ThemeProvider and useTheme. Keep root-rem layout geometry stable, correct compounded body typography, inherit provider density in CommandList, and stop decorative animations under reduced motion while retaining static progress indicators.

@@ -1,5 +1,17 @@
 # @omniviewdev/base-ui
 
+## Unreleased
+
+### Minor Changes
+
+- Compose trusted React cards in the existing toast viewport with caller-scoped IDs and `update(id, patch)`. Updates preserve order, focus, component identity, and expiry. Custom content owns all visible controls and layout; the string/title supplies the screen-reader summary. Content-only progress updates remain silent, while explicit message/title updates announce meaningful state changes.
+- Add `dismissOnAction` (default `true`) and exactly-once `onDismiss(reason)` callbacks: `programmatic`, `close`, `action`, `timeout`, `overflow`, and `dismissAll`. Overflow removes only the toast presentation. Updates never revive missing or exiting presentations. Calling `toast` explicitly with a removed ID can admit a new presentation.
+- Pause remaining expiry while hovered or focused, start expiry when a persistent toast becomes terminal, and clean up expiry/exit timers on teardown. Content-only and unchanged-duration patches preserve the existing deadline; explicitly changing duration starts the new lifetime. Use provider `className` or `style` to offset the single viewport above application chrome.
+
+### Patch Changes
+
+- Keep the toast controller stable across position changes and skip rendering unchanged toast entries. Build controller operations together instead of recreating individual callbacks on viewport renders. Position and capacity changes preserve presentation identity, remaining expiry, and current dismissal callbacks.
+
 ## 0.12.0
 
 ### Minor Changes

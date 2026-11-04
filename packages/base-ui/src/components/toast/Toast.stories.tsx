@@ -43,6 +43,81 @@ function ToastDemo({ position }: { position?: ToastPosition }) {
   );
 }
 
+function ControlledCardDemo() {
+  const { toast, update, dismiss } = useToast();
+  const [units, setUnits] = useState(0);
+  const card = (current: number) => (
+    <section
+      aria-label="Transfer"
+      style={{
+        width: 360,
+        maxWidth: '100%',
+        padding: 16,
+        boxSizing: 'border-box',
+        background: 'var(--ov-color-bg-surface-raised)',
+        border: '1px solid var(--ov-color-border-overlay)',
+        borderRadius: 'var(--ov-radius-surface)',
+        boxShadow: 'var(--ov-shadow-surface)',
+      }}
+    >
+      <strong>Transfer workspace</strong>
+      <p>{current} of 3 files transferred</p>
+      <progress aria-label="Files transferred" value={current} max={3} />
+      <button type="button" onClick={() => dismiss('controlled-transfer')}>
+        Hide transfer
+      </button>
+    </section>
+  );
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      <button
+        type="button"
+        onClick={() => {
+          setUnits(0);
+          toast('Workspace transfer started', {
+            id: 'controlled-transfer',
+            duration: 0,
+            content: card(0),
+          });
+        }}
+      >
+        Show card
+      </button>
+      <button
+        type="button"
+        disabled={units === 3}
+        onClick={() => {
+          const next = units + 1;
+          setUnits(next);
+          update('controlled-transfer', {
+            content: card(next),
+            duration: next === 3 ? 5000 : 0,
+            ...(next === 3 ? { message: 'Workspace transfer completed' } : {}),
+          });
+        }}
+      >
+        Transfer next file
+      </button>
+    </div>
+  );
+}
+
+export const ControlledContent = {
+  render: () => (
+    <ToastProvider style={{ bottom: 36 }}>
+      <ControlledCardDemo />
+    </ToastProvider>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A trusted card uses one viewport, preserves focus across updates, and starts a paused-on-hover/focus expiry only when complete. Content-only updates leave the accessible summary unchanged; update message/title to announce meaningful state changes. Custom content owns visible controls.',
+      },
+    },
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Meta
 // ---------------------------------------------------------------------------
@@ -60,7 +135,14 @@ const meta = {
   argTypes: {
     position: {
       control: 'select',
-      options: ['top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'],
+      options: [
+        'top-left',
+        'top-center',
+        'top-right',
+        'bottom-left',
+        'bottom-center',
+        'bottom-right',
+      ],
     },
     maxVisible: { control: { type: 'number', min: 1, max: 20 } },
     surface: {
@@ -395,7 +477,9 @@ export const SurfaceAndElevation: Story = {
       const [elevation, setElevation] = useState<SurfaceElevation>(2);
 
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}
+        >
           <div>
             <strong style={{ display: 'block', marginBottom: 4 }}>Surface</strong>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>

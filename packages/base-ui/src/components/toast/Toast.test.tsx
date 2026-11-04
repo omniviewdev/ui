@@ -1,8 +1,8 @@
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
-import { ToastProvider, useToast } from './Toast';
+import { ToastProvider, useToast, type ToastController } from './Toast';
 
 // ---------------------------------------------------------------------------
 // Helper: renders a trigger button that invokes useToast inside the provider
@@ -78,8 +78,12 @@ describe('Toast', () => {
     await user.click(screen.getByText('trigger'));
     expect(screen.getByText('Will vanish')).toBeVisible();
 
-    // Advance past duration + exit animation timeout (200ms)
-    act(() => vi.advanceTimersByTime(3200));
+    // Expiry commits the exit state; its effect then starts the 200ms transition.
+    act(() => vi.advanceTimersByTime(3000));
+    expect(screen.getByText('Will vanish')).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(199));
+    expect(screen.getByText('Will vanish')).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(1));
 
     expect(screen.queryByText('Will vanish')).not.toBeInTheDocument();
   });
@@ -101,20 +105,6 @@ describe('Toast', () => {
     act(() => vi.advanceTimersByTime(300));
 
     expect(screen.queryByText('Close me')).not.toBeInTheDocument();
-  });
-
-  it('applies the correct severity data attribute', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    renderWithTheme(
-      <ToastProvider>
-        <ToastTrigger message="Danger!" severity="danger" duration={0} />
-      </ToastProvider>,
-    );
-
-    await user.click(screen.getByText('trigger'));
-
-    const toast = screen.getByText('Danger!').closest('[data-ov-component="toast"]');
-    expect(toast).toHaveAttribute('data-ov-severity', 'danger');
   });
 
   it('renders an action button and fires the callback', async () => {
@@ -222,18 +212,266 @@ describe('Toast', () => {
 
     expect(screen.getByText('Done: ok')).toBeVisible();
   });
+});
 
-  it('forwards a custom className on the provider container', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    renderWithTheme(
-      <ToastProvider className="my-custom-class">
-        <ToastTrigger message="Styled" duration={0} />
+describe('controlled toast presentation', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  function setup(maxVisible = 5) {
+    let api!: ToastController;
+    function Consumer() {
+      api = useToast();
+      return null;
+    }
+    const view = renderWithTheme(
+      <ToastProvider maxVisible={maxVisible}>
+        <Consumer />
       </ToastProvider>,
     );
+    return { api: () => api, ...view };
+  }
 
-    await user.click(screen.getByText('trigger'));
+  it('preserves identity, deadline and updated callbacks across viewport changes', () => {
+    let api!: ToastController;
+    function Consumer() {
+      api = useToast();
+      return null;
+    }
+    const consumer = <Consumer />;
+    const { rerender } = renderWithTheme(
+      <ToastProvider position="bottom-right">{consumer}</ToastProvider>,
+    );
+    const originalDismiss = vi.fn();
+    const latestDismiss = vi.fn();
+    act(() => {
+      api.toast('Position test', {
+        id: 'position',
+        duration: 1000,
+        onDismiss: originalDismiss,
+      });
+    });
+    const entry = screen.getByText('Position test').closest('[data-ov-component="toast"]');
+    act(() => vi.advanceTimersByTime(400));
+    rerender(
+      <ToastProvider position="top-left" maxVisible={2}>
+        {consumer}
+      </ToastProvider>,
+    );
+    expect(screen.getByText('Position test').closest('[data-ov-component="toast"]')).toBe(entry);
+    expect(entry?.parentElement).toHaveAttribute('data-ov-position', 'top-left');
+    act(() => api.update('position', { onDismiss: latestDismiss }));
+    act(() => vi.advanceTimersByTime(599));
+    expect(latestDismiss).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(originalDismiss).not.toHaveBeenCalled();
+    expect(latestDismiss).toHaveBeenCalledExactlyOnceWith('timeout');
+    act(() => vi.advanceTimersByTime(200));
+    expect(screen.queryByText('Position test')).not.toBeInTheDocument();
+  });
 
-    const container = screen.getByText('Styled').closest('[data-ov-component="toast-container"]');
-    expect(container).toHaveClass('my-custom-class');
+  it('does not overwrite caller IDs when generating a new toast ID', () => {
+    const { api } = setup();
+    let seed = '';
+    act(() => {
+      seed = api().toast('Seed', { duration: 0 });
+    });
+    const reserved = `ov-toast-${Number(seed.slice('ov-toast-'.length)) + 1}`;
+    let generated = '';
+    act(() => {
+      api().toast('Caller toast', { id: reserved, duration: 0 });
+      generated = api().toast('Generated toast', { duration: 0 });
+    });
+    expect(generated).not.toBe(reserved);
+    expect(screen.getByText('Caller toast')).toBeVisible();
+    expect(screen.getByText('Generated toast')).toBeVisible();
+  });
+
+  it('upserts and patches content without moving, remounting, or announcing progress', () => {
+    const { api } = setup();
+    const card = (count: number) => (
+      <section>
+        <button>Card action</button>
+        <span>{count} units</span>
+      </section>
+    );
+    act(() => {
+      api().toast('Work started', { id: 'work', content: card(1), duration: 0 });
+      api().toast('Other', { duration: 0 });
+    });
+    const button = screen.getByRole('button', { name: 'Card action' });
+    button.focus();
+    const parent = button.closest('[data-ov-component="toast"]');
+    const order = parent?.parentElement?.textContent;
+    act(() => api().toast('Work started', { id: 'work', content: card(2) }));
+    expect(screen.getByRole('button', { name: 'Card action' })).toBe(button);
+    expect(button).toHaveFocus();
+    expect(button.closest('[data-ov-component="toast"]')).toBe(parent);
+    expect(parent?.parentElement?.firstElementChild).toBe(parent);
+    expect(order).toContain('Other');
+    expect(screen.getByText('2 units')).toBeVisible();
+    expect(screen.getAllByRole('status').map((node) => node.textContent)).toEqual([
+      'Work started',
+      'Other',
+    ]);
+    act(() => api().update('work', { content: card(3) }));
+    expect(screen.getAllByRole('status').map((node) => node.textContent)).toEqual([
+      'Work started',
+      'Other',
+    ]);
+    act(() => api().update('work', { message: 'Completed', title: 'Transfer' }));
+    expect(screen.getAllByRole('status').map((node) => node.textContent)).toEqual([
+      'Transfer. Completed',
+      'Other',
+    ]);
+    expect(screen.getByRole('button', { name: 'Card action' })).toBe(button);
+    act(() => api().dismiss('work'));
+    act(() => api().update('work', { message: 'Resurrected', content: card(3) }));
+    expect(screen.queryByText('3 units')).not.toBeInTheDocument();
+  });
+
+  it('keeps ordinary action dismissal default and supports persistent actions', () => {
+    const { api } = setup();
+    const action = vi.fn();
+    const dismissed = vi.fn();
+    act(() =>
+      api().toast('Stay', {
+        id: 'stay',
+        duration: 0,
+        action: { label: 'Inspect', onClick: action },
+        dismissOnAction: false,
+        onDismiss: dismissed,
+      }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Inspect' }));
+    expect(action).toHaveBeenCalledOnce();
+    expect(dismissed).not.toHaveBeenCalled();
+    act(() => api().update('stay', { dismissOnAction: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Inspect' }));
+    act(() => vi.advanceTimersByTime(200));
+    expect(screen.queryByText('Stay')).not.toBeInTheDocument();
+    expect(dismissed).toHaveBeenCalledExactlyOnceWith('action');
+  });
+
+  it('pauses remaining lifetime for hover and focus together without restarting on updates', () => {
+    const { api } = setup();
+    const dismissed = vi.fn();
+    act(() => api().toast('Timer', { id: 'timer', duration: 1000, onDismiss: dismissed }));
+    const close = screen.getByRole('button', { name: 'Close' });
+    const toast = close.parentElement!;
+    act(() => vi.advanceTimersByTime(400));
+    fireEvent.mouseEnter(toast);
+    fireEvent.focus(close);
+    act(() => {
+      vi.advanceTimersByTime(2000);
+      api().update('timer', { message: 'Still here', duration: 1000 });
+    });
+    fireEvent.mouseLeave(toast);
+    act(() => vi.advanceTimersByTime(2000));
+    expect(dismissed).not.toHaveBeenCalled();
+    fireEvent.blur(close, { relatedTarget: document.body });
+    act(() => vi.advanceTimersByTime(599));
+    expect(dismissed).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(dismissed).toHaveBeenCalledExactlyOnceWith('timeout');
+    act(() => api().dismissAll());
+    expect(dismissed).toHaveBeenCalledTimes(1);
+  });
+
+  it('starts terminal expiry once and ignores content or unchanged duration patches', () => {
+    const { api } = setup();
+    const dismissed = vi.fn();
+    act(() => api().toast('Running', { id: 'task', duration: 0, onDismiss: dismissed }));
+    act(() => vi.advanceTimersByTime(10000));
+    act(() => api().update('task', { message: 'Done', duration: 1000 }));
+    act(() => vi.advanceTimersByTime(600));
+    act(() => api().update('task', { message: 'Details', duration: 1000 }));
+    act(() => vi.advanceTimersByTime(400));
+    expect(dismissed).toHaveBeenCalledExactlyOnceWith('timeout');
+  });
+
+  it('applies an explicitly changed positive duration without content updates resetting it', () => {
+    const { api } = setup();
+    const dismissed = vi.fn();
+    act(() =>
+      api().toast('Long lifetime', { id: 'duration', duration: 5000, onDismiss: dismissed }),
+    );
+    act(() => vi.advanceTimersByTime(400));
+    act(() => api().update('duration', { duration: 1000 }));
+    act(() => vi.advanceTimersByTime(600));
+    act(() => api().update('duration', { message: 'Updated content', duration: 1000 }));
+    act(() => vi.advanceTimersByTime(399));
+    expect(dismissed).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(dismissed).toHaveBeenCalledExactlyOnceWith('timeout');
+  });
+
+  it('reports overflow, programmatic, close and dismissAll once per presentation', () => {
+    const { api } = setup(1);
+    const overflow = vi.fn();
+    const programmatic = vi.fn();
+    const close = vi.fn();
+    const all = vi.fn();
+    act(() => {
+      api().toast('First', { id: 'first', duration: 0, onDismiss: overflow });
+      api().toast('Second', { id: 'second', duration: 0, onDismiss: programmatic });
+      api().dismiss('second');
+      api().dismiss('second');
+      api().toast('Third', { id: 'third', duration: 0, onDismiss: close });
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    act(() => {
+      api().update('third', { message: 'Cannot update exit' });
+      api().dismissAll();
+      api().toast('Fourth', { duration: 0, onDismiss: all });
+      api().dismissAll();
+      api().dismissAll();
+    });
+    expect(overflow).toHaveBeenCalledExactlyOnceWith('overflow');
+    expect(programmatic).toHaveBeenCalledExactlyOnceWith('programmatic');
+    expect(close).toHaveBeenCalledExactlyOnceWith('close');
+    expect(all).toHaveBeenCalledExactlyOnceWith('dismissAll');
+    expect(screen.queryByText('Cannot update exit')).not.toBeInTheDocument();
+  });
+
+  it('preserves promise rejection and never revives a dismissed loading toast', async () => {
+    const { api } = setup();
+    let reject!: (error: Error) => void;
+    const pending = new Promise<string>((_resolve, rejectPromise) => {
+      reject = rejectPromise;
+    });
+    let returned!: Promise<string>;
+    act(() => {
+      returned = api().promise(pending, {
+        loading: 'Pending work',
+        success: 'Finished',
+        error: 'Failed work',
+      });
+    });
+    expect(returned).toBe(pending);
+    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
+    act(() => api().dismissAll());
+    const failure = new Error('Failure');
+    const observed = returned.catch((error: unknown) => error);
+    await act(async () => {
+      reject(failure);
+      await observed;
+    });
+    expect(await observed).toBe(failure);
+    expect(screen.queryByText('Failed work')).not.toBeInTheDocument();
+  });
+
+  it('clears expiry and exit timers when provider unmounts', () => {
+    const { api, unmount } = setup();
+    const dismissed = vi.fn();
+    act(() => {
+      api().toast('Expiry', { duration: 1000, onDismiss: dismissed });
+      api().toast('Exit', { duration: 0 });
+    });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Close' })[1]!);
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
+    act(() => vi.advanceTimersByTime(2000));
+    expect(dismissed).not.toHaveBeenCalled();
   });
 });

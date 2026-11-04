@@ -4,9 +4,10 @@ Reusable component acceptance passed. Kubernetes application integration and rel
 
 ## Verified
 
-- Base UI suite: 1,764 tests across 152 files passed.
+- Base UI suite: 1,759 tests across 152 files passed.
 - Base UI TypeScript check and changed-component ESLint passed.
 - All nine native themes, five component sizes, and both densities: 90 picker combinations.
+- Icon-only square triggers with centered artwork and no visible label or chevron in every combination.
 - Search autofocus, arrow navigation, Enter selection, and scoped popup geometry in every combination.
 - Text scales 80, 90, 100, 110, and 125 in narrow dark/light panes.
 - Every size tier at 360px width and 125% text, in both densities.
@@ -19,6 +20,8 @@ The same run also checked the previously merged Card and KeyedSearch surfaces. I
 Picker chrome uses existing semantic tokens. Uploaded artwork retains its original colors. The local popup portal preserves nested theme scopes; custom token coverage does not depend on a particular built-in palette.
 
 ## Screenshots
+
+![Compact icon changer](evidence/cluster-icon-picker/icons-square-changer.png)
 
 ![Native popup themes](evidence/cluster-icon-picker/icons-native-contact.png)
 

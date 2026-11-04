@@ -225,3 +225,14 @@ This document defines raw primitive values. Components do not consume these dire
 | `--ov-primitive-panel-width-min`   | `320px` |
 | `--ov-primitive-panel-width-max`   | `860px` |
 | `--ov-primitive-tab-height`        | `34px`  |
+
+## Interactive card semantic geometry
+
+Interactive cards add no color primitives. Their `--ov-color-card-*` aliases
+reuse surface, interaction, selection, and accent roles on each theme root.
+The new semantic geometry defaults are `--ov-size-card-selection-rail: 3px`
+and `--ov-size-card-focus-ring-width: 2px`; neither replaces an existing token.
+The fixed rail avoids layout shift across card sizes and densities. The separate
+focus width preserves selected-state visibility during keyboard navigation.
+See [Token Catalog](TOKEN_CATALOG.md#interactive-cards) for the alias contract.
+

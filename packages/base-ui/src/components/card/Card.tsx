@@ -1,4 +1,14 @@
-import { forwardRef, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+  type Ref,
+} from 'react';
 import { cn } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import type { StyledComponentProps, SurfaceElevation, SurfaceType } from '../../system/types';
@@ -11,6 +21,12 @@ export interface CardProps
   as?: 'section' | 'article' | 'div';
   elevation?: SurfaceElevation;
   surface?: SurfaceType;
+  /** Opt in to quiet, whole-card hover and selection styling. */
+  interactive?: boolean;
+  /** Visual selection only; set selection semantics on the owning control. */
+  selected?: boolean;
+  /** Disable primary ActionAreas. Sibling actions own their disabled state. */
+  disabled?: boolean;
 }
 
 export type CardHeaderProps = HTMLAttributes<HTMLDivElement>;
@@ -53,9 +69,20 @@ export interface CardIndicatorProps extends HTMLAttributes<HTMLSpanElement> {
   pulse?: boolean;
 }
 
-export interface CardActionAreaProps extends HTMLAttributes<HTMLDivElement> {
+interface CardActionAreaState {
   disabled?: boolean;
+  /** Stretch the hit target from a title-level control to the card boundary.
+   * Keep independent controls in sibling Card.Action slots, never inside ActionArea.
+   */
+  stretched?: boolean;
 }
+
+export type CardActionAreaProps = CardActionAreaState &
+  (
+    | (HTMLAttributes<HTMLDivElement> & { as?: 'div' })
+    | (ButtonHTMLAttributes<HTMLButtonElement> & { as: 'button' })
+    | (AnchorHTMLAttributes<HTMLAnchorElement> & { as: 'a' })
+  );
 
 export interface CardGroupProps extends HTMLAttributes<HTMLDivElement> {
   columns?: number | 'auto';
@@ -63,6 +90,8 @@ export interface CardGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /* ─── Components ─── */
+
+const CardDisabledContext = createContext(false);
 
 const CardRoot = forwardRef<HTMLElement, CardProps>(function Card(
   {
@@ -73,19 +102,27 @@ const CardRoot = forwardRef<HTMLElement, CardProps>(function Card(
     size,
     elevation = 0,
     surface = 'default',
+    interactive,
+    selected,
+    disabled = false,
     ...props
   },
   ref,
 ) {
   return (
-    <Element
-      ref={ref as never}
-      className={cn(styles.Root, className)}
-      data-ov-elevation={elevation}
-      data-ov-surface={surface}
-      {...styleDataAttributes({ variant, color, size })}
-      {...props}
-    />
+    <CardDisabledContext.Provider value={disabled}>
+      <Element
+        ref={ref as never}
+        className={cn(styles.Root, className)}
+        data-ov-elevation={elevation}
+        data-ov-surface={surface}
+        {...styleDataAttributes({ variant, color, size })}
+        {...(interactive != null && { 'data-ov-interactive': String(interactive) })}
+        {...(selected != null && { 'data-ov-selected': String(selected) })}
+        {...(disabled && { 'data-ov-disabled': 'true' })}
+        {...props}
+      />
+    </CardDisabledContext.Provider>
   );
 });
 
@@ -233,29 +270,83 @@ const CardIndicator = forwardRef<HTMLSpanElement, CardIndicatorProps>(function C
   );
 });
 
-const CardActionArea = forwardRef<HTMLDivElement, CardActionAreaProps>(function CardActionArea(
-  { className, disabled, onClick, onKeyDown, ...props },
+const CardActionArea = forwardRef<HTMLElement, CardActionAreaProps>(function CardActionArea(
+  { className, disabled: disabledProp, stretched, ...props },
   ref,
 ) {
-  function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      (e.currentTarget as HTMLDivElement).click();
+  const cardDisabled = useContext(CardDisabledContext);
+  const disabled = cardDisabled || disabledProp;
+  const shared = {
+    className: cn(styles.ActionArea, className),
+    'aria-disabled': disabled || undefined,
+    'data-ov-disabled': disabled ? 'true' : undefined,
+    'data-ov-stretched': stretched ? 'true' : undefined,
+  };
+
+  if (props.as === 'a') {
+    const { as: Element, href, tabIndex, onClick, ...linkProps } = props;
+    return (
+      <Element
+        {...linkProps}
+        {...shared}
+        ref={ref as Ref<HTMLAnchorElement>}
+        href={disabled ? undefined : href}
+        role={linkProps.role ?? (disabled ? 'link' : undefined)}
+        tabIndex={disabled ? -1 : tabIndex}
+        onClick={(event) => {
+          if (disabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          onClick?.(event);
+        }}
+      />
+    );
+  }
+
+  if (props.as === 'button') {
+    const { as: Element, type = 'button', ...buttonProps } = props;
+    return (
+      <Element
+        {...buttonProps}
+        {...shared}
+        ref={ref as Ref<HTMLButtonElement>}
+        type={type}
+        disabled={disabled}
+      />
+    );
+  }
+
+  const { as: Element = 'div', onClick, onKeyDown, tabIndex, ...divProps } = props;
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    onKeyDown?.(event);
+    if (
+      !event.defaultPrevented &&
+      event.target === event.currentTarget &&
+      (event.key === 'Enter' || event.key === ' ')
+    ) {
+      event.preventDefault();
+      if (!event.repeat) event.currentTarget.click();
     }
-    onKeyDown?.(e);
   }
 
   return (
-    <div
-      ref={ref}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      className={cn(styles.ActionArea, className)}
-      aria-disabled={disabled || undefined}
-      {...(disabled != null && { 'data-ov-disabled': String(disabled) })}
-      onClick={disabled ? undefined : onClick}
+    <Element
+      {...divProps}
+      {...shared}
+      ref={ref as Ref<HTMLDivElement>}
+      role={props.role ?? 'button'}
+      tabIndex={disabled ? -1 : (tabIndex ?? 0)}
+      onClick={(event) => {
+        if (disabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        onClick?.(event);
+      }}
       onKeyDown={disabled ? undefined : handleKeyDown}
-      {...props}
     />
   );
 });

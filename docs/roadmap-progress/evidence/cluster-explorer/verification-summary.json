@@ -1,0 +1,69 @@
+{
+  "nativeThemes": [
+    "void",
+    "dark",
+    "light",
+    "obsidian",
+    "carbon",
+    "solarized-dark",
+    "solarized-light",
+    "high-contrast-dark",
+    "high-contrast-light"
+  ],
+  "sizeTiers": ["xs", "sm", "md", "lg", "xl"],
+  "densities": ["comfortable", "compact"],
+  "cardSizeThemeDensityCombinations": 90,
+  "searchSizeThemeDensityCombinations": 90,
+  "textScales": ["80", "90", "100", "110", "125"],
+  "textScaleThemes": ["dark", "light"],
+  "narrowViewportCssPixels": 360,
+  "customScope": {
+    "scoped": true,
+    "theme": "light",
+    "bg": "rgb(255, 255, 255)",
+    "syntax": ["rgb(148, 98, 33)", "rgb(36, 41, 46)", "rgb(47, 145, 97)"]
+  },
+  "filteredOptionScroll": {
+    "scroll": 4,
+    "activeVisible": true
+  },
+  "indexedCandidateMeasurement": {
+    "candidates": 10000,
+    "indexMs": 1.3999999910593033,
+    "matchingMedianMs": 0.29999999701976776,
+    "matchingP95Ms": 0.5999999940395355,
+    "iterations": 200,
+    "mountedOptions": 1
+  },
+  "portableBrowserErrors": [],
+  "audit": {
+    "highFindings": 115,
+    "newHighGateFailures": 92,
+    "highFindingsWhoseSnippetAlreadyExistsAtHead": 115,
+    "newHighSnippets": 0,
+    "customPropertyCycles": 0,
+    "baselineCommit": "5af0ec923a605aba5e6e3571d639f6238095804c"
+  },
+  "baseUiTests": {
+    "files": 150,
+    "passed": 1717
+  },
+  "checks": {
+    "typecheck": "passed",
+    "changedFileEslint": "passed",
+    "packageBuild": "passed",
+    "portableBrowser": "passed"
+  },
+  "cardTextScaleCases": 10,
+  "rtlRail": {
+    "right": "0px",
+    "left": "258.594px",
+    "width": "3px"
+  },
+  "roundedRailRevision": {
+    "implementation": "Inset shadow inherits full card radius",
+    "nativeCombinationsPassed": 180,
+    "cardTestsPassed": 29,
+    "rtlShadow": "rgb(137, 167, 238) -3px 0px 0px 0px inset"
+  }
+}

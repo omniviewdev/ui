@@ -1,0 +1,69 @@
+.Layout,
+.Narrow,
+.Panel,
+.Label,
+.Results {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--ov-space-stack-md);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+}
+
+.Layout {
+  inline-size: min(100%, calc(var(--ov-size-button-height-md) * 24));
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--ov-size-button-height-md) * 12)), 1fr)
+  );
+  gap: var(--ov-space-stack-lg);
+}
+
+.Panel {
+  padding: var(--ov-space-stack-lg);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+}
+
+.Panel h3,
+.Layout p,
+.Narrow p {
+  margin: 0;
+  font-size: inherit;
+  font-weight: var(--ov-font-weight-label);
+}
+
+.Label {
+  gap: var(--ov-space-stack-xs);
+}
+
+.Results .Resource {
+  display: grid;
+  gap: var(--ov-space-stack-xs);
+  justify-content: stretch;
+  text-align: start;
+  white-space: normal;
+  padding: var(--ov-space-stack-sm) var(--ov-space-inline-control);
+  overflow-wrap: anywhere;
+}
+
+.Resource span {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+
+.Narrow {
+  inline-size: min(100%, calc(var(--ov-size-button-height-md) * 8));
+}
+
+.CustomScope {
+  --ov-syntax-property: var(--ov-color-warning);
+  --ov-syntax-string: var(--ov-color-success);
+  --ov-color-bg-surface-overlay: var(--ov-color-bg-elevated);
+}

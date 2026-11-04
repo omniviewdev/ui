@@ -30,6 +30,21 @@ the ordinary default boundary in each built-in. `color.border.focus` and
 their own semantic roles. Use one intentional neutral boundary owner per edge;
 do not substitute text colors or impose a decorative-line contrast floor.
 
+## Interactive cards
+
+`--ov-color-card-bg` and `--ov-color-card-border` keep opt-in interactive cards quiet.
+`--ov-color-card-hover-bg` / `--ov-color-card-hover-border` identify hover;
+`--ov-color-card-selected-bg` / `--ov-color-card-selected-border` identify selection.
+These aliases resolve on every theme root and accept custom theme overrides.
+Selection uses `--ov-size-card-selection-rail` (3px) on the logical leading edge.
+Keyboard focus uses `--ov-size-card-focus-ring-width` (2px) with the existing
+`--ov-color-state-focus-ring`; it does not replace the selection rail.
+
+Only `Card interactive` consumes these new aliases. Existing palette defaults
+remain unchanged. Card aliases map to surface/default, control-hover/strong,
+and selected/accent-strong roles respectively; geometry has no prior token.
+
+
 ## Canonical token prefixes
 
 - Primitives: `--ov-primitive-*`

@@ -1,10 +1,12 @@
 import {
   createContext,
   forwardRef,
+  memo,
   useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -73,7 +75,7 @@ export function useToast(): ToastController {
   return ctx;
 }
 
-function ToastEntry({
+const ToastEntry = memo(function ToastEntry({
   item,
   onDismiss,
   onRemove,
@@ -196,7 +198,7 @@ function ToastEntry({
       )}
     </div>
   );
-}
+});
 let nextId = 0;
 export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(function ToastProvider(
   {
@@ -318,7 +320,11 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
     },
     [toast, update],
   );
-  const ordered = position.startsWith('top') ? items : [...items].reverse();
+  const controller = useMemo(
+    () => ({ toast, update, dismiss, dismissAll, promise }),
+    [toast, update, dismiss, dismissAll, promise],
+  );
+  const ordered = position.startsWith('top') || items.length < 2 ? items : [...items].reverse();
   const portalAttrs: Record<string, string> = {};
   if (typeof document !== 'undefined') {
     for (const attr of document.documentElement.getAttributeNames()) {
@@ -327,7 +333,7 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
     }
   }
   return (
-    <ToastContext.Provider value={{ toast, update, dismiss, dismissAll, promise }}>
+    <ToastContext.Provider value={controller}>
       {children}
       {typeof document !== 'undefined' &&
         createPortal(

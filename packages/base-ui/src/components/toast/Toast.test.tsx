@@ -232,6 +232,42 @@ describe('controlled toast presentation', () => {
     return { api: () => api, ...view };
   }
 
+  it('preserves controller, identity, deadline and updated callbacks across position changes', () => {
+    let api!: ToastController;
+    function Consumer() {
+      api = useToast();
+      return null;
+    }
+    const consumer = <Consumer />;
+    const { rerender } = renderWithTheme(
+      <ToastProvider position="bottom-right">{consumer}</ToastProvider>,
+    );
+    const controller = api;
+    const originalDismiss = vi.fn();
+    const latestDismiss = vi.fn();
+    act(() => {
+      api.toast('Position test', {
+        id: 'position',
+        duration: 1000,
+        onDismiss: originalDismiss,
+      });
+    });
+    const entry = screen.getByText('Position test').closest('[data-ov-component="toast"]');
+    act(() => vi.advanceTimersByTime(400));
+    rerender(<ToastProvider position="top-left">{consumer}</ToastProvider>);
+    expect(api).toBe(controller);
+    expect(screen.getByText('Position test').closest('[data-ov-component="toast"]')).toBe(entry);
+    expect(entry?.parentElement).toHaveAttribute('data-ov-position', 'top-left');
+    act(() => api.update('position', { onDismiss: latestDismiss }));
+    act(() => vi.advanceTimersByTime(599));
+    expect(latestDismiss).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(originalDismiss).not.toHaveBeenCalled();
+    expect(latestDismiss).toHaveBeenCalledExactlyOnceWith('timeout');
+    act(() => vi.advanceTimersByTime(200));
+    expect(screen.queryByText('Position test')).not.toBeInTheDocument();
+  });
+
   it('does not overwrite caller IDs when generating a new toast ID', () => {
     const { api } = setup();
     let seed = '';

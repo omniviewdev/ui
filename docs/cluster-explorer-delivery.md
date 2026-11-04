@@ -2,6 +2,51 @@
 
 Tracking board: https://github.com/orgs/omniviewdev/projects/14
 
+**Implementation: IN PROGRESS.** Source implementation exists across UI, Kubernetes and host/runtime. Native application verification, persistence/restart evidence, integrated screenshots and source-compatible release PRs remain integration gates. Source tests and standalone UI proof do not certify the native application.
+
+## Current source implementation
+
+The tables below preserve the pre-migration audit. Historical defects describe the old source, not the intended final behavior. This status records implemented source, not completed runtime acceptance.
+
+| Area                    | Implemented source and evidence                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Explorer and navigation | `pages/ClustersPage.tsx`, `components/connections/ExplorerSidebar.tsx` and `ConnectionCard.tsx`: shared search/scope/facets, compact cards, direct open, connected-first Debug view, folders and saved lenses.                                                                                                                                                                            |
+| Table                   | `components/connections/ConnectionTable.tsx`: base-ui `DataTable`, identity/provider/environment/region/account/status/metadata columns, sorting, grouping, visibility, density and virtual body.                                                                                                                                                                                         |
+| Preview and settings    | `components/connections/ConnectionContextMenu.tsx`: explicit Preview dialog, independent overflow actions and full encoded cluster Settings route. Settings retain identity, avatar, description, tags and connection controls.                                                                                                                                                           |
+| Organization            | `components/connections/ClusterOrganization.tsx`, `ClusterHub.tsx`, `ExplorerSidebar.tsx`, `hooks/useClusterPreferences.ts` and `utils/folderRules.ts`: shared folder drop targets, explicit organization mode, cancellation-safe assignment, menu alternatives and deduplicated manual-plus-rule membership. Saved section order/collapse and legacy folder images remain.               |
+| Named custom assets     | `components/connections/FolderDialog.tsx`, `utils/avatarUtils.ts`, `utils/folderIcons.ts` and `hooks/useClusterPreferences.ts`: reusable named raster assets, validated imports, base-ui IconPicker, backend asset storage and legacy inline image fallback. In-use asset removal preserves folder appearance.                                                                            |
+| Saved lenses            | `hooks/useClusterPreferences.ts`, `types/clusterExplorer.ts` and `pages/ClustersPage.tsx`: backend `cluster_saved_lenses`, save/edit/delete/reorder and restoration of query/facets/scope/group/sort/view.                                                                                                                                                                                |
+| Shared recents          | `pages/ClusterResourcesRoute.tsx` records access in the connected resource view, rather than assuming a click or connection attempt succeeded. Explorer, homepage and launcher routes converge on that view. `hooks/useClusterPreferences.ts` retains backend `cluster_recent`, timestamps/counts and 100-entry limit. Native restart and cross-entry-point verification remain required. |
+| Source provenance       | `utils/clusterSearch.ts`, `hooks/useConnectionGrouping.ts`, `ConnectionCard.tsx` and `ConnectionTable.tsx`: explicit source/key provenance, configured-hint labels and current/stale/unknown metadata. Names do not establish environment or ownership. Readiness is not workload health; missing metrics remain unknown.                                                                 |
+
+Host tracking: [omniview#389](https://github.com/omniviewdev/omniview/issues/389) and [omniview#390](https://github.com/omniviewdev/omniview/issues/390). UI and Kubernetes work remains linked in the tracking table below.
+
+## Publication and source-compatibility gate
+
+Primary npm `latest` manifests observed during this audit:
+
+| Package                                                             | Published version | Published peer dependencies                                                                                      |
+| ------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [base-ui](https://registry.npmjs.org/@omniviewdev%2fbase-ui/latest) | `0.13.0`          | `react ^19.3.1`, `react-dom ^19.3.1`                                                                             |
+| [ai-ui](https://registry.npmjs.org/@omniviewdev%2fai-ui/latest)     | `6.1.7`           | `base-ui 0.13.0`, `react ^19.3.1`, `react-dom ^19.3.1`, `react-icons ^5.7.0`                                     |
+| [editors](https://registry.npmjs.org/@omniviewdev%2feditors/latest) | `6.1.7`           | `base-ui 0.13.0`, `react ^19.3.1`, `react-dom ^19.3.1`                                                           |
+| [runtime](https://registry.npmjs.org/@omniviewdev%2fruntime/latest) | `0.28.0`          | `base-ui ~0.13.0`, `react ^19.3.1`, `react-dom ^19.3.1`, `react-router ^8.5.0`, `@tanstack/react-query ^5.105.0` |
+
+Local UI source still declares base-ui `0.13.0` and ai-ui/editors `6.1.7`; its workspace peers use `workspace:*`. Those declarations are not evidence that the new APIs exist in published `0.13.0`. Runtime source declares `0.7.4`, but stable release automation stamps the actual release version; that source value is not npm latest.
+
+[UI#104](https://github.com/omniviewdev/ui/pull/104) merged at `429a614967e7654a2ba6c9dc94c9ba85f5fd26e6`. Live [UI#106](https://github.com/omniviewdev/ui/pull/106) is **OPEN**, not draft, with merge state **UNSTABLE**. Its current payload is base-ui `0.14.0`, ai-ui `6.1.8` and editors `6.1.8`, containing Card/KeyedSearch from #104. Its current release notes do not include IconPicker. The new `.changeset/reusable-icon-picker.md` requests a minor base-ui release; the final Changesets payload must include it before consumers select a version.
+
+Safe publication order:
+
+1. Obtain maintainer approval to merge the IconPicker source/export changes and changeset. Let Changesets update the release PR. If #106 has already published, use the next generated release instead; do not assume `0.14.0` contains IconPicker.
+2. Review and authorize the resulting UI release PR. UI `.github/workflows/release.yml` installs with a frozen lock, builds, and runs Changesets on pushes to main; merging the version PR authorizes automatic npm publication. Confirm actual registry manifests and package exports for Card, KeyedSearch and IconPicker. Publish the matching ai-ui/editors cohort because their published base-ui peers are exact, not broad ranges.
+3. Update host dependencies and runtime base-ui peer/devDependency to the actual released cohort. `~0.13.0` excludes `0.14.0`; changing only the plugin cannot fix that. Expose the new base-ui API through the host's shared dependency export and keep `ui/features/plugins/api/shared_dependencies.ts` synchronized with `packages/omniviewdev-vite-plugin/src/sharedPackages.ts`.
+4. Regenerate ordinary repository locks from published packages with the repository's pinned pnpm, outside managed workspace-link overlays. Commit real resolution/integrity and peer snapshots with source-compatible manifests. Do not hand-write lock entries, freeze local `link:` overlays into release PRs, suppress peer errors, or reference unpublished versions. UI, host and plugin locks must each match their own final manifests.
+5. Obtain explicit maintainer release authorization for the host/runtime cohort. Host `.github/workflows/release.yaml` supports npm-only `workflow_dispatch` with a version, or a `v*` tag for desktop plus npm. Its reusable `npm-publish.yml` stamps providers/runtime/vite-plugin to that version, builds providers → runtime → vite-plugin, and publishes to `latest`. Select an unused approved version rather than editing runtime's stale source version and assuming it publishes. Ensure npm trusted publishers authorize the calling `release.yaml`, and the workflow changes exist on main before tagging.
+6. After that runtime exists on npm, update the Kubernetes consumer to the published runtime and matching UI cohort, regenerate its real lock, then complete integrated native verification and PR evidence. No plugin PR may depend on missing shared exports or only-local workspace APIs.
+
+No release, tag, publish, merge or native-readiness claim is authorized by this audit. Parent owns final cohort selection, generated bindings, native linking, checks, screenshots, proof documentation and PRs.
+
 ## Delivery gates
 
 1. Review and land the reusable Card interaction and KeyedSearch components in the UI repository. The first PR contains no Kubernetes implementation.

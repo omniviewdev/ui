@@ -69,10 +69,11 @@ const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>(functi
     color: color ?? rendered?.color,
     size: size ?? rendered?.size,
   });
+  // A styled render control owns its chrome, spacing, and hit-area dimensions.
   return (
     <BasePopover.Trigger
       ref={ref}
-      className={withBaseClassName(styles.Trigger, className)}
+      className={rendered ? className : withBaseClassName(styles.Trigger, className)}
       {...styleDataAttributes(resolved)}
       {...props}
     />

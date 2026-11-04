@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { BUILT_IN_THEMES } from '../../base-ui/src/theme/registry/catalog.ts';
@@ -16,13 +16,15 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 const results = [];
+const interactions = [];
 const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
 
-async function story(id, theme = 'dark', density = 'comfortable', textSize = '100') {
+async function story(id, theme = 'dark', density = 'comfortable', textSize = '100', args = '') {
   const url = new URL('/iframe.html', origin);
   url.searchParams.set('id', id);
   url.searchParams.set('viewMode', 'story');
   url.searchParams.set('globals', `theme:${theme};density:${density};textSize:${textSize}`);
+  if (args) url.searchParams.set('args', args);
   await page.goto(url.href);
   await page.waitForFunction(
     ({ theme, density, textSize }) => {
@@ -152,6 +154,209 @@ try {
     }
   }
 
+  await story('components-iconpicker--theme-size-matrix');
+  for (const theme of BUILT_IN_THEMES) {
+    for (const density of ['comfortable', 'compact']) {
+      for (const size of sizes) {
+        const label = `${theme.name} ${density} ${size} icon`;
+        const trigger = page.getByRole('button', { name: `${label}: Folder`, exact: true });
+        const triggerGeometry = await trigger.evaluate((button) => {
+          const box = button.getBoundingClientRect();
+          const glyph = button.querySelector('svg')?.getBoundingClientRect();
+          return {
+            width: box.width,
+            height: box.height,
+            text: button.textContent.trim(),
+            centered:
+              !!glyph &&
+              Math.abs(glyph.x + glyph.width / 2 - box.x - box.width / 2) < 1 &&
+              Math.abs(glyph.y + glyph.height / 2 - box.y - box.height / 2) < 1,
+          };
+        });
+        assert(
+          Math.abs(triggerGeometry.width - triggerGeometry.height) < 1 &&
+            triggerGeometry.centered &&
+            triggerGeometry.text === '',
+          JSON.stringify({ theme: theme.id, density, size, triggerGeometry }),
+        );
+        interactions.push({
+          component: 'IconPicker',
+          scenario: 'square-trigger',
+          theme: theme.id,
+          density,
+          size,
+          ...triggerGeometry,
+        });
+        await trigger.click();
+        const popup = page.getByRole('dialog', { name: label, exact: true });
+        await popup.waitFor();
+        await settle();
+        const geometry = await popup.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          const input = element.querySelector('input');
+          const shell = input.parentElement;
+          const inputStyle = getComputedStyle(input);
+          return {
+            width: rect.width,
+            insideViewport:
+              rect.left >= -1 &&
+              rect.right <= innerWidth + 1 &&
+              rect.top >= -1 &&
+              rect.bottom <= innerHeight + 1,
+            theme: element.closest('[data-ov-theme]')?.dataset.ovTheme,
+            focused: input === document.activeElement,
+            inputHeight: input.getBoundingClientRect().height,
+            lineHeight: parseFloat(inputStyle.lineHeight),
+            shellHeight: shell.getBoundingClientRect().height,
+            minimumHeight: parseFloat(getComputedStyle(shell).minHeight),
+            overflow: element.scrollWidth > element.clientWidth + 1,
+          };
+        });
+        assert(
+          geometry.insideViewport &&
+            geometry.focused &&
+            !geometry.overflow &&
+            geometry.theme === theme.id &&
+            Number.isFinite(geometry.minimumHeight) &&
+            geometry.shellHeight >= geometry.minimumHeight - 1 &&
+            geometry.inputHeight >= geometry.lineHeight - 1,
+          JSON.stringify({ component: 'IconPicker', theme: theme.id, density, size, geometry }),
+        );
+        results.push({ component: 'IconPicker', theme: theme.id, density, size, geometry });
+        if (density === 'comfortable' && size === 'md') {
+          await popup.screenshot({ path: path.join(output, `icons-${theme.id}.png`) });
+        }
+        const search = popup.getByRole('searchbox', { name: 'Search icons' });
+        await search.fill('cloud');
+        await search.press('ArrowDown');
+        assert(
+          await popup
+            .getByRole('button', { name: 'Cloud', exact: true })
+            .evaluate((button) => button === document.activeElement),
+        );
+        await page.keyboard.press('Enter');
+        await page.getByRole('button', { name: `${label}: Cloud`, exact: true }).waitFor();
+      }
+    }
+  }
+  await capture('icons-native-theme-size-matrix');
+
+  await page.setViewportSize({ width: 360, height: 900 });
+  for (const theme of ['dark', 'light']) {
+    for (const textSize of ['80', '90', '100', '110', '125']) {
+      await story('components-iconpicker--search-and-keyboard', theme, 'comfortable', textSize);
+      const popup = page.getByRole('dialog', { name: 'Choose icon', exact: true });
+      await popup.waitFor();
+      await settle();
+      const fitting = await popup.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const input = element.querySelector('input');
+        return (
+          rect.left >= -1 &&
+          rect.right <= innerWidth + 1 &&
+          element.scrollWidth <= element.clientWidth + 1 &&
+          input.getBoundingClientRect().height >= parseFloat(getComputedStyle(input).lineHeight) - 1
+        );
+      });
+      assert(fitting, `${theme} ${textSize} narrow picker clips content`);
+      if (textSize === '125') await capture(`icons-narrow-${theme}-125`);
+    }
+  }
+  for (const density of ['comfortable', 'compact']) {
+    for (const size of sizes) {
+      await story(
+        'components-iconpicker--search-and-keyboard',
+        'high-contrast-light',
+        density,
+        '125',
+        `size:${size}`,
+      );
+      const popup = page.getByRole('dialog', { name: 'Choose icon', exact: true });
+      await popup.waitFor();
+      await settle();
+      const fits = await popup.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.left >= -1 &&
+          rect.right <= innerWidth + 1 &&
+          element.scrollWidth <= element.clientWidth + 1
+        );
+      });
+      assert(fits, `Narrow ${density} ${size} picker overflows at 125%`);
+      if (density === 'comfortable' && size === 'xl') await capture('icons-narrow-xl-125');
+      await popup.getByRole('searchbox', { name: 'Search icons' }).fill('cloud');
+      await page.keyboard.press('Enter');
+      await page.getByRole('button', { name: 'Choose icon: Cloud', exact: true }).waitFor();
+      interactions.push({
+        component: 'IconPicker',
+        scenario: 'narrow-keyboard',
+        size,
+        density,
+        textSize: '125',
+      });
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await story('components-iconpicker--nested-custom-reduced-motion');
+  const customPopup = page.getByRole('dialog', { name: 'Custom scoped icon', exact: true });
+  await customPopup.waitFor();
+  assert.equal(
+    await customPopup.evaluate((element) => getComputedStyle(element).transitionDuration),
+    '0s',
+  );
+  await capture('icons-nested-custom-reduced-motion');
+
+  await story('components-iconpicker--upload-and-library');
+  let libraryPopup = page.getByRole('dialog', { name: 'Choose icon', exact: true });
+  await libraryPopup.waitFor();
+  await page.keyboard.press('Escape');
+  await libraryPopup.waitFor({ state: 'hidden' });
+  await page.getByRole('textbox', { name: 'New icon name' }).fill('On-call icon');
+  await page.getByRole('button', { name: 'Choose icon: Folder', exact: true }).click();
+  libraryPopup = page.getByRole('dialog', { name: 'Choose icon', exact: true });
+  const fileInput = libraryPopup.getByLabel('Upload icon file');
+  await fileInput.setInputFiles({
+    name: 'blocked.svg',
+    mimeType: 'image/svg+xml',
+    buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>'),
+  });
+  await libraryPopup.getByRole('alert').waitFor();
+  assert.match(
+    await libraryPopup.getByRole('alert').textContent(),
+    /Choose a PNG, JPEG, GIF or WebP/,
+  );
+  await fileInput.setInputFiles({
+    name: 'verified-raster.png',
+    mimeType: 'image/png',
+    buffer: await readFile(path.join(output, 'icons-dark.png')),
+  });
+  await page.getByRole('button', { name: 'Choose icon: On-call icon', exact: true }).waitFor();
+  assert.equal(
+    await libraryPopup
+      .getByRole('button', { name: 'On-call icon', exact: true })
+      .getAttribute('aria-pressed'),
+    'true',
+  );
+  await page.waitForFunction(() => {
+    const image = document.querySelector('button[aria-label="On-call icon"] img');
+    return image?.complete && image.naturalWidth > 0;
+  });
+  await capture('icons-upload-library');
+  await libraryPopup.getByRole('button', { name: 'Remove selected image', exact: true }).click();
+  await page.getByRole('button', { name: 'Choose icon: None', exact: true }).waitFor();
+  assert.equal(
+    await libraryPopup.getByRole('button', { name: 'On-call icon', exact: true }).count(),
+    0,
+  );
+  interactions.push({
+    component: 'IconPicker',
+    scenario: 'named-raster-library',
+    rejectedSvg: true,
+    decodedRaster: true,
+    selected: true,
+    removed: true,
+  });
+
   await story('components-keyedsearch--interactive-resources');
   let input = page.getByRole('combobox');
   await input.fill('api');
@@ -207,6 +412,7 @@ try {
   const report = {
     nativeThemes: BUILT_IN_THEMES.map(({ id }) => id),
     results,
+    interactions,
     browserErrors: errors,
   };
   await writeFile(path.join(output, 'verification.json'), `${JSON.stringify(report, null, 2)}\n`);

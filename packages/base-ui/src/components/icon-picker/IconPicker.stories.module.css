@@ -1,0 +1,53 @@
+.Catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 40rem), 1fr));
+  gap: var(--ov-space-stack-lg);
+}
+
+.Panel {
+  display: grid;
+  align-content: start;
+  gap: var(--ov-space-stack-md);
+  padding: var(--ov-panel-padding);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-surface);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+}
+
+.Panel h3,
+.Panel h4,
+.Panel p {
+  margin: 0;
+}
+
+.Panel p {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-body);
+  line-height: var(--ov-line-height-normal);
+}
+
+.Row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-md);
+}
+
+.Density,
+.Size {
+  display: grid;
+  gap: var(--ov-space-stack-sm);
+}
+
+.Size > span {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+
+.CustomScope {
+  --ov-color-bg-control: var(--ov-color-bg-surface-raised);
+  --ov-color-border-chrome: var(--ov-color-accent-strong);
+  --ov-color-state-selected: var(--ov-color-accent-soft);
+}

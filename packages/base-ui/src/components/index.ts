@@ -34,6 +34,7 @@ export * from './empty-state';
 export * from './form-field';
 export * from './grid';
 export * from './icon-button';
+export * from './icon-picker';
 export * from './image';
 export * from './image-list';
 export * from './input';

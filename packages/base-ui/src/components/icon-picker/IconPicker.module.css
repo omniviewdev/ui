@@ -1,0 +1,175 @@
+.Root {
+  --_ov-picker-cell: var(--ov-size-button-height-md);
+  --_ov-picker-gap: var(--ov-space-stack-xs);
+  display: inline-flex;
+  max-inline-size: 100%;
+  font-family: var(--ov-font-sans);
+}
+
+.Root[data-ov-size='xs'] {
+  --_ov-picker-cell: var(--ov-size-button-height-xs);
+}
+.Root[data-ov-size='sm'] {
+  --_ov-picker-cell: var(--ov-size-button-height-sm);
+}
+.Root[data-ov-size='lg'] {
+  --_ov-picker-cell: var(--ov-size-button-height-lg);
+}
+.Root[data-ov-size='xl'] {
+  --_ov-picker-cell: var(--ov-size-button-height-xl);
+}
+
+.Trigger {
+  flex-shrink: 0;
+  max-inline-size: 100%;
+}
+
+.Preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: 1em;
+  block-size: 1em;
+  min-inline-size: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  font-size: var(--ov-size-icon-button-icon-md);
+  line-height: 1;
+  color: inherit;
+}
+
+.Preview[data-ov-size='xs'] {
+  font-size: var(--ov-size-icon-button-icon-xs);
+}
+.Preview[data-ov-size='sm'] {
+  font-size: var(--ov-size-icon-button-icon-sm);
+}
+.Preview[data-ov-size='lg'] {
+  font-size: var(--ov-size-icon-button-icon-lg);
+}
+.Preview[data-ov-size='xl'] {
+  font-size: var(--ov-size-icon-button-icon-xl);
+}
+
+.Preview svg {
+  inline-size: 1em;
+  block-size: 1em;
+}
+
+.Image {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.Popup {
+  --_ov-picker-padding: var(--ov-panel-padding);
+  box-sizing: border-box;
+  inline-size: calc(
+    var(--_ov-picker-cell) * 6 + var(--_ov-picker-gap) * 5 + var(--_ov-picker-padding) * 2
+  );
+  min-inline-size: 0;
+  max-inline-size: calc(100vw - var(--ov-space-stack-lg) * 2);
+  max-block-size: min(80vh, var(--available-height, 80vh));
+  overflow-y: auto;
+  padding: var(--_ov-picker-padding);
+  gap: var(--ov-space-stack-sm);
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--_ov-picker-gap);
+}
+
+.Option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  block-size: var(--_ov-picker-cell);
+  padding: 0;
+  border: 1px solid var(--ov-color-border-chrome);
+  border-radius: var(--ov-radius-control);
+  background: var(--ov-color-bg-control);
+  color: var(--ov-color-fg-default);
+  font: inherit;
+  cursor: pointer;
+}
+
+.Option:not(:disabled):hover {
+  background: var(--ov-color-bg-control-hover);
+}
+
+.Option[aria-pressed='true'] {
+  border-color: var(--ov-color-border-focus);
+  background: var(--ov-color-state-selected);
+  color: var(--ov-color-fg-default);
+}
+
+.Option:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: 2px;
+}
+
+.Option:disabled {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: not-allowed;
+}
+
+.Check {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  border-radius: var(--ov-radius-control);
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1;
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-xs);
+}
+
+.Hint,
+.Error {
+  margin: 0;
+  font-size: var(--ov-font-size-caption);
+  line-height: var(--ov-line-height-normal);
+  color: var(--ov-color-fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.Error {
+  color: var(--ov-color-danger);
+}
+
+.SrOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Popup,
+  .Trigger {
+    transition: none;
+  }
+}
+
+:global([data-ov-motion='reduced']) .Popup,
+:global([data-ov-motion='reduced']) .Trigger {
+  transition: none;
+}

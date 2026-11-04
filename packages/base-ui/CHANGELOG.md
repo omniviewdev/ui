@@ -1,5 +1,19 @@
 # @omniviewdev/base-ui
 
+## 0.14.0
+
+### Minor Changes
+
+- [#104](https://github.com/omniviewdev/ui/pull/104) [`429a614`](https://github.com/omniviewdev/ui/commit/429a614967e7654a2ba6c9dc94c9ba85f5fd26e6) Thanks [@joshuapare](https://github.com/joshuapare)! - Add `KeyedSearch` with typed field/value schemas, lossless query parsing, caret-aware automatic completion, syntax-token highlighting, native editing and consumer-owned result navigation.
+
+  Extend `Card` with opt-in interactive hover/selection states, a logical selection rail, independent keyboard focus and native button/link ActionAreas with sibling overflow composition. Add semantic card aliases that resolve within nested/custom theme roots, reduced-motion behavior, and stories across all built-in themes, sizes and densities.
+
+- [#107](https://github.com/omniviewdev/ui/pull/107) [`924d231`](https://github.com/omniviewdev/ui/commit/924d231ca5c0467452e0b7119381ad01f0e41cdd) Thanks [@joshuapare](https://github.com/joshuapare)! - Add a controlled, domain-neutral `IconPicker` with preset, emoji and safe local raster image choices, searchable labels and keywords, accessible grid keyboard navigation, and all five native sizes.
+
+  Expose caller-owned upload and removal controls with pending/error states and a typed raster MIME accept list. Preserve enclosing theme, density, text scale and reduced-motion settings; reject unsafe image sources without fetching arbitrary remote previews. Applications retain asset validation, persistence and in-use deletion policy.
+
+  Use a uniform icon-only square trigger with centered artwork. Keep styled custom popover triggers in control of their own chrome and hit-area dimensions instead of applying a second layer of popover button padding.
+
 ## 0.13.0
 
 ### Minor Changes

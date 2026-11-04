@@ -222,18 +222,15 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
       current.current = [];
     };
   }, []);
-  const commit = useCallback((next: ToastItem[]) => {
-    current.current = next;
-    if (mounted.current) setItems(next);
-  }, []);
-  const remove = useCallback(
-    (id: string) => {
+  const operations = useMemo(() => {
+    const commit = (next: ToastItem[]) => {
+      current.current = next;
+      if (mounted.current) setItems(next);
+    };
+    const remove = (id: string) => {
       commit(current.current.filter((item) => item.id !== id));
-    },
-    [commit],
-  );
-  const end = useCallback(
-    (id: string, reason: ToastDismissReason, animate = false) => {
+    };
+    const end = (id: string, reason: ToastDismissReason, animate = false) => {
       const item = current.current.find((entry) => entry.id === id);
       if (!item || item.exiting) return;
       commit(
@@ -242,30 +239,29 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
           : current.current.filter((entry) => entry.id !== id),
       );
       item.onDismiss?.(reason);
-    },
-    [commit],
-  );
-  const dismiss = useCallback((id: string) => end(id, 'programmatic'), [end]);
-  const dismissAll = useCallback(() => {
-    const previous = current.current;
-    commit([]);
-    previous.forEach((item) => {
-      if (!item.exiting) item.onDismiss?.('dismissAll');
-    });
-  }, [commit]);
-  const update = useCallback(
-    (id: string, patch: ToastUpdate & { loading?: boolean }) => {
+    };
+    const dismiss = (id: string) => end(id, 'programmatic');
+    const dismissAll = () => {
+      const previous = current.current;
+      commit([]);
+      previous.forEach((item) => {
+        if (!item.exiting) item.onDismiss?.('dismissAll');
+      });
+    };
+    const update = (id: string, patch: ToastUpdate & { loading?: boolean }) => {
       if (!mounted.current) return;
       commit(
         current.current.map((item) =>
           item.id === id && !item.exiting ? { ...item, ...patch } : item,
         ),
       );
-    },
-    [commit],
-  );
-  const toast = useCallback(
-    (message: string, options?: ToastOptions) => {
+    };
+    return { commit, remove, end, dismiss, dismissAll, update };
+  }, []);
+  const { end, remove } = operations;
+  const controller = useMemo(() => {
+    const { commit, update, dismiss, dismissAll } = operations;
+    const toast = (message: string, options?: ToastOptions) => {
       let id = options?.id;
       if (id === undefined) {
         do {
@@ -292,11 +288,8 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
         if (!entry.exiting) entry.onDismiss?.('overflow');
       });
       return id;
-    },
-    [commit, maxVisible, update],
-  );
-  const promise = useCallback(
-    <T,>(pending: Promise<T>, messages: ToastPromiseMessages<T>): Promise<T> => {
+    };
+    const promise = <T,>(pending: Promise<T>, messages: ToastPromiseMessages<T>): Promise<T> => {
       const id = toast(messages.loading, { duration: 0 });
       update(id, { loading: true });
       pending.then(
@@ -317,13 +310,9 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
           }),
       );
       return pending;
-    },
-    [toast, update],
-  );
-  const controller = useMemo(
-    () => ({ toast, update, dismiss, dismissAll, promise }),
-    [toast, update, dismiss, dismissAll, promise],
-  );
+    };
+    return { toast, update, dismiss, dismissAll, promise };
+  }, [maxVisible, operations]);
   const ordered = position.startsWith('top') || items.length < 2 ? items : [...items].reverse();
   const portalAttrs: Record<string, string> = {};
   if (typeof document !== 'undefined') {

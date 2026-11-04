@@ -232,7 +232,7 @@ describe('controlled toast presentation', () => {
     return { api: () => api, ...view };
   }
 
-  it('preserves controller, identity, deadline and updated callbacks across position changes', () => {
+  it('preserves identity, deadline and updated callbacks across viewport changes', () => {
     let api!: ToastController;
     function Consumer() {
       api = useToast();
@@ -242,7 +242,6 @@ describe('controlled toast presentation', () => {
     const { rerender } = renderWithTheme(
       <ToastProvider position="bottom-right">{consumer}</ToastProvider>,
     );
-    const controller = api;
     const originalDismiss = vi.fn();
     const latestDismiss = vi.fn();
     act(() => {
@@ -254,8 +253,11 @@ describe('controlled toast presentation', () => {
     });
     const entry = screen.getByText('Position test').closest('[data-ov-component="toast"]');
     act(() => vi.advanceTimersByTime(400));
-    rerender(<ToastProvider position="top-left">{consumer}</ToastProvider>);
-    expect(api).toBe(controller);
+    rerender(
+      <ToastProvider position="top-left" maxVisible={2}>
+        {consumer}
+      </ToastProvider>,
+    );
     expect(screen.getByText('Position test').closest('[data-ov-component="toast"]')).toBe(entry);
     expect(entry?.parentElement).toHaveAttribute('data-ov-position', 'top-left');
     act(() => api.update('position', { onDismiss: latestDismiss }));

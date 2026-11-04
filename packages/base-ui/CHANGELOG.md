@@ -10,7 +10,7 @@
 
 ### Patch Changes
 
-- Keep the toast controller stable across position changes and skip rendering unchanged toast entries. Position changes preserve presentation identity, remaining expiry, and current dismissal callbacks.
+- Keep the toast controller stable across position changes and skip rendering unchanged toast entries. Build controller operations together instead of recreating individual callbacks on viewport renders. Position and capacity changes preserve presentation identity, remaining expiry, and current dismissal callbacks.
 
 ## 0.12.0
 

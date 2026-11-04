@@ -76,6 +76,48 @@ describe('IconPicker', () => {
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith('rocket');
   });
 
+  it.each([
+    { name: 'one row', count: 4, start: 0, disabled: [], expected: [0, 0, 0, 0] },
+    { name: 'partial last row', count: 10, start: 8, disabled: [], expected: [2, 8, 2, 8] },
+    { name: 'missing last-row column', count: 10, start: 4, disabled: [], expected: [4, 4, 4, 4] },
+    { name: 'disabled rows', count: 20, start: 1, disabled: [7, 13], expected: [19, 1, 19, 1] },
+    {
+      name: 'only enabled row in column',
+      count: 20,
+      start: 1,
+      disabled: [7, 13, 19],
+      expected: [1, 1, 1, 1],
+    },
+  ])(
+    'keeps vertical focus in its column with $name',
+    async ({ count, start, disabled, expected }) => {
+      const user = userEvent.setup();
+      const onValueChange = vi.fn();
+      const choices: IconPickerItem[] = Array.from({ length: count }, (_, index) => ({
+        id: String(index),
+        label: `Icon ${index}`,
+        kind: 'emoji',
+        emoji: '⭐',
+        disabled: disabled.includes(index),
+      }));
+      renderWithTheme(<IconPicker items={choices} onValueChange={onValueChange} />);
+      await user.click(screen.getByRole('button', { name: 'Choose icon: None' }));
+      const search = await screen.findByRole('searchbox');
+      await user.click(search);
+      await user.keyboard('{ArrowDown}');
+      for (let index = 0; index < start; index++) await user.keyboard('{ArrowRight}');
+      expect(screen.getByRole('button', { name: `Icon ${start}` })).toHaveFocus();
+      const keys = ['{ArrowDown}', '{ArrowDown}', '{ArrowUp}', '{ArrowUp}'];
+      for (const [index, key] of keys.entries()) {
+        await user.keyboard(key);
+        expect(screen.getByRole('button', { name: `Icon ${expected[index]}` })).toHaveFocus();
+      }
+      expect(onValueChange).not.toHaveBeenCalled();
+      await user.keyboard('{Enter}');
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith(String(expected.at(-1)));
+    },
+  );
+
   it('keeps selection controlled, clears to undefined, and never submits an owning form', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
@@ -113,6 +155,29 @@ describe('IconPicker', () => {
     view.rerender(<IconPicker items={items} onValueChange={onValueChange} open />);
     fireEvent.keyDown(screen.getByRole('searchbox'), { key: 'Enter', isComposing: true });
     expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it('keeps Safari composition-confirming Enter open and selects only on a later Enter', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithTheme(<IconPicker items={items} onValueChange={onValueChange} />);
+    const trigger = screen.getByRole('button', { name: 'Choose icon: None' });
+    await user.click(trigger);
+    const search = await screen.findByRole('searchbox');
+    await user.type(search, 'rocket');
+    fireEvent.compositionStart(search);
+    fireEvent.keyDown(search, { key: 'Enter', isComposing: false });
+    expect(onValueChange).not.toHaveBeenCalled();
+    fireEvent.compositionEnd(search, { data: 'rocket' });
+    fireEvent.keyDown(search, { key: 'Enter', keyCode: 229, isComposing: false });
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(search).toHaveFocus();
+    expect(screen.getByRole('button', { name: 'Rocket' })).toBeVisible();
+    await user.keyboard('{Enter}');
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('rocket');
+    await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'false'));
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it('shows truthful empty results and never accepts Enter without an enabled result', async () => {

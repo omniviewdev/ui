@@ -4,7 +4,7 @@ Reusable component acceptance passed. Kubernetes application integration and rel
 
 ## Verified
 
-- Base UI suite: 1,759 tests across 152 files passed.
+- Base UI suite: 1,765 tests across 152 files passed, including Safari composition and partial-grid keyboard navigation regressions.
 - Base UI TypeScript check and changed-component ESLint passed.
 - All nine native themes, five component sizes, and both densities: 90 picker combinations.
 - Icon-only square triggers with centered artwork and no visible label or chevron in every combination.

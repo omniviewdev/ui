@@ -125,6 +125,7 @@ export function IconPicker({
   const id = useId();
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
   const search = useRef<HTMLInputElement>(null);
+  const composing = useRef(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const optionRefs = useRef(new Map<string, HTMLButtonElement>());
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
@@ -171,12 +172,26 @@ export function IconPicker({
   function navigate(event: KeyboardEvent<HTMLButtonElement>, item: IconPickerItem) {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     const index = filtered.findIndex((entry) => entry.id === item.id);
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const column = index % COLUMNS;
+      const row = Math.floor(index / COLUMNS);
+      const rows = Math.floor((filtered.length - 1 - column) / COLUMNS) + 1;
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      for (let offset = 1; offset < rows; offset++) {
+        const nextRow = (row + direction * offset + rows) % rows;
+        const candidate = filtered[nextRow * COLUMNS + column];
+        if (candidate && !candidate.disabled) {
+          focusOption(candidate);
+          return;
+        }
+      }
+      return;
+    }
     const rtl = getComputedStyle(event.currentTarget).direction === 'rtl';
     let delta: number;
     if (event.key === 'ArrowRight') delta = rtl ? -1 : 1;
     else if (event.key === 'ArrowLeft') delta = rtl ? 1 : -1;
-    else if (event.key === 'ArrowDown') delta = COLUMNS;
-    else if (event.key === 'ArrowUp') delta = -COLUMNS;
     else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
       focusOption(event.key === 'Home' ? enabled[0] : enabled.at(-1));
@@ -234,8 +249,19 @@ export function IconPicker({
                       setQuery(event.target.value);
                       setFocusedId(undefined);
                     }}
+                    onCompositionStart={() => {
+                      composing.current = true;
+                    }}
+                    onCompositionEnd={() => {
+                      composing.current = false;
+                    }}
                     onKeyDown={(event) => {
-                      if (event.nativeEvent.isComposing) return;
+                      if (
+                        composing.current ||
+                        event.nativeEvent.isComposing ||
+                        event.keyCode === 229
+                      )
+                        return;
                       if (event.key === 'Enter') event.preventDefault();
                       if (busy) return;
                       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {

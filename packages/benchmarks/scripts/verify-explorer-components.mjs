@@ -160,6 +160,33 @@ try {
       for (const size of sizes) {
         const label = `${theme.name} ${density} ${size} icon`;
         const trigger = page.getByRole('button', { name: `${label}: Folder`, exact: true });
+        const triggerGeometry = await trigger.evaluate((button) => {
+          const box = button.getBoundingClientRect();
+          const glyph = button.querySelector('svg')?.getBoundingClientRect();
+          return {
+            width: box.width,
+            height: box.height,
+            text: button.textContent.trim(),
+            centered:
+              !!glyph &&
+              Math.abs(glyph.x + glyph.width / 2 - box.x - box.width / 2) < 1 &&
+              Math.abs(glyph.y + glyph.height / 2 - box.y - box.height / 2) < 1,
+          };
+        });
+        assert(
+          Math.abs(triggerGeometry.width - triggerGeometry.height) < 1 &&
+            triggerGeometry.centered &&
+            triggerGeometry.text === '',
+          JSON.stringify({ theme: theme.id, density, size, triggerGeometry }),
+        );
+        interactions.push({
+          component: 'IconPicker',
+          scenario: 'square-trigger',
+          theme: theme.id,
+          density,
+          size,
+          ...triggerGeometry,
+        });
         await trigger.click();
         const popup = page.getByRole('dialog', { name: label, exact: true });
         await popup.waitFor();

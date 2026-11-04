@@ -30,7 +30,8 @@ const items: IconPickerItem[] = [
 - `items` is a readonly array. IDs must be unique. Every item has `id`, `label`, optional `keywords`, and optional `disabled`.
 - The discriminated union contains `preset` with trusted application `icon: ReactNode`, `emoji` with `emoji: string`, or `image` with `src: string` and optional `removable: boolean`.
 - `size` supports `xs`, `sm`, `md`, `lg`, and `xl`. Density, text scale, themes, and motion inherit the enclosing base-ui scope.
-- `label` names the trigger and dialog; `searchPlaceholder` changes search placeholder copy.
+- The trigger is an icon-only square built on `IconButton`, without a visible name or chevron. Presets, emoji, and raster artwork share centered, tier-scaled bounds.
+- `label` supplies the accessible trigger name and popup title; the selected item's name remains accessible without changing button geometry. `searchPlaceholder` changes search placeholder copy.
 - `disabled` disables the trigger and prevents displaying a popup. Individual disabled items stay visible but cannot receive selection or keyboard focus.
 - `open`, `defaultOpen`, and `onOpenChange` optionally control popup visibility. The default is internally managed.
 - Standard div attributes, including `className`, `style`, and `id`, apply to the owning wrapper.

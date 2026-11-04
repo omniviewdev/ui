@@ -20,23 +20,36 @@
 }
 
 .Trigger {
+  flex-shrink: 0;
   max-inline-size: 100%;
-  gap: var(--ov-space-inline-control);
-}
-
-.TriggerLabel {
-  min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .Preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  max-inline-size: 100%;
-  max-block-size: 100%;
-  background: transparent;
+  inline-size: 1em;
+  block-size: 1em;
+  min-inline-size: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  font-size: var(--ov-size-icon-button-icon-md);
+  line-height: 1;
   color: inherit;
+}
+
+.Preview[data-ov-size='xs'] {
+  font-size: var(--ov-size-icon-button-icon-xs);
+}
+.Preview[data-ov-size='sm'] {
+  font-size: var(--ov-size-icon-button-icon-sm);
+}
+.Preview[data-ov-size='lg'] {
+  font-size: var(--ov-size-icon-button-icon-lg);
+}
+.Preview[data-ov-size='xl'] {
+  font-size: var(--ov-size-icon-button-icon-xl);
 }
 
 .Preview svg {
@@ -76,7 +89,7 @@
   justify-content: center;
   box-sizing: border-box;
   min-inline-size: 0;
-  min-block-size: var(--_ov-picker-cell);
+  block-size: var(--_ov-picker-cell);
   padding: 0;
   border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-control);

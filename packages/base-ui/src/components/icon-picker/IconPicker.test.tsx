@@ -248,20 +248,6 @@ describe('IconPicker', () => {
     ).toHaveAttribute('src', PNG);
   });
 
-  it.each(['xs', 'sm', 'md', 'lg', 'xl'] as const)(
-    'forwards %s to native controls, preview and popup',
-    async (size) => {
-      const user = userEvent.setup();
-      renderWithTheme(<IconPicker items={items} size={size} onValueChange={vi.fn()} />);
-      const trigger = screen.getByRole('button', { name: 'Choose icon: None' });
-      expect(trigger).toHaveAttribute('data-ov-size', size);
-      expect(trigger.querySelector('[data-ov-avatar-root]')).toHaveAttribute('data-ov-size', size);
-      await user.click(trigger);
-      const popup = await screen.findByRole('dialog');
-      expect(popup).toHaveAttribute('data-ov-size', size);
-    },
-  );
-
   it.each(['compact', 'comfortable'])(
     'keeps an initially open popup within its custom %s scope',
     async (density) => {

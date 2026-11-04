@@ -8,8 +8,8 @@ import {
 } from 'react';
 import { cn } from '../../system/classnames';
 import type { ComponentSize } from '../../system/types';
-import { Avatar } from '../avatar';
 import { Button } from '../button';
+import { IconButton } from '../icon-button';
 import { Image } from '../image';
 import { Input } from '../input';
 import { Popover } from '../popover';
@@ -86,24 +86,17 @@ function RasterPreview({ src }: { src: string }) {
 
 function Preview({ item, size }: { item?: IconPickerItem; size: ComponentSize }) {
   return (
-    <Avatar
-      className={styles.Preview}
-      size={size}
-      shape="rounded"
-      deterministic={false}
-      aria-hidden="true"
-      fallback={
-        item?.kind === 'preset' ? (
-          item.icon
-        ) : item?.kind === 'emoji' ? (
-          item.emoji
-        ) : item?.kind === 'image' ? (
-          <RasterPreview src={item.src} />
-        ) : (
-          <span>−</span>
-        )
-      }
-    />
+    <span className={styles.Preview} data-ov-size={size} aria-hidden="true">
+      {item?.kind === 'preset' ? (
+        item.icon
+      ) : item?.kind === 'emoji' ? (
+        item.emoji
+      ) : item?.kind === 'image' ? (
+        <RasterPreview src={item.src} />
+      ) : (
+        <span>−</span>
+      )}
+    </span>
   );
 }
 
@@ -207,13 +200,13 @@ export function IconPicker({
       <Popover.Root open={open} onOpenChange={changeOpen} size={size}>
         <Popover.Trigger
           disabled={disabled}
-          render={<Button size={size} variant="outline" className={styles.Trigger} />}
+          render={
+            <IconButton size={size} variant="outline" className={styles.Trigger}>
+              <Preview item={selected} size={size} />
+            </IconButton>
+          }
           aria-label={`${label}: ${selected?.label ?? 'None'}`}
-        >
-          <Preview item={selected} size={size} />
-          <span className={styles.TriggerLabel}>{selected?.label ?? label}</span>
-          <span aria-hidden>⌄</span>
-        </Popover.Trigger>
+        />
         {/* Local portal retains nested native themes and caller-defined token overrides. */}
         {root ? (
           <Popover.Portal container={root}>

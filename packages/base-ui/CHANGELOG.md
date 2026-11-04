@@ -12,6 +12,12 @@
 
 - Keep the toast controller stable across position changes and skip rendering unchanged toast entries. Build controller operations together instead of recreating individual callbacks on viewport renders. Position and capacity changes preserve presentation identity, remaining expiry, and current dismissal callbacks.
 
+## 0.13.0
+
+### Minor Changes
+
+- [#103](https://github.com/omniviewdev/ui/pull/103) [`79d0172`](https://github.com/omniviewdev/ui/commit/79d01720ff5c2768285b8e43cd83292dbde7b0ff) Thanks [@joshuapare](https://github.com/joshuapare)! - Support caller-scoped toast IDs, custom React content, in-place progress updates, and dismissal lifecycle callbacks. Preserve focus and expiry while activity content changes. Animate measured progress over 300 milliseconds and respect reduced-motion preferences.
+
 ## 0.12.0
 
 ### Minor Changes

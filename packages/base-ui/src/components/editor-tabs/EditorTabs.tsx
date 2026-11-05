@@ -43,7 +43,7 @@ import type {
 import styles from './EditorTabs.module.css';
 
 export interface EditorTabsProps extends Omit<StyledComponentProps, 'variant'> {
-  /** Tab style variant. `'pill'` gives rounded top corners for browser-style tabs. */
+  /** Tab style variant. `'pill'` gives inset tabs with rounded corners on a surface header. */
   variant?: StyledComponentProps['variant'] | 'pill';
   tabs: TabDescriptor[];
   groups?: TabGroupDescriptor[];

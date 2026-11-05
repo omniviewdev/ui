@@ -111,17 +111,18 @@
   --_ov-border: var(--ov-color-border-overlay);
   --_ov-selected-bg: var(--ov-color-state-selected);
   --_ov-highlight-bg: var(--ov-color-state-hover);
-  --_ov-popup-padding: var(--ov-size-list-item-gap);
-  --_ov-list-gap: var(--ov-size-list-item-gap);
-  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-md);
-  --_ov-item-height: var(--ov-size-list-item-height-md);
-  --_ov-item-radius: var(--ov-size-list-item-radius);
-  --_ov-decorator-size: var(--ov-size-icon-button-icon-md);
-  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-md);
-  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-md);
-  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-md);
+  --_ov-popup-padding: var(--ov-size-menu-popup-padding);
+  --_ov-list-gap: var(--ov-size-menu-item-gap);
+  --_ov-item-padding-inline: var(--ov-size-menu-item-padding-inline-md);
+  --_ov-item-height: var(--ov-size-menu-item-height-md);
+  --_ov-item-radius: var(--ov-size-menu-item-radius);
+  --_ov-item-font-size: var(--ov-size-menu-font-size-md);
+  --_ov-decorator-size: var(--ov-size-menu-icon-md);
+  --_ov-group-label-font-size: var(--ov-size-menu-label-font-size);
+  --_ov-group-label-gap-top: var(--ov-size-menu-label-gap);
+  --_ov-group-label-gap-after: var(--ov-size-menu-label-gap);
 
-  min-inline-size: max(220px, var(--anchor-width));
+  min-inline-size: max(var(--ov-size-menu-min-width), var(--anchor-width));
   max-inline-size: min(92vw, 480px);
   max-block-size: 320px;
   overflow: auto;
@@ -133,47 +134,31 @@
 }
 
 .Popup[data-ov-size='xs'] {
-  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) - 2px);
-  --_ov-list-gap: calc(var(--ov-size-list-item-gap) - 2px);
-  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-xs);
-  --_ov-item-height: var(--ov-size-list-item-height-xs);
-  --_ov-decorator-size: var(--ov-size-icon-button-icon-xs);
-  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
-  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
-  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-sm);
+  --_ov-item-padding-inline: var(--ov-size-menu-item-padding-inline-xs);
+  --_ov-item-height: var(--ov-size-menu-item-height-xs);
+  --_ov-item-font-size: var(--ov-size-menu-font-size-xs);
+  --_ov-decorator-size: var(--ov-size-menu-icon-xs);
 }
 
 .Popup[data-ov-size='sm'] {
-  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) - 1px);
-  --_ov-list-gap: calc(var(--ov-size-list-item-gap) - 1px);
-  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-sm);
-  --_ov-item-height: var(--ov-size-list-item-height-sm);
-  --_ov-decorator-size: var(--ov-size-icon-button-icon-sm);
-  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-sm);
-  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-sm);
-  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-sm);
+  --_ov-item-padding-inline: var(--ov-size-menu-item-padding-inline-sm);
+  --_ov-item-height: var(--ov-size-menu-item-height-sm);
+  --_ov-item-font-size: var(--ov-size-menu-font-size-sm);
+  --_ov-decorator-size: var(--ov-size-menu-icon-sm);
 }
 
 .Popup[data-ov-size='lg'] {
-  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) + 1px);
-  --_ov-list-gap: calc(var(--ov-size-list-item-gap) + 1px);
-  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-lg);
-  --_ov-item-height: var(--ov-size-list-item-height-lg);
-  --_ov-decorator-size: var(--ov-size-icon-button-icon-lg);
-  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
-  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
-  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+  --_ov-item-padding-inline: var(--ov-size-menu-item-padding-inline-lg);
+  --_ov-item-height: var(--ov-size-menu-item-height-lg);
+  --_ov-item-font-size: var(--ov-size-menu-font-size-lg);
+  --_ov-decorator-size: var(--ov-size-menu-icon-lg);
 }
 
 .Popup[data-ov-size='xl'] {
-  --_ov-popup-padding: calc(var(--ov-size-list-item-gap) + 2px);
-  --_ov-list-gap: calc(var(--ov-size-list-item-gap) + 2px);
-  --_ov-item-padding-inline: var(--ov-size-list-item-padding-inline-xl);
-  --_ov-item-height: var(--ov-size-list-item-height-xl);
-  --_ov-decorator-size: var(--ov-size-icon-button-icon-xl);
-  --_ov-group-label-font-size: var(--ov-size-list-group-label-font-size-lg);
-  --_ov-group-label-gap-top: var(--ov-size-list-group-label-gap-top-lg);
-  --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
+  --_ov-item-padding-inline: var(--ov-size-menu-item-padding-inline-xl);
+  --_ov-item-height: var(--ov-size-menu-item-height-xl);
+  --_ov-item-font-size: var(--ov-size-menu-font-size-xl);
+  --_ov-decorator-size: var(--ov-size-menu-icon-xl);
 }
 
 .Popup[data-ov-color='neutral'] {
@@ -220,23 +205,19 @@
 .Item {
   display: flex;
   align-items: center;
-  gap: var(--ov-space-inline-control);
+  gap: var(--ov-size-menu-decorator-gap);
   min-height: var(--_ov-item-height);
   padding-inline: var(--_ov-item-padding-inline);
   border-radius: var(--_ov-item-radius);
   color: var(--ov-color-fg-default);
   font-family: var(--ov-font-sans);
-  font-size: var(--ov-font-size-body);
+  font-size: var(--_ov-item-font-size);
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
   transition:
     background-color var(--ov-duration-interactive) var(--ov-ease-standard),
     color var(--ov-duration-interactive) var(--ov-ease-standard);
-}
-
-.Item[data-ov-size='sm'] {
-  font-size: var(--ov-font-size-caption);
 }
 
 .Item:hover,
@@ -275,14 +256,14 @@
   align-items: center;
   justify-content: center;
   color: var(--ov-color-fg-subtle);
-  font-size: var(--ov-font-size-caption);
+  font-size: var(--_ov-item-font-size);
   font-weight: var(--ov-font-weight-label);
 }
 
 .Empty {
   padding: var(--_ov-popup-padding) var(--_ov-item-padding-inline);
   color: var(--ov-color-fg-subtle);
-  font-size: var(--ov-font-size-caption);
+  font-size: var(--_ov-item-font-size);
 }
 
 .Empty:empty {
@@ -302,8 +283,8 @@
 
 .Separator {
   height: 1px;
-  margin: var(--_ov-popup-padding) 0;
-  background: var(--ov-color-border-muted);
+  margin: var(--ov-space-1) 0;
+  background: var(--ov-color-border-default);
 }
 
 .Trigger,

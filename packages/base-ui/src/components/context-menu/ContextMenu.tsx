@@ -153,12 +153,14 @@ const ContextMenuPopup = forwardRef<
 >(function ContextMenuPopup({ className, variant, color, size, ...props }, ref) {
   const resolved = useResolvedStyleProps({ variant, color, size });
   return (
-    <BaseContextMenu.Popup
-      ref={ref}
-      className={withBaseClassName(styles.Popup, className)}
-      {...styleDataAttributes(resolved)}
-      {...props}
-    />
+    <ContextMenuStyleContext.Provider value={resolved}>
+      <BaseContextMenu.Popup
+        ref={ref}
+        className={withBaseClassName(styles.Popup, className)}
+        {...styleDataAttributes(resolved)}
+        {...props}
+      />
+    </ContextMenuStyleContext.Provider>
   );
 });
 

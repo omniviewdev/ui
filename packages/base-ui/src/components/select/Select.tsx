@@ -209,12 +209,14 @@ const SelectPopup = forwardRef<ElementRef<typeof BaseSelect.Popup>, SelectPopupP
     const resolved = useResolvedStyleProps({ variant, color, size });
 
     return (
-      <BaseSelect.Popup
-        ref={ref}
-        className={withBaseClassName<BaseSelect.Popup.State>(styles.Popup, className)}
-        {...styleDataAttributes(resolved)}
-        {...props}
-      />
+      <SelectStyleContext.Provider value={resolved}>
+        <BaseSelect.Popup
+          ref={ref}
+          className={withBaseClassName<BaseSelect.Popup.State>(styles.Popup, className)}
+          {...styleDataAttributes(resolved)}
+          {...props}
+        />
+      </SelectStyleContext.Provider>
     );
   },
 );

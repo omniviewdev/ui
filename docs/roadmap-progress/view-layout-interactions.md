@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented, reverified on merged `main`, independently reviewed, and delivered through [UI PR #71](https://github.com/omniviewdev/ui/pull/71). The PR and [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67) record the authoritative review/merge state. This is a bounded presentation/interaction subset, not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze.
+Implemented, reverified on merged `main`, reviewed independently, and delivered through [UI PR #71](https://github.com/omniviewdev/ui/pull/71). The PR and [UI-LAYOUT issue ui#67](https://github.com/omniviewdev/ui/issues/67) record the authoritative review/merge state. This is a bounded presentation/interaction subset, not completion of [P33](https://github.com/omniviewdev/omniview/issues/104), P32, dashboard integration, or a production contract freeze.
 
 ## Current source, ownership and integration
 

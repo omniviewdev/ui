@@ -55,6 +55,7 @@ export interface ToastProviderProps extends Omit<HTMLAttributes<HTMLDivElement>,
 }
 interface ToastItem extends ToastOptions {
   id: string;
+  presentation: number;
   message: string;
   severity: ToastSeverity;
   duration: number;
@@ -200,6 +201,7 @@ const ToastEntry = memo(function ToastEntry({
   );
 });
 let nextId = 0;
+let nextPresentation = 0;
 export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(function ToastProvider(
   {
     position = 'bottom-right',
@@ -269,18 +271,19 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
         } while (current.current.some((item) => item.id === id));
       }
       if (!mounted.current) return id;
-      if (current.current.some((item) => item.id === id)) {
+      if (current.current.some((item) => item.id === id && !item.exiting)) {
         update(id, { ...options, message });
         return id;
       }
       const item: ToastItem = {
         ...options,
         id,
+        presentation: ++nextPresentation,
         message,
         severity: options?.severity ?? 'info',
         duration: options?.duration ?? 5000,
       };
-      const next = [item, ...current.current];
+      const next = [item, ...current.current.filter((entry) => entry.id !== id)];
       const admitted = next.slice(0, Math.max(0, maxVisible));
       const overflow = next.slice(admitted.length);
       commit(admitted);
@@ -337,7 +340,7 @@ export const ToastProvider = forwardRef<HTMLDivElement, ToastProviderProps>(func
             {...containerProps}
           >
             {ordered.map((item) => (
-              <ToastEntry key={item.id} item={item} onDismiss={end} onRemove={remove} />
+              <ToastEntry key={item.presentation} item={item} onDismiss={end} onRemove={remove} />
             ))}
           </div>,
           document.body,

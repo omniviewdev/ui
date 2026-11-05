@@ -405,6 +405,34 @@
   --ov-size-switch-gap-md: 8px;
   --ov-size-switch-gap-lg: 10px;
   --ov-size-switch-gap-xl: 12px;
+  /* Menu geometry stays compact without borrowing general list sizing. */
+  --ov-size-menu-min-width: 192px;
+  --ov-size-menu-popup-padding: 6px;
+  --ov-size-menu-item-gap: 2px;
+  --ov-size-menu-item-height-xs: 22px;
+  --ov-size-menu-item-height-sm: 24px;
+  --ov-size-menu-item-height-md: 28px;
+  --ov-size-menu-item-height-lg: 32px;
+  --ov-size-menu-item-height-xl: 36px;
+  --ov-size-menu-item-padding-inline-xs: 6px;
+  --ov-size-menu-item-padding-inline-sm: 8px;
+  --ov-size-menu-item-padding-inline-md: 10px;
+  --ov-size-menu-item-padding-inline-lg: 12px;
+  --ov-size-menu-item-padding-inline-xl: 14px;
+  --ov-size-menu-item-radius: var(--ov-radius-control);
+  --ov-size-menu-icon-xs: 12px;
+  --ov-size-menu-icon-sm: 14px;
+  --ov-size-menu-icon-md: 16px;
+  --ov-size-menu-icon-lg: 18px;
+  --ov-size-menu-icon-xl: 20px;
+  --ov-size-menu-decorator-gap: 8px;
+  --ov-size-menu-font-size-xs: var(--ov-primitive-font-size-12);
+  --ov-size-menu-font-size-sm: var(--ov-primitive-font-size-13);
+  --ov-size-menu-font-size-md: var(--ov-primitive-font-size-13);
+  --ov-size-menu-font-size-lg: var(--ov-primitive-font-size-14);
+  --ov-size-menu-font-size-xl: var(--ov-primitive-font-size-14);
+  --ov-size-menu-label-font-size: var(--ov-primitive-font-size-11);
+  --ov-size-menu-label-gap: 3px;
   --ov-size-list-item-gap: 4px;
   --ov-size-list-item-radius: var(--ov-radius-control);
   --ov-size-list-item-height-xs: 18px;
@@ -1379,6 +1407,11 @@
 }
 
 [data-ov-density='compact'] {
+  --ov-size-menu-item-height-xs: 20px;
+  --ov-size-menu-item-height-sm: 22px;
+  --ov-size-menu-item-height-md: 26px;
+  --ov-size-menu-item-height-lg: 30px;
+  --ov-size-menu-item-height-xl: 34px;
   --ov-control-height-xs: 18px;
   --ov-control-height-sm: 24px;
   --ov-control-height-md: 30px;
@@ -1770,6 +1803,11 @@
 }
 
 [data-ov-density='comfortable'] {
+  --ov-size-menu-item-height-xs: 22px;
+  --ov-size-menu-item-height-sm: 24px;
+  --ov-size-menu-item-height-md: 28px;
+  --ov-size-menu-item-height-lg: 32px;
+  --ov-size-menu-item-height-xl: 36px;
   --ov-control-height-xs: 18px;
   --ov-control-height-sm: 28px;
   --ov-control-height-md: 36px;

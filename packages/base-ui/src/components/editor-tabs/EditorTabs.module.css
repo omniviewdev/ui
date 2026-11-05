@@ -31,9 +31,13 @@
   position: relative;
   display: flex;
   align-items: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: var(--_ov-tab-height);
   height: var(--_ov-tab-height);
   background: var(--_ov-group-header-bg);
   border-bottom: 1px solid var(--_ov-tab-border);
+  border-radius: 0;
   font-family: var(--ov-font-sans);
   overflow: hidden;
 }
@@ -80,11 +84,11 @@
   --_ov-tab-bg: transparent;
   --_ov-tab-active-bg: var(--ov-color-bg-surface-raised);
   --_ov-tab-active-border: transparent;
-  --_ov-tab-hover-bg: var(--ov-color-bg-surface);
+  --_ov-tab-hover-bg: var(--ov-color-state-hover);
   --_ov-tab-divider: transparent;
-  --_ov-group-header-bg: var(--ov-color-bg-base);
+  --_ov-group-header-bg: var(--ov-color-bg-surface);
 
-  border-bottom-color: transparent;
+  border-bottom: 0;
 }
 
 /* Pill variant needs a taller container so tabs match control heights */
@@ -96,13 +100,21 @@
   --_ov-tab-height: 48px;
 }
 
-/* Pill tabs: JetBrains-style capsule with all-corner rounding */
+/* Keep insets on the viewport, not percentage-height tabs inside auto-sized segments. */
+.Root[data-ov-variant='pill'] .Viewport {
+  padding: 4px 2px;
+}
+
+.Root[data-ov-variant='pill'] .Segment {
+  gap: 4px;
+  padding-inline: 2px;
+}
+
 .Root[data-ov-variant='pill'] .Tab {
   border-bottom: none;
-  border-radius: 6px;
-  margin: 4px 2px;
-  padding: 0 14px;
-  height: calc(100% - 8px);
+  border-radius: var(--ov-radius-control, 6px);
+  padding-inline: var(--_ov-tab-padding-x);
+  height: auto;
 }
 
 .Root[data-ov-variant='pill'] .Tab[data-active] {
@@ -238,6 +250,7 @@
   height: 100%;
   padding: 0 var(--_ov-tab-padding-x);
   border: none;
+  border-radius: 0;
   border-bottom: 2px solid transparent;
   background: var(--_ov-tab-bg);
   color: var(--_ov-tab-fg);
@@ -262,7 +275,7 @@
 }
 
 .Tab[data-active] {
-  background: var(--ov-color-bg-surface-raised);
+  background: var(--_ov-tab-active-bg);
   color: var(--_ov-tab-active-fg);
   border-bottom-color: var(--_ov-tab-active-border);
 }

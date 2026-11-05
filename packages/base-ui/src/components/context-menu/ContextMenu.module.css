@@ -76,7 +76,6 @@
   --_ov-item-font-size: var(--ov-size-menu-font-size-xl);
 }
 
-
 .Popup[data-ov-color='brand'] {
   --_ov-selected-bg: var(--ov-color-accent-soft);
 }

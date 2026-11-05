@@ -5,23 +5,19 @@ import { Checkbox } from '@omniviewdev/base-ui';
 import { ThemeWrapper } from '../utils/theme-wrapper';
 
 test('Checkbox: mount', async () => {
-  await measureRenders(
-    <Checkbox.Item defaultChecked={false}>Accept terms</Checkbox.Item>,
-    { wrapper: ThemeWrapper },
-  );
+  await measureRenders(<Checkbox.Item defaultChecked={false}>Accept terms</Checkbox.Item>, {
+    wrapper: ThemeWrapper,
+  });
 });
 
 test('Checkbox: toggle checked', async () => {
-  await measureRenders(
-    <Checkbox.Item defaultChecked={false}>Accept terms</Checkbox.Item>,
-    {
-      wrapper: ThemeWrapper,
-      scenario: async () => {
-        const checkbox = screen.getByRole('checkbox');
-        fireEvent.click(checkbox);
-      },
+  await measureRenders(<Checkbox.Item defaultChecked={false}>Accept terms</Checkbox.Item>, {
+    wrapper: ThemeWrapper,
+    scenario: async () => {
+      const checkbox = screen.getByRole('checkbox');
+      fireEvent.click(checkbox);
     },
-  );
+  });
 });
 
 /**

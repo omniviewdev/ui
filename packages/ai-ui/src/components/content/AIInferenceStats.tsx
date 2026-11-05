@@ -35,30 +35,18 @@ export const AIInferenceStats = forwardRef<HTMLDivElement, AIInferenceStatsProps
     return (
       <StatRow ref={ref} size="sm" className={cn(className)} {...rest}>
         {throughput != null && (
-          <StatRow.Item icon={<LuZap />}>
-            {throughput.toFixed(2)} tok/sec
-          </StatRow.Item>
+          <StatRow.Item icon={<LuZap />}>{throughput.toFixed(2)} tok/sec</StatRow.Item>
         )}
         {tokenCount != null && (
-          <StatRow.Item icon={<LuGauge />}>
-            {tokenCount.toLocaleString()} tokens
-          </StatRow.Item>
+          <StatRow.Item icon={<LuGauge />}>{tokenCount.toLocaleString()} tokens</StatRow.Item>
         )}
         {inputTokens != null && outputTokens != null && (
           <StatRow.Item>
             {inputTokens.toLocaleString()} in / {outputTokens.toLocaleString()} out
           </StatRow.Item>
         )}
-        {latency != null && (
-          <StatRow.Item icon={<LuClock />}>
-            {latency.toFixed(2)}s
-          </StatRow.Item>
-        )}
-        {stopReason != null && (
-          <StatRow.Item>
-            Stop: {stopReason}
-          </StatRow.Item>
-        )}
+        {latency != null && <StatRow.Item icon={<LuClock />}>{latency.toFixed(2)}s</StatRow.Item>}
+        {stopReason != null && <StatRow.Item>Stop: {stopReason}</StatRow.Item>}
       </StatRow>
     );
   },

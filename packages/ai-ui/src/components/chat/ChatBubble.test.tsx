@@ -11,7 +11,11 @@ describe('ChatBubble', () => {
   });
 
   it('applies role data attribute', () => {
-    renderAI(<ChatBubble role="assistant" data-testid="cb">Hi</ChatBubble>);
+    renderAI(
+      <ChatBubble role="assistant" data-testid="cb">
+        Hi
+      </ChatBubble>,
+    );
     expect(screen.getByTestId('cb')).toHaveAttribute('data-ov-role', 'assistant');
   });
 
@@ -26,7 +30,11 @@ describe('ChatBubble', () => {
 
   it('renders timestamp', () => {
     const date = new Date('2024-01-01T12:30:00');
-    renderAI(<ChatBubble role="user" timestamp={date}>Hi</ChatBubble>);
+    renderAI(
+      <ChatBubble role="user" timestamp={date}>
+        Hi
+      </ChatBubble>,
+    );
     const time = document.querySelector('time');
     expect(time).toBeInTheDocument();
     expect(time).toHaveAttribute('datetime', date.toISOString());
@@ -43,17 +51,29 @@ describe('ChatBubble', () => {
 
   it('forwards ref', () => {
     const ref = createRef<HTMLDivElement>();
-    renderAI(<ChatBubble ref={ref} role="user">Hi</ChatBubble>);
+    renderAI(
+      <ChatBubble ref={ref} role="user">
+        Hi
+      </ChatBubble>,
+    );
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
 
   it('merges className', () => {
-    renderAI(<ChatBubble role="user" className="custom" data-testid="cb">Hi</ChatBubble>);
+    renderAI(
+      <ChatBubble role="user" className="custom" data-testid="cb">
+        Hi
+      </ChatBubble>,
+    );
     expect(screen.getByTestId('cb').className).toContain('custom');
   });
 
   it('renders system role', () => {
-    renderAI(<ChatBubble role="system" data-testid="cb">System message</ChatBubble>);
+    renderAI(
+      <ChatBubble role="system" data-testid="cb">
+        System message
+      </ChatBubble>,
+    );
     expect(screen.getByTestId('cb')).toHaveAttribute('data-ov-role', 'system');
   });
 });

@@ -1,0 +1,166 @@
+.range,
+.presets {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-2);
+  flex-wrap: wrap;
+}
+.form {
+  display: grid;
+  gap: var(--ov-space-3);
+}
+.option {
+  display: grid;
+  gap: var(--ov-space-1);
+}
+.option small,
+.details dt {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-4);
+  margin: 0;
+  font-size: var(--ov-font-size-caption);
+}
+.details > div {
+  display: grid;
+  gap: var(--ov-space-1);
+  min-width: 0;
+}
+.details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.advanced {
+  border-block-start: 1px solid var(--ov-color-border-default);
+  padding-block-start: 8px;
+  color: var(--ov-color-fg-muted);
+  font-size: 10px;
+}
+.advanced summary {
+  cursor: pointer;
+  margin-bottom: var(--ov-space-2);
+}
+.displayPicker {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 6px;
+  background: var(--ov-color-bg-inset);
+}
+.displayOption {
+  display: inline-flex;
+}
+.displayPicker .displayButton {
+  inline-size: 26px;
+  min-inline-size: 26px;
+  block-size: 24px;
+  min-block-size: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--ov-color-fg-muted);
+}
+.displayButton > svg {
+  inline-size: 13px;
+  block-size: 13px;
+}
+.displayPicker .displayButton[aria-pressed='true'] {
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-bg-surface);
+  box-shadow: var(--ov-shadow-surface);
+}
+.detailsRoot {
+  display: grid;
+  gap: 10px;
+  min-inline-size: 0;
+}
+.source {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 0;
+  color: var(--ov-color-fg-default);
+  font-size: 11px;
+}
+.source > svg {
+  inline-size: 13px;
+  block-size: 13px;
+  flex-shrink: 0;
+}
+.source > span {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timing {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.timing th,
+.timing td {
+  padding: 5px 0;
+  text-align: start;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.timing thead {
+  color: var(--ov-color-fg-muted);
+}
+.timing tbody {
+  color: var(--ov-color-fg-default);
+}
+.timing tbody tr + tr {
+  border-block-start: 1px solid var(--ov-color-border-default);
+}
+.sampleStatus {
+  display: inline-block;
+  inline-size: 5px;
+  block-size: 5px;
+  margin-inline-end: 5px;
+  border-radius: 50%;
+  background: var(--ov-color-fg-muted);
+}
+.sampleStatus[data-status='ok'] {
+  background: var(--ov-color-success);
+}
+.sampleStatus[data-status='delayed'] {
+  background: var(--ov-color-warning);
+}
+.sampleStatus[data-status='error'] {
+  background: var(--ov-color-danger);
+}
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.labels > span {
+  display: inline-flex;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow: hidden;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 4px;
+  font-size: 10px;
+}
+.labels > span > span {
+  padding: 3px 5px;
+  background: var(--ov-color-bg-inset);
+}
+.labels code {
+  padding: 3px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ov-color-fg-default);
+}

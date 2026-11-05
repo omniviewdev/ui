@@ -50,11 +50,15 @@ export function FilesTab({ container }: FilesTabProps) {
           />
           <TreeList.ItemToggle itemKey={node.key} />
           <TreeList.ItemIcon>
-            {item.type === 'directory'
-              ? node.isExpanded
-                ? <LuFolderOpen aria-hidden />
-                : <LuFolder aria-hidden />
-              : <LuFile aria-hidden />}
+            {item.type === 'directory' ? (
+              node.isExpanded ? (
+                <LuFolderOpen aria-hidden />
+              ) : (
+                <LuFolder aria-hidden />
+              )
+            ) : (
+              <LuFile aria-hidden />
+            )}
           </TreeList.ItemIcon>
           <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
           {item.size !== undefined && (

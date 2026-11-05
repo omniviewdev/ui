@@ -9,6 +9,7 @@
 **Tech Stack:** React 19, TypeScript, CSS Modules, pnpm workspace packages (`@omniviewdev/base-ui`, `@omniviewdev/ai-ui`, `@omniviewdev/editors`), Vite 7 with React Compiler.
 
 **Critical API Notes (read before implementing ANY task):**
+
 - **Tooltip:** Compound — `Tooltip.Root > Tooltip.Trigger (render prop) > Tooltip.Portal > Tooltip.Positioner > Tooltip.Popup`
 - **TreeList:** Compound — `TreeList.Root` (accepts `items`, `itemKey`, `getChildren`, `renderItem`, `selectionMode`, `expandedKeys`, `onExpandedKeysChange`, `selectedKeys`, `onSelectedKeysChange`; `expandedKeys` is `ReadonlySet<Key>`) > `TreeList.Viewport` (REQUIRED child — nothing renders without it). `renderItem(item, node)` must return `TreeList.Item > TreeList.ItemIndent + TreeList.ItemToggle + TreeList.ItemIcon + TreeList.ItemLabel` for proper keyboard nav and a11y.
 - **Card:** Compound — `Card`, `Card.ActionArea`, `Card.Header`, `Card.Title`, `Card.Description`, `Card.Body`, `Card.Footer`, `Card.Stat` (takes `children`, NOT `value`/`label` — use `Card.KeyValue` for label+value pattern), `Card.Group`
@@ -44,6 +45,7 @@
 ### Task 1: File Explorer — Mock Data & Types
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/file-explorer/types.ts`
 - Create: `apps/showcase/src/demos/file-explorer/data.ts`
 
@@ -56,18 +58,18 @@ export interface FileNode {
   id: string;
   name: string;
   type: 'file' | 'folder';
-  size?: number;         // bytes
-  modified?: string;     // ISO date string
-  permissions?: string;  // e.g. "rw-r--r--"
-  extension?: string;    // e.g. "tsx", "json"
+  size?: number; // bytes
+  modified?: string; // ISO date string
+  permissions?: string; // e.g. "rw-r--r--"
+  extension?: string; // e.g. "tsx", "json"
   children?: FileNode[];
-  content?: string;      // preview content for text files
+  content?: string; // preview content for text files
 }
 
 export interface FileSelection {
   pane: 'local' | 'remote';
   node: FileNode;
-  path: string[];  // breadcrumb segments
+  path: string[]; // breadcrumb segments
 }
 ```
 
@@ -85,28 +87,80 @@ export const localFiles: FileNode = {
   type: 'folder',
   children: [
     {
-      id: 'src', name: 'src', type: 'folder', children: [
+      id: 'src',
+      name: 'src',
+      type: 'folder',
+      children: [
         {
-          id: 'components', name: 'components', type: 'folder', children: [
-            { id: 'app-tsx', name: 'App.tsx', type: 'file', size: 2400, modified: '2026-03-12T10:00:00Z', permissions: 'rw-r--r--', extension: 'tsx',
-              content: 'import { useState } from \'react\';\nimport { ThemeProvider } from \'@omniviewdev/base-ui\';\n\nexport function App() {\n  const [count, setCount] = useState(0);\n  return (\n    <ThemeProvider>\n      <main>\n        <h1>Hello World</h1>\n        <button onClick={() => setCount(c => c + 1)}>\n          Count: {count}\n        </button>\n      </main>\n    </ThemeProvider>\n  );\n}' },
+          id: 'components',
+          name: 'components',
+          type: 'folder',
+          children: [
+            {
+              id: 'app-tsx',
+              name: 'App.tsx',
+              type: 'file',
+              size: 2400,
+              modified: '2026-03-12T10:00:00Z',
+              permissions: 'rw-r--r--',
+              extension: 'tsx',
+              content:
+                "import { useState } from 'react';\nimport { ThemeProvider } from '@omniviewdev/base-ui';\n\nexport function App() {\n  const [count, setCount] = useState(0);\n  return (\n    <ThemeProvider>\n      <main>\n        <h1>Hello World</h1>\n        <button onClick={() => setCount(c => c + 1)}>\n          Count: {count}\n        </button>\n      </main>\n    </ThemeProvider>\n  );\n}",
+            },
             // ... ~8 more component files
-          ]
+          ],
         },
         {
-          id: 'hooks', name: 'hooks', type: 'folder', children: [
-            { id: 'use-theme', name: 'useTheme.ts', type: 'file', size: 890, modified: '2026-03-10T14:00:00Z', permissions: 'rw-r--r--', extension: 'ts',
-              content: 'import { useContext } from \'react\';\nimport { ThemeContext } from \'../context\';\n\nexport function useTheme() {\n  return useContext(ThemeContext);\n}' },
+          id: 'hooks',
+          name: 'hooks',
+          type: 'folder',
+          children: [
+            {
+              id: 'use-theme',
+              name: 'useTheme.ts',
+              type: 'file',
+              size: 890,
+              modified: '2026-03-10T14:00:00Z',
+              permissions: 'rw-r--r--',
+              extension: 'ts',
+              content:
+                "import { useContext } from 'react';\nimport { ThemeContext } from '../context';\n\nexport function useTheme() {\n  return useContext(ThemeContext);\n}",
+            },
             // ... 2-3 more hook files
-          ]
+          ],
         },
         // ... utils/, styles/ folders
-      ]
+      ],
     },
-    { id: 'pkg-json', name: 'package.json', type: 'file', size: 1200, modified: '2026-03-11T09:00:00Z', permissions: 'rw-r--r--', extension: 'json',
-      content: '{\n  "name": "my-project",\n  "version": "1.0.0",\n  "dependencies": {\n    "react": "^19.0.0"\n  }\n}' },
-    { id: 'tsconfig', name: 'tsconfig.json', type: 'file', size: 450, modified: '2026-03-08T12:00:00Z', permissions: 'rw-r--r--', extension: 'json' },
-    { id: 'readme', name: 'README.md', type: 'file', size: 3200, modified: '2026-03-12T08:00:00Z', permissions: 'rw-r--r--', extension: 'md' },
+    {
+      id: 'pkg-json',
+      name: 'package.json',
+      type: 'file',
+      size: 1200,
+      modified: '2026-03-11T09:00:00Z',
+      permissions: 'rw-r--r--',
+      extension: 'json',
+      content:
+        '{\n  "name": "my-project",\n  "version": "1.0.0",\n  "dependencies": {\n    "react": "^19.0.0"\n  }\n}',
+    },
+    {
+      id: 'tsconfig',
+      name: 'tsconfig.json',
+      type: 'file',
+      size: 450,
+      modified: '2026-03-08T12:00:00Z',
+      permissions: 'rw-r--r--',
+      extension: 'json',
+    },
+    {
+      id: 'readme',
+      name: 'README.md',
+      type: 'file',
+      size: 3200,
+      modified: '2026-03-12T08:00:00Z',
+      permissions: 'rw-r--r--',
+      extension: 'md',
+    },
     // ... public/ folder, .gitignore, etc.
   ],
 };
@@ -117,21 +171,64 @@ export const remoteFiles: FileNode = {
   type: 'folder',
   children: [
     {
-      id: 'assets', name: 'assets', type: 'folder', children: [
-        { id: 'images', name: 'images', type: 'folder', children: [
-          { id: 'logo-png', name: 'logo.png', type: 'file', size: 45000, modified: '2026-02-15T10:00:00Z', permissions: 'rw-r--r--', extension: 'png' },
-          // ... more image files
-        ]},
-        { id: 'fonts', name: 'fonts', type: 'folder', children: [
-          { id: 'inter-woff2', name: 'Inter.woff2', type: 'file', size: 98000, modified: '2026-01-20T10:00:00Z', permissions: 'rw-r--r--', extension: 'woff2' },
-        ]},
-      ]
+      id: 'assets',
+      name: 'assets',
+      type: 'folder',
+      children: [
+        {
+          id: 'images',
+          name: 'images',
+          type: 'folder',
+          children: [
+            {
+              id: 'logo-png',
+              name: 'logo.png',
+              type: 'file',
+              size: 45000,
+              modified: '2026-02-15T10:00:00Z',
+              permissions: 'rw-r--r--',
+              extension: 'png',
+            },
+            // ... more image files
+          ],
+        },
+        {
+          id: 'fonts',
+          name: 'fonts',
+          type: 'folder',
+          children: [
+            {
+              id: 'inter-woff2',
+              name: 'Inter.woff2',
+              type: 'file',
+              size: 98000,
+              modified: '2026-01-20T10:00:00Z',
+              permissions: 'rw-r--r--',
+              extension: 'woff2',
+            },
+          ],
+        },
+      ],
     },
-    { id: 'backups', name: 'backups', type: 'folder', children: [
-      // ... backup files
-    ]},
-    { id: 'config-yaml', name: 'config.yaml', type: 'file', size: 620, modified: '2026-03-01T10:00:00Z', permissions: 'rw-r--r--', extension: 'yaml',
-      content: 'server:\n  host: 0.0.0.0\n  port: 8080\n\ndatabase:\n  host: postgres.internal\n  port: 5432\n  name: myapp' },
+    {
+      id: 'backups',
+      name: 'backups',
+      type: 'folder',
+      children: [
+        // ... backup files
+      ],
+    },
+    {
+      id: 'config-yaml',
+      name: 'config.yaml',
+      type: 'file',
+      size: 620,
+      modified: '2026-03-01T10:00:00Z',
+      permissions: 'rw-r--r--',
+      extension: 'yaml',
+      content:
+        'server:\n  host: 0.0.0.0\n  port: 8080\n\ndatabase:\n  host: postgres.internal\n  port: 5432\n  name: myapp',
+    },
   ],
 };
 ```
@@ -196,6 +293,7 @@ git commit -m "feat(file-explorer): add mock data and types"
 ### Task 2: File Explorer — Layout Shell & Tree Panes
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/file-explorer/components/TreePane.tsx`
 - Create: `apps/showcase/src/demos/file-explorer/components/TreePane.module.css`
 - Modify: `apps/showcase/src/demos/file-explorer/index.tsx` (replace placeholder)
@@ -223,7 +321,9 @@ interface TreePaneProps {
 }
 
 export function TreePane({ label, root, onSelectFile, searchQuery }: TreePaneProps) {
-  const [expandedKeys, setExpandedKeys] = useState<ReadonlySet<string>>(new Set(['src', 'components', 'assets']));
+  const [expandedKeys, setExpandedKeys] = useState<ReadonlySet<string>>(
+    new Set(['src', 'components', 'assets']),
+  );
   const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<string>>(new Set());
   const [currentPath, setCurrentPath] = useState<string[]>([root.name]);
 
@@ -236,7 +336,12 @@ export function TreePane({ label, root, onSelectFile, searchQuery }: TreePanePro
         <span className={styles.label}>{label}</span>
         <Breadcrumbs>
           {currentPath.map((segment, i) => (
-            <Breadcrumbs.Item key={i} onClick={() => {/* navigate up */}}>
+            <Breadcrumbs.Item
+              key={i}
+              onClick={() => {
+                /* navigate up */
+              }}
+            >
               {segment}
             </Breadcrumbs.Item>
           ))}
@@ -325,10 +430,12 @@ export default function FileExplorer() {
   const [selected, setSelected] = useState<FileSelection | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSelectFile = useCallback((pane: 'local' | 'remote') =>
-    (node: FileNode, path: string[]) => {
+  const handleSelectFile = useCallback(
+    (pane: 'local' | 'remote') => (node: FileNode, path: string[]) => {
       setSelected({ pane, node, path });
-    }, []);
+    },
+    [],
+  );
 
   return (
     <div className={styles.explorer}>
@@ -337,8 +444,18 @@ export default function FileExplorer() {
         <ResizableSplitPane direction="horizontal" defaultSize={600}>
           {/* Left: dual tree panes */}
           <ResizableSplitPane direction="horizontal" defaultSize={300}>
-            <TreePane label="Local" root={localFiles} onSelectFile={handleSelectFile('local')} searchQuery={searchQuery} />
-            <TreePane label="Remote (S3)" root={remoteFiles} onSelectFile={handleSelectFile('remote')} searchQuery={searchQuery} />
+            <TreePane
+              label="Local"
+              root={localFiles}
+              onSelectFile={handleSelectFile('local')}
+              searchQuery={searchQuery}
+            />
+            <TreePane
+              label="Remote (S3)"
+              root={remoteFiles}
+              onSelectFile={handleSelectFile('remote')}
+              searchQuery={searchQuery}
+            />
           </ResizableSplitPane>
           {/* Right: detail panel (Task 3) */}
           <div className={styles.detailPlaceholder}>
@@ -396,6 +513,7 @@ git commit -m "feat(file-explorer): layout shell with dual tree panes"
 ### Task 3: File Explorer — Detail Panel, Toolbar, Context Menu, StatusBar
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/file-explorer/components/DetailPanel.tsx`
 - Create: `apps/showcase/src/demos/file-explorer/components/DetailPanel.module.css`
 - Create: `apps/showcase/src/demos/file-explorer/components/ExplorerToolbar.tsx`
@@ -427,8 +545,12 @@ export function DetailPanel({ node }: DetailPanelProps) {
         <Typography.Heading level={4}>{node.name}</Typography.Heading>
         <DescriptionList>
           <DescriptionList.Item label="Type">{node.extension ?? node.type}</DescriptionList.Item>
-          <DescriptionList.Item label="Size">{node.size ? formatBytes(node.size) : '—'}</DescriptionList.Item>
-          <DescriptionList.Item label="Modified">{node.modified ? timeAgo(node.modified) : '—'}</DescriptionList.Item>
+          <DescriptionList.Item label="Size">
+            {node.size ? formatBytes(node.size) : '—'}
+          </DescriptionList.Item>
+          <DescriptionList.Item label="Modified">
+            {node.modified ? timeAgo(node.modified) : '—'}
+          </DescriptionList.Item>
           <DescriptionList.Item label="Permissions">{node.permissions ?? '—'}</DescriptionList.Item>
         </DescriptionList>
       </div>
@@ -449,7 +571,15 @@ export function DetailPanel({ node }: DetailPanelProps) {
 ```tsx
 // apps/showcase/src/demos/file-explorer/components/ExplorerToolbar.tsx
 import { Toolbar, IconButton, SearchInput, Separator, useToast } from '@omniviewdev/base-ui';
-import { LuArrowLeft, LuArrowRight, LuArrowUp, LuCopy, LuFolderPlus, LuMove, LuTrash2 } from 'react-icons/lu';
+import {
+  LuArrowLeft,
+  LuArrowRight,
+  LuArrowUp,
+  LuCopy,
+  LuFolderPlus,
+  LuMove,
+  LuTrash2,
+} from 'react-icons/lu';
 import styles from './ExplorerToolbar.module.css';
 
 interface ExplorerToolbarProps {
@@ -458,7 +588,11 @@ interface ExplorerToolbarProps {
   hasSelection: boolean;
 }
 
-export function ExplorerToolbar({ searchQuery, onSearchChange, hasSelection }: ExplorerToolbarProps) {
+export function ExplorerToolbar({
+  searchQuery,
+  onSearchChange,
+  hasSelection,
+}: ExplorerToolbarProps) {
   const { toast } = useToast();
 
   const handleAction = (action: string) => {
@@ -468,9 +602,15 @@ export function ExplorerToolbar({ searchQuery, onSearchChange, hasSelection }: E
   return (
     <Toolbar.Root className={styles.toolbar}>
       <Toolbar.Group>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Back"><LuArrowLeft /></IconButton>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Forward"><LuArrowRight /></IconButton>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Up"><LuArrowUp /></IconButton>
+        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Back">
+          <LuArrowLeft />
+        </IconButton>
+        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Forward">
+          <LuArrowRight />
+        </IconButton>
+        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Up">
+          <LuArrowUp />
+        </IconButton>
       </Toolbar.Group>
       <Toolbar.Group>
         <SearchInput
@@ -480,16 +620,43 @@ export function ExplorerToolbar({ searchQuery, onSearchChange, hasSelection }: E
         />
       </Toolbar.Group>
       <Toolbar.Group>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Copy" disabled={!hasSelection} onClick={() => handleAction('Copy')}>
+        <IconButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          aria-label="Copy"
+          disabled={!hasSelection}
+          onClick={() => handleAction('Copy')}
+        >
           <LuCopy />
         </IconButton>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Move" disabled={!hasSelection} onClick={() => handleAction('Move')}>
+        <IconButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          aria-label="Move"
+          disabled={!hasSelection}
+          onClick={() => handleAction('Move')}
+        >
           <LuMove />
         </IconButton>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="Delete" disabled={!hasSelection} onClick={() => handleAction('Delete')}>
+        <IconButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          aria-label="Delete"
+          disabled={!hasSelection}
+          onClick={() => handleAction('Delete')}
+        >
           <LuTrash2 />
         </IconButton>
-        <IconButton variant="ghost" color="neutral" size="sm" aria-label="New Folder" onClick={() => handleAction('Folder created')}>
+        <IconButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          aria-label="New Folder"
+          onClick={() => handleAction('Folder created')}
+        >
           <LuFolderPlus />
         </IconButton>
       </Toolbar.Group>
@@ -508,17 +675,29 @@ Wrap tree items with ContextMenu. Read ContextMenu source to verify API — it m
 // In TreePane.tsx renderItem, wrap with ContextMenu
 <ContextMenu.Root>
   <ContextMenu.Trigger>
-    <span>{item.type === 'folder' ? <LuFolder /> : <LuFile />} {item.name}</span>
+    <span>
+      {item.type === 'folder' ? <LuFolder /> : <LuFile />} {item.name}
+    </span>
   </ContextMenu.Trigger>
   <ContextMenu.Portal>
     <ContextMenu.Positioner>
       <ContextMenu.Popup>
-        <ContextMenu.Item onClick={() => toast('Copied', { severity: 'success' })}>Copy</ContextMenu.Item>
-        <ContextMenu.Item onClick={() => toast('Moved', { severity: 'success' })}>Move</ContextMenu.Item>
-        <ContextMenu.Item onClick={() => toast('Renamed', { severity: 'success' })}>Rename</ContextMenu.Item>
+        <ContextMenu.Item onClick={() => toast('Copied', { severity: 'success' })}>
+          Copy
+        </ContextMenu.Item>
+        <ContextMenu.Item onClick={() => toast('Moved', { severity: 'success' })}>
+          Move
+        </ContextMenu.Item>
+        <ContextMenu.Item onClick={() => toast('Renamed', { severity: 'success' })}>
+          Rename
+        </ContextMenu.Item>
         <ContextMenu.Separator />
-        <ContextMenu.Item color="danger" onClick={() => toast('Deleted', { severity: 'success' })}>Delete</ContextMenu.Item>
-        <ContextMenu.Item onClick={() => toast('Folder created', { severity: 'success' })}>New Folder</ContextMenu.Item>
+        <ContextMenu.Item color="danger" onClick={() => toast('Deleted', { severity: 'success' })}>
+          Delete
+        </ContextMenu.Item>
+        <ContextMenu.Item onClick={() => toast('Folder created', { severity: 'success' })}>
+          New Folder
+        </ContextMenu.Item>
       </ContextMenu.Popup>
     </ContextMenu.Positioner>
   </ContextMenu.Portal>
@@ -534,7 +713,8 @@ Wrap tree items with ContextMenu. Read ContextMenu source to verify API — it m
 <StatusBar>
   <StatusBar.Section>
     <StatusBar.Item>
-      {stats.files + stats.folders} items • {stats.folders} folders, {stats.files} files • {formatBytes(stats.totalSize)}
+      {stats.files + stats.folders} items • {stats.folders} folders, {stats.files} files •{' '}
+      {formatBytes(stats.totalSize)}
     </StatusBar.Item>
   </StatusBar.Section>
 </StatusBar>
@@ -545,6 +725,7 @@ Use `countNodes()` from `data.ts` to compute stats for whichever pane is active.
 - [ ] **Step 5: Wire everything together in index.tsx**
 
 Update the main `FileExplorer` component to:
+
 1. Import and render `ExplorerToolbar` at top
 2. Replace detail placeholder with `DetailPanel`
 3. Add `StatusBar` at bottom
@@ -572,6 +753,7 @@ git commit -m "feat(file-explorer): detail panel, toolbar, context menu, status 
 ### Task 4: IDE Editor — Mock Data
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/ide-editor/types.ts`
 - Create: `apps/showcase/src/demos/ide-editor/data.ts`
 
@@ -583,8 +765,8 @@ git commit -m "feat(file-explorer): detail panel, toolbar, context menu, status 
 export interface IDEFile {
   id: string;
   name: string;
-  path: string;         // e.g. "src/components/App.tsx"
-  language: string;     // Monaco language id: "typescript", "css", "json", "markdown"
+  path: string; // e.g. "src/components/App.tsx"
+  language: string; // Monaco language id: "typescript", "css", "json", "markdown"
   content: string;
 }
 
@@ -601,7 +783,7 @@ export interface SearchResult {
   line: number;
   column: number;
   match: string;
-  context: string;  // surrounding text
+  context: string; // surrounding text
 }
 
 export interface GitStatusEntry {
@@ -650,13 +832,23 @@ export function App() {
 
 // File tree structure for TreeList (nested)
 export const fileTree = [
-  { id: 'src', name: 'src', type: 'folder' as const, children: [
-    { id: 'components', name: 'components', type: 'folder' as const, children: [
-      { id: 'app-tsx', name: 'App.tsx', type: 'file' as const },
+  {
+    id: 'src',
+    name: 'src',
+    type: 'folder' as const,
+    children: [
+      {
+        id: 'components',
+        name: 'components',
+        type: 'folder' as const,
+        children: [
+          { id: 'app-tsx', name: 'App.tsx', type: 'file' as const },
+          // ...
+        ],
+      },
       // ...
-    ]},
-    // ...
-  ]},
+    ],
+  },
   // ...
 ];
 
@@ -683,7 +875,13 @@ dist/assets/index.js   142.35 kB │ gzip: 45.67 kB
 
 // 10 mock search results
 export const searchResults: SearchResult[] = [
-  { file: 'src/App.tsx', line: 3, column: 10, match: 'useState', context: "const [count, setCount] = useState(0);" },
+  {
+    file: 'src/App.tsx',
+    line: 3,
+    column: 10,
+    match: 'useState',
+    context: 'const [count, setCount] = useState(0);',
+  },
   // ... 9 more
 ];
 
@@ -722,6 +920,7 @@ git commit -m "feat(ide-editor): add mock data and types"
 ### Task 5: IDE Editor — Layout Shell & Sidebar
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/ide-editor/components/IconStrip.tsx`
 - Create: `apps/showcase/src/demos/ide-editor/components/IconStrip.module.css`
 - Create: `apps/showcase/src/demos/ide-editor/components/SidebarPanel.tsx`
@@ -854,7 +1053,13 @@ setupMonacoWorkers();
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { ResizableSplitPane, EditorTabs } from '@omniviewdev/base-ui';
-import { CodeEditor, DiffViewer, Terminal, CommandPalette, MarkdownPreview } from '@omniviewdev/editors';
+import {
+  CodeEditor,
+  DiffViewer,
+  Terminal,
+  CommandPalette,
+  MarkdownPreview,
+} from '@omniviewdev/editors';
 import type { TerminalHandle } from '@omniviewdev/editors';
 import { IconStrip } from './components/IconStrip';
 import { SidebarPanel } from './components/SidebarPanel';
@@ -875,22 +1080,25 @@ export default function IdeEditor() {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
-        setShowPalette(p => !p);
+        setShowPalette((p) => !p);
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const handleOpenFile = useCallback((fileId: string) => {
-    // If tab already open, activate it
-    // Otherwise, find file in projectFiles, create new tab, add to tabs
-  }, [tabs]);
+  const handleOpenFile = useCallback(
+    (fileId: string) => {
+      // If tab already open, activate it
+      // Otherwise, find file in projectFiles, create new tab, add to tabs
+    },
+    [tabs],
+  );
 
-  const activeTab = tabs.find(t => t.id === activeTabId);
+  const activeTab = tabs.find((t) => t.id === activeTabId);
 
   // Convert IDETab[] to TabDescriptor[] for EditorTabs
-  const tabDescriptors = tabs.map(t => ({
+  const tabDescriptors = tabs.map((t) => ({
     id: t.id,
     title: t.file.name,
     closable: true,
@@ -907,7 +1115,7 @@ export default function IdeEditor() {
             tabs={tabDescriptors}
             activeId={activeTabId}
             onActiveChange={setActiveTabId}
-            onClose={(tabId) => setTabs(ts => ts.filter(t => t.id !== tabId))}
+            onClose={(tabId) => setTabs((ts) => ts.filter((t) => t.id !== tabId))}
           />
           {/* Content area rendered separately based on activeTabId */}
           <ResizableSplitPane direction="vertical" defaultSize={400}>
@@ -916,14 +1124,20 @@ export default function IdeEditor() {
                 <CodeEditor value={activeTab.file.content} language={activeTab.file.language} />
               )}
               {activeTab?.type === 'diff' && (
-                <DiffViewer original={activeTab.originalContent ?? ''} modified={activeTab.file.content} />
+                <DiffViewer
+                  original={activeTab.originalContent ?? ''}
+                  modified={activeTab.file.content}
+                />
               )}
               {activeTab?.type === 'markdown' && (
                 <MarkdownPreview content={activeTab.file.content} />
               )}
             </div>
             {showTerminal && (
-              <Terminal ref={terminalRef} onReady={() => terminalRef.current?.write(terminalOutput)} />
+              <Terminal
+                ref={terminalRef}
+                onReady={() => terminalRef.current?.write(terminalOutput)}
+              />
             )}
           </ResizableSplitPane>
         </div>
@@ -933,7 +1147,7 @@ export default function IdeEditor() {
         commands={paletteCommands}
         onSelect={(cmd) => {
           setShowPalette(false);
-          if (cmd.id === 'toggle-terminal') setShowTerminal(t => !t);
+          if (cmd.id === 'toggle-terminal') setShowTerminal((t) => !t);
           // handle other commands
         }}
         onClose={() => setShowPalette(false)}
@@ -944,6 +1158,7 @@ export default function IdeEditor() {
 ```
 
 **Key API corrections applied:**
+
 - **EditorTabs** is a tab BAR only — does NOT render content. Uses `TabDescriptor[]` (`{ id, title, closable, ... }`), `activeId`, `onActiveChange`, `onClose`. Content area is rendered separately below.
 - **CodeEditor** uses `value` (controlled), NOT `defaultValue`.
 - **CommandPalette** uses `open` prop (boolean) + `commands` (NOT `items`). It handles its own visibility — no conditional rendering needed.
@@ -995,6 +1210,7 @@ git commit -m "feat(ide-editor): layout shell with sidebar, editor tabs, termina
 ### Task 6: IDE Editor — EditorTabs, Sidebar Panels, Command Palette Polish
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/ide-editor/components/SidebarPanel.tsx` — flesh out all three panels
 - Modify: `apps/showcase/src/demos/ide-editor/index.tsx` — wire EditorTabs fully
 
@@ -1038,6 +1254,7 @@ git commit -m "feat(ide-editor): complete sidebar panels, editor tabs, command p
 ### Task 7: AI Chat — Mock Data & Types
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/ai-chat/types.ts`
 - Create: `apps/showcase/src/demos/ai-chat/data.ts`
 
@@ -1051,7 +1268,7 @@ export type MessageRole = 'user' | 'assistant';
 export interface ChatMessage {
   id: string;
   role: MessageRole;
-  content: string;          // markdown content
+  content: string; // markdown content
   thinking?: {
     text: string;
     durationMs: number;
@@ -1060,7 +1277,7 @@ export interface ChatMessage {
   citations?: CitationData[];
   sources?: SourceData[];
   branches?: BranchData[];
-  contextFiles?: string[];   // for AIContextIndicator
+  contextFiles?: string[]; // for AIContextIndicator
   artifact?: ArtifactData;
 }
 
@@ -1100,21 +1317,14 @@ export interface ArtifactData {
 
 /** Phases of the scripted replay state machine */
 export type ReplayPhase =
-  | 'idle'
-  | 'typing'
-  | 'thinking'
-  | 'tool-call'
-  | 'streaming'
-  | 'artifact'
-  | 'follow-up'
-  | 'done';
+  'idle' | 'typing' | 'thinking' | 'tool-call' | 'streaming' | 'artifact' | 'follow-up' | 'done';
 ```
 
 - [ ] **Step 2: Create mock data**
 
 Create the 6 pre-built messages plus scripted replay data:
 
-```tsx
+````tsx
 // apps/showcase/src/demos/ai-chat/data.ts
 import type { ChatMessage, ArtifactData } from './types';
 
@@ -1129,45 +1339,89 @@ export const prebuiltMessages: ChatMessage[] = [
   {
     id: 'msg-2',
     role: 'assistant',
-    content: "React's reconciler (called \"Fiber\") works by...\n\n## Key Concepts\n\n1. **Virtual DOM diffing** — React creates a lightweight copy...\n2. **Work loops** — The fiber architecture breaks rendering into units...\n3. **Reconciliation** — When state changes, React compares...\n\n```tsx\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c + 1)}>{count}</button>;\n}\n```\n\nThe key insight is that Fiber makes rendering interruptible...",
-    thinking: { text: 'Let me think about how to explain the React reconciler clearly...', durationMs: 2100 },
+    content:
+      'React\'s reconciler (called "Fiber") works by...\n\n## Key Concepts\n\n1. **Virtual DOM diffing** — React creates a lightweight copy...\n2. **Work loops** — The fiber architecture breaks rendering into units...\n3. **Reconciliation** — When state changes, React compares...\n\n```tsx\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c + 1)}>{count}</button>;\n}\n```\n\nThe key insight is that Fiber makes rendering interruptible...',
+    thinking: {
+      text: 'Let me think about how to explain the React reconciler clearly...',
+      durationMs: 2100,
+    },
   },
   // 3. User message — triggers tool use
   {
     id: 'msg-3',
     role: 'user',
-    content: 'Search for recent articles about React Server Components and summarize the key points.',
+    content:
+      'Search for recent articles about React Server Components and summarize the key points.',
   },
   // 4. Assistant response — ToolCall + ToolResult + Citations + Sources
   {
     id: 'msg-4',
     role: 'assistant',
-    content: 'Based on my research, here are the key developments in React Server Components:\n\n1. **Server-first rendering** — RSCs render entirely on the server [1].\n2. **Zero bundle size** — Server components aren\'t included in the client bundle [2].\n3. **Async data fetching** — Components can use `async/await` directly [1][3].',
-    toolCalls: [{
-      id: 'tc-1', name: 'web_search', status: 'success', durationMs: 1200,
-      input: 'React Server Components 2026',
-      output: 'Found 3 relevant articles...',
-    }],
+    content:
+      "Based on my research, here are the key developments in React Server Components:\n\n1. **Server-first rendering** — RSCs render entirely on the server [1].\n2. **Zero bundle size** — Server components aren't included in the client bundle [2].\n3. **Async data fetching** — Components can use `async/await` directly [1][3].",
+    toolCalls: [
+      {
+        id: 'tc-1',
+        name: 'web_search',
+        status: 'success',
+        durationMs: 1200,
+        input: 'React Server Components 2026',
+        output: 'Found 3 relevant articles...',
+      },
+    ],
     citations: [
       { id: 'c1', number: 1, text: 'RSCs render entirely on the server', source: 'React Blog' },
-      { id: 'c2', number: 2, text: 'Zero client-side JavaScript for server components', source: 'Vercel Engineering' },
+      {
+        id: 'c2',
+        number: 2,
+        text: 'Zero client-side JavaScript for server components',
+        source: 'Vercel Engineering',
+      },
       { id: 'c3', number: 3, text: 'Native async/await in components', source: 'Dan Abramov' },
     ],
     sources: [
-      { id: 's1', title: 'React Blog — Server Components Update', url: 'https://react.dev/blog/rsc', snippet: 'Server Components are a new kind of component...' },
-      { id: 's2', title: 'Vercel — Understanding RSC', url: 'https://vercel.com/blog/rsc', snippet: 'Zero-bundle-size components that render...' },
-      { id: 's3', title: 'Dan Abramov — RSC From Scratch', url: 'https://overreacted.io/rsc', snippet: 'Let me walk you through building...' },
+      {
+        id: 's1',
+        title: 'React Blog — Server Components Update',
+        url: 'https://react.dev/blog/rsc',
+        snippet: 'Server Components are a new kind of component...',
+      },
+      {
+        id: 's2',
+        title: 'Vercel — Understanding RSC',
+        url: 'https://vercel.com/blog/rsc',
+        snippet: 'Zero-bundle-size components that render...',
+      },
+      {
+        id: 's3',
+        title: 'Dan Abramov — RSC From Scratch',
+        url: 'https://overreacted.io/rsc',
+        snippet: 'Let me walk you through building...',
+      },
     ],
   },
   // 5. Assistant message with branching — 3 alternatives
   {
     id: 'msg-5',
     role: 'assistant',
-    content: 'Here\'s a practical example of Server Components:\n\n```tsx\n// This runs on the server\nasync function PostList() {\n  const posts = await db.posts.findMany();\n  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;\n}\n```',
+    content:
+      "Here's a practical example of Server Components:\n\n```tsx\n// This runs on the server\nasync function PostList() {\n  const posts = await db.posts.findMany();\n  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;\n}\n```",
     branches: [
-      { id: 'b1', content: 'Here\'s a practical example of Server Components:\n\n```tsx\nasync function PostList() {\n  const posts = await db.posts.findMany();\n  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;\n}\n```' },
-      { id: 'b2', content: 'Let me show you a comparison between client and server components:\n\n**Server Component:**\n```tsx\nasync function UserProfile({ id }) {\n  const user = await getUser(id);\n  return <h1>{user.name}</h1>;\n}\n```\n\n**Client Component:**\n```tsx\n\'use client\';\nfunction LikeButton() {\n  const [liked, setLiked] = useState(false);\n  return <button onClick={() => setLiked(true)}>Like</button>;\n}\n```' },
-      { id: 'b3', content: 'Here\'s how data flows between server and client components:\n\n1. Server components fetch data directly\n2. They pass serializable props to client components\n3. Client components handle interactivity\n\nThis creates a clear separation of concerns...' },
+      {
+        id: 'b1',
+        content:
+          "Here's a practical example of Server Components:\n\n```tsx\nasync function PostList() {\n  const posts = await db.posts.findMany();\n  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;\n}\n```",
+      },
+      {
+        id: 'b2',
+        content:
+          "Let me show you a comparison between client and server components:\n\n**Server Component:**\n```tsx\nasync function UserProfile({ id }) {\n  const user = await getUser(id);\n  return <h1>{user.name}</h1>;\n}\n```\n\n**Client Component:**\n```tsx\n'use client';\nfunction LikeButton() {\n  const [liked, setLiked] = useState(false);\n  return <button onClick={() => setLiked(true)}>Like</button>;\n}\n```",
+      },
+      {
+        id: 'b3',
+        content:
+          "Here's how data flows between server and client components:\n\n1. Server components fetch data directly\n2. They pass serializable props to client components\n3. Client components handle interactivity\n\nThis creates a clear separation of concerns...",
+      },
     ],
   },
   // 6. User message with AIContextIndicator
@@ -1230,7 +1484,7 @@ export const modelOptions = [
   { id: 'claude-4-opus', name: 'Claude 4 Opus' },
   { id: 'claude-4-haiku', name: 'Claude 4 Haiku' },
 ];
-```
+````
 
 - [ ] **Step 3: Verify build**
 
@@ -1250,6 +1504,7 @@ git commit -m "feat(ai-chat): add mock data, types, and conversation script"
 ### Task 8: AI Chat — Layout & Pre-built Conversation
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/ai-chat/index.tsx` (replace placeholder)
 - Create: `apps/showcase/src/demos/ai-chat/index.module.css`
 - Create: `apps/showcase/src/demos/ai-chat/components/MessageRenderer.tsx`
@@ -1257,6 +1512,7 @@ git commit -m "feat(ai-chat): add mock data, types, and conversation script"
 - Create: `apps/showcase/src/demos/ai-chat/components/ArtifactPanel.tsx`
 
 **Before starting:** Read source for ALL ai-ui components listed in the spec. Pay close attention to:
+
 - `ChatMessageList` — container props (scrollable? ref?)
 - `ChatBubble` — how it wraps content, role prop
 - `ChatAvatar` — role prop
@@ -1282,11 +1538,22 @@ A component that takes a `ChatMessage` and renders the appropriate ai-ui compone
 ```tsx
 // apps/showcase/src/demos/ai-chat/components/MessageRenderer.tsx
 import {
-  ChatBubble, ChatAvatar, AIMarkdown, AIMessageActions,
-  ThinkingBlock, ToolCall, ToolResult,
-  AIInlineCitation, AISources, AIContextIndicator,
-  AIBranch, AIBranchContent, AIBranchSelector,
-  AIBranchPrevious, AIBranchNext, AIBranchIndicator,
+  ChatBubble,
+  ChatAvatar,
+  AIMarkdown,
+  AIMessageActions,
+  ThinkingBlock,
+  ToolCall,
+  ToolResult,
+  AIInlineCitation,
+  AISources,
+  AIContextIndicator,
+  AIBranch,
+  AIBranchContent,
+  AIBranchSelector,
+  AIBranchPrevious,
+  AIBranchNext,
+  AIBranchIndicator,
 } from '@omniviewdev/ai-ui';
 import { useState } from 'react';
 import type { ChatMessage } from '../types';
@@ -1305,9 +1572,7 @@ export function MessageRenderer({ message }: MessageRendererProps) {
 
       <ChatBubble role={message.role}>
         {/* Context indicator (user messages with attached files) */}
-        {message.contextFiles && (
-          <AIContextIndicator files={message.contextFiles} />
-        )}
+        {message.contextFiles && <AIContextIndicator files={message.contextFiles} />}
 
         {/* Thinking block */}
         {message.thinking && (
@@ -1319,7 +1584,7 @@ export function MessageRenderer({ message }: MessageRendererProps) {
         )}
 
         {/* Tool calls */}
-        {message.toolCalls?.map(tc => (
+        {message.toolCalls?.map((tc) => (
           <div key={tc.id}>
             <ToolCall name={tc.name} status={tc.status} duration={tc.durationMs} />
             {tc.output && <ToolResult>{tc.output}</ToolResult>}
@@ -1333,9 +1598,15 @@ export function MessageRenderer({ message }: MessageRendererProps) {
               <AIMarkdown>{message.branches[activeBranch].content}</AIMarkdown>
             </AIBranchContent>
             <AIBranchSelector>
-              <AIBranchPrevious onClick={() => setActiveBranch(i => Math.max(0, i - 1))} disabled={activeBranch === 0} />
+              <AIBranchPrevious
+                onClick={() => setActiveBranch((i) => Math.max(0, i - 1))}
+                disabled={activeBranch === 0}
+              />
               <AIBranchIndicator current={activeBranch + 1} total={message.branches.length} />
-              <AIBranchNext onClick={() => setActiveBranch(i => Math.min(message.branches.length - 1, i + 1))} disabled={activeBranch === message.branches.length - 1} />
+              <AIBranchNext
+                onClick={() => setActiveBranch((i) => Math.min(message.branches.length - 1, i + 1))}
+                disabled={activeBranch === message.branches.length - 1}
+              />
             </AIBranchSelector>
           </AIBranch>
         ) : (
@@ -1343,7 +1614,7 @@ export function MessageRenderer({ message }: MessageRendererProps) {
         )}
 
         {/* Citations */}
-        {message.citations?.map(c => (
+        {message.citations?.map((c) => (
           <AIInlineCitation key={c.id} number={c.number} source={c.source} />
         ))}
 
@@ -1365,8 +1636,14 @@ export function MessageRenderer({ message }: MessageRendererProps) {
 ```tsx
 // apps/showcase/src/demos/ai-chat/components/ArtifactPanel.tsx
 import {
-  AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactDescription,
-  AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose,
+  AIArtifact,
+  AIArtifactHeader,
+  AIArtifactTitle,
+  AIArtifactDescription,
+  AIArtifactActions,
+  AIArtifactAction,
+  AIArtifactContent,
+  AIArtifactClose,
   AICodeBlock,
 } from '@omniviewdev/ai-ui';
 import type { ArtifactData } from '../types';
@@ -1406,8 +1683,12 @@ import '@omniviewdev/ai-ui/styles.css';
 
 import { useState, useCallback } from 'react';
 import {
-  ChatMessageList, ChatInput, ChatSuggestions,
-  AIConversationHeader, AIModelSelector, AIFollowUp,
+  ChatMessageList,
+  ChatInput,
+  ChatSuggestions,
+  AIConversationHeader,
+  AIModelSelector,
+  AIFollowUp,
 } from '@omniviewdev/ai-ui';
 import { ResizableSplitPane } from '@omniviewdev/base-ui';
 import { MessageRenderer } from './components/MessageRenderer';
@@ -1426,9 +1707,12 @@ export default function AiChat() {
     // Add user message, then trigger scripted replay (Task 9)
   }, []);
 
-  const handleSuggestionClick = useCallback((suggestion: string) => {
-    handleSend(suggestion);
-  }, [handleSend]);
+  const handleSuggestionClick = useCallback(
+    (suggestion: string) => {
+      handleSend(suggestion);
+    },
+    [handleSend],
+  );
 
   const chatContent = (
     <div className={styles.chatColumn}>
@@ -1441,7 +1725,7 @@ export default function AiChat() {
         />
       </AIConversationHeader>
       <ChatMessageList>
-        {messages.map(msg => (
+        {messages.map((msg) => (
           <MessageRenderer key={msg.id} message={msg} />
         ))}
       </ChatMessageList>
@@ -1506,6 +1790,7 @@ git commit -m "feat(ai-chat): layout with pre-built conversation and artifact pa
 ### Task 9: AI Chat — Scripted Replay
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/ai-chat/hooks/useScriptedReplay.ts`
 - Modify: `apps/showcase/src/demos/ai-chat/index.tsx` — wire replay hook
 
@@ -1559,28 +1844,32 @@ export function useScriptedReplay() {
     let elapsed = 0;
 
     // Phase 1: Typing indicator (~500ms)
-    setState(s => ({ ...s, phase: 'typing' }));
+    setState((s) => ({ ...s, phase: 'typing' }));
     elapsed += 500;
 
     // Phase 2: Thinking block (~2s)
     schedule(() => {
-      setState(s => ({ ...s, phase: 'thinking', thinkingText: 'Analyzing the request and considering the best approach...' }));
+      setState((s) => ({
+        ...s,
+        phase: 'thinking',
+        thinkingText: 'Analyzing the request and considering the best approach...',
+      }));
     }, elapsed);
     elapsed += 2000;
 
     // Phase 3: Tool call (~1s)
     schedule(() => {
-      setState(s => ({ ...s, phase: 'tool-call', toolCallStatus: 'running' }));
+      setState((s) => ({ ...s, phase: 'tool-call', toolCallStatus: 'running' }));
     }, elapsed);
     elapsed += 1000;
     schedule(() => {
-      setState(s => ({ ...s, toolCallStatus: 'success' }));
+      setState((s) => ({ ...s, toolCallStatus: 'success' }));
     }, elapsed);
     elapsed += 300;
 
     // Phase 4: Streaming text (~50ms per character)
     schedule(() => {
-      setState(s => ({ ...s, phase: 'streaming' }));
+      setState((s) => ({ ...s, phase: 'streaming' }));
       // Stream characters one at a time
       let charIndex = 0;
       const streamInterval = setInterval(() => {
@@ -1588,16 +1877,21 @@ export function useScriptedReplay() {
         if (charIndex >= replayStreamedText.length) {
           clearInterval(streamInterval);
           // Phase 5: Artifact
-          setState(s => ({ ...s, phase: 'artifact', artifact: replayArtifact, streamedText: replayStreamedText }));
+          setState((s) => ({
+            ...s,
+            phase: 'artifact',
+            artifact: replayArtifact,
+            streamedText: replayStreamedText,
+          }));
           // Phase 6: Follow-ups
           setTimeout(() => {
-            setState(s => ({ ...s, phase: 'follow-up', followUps: followUpSuggestions }));
+            setState((s) => ({ ...s, phase: 'follow-up', followUps: followUpSuggestions }));
             setTimeout(() => {
-              setState(s => ({ ...s, phase: 'done' }));
+              setState((s) => ({ ...s, phase: 'done' }));
             }, 500);
           }, 500);
         } else {
-          setState(s => ({ ...s, streamedText: replayStreamedText.slice(0, charIndex) }));
+          setState((s) => ({ ...s, streamedText: replayStreamedText.slice(0, charIndex) }));
         }
       }, 50);
       // Track interval for cleanup
@@ -1634,25 +1928,39 @@ In `index.tsx`, integrate the replay hook:
 ```tsx
 // Key rendering logic in ChatMessageList — CUMULATIVE display:
 // Each component stays visible once its phase starts. Use phase ordering:
-const phaseOrder = ['typing', 'thinking', 'tool-call', 'streaming', 'artifact', 'follow-up', 'done'];
+const phaseOrder = [
+  'typing',
+  'thinking',
+  'tool-call',
+  'streaming',
+  'artifact',
+  'follow-up',
+  'done',
+];
 const phaseIndex = phaseOrder.indexOf(state.phase);
 const pastPhase = (p: string) => phaseIndex >= phaseOrder.indexOf(p);
 
-{state.phase !== 'idle' && (
-  <div>
-    {/* Typing indicator only shows during its phase, replaced by thinking */}
-    {state.phase === 'typing' && <TypingIndicator />}
-    {/* ThinkingBlock appears at 'thinking' and stays visible (collapsed) in later phases */}
-    {pastPhase('thinking') && <ThinkingBlock content={state.thinkingText} defaultCollapsed={pastPhase('tool-call')} />}
-    {/* ToolCall appears at 'tool-call' and stays visible */}
-    {pastPhase('tool-call') && <ToolCall name="run_code" status={state.toolCallStatus} />}
-    {/* StreamingText appears at 'streaming' */}
-    {pastPhase('streaming') && <StreamingText text={state.streamedText} />}
-    {/* Stop button visible during active phases */}
-    {!pastPhase('artifact') && state.phase !== 'idle' && <AIStopButton onClick={handleStop} />}
-  </div>
-)}
-{state.followUps.length > 0 && <AIFollowUp items={state.followUps} onSelect={handleSend} />}
+{
+  state.phase !== 'idle' && (
+    <div>
+      {/* Typing indicator only shows during its phase, replaced by thinking */}
+      {state.phase === 'typing' && <TypingIndicator />}
+      {/* ThinkingBlock appears at 'thinking' and stays visible (collapsed) in later phases */}
+      {pastPhase('thinking') && (
+        <ThinkingBlock content={state.thinkingText} defaultCollapsed={pastPhase('tool-call')} />
+      )}
+      {/* ToolCall appears at 'tool-call' and stays visible */}
+      {pastPhase('tool-call') && <ToolCall name="run_code" status={state.toolCallStatus} />}
+      {/* StreamingText appears at 'streaming' */}
+      {pastPhase('streaming') && <StreamingText text={state.streamedText} />}
+      {/* Stop button visible during active phases */}
+      {!pastPhase('artifact') && state.phase !== 'idle' && <AIStopButton onClick={handleStop} />}
+    </div>
+  );
+}
+{
+  state.followUps.length > 0 && <AIFollowUp items={state.followUps} onSelect={handleSend} />;
+}
 ```
 
 **Important:** Components must render CUMULATIVELY — once a thinking block appears, it stays visible (collapsed) during subsequent phases. The tool call stays visible after completion. This creates a realistic conversation flow where each element accumulates rather than replacing the previous one.
@@ -1679,6 +1987,7 @@ git commit -m "feat(ai-chat): scripted replay with streaming, tool calls, and ar
 ### Task 10: Container Management — Mock Data
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/container-management/types.ts`
 - Create: `apps/showcase/src/demos/container-management/data.ts`
 
@@ -1694,14 +2003,14 @@ export interface Container {
   name: string;
   image: string;
   status: ContainerStatus;
-  cpu: number;       // 0-100 percentage
-  memory: number;    // MB
+  cpu: number; // 0-100 percentage
+  memory: number; // MB
   memoryLimit: number; // MB
   ports: PortMapping[];
-  created: string;   // ISO date
-  uptime: string;    // e.g. "2 days"
-  network: string;   // bytes/s formatted
-  disk: string;      // e.g. "45 MB"
+  created: string; // ISO date
+  uptime: string; // e.g. "2 days"
+  network: string; // bytes/s formatted
+  disk: string; // e.g. "45 MB"
 }
 
 export interface PortMapping {
@@ -1711,14 +2020,14 @@ export interface PortMapping {
 }
 
 export interface ContainerDetail extends Container {
-  logs: string;           // multi-line log output
+  logs: string; // multi-line log output
   config: Record<string, unknown>; // nested JSON config
   filesystem: FileSystemNode[];
   stats: ContainerStats;
 }
 
 export interface ContainerStats {
-  cpuHistory: number[];     // last 10 readings
+  cpuHistory: number[]; // last 10 readings
   memoryHistory: number[];
   networkRx: string;
   networkTx: string;
@@ -1744,10 +2053,57 @@ import type { Container, ContainerDetail, ContainerStatus, FileSystemNode } from
 
 // 15-20 unique containers with realistic names
 const uniqueContainers: Omit<Container, 'cpu' | 'memory'>[] = [
-  { id: 'c001', name: 'api-server', image: 'node:20-slim', status: 'running', memoryLimit: 512, ports: [{ host: 3000, container: 3000, protocol: 'tcp' }], created: '2026-03-10T08:00:00Z', uptime: '2 days', network: '1.2 MB/s', disk: '45 MB' },
-  { id: 'c002', name: 'postgres-db', image: 'postgres:16', status: 'running', memoryLimit: 1024, ports: [{ host: 5432, container: 5432, protocol: 'tcp' }], created: '2026-03-08T12:00:00Z', uptime: '4 days', network: '850 KB/s', disk: '2.1 GB' },
-  { id: 'c003', name: 'redis-cache', image: 'redis:7-alpine', status: 'stopped', memoryLimit: 256, ports: [{ host: 6379, container: 6379, protocol: 'tcp' }], created: '2026-03-09T10:00:00Z', uptime: '0', network: '0', disk: '12 MB' },
-  { id: 'c004', name: 'nginx-proxy', image: 'nginx:1.25', status: 'running', memoryLimit: 128, ports: [{ host: 80, container: 80, protocol: 'tcp' }, { host: 443, container: 443, protocol: 'tcp' }], created: '2026-03-10T08:00:00Z', uptime: '2 days', network: '3.4 MB/s', disk: '22 MB' },
+  {
+    id: 'c001',
+    name: 'api-server',
+    image: 'node:20-slim',
+    status: 'running',
+    memoryLimit: 512,
+    ports: [{ host: 3000, container: 3000, protocol: 'tcp' }],
+    created: '2026-03-10T08:00:00Z',
+    uptime: '2 days',
+    network: '1.2 MB/s',
+    disk: '45 MB',
+  },
+  {
+    id: 'c002',
+    name: 'postgres-db',
+    image: 'postgres:16',
+    status: 'running',
+    memoryLimit: 1024,
+    ports: [{ host: 5432, container: 5432, protocol: 'tcp' }],
+    created: '2026-03-08T12:00:00Z',
+    uptime: '4 days',
+    network: '850 KB/s',
+    disk: '2.1 GB',
+  },
+  {
+    id: 'c003',
+    name: 'redis-cache',
+    image: 'redis:7-alpine',
+    status: 'stopped',
+    memoryLimit: 256,
+    ports: [{ host: 6379, container: 6379, protocol: 'tcp' }],
+    created: '2026-03-09T10:00:00Z',
+    uptime: '0',
+    network: '0',
+    disk: '12 MB',
+  },
+  {
+    id: 'c004',
+    name: 'nginx-proxy',
+    image: 'nginx:1.25',
+    status: 'running',
+    memoryLimit: 128,
+    ports: [
+      { host: 80, container: 80, protocol: 'tcp' },
+      { host: 443, container: 443, protocol: 'tcp' },
+    ],
+    created: '2026-03-10T08:00:00Z',
+    uptime: '2 days',
+    network: '3.4 MB/s',
+    disk: '22 MB',
+  },
   // ... grafana, prometheus, kafka, zookeeper, elasticsearch, kibana, rabbitmq,
   // minio, vault, consul, jaeger, tempo, loki (~15-20 total)
 ];
@@ -1771,7 +2127,7 @@ function generateWorkers(count: number): Container[] {
 }
 
 export const containers: Container[] = [
-  ...uniqueContainers.map(c => ({
+  ...uniqueContainers.map((c) => ({
     ...c,
     cpu: c.status === 'running' ? Math.round(5 + Math.random() * 75) : 0,
     memory: c.status === 'running' ? Math.round(64 + Math.random() * (c.memoryLimit * 0.8)) : 0,
@@ -1788,7 +2144,9 @@ export function getContainerDetail(container: Container): ContainerDetail {
     filesystem: containerFilesystem,
     stats: {
       cpuHistory: Array.from({ length: 10 }, () => Math.round(Math.random() * 100)),
-      memoryHistory: Array.from({ length: 10 }, () => Math.round(Math.random() * container.memoryLimit)),
+      memoryHistory: Array.from({ length: 10 }, () =>
+        Math.round(Math.random() * container.memoryLimit),
+      ),
       networkRx: '12.4 MB',
       networkTx: '3.2 MB',
       diskRead: '145 MB',
@@ -1799,14 +2157,22 @@ export function getContainerDetail(container: Container): ContainerDetail {
 }
 
 /** Wrapper for statusToColor that handles container-specific statuses not in the base mapping */
-export function containerStatusColor(status: ContainerStatus): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
+export function containerStatusColor(
+  status: ContainerStatus,
+): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
   switch (status) {
-    case 'running': return 'success';
-    case 'paused': return 'warning';
-    case 'restarting': return 'info';
-    case 'exited': return 'neutral';
-    case 'stopped': return 'neutral';
-    default: return statusToColor(status);
+    case 'running':
+      return 'success';
+    case 'paused':
+      return 'warning';
+    case 'restarting':
+      return 'info';
+    case 'exited':
+      return 'neutral';
+    case 'stopped':
+      return 'neutral';
+    default:
+      return statusToColor(status);
   }
 }
 
@@ -1834,31 +2200,63 @@ function generateConfig(container: Container): Record<string, unknown> {
     Id: container.id,
     Name: `/${container.name}`,
     Image: container.image,
-    State: { Status: container.status, Running: container.status === 'running', Pid: Math.round(Math.random() * 50000) },
-    NetworkSettings: { Networks: { bridge: { IPAddress: `172.17.0.${Math.round(2 + Math.random() * 250)}` } } },
+    State: {
+      Status: container.status,
+      Running: container.status === 'running',
+      Pid: Math.round(Math.random() * 50000),
+    },
+    NetworkSettings: {
+      Networks: { bridge: { IPAddress: `172.17.0.${Math.round(2 + Math.random() * 250)}` } },
+    },
     HostConfig: { Memory: container.memoryLimit * 1024 * 1024, CpuShares: 1024 },
-    Config: { Env: ['NODE_ENV=production', `HOSTNAME=${container.name}`], Cmd: ['/bin/sh', '-c', 'node server.js'] },
+    Config: {
+      Env: ['NODE_ENV=production', `HOSTNAME=${container.name}`],
+      Cmd: ['/bin/sh', '-c', 'node server.js'],
+    },
   };
 }
 
 const containerFilesystem: FileSystemNode[] = [
-  { id: 'app', name: 'app', type: 'directory', children: [
-    { id: 'app-src', name: 'src', type: 'directory', children: [
-      { id: 'app-index', name: 'index.js', type: 'file', size: 2400 },
-      { id: 'app-server', name: 'server.js', type: 'file', size: 5600 },
-    ]},
-    { id: 'app-pkg', name: 'package.json', type: 'file', size: 1200 },
-    { id: 'app-node', name: 'node_modules', type: 'directory', children: [] },
-  ]},
-  { id: 'etc', name: 'etc', type: 'directory', children: [
-    { id: 'etc-hosts', name: 'hosts', type: 'file', size: 180 },
-    { id: 'etc-resolv', name: 'resolv.conf', type: 'file', size: 120 },
-  ]},
-  { id: 'var', name: 'var', type: 'directory', children: [
-    { id: 'var-log', name: 'log', type: 'directory', children: [
-      { id: 'var-log-app', name: 'app.log', type: 'file', size: 45000 },
-    ]},
-  ]},
+  {
+    id: 'app',
+    name: 'app',
+    type: 'directory',
+    children: [
+      {
+        id: 'app-src',
+        name: 'src',
+        type: 'directory',
+        children: [
+          { id: 'app-index', name: 'index.js', type: 'file', size: 2400 },
+          { id: 'app-server', name: 'server.js', type: 'file', size: 5600 },
+        ],
+      },
+      { id: 'app-pkg', name: 'package.json', type: 'file', size: 1200 },
+      { id: 'app-node', name: 'node_modules', type: 'directory', children: [] },
+    ],
+  },
+  {
+    id: 'etc',
+    name: 'etc',
+    type: 'directory',
+    children: [
+      { id: 'etc-hosts', name: 'hosts', type: 'file', size: 180 },
+      { id: 'etc-resolv', name: 'resolv.conf', type: 'file', size: 120 },
+    ],
+  },
+  {
+    id: 'var',
+    name: 'var',
+    type: 'directory',
+    children: [
+      {
+        id: 'var-log',
+        name: 'log',
+        type: 'directory',
+        children: [{ id: 'var-log-app', name: 'app.log', type: 'file', size: 45000 }],
+      },
+    ],
+  },
 ];
 
 // Aggregate stats for the status bar
@@ -1887,6 +2285,7 @@ git commit -m "feat(container-mgmt): add mock data with 50 containers"
 ### Task 11: Container Management — List View
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/container-management/index.tsx` (replace placeholder)
 - Create: `apps/showcase/src/demos/container-management/index.module.css`
 - Create: `apps/showcase/src/demos/container-management/components/ContainerList.tsx`
@@ -1907,8 +2306,17 @@ import {
   getFilteredRowModel,
 } from '@tanstack/react-table';
 import {
-  DataTable, FilterBar, StatusDot, Badge, Meter,
-  IconButton, Button, Toolbar, SearchInput, useToast, statusToColor,
+  DataTable,
+  FilterBar,
+  StatusDot,
+  Badge,
+  Meter,
+  IconButton,
+  Button,
+  Toolbar,
+  SearchInput,
+  useToast,
+  statusToColor,
 } from '@omniviewdev/base-ui';
 import { LuPlay, LuSquare, LuTrash2 } from 'react-icons/lu';
 import type { Container } from '../types';
@@ -1926,67 +2334,102 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const columns = useMemo(() => [
-    columnHelper.display({
-      id: 'select',
-      // Checkbox column — DataTable may handle this via features prop
-    }),
-    columnHelper.accessor('name', {
-      header: 'Name',
-      cell: (info) => (
-        <span className={styles.nameCell}>
-          <StatusDot color={statusToColor(info.row.original.status)} />
-          {info.getValue()}
-        </span>
-      ),
-    }),
-    columnHelper.accessor('image', { header: 'Image' }),
-    columnHelper.accessor('status', {
-      header: 'Status',
-      cell: (info) => <Badge color={statusToColor(info.getValue())}>{info.getValue()}</Badge>,
-    }),
-    columnHelper.accessor('cpu', {
-      header: 'CPU',
-      cell: (info) => info.row.original.status === 'running'
-        ? <Meter value={info.getValue()} max={100} />
-        : <span className={styles.inactive}>—</span>,
-    }),
-    columnHelper.accessor('memory', {
-      header: 'Memory',
-      cell: (info) => info.row.original.status === 'running'
-        ? `${info.getValue()} MB`
-        : <span className={styles.inactive}>—</span>,
-    }),
-    columnHelper.display({
-      id: 'actions',
-      cell: (info) => (
-        <Toolbar.Root>
-          <Toolbar.Group>
-            {info.row.original.status === 'running' ? (
-              <IconButton variant="ghost" color="neutral" size="sm" aria-label="Stop" onClick={(e) => { e.stopPropagation(); toast(`Stopped ${info.row.original.name}`, { severity: 'info' }); }}>
-                <LuSquare />
+  const columns = useMemo(
+    () => [
+      columnHelper.display({
+        id: 'select',
+        // Checkbox column — DataTable may handle this via features prop
+      }),
+      columnHelper.accessor('name', {
+        header: 'Name',
+        cell: (info) => (
+          <span className={styles.nameCell}>
+            <StatusDot color={statusToColor(info.row.original.status)} />
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      columnHelper.accessor('image', { header: 'Image' }),
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: (info) => <Badge color={statusToColor(info.getValue())}>{info.getValue()}</Badge>,
+      }),
+      columnHelper.accessor('cpu', {
+        header: 'CPU',
+        cell: (info) =>
+          info.row.original.status === 'running' ? (
+            <Meter value={info.getValue()} max={100} />
+          ) : (
+            <span className={styles.inactive}>—</span>
+          ),
+      }),
+      columnHelper.accessor('memory', {
+        header: 'Memory',
+        cell: (info) =>
+          info.row.original.status === 'running' ? (
+            `${info.getValue()} MB`
+          ) : (
+            <span className={styles.inactive}>—</span>
+          ),
+      }),
+      columnHelper.display({
+        id: 'actions',
+        cell: (info) => (
+          <Toolbar.Root>
+            <Toolbar.Group>
+              {info.row.original.status === 'running' ? (
+                <IconButton
+                  variant="ghost"
+                  color="neutral"
+                  size="sm"
+                  aria-label="Stop"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toast(`Stopped ${info.row.original.name}`, { severity: 'info' });
+                  }}
+                >
+                  <LuSquare />
+                </IconButton>
+              ) : (
+                <IconButton
+                  variant="ghost"
+                  color="success"
+                  size="sm"
+                  aria-label="Start"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toast(`Started ${info.row.original.name}`, { severity: 'success' });
+                  }}
+                >
+                  <LuPlay />
+                </IconButton>
+              )}
+              <IconButton
+                variant="ghost"
+                color="danger"
+                size="sm"
+                aria-label="Delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toast(`Deleted ${info.row.original.name}`, { severity: 'success' });
+                }}
+              >
+                <LuTrash2 />
               </IconButton>
-            ) : (
-              <IconButton variant="ghost" color="success" size="sm" aria-label="Start" onClick={(e) => { e.stopPropagation(); toast(`Started ${info.row.original.name}`, { severity: 'success' }); }}>
-                <LuPlay />
-              </IconButton>
-            )}
-            <IconButton variant="ghost" color="danger" size="sm" aria-label="Delete" onClick={(e) => { e.stopPropagation(); toast(`Deleted ${info.row.original.name}`, { severity: 'success' }); }}>
-              <LuTrash2 />
-            </IconButton>
-          </Toolbar.Group>
-        </Toolbar.Root>
-      ),
-    }),
-  ], [toast]);
+            </Toolbar.Group>
+          </Toolbar.Root>
+        ),
+      }),
+    ],
+    [toast],
+  );
 
   // Filtered data
   const filteredData = useMemo(() => {
     let data = containers;
-    if (statusFilter) data = data.filter(c => c.status === statusFilter);
-    if (searchQuery) data = data.filter(c =>
-      c.name.includes(searchQuery) || c.image.includes(searchQuery)
-    );
+    if (statusFilter) data = data.filter((c) => c.status === statusFilter);
+    if (searchQuery)
+      data = data.filter((c) => c.name.includes(searchQuery) || c.image.includes(searchQuery));
     return data;
   }, [containers, statusFilter, searchQuery]);
 
@@ -2005,7 +2448,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
       {/* FilterBar + SearchInput composed together (FilterBar has NO built-in search) */}
       <div className={styles.filterRow}>
         <FilterBar.Root>
-          {['running', 'stopped', 'paused', 'exited'].map(status => (
+          {['running', 'stopped', 'paused', 'exited'].map((status) => (
             <FilterBar.Chip
               key={status}
               active={statusFilter === status}
@@ -2026,10 +2469,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
       <DataTable.Root table={table}>
         <DataTable.Container>
           <DataTable.Header />
-          <DataTable.VirtualBody
-            estimateRowSize={48}
-            overscan={5}
-          />
+          <DataTable.VirtualBody estimateRowSize={48} overscan={5} />
         </DataTable.Container>
       </DataTable.Root>
 
@@ -2038,13 +2478,28 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
         <Toolbar.Root className={styles.bulkBar}>
           <Toolbar.Group>
             <span>{selectedCount} selected</span>
-            <Button variant="soft" color="success" size="sm" onClick={() => toast(`Started ${selectedCount} containers`, { severity: 'success' })}>
+            <Button
+              variant="soft"
+              color="success"
+              size="sm"
+              onClick={() => toast(`Started ${selectedCount} containers`, { severity: 'success' })}
+            >
               <LuPlay /> Start
             </Button>
-            <Button variant="soft" color="neutral" size="sm" onClick={() => toast(`Stopped ${selectedCount} containers`, { severity: 'info' })}>
+            <Button
+              variant="soft"
+              color="neutral"
+              size="sm"
+              onClick={() => toast(`Stopped ${selectedCount} containers`, { severity: 'info' })}
+            >
               <LuSquare /> Stop
             </Button>
-            <Button variant="soft" color="danger" size="sm" onClick={() => toast(`Deleted ${selectedCount} containers`, { severity: 'success' })}>
+            <Button
+              variant="soft"
+              color="danger"
+              size="sm"
+              onClick={() => toast(`Deleted ${selectedCount} containers`, { severity: 'success' })}
+            >
               <LuTrash2 /> Delete
             </Button>
           </Toolbar.Group>
@@ -2056,6 +2511,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
 ```
 
 **CRITICAL:**
+
 - `DataTable.VirtualBody` takes `estimateRowSize` (number) and `overscan` — NOT `estimateSize` (function) or `onRowClick`.
 - Row click handling: `DataTable.VirtualBody` has NO `onRowClick` prop. Attach click handlers via TanStack Table's row model — either add an `onClick` handler in a wrapper, or use a custom cell renderer that makes the name cell clickable.
 - `FilterBar` has NO built-in search input. Compose a `SearchInput` alongside `FilterBar.Chip` elements for status filtering.
@@ -2082,8 +2538,8 @@ export default function ContainerManagement() {
     <div className={styles.container}>
       {selectedContainer ? (
         <div>Detail view placeholder — {selectedContainer.name}</div>
-        // <ContainerDetail container={selectedContainer} onBack={() => setSelectedContainer(null)} />
       ) : (
+        // <ContainerDetail container={selectedContainer} onBack={() => setSelectedContainer(null)} />
         <ContainerList containers={containers} onSelectContainer={setSelectedContainer} />
       )}
       <StatusBar>
@@ -2130,6 +2586,7 @@ git commit -m "feat(container-mgmt): list view with DataTable, filtering, bulk a
 ### Task 12: Container Management — Detail View
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/container-management/components/ContainerDetail.tsx`
 - Create: `apps/showcase/src/demos/container-management/components/ContainerDetail.module.css`
 - Create: `apps/showcase/src/demos/container-management/components/tabs/LogsTab.tsx`
@@ -2146,8 +2603,15 @@ git commit -m "feat(container-mgmt): list view with DataTable, filtering, bulk a
 // apps/showcase/src/demos/container-management/components/ContainerDetail.tsx
 import { useMemo } from 'react';
 import {
-  Breadcrumbs, IconButton, Typography, StatusDot, Badge,
-  Tabs, Toolbar, useToast, statusToColor,
+  Breadcrumbs,
+  IconButton,
+  Typography,
+  StatusDot,
+  Badge,
+  Tabs,
+  Toolbar,
+  useToast,
+  statusToColor,
 } from '@omniviewdev/base-ui';
 import { LuArrowLeft, LuPlay, LuSquare, LuRotateCw, LuTrash2 } from 'react-icons/lu';
 import { getContainerDetail } from '../data';
@@ -2182,7 +2646,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
           <Typography.Heading level={3}>{container.name}</Typography.Heading>
           <Typography.Code>{container.id}</Typography.Code>
           <Typography.Code>{container.image}</Typography.Code>
-          {container.ports.map(p => (
+          {container.ports.map((p) => (
             <Typography.Code key={`${p.host}:${p.container}`}>
               {p.host}:{p.container}
             </Typography.Code>
@@ -2191,16 +2655,40 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
           <Badge color={statusToColor(container.status)}>{container.status}</Badge>
           <Toolbar.Root>
             <Toolbar.Group>
-              <IconButton variant="ghost" color="neutral" size="sm" aria-label="Stop" onClick={() => toast('Stopped', { severity: 'info' })}>
+              <IconButton
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                aria-label="Stop"
+                onClick={() => toast('Stopped', { severity: 'info' })}
+              >
                 <LuSquare />
               </IconButton>
-              <IconButton variant="ghost" color="neutral" size="sm" aria-label="Restart" onClick={() => toast('Restarting', { severity: 'info' })}>
+              <IconButton
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                aria-label="Restart"
+                onClick={() => toast('Restarting', { severity: 'info' })}
+              >
                 <LuRotateCw />
               </IconButton>
-              <IconButton variant="ghost" color="success" size="sm" aria-label="Start" onClick={() => toast('Started', { severity: 'success' })}>
+              <IconButton
+                variant="ghost"
+                color="success"
+                size="sm"
+                aria-label="Start"
+                onClick={() => toast('Started', { severity: 'success' })}
+              >
                 <LuPlay />
               </IconButton>
-              <IconButton variant="ghost" color="danger" size="sm" aria-label="Delete" onClick={() => toast('Deleted', { severity: 'success' })}>
+              <IconButton
+                variant="ghost"
+                color="danger"
+                size="sm"
+                aria-label="Delete"
+                onClick={() => toast('Deleted', { severity: 'success' })}
+              >
                 <LuTrash2 />
               </IconButton>
             </Toolbar.Group>
@@ -2217,10 +2705,18 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
           <Tabs.Tab value="files">Files</Tabs.Tab>
           <Tabs.Indicator />
         </Tabs.List>
-        <Tabs.Panel value="logs"><LogsTab logs={detail.logs} /></Tabs.Panel>
-        <Tabs.Panel value="inspect"><InspectTab container={container} config={detail.config} /></Tabs.Panel>
-        <Tabs.Panel value="stats"><StatsTab stats={detail.stats} container={container} /></Tabs.Panel>
-        <Tabs.Panel value="files"><FilesTab filesystem={detail.filesystem} /></Tabs.Panel>
+        <Tabs.Panel value="logs">
+          <LogsTab logs={detail.logs} />
+        </Tabs.Panel>
+        <Tabs.Panel value="inspect">
+          <InspectTab container={container} config={detail.config} />
+        </Tabs.Panel>
+        <Tabs.Panel value="stats">
+          <StatsTab stats={detail.stats} container={container} />
+        </Tabs.Panel>
+        <Tabs.Panel value="files">
+          <FilesTab filesystem={detail.filesystem} />
+        </Tabs.Panel>
       </Tabs.Root>
     </div>
   );
@@ -2299,28 +2795,38 @@ export function StatsTab({ stats, container }: StatsTabProps) {
   return (
     <Card.Group columns={2}>
       <Card size="sm">
-        <Card.Header><Card.Title>CPU Usage</Card.Title></Card.Header>
+        <Card.Header>
+          <Card.Title>CPU Usage</Card.Title>
+        </Card.Header>
         <Card.Body>
           <Card.Stat>{container.cpu}%</Card.Stat>
           <Meter value={container.cpu} max={100} />
         </Card.Body>
       </Card>
       <Card size="sm">
-        <Card.Header><Card.Title>Memory</Card.Title></Card.Header>
+        <Card.Header>
+          <Card.Title>Memory</Card.Title>
+        </Card.Header>
         <Card.Body>
-          <Card.Stat>{container.memory} / {container.memoryLimit} MB</Card.Stat>
+          <Card.Stat>
+            {container.memory} / {container.memoryLimit} MB
+          </Card.Stat>
           <Meter value={container.memory} max={container.memoryLimit} />
         </Card.Body>
       </Card>
       <Card size="sm">
-        <Card.Header><Card.Title>Network I/O</Card.Title></Card.Header>
+        <Card.Header>
+          <Card.Title>Network I/O</Card.Title>
+        </Card.Header>
         <Card.Body>
           <Card.KeyValue label="Received">↓ {stats.networkRx}</Card.KeyValue>
           <Card.KeyValue label="Transmitted">↑ {stats.networkTx}</Card.KeyValue>
         </Card.Body>
       </Card>
       <Card size="sm">
-        <Card.Header><Card.Title>Disk I/O</Card.Title></Card.Header>
+        <Card.Header>
+          <Card.Title>Disk I/O</Card.Title>
+        </Card.Header>
         <Card.Body>
           <Card.KeyValue label="Read">R: {stats.diskRead}</Card.KeyValue>
           <Card.KeyValue label="Write">W: {stats.diskWrite}</Card.KeyValue>
@@ -2389,6 +2895,7 @@ git commit -m "feat(container-mgmt): detail view with logs, inspect, stats, file
 ### Task 13: Cross-Demo Verification & Cleanup
 
 **Files:**
+
 - No new files — verification and cleanup only
 
 - [ ] **Step 1: Full build check**

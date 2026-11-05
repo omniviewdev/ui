@@ -8,7 +8,11 @@ interface WrapperProps {
 
 function Wrapper({ children }: WrapperProps) {
   const [themeId, setThemeId] = useState('dark');
-  return <ThemeProvider themeId={themeId} onThemeChange={setThemeId}>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider themeId={themeId} onThemeChange={setThemeId}>
+      {children}
+    </ThemeProvider>
+  );
 }
 
 export function renderWithTheme(

@@ -12,7 +12,8 @@ import type { StyledComponentProps, ComponentColor } from '../../system/types';
 import styles from './ConfirmButton.module.css';
 
 export interface ConfirmButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick' | 'type'>,
+  extends
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'onClick' | 'type'>,
     StyledComponentProps {
   /** Text shown in the confirm state. */
   confirmLabel?: string;

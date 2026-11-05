@@ -75,9 +75,7 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
   th: ({ children, style }: MdProps) => (
     <Table.HeaderCell style={style}>{children}</Table.HeaderCell>
   ),
-  td: ({ children, style }: MdProps) => (
-    <Table.Cell style={style}>{children}</Table.Cell>
-  ),
+  td: ({ children, style }: MdProps) => <Table.Cell style={style}>{children}</Table.Cell>,
 
   // Links
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -112,88 +110,91 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
 // Component
 // ---------------------------------------------------------------------------
 
-export const AIMarkdown = forwardRef<HTMLDivElement, AIMarkdownProps>(
-  function AIMarkdown(
-    { stream, content, streaming: streamingProp, cursor = true, onComplete, onChunk, className, ...rest },
-    ref,
-  ) {
-    const [streamedContent, setStreamedContent] = useState('');
-    const [isStreaming, setIsStreaming] = useState(false);
-
-    const onCompleteRef = useRef(onComplete);
-    onCompleteRef.current = onComplete;
-    const onChunkRef = useRef(onChunk);
-    onChunkRef.current = onChunk;
-
-    // Consume async iterable stream
-    useEffect(() => {
-      if (!stream) return;
-
-      let cancelled = false;
-      let accumulated = '';
-      let rafId: number | null = null;
-      let pendingFlush = false;
-
-      setIsStreaming(true);
-      setStreamedContent('');
-
-      const flush = () => {
-        if (!cancelled) {
-          setStreamedContent(accumulated);
-          pendingFlush = false;
-        }
-      };
-
-      (async () => {
-        try {
-          for await (const chunk of stream) {
-            if (cancelled) break;
-            accumulated += chunk;
-            onChunkRef.current?.(accumulated);
-
-            // Batch React state updates to animation frames
-            if (!pendingFlush) {
-              pendingFlush = true;
-              rafId = requestAnimationFrame(flush);
-            }
-          }
-        } catch {
-          // Stream errored — render whatever we accumulated
-        } finally {
-          if (!cancelled) {
-            if (rafId != null) cancelAnimationFrame(rafId);
-            setStreamedContent(accumulated);
-            setIsStreaming(false);
-            onCompleteRef.current?.();
-          }
-        }
-      })();
-
-      return () => {
-        cancelled = true;
-        if (rafId != null) cancelAnimationFrame(rafId);
-      };
-    }, [stream]);
-
-    const markdown = stream ? streamedContent : (content ?? '');
-    const isActive = stream ? isStreaming : (streamingProp ?? false);
-
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-streaming={isActive ? 'true' : 'false'}
-        data-ov-cursor={cursor ? 'true' : 'false'}
-        {...rest}
-      >
-        <ReactMarkdown
-          remarkPlugins={REMARK_PLUGINS}
-          skipHtml
-          components={markdownComponents}
-        >
-          {markdown}
-        </ReactMarkdown>
-      </div>
-    );
+export const AIMarkdown = forwardRef<HTMLDivElement, AIMarkdownProps>(function AIMarkdown(
+  {
+    stream,
+    content,
+    streaming: streamingProp,
+    cursor = true,
+    onComplete,
+    onChunk,
+    className,
+    ...rest
   },
-);
+  ref,
+) {
+  const [streamedContent, setStreamedContent] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const onChunkRef = useRef(onChunk);
+  onChunkRef.current = onChunk;
+
+  // Consume async iterable stream
+  useEffect(() => {
+    if (!stream) return;
+
+    let cancelled = false;
+    let accumulated = '';
+    let rafId: number | null = null;
+    let pendingFlush = false;
+
+    setIsStreaming(true);
+    setStreamedContent('');
+
+    const flush = () => {
+      if (!cancelled) {
+        setStreamedContent(accumulated);
+        pendingFlush = false;
+      }
+    };
+
+    (async () => {
+      try {
+        for await (const chunk of stream) {
+          if (cancelled) break;
+          accumulated += chunk;
+          onChunkRef.current?.(accumulated);
+
+          // Batch React state updates to animation frames
+          if (!pendingFlush) {
+            pendingFlush = true;
+            rafId = requestAnimationFrame(flush);
+          }
+        }
+      } catch {
+        // Stream errored — render whatever we accumulated
+      } finally {
+        if (!cancelled) {
+          if (rafId != null) cancelAnimationFrame(rafId);
+          setStreamedContent(accumulated);
+          setIsStreaming(false);
+          onCompleteRef.current?.();
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
+  }, [stream]);
+
+  const markdown = stream ? streamedContent : (content ?? '');
+  const isActive = stream ? isStreaming : (streamingProp ?? false);
+
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Root, className)}
+      data-ov-streaming={isActive ? 'true' : 'false'}
+      data-ov-cursor={cursor ? 'true' : 'false'}
+      {...rest}
+    >
+      <ReactMarkdown remarkPlugins={REMARK_PLUGINS} skipHtml components={markdownComponents}>
+        {markdown}
+      </ReactMarkdown>
+    </div>
+  );
+});

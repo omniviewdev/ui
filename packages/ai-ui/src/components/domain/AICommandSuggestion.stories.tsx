@@ -35,7 +35,8 @@ export const Playground: Story = {
 export const Destructive: Story = {
   args: {
     command: 'kubectl delete pod --all -n staging',
-    description: 'Delete all pods in the staging namespace. They will be recreated by their controllers.',
+    description:
+      'Delete all pods in the staging namespace. They will be recreated by their controllers.',
     destructive: true,
     onApply: () => {},
     onCopy: () => {},

@@ -69,10 +69,15 @@ export function findCustomPropertyCycles(css, file) {
   });
 
   const results = [];
-  for (const scope of [...scopes.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([, value]) => value)) {
-    const graph = new Map([...scope.declarations].map(([property, declaration]) => [
-      property, customPropertyReferences(declaration.value),
-    ]));
+  for (const scope of [...scopes.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([, value]) => value)) {
+    const graph = new Map(
+      [...scope.declarations].map(([property, declaration]) => [
+        property,
+        customPropertyReferences(declaration.value),
+      ]),
+    );
     for (const properties of findDependencyCycles(graph)) {
       const declaration = scope.declarations.get(properties[0]);
       results.push({
@@ -92,9 +97,17 @@ export async function scanCustomPropertyCycles() {
   const files = await findFiles('packages/*/src/**/*.css', { excludeStylesCSS: false });
   for (const file of files) {
     for (const cycle of findCustomPropertyCycles(readFileSync(file, 'utf8'), file)) {
-      results.push(finding('High', 'Token/Styling', 'Custom property dependency cycle',
-        file, cycle.line, cycle.snippet,
-        `Same-element custom-property cycle in ${[...cycle.context, cycle.selector].join(' / ')}: ${cycle.properties.join(', ')}. Cyclic values become invalid at computed-value time.`));
+      results.push(
+        finding(
+          'High',
+          'Token/Styling',
+          'Custom property dependency cycle',
+          file,
+          cycle.line,
+          cycle.snippet,
+          `Same-element custom-property cycle in ${[...cycle.context, cycle.selector].join(' / ')}: ${cycle.properties.join(', ')}. Cyclic values become invalid at computed-value time.`,
+        ),
+      );
     }
   }
   return results;

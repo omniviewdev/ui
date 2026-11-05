@@ -272,13 +272,13 @@ Snapshot: 2026-10-31, values from
 palette. This is a local before/after comparison, not a second theme catalog.
 Replacing the strong outline on a decorative edge reduces its contrast as follows:
 
-| Adjacent surface | Surface color | Required-boundary color `#6c7788` | Decorative chrome `#343840` |
-| ---------------- | ------------- | -------------------------------- | -------------------------- |
-| Base | `#181a1c` | 3.85:1 | 1.48:1 |
-| Surface / overlay | `#1f2125` | 3.56:1 | 1.37:1 |
-| Raised / control | `#272a30` | 3.17:1 | 1.22:1 |
-| Inset | `#131416` | 4.07:1 | 1.57:1 |
-| Elevated | `#2e323a` | 2.84:1 | 1.09:1 |
+| Adjacent surface  | Surface color | Required-boundary color `#6c7788` | Decorative chrome `#343840` |
+| ----------------- | ------------- | --------------------------------- | --------------------------- |
+| Base              | `#181a1c`     | 3.85:1                            | 1.48:1                      |
+| Surface / overlay | `#1f2125`     | 3.56:1                            | 1.37:1                      |
+| Raised / control  | `#272a30`     | 3.17:1                            | 1.22:1                      |
+| Inset             | `#131416`     | 4.07:1                            | 1.57:1                      |
+| Elevated          | `#2e323a`     | 2.84:1                            | 1.09:1                      |
 
 The quiet outline intentionally does not meet 3:1 and cannot identify a control
 by itself. The strong token also falls below 3:1 against the elevated surface
@@ -287,10 +287,10 @@ compliance. Required boundaries there need a compliant surface pairing or
 another sufficient identifying cue.
 
 | Neutral state | Opaque sRGB fill, channels on 0–255 scale | Default text `#cccccc` | Muted icon `#9d9d9d` | Focus `#7a96db` against fill |
-| ------------- | --------------------------------------- | ---------------------- | -------------------- | -------------------------- |
-| Rest | `(39, 42, 48)` | 8.96:1 | 5.30:1 | 4.94:1 |
-| Hover | `(55.5, 58.2, 63.6)` | 7.08:1 | 4.19:1 | 3.90:1 |
-| Pressed | `(65.4, 67.92, 72.96)` | 6.09:1 | 3.60:1 | 3.36:1 |
+| ------------- | ----------------------------------------- | ---------------------- | -------------------- | ---------------------------- |
+| Rest          | `(39, 42, 48)`                            | 8.96:1                 | 5.30:1               | 4.94:1                       |
+| Hover         | `(55.5, 58.2, 63.6)`                      | 7.08:1                 | 4.19:1               | 3.90:1                       |
+| Pressed       | `(65.4, 67.92, 72.96)`                    | 6.09:1                 | 3.60:1               | 3.36:1                       |
 
 Calculated with an sRGB evaluation script: normalize channels to 0–1, linearize
 with `c / 12.92` when `c <= 0.04045`, otherwise `((c + 0.055) / 1.055) ** 2.4`;

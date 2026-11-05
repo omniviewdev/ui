@@ -48,53 +48,51 @@ export interface CollapsibleProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
-  function Collapsible(
-    {
-      open: openProp,
-      defaultOpen = false,
-      onOpenChange,
-      animation = 'default',
-      disabled = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const [internalOpen, setInternalOpen] = useState(defaultOpen);
-    const isControlled = openProp !== undefined;
-    const open = isControlled ? openProp : internalOpen;
-
-    if (isControlled && internalOpen !== openProp) {
-      setInternalOpen(openProp);
-    }
-
-    const toggle = useCallback(() => {
-      if (disabled) return;
-      const next = !open;
-      if (!isControlled) setInternalOpen(next);
-      onOpenChange?.(next);
-    }, [disabled, open, isControlled, onOpenChange]);
-
-    const ctx: CollapsibleContextValue = { open, toggle, disabled };
-
-    return (
-      <CollapsibleContext.Provider value={ctx}>
-        <div
-          ref={ref}
-          className={cn(styles.Root, className)}
-          data-ov-open={open ? 'true' : 'false'}
-          data-ov-disabled={disabled ? 'true' : undefined}
-          data-ov-animation={animation}
-          {...rest}
-        >
-          {children}
-        </div>
-      </CollapsibleContext.Provider>
-    );
+export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(function Collapsible(
+  {
+    open: openProp,
+    defaultOpen = false,
+    onOpenChange,
+    animation = 'default',
+    disabled = false,
+    className,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : internalOpen;
+
+  if (isControlled && internalOpen !== openProp) {
+    setInternalOpen(openProp);
+  }
+
+  const toggle = useCallback(() => {
+    if (disabled) return;
+    const next = !open;
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  }, [disabled, open, isControlled, onOpenChange]);
+
+  const ctx: CollapsibleContextValue = { open, toggle, disabled };
+
+  return (
+    <CollapsibleContext.Provider value={ctx}>
+      <div
+        ref={ref}
+        className={cn(styles.Root, className)}
+        data-ov-open={open ? 'true' : 'false'}
+        data-ov-disabled={disabled ? 'true' : undefined}
+        data-ov-animation={animation}
+        {...rest}
+      >
+        {children}
+      </div>
+    </CollapsibleContext.Provider>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // CollapsibleTrigger
@@ -151,15 +149,8 @@ export const CollapsibleContent = forwardRef<HTMLDivElement, CollapsibleContentP
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Content, className)}
-        aria-hidden={!open}
-        {...rest}
-      >
-        <div className={styles.ContentInner}>
-          {children}
-        </div>
+      <div ref={ref} className={cn(styles.Content, className)} aria-hidden={!open} {...rest}>
+        <div className={styles.ContentInner}>{children}</div>
       </div>
     );
   },

@@ -293,13 +293,22 @@ Would you like me to dive deeper into any of these topics?`,
 
 function matchResponse(input: string): CannedResponse {
   const lower = input.toLowerCase();
-  if (lower.includes('deployment') || lower.includes('rollout') || lower.includes('rolling update')) {
+  if (
+    lower.includes('deployment') ||
+    lower.includes('rollout') ||
+    lower.includes('rolling update')
+  ) {
     return CANNED_RESPONSES.deployments!;
   }
   if (lower.includes('service') || lower.includes('networking') || lower.includes('expose')) {
     return CANNED_RESPONSES.services!;
   }
-  if (lower.includes('scal') || lower.includes('replica') || lower.includes('autoscal') || lower.includes('hpa')) {
+  if (
+    lower.includes('scal') ||
+    lower.includes('replica') ||
+    lower.includes('autoscal') ||
+    lower.includes('hpa')
+  ) {
     return CANNED_RESPONSES.scaling!;
   }
   return CANNED_RESPONSES.default!;
@@ -311,7 +320,7 @@ function FullChatInterfaceComponent() {
       id: 'welcome',
       role: 'assistant',
       content:
-        'Hello! I\'m your Kubernetes assistant. Ask me about pods, deployments, services, scaling, or anything else about your cluster.',
+        "Hello! I'm your Kubernetes assistant. Ask me about pods, deployments, services, scaling, or anything else about your cluster.",
       state: 'complete',
       timestamp: new Date(Date.now() - 60000),
     },
@@ -340,7 +349,12 @@ function FullChatInterfaceComponent() {
     setMessages((prev) =>
       prev.map((m) =>
         m.id === id
-          ? { ...m, content: finalContent ?? m.content, stream: undefined, state: 'complete' as const }
+          ? {
+              ...m,
+              content: finalContent ?? m.content,
+              stream: undefined,
+              state: 'complete' as const,
+            }
           : m,
       ),
     );
@@ -387,7 +401,13 @@ function FullChatInterfaceComponent() {
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
-          { id: assistantMsgId, role: 'assistant', content: response.content, state: 'thinking', timestamp: new Date() },
+          {
+            id: assistantMsgId,
+            role: 'assistant',
+            content: response.content,
+            state: 'thinking',
+            timestamp: new Date(),
+          },
         ]);
         setActiveStreamId(assistantMsgId);
         scrollToBottom();
@@ -397,7 +417,11 @@ function FullChatInterfaceComponent() {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantMsgId
-                ? { ...m, stream: simulateStream(response.content, 5, 8), state: 'streaming' as const }
+                ? {
+                    ...m,
+                    stream: simulateStream(response.content, 5, 8),
+                    state: 'streaming' as const,
+                  }
                 : m,
             ),
           );
@@ -422,12 +446,7 @@ function FullChatInterfaceComponent() {
       return (
         <ChatBubble
           role={msg.role}
-          avatar={
-            <ChatAvatar
-              role={msg.role}
-              name={msg.role === 'user' ? 'You' : 'Claude'}
-            />
-          }
+          avatar={<ChatAvatar role={msg.role} name={msg.role === 'user' ? 'You' : 'Claude'} />}
           timestamp={msg.state === 'complete' ? msg.timestamp : undefined}
           actions={
             msg.role === 'assistant' && msg.state === 'complete' && msg.id !== 'welcome' ? (
@@ -435,9 +454,7 @@ function FullChatInterfaceComponent() {
                 onCopy={() => navigator.clipboard?.writeText(msg.content)}
                 onRegenerate={() => {}}
                 feedback={feedbackMap[msg.id] ?? null}
-                onFeedback={(fb) =>
-                  setFeedbackMap((prev) => ({ ...prev, [msg.id]: fb }))
-                }
+                onFeedback={(fb) => setFeedbackMap((prev) => ({ ...prev, [msg.id]: fb }))}
               />
             ) : undefined
           }
@@ -487,7 +504,7 @@ function FullChatInterfaceComponent() {
               id: 'welcome',
               role: 'assistant',
               content:
-                'Hello! I\'m your Kubernetes assistant. Ask me about pods, deployments, services, scaling, or anything else about your cluster.',
+                "Hello! I'm your Kubernetes assistant. Ask me about pods, deployments, services, scaling, or anything else about your cluster.",
               state: 'complete',
               timestamp: new Date(),
             },
@@ -530,10 +547,7 @@ function FullChatInterfaceComponent() {
         )}
 
         {!isGenerating && followUps.length === 0 && messages.length <= 1 && (
-          <ChatSuggestions
-            suggestions={suggestions}
-            onSelect={(value) => handleSubmit(value)}
-          />
+          <ChatSuggestions suggestions={suggestions} onSelect={(value) => handleSubmit(value)} />
         )}
 
         <ChatInput
@@ -588,9 +602,24 @@ spec:
   type: ClusterIP`;
 
   const sources = [
-    { id: '1', label: 'Kubernetes Documentation', url: 'https://kubernetes.io/docs', detail: 'Official reference' },
-    { id: '2', label: 'Service Networking', url: 'https://kubernetes.io/docs/concepts/services-networking', detail: 'Concepts guide' },
-    { id: '3', label: 'Best Practices', url: 'https://kubernetes.io/docs/best-practices', detail: 'Production patterns' },
+    {
+      id: '1',
+      label: 'Kubernetes Documentation',
+      url: 'https://kubernetes.io/docs',
+      detail: 'Official reference',
+    },
+    {
+      id: '2',
+      label: 'Service Networking',
+      url: 'https://kubernetes.io/docs/concepts/services-networking',
+      detail: 'Concepts guide',
+    },
+    {
+      id: '3',
+      label: 'Best Practices',
+      url: 'https://kubernetes.io/docs/best-practices',
+      detail: 'Production patterns',
+    },
   ];
 
   const followUps = [
@@ -609,12 +638,7 @@ spec:
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <AIMarkdown content={markdownContent} />
 
-          <AICodeBlock
-            code={codeSnippet}
-            language="yaml"
-            filename="service.yaml"
-            showLineNumbers
-          />
+          <AICodeBlock code={codeSnippet} language="yaml" filename="service.yaml" showLineNumbers />
 
           <AISources sources={sources} onNavigate={() => {}} />
 
@@ -643,12 +667,29 @@ export const AIResponseBlock: StoryObj = {
 // ---------------------------------------------------------------------------
 
 function AgentSessionComponent() {
-  const [agentStatus, setAgentStatus] = useState<'idle' | 'running' | 'paused' | 'complete' | 'error'>('running');
+  const [agentStatus, setAgentStatus] = useState<
+    'idle' | 'running' | 'paused' | 'complete' | 'error'
+  >('running');
 
   const tasks = [
-    { id: '1', label: 'Analyze cluster health', status: 'complete' as const, detail: 'All nodes healthy' },
-    { id: '2', label: 'Check pod resource usage', status: 'complete' as const, detail: 'Found 3 pods over limit' },
-    { id: '3', label: 'Review network policies', status: 'running' as const, detail: 'Scanning 12 policies...' },
+    {
+      id: '1',
+      label: 'Analyze cluster health',
+      status: 'complete' as const,
+      detail: 'All nodes healthy',
+    },
+    {
+      id: '2',
+      label: 'Check pod resource usage',
+      status: 'complete' as const,
+      detail: 'Found 3 pods over limit',
+    },
+    {
+      id: '3',
+      label: 'Review network policies',
+      status: 'running' as const,
+      detail: 'Scanning 12 policies...',
+    },
     { id: '4', label: 'Audit RBAC permissions', status: 'idle' as const },
     { id: '5', label: 'Generate report', status: 'idle' as const },
   ];
@@ -819,14 +860,8 @@ function StreamingConversationComponent() {
       </ChatBubble>
 
       {/* Currently streaming message with full markdown */}
-      <ChatBubble
-        role="assistant"
-        avatar={<ChatAvatar role="assistant" name="Claude" />}
-      >
-        <AIMarkdown
-          stream={stream}
-          onComplete={() => {}}
-        />
+      <ChatBubble role="assistant" avatar={<ChatAvatar role="assistant" name="Claude" />}>
+        <AIMarkdown stream={stream} onComplete={() => {}} />
       </ChatBubble>
 
       {/* The blinking cursor inside AIMarkdown indicates active streaming.
@@ -868,11 +903,7 @@ function ErrorAndRetryComponent() {
       />
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <AIRetryButton
-          onRetry={handleRetry}
-          retrying={retrying}
-          label="Retry with smaller scope"
-        />
+        <AIRetryButton onRetry={handleRetry} retrying={retrying} label="Retry with smaller scope" />
       </div>
     </div>
   );
@@ -896,11 +927,7 @@ function RichMessageComponent() {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <AIAttachment
-              name="deployment.yaml"
-              type="file"
-              size={2048}
-            />
+            <AIAttachment name="deployment.yaml" type="file" size={2048} />
             <AIAttachment
               name="architecture-diagram.png"
               type="image"
@@ -911,13 +938,12 @@ function RichMessageComponent() {
 
           <p>
             I&apos;ve analyzed the deployment configuration
-            <AIInlineCitation index={1} source="deployment.yaml" />
-            {' '}and the architecture diagram
+            <AIInlineCitation index={1} source="deployment.yaml" /> and the architecture diagram
             <AIInlineCitation index={2} source="architecture-diagram.png" />
-            . The current setup uses a rolling update strategy with a max surge of 25%.
-            According to the Kubernetes best practices guide
-            <AIInlineCitation index={3} source="K8s Best Practices" />
-            , this is a reasonable default for production workloads.
+            . The current setup uses a rolling update strategy with a max surge of 25%. According to
+            the Kubernetes best practices guide
+            <AIInlineCitation index={3} source="K8s Best Practices" />, this is a reasonable default
+            for production workloads.
           </p>
 
           <AICostIndicator cost={0.0034} />
@@ -948,7 +974,11 @@ function ContextAwareChatComponent() {
   ];
 
   const models = [
-    { id: 'claude-3-5-sonnet', name: 'Claude 3.5 Sonnet', description: 'Best balance of speed and quality' },
+    {
+      id: 'claude-3-5-sonnet',
+      name: 'Claude 3.5 Sonnet',
+      description: 'Best balance of speed and quality',
+    },
     { id: 'claude-3-opus', name: 'Claude 3 Opus', description: 'Most capable for complex tasks' },
     { id: 'claude-3-haiku', name: 'Claude 3 Haiku', description: 'Fastest response times' },
   ];
@@ -963,11 +993,7 @@ function ContextAwareChatComponent() {
     <div style={{ maxWidth: 700, display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <AIContextIndicator items={contextItems} maxVisible={3} />
-        <AIModelSelector
-          models={models}
-          value={selectedModel}
-          onChange={setSelectedModel}
-        />
+        <AIModelSelector models={models} value={selectedModel} onChange={setSelectedModel} />
       </div>
 
       <ChatInput
@@ -986,33 +1012,87 @@ export const ContextAwareChat: StoryObj = {
   render: () => <ContextAwareChatComponent />,
 };
 
-
 // ---------------------------------------------------------------------------
 // 9. LongDebugSession — ~40 message K8s incident debugging with virtualization
 // ---------------------------------------------------------------------------
 
 interface DebugMsg extends ChatMsg {
-  toolCall?: { name: string; args: Record<string, unknown>; result?: string; status: 'success' | 'error' };
+  toolCall?: {
+    name: string;
+    args: Record<string, unknown>;
+    result?: string;
+    status: 'success' | 'error';
+  };
   thinking?: string;
 }
 
 const DEBUG_SESSION_MESSAGES: DebugMsg[] = [
   // --- Phase 1: Discovery (1-8) ---
-  { id: 'd1', role: 'user', content: 'We\'re getting 500 errors on the payments API in production. Can you check what\'s going on?', state: 'complete', timestamp: new Date(Date.now() - 3600000) },
-  { id: 'd2', role: 'assistant', content: 'I\'ll investigate the payments API issues right away. Let me start by checking the pod status in the production namespace.', state: 'complete', timestamp: new Date(Date.now() - 3595000), thinking: 'The user is reporting 500 errors on payments API. I should check pod health first, then look at logs, resource usage, and recent deployments.' },
-  { id: 'd3', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3590000), toolCall: { name: 'kubectl get pods', args: { namespace: 'production', selector: 'app=payments-api' }, status: 'success', result: `NAME                            READY   STATUS             RESTARTS      AGE
+  {
+    id: 'd1',
+    role: 'user',
+    content:
+      "We're getting 500 errors on the payments API in production. Can you check what's going on?",
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3600000),
+  },
+  {
+    id: 'd2',
+    role: 'assistant',
+    content:
+      "I'll investigate the payments API issues right away. Let me start by checking the pod status in the production namespace.",
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3595000),
+    thinking:
+      'The user is reporting 500 errors on payments API. I should check pod health first, then look at logs, resource usage, and recent deployments.',
+  },
+  {
+    id: 'd3',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3590000),
+    toolCall: {
+      name: 'kubectl get pods',
+      args: { namespace: 'production', selector: 'app=payments-api' },
+      status: 'success',
+      result: `NAME                            READY   STATUS             RESTARTS      AGE
 payments-api-7b9f4c8d6-abc12   1/1     Running            0             2d
 payments-api-7b9f4c8d6-def34   0/1     CrashLoopBackOff   14 (2m ago)   2d
 payments-api-7b9f4c8d6-ghi56   1/1     Running            0             2d
-payments-api-7b9f4c8d6-jkl78   0/1     OOMKilled          8 (5m ago)    2d` } },
-  { id: 'd4', role: 'assistant', content: `Found the problem — **2 out of 4 pods are unhealthy**:
+payments-api-7b9f4c8d6-jkl78   0/1     OOMKilled          8 (5m ago)    2d`,
+    },
+  },
+  {
+    id: 'd4',
+    role: 'assistant',
+    content: `Found the problem — **2 out of 4 pods are unhealthy**:
 
 - \`payments-api-...-def34\` is in **CrashLoopBackOff** with 14 restarts
 - \`payments-api-...-jkl78\` was **OOMKilled** with 8 restarts
 
-This means only 2 pods are serving traffic, which explains the 500 errors under load. Let me check the resource limits and recent logs.`, state: 'complete', timestamp: new Date(Date.now() - 3585000) },
-  { id: 'd5', role: 'user', content: 'That looks bad. What are the current resource limits?', state: 'complete', timestamp: new Date(Date.now() - 3580000) },
-  { id: 'd6', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3575000), toolCall: { name: 'kubectl describe deployment', args: { name: 'payments-api', namespace: 'production' }, status: 'success', result: `Containers:
+This means only 2 pods are serving traffic, which explains the 500 errors under load. Let me check the resource limits and recent logs.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3585000),
+  },
+  {
+    id: 'd5',
+    role: 'user',
+    content: 'That looks bad. What are the current resource limits?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3580000),
+  },
+  {
+    id: 'd6',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3575000),
+    toolCall: {
+      name: 'kubectl describe deployment',
+      args: { name: 'payments-api', namespace: 'production' },
+      status: 'success',
+      result: `Containers:
   payments-api:
     Image:      registry.internal/payments-api:v3.2.1
     Port:       8080/TCP
@@ -1024,19 +1104,48 @@ This means only 2 pods are serving traffic, which explains the 500 errors under 
         cpu:     250m
         memory:  128Mi
     Liveness:    http-get http://:8080/healthz delay=10s timeout=5s period=15s
-    Readiness:   http-get http://:8080/ready delay=5s timeout=3s period=10s` } },
-  { id: 'd7', role: 'assistant', content: `The resource limits look quite tight:
+    Readiness:   http-get http://:8080/ready delay=5s timeout=3s period=10s`,
+    },
+  },
+  {
+    id: 'd7',
+    role: 'assistant',
+    content: `The resource limits look quite tight:
 
 | Resource | Request | Limit |
 |----------|---------|-------|
 | CPU | 250m | 500m |
 | Memory | 128Mi | **256Mi** |
 
-A **256Mi memory limit** for a payments API handling production traffic is very low. The OOMKilled status confirms pods are exceeding this limit. Let me check the actual memory usage and logs.`, state: 'complete', timestamp: new Date(Date.now() - 3570000) },
-  { id: 'd8', role: 'user', content: 'Yes, please check the logs from the crashing pod.', state: 'complete', timestamp: new Date(Date.now() - 3565000) },
+A **256Mi memory limit** for a payments API handling production traffic is very low. The OOMKilled status confirms pods are exceeding this limit. Let me check the actual memory usage and logs.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3570000),
+  },
+  {
+    id: 'd8',
+    role: 'user',
+    content: 'Yes, please check the logs from the crashing pod.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3565000),
+  },
 
   // --- Phase 2: Investigation (9-18) ---
-  { id: 'd9', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3560000), toolCall: { name: 'kubectl logs', args: { pod: 'payments-api-7b9f4c8d6-def34', namespace: 'production', previous: true, tail: 50 }, status: 'success', result: `2024-01-15T10:23:41Z INFO  Starting payments-api v3.2.1
+  {
+    id: 'd9',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3560000),
+    toolCall: {
+      name: 'kubectl logs',
+      args: {
+        pod: 'payments-api-7b9f4c8d6-def34',
+        namespace: 'production',
+        previous: true,
+        tail: 50,
+      },
+      status: 'success',
+      result: `2024-01-15T10:23:41Z INFO  Starting payments-api v3.2.1
 2024-01-15T10:23:42Z INFO  Connected to PostgreSQL (pool_size=20)
 2024-01-15T10:23:42Z INFO  Connected to Redis cache
 2024-01-15T10:23:43Z INFO  Listening on :8080
@@ -1047,8 +1156,13 @@ A **256Mi memory limit** for a payments API handling production traffic is very 
 2024-01-15T10:25:18Z ERROR java.lang.OutOfMemoryError: GC overhead limit exceeded
 2024-01-15T10:25:18Z ERROR   at com.payments.cache.TransactionCache.processBatch(TransactionCache.java:142)
 2024-01-15T10:25:18Z ERROR   at com.payments.worker.BatchProcessor.run(BatchProcessor.java:89)
-2024-01-15T10:25:18Z FATAL Shutting down due to unrecoverable error` } },
-  { id: 'd10', role: 'assistant', content: `The logs reveal the root cause — a **memory leak in the transaction cache**:
+2024-01-15T10:25:18Z FATAL Shutting down due to unrecoverable error`,
+    },
+  },
+  {
+    id: 'd10',
+    role: 'assistant',
+    content: `The logs reveal the root cause — a **memory leak in the transaction cache**:
 
 1. Memory climbs from 77% to 95% within 90 seconds
 2. \`TransactionCache.processBatch()\` is the offending code path
@@ -1061,10 +1175,38 @@ This looks like the \`BatchProcessor\` is holding references to processed transa
 
 1. **Increase memory limits** to stop the bleeding (512Mi or 1Gi)
 2. **Investigate the memory leak** in \`TransactionCache.processBatch()\`
-3. **Scale up** to handle the backlog while we fix`, state: 'complete', timestamp: new Date(Date.now() - 3550000) },
-  { id: 'd11', role: 'user', content: 'Let\'s increase the memory first to stabilize, then we can investigate the leak.', state: 'complete', timestamp: new Date(Date.now() - 3545000) },
-  { id: 'd12', role: 'assistant', content: 'Good call. I\'ll patch the deployment to increase memory limits to 512Mi (request) and 1Gi (limit). This gives enough headroom while we investigate the leak.', state: 'complete', timestamp: new Date(Date.now() - 3540000), thinking: 'The user wants to stabilize first. I should increase the memory limit significantly — 1Gi gives 4x the current limit. I should also increase the request to 512Mi so the scheduler places pods on nodes with enough memory.' },
-  { id: 'd13', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3535000), toolCall: { name: 'kubectl apply', args: { file: 'inline-patch' }, status: 'success', result: `deployment.apps/payments-api patched
+3. **Scale up** to handle the backlog while we fix`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3550000),
+  },
+  {
+    id: 'd11',
+    role: 'user',
+    content: "Let's increase the memory first to stabilize, then we can investigate the leak.",
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3545000),
+  },
+  {
+    id: 'd12',
+    role: 'assistant',
+    content:
+      "Good call. I'll patch the deployment to increase memory limits to 512Mi (request) and 1Gi (limit). This gives enough headroom while we investigate the leak.",
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3540000),
+    thinking:
+      'The user wants to stabilize first. I should increase the memory limit significantly — 1Gi gives 4x the current limit. I should also increase the request to 512Mi so the scheduler places pods on nodes with enough memory.',
+  },
+  {
+    id: 'd13',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3535000),
+    toolCall: {
+      name: 'kubectl apply',
+      args: { file: 'inline-patch' },
+      status: 'success',
+      result: `deployment.apps/payments-api patched
 ---
 Applied patch:
 spec:
@@ -1078,8 +1220,13 @@ spec:
             memory: "512Mi"
           limits:
             cpu: "1"
-            memory: "1Gi"` } },
-  { id: 'd14', role: 'assistant', content: `Deployment patched. Kubernetes is now performing a rolling update with the new resource limits:
+            memory: "1Gi"`,
+    },
+  },
+  {
+    id: 'd14',
+    role: 'assistant',
+    content: `Deployment patched. Kubernetes is now performing a rolling update with the new resource limits:
 
 \`\`\`yaml
 resources:
@@ -1091,9 +1238,21 @@ resources:
     memory: "1Gi"     # was 256Mi
 \`\`\`
 
-The rolling update will create new pods with the higher limits before terminating the old ones. Let me also set up an HPA to auto-scale based on memory pressure.`, state: 'complete', timestamp: new Date(Date.now() - 3530000) },
-  { id: 'd15', role: 'user', content: 'Good idea. What should the HPA targets be?', state: 'complete', timestamp: new Date(Date.now() - 3525000) },
-  { id: 'd16', role: 'assistant', content: `For a payments API with a known memory leak, I recommend:
+The rolling update will create new pods with the higher limits before terminating the old ones. Let me also set up an HPA to auto-scale based on memory pressure.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3530000),
+  },
+  {
+    id: 'd15',
+    role: 'user',
+    content: 'Good idea. What should the HPA targets be?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3525000),
+  },
+  {
+    id: 'd16',
+    role: 'assistant',
+    content: `For a payments API with a known memory leak, I recommend:
 
 \`\`\`yaml
 apiVersion: autoscaling/v2
@@ -1136,39 +1295,163 @@ Key decisions:
 - **min 4 replicas** — maintains HA even if 2 pods restart
 - **memory target 70%** — scales up before OOM risk
 - **scale-down stabilization 5min** — prevents flapping during traffic spikes
-- **max 12** — cost guardrail`, state: 'complete', timestamp: new Date(Date.now() - 3520000) },
-  { id: 'd17', role: 'user', content: 'Apply that HPA config please.', state: 'complete', timestamp: new Date(Date.now() - 3515000) },
-  { id: 'd18', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3510000), toolCall: { name: 'kubectl apply', args: { resource: 'HorizontalPodAutoscaler' }, status: 'success', result: 'horizontalpodautoscaler.autoscaling/payments-api-hpa created' } },
+- **max 12** — cost guardrail`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3520000),
+  },
+  {
+    id: 'd17',
+    role: 'user',
+    content: 'Apply that HPA config please.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3515000),
+  },
+  {
+    id: 'd18',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3510000),
+    toolCall: {
+      name: 'kubectl apply',
+      args: { resource: 'HorizontalPodAutoscaler' },
+      status: 'success',
+      result: 'horizontalpodautoscaler.autoscaling/payments-api-hpa created',
+    },
+  },
 
   // --- Phase 3: Fix & Network (19-28) ---
-  { id: 'd19', role: 'assistant', content: 'HPA created. Now let me check the network policies — we should make sure the new pods can reach the database and cache.', state: 'complete', timestamp: new Date(Date.now() - 3505000) },
-  { id: 'd20', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3500000), toolCall: { name: 'kubectl get networkpolicies', args: { namespace: 'production' }, status: 'success', result: `NAME                    POD-SELECTOR         AGE
+  {
+    id: 'd19',
+    role: 'assistant',
+    content:
+      'HPA created. Now let me check the network policies — we should make sure the new pods can reach the database and cache.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3505000),
+  },
+  {
+    id: 'd20',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3500000),
+    toolCall: {
+      name: 'kubectl get networkpolicies',
+      args: { namespace: 'production' },
+      status: 'success',
+      result: `NAME                    POD-SELECTOR         AGE
 allow-payments-egress   app=payments-api     45d
 allow-payments-ingress  app=payments-api     45d
 default-deny-all        <none>               120d
-allow-monitoring        app=prometheus       90d` } },
-  { id: 'd21', role: 'assistant', content: `Network policies look good — the \`allow-payments-egress\` and \`allow-payments-ingress\` policies are already in place and use label selectors, so new pods will automatically match.
+allow-monitoring        app=prometheus       90d`,
+    },
+  },
+  {
+    id: 'd21',
+    role: 'assistant',
+    content: `Network policies look good — the \`allow-payments-egress\` and \`allow-payments-ingress\` policies are already in place and use label selectors, so new pods will automatically match.
 
-Let me check the rollout status.`, state: 'complete', timestamp: new Date(Date.now() - 3495000) },
-  { id: 'd22', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3490000), toolCall: { name: 'kubectl rollout status', args: { deployment: 'payments-api', namespace: 'production' }, status: 'success', result: `Waiting for deployment "payments-api" rollout to finish: 2 of 4 updated replicas are available...
+Let me check the rollout status.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3495000),
+  },
+  {
+    id: 'd22',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3490000),
+    toolCall: {
+      name: 'kubectl rollout status',
+      args: { deployment: 'payments-api', namespace: 'production' },
+      status: 'success',
+      result: `Waiting for deployment "payments-api" rollout to finish: 2 of 4 updated replicas are available...
 Waiting for deployment "payments-api" rollout to finish: 3 of 4 updated replicas are available...
-deployment "payments-api" successfully rolled out` } },
-  { id: 'd23', role: 'assistant', content: 'Rollout complete — all 4 pods are running with the new resource limits. Let me verify the pods are healthy.', state: 'complete', timestamp: new Date(Date.now() - 3485000) },
-  { id: 'd24', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3480000), toolCall: { name: 'kubectl get pods', args: { namespace: 'production', selector: 'app=payments-api' }, status: 'success', result: `NAME                            READY   STATUS    RESTARTS   AGE
+deployment "payments-api" successfully rolled out`,
+    },
+  },
+  {
+    id: 'd23',
+    role: 'assistant',
+    content:
+      'Rollout complete — all 4 pods are running with the new resource limits. Let me verify the pods are healthy.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3485000),
+  },
+  {
+    id: 'd24',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3480000),
+    toolCall: {
+      name: 'kubectl get pods',
+      args: { namespace: 'production', selector: 'app=payments-api' },
+      status: 'success',
+      result: `NAME                            READY   STATUS    RESTARTS   AGE
 payments-api-5c8d9f7a2-mn01    1/1     Running   0          3m
 payments-api-5c8d9f7a2-op23    1/1     Running   0          2m
 payments-api-5c8d9f7a2-qr45    1/1     Running   0          2m
-payments-api-5c8d9f7a2-st67    1/1     Running   0          1m` } },
-  { id: 'd25', role: 'assistant', content: 'All 4 new pods are **Running** with 0 restarts. The new pod names confirm the rolling update replaced all old pods.', state: 'complete', timestamp: new Date(Date.now() - 3475000) },
-  { id: 'd26', role: 'user', content: 'Great! Are the 500 errors gone now?', state: 'complete', timestamp: new Date(Date.now() - 3470000) },
-  { id: 'd27', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3465000), toolCall: { name: 'kubectl logs', args: { deployment: 'payments-api', namespace: 'production', since: '5m', grep: 'ERROR' }, status: 'success', result: `(no matching log entries)` } },
-  { id: 'd28', role: 'assistant', content: `No errors in the last 5 minutes — the 500s have stopped. The pods are now running with 4x the memory, so the leak will take much longer to cause issues.
+payments-api-5c8d9f7a2-st67    1/1     Running   0          1m`,
+    },
+  },
+  {
+    id: 'd25',
+    role: 'assistant',
+    content:
+      'All 4 new pods are **Running** with 0 restarts. The new pod names confirm the rolling update replaced all old pods.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3475000),
+  },
+  {
+    id: 'd26',
+    role: 'user',
+    content: 'Great! Are the 500 errors gone now?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3470000),
+  },
+  {
+    id: 'd27',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3465000),
+    toolCall: {
+      name: 'kubectl logs',
+      args: { deployment: 'payments-api', namespace: 'production', since: '5m', grep: 'ERROR' },
+      status: 'success',
+      result: `(no matching log entries)`,
+    },
+  },
+  {
+    id: 'd28',
+    role: 'assistant',
+    content: `No errors in the last 5 minutes — the 500s have stopped. The pods are now running with 4x the memory, so the leak will take much longer to cause issues.
 
-However, **this is a temporary fix**. The memory leak in \`TransactionCache.processBatch()\` still needs to be addressed. Without a fix, pods will eventually hit 1Gi and get OOMKilled again — just less frequently.`, state: 'complete', timestamp: new Date(Date.now() - 3460000) },
+However, **this is a temporary fix**. The memory leak in \`TransactionCache.processBatch()\` still needs to be addressed. Without a fix, pods will eventually hit 1Gi and get OOMKilled again — just less frequently.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3460000),
+  },
 
   // --- Phase 4: Verification (29-38) ---
-  { id: 'd29', role: 'user', content: 'Can you run a health check across the whole production namespace?', state: 'complete', timestamp: new Date(Date.now() - 3455000) },
-  { id: 'd30', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3450000), toolCall: { name: 'kubectl get pods', args: { namespace: 'production', output: 'wide' }, status: 'success', result: `NAME                            READY   STATUS    RESTARTS   AGE    NODE
+  {
+    id: 'd29',
+    role: 'user',
+    content: 'Can you run a health check across the whole production namespace?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3455000),
+  },
+  {
+    id: 'd30',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3450000),
+    toolCall: {
+      name: 'kubectl get pods',
+      args: { namespace: 'production', output: 'wide' },
+      status: 'success',
+      result: `NAME                            READY   STATUS    RESTARTS   AGE    NODE
 payments-api-5c8d9f7a2-mn01    1/1     Running   0          8m     worker-1
 payments-api-5c8d9f7a2-op23    1/1     Running   0          7m     worker-2
 payments-api-5c8d9f7a2-qr45    1/1     Running   0          7m     worker-3
@@ -1181,8 +1464,13 @@ postgres-0                      1/1     Running   0          14d    worker-3
 postgres-1                      1/1     Running   0          14d    worker-1
 redis-master-0                  1/1     Running   0          30d    worker-2
 redis-replica-0                 1/1     Running   0          30d    worker-3
-redis-replica-1                 1/1     Running   0          30d    worker-1` } },
-  { id: 'd31', role: 'assistant', content: `All **13 pods** across the production namespace are **Running** and **Ready**:
+redis-replica-1                 1/1     Running   0          30d    worker-1`,
+    },
+  },
+  {
+    id: 'd31',
+    role: 'assistant',
+    content: `All **13 pods** across the production namespace are **Running** and **Ready**:
 
 | Service | Pods | Status |
 |---------|------|--------|
@@ -1192,14 +1480,38 @@ redis-replica-1                 1/1     Running   0          30d    worker-1` } 
 | postgres | 2 | Healthy (14d uptime) |
 | redis | 3 | Healthy (30d uptime) |
 
-Pods are well-distributed across all 3 worker nodes. No single node is overloaded.`, state: 'complete', timestamp: new Date(Date.now() - 3445000) },
-  { id: 'd32', role: 'user', content: 'What does the current memory usage look like on the payments pods?', state: 'complete', timestamp: new Date(Date.now() - 3440000) },
-  { id: 'd33', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3435000), toolCall: { name: 'kubectl top pods', args: { namespace: 'production', selector: 'app=payments-api' }, status: 'success', result: `NAME                            CPU(cores)   MEMORY(bytes)
+Pods are well-distributed across all 3 worker nodes. No single node is overloaded.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3445000),
+  },
+  {
+    id: 'd32',
+    role: 'user',
+    content: 'What does the current memory usage look like on the payments pods?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3440000),
+  },
+  {
+    id: 'd33',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3435000),
+    toolCall: {
+      name: 'kubectl top pods',
+      args: { namespace: 'production', selector: 'app=payments-api' },
+      status: 'success',
+      result: `NAME                            CPU(cores)   MEMORY(bytes)
 payments-api-5c8d9f7a2-mn01    124m         287Mi
 payments-api-5c8d9f7a2-op23    98m          245Mi
 payments-api-5c8d9f7a2-qr45    115m         268Mi
-payments-api-5c8d9f7a2-st67    87m          231Mi` } },
-  { id: 'd34', role: 'assistant', content: `Current memory usage across payment pods:
+payments-api-5c8d9f7a2-st67    87m          231Mi`,
+    },
+  },
+  {
+    id: 'd34',
+    role: 'assistant',
+    content: `Current memory usage across payment pods:
 
 - **mn01**: 287Mi / 1Gi (28%)
 - **op23**: 245Mi / 1Gi (24%)
@@ -1208,9 +1520,28 @@ payments-api-5c8d9f7a2-st67    87m          231Mi` } },
 
 Average: ~258Mi — this is already **above the old 256Mi limit**, confirming those pods would have been OOMKilled immediately. With the new 1Gi limit, they have plenty of headroom.
 
-> **Watch for**: Memory climbing steadily over hours. If you see pods approaching 700Mi+, the leak is progressing and you should prioritize the code fix.`, state: 'complete', timestamp: new Date(Date.now() - 3430000) },
-  { id: 'd35', role: 'user', content: 'Can you check the HPA status?', state: 'complete', timestamp: new Date(Date.now() - 3425000) },
-  { id: 'd36', role: 'assistant', content: '', state: 'complete', timestamp: new Date(Date.now() - 3420000), toolCall: { name: 'kubectl describe hpa', args: { name: 'payments-api-hpa', namespace: 'production' }, status: 'success', result: `Name:                          payments-api-hpa
+> **Watch for**: Memory climbing steadily over hours. If you see pods approaching 700Mi+, the leak is progressing and you should prioritize the code fix.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3430000),
+  },
+  {
+    id: 'd35',
+    role: 'user',
+    content: 'Can you check the HPA status?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3425000),
+  },
+  {
+    id: 'd36',
+    role: 'assistant',
+    content: '',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3420000),
+    toolCall: {
+      name: 'kubectl describe hpa',
+      args: { name: 'payments-api-hpa', namespace: 'production' },
+      status: 'success',
+      result: `Name:                          payments-api-hpa
 Namespace:                     production
 Reference:                     Deployment/payments-api
 Metrics:                       ( current / target )
@@ -1221,20 +1552,46 @@ Max replicas:                  12
 Deployment pods:               4 current / 4 desired
 Conditions:
   AbleToScale:   True
-  ScalingActive: False (current replicas within target range)` } },
-  { id: 'd37', role: 'assistant', content: `HPA is active and healthy:
+  ScalingActive: False (current replicas within target range)`,
+    },
+  },
+  {
+    id: 'd37',
+    role: 'assistant',
+    content: `HPA is active and healthy:
 
 - **Memory**: 25% / 70% target — well within range
 - **CPU**: 21% / 75% target — plenty of headroom
 - **Replicas**: 4 current / 4 desired — no scaling needed right now
 - **ScalingActive**: False — means the current replica count satisfies all metric targets
 
-The HPA will kick in if memory rises above 70% average (~717Mi per pod) or CPU above 75%.`, state: 'complete', timestamp: new Date(Date.now() - 3415000) },
-  { id: 'd38', role: 'user', content: 'Perfect. Can you write up an incident report summary of what happened and what we did?', state: 'complete', timestamp: new Date(Date.now() - 3410000) },
+The HPA will kick in if memory rises above 70% average (~717Mi per pod) or CPU above 75%.`,
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3415000),
+  },
+  {
+    id: 'd38',
+    role: 'user',
+    content:
+      'Perfect. Can you write up an incident report summary of what happened and what we did?',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3410000),
+  },
 
   // --- Phase 5: Final streaming message (39-40) ---
-  { id: 'd39', role: 'assistant', content: 'Let me compile the incident report.', state: 'complete', timestamp: new Date(Date.now() - 3405000), thinking: 'The user wants a comprehensive incident report. I should cover: timeline, root cause, impact, remediation steps taken, and follow-up actions needed. I\'ll format it as a proper incident report with sections.' },
-  { id: 'd40', role: 'assistant', content: `## Incident Report: Payments API 500 Errors
+  {
+    id: 'd39',
+    role: 'assistant',
+    content: 'Let me compile the incident report.',
+    state: 'complete',
+    timestamp: new Date(Date.now() - 3405000),
+    thinking:
+      "The user wants a comprehensive incident report. I should cover: timeline, root cause, impact, remediation steps taken, and follow-up actions needed. I'll format it as a proper incident report with sections.",
+  },
+  {
+    id: 'd40',
+    role: 'assistant',
+    content: `## Incident Report: Payments API 500 Errors
 
 ### Summary
 Production payments API experienced intermittent 500 errors due to pods crashing from memory exhaustion (OOMKilled) and entering CrashLoopBackOff state.
@@ -1276,7 +1633,10 @@ The \`TransactionCache.processBatch()\` method in payments-api v3.2.1 retains re
 - [ ] **P2**: Add memory usage alerting at 60% of limit (SRE)
 - [ ] **P2**: Review resource limits for all production deployments (SRE)
 - [ ] **P3**: Add heap dump on OOM for faster debugging (Engineering)
-- [ ] **P3**: Post-mortem meeting scheduled for next sprint (Team)`, state: 'streaming', timestamp: new Date(Date.now() - 3400000) },
+- [ ] **P3**: Post-mortem meeting scheduled for next sprint (Team)`,
+    state: 'streaming',
+    timestamp: new Date(Date.now() - 3400000),
+  },
 ];
 
 const INCIDENT_REPORT_CONTENT = DEBUG_SESSION_MESSAGES[DEBUG_SESSION_MESSAGES.length - 1]!.content;
@@ -1317,7 +1677,9 @@ function LongDebugSessionComponent() {
       }
     })();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const renderMessage = useCallback(
@@ -1329,17 +1691,12 @@ function LongDebugSessionComponent() {
         <ChatBubble
           role={msg.role}
           avatar={
-            <ChatAvatar
-              role={msg.role}
-              name={msg.role === 'user' ? 'DevOps Engineer' : 'Claude'}
-            />
+            <ChatAvatar role={msg.role} name={msg.role === 'user' ? 'DevOps Engineer' : 'Claude'} />
           }
           timestamp={msg.state === 'complete' || streamComplete ? msg.timestamp : undefined}
         >
           {/* Thinking block */}
-          {msg.thinking && (
-            <ThinkingBlock content={msg.thinking} duration={1800} />
-          )}
+          {msg.thinking && <ThinkingBlock content={msg.thinking} duration={1800} />}
 
           {/* Tool call with result */}
           {msg.toolCall && (
@@ -1496,7 +1853,8 @@ const REASONING_STEPS: StepConfig[] = [
   },
   {
     label: 'Correlating with deployment events',
-    description: 'Latency spikes started after v2.14.0 release — introduced new database query in hot path',
+    description:
+      'Latency spikes started after v2.14.0 release — introduced new database query in hot path',
     activeDuration: 1000,
   },
   {
@@ -1550,11 +1908,15 @@ CREATE INDEX CONCURRENTLY idx_users_org_active
 function ReasoningShowcaseComponent() {
   const [phase, setPhase] = useState<ReasoningPhase>('idle');
   // Thinking — uses stream prop (tokens arrive incrementally, just like a real model)
-  const [thinkingStream, setThinkingStream] = useState<AsyncIterable<string> | undefined>(undefined);
+  const [thinkingStream, setThinkingStream] = useState<AsyncIterable<string> | undefined>(
+    undefined,
+  );
   // Steps — only discovered steps exist; they appear one at a time
   const [steps, setSteps] = useState<DiscoveredStep[]>([]);
   // Response — streams in token by token
-  const [responseStream, setResponseStream] = useState<AsyncIterable<string> | undefined>(undefined);
+  const [responseStream, setResponseStream] = useState<AsyncIterable<string> | undefined>(
+    undefined,
+  );
   const [showAssistant, setShowAssistant] = useState(false);
   const cancelRef = useRef(false);
 
@@ -1565,7 +1927,9 @@ function ReasoningShowcaseComponent() {
     setSteps([]);
     setResponseStream(undefined);
     setShowAssistant(false);
-    setTimeout(() => { cancelRef.current = false; }, 50);
+    setTimeout(() => {
+      cancelRef.current = false;
+    }, 50);
   }, []);
 
   const runSequence = useCallback(async () => {
@@ -1580,7 +1944,9 @@ function ReasoningShowcaseComponent() {
 
     // Create a thinking stream that we also await completion of
     let resolveThinking: () => void;
-    const thinkingDone = new Promise<void>((r) => { resolveThinking = r; });
+    const thinkingDone = new Promise<void>((r) => {
+      resolveThinking = r;
+    });
 
     const thinkingGen = simulateStream(THINKING_CONTENT, 3, 12);
     async function* thinkingWithSignal(): AsyncGenerator<string> {
@@ -1620,7 +1986,12 @@ function ReasoningShowcaseComponent() {
       setSteps((prev) =>
         prev.map((s, j) =>
           j === i
-            ? { ...s, status: 'complete' as const, description: config.description, tags: config.tags }
+            ? {
+                ...s,
+                status: 'complete' as const,
+                description: config.description,
+                tags: config.tags,
+              }
             : s,
         ),
       );
@@ -1671,11 +2042,7 @@ function ReasoningShowcaseComponent() {
                 Auto-opens while streaming, auto-closes when done. Duration is
                 measured automatically by the component. */}
             {thinkingStream && (
-              <ThinkingBlock
-                stream={thinkingStream}
-                autoClose
-                autoCloseDelay={800}
-              />
+              <ThinkingBlock stream={thinkingStream} autoClose autoCloseDelay={800} />
             )}
 
             {/* ChainOfThought — steps appear incrementally as discovered.
@@ -1702,9 +2069,7 @@ function ReasoningShowcaseComponent() {
             )}
 
             {/* Final response — streams in token by token */}
-            {responseStream && (
-              <AIMarkdown stream={responseStream} />
-            )}
+            {responseStream && <AIMarkdown stream={responseStream} />}
           </div>
         </ChatBubble>
       )}
@@ -1730,7 +2095,8 @@ function ReasoningShowcaseComponent() {
         <span style={{ fontSize: 12, color: 'var(--ov-color-fg-muted, #64748b)' }}>
           {phase === 'idle' && 'Click to simulate a full AI response flow'}
           {phase === 'thinking' && 'Thinking...'}
-          {phase === 'reasoning' && `Investigating (${steps.filter((s) => s.status === 'complete').length}/${steps.length} steps)`}
+          {phase === 'reasoning' &&
+            `Investigating (${steps.filter((s) => s.status === 'complete').length}/${steps.length} steps)`}
           {phase === 'responding' && 'Streaming response...'}
           {phase === 'complete' && 'Complete'}
         </span>

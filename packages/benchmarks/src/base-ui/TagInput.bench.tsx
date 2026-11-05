@@ -15,11 +15,7 @@ function TagInputBench({ tags }: { tags: string[] }) {
 }
 
 describe('TagInput', () => {
-  benchRender(
-    'mount with 10 tags',
-    () => <TagInputBench tags={tags10} />,
-    TIER_1_OPTIONS,
-  );
+  benchRender('mount with 10 tags', () => <TagInputBench tags={tags10} />, TIER_1_OPTIONS);
 
   benchRerender(
     'tags change (10 → 20)',

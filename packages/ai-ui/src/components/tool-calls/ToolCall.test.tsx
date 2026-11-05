@@ -97,10 +97,16 @@ describe('ToolCall', () => {
 
   it('renders status icons for non-running statuses', () => {
     const { rerender } = renderAI(<ToolCall name="t" status="pending" data-testid="tc" />);
-    expect(screen.getByTestId('tc').querySelector('[data-ov-status="pending"] svg')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('tc').querySelector('[data-ov-status="pending"] svg'),
+    ).toBeInTheDocument();
     rerender(<ToolCall name="t" status="success" data-testid="tc" />);
-    expect(screen.getByTestId('tc').querySelector('[data-ov-status="success"] svg')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('tc').querySelector('[data-ov-status="success"] svg'),
+    ).toBeInTheDocument();
     rerender(<ToolCall name="t" status="error" data-testid="tc" />);
-    expect(screen.getByTestId('tc').querySelector('[data-ov-status="error"] svg')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('tc').querySelector('[data-ov-status="error"] svg'),
+    ).toBeInTheDocument();
   });
 });

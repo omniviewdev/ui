@@ -17,28 +17,25 @@ export interface AgentTaskListProps extends Omit<HTMLAttributes<HTMLDivElement>,
   tasks: AgentTask[];
 }
 
-export const AgentTaskList = forwardRef<HTMLDivElement, AgentTaskListProps>(
-  function AgentTaskList({ tasks, className, ...rest }, ref) {
-    if (tasks.length === 0) return null;
+export const AgentTaskList = forwardRef<HTMLDivElement, AgentTaskListProps>(function AgentTaskList(
+  { tasks, className, ...rest },
+  ref,
+) {
+  if (tasks.length === 0) return null;
 
-    return (
-      <List
-        ref={ref}
-        className={cn(styles.Root, className)}
-        selectionMode="none"
-        density="compact"
-        {...rest}
-      >
-        {tasks.map((task) => (
-          <List.Item key={task.id} itemKey={task.id} textValue={task.label}>
-            <AgentStatusItem
-              label={task.label}
-              status={task.status}
-              detail={task.detail}
-            />
-          </List.Item>
-        ))}
-      </List>
-    );
-  },
-);
+  return (
+    <List
+      ref={ref}
+      className={cn(styles.Root, className)}
+      selectionMode="none"
+      density="compact"
+      {...rest}
+    >
+      {tasks.map((task) => (
+        <List.Item key={task.id} itemKey={task.id} textValue={task.label}>
+          <AgentStatusItem label={task.label} status={task.status} detail={task.detail} />
+        </List.Item>
+      ))}
+    </List>
+  );
+});

@@ -41,9 +41,7 @@ function WithMinMaxStory(args: DateRangePickerProps) {
   min.setDate(today.getDate() - 30);
   const max = new Date(today);
   max.setDate(today.getDate() + 30);
-  return (
-    <DateRangePicker {...args} value={value} onChange={setValue} min={min} max={max} />
-  );
+  return <DateRangePicker {...args} value={value} onChange={setValue} min={min} max={max} />;
 }
 
 function DisabledStory(args: DateRangePickerProps) {
@@ -59,9 +57,7 @@ function CustomSeparatorStory(args: DateRangePickerProps) {
   const end = new Date(today);
   end.setDate(today.getDate() + 7);
   const [value, setValue] = useState<DateRange>({ start: today, end });
-  return (
-    <DateRangePicker {...args} value={value} onChange={setValue} rangeSeparator=" to " />
-  );
+  return <DateRangePicker {...args} value={value} onChange={setValue} rangeSeparator=" to " />;
 }
 
 function LocaleGBStory(args: DateRangePickerProps) {

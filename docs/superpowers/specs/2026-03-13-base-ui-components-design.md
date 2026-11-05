@@ -5,6 +5,7 @@
 **Package:** `@omniviewdev/base-ui`
 
 **Components:**
+
 1. `Tabs.Tab` `endDecorator` enhancement (existing component)
 2. `useSortableTable` hook + `SortableHeader` component (new)
 3. `FileTable` compound component (new)
@@ -56,7 +57,14 @@ function TabsTab({ endDecorator, children, ...props }: TabsTabProps) {
 **Usage:**
 
 ```tsx
-<Tabs.Tab value="queued" endDecorator={<Badge size="sm" color="info">2</Badge>}>
+<Tabs.Tab
+  value="queued"
+  endDecorator={
+    <Badge size="sm" color="info">
+      2
+    </Badge>
+  }
+>
   Queued
 </Tabs.Tab>
 ```
@@ -100,8 +108,8 @@ interface SortableColumnDef<T> {
   id: string;
   header: ReactNode;
   accessor: (item: T) => string | number | Date | undefined;
-  sortable?: boolean;        // default true
-  sortFn?: (a: T, b: T) => number;  // custom comparator override
+  sortable?: boolean; // default true
+  sortFn?: (a: T, b: T) => number; // custom comparator override
 }
 
 interface UseSortableTableOptions<T> {
@@ -114,13 +122,14 @@ interface UseSortableTableReturn<T> {
   sortedData: T[];
   sort: SortConfig;
   onSort: (columnId: string) => void;
-  columns: SortableColumnDef<T>[];  // pass-through for rendering
+  columns: SortableColumnDef<T>[]; // pass-through for rendering
 }
 
 function useSortableTable<T>(options: UseSortableTableOptions<T>): UseSortableTableReturn<T>;
 ```
 
 **Sort behavior:**
+
 - Click a header → sort ascending by that column
 - Click same header again → toggle to descending
 - Click a different header → sort ascending by new column
@@ -138,7 +147,13 @@ interface SortableHeaderProps {
   children: ReactNode;
 }
 
-function SortableHeader({ columnId, sort, onSort, sortable = true, children }: SortableHeaderProps): JSX.Element;
+function SortableHeader({
+  columnId,
+  sort,
+  onSort,
+  sortable = true,
+  children,
+}: SortableHeaderProps): JSX.Element;
 ```
 
 Renders a `<button>` wrapping children + a sort indicator icon (inline SVG chevron, not Unicode glyphs — for cross-font consistency). Sets `aria-sort="ascending"` or `aria-sort="descending"` on the parent `<th>` via a callback ref or by expecting the consumer to pass it through. When `sortable` is false, renders a plain `<span>` with no interactive behavior.
@@ -197,7 +212,7 @@ const { sortedData, sort, onSort, columns } = useSortableTable({
       <Table.Row key={item.id}>...</Table.Row>
     ))}
   </Table.Body>
-</Table>
+</Table>;
 ```
 
 ### Scope
@@ -236,9 +251,9 @@ interface FileTableItem {
   id: string;
   name: string;
   type: 'file' | 'folder';
-  size?: number;              // bytes
-  modified?: string;          // ISO date string
-  extension?: string;         // e.g. "tsx", "json"
+  size?: number; // bytes
+  modified?: string; // ISO date string
+  extension?: string; // e.g. "tsx", "json"
   children?: FileTableItem[]; // for navigation (not rendered as rows)
 }
 ```
@@ -280,11 +295,11 @@ Consumers can extend this interface with additional fields accessed via custom c
 ```tsx
 interface FileTableRootProps<T extends FileTableItem> {
   items: T[];
-  onNavigate?: (folder: T) => void;       // double-click folder
-  onSelect?: (item: T) => void;           // single-click row
-  selectedId?: string;                     // controlled selection
-  showParent?: boolean;                    // render ".." row
-  onNavigateUp?: () => void;              // ".." handler
+  onNavigate?: (folder: T) => void; // double-click folder
+  onSelect?: (item: T) => void; // single-click row
+  selectedId?: string; // controlled selection
+  showParent?: boolean; // render ".." row
+  onNavigateUp?: () => void; // ".." handler
   defaultSort?: SortConfig;
   children: ReactNode;
 }
@@ -294,14 +309,14 @@ interface FileTableRootProps<T extends FileTableItem> {
 
 Rendered automatically in this order:
 
-| Column | Width | Content | Sortable |
-|--------|-------|---------|----------|
-| Icon | 28px | `LuFolder` (amber) for folders, `LuFile` (subtle) for files | No |
-| Name | flex | File/folder name | Yes |
-| Actions | 28px | Slot from `rowActions` — visible on hover only | No |
-| Size | 80px | Formatted bytes, right-aligned, mono | Yes |
-| Type | 80px | "Directory" or extension-derived label | Yes |
-| Modified | 120px | Formatted date | Yes |
+| Column   | Width | Content                                                     | Sortable |
+| -------- | ----- | ----------------------------------------------------------- | -------- |
+| Icon     | 28px  | `LuFolder` (amber) for folders, `LuFile` (subtle) for files | No       |
+| Name     | flex  | File/folder name                                            | Yes      |
+| Actions  | 28px  | Slot from `rowActions` — visible on hover only              | No       |
+| Size     | 80px  | Formatted bytes, right-aligned, mono                        | Yes      |
+| Type     | 80px  | "Directory" or extension-derived label                      | Yes      |
+| Modified | 120px | Formatted date                                              | Yes      |
 
 Extra columns from `FileTable.Column` are appended after Modified.
 
@@ -326,8 +341,8 @@ interface FileTableColumnProps<T extends FileTableItem> {
   /** Returns a sortable primitive. Required when sortable is true. */
   sortAccessor?: (item: T) => string | number | Date | undefined;
   width?: number | string;
-  sortable?: boolean;           // default false for custom columns
-  sortFn?: (a: T, b: T) => number;  // alternative to sortAccessor for custom comparators
+  sortable?: boolean; // default false for custom columns
+  sortFn?: (a: T, b: T) => number; // alternative to sortAccessor for custom comparators
   mono?: boolean;
   align?: 'left' | 'right';
 }
@@ -409,14 +424,17 @@ export * from './file-table';
 ```
 
 **Exported from `sortable-table/index.ts`:**
+
 - `useSortableTable` (hook)
 - `SortableHeader` (component)
 - Types: `SortConfig`, `SortableColumnDef`, `UseSortableTableOptions`, `UseSortableTableReturn`
 
 **Exported from `file-table/index.ts`:**
+
 - `FileTable` (compound: Root, Header, Body, Status, Column)
 - Types: `FileTableItem`, `FileTableRootProps`, `FileTableColumnProps`
 - Utilities: `formatBytes`, `formatDate`, `fileTypeLabel`
 
 **Modified exports from `tabs/index.ts`:**
+
 - `TabsTabProps` type (updated to include `endDecorator`)

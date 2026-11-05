@@ -74,10 +74,7 @@ export default function WebBrowser() {
       />
 
       {/* Bookmarks bar */}
-      <BookmarksBar
-        bookmarks={DEFAULT_BOOKMARKS}
-        onNavigate={browser.navigate}
-      />
+      <BookmarksBar bookmarks={DEFAULT_BOOKMARKS} onNavigate={browser.navigate} />
 
       {/* Loading indicator */}
       {browser.activeTab.loading && (

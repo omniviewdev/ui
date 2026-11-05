@@ -34,7 +34,10 @@ export const Playground: Story = {
       <FindBar
         {...args}
         query={query}
-        onQueryChange={(q) => { setQuery(q); setCurrent(1); }}
+        onQueryChange={(q) => {
+          setQuery(q);
+          setCurrent(1);
+        }}
         matchCount={total}
         currentMatch={total ? current : undefined}
         onNext={next}
@@ -68,7 +71,10 @@ export const WithReplace: Story = {
         {...args}
         replaceEnabled
         query={query}
-        onQueryChange={(q) => { setQuery(q); setCurrent(1); }}
+        onQueryChange={(q) => {
+          setQuery(q);
+          setCurrent(1);
+        }}
         replaceText={replaceText}
         onReplaceTextChange={setReplaceText}
         matchCount={total}

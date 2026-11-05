@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Chip } from '@omniviewdev/base-ui';
 
 describe('Chip', () => {
-  benchRender(
-    'mount',
-    () => <Chip>Label</Chip>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <Chip>Label</Chip>, TIER_2_OPTIONS);
 
   benchRerender(
     'variant change',

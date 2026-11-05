@@ -9,7 +9,10 @@ const meta = {
     status: 'idle',
   },
   argTypes: {
-    status: { control: 'inline-radio', options: ['idle', 'running', 'paused', 'complete', 'error'] },
+    status: {
+      control: 'inline-radio',
+      options: ['idle', 'running', 'paused', 'complete', 'error'],
+    },
   },
 } satisfies Meta<typeof AgentControls>;
 

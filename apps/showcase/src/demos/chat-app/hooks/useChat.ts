@@ -1,13 +1,7 @@
 // apps/showcase/src/demos/chat-app/hooks/useChat.ts
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import type { User, Workspace, Channel, Message } from '../types';
-import {
-  WORKSPACES,
-  MESSAGES,
-  THREAD_REPLIES,
-  CURRENT_USER,
-  getUserById,
-} from '../data';
+import { WORKSPACES, MESSAGES, THREAD_REPLIES, CURRENT_USER, getUserById } from '../data';
 
 export interface UseChatReturn {
   currentUser: User;
@@ -59,7 +53,9 @@ export function useChat(): UseChatReturn {
   );
 
   const activeChannel = useMemo(
-    () => activeWorkspace.channels.find((c) => c.id === activeChannelId) ?? activeWorkspace.channels[0]!,
+    () =>
+      activeWorkspace.channels.find((c) => c.id === activeChannelId) ??
+      activeWorkspace.channels[0]!,
     [activeWorkspace, activeChannelId],
   );
 
@@ -69,23 +65,26 @@ export function useChat(): UseChatReturn {
   );
 
   const activeThread = useMemo(
-    () => (activeThreadId ? messages.find((m) => m.id === activeThreadId) ?? null : null),
+    () => (activeThreadId ? (messages.find((m) => m.id === activeThreadId) ?? null) : null),
     [messages, activeThreadId],
   );
 
   const threadMessages = useMemo(
-    () => (activeThreadId ? threadReplies[activeThreadId] ?? [] : []),
+    () => (activeThreadId ? (threadReplies[activeThreadId] ?? []) : []),
     [threadReplies, activeThreadId],
   );
 
-  const switchWorkspace = useCallback((id: string) => {
-    setActiveWorkspaceId(id);
-    const ws = workspaces.find((w) => w.id === id);
-    if (ws && ws.channels.length > 0) {
-      setActiveChannelId(ws.channels[0]?.id ?? '');
-    }
-    setActiveThreadId(null);
-  }, [workspaces]);
+  const switchWorkspace = useCallback(
+    (id: string) => {
+      setActiveWorkspaceId(id);
+      const ws = workspaces.find((w) => w.id === id);
+      if (ws && ws.channels.length > 0) {
+        setActiveChannelId(ws.channels[0]?.id ?? '');
+      }
+      setActiveThreadId(null);
+    },
+    [workspaces],
+  );
 
   const switchChannel = useCallback((id: string) => {
     setActiveChannelId(id);
@@ -113,91 +112,103 @@ export function useChat(): UseChatReturn {
     }, 3000);
   }, [activeWorkspace.users]);
 
-  const sendMessage = useCallback((content: string) => {
-    const trimmed = content.trim();
-    if (!trimmed) return;
+  const sendMessage = useCallback(
+    (content: string) => {
+      const trimmed = content.trim();
+      if (!trimmed) return;
 
-    const newMsg: Message = {
-      id: makeMsgId(),
-      channelId: activeChannelId,
-      userId: CURRENT_USER.id,
-      content: trimmed,
-      timestamp: Date.now(),
-      reactions: [],
-      replyCount: 0,
-    };
+      const newMsg: Message = {
+        id: makeMsgId(),
+        channelId: activeChannelId,
+        userId: CURRENT_USER.id,
+        content: trimmed,
+        timestamp: Date.now(),
+        reactions: [],
+        replyCount: 0,
+      };
 
-    setMessagesByChannel((prev) => ({
-      ...prev,
-      [activeChannelId]: [...(prev[activeChannelId] ?? []), newMsg],
-    }));
+      setMessagesByChannel((prev) => ({
+        ...prev,
+        [activeChannelId]: [...(prev[activeChannelId] ?? []), newMsg],
+      }));
 
-    simulateTyping();
-  }, [activeChannelId, simulateTyping]);
+      simulateTyping();
+    },
+    [activeChannelId, simulateTyping],
+  );
 
-  const sendThreadReply = useCallback((content: string) => {
-    const trimmed = content.trim();
-    if (!trimmed || !activeThreadId) return;
+  const sendThreadReply = useCallback(
+    (content: string) => {
+      const trimmed = content.trim();
+      if (!trimmed || !activeThreadId) return;
 
-    const newReply: Message = {
-      id: makeMsgId(),
-      channelId: activeChannelId,
-      userId: CURRENT_USER.id,
-      content: trimmed,
-      timestamp: Date.now(),
-      reactions: [],
-      replyCount: 0,
-    };
+      const newReply: Message = {
+        id: makeMsgId(),
+        channelId: activeChannelId,
+        userId: CURRENT_USER.id,
+        content: trimmed,
+        timestamp: Date.now(),
+        reactions: [],
+        replyCount: 0,
+      };
 
-    // Add reply to thread
-    setThreadReplies((prev) => ({
-      ...prev,
-      [activeThreadId]: [...(prev[activeThreadId] ?? []), newReply],
-    }));
-
-    // Increment replyCount on parent message
-    setMessagesByChannel((prev) => ({
-      ...prev,
-      [activeChannelId]: (prev[activeChannelId] ?? []).map((m) =>
-        m.id === activeThreadId ? { ...m, replyCount: m.replyCount + 1 } : m,
-      ),
-    }));
-  }, [activeChannelId, activeThreadId]);
-
-  const toggleReaction = useCallback((messageId: string, emoji: string) => {
-    const toggleInList = (msgs: Message[]): Message[] =>
-      msgs.map((m) => {
-        if (m.id !== messageId) return m;
-        const existing = m.reactions.find((r) => r.emoji === emoji);
-        if (existing) {
-          const hasUser = existing.userIds.includes(CURRENT_USER.id);
-          const updatedUserIds = hasUser
-            ? existing.userIds.filter((uid) => uid !== CURRENT_USER.id)
-            : [...existing.userIds, CURRENT_USER.id];
-          return {
-            ...m,
-            reactions: updatedUserIds.length > 0
-              ? m.reactions.map((r) => (r.emoji === emoji ? { ...r, userIds: updatedUserIds } : r))
-              : m.reactions.filter((r) => r.emoji !== emoji),
-          };
-        }
-        return { ...m, reactions: [...m.reactions, { emoji, userIds: [CURRENT_USER.id] }] };
-      });
-
-    // Try channel messages first
-    setMessagesByChannel((prev) => ({
-      ...prev,
-      [activeChannelId]: toggleInList(prev[activeChannelId] ?? []),
-    }));
-
-    // Also try thread replies
-    if (activeThreadId) {
+      // Add reply to thread
       setThreadReplies((prev) => ({
         ...prev,
-        [activeThreadId]: toggleInList(prev[activeThreadId] ?? []),
+        [activeThreadId]: [...(prev[activeThreadId] ?? []), newReply],
       }));
-    }
-  }, [activeChannelId, activeThreadId]);
+
+      // Increment replyCount on parent message
+      setMessagesByChannel((prev) => ({
+        ...prev,
+        [activeChannelId]: (prev[activeChannelId] ?? []).map((m) =>
+          m.id === activeThreadId ? { ...m, replyCount: m.replyCount + 1 } : m,
+        ),
+      }));
+    },
+    [activeChannelId, activeThreadId],
+  );
+
+  const toggleReaction = useCallback(
+    (messageId: string, emoji: string) => {
+      const toggleInList = (msgs: Message[]): Message[] =>
+        msgs.map((m) => {
+          if (m.id !== messageId) return m;
+          const existing = m.reactions.find((r) => r.emoji === emoji);
+          if (existing) {
+            const hasUser = existing.userIds.includes(CURRENT_USER.id);
+            const updatedUserIds = hasUser
+              ? existing.userIds.filter((uid) => uid !== CURRENT_USER.id)
+              : [...existing.userIds, CURRENT_USER.id];
+            return {
+              ...m,
+              reactions:
+                updatedUserIds.length > 0
+                  ? m.reactions.map((r) =>
+                      r.emoji === emoji ? { ...r, userIds: updatedUserIds } : r,
+                    )
+                  : m.reactions.filter((r) => r.emoji !== emoji),
+            };
+          }
+          return { ...m, reactions: [...m.reactions, { emoji, userIds: [CURRENT_USER.id] }] };
+        });
+
+      // Try channel messages first
+      setMessagesByChannel((prev) => ({
+        ...prev,
+        [activeChannelId]: toggleInList(prev[activeChannelId] ?? []),
+      }));
+
+      // Also try thread replies
+      if (activeThreadId) {
+        setThreadReplies((prev) => ({
+          ...prev,
+          [activeThreadId]: toggleInList(prev[activeThreadId] ?? []),
+        }));
+      }
+    },
+    [activeChannelId, activeThreadId],
+  );
 
   return {
     currentUser: CURRENT_USER,

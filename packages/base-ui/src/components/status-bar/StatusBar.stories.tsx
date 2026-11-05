@@ -64,8 +64,12 @@ export const IDEStatusBar: Story = {
           feat/ai-ui
         </StatusBar.IconItem>
         <StatusBar.Separator />
-        <StatusBar.IconItem icon={<LuCircleX />} color="danger">0</StatusBar.IconItem>
-        <StatusBar.IconItem icon={<LuTriangleAlert />} color="warning">3</StatusBar.IconItem>
+        <StatusBar.IconItem icon={<LuCircleX />} color="danger">
+          0
+        </StatusBar.IconItem>
+        <StatusBar.IconItem icon={<LuTriangleAlert />} color="warning">
+          3
+        </StatusBar.IconItem>
         <StatusBar.Separator />
         <StatusBar.Indicator status="success" pulse label="Kubernetes Connected" />
       </StatusBar.Section>
@@ -73,7 +77,9 @@ export const IDEStatusBar: Story = {
         <StatusBar.Progress value={45} label="Indexing files" color="brand" />
       </StatusBar.Section>
       <StatusBar.Section align="end">
-        <StatusBar.IconItem icon={<LuBell />} onClick={() => {}}>3</StatusBar.IconItem>
+        <StatusBar.IconItem icon={<LuBell />} onClick={() => {}}>
+          3
+        </StatusBar.IconItem>
         <StatusBar.Separator />
         <StatusBar.Item onClick={() => {}}>Ln 142, Col 37</StatusBar.Item>
         <StatusBar.Separator />
@@ -124,7 +130,9 @@ export const WithProgress: Story = {
           <StatusBar.Section align="start">
             <StatusBar.Progress value={100} label="Build complete" color="success" />
             <StatusBar.Separator />
-            <StatusBar.IconItem icon={<LuCheck />} color="success">Done</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuCheck />} color="success">
+              Done
+            </StatusBar.IconItem>
           </StatusBar.Section>
         </StatusBar>
       </div>
@@ -142,7 +150,9 @@ export const ConnectionStates: Story = {
         </div>
         <StatusBar>
           <StatusBar.Section align="start">
-            <StatusBar.IconItem icon={<LuWifi />} color="success">Online</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuWifi />} color="success">
+              Online
+            </StatusBar.IconItem>
             <StatusBar.Separator />
             <StatusBar.Indicator status="success" pulse label="API Connected" />
             <StatusBar.Separator />
@@ -151,12 +161,12 @@ export const ConnectionStates: Story = {
         </StatusBar>
       </div>
       <div>
-        <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>
-          Degraded
-        </div>
+        <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>Degraded</div>
         <StatusBar>
           <StatusBar.Section align="start">
-            <StatusBar.IconItem icon={<LuCloud />} color="warning">Degraded</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuCloud />} color="warning">
+              Degraded
+            </StatusBar.IconItem>
             <StatusBar.Separator />
             <StatusBar.Indicator status="success" label="API" />
             <StatusBar.Separator />
@@ -172,12 +182,16 @@ export const ConnectionStates: Story = {
         </div>
         <StatusBar>
           <StatusBar.Section align="start">
-            <StatusBar.IconItem icon={<LuWifiOff />} color="danger">Offline</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuWifiOff />} color="danger">
+              Offline
+            </StatusBar.IconItem>
             <StatusBar.Separator />
             <StatusBar.Indicator status="danger" label="Disconnected" />
           </StatusBar.Section>
           <StatusBar.Section align="end">
-            <StatusBar.IconItem icon={<LuRefreshCw />} onClick={() => {}}>Retry</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuRefreshCw />} onClick={() => {}}>
+              Retry
+            </StatusBar.IconItem>
           </StatusBar.Section>
         </StatusBar>
       </div>
@@ -187,7 +201,9 @@ export const ConnectionStates: Story = {
         </div>
         <StatusBar>
           <StatusBar.Section align="start">
-            <StatusBar.IconItem icon={<LuCloudOff />} color="warning">Reconnecting</StatusBar.IconItem>
+            <StatusBar.IconItem icon={<LuCloudOff />} color="warning">
+              Reconnecting
+            </StatusBar.IconItem>
             <StatusBar.Separator />
             <StatusBar.Indicator status="warning" pulse label="Attempting reconnect..." />
             <StatusBar.Separator />
@@ -196,9 +212,7 @@ export const ConnectionStates: Story = {
         </StatusBar>
       </div>
       <div>
-        <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>
-          All colors
-        </div>
+        <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', opacity: 0.5 }}>All colors</div>
         <StatusBar>
           <StatusBar.Section align="start">
             <StatusBar.Indicator status="neutral" label="Neutral" />
@@ -239,9 +253,7 @@ export const AllSizes: Story = {
               <StatusBar.Progress value={60} label="Syncing" color="brand" />
             </StatusBar.Section>
             <StatusBar.Section align="end">
-              <StatusBar.IconItem icon={<LuClock />}>
-                12:34 PM
-              </StatusBar.IconItem>
+              <StatusBar.IconItem icon={<LuClock />}>12:34 PM</StatusBar.IconItem>
               <StatusBar.Separator />
               <StatusBar.Item>Ready</StatusBar.Item>
             </StatusBar.Section>

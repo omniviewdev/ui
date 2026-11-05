@@ -14,12 +14,7 @@ export interface AIMessageGroupProps extends HTMLAttributes<HTMLDivElement> {
 export const AIMessageGroup = forwardRef<HTMLDivElement, AIMessageGroupProps>(
   function AIMessageGroup({ role, avatar, children, className, ...rest }, ref) {
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-role={role}
-        {...rest}
-      >
+      <div ref={ref} className={cn(styles.Root, className)} data-ov-role={role} {...rest}>
         {avatar && <div className={styles.Avatar}>{avatar}</div>}
         <div className={styles.Messages}>{children}</div>
       </div>

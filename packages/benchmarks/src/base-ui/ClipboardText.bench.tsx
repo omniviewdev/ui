@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { ClipboardText } from '@omniviewdev/base-ui';
 
 describe('ClipboardText', () => {
-  benchRender(
-    'mount',
-    () => <ClipboardText value="kubectl get pods" />,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <ClipboardText value="kubectl get pods" />, TIER_2_OPTIONS);
 
   benchRerender(
     'value change',
@@ -20,5 +16,10 @@ describe('ClipboardText', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => <ClipboardText key={i} value={`command-${i}`} />, TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => <ClipboardText key={i} value={`command-${i}`} />,
+    TIER_2_OPTIONS,
+  );
 });

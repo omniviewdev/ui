@@ -27,30 +27,31 @@
 
 ## File Map
 
-| File | Responsibility |
-|---|---|
-| `packages/base-ui/src/components/tree-list/types.ts` | Public guide, order, reorder-event, and item prop contracts |
-| `packages/base-ui/src/components/tree-list/order.ts` | Pure sparse-order application and sibling-move utilities |
-| `packages/base-ui/src/components/tree-list/order.test.ts` | Pure ordering behavior and complexity-sensitive edge cases |
-| `packages/base-ui/src/components/tree-list/hooks/useTreeFlattener.ts` | Static and ordered DFS selection while preserving static fast loop |
-| `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.ts` | Controlled/uncontrolled sparse order state |
-| `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.test.ts` | Controlled/uncontrolled hook contract |
-| `packages/base-ui/src/components/tree-list/context/TreeReorderContext.tsx` | Optional reorder item/handle contract, mounted only in reorderable roots |
-| `packages/base-ui/src/components/tree-list/TreeListReorder.tsx` | DnD provider, sensors, drag completion, sortable item wrapper, drag handle |
-| `packages/base-ui/src/components/tree-list/TreeList.tsx` | Public compound integration, static/ordered/reorderable root selection, selectable items, guide mode |
-| `packages/base-ui/src/components/tree-list/TreeList.module.css` | Rail geometry, drag handle, dragging state, reduced motion |
-| `packages/base-ui/src/components/tree-list/TreeList.test.tsx` | Public behavior integration tests |
-| `packages/base-ui/src/components/tree-list/TreeList.stories.tsx` | Rail, controlled/uncontrolled, virtualized, and Kubernetes-shaped stories |
-| `packages/base-ui/src/components/tree-list/index.ts` | Public type exports |
-| `apps/showcase/src/demos/container-management/components/tabs/FilesTab.tsx` | Connector prop cutover |
-| `packages/benchmarks/src/base-ui/TreeList.bench.tsx` | Static baseline plus ordered/reorderable benchmarks |
-| `.changeset/bright-trees-drag.md` | Base UI release note and connector API cutover |
+| File                                                                        | Responsibility                                                                                       |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `packages/base-ui/src/components/tree-list/types.ts`                        | Public guide, order, reorder-event, and item prop contracts                                          |
+| `packages/base-ui/src/components/tree-list/order.ts`                        | Pure sparse-order application and sibling-move utilities                                             |
+| `packages/base-ui/src/components/tree-list/order.test.ts`                   | Pure ordering behavior and complexity-sensitive edge cases                                           |
+| `packages/base-ui/src/components/tree-list/hooks/useTreeFlattener.ts`       | Static and ordered DFS selection while preserving static fast loop                                   |
+| `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.ts`           | Controlled/uncontrolled sparse order state                                                           |
+| `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.test.ts`      | Controlled/uncontrolled hook contract                                                                |
+| `packages/base-ui/src/components/tree-list/context/TreeReorderContext.tsx`  | Optional reorder item/handle contract, mounted only in reorderable roots                             |
+| `packages/base-ui/src/components/tree-list/TreeListReorder.tsx`             | DnD provider, sensors, drag completion, sortable item wrapper, drag handle                           |
+| `packages/base-ui/src/components/tree-list/TreeList.tsx`                    | Public compound integration, static/ordered/reorderable root selection, selectable items, guide mode |
+| `packages/base-ui/src/components/tree-list/TreeList.module.css`             | Rail geometry, drag handle, dragging state, reduced motion                                           |
+| `packages/base-ui/src/components/tree-list/TreeList.test.tsx`               | Public behavior integration tests                                                                    |
+| `packages/base-ui/src/components/tree-list/TreeList.stories.tsx`            | Rail, controlled/uncontrolled, virtualized, and Kubernetes-shaped stories                            |
+| `packages/base-ui/src/components/tree-list/index.ts`                        | Public type exports                                                                                  |
+| `apps/showcase/src/demos/container-management/components/tabs/FilesTab.tsx` | Connector prop cutover                                                                               |
+| `packages/benchmarks/src/base-ui/TreeList.bench.tsx`                        | Static baseline plus ordered/reorderable benchmarks                                                  |
+| `.changeset/bright-trees-drag.md`                                           | Base UI release note and connector API cutover                                                       |
 
 ---
 
 ### Task 1: Establish the Performance Baseline and Public Contracts
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/tree-list/types.ts`
 - Modify: `packages/base-ui/src/components/tree-list/index.ts`
 - Test: `packages/base-ui/src/components/tree-list/order.test.ts`
@@ -58,6 +59,7 @@
 - Benchmark: `packages/benchmarks/src/base-ui/TreeList.bench.tsx`
 
 **Interfaces:**
+
 - Produces: `TreeIndentGuide`, `TreeOrder`, `TreeReorderEvent`, `applySiblingOrder`, and `moveSibling`.
 - `applySiblingOrder<TItem>(siblings, parentKey, order, itemKey): readonly TItem[]`
 - `moveSibling(order, siblingKeys, parentKey, activeKey, overKey): { order: TreeOrder; event: TreeReorderEvent } | null`
@@ -84,8 +86,11 @@ it('applies explicit keys first and appends new source keys in source order', ()
   const items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
   const order: TreeOrder = new Map([[null, ['b', 'missing']]]);
 
-  expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id))
-    .toEqual(['b', 'a', 'c']);
+  expect(applySiblingOrder(items, null, order, (item) => item.id).map((item) => item.id)).toEqual([
+    'b',
+    'a',
+    'c',
+  ]);
 });
 
 it('moves one sibling and returns immutable sparse order plus event metadata', () => {
@@ -94,7 +99,11 @@ it('moves one sibling and returns immutable sparse order plus event metadata', (
 
   expect(result?.order.get(null)).toEqual(['c', 'a', 'b']);
   expect(result?.event).toEqual({
-    activeKey: 'c', overKey: 'a', parentKey: null, fromIndex: 2, toIndex: 0,
+    activeKey: 'c',
+    overKey: 'a',
+    parentKey: null,
+    fromIndex: 2,
+    toIndex: 0,
   });
   expect(initial.size).toBe(0);
 });
@@ -164,6 +173,7 @@ git commit -m "feat(tree-list): add sparse ordering contracts"
 ### Task 2: Add Ordered Flattening and Controlled/Uncontrolled Order State
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.ts`
 - Create: `packages/base-ui/src/components/tree-list/hooks/useTreeOrder.test.ts`
 - Modify: `packages/base-ui/src/components/tree-list/hooks/useTreeFlattener.ts`
@@ -172,6 +182,7 @@ git commit -m "feat(tree-list): add sparse ordering contracts"
 - Test: `packages/base-ui/src/components/tree-list/TreeList.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `TreeOrder`, `TreeReorderEvent`, `applySiblingOrder`, `moveSibling`.
 - Produces: `useTreeOrder({ order, defaultOrder, onOrderChange })` returning `{ currentOrder, proposeMove }`.
 - `useTreeFlattener` gains an optional `order` used only to select the ordered DFS implementation.
@@ -257,11 +268,13 @@ git commit -m "feat(tree-list): support controlled ordering"
 ### Task 3: Add Non-selectable Branch Rows
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/tree-list/types.ts`
 - Modify: `packages/base-ui/src/components/tree-list/TreeList.tsx`
 - Test: `packages/base-ui/src/components/tree-list/TreeList.test.tsx`
 
 **Interfaces:**
+
 - Produces: `TreeList.Item selectable?: boolean`, defaulting to `true`.
 
 - [ ] **Step 1: Write a failing behavior test**
@@ -302,6 +315,7 @@ git commit -m "feat(tree-list): support non-selectable branches"
 ### Task 4: Add the Reorderable DnD Path and Explicit Drag Handle
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/tree-list/context/TreeReorderContext.tsx`
 - Create: `packages/base-ui/src/components/tree-list/TreeListReorder.tsx`
 - Modify: `packages/base-ui/src/components/tree-list/TreeList.tsx`
@@ -310,6 +324,7 @@ git commit -m "feat(tree-list): support non-selectable branches"
 - Test: `packages/base-ui/src/components/tree-list/TreeList.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useTreeOrder`, visible flattened keys, store node metadata, and `proposeMove`.
 - Produces: `reorderable`, `TreeList.ReorderableItem`, and `TreeList.ItemDragHandle`.
 - `TreeList.Item` remains unchanged and never invokes `useSortable` or reads reorder context.
@@ -392,6 +407,7 @@ git commit -m "feat(tree-list): add optional sibling reordering"
 ### Task 5: Replace the Connector Boolean with Guide Modes and Add Rails
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/tree-list/types.ts`
 - Modify: `packages/base-ui/src/components/tree-list/hooks/useTreeState.ts`
 - Modify: `packages/base-ui/src/components/tree-list/TreeList.tsx`
@@ -401,6 +417,7 @@ git commit -m "feat(tree-list): add optional sibling reordering"
 - Modify: `apps/showcase/src/demos/container-management/components/tabs/FilesTab.tsx`
 
 **Interfaces:**
+
 - Consumes: `TreeIndentGuide`.
 - Produces: `indentGuide?: 'none' | 'rail' | 'connectors'`, default `'none'`.
 - Removes: `showBranchConnectors` from public and internal config.
@@ -459,11 +476,13 @@ git commit -m "feat(tree-list): add hierarchy rail guides"
 ### Task 6: Add Storybook Scenarios and Performance Benchmarks
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/tree-list/TreeList.stories.tsx`
 - Modify: `packages/benchmarks/src/base-ui/TreeList.bench.tsx`
 - Test: `packages/base-ui/src/components/tree-list/TreeList.test.tsx`
 
 **Interfaces:**
+
 - Consumes all public APIs from Tasks 1–5.
 - Produces permanent stories `RailGuides`, `ReorderableUncontrolled`, `ReorderableControlledPreset`, `ReorderableVirtualized`, and `KubernetesSidebar`.
 
@@ -520,10 +539,12 @@ git commit -m "docs(tree-list): demonstrate sortable hierarchy guides"
 ### Task 7: Visual Smoke Test, Release Documentation, and Final Validation
 
 **Files:**
+
 - Create: `.changeset/bright-trees-drag.md`
 - Modify only if behavior requires correction: files from Tasks 1–6
 
 **Interfaces:**
+
 - Produces a releasable Base UI branch. The plugin migration remains gated on package publication.
 
 - [ ] **Step 1: Start Storybook and inspect the actual surface**

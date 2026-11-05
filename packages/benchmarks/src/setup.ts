@@ -12,16 +12,17 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
 }
 
 if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
-  window.matchMedia = (query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: () => {},
-    removeListener: () => {},
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    dispatchEvent: () => false,
-  }) as MediaQueryList;
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
 }
 
 // @base-ui/react uses PointerEvent in click handlers (checkbox, button, etc.)
@@ -57,6 +58,8 @@ if (typeof globalThis.IntersectionObserver === 'undefined') {
     observe() {}
     unobserve() {}
     disconnect() {}
-    takeRecords() { return []; }
+    takeRecords() {
+      return [];
+    }
   } as unknown as typeof IntersectionObserver;
 }

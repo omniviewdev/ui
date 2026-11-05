@@ -29,11 +29,7 @@ describe('TimePicker', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <TimePicker
-        defaultValue={new Date(2026, 3, 12, 9, 0)}
-        onChange={onChange}
-        hourCycle={24}
-      />,
+      <TimePicker defaultValue={new Date(2026, 3, 12, 9, 0)} onChange={onChange} hourCycle={24} />,
     );
     const hour = screen.getByRole('spinbutton', { name: /hour/i });
     await user.click(hour);
@@ -52,28 +48,20 @@ describe('TimePicker', () => {
   });
 
   it('shows meridiem section when hourCycle=12', () => {
-    render(
-      <TimePicker value={new Date(2026, 3, 12, 14, 0)} onChange={() => {}} hourCycle={12} />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 14, 0)} onChange={() => {}} hourCycle={12} />);
     const field = screen.getByRole('group', { name: /time/i });
     // DateField renders a meridiem spinbutton for 12-hour mode (aria-label "AM or PM")
-    expect(
-      within(field).getByRole('spinbutton', { name: /am|pm|meridiem/i }),
-    ).toBeInTheDocument();
+    expect(within(field).getByRole('spinbutton', { name: /am|pm|meridiem/i })).toBeInTheDocument();
   });
 
   it('disables the field when disabled', () => {
-    render(
-      <TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} disabled />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} disabled />);
     const field = screen.getByRole('group', { name: /time/i });
     expect(field).toHaveAttribute('data-disabled');
   });
 
   it('marks the field as readonly when readOnly', () => {
-    render(
-      <TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} readOnly />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} readOnly />);
     const field = screen.getByRole('group', { name: /time/i });
     expect(field).toHaveAttribute('data-readonly');
   });
@@ -83,13 +71,7 @@ describe('TimePicker', () => {
   it('minuteStep snaps committed values to multiples', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <TimePicker
-        value={new Date(2026, 3, 12, 9, 0)}
-        onChange={onChange}
-        minuteStep={5}
-      />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 0)} onChange={onChange} minuteStep={5} />);
 
     // Focus the minute section in the DateField and type "37". With
     // minuteStep=5 and hourCycle=24, the DateField will commit 9:37, and
@@ -122,9 +104,7 @@ describe('TimePicker', () => {
   it('selecting a column item commits the time', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />);
 
     await user.click(screen.getByRole('button', { name: /open time picker/i }));
 
@@ -138,13 +118,7 @@ describe('TimePicker', () => {
 
   it('minutes column respects minuteStep (60/step items visible)', async () => {
     const user = userEvent.setup();
-    render(
-      <TimePicker
-        value={new Date(2026, 3, 12, 9, 0)}
-        onChange={() => {}}
-        minuteStep={15}
-      />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 9, 0)} onChange={() => {}} minuteStep={15} />);
 
     await user.click(screen.getByRole('button', { name: /open time picker/i }));
 
@@ -158,13 +132,7 @@ describe('TimePicker', () => {
   it('AM/PM column switches meridiem', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <TimePicker
-        value={new Date(2026, 3, 12, 14, 0)}
-        onChange={onChange}
-        hourCycle={12}
-      />,
-    );
+    render(<TimePicker value={new Date(2026, 3, 12, 14, 0)} onChange={onChange} hourCycle={12} />);
 
     await user.click(screen.getByRole('button', { name: /open time picker/i }));
 

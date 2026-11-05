@@ -75,11 +75,13 @@ Utility modules (`dateUtils`, `formatters`) are separated because they are pure,
 ## Task 1: Add Theming Tokens to styles.css
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/styles.css`
 
 Per the spec, add these semantic tokens under each of the 7 `:root[data-ov-theme='<mode>']` blocks. Also add the per-density size tokens under the two `:root[data-ov-density='<density>']` blocks.
 
 Token list:
+
 - `--ov-color-datepicker-header-bg`
 - `--ov-color-datepicker-cell-bg`
 - `--ov-color-datepicker-cell-bg-today`
@@ -102,6 +104,7 @@ Read the file to confirm the block structure for `:root[data-ov-theme='dark']`, 
 For each of the 7 built-in themes, add values that re-use existing tokens where possible and introduce new concrete hex values only when needed. Below is a starting recipe for the `dark` theme — derive analogous values for the other 6 themes based on each theme's existing color character (consult the theme's existing `color.bg.*`, `color.fg.*`, `color.brand.*`, and `color.state.*` values before picking):
 
 For `:root[data-ov-theme='dark']`:
+
 ```css
 --ov-color-datepicker-header-bg: var(--ov-color-bg-surface-raised);
 --ov-color-datepicker-cell-bg: transparent;
@@ -118,12 +121,14 @@ For `:root[data-ov-theme='dark']`:
 For the two high-contrast themes, pick values that preserve WCAG AAA contrast (e.g., `--ov-color-datepicker-cell-bg-selected: var(--ov-color-fg-default)` with inverse fg, or use the theme's pure white/black variables).
 
 For `:root[data-ov-density='comfortable']`:
+
 ```css
 --ov-size-datepicker-cell: 32px;
 --ov-size-datepicker-gap: 2px;
 ```
 
 For `:root[data-ov-density='compact']`:
+
 ```css
 --ov-size-datepicker-cell: 26px;
 --ov-size-datepicker-gap: 1px;
@@ -151,6 +156,7 @@ git commit -m "feat(base-ui): add date picker theming tokens"
 ## Task 2: Pure Date Utilities
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-picker/dateUtils.ts`
 - Create: `packages/base-ui/src/components/date-picker/dateUtils.test.ts`
 
@@ -364,6 +370,7 @@ git commit -m "feat(base-ui): pure date utilities for DatePicker"
 ## Task 3: Intl Formatter Helpers
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-picker/formatters.ts`
 - Create: `packages/base-ui/src/components/date-picker/formatters.test.ts`
 
@@ -458,12 +465,11 @@ export function formatMonthYear(date: Date, locale?: string): string {
 export function getWeekStartsOnForLocale(locale?: string): WeekStart {
   try {
     // Intl.Locale.weekInfo (Chrome 110+, Safari 17+). firstDay: 1=Mon…7=Sun.
-    const info = (new Intl.Locale(locale ?? 'en-US') as unknown as {
+    const info = new Intl.Locale(locale ?? 'en-US') as unknown as {
       getWeekInfo?: () => { firstDay: number };
       weekInfo?: { firstDay: number };
-    });
-    const first =
-      info.getWeekInfo?.().firstDay ?? info.weekInfo?.firstDay ?? undefined;
+    };
+    const first = info.getWeekInfo?.().firstDay ?? info.weekInfo?.firstDay ?? undefined;
     if (first !== undefined) {
       return (first === 7 ? 0 : first) as WeekStart;
     }
@@ -514,6 +520,7 @@ git commit -m "feat(base-ui): Intl-based formatters for DatePicker"
 ## Task 4: Calendar Grid Component
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-picker/Calendar.tsx`
 - Create: `packages/base-ui/src/components/date-picker/Calendar.module.css`
 - Create: `packages/base-ui/src/components/date-picker/Calendar.test.tsx`
@@ -742,14 +749,7 @@ Create `packages/base-ui/src/components/date-picker/Calendar.module.css`:
 Create `packages/base-ui/src/components/date-picker/Calendar.tsx`:
 
 ```tsx
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import styles from './Calendar.module.css';
 import {
   addDays,
@@ -761,11 +761,7 @@ import {
   startOfMonth,
   type WeekStart,
 } from './dateUtils';
-import {
-  formatMonthYear,
-  getWeekStartsOnForLocale,
-  getWeekdayLabels,
-} from './formatters';
+import { formatMonthYear, getWeekStartsOnForLocale, getWeekdayLabels } from './formatters';
 
 export interface CalendarProps {
   value: Date | null;
@@ -810,8 +806,7 @@ export function Calendar({
   useEffect(() => {
     // Keep view month in sync with focusedDate.
     setViewMonth((prev) =>
-      prev.getMonth() === focusedDate.getMonth() &&
-      prev.getFullYear() === focusedDate.getFullYear()
+      prev.getMonth() === focusedDate.getMonth() && prev.getFullYear() === focusedDate.getFullYear()
         ? prev
         : startOfMonth(focusedDate),
     );
@@ -836,26 +831,31 @@ export function Calendar({
     [min, max, isDateDisabled],
   );
 
-  const moveFocus = useCallback(
-    (next: Date) => {
-      setFocusedDate(next);
-      // Defer focus to after the next render.
-      queueMicrotask(() => {
-        const selector = `[data-date='${toIsoDay(next)}']`;
-        gridRef.current?.querySelector<HTMLButtonElement>(selector)?.focus();
-      });
-    },
-    [],
-  );
+  const moveFocus = useCallback((next: Date) => {
+    setFocusedDate(next);
+    // Defer focus to after the next render.
+    queueMicrotask(() => {
+      const selector = `[data-date='${toIsoDay(next)}']`;
+      gridRef.current?.querySelector<HTMLButtonElement>(selector)?.focus();
+    });
+  }, []);
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const current = focusedDate;
     let next: Date | null = null;
     switch (e.key) {
-      case 'ArrowRight': next = addDays(current, 1); break;
-      case 'ArrowLeft':  next = addDays(current, -1); break;
-      case 'ArrowDown':  next = addDays(current, 7); break;
-      case 'ArrowUp':    next = addDays(current, -7); break;
+      case 'ArrowRight':
+        next = addDays(current, 1);
+        break;
+      case 'ArrowLeft':
+        next = addDays(current, -1);
+        break;
+      case 'ArrowDown':
+        next = addDays(current, 7);
+        break;
+      case 'ArrowUp':
+        next = addDays(current, -7);
+        break;
       case 'Home': {
         const diff = (current.getDay() - resolvedWeekStart + 7) % 7;
         next = addDays(current, -diff);
@@ -866,8 +866,12 @@ export function Calendar({
         next = addDays(current, 6 - diff);
         break;
       }
-      case 'PageUp':   next = e.shiftKey ? addYears(current, -1) : addMonths(current, -1); break;
-      case 'PageDown': next = e.shiftKey ? addYears(current, 1)  : addMonths(current, 1); break;
+      case 'PageUp':
+        next = e.shiftKey ? addYears(current, -1) : addMonths(current, -1);
+        break;
+      case 'PageDown':
+        next = e.shiftKey ? addYears(current, 1) : addMonths(current, 1);
+        break;
       case 'Enter':
       case ' ':
         if (!isCellDisabled(current)) onChange(current);
@@ -892,11 +896,7 @@ export function Calendar({
         >
           ‹
         </button>
-        <span
-          className={styles.monthLabel}
-          aria-live="polite"
-          role="status"
-        >
+        <span className={styles.monthLabel} aria-live="polite" role="status">
           {formatMonthYear(viewMonth, locale)}
         </span>
         <button
@@ -935,9 +935,7 @@ export function Calendar({
                   aria-selected={selected}
                   aria-disabled={disabled || undefined}
                   aria-current={isToday ? 'date' : undefined}
-                  className={[styles.cell, !inMonth && styles.otherMonth]
-                    .filter(Boolean)
-                    .join(' ')}
+                  className={[styles.cell, !inMonth && styles.otherMonth].filter(Boolean).join(' ')}
                   onClick={() => !disabled && onChange(date)}
                   onFocus={() => setFocusedDate(date)}
                 >
@@ -975,6 +973,7 @@ git commit -m "feat(base-ui): Calendar grid with WAI-ARIA keyboard nav"
 ## Task 5: DatePicker — Compound + Convenience Wrapper
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-picker/DatePicker.tsx`
 - Create: `packages/base-ui/src/components/date-picker/DatePicker.module.css`
 - Create: `packages/base-ui/src/components/date-picker/DatePicker.test.tsx`
@@ -1080,9 +1079,14 @@ Create `packages/base-ui/src/components/date-picker/DatePicker.module.css`:
   outline-offset: 2px;
 }
 
-.trigger[disabled] { cursor: not-allowed; opacity: 0.6; }
+.trigger[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 
-.placeholder { color: var(--ov-color-fg-muted); }
+.placeholder {
+  color: var(--ov-color-fg-muted);
+}
 
 .popup {
   /* Popover positioning handled by @base-ui/react. */
@@ -1192,9 +1196,7 @@ export function DatePicker(props: DatePickerProps) {
         aria-readonly={readOnly || undefined}
         className={[styles.trigger, className].filter(Boolean).join(' ')}
       >
-        {label ?? (
-          <span className={styles.placeholder}>{placeholder ?? 'Select a date'}</span>
-        )}
+        {label ?? <span className={styles.placeholder}>{placeholder ?? 'Select a date'}</span>}
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner sideOffset={4}>
@@ -1260,6 +1262,7 @@ git commit -m "feat(base-ui): DatePicker component with compound API"
 ## Task 6: TimePicker
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/time-picker/TimePicker.tsx`
 - Create: `packages/base-ui/src/components/time-picker/TimePicker.module.css`
 - Create: `packages/base-ui/src/components/time-picker/TimePicker.test.tsx`
@@ -1396,7 +1399,9 @@ Create `packages/base-ui/src/components/time-picker/TimePicker.module.css`:
   border-radius: 2px;
 }
 
-.separator { color: var(--ov-color-fg-muted); }
+.separator {
+  color: var(--ov-color-fg-muted);
+}
 
 .meridiem {
   min-width: 3ch;
@@ -1408,7 +1413,9 @@ Create `packages/base-ui/src/components/time-picker/TimePicker.module.css`:
   padding-inline: var(--ov-space-2);
 }
 
-.root[data-disabled] { opacity: 0.6; }
+.root[data-disabled] {
+  opacity: 0.6;
+}
 ```
 
 Create `packages/base-ui/src/components/time-picker/TimePicker.tsx`:
@@ -1593,6 +1600,7 @@ git commit -m "feat(base-ui): TimePicker with 12/24 hour support and minute step
 ## Task 7: DateTimePicker
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-time-picker/DateTimePicker.tsx`
 - Create: `packages/base-ui/src/components/date-time-picker/DateTimePicker.module.css`
 - Create: `packages/base-ui/src/components/date-time-picker/DateTimePicker.test.tsx`
@@ -1786,9 +1794,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
         className={[pickerStyles.trigger, className].filter(Boolean).join(' ')}
       >
         {label ?? (
-          <span className={pickerStyles.placeholder}>
-            {placeholder ?? 'Select date and time'}
-          </span>
+          <span className={pickerStyles.placeholder}>{placeholder ?? 'Select date and time'}</span>
         )}
       </Popover.Trigger>
       <Popover.Portal>
@@ -1859,6 +1865,7 @@ git commit -m "feat(base-ui): DateTimePicker composing DatePicker and TimePicker
 ## Task 8: Storybook Stories
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/date-picker/DatePicker.stories.tsx`
 - Create: `packages/base-ui/src/components/time-picker/TimePicker.stories.tsx`
 - Create: `packages/base-ui/src/components/date-time-picker/DateTimePicker.stories.tsx`
@@ -2031,6 +2038,7 @@ git commit -m "docs(base-ui): Storybook stories for date/time pickers"
 ## Task 9: COMPONENT_STATUS & Final Verification
 
 **Files:**
+
 - Modify: `packages/base-ui/docs/COMPONENT_STATUS.md`
 
 - [ ] **Step 1: Update COMPONENT_STATUS.md**

@@ -36,5 +36,4 @@ describe('MultiSelect', () => {
     (props) => <MultiSelectBench {...props} />,
     TIER_1_OPTIONS,
   );
-
 });

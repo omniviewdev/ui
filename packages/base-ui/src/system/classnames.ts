@@ -3,9 +3,7 @@ export function cn(...parts: Array<string | false | null | undefined>): string {
 }
 
 export type StatefulClassName<TState> =
-  | string
-  | ((state: TState) => string | undefined)
-  | undefined;
+  string | ((state: TState) => string | undefined) | undefined;
 
 export function withBaseClassName<TState>(
   baseClassName: string | undefined,

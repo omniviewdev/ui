@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIFollowUp } from './AIFollowUp';
 
@@ -17,7 +18,7 @@ export const Playground: Story = {
       'How do I scale this deployment?',
       'Show me the pod logs',
     ],
-    onSelect: (s) => console.log('selected', s),
+    onSelect: action('selected'),
   },
 };
 
@@ -37,6 +38,6 @@ export const ManySuggestions: Story = {
       'What is the current replica count?',
       'How do I update the image?',
     ],
-    onSelect: (s) => console.log('selected', s),
+    onSelect: action('selected'),
   },
 };

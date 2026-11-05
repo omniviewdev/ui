@@ -1,9 +1,17 @@
 import {
-  forwardRef, useCallback, useLayoutEffect, useMemo, useRef, useSyncExternalStore,
-  type ReactNode, type RefObject,
+  forwardRef,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+  type ReactNode,
+  type RefObject,
 } from 'react';
 import {
-  CommandList, useCommandListConfig, useCommandListStoreContext,
+  CommandList,
+  useCommandListConfig,
+  useCommandListStoreContext,
 } from '@omniviewdev/base-ui';
 import styles from './CommandPalette.module.css';
 
@@ -44,9 +52,11 @@ function fuzzyMatch(text: string, query: string): boolean {
 }
 
 function matchesCommand(cmd: CommandItem, query: string): boolean {
-  return fuzzyMatch(cmd.label, query) ||
+  return (
+    fuzzyMatch(cmd.label, query) ||
     (cmd.description ? fuzzyMatch(cmd.description, query) : false) ||
-    (cmd.group ? fuzzyMatch(cmd.group, query) : false);
+    (cmd.group ? fuzzyMatch(cmd.group, query) : false)
+  );
 }
 
 const NO_COMMANDS: CommandItem[] = [];
@@ -60,7 +70,9 @@ function PaletteInput({ inputRef }: { inputRef: RefObject<HTMLInputElement | nul
 
   useLayoutEffect(() => {
     if (activeId) {
-      inputRef.current?.ownerDocument.getElementById(activeId)?.scrollIntoView?.({ block: 'nearest' });
+      inputRef.current?.ownerDocument
+        .getElementById(activeId)
+        ?.scrollIntoView?.({ block: 'nearest' });
     }
   }, [activeId, inputRef]);
 
@@ -89,10 +101,7 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const composingRef = useRef(false);
     const failed = error !== undefined;
-    const enabledCommands = useMemo(
-      () => commands.filter((c) => !c.disabled),
-      [commands],
-    );
+    const enabledCommands = useMemo(() => commands.filter((c) => !c.disabled), [commands]);
     const visibleCommands = failed || loading ? NO_COMMANDS : enabledCommands;
 
     // Group only contiguous runs. Merging equal group labels would reorder caller results.
@@ -123,8 +132,11 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
       inputRef.current?.focus({ preventScroll: true });
       return () => {
         // Respect commands that intentionally focus a navigation destination.
-        if (opener instanceof HTMLElement && opener.isConnected &&
-            (doc?.activeElement === doc?.body || dialog?.contains(doc?.activeElement ?? null))) {
+        if (
+          opener instanceof HTMLElement &&
+          opener.isConnected &&
+          (doc?.activeElement === doc?.body || dialog?.contains(doc?.activeElement ?? null))
+        ) {
           opener.focus({ preventScroll: true });
         }
       };
@@ -149,15 +161,22 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(event) => {
             // Nonfocusable headings/results must not strand keyboard focus on the page body.
-            if (event.button === 0 && event.target instanceof Element &&
-                !event.target.closest('input, button')) {
+            if (
+              event.button === 0 &&
+              event.target instanceof Element &&
+              !event.target.closest('input, button')
+            ) {
               event.preventDefault();
               inputRef.current?.focus({ preventScroll: true });
             }
           }}
           onKeyDown={(e) => e.stopPropagation()}
-          onCompositionStartCapture={() => { composingRef.current = true; }}
-          onCompositionEndCapture={() => { composingRef.current = false; }}
+          onCompositionStartCapture={() => {
+            composingRef.current = true;
+          }}
+          onCompositionEndCapture={() => {
+            composingRef.current = false;
+          }}
           onKeyDownCapture={(event) => {
             // Stop command handlers without preventing the IME's native default action.
             if (composingRef.current || event.nativeEvent.isComposing || event.keyCode === 229) {
@@ -165,8 +184,11 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
               return;
             }
             // A focused Clear search button owns Enter/Space, not the command list.
-            if (event.target instanceof HTMLButtonElement &&
-                event.key !== 'Escape' && event.key !== 'Tab') {
+            if (
+              event.target instanceof HTMLButtonElement &&
+              event.key !== 'Escape' &&
+              event.key !== 'Tab'
+            ) {
               event.stopPropagation();
               return;
             }
@@ -203,23 +225,16 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
             items={visibleCommands}
             itemKey={getCommandKey}
             renderItem={(cmd, meta) => (
-              <CommandList.Item
-                itemKey={meta.key}
-                data-testid={`command-item-${cmd.id}`}
-              >
+              <CommandList.Item itemKey={meta.key} data-testid={`command-item-${cmd.id}`}>
                 {cmd.icon && (
                   <CommandList.ItemIcon aria-hidden="true">{cmd.icon}</CommandList.ItemIcon>
                 )}
                 <CommandList.ItemLabel>{cmd.label}</CommandList.ItemLabel>
                 {cmd.description && (
-                  <CommandList.ItemDescription>
-                    {cmd.description}
-                  </CommandList.ItemDescription>
+                  <CommandList.ItemDescription>{cmd.description}</CommandList.ItemDescription>
                 )}
                 {cmd.shortcut && (
-                  <CommandList.ItemShortcut>
-                    {cmd.shortcut}
-                  </CommandList.ItemShortcut>
+                  <CommandList.ItemShortcut>{cmd.shortcut}</CommandList.ItemShortcut>
                 )}
               </CommandList.Item>
             )}
@@ -229,7 +244,9 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
             groupLabel={groupLabel}
             loading={loading && !failed}
             onAction={(key) => {
-              const current = visibleCommands.find((command) => command.id === key && !command.disabled);
+              const current = visibleCommands.find(
+                (command) => command.id === key && !command.disabled,
+              );
               if (!current) return;
               onSelect(current);
               onClose();

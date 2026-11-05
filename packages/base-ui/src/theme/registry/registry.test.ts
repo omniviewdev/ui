@@ -49,16 +49,8 @@ describe('theme registry', () => {
     registry.register(theme('duplicate'), user);
     registry.register(theme('owned'), plugin);
 
-    expectRegistryError(
-      () => registry.register(theme('duplicate'), plugin),
-      'duplicate_id',
-      'id',
-    );
-    expectRegistryError(
-      () => registry.register(theme('void'), plugin),
-      'reserved_id',
-      'id',
-    );
+    expectRegistryError(() => registry.register(theme('duplicate'), plugin), 'duplicate_id', 'id');
+    expectRegistryError(() => registry.register(theme('void'), plugin), 'reserved_id', 'id');
     expectRegistryError(
       () => registry.unregister('void', { kind: 'builtin', id: 'base-ui' }),
       'reserved_id',
@@ -97,13 +89,12 @@ describe('theme registry', () => {
     registry.register(theme('user.b', 'Alpha'), user);
     registry.register(theme('plugin.a', 'Zulu'), plugin);
 
-    expect(registry.getSnapshot().themes.slice(9).map(({ id }) => id)).toEqual([
-      'user.a',
-      'user.b',
-      'user.z',
-      'plugin.z',
-      'plugin.a',
-    ]);
+    expect(
+      registry
+        .getSnapshot()
+        .themes.slice(9)
+        .map(({ id }) => id),
+    ).toEqual(['user.a', 'user.b', 'user.z', 'plugin.z', 'plugin.a']);
   });
 
   it('isolates listener exceptions and snapshots dispatch listeners', () => {

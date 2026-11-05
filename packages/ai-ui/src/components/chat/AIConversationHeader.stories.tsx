@@ -38,7 +38,8 @@ export const WithActions: Story = {
 
 export const LongTitle: Story = {
   args: {
-    title: 'Very long conversation title that should be truncated when it overflows the available space in the header bar',
+    title:
+      'Very long conversation title that should be truncated when it overflows the available space in the header bar',
     model: 'Claude 3 Opus',
     onNewChat: () => {},
   },

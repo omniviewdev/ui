@@ -15,7 +15,20 @@ const meta = {
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100 } },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
-    color: { control: 'select', options: [undefined, 'neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        undefined,
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
   },
 } satisfies Meta<typeof Meter>;
 
@@ -38,7 +51,14 @@ export const ColorZones: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 300 }}>
       <Meter value={20} low={25} high={75} optimum={50} label="Low (good zone)" aria-label="Low" />
       <Meter value={50} low={25} high={75} optimum={50} label="Medium (optimal)" aria-label="Med" />
-      <Meter value={90} low={25} high={75} optimum={50} label="High (danger zone)" aria-label="High" />
+      <Meter
+        value={90}
+        low={25}
+        high={75}
+        optimum={50}
+        label="High (danger zone)"
+        aria-label="High"
+      />
     </div>
   ),
 };
@@ -61,7 +81,14 @@ export const AllSizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 300 }}>
       {(['sm', 'md', 'lg'] as const).map((size) => (
-        <Meter key={size} value={65} size={size} color="brand" label={`size="${size}"`} aria-label={size} />
+        <Meter
+          key={size}
+          value={65}
+          size={size}
+          color="brand"
+          label={`size="${size}"`}
+          aria-label={size}
+        />
       ))}
     </div>
   ),
@@ -71,9 +98,33 @@ export const ResourceMetrics: Story = {
   name: 'K8s resource metrics',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: 250 }}>
-      <Meter value={42} low={30} high={80} optimum={50} label="CPU: 42%" size="sm" aria-label="CPU" />
-      <Meter value={78} low={30} high={80} optimum={50} label="Memory: 78%" size="sm" aria-label="Memory" />
-      <Meter value={91} low={30} high={80} optimum={50} label="Disk: 91%" size="sm" aria-label="Disk" />
+      <Meter
+        value={42}
+        low={30}
+        high={80}
+        optimum={50}
+        label="CPU: 42%"
+        size="sm"
+        aria-label="CPU"
+      />
+      <Meter
+        value={78}
+        low={30}
+        high={80}
+        optimum={50}
+        label="Memory: 78%"
+        size="sm"
+        aria-label="Memory"
+      />
+      <Meter
+        value={91}
+        low={30}
+        high={80}
+        optimum={50}
+        label="Disk: 91%"
+        size="sm"
+        aria-label="Disk"
+      />
     </div>
   ),
 };

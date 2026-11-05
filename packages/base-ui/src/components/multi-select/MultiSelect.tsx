@@ -1,6 +1,13 @@
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
 import { LuCheck, LuChevronDown, LuSearch, LuX } from 'react-icons/lu';
-import { useCallback, useMemo, useRef, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  type ComponentPropsWithRef,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 import { Chip } from '../chip';
 import { IconButton } from '../icon-button';
 import { cn, withBaseClassName } from '../../system/classnames';
@@ -314,10 +321,7 @@ export function MultiSelect<Item = string>({
           </BaseCombobox.Chips>
 
           {clearable ? (
-            <BaseCombobox.Clear
-              aria-label={clearButtonLabel}
-              render={renderClearButton}
-            />
+            <BaseCombobox.Clear aria-label={clearButtonLabel} render={renderClearButton} />
           ) : null}
 
           <BaseCombobox.Trigger

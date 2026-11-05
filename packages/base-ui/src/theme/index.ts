@@ -6,7 +6,14 @@ export { ThemeSwitcher } from './ThemeSwitcher';
 export type { ThemeSwitcherProps } from './ThemeSwitcher';
 export { useTheme } from './useTheme';
 export { useThemeRegistry } from './useThemeRegistry';
-export type { ThemeContextValue, ThemeDensity, ThemeMode, ThemeMotion, ThemeState, ThemeTextSize } from './types';
+export type {
+  ThemeContextValue,
+  ThemeDensity,
+  ThemeMode,
+  ThemeMotion,
+  ThemeState,
+  ThemeTextSize,
+} from './types';
 export * from './registry';
 export { useThemeList } from './useThemeList';
 export type {

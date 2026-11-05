@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuPanelLeftClose, LuPanelLeftOpen, LuPanelRightClose, LuPanelRightOpen, LuMessageSquare, LuBox, LuPlug, LuSettings, LuSearch, LuLayers } from 'react-icons/lu';
+import {
+  LuPanelLeftClose,
+  LuPanelLeftOpen,
+  LuPanelRightClose,
+  LuPanelRightOpen,
+  LuMessageSquare,
+  LuBox,
+  LuPlug,
+  LuSettings,
+  LuSearch,
+  LuLayers,
+} from 'react-icons/lu';
 import { AppShell, type AppShellProps } from './AppShell';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
@@ -141,7 +152,15 @@ export const ContentOnly: Story = {
   ),
 };
 
-const NavIcon = ({ icon: Icon, label, active }: { icon: typeof LuMessageSquare; label: string; active?: boolean }) => (
+const NavIcon = ({
+  icon: Icon,
+  label,
+  active,
+}: {
+  icon: typeof LuMessageSquare;
+  label: string;
+  active?: boolean;
+}) => (
   <IconButton size="sm" variant="ghost" color={active ? 'brand' : 'neutral'} aria-label={label}>
     <Icon size={16} />
   </IconButton>
@@ -168,13 +187,27 @@ function ThreeColumnDemo() {
           </div>
         </AppShell.NavRail>
         <AppShell.Header>
-          <div style={{ padding: '0 12px', display: 'flex', alignItems: 'center', gap: 8, width: '100%' }}>
+          <div
+            style={{
+              padding: '0 12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              width: '100%',
+            }}
+          >
             <span style={{ fontSize: 13, fontWeight: 600 }}>Desktop App Layout</span>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setSecondaryCollapsed((c) => !c)}
-              startDecorator={secondaryCollapsed ? <LuPanelRightOpen size={14} /> : <LuPanelRightClose size={14} />}
+              startDecorator={
+                secondaryCollapsed ? (
+                  <LuPanelRightOpen size={14} />
+                ) : (
+                  <LuPanelRightClose size={14} />
+                )
+              }
               style={{ marginLeft: 'auto' }}
             >
               {secondaryCollapsed ? 'Show' : 'Hide'} Panel
@@ -182,8 +215,18 @@ function ThreeColumnDemo() {
           </div>
         </AppShell.Header>
         <AppShell.Sidebar>
-          <div style={{ padding: 'var(--ov-space-3, 12px)', fontSize: 'var(--ov-font-size-sm, 13px)' }}>
-            <div style={{ fontWeight: 600, marginBottom: 'var(--ov-space-2, 8px)', color: 'var(--ov-color-fg-default)' }}>Conversations</div>
+          <div
+            style={{ padding: 'var(--ov-space-3, 12px)', fontSize: 'var(--ov-font-size-sm, 13px)' }}
+          >
+            <div
+              style={{
+                fontWeight: 600,
+                marginBottom: 'var(--ov-space-2, 8px)',
+                color: 'var(--ov-color-fg-default)',
+              }}
+            >
+              Conversations
+            </div>
             {['New Chat', 'Cluster Setup', 'Code Review', 'Debug Session'].map((item, i) => (
               <div
                 key={item}
@@ -205,15 +248,36 @@ function ThreeColumnDemo() {
           <SlotLabel label="Main Content" area="content" />
         </AppShell.Content>
         <AppShell.SecondarySidebar>
-          <div style={{ padding: 'var(--ov-space-3, 12px)', fontSize: 'var(--ov-font-size-sm, 13px)' }}>
-            <div style={{ fontWeight: 600, marginBottom: 'var(--ov-space-2, 8px)', color: 'var(--ov-color-fg-default)' }}>Detail Panel</div>
-            <div style={{ fontSize: 'var(--ov-font-size-xs, 12px)', color: 'var(--ov-color-fg-muted)' }}>
+          <div
+            style={{ padding: 'var(--ov-space-3, 12px)', fontSize: 'var(--ov-font-size-sm, 13px)' }}
+          >
+            <div
+              style={{
+                fontWeight: 600,
+                marginBottom: 'var(--ov-space-2, 8px)',
+                color: 'var(--ov-color-fg-default)',
+              }}
+            >
+              Detail Panel
+            </div>
+            <div
+              style={{
+                fontSize: 'var(--ov-font-size-xs, 12px)',
+                color: 'var(--ov-color-fg-muted)',
+              }}
+            >
               Properties, parameters, or inspector content goes here.
             </div>
           </div>
         </AppShell.SecondarySidebar>
         <AppShell.Footer>
-          <div style={{ padding: '0 var(--ov-space-2, 8px)', fontSize: 'var(--ov-font-size-xs, 11px)', color: 'var(--ov-color-fg-muted)' }}>
+          <div
+            style={{
+              padding: '0 var(--ov-space-2, 8px)',
+              fontSize: 'var(--ov-font-size-xs, 11px)',
+              color: 'var(--ov-color-fg-muted)',
+            }}
+          >
             Ready
           </div>
         </AppShell.Footer>

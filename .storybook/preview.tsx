@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react';
 import { BUILT_IN_THEMES, ThemeProvider } from '@omniviewdev/base-ui';
 import '../packages/base-ui/src/theme/styles.css';
+import './metrics-preview.css';
 
 // Side-effect import — configures Monaco workers before any editor story mounts.
 // Without this, all editors stories fail with worker initialization errors.
@@ -47,36 +48,42 @@ const preview: Preview = {
           initialDensity={density}
           initialMotion={motion}
         >
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '100%',
-              minWidth: 0,
-              minHeight: '160px',
-              background: 'var(--ov-color-bg-base)',
-              color: 'var(--ov-color-fg-default)',
-              padding: 'var(--ov-space-stack-md)',
-              boxSizing: 'border-box',
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-            }}
-          >
+          {context.title.startsWith('Metrics/') ? (
+            <div className="ov-metrics-story">
+              <Story />
+            </div>
+          ) : (
             <div
               style={{
                 width: '100%',
+                maxWidth: '100%',
                 minWidth: 0,
-                minHeight: '100%',
-                padding: 'var(--ov-panel-padding)',
-                borderRadius: 'var(--ov-radius-surface)',
-                border: '1px solid var(--ov-color-border-muted)',
-                background: 'var(--ov-color-bg-inset)',
+                minHeight: '160px',
+                background: 'var(--ov-color-bg-base)',
+                color: 'var(--ov-color-fg-default)',
+                padding: 'var(--ov-space-stack-md)',
                 boxSizing: 'border-box',
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
               }}
             >
-              <Story />
+              <div
+                style={{
+                  width: '100%',
+                  minWidth: 0,
+                  minHeight: '100%',
+                  padding: 'var(--ov-panel-padding)',
+                  borderRadius: 'var(--ov-radius-surface)',
+                  border: '1px solid var(--ov-color-border-muted)',
+                  background: 'var(--ov-color-bg-inset)',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <Story />
+              </div>
             </div>
-          </div>
+          )}
         </ThemeProvider>
       );
     },

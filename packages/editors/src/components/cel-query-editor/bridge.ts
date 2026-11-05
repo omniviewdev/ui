@@ -1,11 +1,24 @@
 import type * as Monaco from 'monaco-editor';
 import type {
-  QueryAvailability, QueryCompletion, QueryDocument, QueryLanguageRequest,
-  QueryLanguageResponse, QueryLanguageService, QueryHoverService, QuerySignatureService,
-  QueryRange, QueryServiceStatus,
+  QueryAvailability,
+  QueryCompletion,
+  QueryDocument,
+  QueryLanguageRequest,
+  QueryLanguageResponse,
+  QueryLanguageService,
+  QueryHoverService,
+  QuerySignatureService,
+  QueryRange,
+  QueryServiceStatus,
 } from '@omniviewdev/base-ui';
 import { CEL_LANGUAGE_ID, registerCelLanguage } from './language';
-import { automaticCompletion, completionMatches, latestRequestGate, sourceOffset, sourcePosition } from './presentation';
+import {
+  automaticCompletion,
+  completionMatches,
+  latestRequestGate,
+  sourceOffset,
+  sourcePosition,
+} from './presentation';
 
 export interface CelBridgeState {
   document: QueryDocument;
@@ -63,13 +76,20 @@ export function attachCelBridge(
   const selector = { language: CEL_LANGUAGE_ID, scheme: model.uri.scheme, pattern: model.uri.path };
   const blocked = () => {
     const state = getState();
-    return disposed || model.isDisposed() || composing || state.disabled ||
-      Boolean(state.availability && state.availability.status !== 'ready');
+    return (
+      disposed ||
+      model.isDisposed() ||
+      composing ||
+      state.disabled ||
+      Boolean(state.availability && state.availability.status !== 'ready')
+    );
   };
 
   function dismissSemanticWidgets() {
     editor.trigger('cel', 'closeParameterHints', {});
-    editor.getContribution<MonacoContentHoverController>('editor.contrib.contentHover')?.hideContentHover();
+    editor
+      .getContribution<MonacoContentHoverController>('editor.contrib.contentHover')
+      ?.hideContentHover();
   }
 
   function range(source: string, value: QueryRange): Monaco.IRange {
@@ -77,8 +97,12 @@ export function attachCelBridge(
       throw new RangeError('Expected a half-open UTF-8 range');
     const start = sourcePosition(source, value.start);
     const end = sourcePosition(source, value.end);
-    return { startLineNumber: start.lineNumber, startColumn: start.column,
-      endLineNumber: end.lineNumber, endColumn: end.column };
+    return {
+      startLineNumber: start.lineNumber,
+      startColumn: start.column,
+      endLineNumber: end.lineNumber,
+      endColumn: end.column,
+    };
   }
 
   async function execute<T extends ResponseEnvelope>(
@@ -95,15 +119,26 @@ export function attachCelBridge(
     const operation = gate.begin();
     const subscription = token?.onCancellationRequested(() => operation.abort());
     try {
-      const response = await service({ document, contextKey: state.contextKey,
+      const response = await service({
+        document,
+        contextKey: state.contextKey,
         cursor: { offset: sourceOffset(document.text, position), unit: 'utf8-byte' },
-        signal: operation.signal });
+        signal: operation.signal,
+      });
       const current = getState();
-      if (blocked() || !gate.current(operation) || requestGeneration !== generation ||
-          model!.isDisposed() || model!.getVersionId() !== modelVersion ||
-          current.contextKey !== state.contextKey || current.document.version !== document.version ||
-          current.document.text !== document.text || response.documentVersion !== document.version ||
-          response.contextKey !== state.contextKey) return;
+      if (
+        blocked() ||
+        !gate.current(operation) ||
+        requestGeneration !== generation ||
+        model!.isDisposed() ||
+        model!.getVersionId() !== modelVersion ||
+        current.contextKey !== state.contextKey ||
+        current.document.version !== document.version ||
+        current.document.text !== document.text ||
+        response.documentVersion !== document.version ||
+        response.contextKey !== state.contextKey
+      )
+        return;
       if (response.status !== 'ready' && response.status !== 'empty')
         onStatus(response.message ?? `CEL language service ${response.status}.`);
       return response;
@@ -121,14 +156,22 @@ export function attachCelBridge(
       monaco.editor.setModelMarkers(model!, markerOwner, []);
       return;
     }
-    const severities = { error: monaco.MarkerSeverity.Error, warning: monaco.MarkerSeverity.Warning,
-      info: monaco.MarkerSeverity.Info, hint: monaco.MarkerSeverity.Hint };
+    const severities = {
+      error: monaco.MarkerSeverity.Error,
+      warning: monaco.MarkerSeverity.Warning,
+      info: monaco.MarkerSeverity.Info,
+      hint: monaco.MarkerSeverity.Hint,
+    };
     const values: Monaco.editor.IMarkerData[] = [];
     for (const diagnostic of result.diagnostics) {
       try {
-        values.push({ ...range(getState().document.text, diagnostic.range),
-          severity: severities[diagnostic.severity], message: diagnostic.message,
-          source: 'CEL', code: diagnostic.id });
+        values.push({
+          ...range(getState().document.text, diagnostic.range),
+          severity: severities[diagnostic.severity],
+          message: diagnostic.message,
+          source: 'CEL',
+          code: diagnostic.id,
+        });
       } catch {
         onStatus('The language service returned an invalid UTF-8 diagnostic range.');
       }
@@ -136,30 +179,49 @@ export function attachCelBridge(
     monaco.editor.setModelMarkers(model!, markerOwner, values);
   }
 
-  function completion(item: QueryCompletion, index: number, position: Monaco.IPosition): Monaco.languages.CompletionItem | undefined {
+  function completion(
+    item: QueryCompletion,
+    index: number,
+    position: Monaco.IPosition,
+  ): Monaco.languages.CompletionItem | undefined {
     if (item.disabledReason) return;
     const source = getState().document.text;
     const editRange = range(source, item.edit.range);
     // Monaco completion edits must be single-line and contain the request cursor.
-    if (editRange.startLineNumber !== position.lineNumber || editRange.endLineNumber !== position.lineNumber ||
-        editRange.startColumn > position.column || editRange.endColumn < position.column)
+    if (
+      editRange.startLineNumber !== position.lineNumber ||
+      editRange.endLineNumber !== position.lineNumber ||
+      editRange.startColumn > position.column ||
+      editRange.endColumn < position.column
+    )
       throw new RangeError('Completion range must contain the cursor on one line');
     const prefix = model!.getValueInRange({ ...editRange, endColumn: position.column });
     if (!completionMatches(prefix, item.filterText ?? item.label)) return;
-    const kinds = { field: monaco.languages.CompletionItemKind.Field,
-      operator: monaco.languages.CompletionItemKind.Operator, value: monaco.languages.CompletionItemKind.Value,
-      parameter: monaco.languages.CompletionItemKind.Variable, function: monaco.languages.CompletionItemKind.Function };
+    const kinds = {
+      field: monaco.languages.CompletionItemKind.Field,
+      operator: monaco.languages.CompletionItemKind.Operator,
+      value: monaco.languages.CompletionItemKind.Value,
+      parameter: monaco.languages.CompletionItemKind.Variable,
+      function: monaco.languages.CompletionItemKind.Function,
+    };
     return {
       label: { label: item.label, detail: item.type ? `: ${item.type}` : undefined },
-      kind: kinds[item.kind], detail: item.detail ?? item.type,
-      documentation: item.description || item.condition
-        ? { value: [item.description, item.condition].filter(Boolean).join('\n\n'), isTrusted: false }
-        : undefined,
+      kind: kinds[item.kind],
+      detail: item.detail ?? item.type,
+      documentation:
+        item.description || item.condition
+          ? {
+              value: [item.description, item.condition].filter(Boolean).join('\n\n'),
+              isTrusted: false,
+            }
+          : undefined,
       filterText: item.filterText ?? item.label,
       sortText: item.sortText ?? String(index).padStart(6, '0'),
       insertText: item.edit.text,
-      insertTextRules: item.insertTextFormat === 'snippet'
-        ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet : undefined,
+      insertTextRules:
+        item.insertTextFormat === 'snippet'
+          ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+          : undefined,
       range: editRange,
     };
   }
@@ -169,9 +231,13 @@ export function attachCelBridge(
     const state = getState();
     const position = editor.getPosition();
     if (!position) return;
-    if (state.check) void execute(state.check, position, checkGate).then(result => {
-      if (result) { onStatus(result.message); markers(result); }
-    });
+    if (state.check)
+      void execute(state.check, position, checkGate).then((result) => {
+        if (result) {
+          onStatus(result.message);
+          markers(result);
+        }
+      });
     if (state.request && !completionDismissed && editor.hasTextFocus()) {
       completionPermit = model.getVersionId();
       editor.trigger('cel', 'editor.action.triggerSuggest', {});
@@ -194,7 +260,9 @@ export function attachCelBridge(
         if (result.status !== 'ready') return { suggestions: [] };
         onStatus(result.message);
         const suggestions: Monaco.languages.CompletionItem[] = [];
-        for (const [index, item] of result.completions.slice(0, state.maxSuggestions ?? 100).entries()) {
+        for (const [index, item] of result.completions
+          .slice(0, state.maxSuggestions ?? 100)
+          .entries()) {
           try {
             const suggestion = completion(item, index, position);
             if (suggestion) suggestions.push(suggestion);
@@ -211,9 +279,14 @@ export function attachCelBridge(
         const result = await execute(getState().hover, position, hoverGate, token);
         if (result?.status !== 'ready' || !result.hover) return;
         try {
-          return { range: range(getState().document.text, result.hover.range),
-            contents: [{ value: result.hover.contents, isTrusted: false }] };
-        } catch { onStatus('The language service returned an invalid UTF-8 hover range.'); return; }
+          return {
+            range: range(getState().document.text, result.hover.range),
+            contents: [{ value: result.hover.contents, isTrusted: false }],
+          };
+        } catch {
+          onStatus('The language service returned an invalid UTF-8 hover range.');
+          return;
+        }
       },
     }),
     monaco.languages.registerSignatureHelpProvider(selector, {
@@ -225,12 +298,27 @@ export function attachCelBridge(
         if (result?.status !== 'ready' || !result.signature) return;
         const signature = result.signature;
         return {
-          value: { activeSignature: 0,
-            activeParameter: Math.max(0, Math.min(signature.activeParameter, signature.parameters.length - 1)),
-            signatures: [{ label: signature.label,
-              documentation: signature.documentation ? { value: signature.documentation, isTrusted: false } : undefined,
-              parameters: signature.parameters.map(parameter => ({ label: parameter.label,
-                documentation: parameter.documentation ? { value: parameter.documentation, isTrusted: false } : undefined })) }] },
+          value: {
+            activeSignature: 0,
+            activeParameter: Math.max(
+              0,
+              Math.min(signature.activeParameter, signature.parameters.length - 1),
+            ),
+            signatures: [
+              {
+                label: signature.label,
+                documentation: signature.documentation
+                  ? { value: signature.documentation, isTrusted: false }
+                  : undefined,
+                parameters: signature.parameters.map((parameter) => ({
+                  label: parameter.label,
+                  documentation: parameter.documentation
+                    ? { value: parameter.documentation, isTrusted: false }
+                    : undefined,
+                })),
+              },
+            ],
+          },
           dispose() {},
         };
       },
@@ -239,20 +327,27 @@ export function attachCelBridge(
       localEdit = true;
       completionDismissed = false;
       completionPermit = undefined;
-      completionGate.cancel(); checkGate.cancel(); hoverGate.cancel(); signatureGate.cancel();
+      completionGate.cancel();
+      checkGate.cancel();
+      hoverGate.cancel();
+      signatureGate.cancel();
       editor.trigger('cel', 'hideSuggestWidget', {});
       monaco.editor.setModelMarkers(model, markerOwner, []);
       if (!composing) scheduler.schedule(getState().debounceMs ?? debounceMs);
     }),
     editor.onDidChangeCursorPosition(() => {
       completionPermit = undefined;
-      completionGate.cancel(); signatureGate.cancel();
+      completionGate.cancel();
+      signatureGate.cancel();
     }),
     editor.onDidCompositionStart(() => {
       composing = true;
       completionPermit = undefined;
       scheduler.cancel();
-      completionGate.cancel(); checkGate.cancel(); hoverGate.cancel(); signatureGate.cancel();
+      completionGate.cancel();
+      checkGate.cancel();
+      hoverGate.cancel();
+      signatureGate.cancel();
       editor.trigger('cel', 'hideSuggestWidget', {});
       dismissSemanticWidgets();
     }),
@@ -260,44 +355,70 @@ export function attachCelBridge(
       composing = false;
       scheduler.schedule(getState().debounceMs ?? debounceMs);
     }),
-    editor.onKeyDown(event => {
+    editor.onKeyDown((event) => {
       if (event.keyCode === monaco.KeyCode.Escape) {
         completionPermit = undefined;
         completionDismissed = true;
         completionGate.cancel();
       }
     }),
-    editor.addAction({ id: `cel.complete.${model.id}`, label: 'CEL: Show contextual suggestions',
+    editor.addAction({
+      id: `cel.complete.${model.id}`,
+      label: 'CEL: Show contextual suggestions',
       precondition: '!suggestWidgetVisible || !suggestWidgetHasFocusedSuggestion',
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Space, monaco.KeyMod.WinCtrl | monaco.KeyCode.Space],
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.Space,
+        monaco.KeyMod.WinCtrl | monaco.KeyCode.Space,
+      ],
       run: () => {
         if (blocked()) return;
         completionDismissed = false;
         scheduler.immediate();
-      } }),
-    editor.addAction({ id: `cel.run.${model.id}`, label: 'CEL: Run query',
+      },
+    }),
+    editor.addAction({
+      id: `cel.run.${model.id}`,
+      label: 'CEL: Run query',
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
-      run: () => { if (!blocked()) getState().onSubmit?.(); } }),
+      run: () => {
+        if (!blocked()) getState().onSubmit?.();
+      },
+    }),
   ];
 
   function refresh() {
     if (disposed || model!.isDisposed()) return;
     const state = getState();
-    const sameContext = previous && previous.contextKey === state.contextKey &&
-      previous.request === state.request && previous.check === state.check &&
-      previous.hover === state.hover && previous.signature === state.signature &&
-      previous.disabled === state.disabled && previous.maxSuggestions === state.maxSuggestions &&
+    const sameContext =
+      previous &&
+      previous.contextKey === state.contextKey &&
+      previous.request === state.request &&
+      previous.check === state.check &&
+      previous.hover === state.hover &&
+      previous.signature === state.signature &&
+      previous.disabled === state.disabled &&
+      previous.maxSuggestions === state.maxSuggestions &&
       previous.debounceMs === state.debounceMs &&
       previous.availability?.status === state.availability?.status &&
       previous.availability?.message === state.availability?.message;
-    if (previous && (previous.contextKey !== state.contextKey || previous.request !== state.request ||
-      previous.check !== state.check || previous.hover !== state.hover || previous.signature !== state.signature))
+    if (
+      previous &&
+      (previous.contextKey !== state.contextKey ||
+        previous.request !== state.request ||
+        previous.check !== state.check ||
+        previous.hover !== state.hover ||
+        previous.signature !== state.signature)
+    )
       previous.onDocumentClose?.(model!.uri.toString());
     const acknowledgedEdit = localEdit && model!.getValue() === state.document.text;
-    const sameDocument = previous?.document.text === state.document.text &&
+    const sameDocument =
+      previous?.document.text === state.document.text &&
       previous.document.version === state.document.version;
-    previous = { ...state, document: { ...state.document },
-      availability: state.availability ? { ...state.availability } : undefined };
+    previous = {
+      ...state,
+      document: { ...state.document },
+      availability: state.availability ? { ...state.availability } : undefined,
+    };
     localEdit = false;
     // A normal controlled acknowledgement must not add a second scheduling delay,
     // or cancel an explicit request started before React committed the same edit.
@@ -305,17 +426,26 @@ export function attachCelBridge(
     completionPermit = undefined;
     completionDismissed = false;
     generation++;
-    completionGate.cancel(); checkGate.cancel(); hoverGate.cancel(); signatureGate.cancel();
+    completionGate.cancel();
+    checkGate.cancel();
+    hoverGate.cancel();
+    signatureGate.cancel();
     scheduler.cancel();
     editor.trigger('cel', 'hideSuggestWidget', {});
     dismissSemanticWidgets();
     monaco.editor.setModelMarkers(model!, markerOwner, []);
-    editor.updateOptions({ quickSuggestions: false, suggestOnTriggerCharacters: false,
-      wordBasedSuggestions: 'off', parameterHints: { enabled: true },
+    editor.updateOptions({
+      quickSuggestions: false,
+      suggestOnTriggerCharacters: false,
+      wordBasedSuggestions: 'off',
+      parameterHints: { enabled: true },
       suggest: { showWords: false, showStatusBar: true, preview: false, selectionMode: 'always' },
-      acceptSuggestionOnEnter: 'on', tabCompletion: 'off',
-      renderValidationDecorations: 'on', fixedOverflowWidgets: true,
-      padding: { top: 8, bottom: 8 } });
+      acceptSuggestionOnEnter: 'on',
+      tabCompletion: 'off',
+      renderValidationDecorations: 'on',
+      fixedOverflowWidgets: true,
+      padding: { top: 8, bottom: 8 },
+    });
     onStatus(getState().availability?.message);
     if (!blocked()) scheduler.schedule(state.debounceMs ?? debounceMs);
   }
@@ -327,7 +457,10 @@ export function attachCelBridge(
       disposed = true;
       completionPermit = undefined;
       scheduler.cancel();
-      completionGate.cancel(); checkGate.cancel(); hoverGate.cancel(); signatureGate.cancel();
+      completionGate.cancel();
+      checkGate.cancel();
+      hoverGate.cancel();
+      signatureGate.cancel();
       previous?.onDocumentClose?.(model!.uri.toString());
       for (const subscription of subscriptions) subscription.dispose();
       if (!model.isDisposed()) dismissSemanticWidgets();

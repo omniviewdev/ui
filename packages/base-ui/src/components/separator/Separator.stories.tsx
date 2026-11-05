@@ -20,7 +20,19 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'] },
     inset: { control: 'inline-radio', options: ['none', 'start', 'end', 'middle'] },
@@ -113,13 +125,22 @@ export const VerticalPaneDivider: Story = {
 };
 
 const BOUNDARY_VARIANTS = ['default', 'soft', 'solid', 'outline', 'ghost'] as const;
-const BOUNDARY_COLORS = ['brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] as const;
+const BOUNDARY_COLORS = [
+  'brand',
+  'success',
+  'warning',
+  'danger',
+  'info',
+  'discovery',
+  'secondary',
+] as const;
 
 export const BoundaryRegression: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Computed-style regression matrix for every built-in theme. Run in Chromium at compact and comfortable density; the play function checks real borders, labeled pseudo-elements, and vertical geometry.',
+        story:
+          'Computed-style regression matrix for every built-in theme. Run in Chromium at compact and comfortable density; the play function checks real borders, labeled pseudo-elements, and vertical geometry.',
       },
     },
   },
@@ -129,30 +150,63 @@ export const BoundaryRegression: Story = {
         <section
           key={id}
           data-ov-theme={id}
-          style={{ background: 'var(--ov-color-bg-base)', color: 'var(--ov-color-fg-default)', padding: 16 }}
+          style={{
+            background: 'var(--ov-color-bg-base)',
+            color: 'var(--ov-color-fg-default)',
+            padding: 16,
+          }}
         >
           <h2>{name}</h2>
           {(['base', 'surface'] as const).map((surface) => (
-            <div key={surface} style={{ display: 'grid', gap: 16, padding: 16, background: `var(--ov-color-bg-${surface})` }}>
+            <div
+              key={surface}
+              style={{
+                display: 'grid',
+                gap: 16,
+                padding: 16,
+                background: `var(--ov-color-bg-${surface})`,
+              }}
+            >
               <h3>{surface}</h3>
               {BOUNDARY_VARIANTS.map((variant) => {
                 const props = variant === 'default' ? {} : { variant };
                 const name = `${id}/${surface}/${variant}`;
                 return (
-                  <div key={variant} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr 48px', gap: 16, alignItems: 'center', minHeight: 40 }}>
+                  <div
+                    key={variant}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '80px 1fr 1fr 48px',
+                      gap: 16,
+                      alignItems: 'center',
+                      minHeight: 40,
+                    }}
+                  >
                     <span>{variant}</span>
                     <Separator {...props} data-boundary-case={`${name}/horizontal`} />
                     <Separator {...props} label="Group" data-boundary-case={`${name}/labeled`} />
-                    <Separator {...props} orientation="vertical" data-boundary-case={`${name}/vertical`} />
+                    <Separator
+                      {...props}
+                      orientation="vertical"
+                      data-boundary-case={`${name}/vertical`}
+                    />
                   </div>
                 );
               })}
               {BOUNDARY_COLORS.map((color) => (
-                <Separator key={color} color={color} data-boundary-case={`${id}/${surface}/${color}`} />
+                <Separator
+                  key={color}
+                  color={color}
+                  data-boundary-case={`${id}/${surface}/${color}`}
+                />
               ))}
               <div style={{ display: 'grid', gap: 12 }}>
                 {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                  <Separator key={size} size={size} data-boundary-case={`${id}/${surface}/size-${size}`} />
+                  <Separator
+                    key={size}
+                    size={size}
+                    data-boundary-case={`${id}/${surface}/size-${size}`}
+                  />
                 ))}
               </div>
             </div>
@@ -180,8 +234,13 @@ export const BoundaryRegression: Story = {
       return color;
     };
     for (const section of canvasElement.querySelectorAll('section[data-ov-theme]')) {
-      if (boundaryColor(section, '--ov-color-border-overlay') !== boundaryColor(section, '--ov-color-border-default')) {
-        throw new Error(`${section.getAttribute('data-ov-theme')}: overlay must resolve to the ordinary enclosure boundary`);
+      if (
+        boundaryColor(section, '--ov-color-border-overlay') !==
+        boundaryColor(section, '--ov-color-border-default')
+      ) {
+        throw new Error(
+          `${section.getAttribute('data-ov-theme')}: overlay must resolve to the ordinary enclosure boundary`,
+        );
       }
     }
 
@@ -193,7 +252,9 @@ export const BoundaryRegression: Story = {
       const color = vertical ? style.borderLeftColor : style.borderTopColor;
       const name = `${element.dataset.boundaryCase}${pseudo ?? ''}`;
       if (borderStyle !== 'solid' || !(Number.parseFloat(width) > 0)) {
-        throw new Error(`${name}: expected a visible solid border, received ${width} ${borderStyle}`);
+        throw new Error(
+          `${name}: expected a visible solid border, received ${width} ${borderStyle}`,
+        );
       }
       context.clearRect(0, 0, 1, 1);
       context.fillStyle = color;
@@ -208,9 +269,9 @@ export const BoundaryRegression: Story = {
         throw new Error(`${name}: separator color is unresolved (possible custom-property cycle)`);
       }
       if (
-        element.dataset.ovColor === 'neutral'
-        && element.dataset.ovVariant === 'soft'
-        && color !== boundaryColor(element, '--ov-color-border-muted')
+        element.dataset.ovColor === 'neutral' &&
+        element.dataset.ovVariant === 'soft' &&
+        color !== boundaryColor(element, '--ov-color-border-muted')
       ) {
         throw new Error(`${name}: neutral hairline must use the muted boundary, not a text color`);
       }
@@ -228,12 +289,21 @@ export const BoundaryRegression: Story = {
         }
       }
       if (
-        separator.closest('[data-ov-density]')?.getAttribute('data-ov-density') === 'compact'
-        && separator.dataset.ovSize === 'md'
+        separator.closest('[data-ov-density]')?.getAttribute('data-ov-density') === 'compact' &&
+        separator.dataset.ovSize === 'md'
       ) {
-        const style = getComputedStyle(separator, separator.dataset.ovHasLabel === 'true' ? '::before' : null);
-        const width = separator.dataset.ovOrientation === 'vertical' ? style.borderLeftWidth : style.borderTopWidth;
-        if (width !== '1px') throw new Error(`${separator.dataset.boundaryCase}: compact default must be a one-pixel hairline`);
+        const style = getComputedStyle(
+          separator,
+          separator.dataset.ovHasLabel === 'true' ? '::before' : null,
+        );
+        const width =
+          separator.dataset.ovOrientation === 'vertical'
+            ? style.borderLeftWidth
+            : style.borderTopWidth;
+        if (width !== '1px')
+          throw new Error(
+            `${separator.dataset.boundaryCase}: compact default must be a one-pixel hairline`,
+          );
       }
     }
     canvasElement.dataset.boundaryRegressionCases = String(separators.length);

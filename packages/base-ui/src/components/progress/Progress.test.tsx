@@ -44,7 +44,9 @@ describe('Progress', () => {
   });
 
   it('applies discovery and secondary color data attributes', () => {
-    const { rerender } = renderWithTheme(<Progress value={50} color="discovery" aria-label="disc" />);
+    const { rerender } = renderWithTheme(
+      <Progress value={50} color="discovery" aria-label="disc" />,
+    );
     expect(screen.getByRole('progressbar')).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(<Progress value={50} color="secondary" aria-label="sec" />);

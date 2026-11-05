@@ -120,16 +120,16 @@ The receipt, unchanged ZIP, portable bootstrap and allowlisted execution summary
 
 ### Measured browser comparison
 
-| Measurement (milliseconds unless noted) | Existing lightweight `QueryInput` | Existing Monaco `CelQueryEditor` |
-| --- | --- | --- |
-| First mount in an already-loaded host document, click to visible labeled textarea | 13.2 | 362.0 |
-| First source-handler to mount callback (excludes automation transport) | 3.0 | 325.5 |
-| First script focus to active textarea | 18.9 | 4.3 |
-| Warm mount, 20 cycles: median / p95 | 8.6 / 13.6 | 29.4 / 40.8 |
-| Warm script focus, 20 cycles: median / p95 | 8.2 / 8.8 | 1.7 / 2.1 |
-| Candidate-isolated forced-GC JS heap: before / after20 / after40 cycles (bytes) | 40,847,960 / 43,393,624 / 44,087,332 | 40,917,660 / 48,583,568 / 49,331,620 |
-| Model ownership after disposal | No Monaco model | Zero retained Monaco models |
-| Completed adapter disposal callbacks in isolated run | 40/40 | 40/40, plus 40 document-close callbacks |
+| Measurement (milliseconds unless noted)                                           | Existing lightweight `QueryInput`    | Existing Monaco `CelQueryEditor`        |
+| --------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------- |
+| First mount in an already-loaded host document, click to visible labeled textarea | 13.2                                 | 362.0                                   |
+| First source-handler to mount callback (excludes automation transport)            | 3.0                                  | 325.5                                   |
+| First script focus to active textarea                                             | 18.9                                 | 4.3                                     |
+| Warm mount, 20 cycles: median / p95                                               | 8.6 / 13.6                           | 29.4 / 40.8                             |
+| Warm script focus, 20 cycles: median / p95                                        | 8.2 / 8.8                            | 1.7 / 2.1                               |
+| Candidate-isolated forced-GC JS heap: before / after20 / after40 cycles (bytes)   | 40,847,960 / 43,393,624 / 44,087,332 | 40,917,660 / 48,583,568 / 49,331,620    |
+| Model ownership after disposal                                                    | No Monaco model                      | Zero retained Monaco models             |
+| Completed adapter disposal callbacks in isolated run                              | 40/40                                | 40/40, plus 40 document-close callbacks |
 
 “First” is first editor/model mount, **not** a cold application process or standalone candidate download. Focus timings include browser automation/DOM focus, not OS focus or paint latency. The shell eagerly loads Monaco/shared dependencies, and the comparison imports both candidates, so common bytes/module heap cannot be attributed to one candidate. An uncached CDP network run observed 654 host-baseline requests / 39,631,949 encoded bytes; entering the disposable route added 5 requests / 131,757 bytes, including experiment/service/style overhead. Candidate mounts added 6 / 11,813 bytes and 9 / 12,518 bytes respectively, primarily fixture transport; the parent-page session does not include the workers' entire import graph. Resource Timing's default buffer saturated in an earlier sample; use the separate CDP network evidence rather than interpreting identical buffered totals as zero cost.
 

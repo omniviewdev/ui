@@ -23,8 +23,7 @@
   --_ov-dt-sort-indicator: var(--ov-color-fg-muted);
   --_ov-dt-sort-indicator-active: var(--ov-color-brand-400);
   --_ov-dt-pinned-bg: var(--ov-color-bg-surface);
-  /* elevation shadow color — no semantic token maps to raw alpha-black shadow values */
-  --_ov-dt-pinned-shadow: rgb(0 0 0 / 0.12);
+  --_ov-dt-pinned-shadow: var(--ov-color-shadow-pinned);
   /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
   --_duration-pulse: 1.5s;
   --_easing-skeleton: ease-in-out;
@@ -628,7 +627,6 @@
 .Cell[data-ov-pinned] {
   background: var(--_ov-dt-pinned-bg);
 }
-
 
 .Root[data-ov-hoverable='true'] .Row:hover > .Cell[data-ov-pinned] {
   background: var(--_ov-dt-row-hover);

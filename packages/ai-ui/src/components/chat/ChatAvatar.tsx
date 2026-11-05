@@ -20,29 +20,30 @@ const ROLE_COLORS: Record<ChatRole, 'brand' | 'neutral' | 'info'> = {
   system: 'neutral',
 };
 
-export const ChatAvatar = forwardRef<HTMLDivElement, ChatAvatarProps>(
-  function ChatAvatar({ role, src, name, className, ...rest }, ref) {
-    const RoleIcon = CHAT_ROLE_ICONS[role];
+export const ChatAvatar = forwardRef<HTMLDivElement, ChatAvatarProps>(function ChatAvatar(
+  { role, src, name, className, ...rest },
+  ref,
+) {
+  const RoleIcon = CHAT_ROLE_ICONS[role];
 
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-role={role}
-        aria-label={name ?? role}
-        {...rest}
-      >
-        <Avatar
-          src={src}
-          name={name}
-          alt={name ?? role}
-          fallbackIcon={!name ? <RoleIcon size={16} /> : undefined}
-          size="sm"
-          color={ROLE_COLORS[role]}
-          shape="circle"
-          deterministic
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Root, className)}
+      data-ov-role={role}
+      aria-label={name ?? role}
+      {...rest}
+    >
+      <Avatar
+        src={src}
+        name={name}
+        alt={name ?? role}
+        fallbackIcon={!name ? <RoleIcon size={16} /> : undefined}
+        size="sm"
+        color={ROLE_COLORS[role]}
+        shape="circle"
+        deterministic
+      />
+    </div>
+  );
+});

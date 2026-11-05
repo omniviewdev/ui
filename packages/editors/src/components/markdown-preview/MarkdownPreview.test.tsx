@@ -59,9 +59,7 @@ vi.mock('@omniviewdev/base-ui', () => ({
     },
   ),
   Accordion: Object.assign(
-    ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="accordion">{children}</div>
-    ),
+    ({ children }: { children: React.ReactNode }) => <div data-testid="accordion">{children}</div>,
     {
       Item: ({ children, title }: { children: React.ReactNode; title: string }) => (
         <div data-testid="accordion-item" data-title={title}>
@@ -129,12 +127,18 @@ describe('MarkdownPreview', () => {
 
   it('sets skipHtml=true by default (allowHtml=false)', async () => {
     render(<MarkdownPreview content="<div>html</div>" />);
-    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'true');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute(
+      'data-skip-html',
+      'true',
+    );
   });
 
   it('sets skipHtml=false when allowHtml=true', async () => {
     render(<MarkdownPreview content="<div>html</div>" allowHtml />);
-    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute('data-skip-html', 'false');
+    expect(await screen.findByTestId('react-markdown-mock')).toHaveAttribute(
+      'data-skip-html',
+      'false',
+    );
   });
 
   it('adds rehype plugins when allowHtml=true', async () => {

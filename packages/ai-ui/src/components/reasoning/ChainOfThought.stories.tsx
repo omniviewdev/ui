@@ -1,10 +1,6 @@
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  LuSearch,
-  LuFileText,
-  LuCode,
-  LuCircleCheck,
-} from 'react-icons/lu';
+import { LuSearch, LuFileText, LuCode, LuCircleCheck } from 'react-icons/lu';
 import {
   ChainOfThought,
   ChainOfThoughtStep,
@@ -37,9 +33,24 @@ export const Playground: Story = {
     defaultOpen: true,
     header: 'Analyzing your request',
     steps: [
-      { id: '1', label: 'Parse input', description: 'Tokenizing user query...', status: 'complete' },
-      { id: '2', label: 'Analyze dependencies', description: 'Checking import graph...', status: 'complete' },
-      { id: '3', label: 'Generate solution', description: 'Building response...', status: 'active' },
+      {
+        id: '1',
+        label: 'Parse input',
+        description: 'Tokenizing user query...',
+        status: 'complete',
+      },
+      {
+        id: '2',
+        label: 'Analyze dependencies',
+        description: 'Checking import graph...',
+        status: 'complete',
+      },
+      {
+        id: '3',
+        label: 'Generate solution',
+        description: 'Building response...',
+        status: 'active',
+      },
       { id: '4', label: 'Validate output', description: '', status: 'pending' },
     ],
   },
@@ -76,11 +87,7 @@ export const CompoundAPI: Story = {
         status="active"
       />
 
-      <ChainOfThoughtStep
-        icon={LuCircleCheck}
-        label="Verifying output"
-        status="pending"
-      />
+      <ChainOfThoughtStep icon={LuCircleCheck} label="Verifying output" status="pending" />
     </ChainOfThought>
   ),
 };
@@ -172,7 +179,12 @@ export const CollapsedByDefault: Story = {
     header: 'Advanced Reasoning Process',
     steps: [
       { id: '1', label: 'Step 1: Initialize', status: 'complete' },
-      { id: '2', label: 'Step 2: Process', description: 'Processing complex algorithms', status: 'active' },
+      {
+        id: '2',
+        label: 'Step 2: Process',
+        description: 'Processing complex algorithms',
+        status: 'active',
+      },
       { id: '3', label: 'Step 3: Finalize', status: 'pending' },
     ],
   },
@@ -195,7 +207,12 @@ export const WithError: Story = {
     defaultOpen: true,
     steps: [
       { id: '1', label: 'Fetch data', description: 'Retrieved 150 records', status: 'complete' },
-      { id: '2', label: 'Process records', description: 'Schema validation failed', status: 'error' },
+      {
+        id: '2',
+        label: 'Process records',
+        description: 'Schema validation failed',
+        status: 'error',
+      },
       { id: '3', label: 'Write output', description: '', status: 'pending' },
     ],
   },
@@ -222,15 +239,11 @@ export const WithFiles: Story = {
             type="config"
             path="/manifests/production/service.yaml"
           />
-          <ChainOfThoughtFile
-            name="app.log"
-            type="log"
-            path="/var/log/pods/my-app/app.log"
-          />
+          <ChainOfThoughtFile name="app.log" type="log" path="/var/log/pods/my-app/app.log" />
           <ChainOfThoughtFile
             name="https://k8s.io/docs"
             type="url"
-            onClick={() => console.log('Navigate to URL')}
+            onClick={action('Navigate to URL')}
           />
         </ChainOfThoughtFiles>
       </ChainOfThoughtStep>
@@ -244,15 +257,15 @@ export const WithFiles: Story = {
         <ChainOfThoughtFiles>
           <ChainOfThoughtFile name="cpu_usage" type="query" />
           <ChainOfThoughtFile name="memory_usage" type="query" />
-          <ChainOfThoughtFile name="pod-metrics" type="resource" path="kube-system/metrics-server" />
+          <ChainOfThoughtFile
+            name="pod-metrics"
+            type="resource"
+            path="kube-system/metrics-server"
+          />
         </ChainOfThoughtFiles>
       </ChainOfThoughtStep>
 
-      <ChainOfThoughtStep
-        icon={LuCode}
-        label="Generating recommendations"
-        status="active"
-      />
+      <ChainOfThoughtStep icon={LuCode} label="Generating recommendations" status="active" />
     </ChainOfThought>
   ),
 };

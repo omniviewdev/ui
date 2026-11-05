@@ -34,10 +34,17 @@ describe('Card', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => (
-    <Card key={i}>
-      <Card.Header><Card.Title>Card {i}</Card.Title></Card.Header>
-      <Card.Body>Content {i}</Card.Body>
-    </Card>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => (
+      <Card key={i}>
+        <Card.Header>
+          <Card.Title>Card {i}</Card.Title>
+        </Card.Header>
+        <Card.Body>Content {i}</Card.Body>
+      </Card>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

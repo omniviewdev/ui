@@ -105,9 +105,12 @@ export function ThemeProvider({
   const isFallback = activeTheme.id !== themeId;
 
   useInsertionEffect(() => {
-    const target = root === undefined
-      ? (typeof document === 'undefined' ? null : document.documentElement)
-      : root;
+    const target =
+      root === undefined
+        ? typeof document === 'undefined'
+          ? null
+          : document.documentElement
+        : root;
     if (!target) return;
 
     const applier = createThemeRootApplier(target);
@@ -115,18 +118,24 @@ export function ThemeProvider({
     return applier.cleanup;
   }, [activeTheme, root]);
 
-  const setTheme = useCallback((nextThemeId: ThemeMode) => {
-    onThemeChange?.(nextThemeId);
-  }, [onThemeChange]);
+  const setTheme = useCallback(
+    (nextThemeId: ThemeMode) => {
+      onThemeChange?.(nextThemeId);
+    },
+    [onThemeChange],
+  );
 
   const [density, setDensity] = useState<ThemeDensity>(initialDensity);
   const [motion, setMotion] = useState<ThemeMotion>(initialMotion);
   const [textSize, setTextSize] = useState<ThemeTextSize>(initialTextSize);
   const preferenceOwnerRef = useRef<RootPreferenceEntry | null>(null);
   useInsertionEffect(() => {
-    const target = root === undefined
-      ? (typeof document === 'undefined' ? null : document.documentElement)
-      : root;
+    const target =
+      root === undefined
+        ? typeof document === 'undefined'
+          ? null
+          : document.documentElement
+        : root;
     if (!target) return;
     const preferenceOwner = preferenceOwnerRef.current ?? { density, motion, textSize };
     preferenceOwnerRef.current = preferenceOwner;

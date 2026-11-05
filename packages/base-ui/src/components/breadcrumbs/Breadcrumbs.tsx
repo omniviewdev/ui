@@ -33,7 +33,8 @@ type BreadcrumbItemBaseProps = {
 
 export type BreadcrumbItemProps =
   | (BreadcrumbItemBaseProps & Omit<HTMLAttributes<HTMLElement>, 'color'> & { href?: never })
-  | (BreadcrumbItemBaseProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> & { href: string; active?: false });
+  | (BreadcrumbItemBaseProps &
+      Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> & { href: string; active?: false });
 
 /* ----- BreadcrumbsItem ----- */
 

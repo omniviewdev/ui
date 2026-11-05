@@ -25,15 +25,19 @@ const lifecycle = vi.hoisted(() => ({
 
 // FastRefresh replays effects without necessarily remounting the lazy CodeEditor.
 // Capture actual React effect setups to exercise that cleanup/setup sequence.
-vi.mock('react', async importOriginal => {
+vi.mock('react', async (importOriginal) => {
   const actual = await importOriginal<typeof React>();
   return {
     ...actual,
-    useEffect: (setup: () => void | (() => void), dependencies?: readonly unknown[]) => actual.useEffect(() => {
-      const entry = { setup, cleanup: setup() };
-      lifecycle.effects.add(entry);
-      return () => { entry.cleanup?.(); lifecycle.effects.delete(entry); };
-    }, dependencies),
+    useEffect: (setup: () => void | (() => void), dependencies?: readonly unknown[]) =>
+      actual.useEffect(() => {
+        const entry = { setup, cleanup: setup() };
+        lifecycle.effects.add(entry);
+        return () => {
+          entry.cleanup?.();
+          lifecycle.effects.delete(entry);
+        };
+      }, dependencies),
   };
 });
 vi.mock('./bridge', () => ({
@@ -49,8 +53,10 @@ vi.mock('../code-editor/CodeEditor', () => ({
     useEffect(() => {
       if (mounted.current) return;
       mounted.current = true;
-      onMount?.(lifecycle.editor as unknown as Monaco.editor.IStandaloneCodeEditor,
-        {} as typeof Monaco);
+      onMount?.(
+        lifecycle.editor as unknown as Monaco.editor.IStandaloneCodeEditor,
+        {} as typeof Monaco,
+      );
     }, [onMount]);
     return <div data-testid="retained-code-editor" />;
   },
@@ -59,8 +65,14 @@ vi.mock('../code-editor/CodeEditor', () => ({
 describe('CEL editor effect ownership', () => {
   it('reinstalls its bridge and size subscription when effects replay around a retained editor', async () => {
     const mounted = vi.fn();
-    const { unmount } = render(<CelQueryEditor document={{ text: 'resource.', version: 1 }}
-      contextKey="pod" onChange={() => {}} onMount={mounted} />);
+    const { unmount } = render(
+      <CelQueryEditor
+        document={{ text: 'resource.', version: 1 }}
+        contextKey="pod"
+        onChange={() => {}}
+        onMount={mounted}
+      />,
+    );
     await waitFor(() => expect(lifecycle.bridges).toHaveLength(1));
     const initialBridge = lifecycle.bridges[0]!;
     const initialSize = lifecycle.contentSubscriptions[0]!;

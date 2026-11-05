@@ -28,7 +28,7 @@ interface BrowserTab {
   id: string;
   title: string;
   url: string;
-  favicon?: string;       // emoji or icon identifier
+  favicon?: string; // emoji or icon identifier
   loading: boolean;
   error?: 'blocked' | 'not-found';
   history: string[];
@@ -47,17 +47,18 @@ interface Bookmark {
 
 ### Base-UI components consumed
 
-| Component | Usage | Enhancement needed? |
-|-----------|-------|---------------------|
-| `EditorTabs` | Tab bar | Yes — new `variant="pill"` |
-| `Chip` | Bookmarks bar items | No — uses existing `clickable` + `startDecorator` |
-| `IconButton` | Nav buttons (back, forward, refresh) | No |
-| `Input` | Address bar | No — uses `startDecorator` for lock icon |
-| `Progress` | Loading bar between toolbar and content | No |
+| Component    | Usage                                   | Enhancement needed?                               |
+| ------------ | --------------------------------------- | ------------------------------------------------- |
+| `EditorTabs` | Tab bar                                 | Yes — new `variant="pill"`                        |
+| `Chip`       | Bookmarks bar items                     | No — uses existing `clickable` + `startDecorator` |
+| `IconButton` | Nav buttons (back, forward, refresh)    | No                                                |
+| `Input`      | Address bar                             | No — uses `startDecorator` for lock icon          |
+| `Progress`   | Loading bar between toolbar and content | No                                                |
 
 ### Base-UI enhancement: `EditorTabs` `variant="pill"`
 
 Add a new variant to `EditorTabs` that gives tabs:
+
 - Rounded top corners (`border-radius: 8px 8px 0 0`)
 - Raised active background (matches content area below)
 - No bottom-border indicator (active state shown by background, not underline)
@@ -66,6 +67,7 @@ Add a new variant to `EditorTabs` that gives tabs:
 **Type approach:** The shared `ComponentVariant` type is `'solid' | 'soft' | 'outline' | 'ghost'`. Rather than widening this globally (which would affect every component), extend the variant type locally in `EditorTabsProps`: `variant?: ComponentVariant | 'pill'`. This keeps `pill` scoped to EditorTabs only.
 
 **CSS override details:** The existing active-tab indicator is `border-bottom: 2px solid` on `.Tab[data-active]`. The pill variant CSS must:
+
 - Remove `border-bottom` on all tabs within `[data-ov-variant="pill"]`
 - Override `.Tab[data-active]` and `.Tab[data-dirty]` border-bottom rules
 - Set active tab background to match the content area below
@@ -76,6 +78,7 @@ Applied via `data-ov-variant="pill"` on the root, with CSS targeting `[data-ov-v
 ### BrowserTab → TabDescriptor adapter
 
 The top-level `index.tsx` maps `BrowserTab[]` to `TabDescriptor[]` for EditorTabs:
+
 - `id` → `id`
 - `title` → `title`
 - `favicon` → `icon` (emoji wrapped in a span)
@@ -162,6 +165,7 @@ Linear progress bar rendered in the top-level `index.tsx` layout, positioned bet
 ### Blocked site detection
 
 Many sites set `X-Frame-Options: DENY` or CSP `frame-ancestors 'none'`, preventing iframe embedding. Detection strategy:
+
 - Start a timeout (~5 seconds) when iframe `src` changes
 - If `onLoad` fires, clear timeout → site loaded successfully
 - If timeout expires without `onLoad` → set `error: 'blocked'`
@@ -170,6 +174,7 @@ Many sites set `X-Frame-Options: DENY` or CSP `frame-ancestors 'none'`, preventi
 ### Error page
 
 Clean, centered layout:
+
 - Warning icon
 - "This site can't be displayed in a frame"
 - Monospace URL of the blocked site
@@ -178,6 +183,7 @@ Clean, centered layout:
 ## Layout
 
 Classic Chrome layout (top to bottom):
+
 1. **Tab bar** — `EditorTabs` with `variant="pill"`, `+ ` button
 2. **Toolbar** — back / forward / refresh + address bar
 3. **Bookmarks bar** — row of `Chip` items
@@ -187,6 +193,7 @@ Classic Chrome layout (top to bottom):
 ## Scope Boundaries
 
 **In scope:**
+
 - Tab management (add, close, reorder, switch)
 - URL navigation via address bar
 - Back/forward/refresh
@@ -197,6 +204,7 @@ Classic Chrome layout (top to bottom):
 - `variant="pill"` enhancement to EditorTabs
 
 **Out of scope:**
+
 - Editable bookmarks (add/remove/reorder)
 - Tab pinning
 - DevTools panel

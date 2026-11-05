@@ -59,7 +59,16 @@ const meta: Meta<typeof EditorTabs> = {
     },
     color: {
       control: 'select',
-      options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
       description: 'Active indicator color',
     },
     size: {

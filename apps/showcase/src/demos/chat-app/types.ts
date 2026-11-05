@@ -5,7 +5,7 @@ export type UserStatus = 'online' | 'away' | 'dnd' | 'offline';
 export interface User {
   id: string;
   name: string;
-  avatar: string;        // initials or emoji
+  avatar: string; // initials or emoji
   status: UserStatus;
 }
 
@@ -29,13 +29,13 @@ export interface Channel {
   name: string;
   type: 'channel' | 'dm';
   unreadCount: number;
-  members: string[];     // user IDs
+  members: string[]; // user IDs
 }
 
 export interface Workspace {
   id: string;
   name: string;
-  avatar: string;        // initials or emoji
+  avatar: string; // initials or emoji
   channels: Channel[];
   users: User[];
 }

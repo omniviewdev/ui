@@ -162,6 +162,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@dnd-kit/core@6.3.1': 3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117
+
 importers:
 
   .:
@@ -380,13 +383,13 @@ importers:
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@dnd-kit/core':
         specifier: 6.3.1
-        version: 6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@dnd-kit/modifiers':
         specifier: 9.0.0
-        version: 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
+        version: 9.0.0(@dnd-kit/core@6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       '@dnd-kit/sortable':
         specifier: 10.0.0
-        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
+        version: 10.0.0(@dnd-kit/core@6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       '@dnd-kit/utilities':
         specifier: 3.2.2
         version: 3.2.2(react@19.3.1)
@@ -406,9 +409,6 @@ importers:
         specifier: 16.1.2
         version: 16.1.2(react@19.3.1)
     devDependencies:
-      '@microsoft/api-extractor':
-        specifier: 7.60.0
-        version: 7.60.0(@types/node@26.6.5)
       '@storybook/addon-a11y':
         specifier: 10.6.5
         version: 10.6.5(storybook@10.6.5(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))
@@ -454,6 +454,12 @@ importers:
       react-icons:
         specifier: 5.7.0
         version: 5.7.0(react@19.3.1)
+      rollup:
+        specifier: 4.65.1
+        version: 4.65.1
+      rollup-plugin-dts:
+        specifier: 6.5.1
+        version: 6.5.1(@typescript/typescript6@6.0.2)(@typescript/typescript6@6.0.2)(rollup@4.65.1)
       storybook:
         specifier: 10.6.5
         version: 10.6.5(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1)
@@ -683,6 +689,10 @@ packages:
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/code-frame@8.0.6':
+    resolution: {integrity: sha512-uMHhvmDmwFiLuiozaoRYTZHqMFuu3fem/X9JY78lohAuLoh8LSGGC8JqUzo2cVuBsBxkjMZNk56CE7ock8Xxkw==}
+    engines: {node: ^22.18.0 || >=24.11.0}
+
   '@babel/compat-data@7.29.7':
     resolution: {integrity: sha512-locTkQyKvwIEgBzVrn8693ebc97F2U8ZHjbXwDXJ5Fn2TCpNwTlKcaKLkdHop5c/icOFE7qt7Q9JC5hnKNa6Gg==}
     engines: {node: '>=6.9.0'}
@@ -724,6 +734,10 @@ packages:
   '@babel/helper-validator-identifier@7.29.7':
     resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
     engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@8.0.6':
+    resolution: {integrity: sha512-HYx0YmuchRxRSpnjvcNffnPS8DCauKNmnumIuHG3jnQAVewRA7kfJGwF13ayEpSZs7s4R/oBH4eppuXcAQd5JQ==}
+    engines: {node: ^22.18.0 || >=24.11.0}
 
   '@babel/helper-validator-option@7.29.7':
     resolution: {integrity: sha512-N9ZErrD+yW5geCDtBqnOoxmR8+tNKiGuxKlDpuJxfsqpa2dFcexaziGAE/qoHLiDDreVNMupxGmSoNlyvsA3gw==}
@@ -3281,6 +3295,9 @@ packages:
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
+  js-tokens@10.0.0:
+    resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -3867,6 +3884,17 @@ packages:
     resolution: {integrity: sha512-Dj/cW9zBV2aRj6XzCxuGIs3ESZKv02jixne3q6jFZYZ3/Tg09gHHviSMDL4kObh9pqSahdRHEnDoaP2gn8YLhA==}
     engines: {node: '>= 0.4'}
     hasBin: true
+
+  rollup-plugin-dts@6.5.1:
+    resolution: {integrity: sha512-jODTXp3H7MK/Ur/ErtsrQ0G1GvaCmc3du+y5pNrdBMf6d7HlL2Nd/N6TkEr+f75CkUj01zEoEd7y2elH0eHi1Q==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@typescript/typescript6': ^6
+      rollup: ^3 || ^4
+      typescript: ^4.5 || ^5 || ^6 || ^7
+    peerDependenciesMeta:
+      '@typescript/typescript6':
+        optional: true
 
   rollup@4.65.1:
     resolution: {integrity: sha512-HzD4IdphaPMvuAacnL/vtoq5B8FwqewKvxTtqYibWvP6VDyZ+UsTtlw5F8HIOIIpLQAkN2NOP/0sM3puo9xN/A==}
@@ -4455,6 +4483,12 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
+  '@babel/code-frame@8.0.6':
+    dependencies:
+      '@babel/helper-validator-identifier': 8.0.6
+      js-tokens: 10.0.0
+    optional: true
+
   '@babel/compat-data@7.29.7': {}
 
   '@babel/core@7.29.7(supports-color@8.1.1)':
@@ -4516,6 +4550,9 @@ snapshots:
   '@babel/helper-string-parser@7.29.11': {}
 
   '@babel/helper-validator-identifier@7.29.7': {}
+
+  '@babel/helper-validator-identifier@8.0.6':
+    optional: true
 
   '@babel/helper-validator-option@7.29.7': {}
 
@@ -4812,7 +4849,7 @@ snapshots:
       react: 19.3.1
       tslib: 2.8.1
 
-  '@dnd-kit/core@6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@dnd-kit/core@6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@dnd-kit/accessibility': 3.1.1(react@19.3.1)
       '@dnd-kit/utilities': 3.2.2(react@19.3.1)
@@ -4820,16 +4857,16 @@ snapshots:
       react-dom: 19.3.1(react@19.3.1)
       tslib: 2.8.1
 
-  '@dnd-kit/modifiers@9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
+  '@dnd-kit/modifiers@9.0.0(@dnd-kit/core@6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@dnd-kit/core': 6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@dnd-kit/utilities': 3.2.2(react@19.3.1)
       react: 19.3.1
       tslib: 2.8.1
 
-  '@dnd-kit/sortable@10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
+  '@dnd-kit/sortable@10.0.0(@dnd-kit/core@6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@dnd-kit/core': 6.3.1(patch_hash=3bd30363f04e7bed0717db450af4aa9303506d14c7ae9eed390ff2f13354f117)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@dnd-kit/utilities': 3.2.2(react@19.3.1)
       react: 19.3.1
       tslib: 2.8.1
@@ -7065,6 +7102,9 @@ snapshots:
 
   jju@1.4.0: {}
 
+  js-tokens@10.0.0:
+    optional: true
+
   js-tokens@4.0.0: {}
 
   jsdom@30.1.3:
@@ -7977,6 +8017,18 @@ snapshots:
       is-core-module: 2.17.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+
+  rollup-plugin-dts@6.5.1(@typescript/typescript6@6.0.2)(@typescript/typescript6@6.0.2)(rollup@4.65.1):
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      '@jridgewell/sourcemap-codec': 1.6.0
+      convert-source-map: 2.0.0
+      magic-string: 0.30.21
+      rollup: 4.65.1
+      typescript: '@typescript/typescript6@6.0.2'
+    optionalDependencies:
+      '@babel/code-frame': 8.0.6
+      '@typescript/typescript6': 6.0.2
 
   rollup@4.65.1:
     dependencies:

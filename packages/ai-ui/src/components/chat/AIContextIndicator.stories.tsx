@@ -36,8 +36,6 @@ export const Overflow: Story = {
 
 export const SingleItem: Story = {
   args: {
-    items: [
-      { type: 'file', label: 'pod-spec.yaml' },
-    ],
+    items: [{ type: 'file', label: 'pod-spec.yaml' }],
   },
 };

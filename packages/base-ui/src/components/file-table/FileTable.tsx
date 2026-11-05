@@ -101,7 +101,11 @@ export function FileTableHeader({ children }: FileTableHeaderProps) {
         {ctx.extraColumns.map((col) => (
           <th
             key={col.id}
-            style={col.width ? { width: typeof col.width === 'number' ? `${col.width}px` : col.width } : undefined}
+            style={
+              col.width
+                ? { width: typeof col.width === 'number' ? `${col.width}px` : col.width }
+                : undefined
+            }
           >
             <SortableHeader
               columnId={col.id}
@@ -133,17 +137,16 @@ export function FileTableBody({ rowActions }: FileTableBodyProps) {
   return (
     <tbody>
       {ctx.showParent && (
-        <tr
-          className={styles.ParentRow}
-          onDoubleClick={ctx.onNavigateUp}
-        >
+        <tr className={styles.ParentRow} onDoubleClick={ctx.onNavigateUp}>
           <td />
           <td>..</td>
           <td />
           <td />
           <td />
           <td />
-          {ctx.extraColumns.map((col) => <td key={col.id} />)}
+          {ctx.extraColumns.map((col) => (
+            <td key={col.id} />
+          ))}
         </tr>
       )}
       {ctx.sortedItems.map((item) => (
@@ -161,13 +164,7 @@ export function FileTableBody({ rowActions }: FileTableBodyProps) {
             </span>
           </td>
           <td>{item.name}</td>
-          <td>
-            {actions && (
-              <span className={styles.RowActions}>
-                {actions(item)}
-              </span>
-            )}
-          </td>
+          <td>{actions && <span className={styles.RowActions}>{actions(item)}</span>}</td>
           <td className={styles.SizeCell}>
             {item.size != null ? formatBytes(item.size) : item.type === 'folder' ? '—' : '0 B'}
           </td>
@@ -226,99 +223,110 @@ export interface FileTableRootProps extends Omit<HTMLAttributes<HTMLDivElement>,
   children: ReactNode;
 }
 
-export const FileTableRoot = forwardRef<HTMLDivElement, FileTableRootProps>(
-  function FileTableRoot(
-    {
+export const FileTableRoot = forwardRef<HTMLDivElement, FileTableRootProps>(function FileTableRoot(
+  {
+    items,
+    onNavigate,
+    onSelect,
+    selectedId,
+    showParent,
+    onNavigateUp,
+    defaultSort,
+    children,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  const [extraColumns, setExtraColumns] = useState<FileTableColumnConfig[]>([]);
+
+  const sortableColumns = useMemo<SortableColumnDef<FileTableItem>[]>(() => {
+    const builtIn: SortableColumnDef<FileTableItem>[] = [
+      { id: 'name', header: 'Filename', accessor: (i) => i.name },
+      { id: 'size', header: 'Size', accessor: (i) => i.size ?? 0 },
+      { id: 'type', header: 'Type', accessor: (i) => i.extension ?? '' },
+      { id: 'modified', header: 'Modified', accessor: (i) => i.modified ?? '' },
+    ];
+
+    const extra: SortableColumnDef<FileTableItem>[] = extraColumns
+      .filter((c) => c.sortable)
+      .map((c) => ({
+        id: c.id,
+        header: c.header,
+        accessor: c.sortAccessor ?? (() => undefined),
+        sortFn: c.sortFn,
+      }));
+
+    return [...builtIn, ...extra];
+  }, [extraColumns]);
+
+  const {
+    sortedData: rawSorted,
+    sort,
+    onSort,
+  } = useSortableTable({
+    data: items,
+    columns: sortableColumns,
+    defaultSort: defaultSort ?? { key: 'name', direction: 'asc' },
+  });
+
+  const sortedItems = useMemo(() => {
+    return [...rawSorted].sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+      return 0;
+    });
+  }, [rawSorted]);
+
+  const ctxValue = useMemo(
+    () => ({
       items,
-      onNavigate,
-      onSelect,
+      sortedItems,
+      sort,
+      onSort,
       selectedId,
+      onSelect,
+      onNavigate,
       showParent,
       onNavigateUp,
-      defaultSort,
-      children,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const [extraColumns, setExtraColumns] = useState<FileTableColumnConfig[]>([]);
+      extraColumns,
+      setExtraColumns,
+    }),
+    [
+      items,
+      sortedItems,
+      sort,
+      onSort,
+      selectedId,
+      onSelect,
+      onNavigate,
+      showParent,
+      onNavigateUp,
+      extraColumns,
+    ],
+  );
 
-    const sortableColumns = useMemo<SortableColumnDef<FileTableItem>[]>(() => {
-      const builtIn: SortableColumnDef<FileTableItem>[] = [
-        { id: 'name', header: 'Filename', accessor: (i) => i.name },
-        { id: 'size', header: 'Size', accessor: (i) => i.size ?? 0 },
-        { id: 'type', header: 'Type', accessor: (i) => i.extension ?? '' },
-        { id: 'modified', header: 'Modified', accessor: (i) => i.modified ?? '' },
-      ];
+  // Separate table children (Header, Body) from non-table children (Status)
+  const tableChildren: ReactNode[] = [];
+  const nonTableChildren: ReactNode[] = [];
+  Children.forEach(children, (child) => {
+    if (isValidElement(child) && child.type === FileTableStatus) {
+      nonTableChildren.push(child);
+    } else {
+      tableChildren.push(child);
+    }
+  });
 
-      const extra: SortableColumnDef<FileTableItem>[] = extraColumns
-        .filter((c) => c.sortable)
-        .map((c) => ({
-          id: c.id,
-          header: c.header,
-          accessor: c.sortAccessor ?? (() => undefined),
-          sortFn: c.sortFn,
-        }));
-
-      return [...builtIn, ...extra];
-    }, [extraColumns]);
-
-    const { sortedData: rawSorted, sort, onSort } = useSortableTable({
-      data: items,
-      columns: sortableColumns,
-      defaultSort: defaultSort ?? { key: 'name', direction: 'asc' },
-    });
-
-    const sortedItems = useMemo(() => {
-      return [...rawSorted].sort((a, b) => {
-        if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
-        return 0;
-      });
-    }, [rawSorted]);
-
-    const ctxValue = useMemo(
-      () => ({
-        items,
-        sortedItems,
-        sort,
-        onSort,
-        selectedId,
-        onSelect,
-        onNavigate,
-        showParent,
-        onNavigateUp,
-        extraColumns,
-        setExtraColumns,
-      }),
-      [items, sortedItems, sort, onSort, selectedId, onSelect, onNavigate, showParent, onNavigateUp, extraColumns],
-    );
-
-    // Separate table children (Header, Body) from non-table children (Status)
-    const tableChildren: ReactNode[] = [];
-    const nonTableChildren: ReactNode[] = [];
-    Children.forEach(children, (child) => {
-      if (isValidElement(child) && (child.type === FileTableStatus)) {
-        nonTableChildren.push(child);
-      } else {
-        tableChildren.push(child);
-      }
-    });
-
-    return (
-      <FileTableProvider value={ctxValue}>
-        <div ref={ref} className={`${styles.Root}${className ? ` ${className}` : ''}`} {...rest}>
-          <div className={styles.TableWrap}>
-            <table className={styles.Table}>
-              {tableChildren}
-            </table>
-          </div>
-          {nonTableChildren}
+  return (
+    <FileTableProvider value={ctxValue}>
+      <div ref={ref} className={`${styles.Root}${className ? ` ${className}` : ''}`} {...rest}>
+        <div className={styles.TableWrap}>
+          <table className={styles.Table}>{tableChildren}</table>
         </div>
-      </FileTableProvider>
-    );
-  },
-);
+        {nonTableChildren}
+      </div>
+    </FileTableProvider>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Compound export

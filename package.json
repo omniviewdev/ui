@@ -5,8 +5,8 @@
   "description": "Planning and standards repository for Omniview's Base UI migration.",
   "packageManager": "pnpm@12.14.0",
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix --max-warnings=0",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "build": "pnpm -r --filter \"./packages/*\" build",

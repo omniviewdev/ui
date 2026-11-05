@@ -14,34 +14,27 @@ export interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   actions?: ReactNode;
 }
 
-export const ChatBubble = forwardRef<HTMLDivElement, ChatBubbleProps>(
-  function ChatBubble(
-    { role, avatar, timestamp, actions, children, className, ...rest },
-    ref,
-  ) {
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-role={role}
-        {...rest}
-      >
-        {avatar && <div className={styles.Avatar}>{avatar}</div>}
-        <div className={styles.Content}>
-          <div className={styles.Bubble}>{children}</div>
-          <div className={styles.Meta}>
-            {timestamp && (
-              <time className={styles.Timestamp} dateTime={timestamp.toISOString()}>
-                {timestamp.toLocaleTimeString(undefined, {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </time>
-            )}
-            {actions && <div className={styles.Actions}>{actions}</div>}
-          </div>
+export const ChatBubble = forwardRef<HTMLDivElement, ChatBubbleProps>(function ChatBubble(
+  { role, avatar, timestamp, actions, children, className, ...rest },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.Root, className)} data-ov-role={role} {...rest}>
+      {avatar && <div className={styles.Avatar}>{avatar}</div>}
+      <div className={styles.Content}>
+        <div className={styles.Bubble}>{children}</div>
+        <div className={styles.Meta}>
+          {timestamp && (
+            <time className={styles.Timestamp} dateTime={timestamp.toISOString()}>
+              {timestamp.toLocaleTimeString(undefined, {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </time>
+          )}
+          {actions && <div className={styles.Actions}>{actions}</div>}
         </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+});

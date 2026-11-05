@@ -84,6 +84,7 @@ function useCollapsible(): CollapsibleContextValue;
 ## Usage
 
 ### Basic
+
 ```tsx
 <Collapsible>
   <CollapsibleTrigger>Show details</CollapsibleTrigger>
@@ -94,6 +95,7 @@ function useCollapsible(): CollapsibleContextValue;
 ```
 
 ### Controlled
+
 ```tsx
 const [open, setOpen] = useState(false);
 
@@ -101,10 +103,11 @@ const [open, setOpen] = useState(false);
   <CollapsibleContent>
     <p>Controlled by parent.</p>
   </CollapsibleContent>
-</Collapsible>
+</Collapsible>;
 ```
 
 ### In AI components (ThinkingBlock refactored)
+
 ```tsx
 // Before: hand-rolled CSS Grid in ThinkingBlock
 <div className={styles.CollapseWrapper} aria-hidden={!isOpen}>
@@ -120,15 +123,12 @@ const [open, setOpen] = useState(false);
 ```
 
 ### In Accordion (refactored)
+
 ```tsx
 // Accordion.Item internally uses Collapsible
 <Collapsible open={expanded} onOpenChange={() => toggle(id)} disabled={disabled}>
-  <CollapsibleTrigger className={styles.Header}>
-    {title}
-  </CollapsibleTrigger>
-  <CollapsibleContent>
-    {children}
-  </CollapsibleContent>
+  <CollapsibleTrigger className={styles.Header}>{title}</CollapsibleTrigger>
+  <CollapsibleContent>{children}</CollapsibleContent>
 </Collapsible>
 ```
 
@@ -166,7 +166,9 @@ const [open, setOpen] = useState(false);
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .Content { transition: none; }
+  .Content {
+    transition: none;
+  }
 }
 
 :root[data-ov-motion='reduced'] .Content {

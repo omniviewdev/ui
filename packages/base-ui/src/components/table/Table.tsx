@@ -14,13 +14,7 @@ import styles from './Table.module.css';
 export type TableLayout = 'auto' | 'fixed';
 export type TableCellAlign = 'left' | 'center' | 'right';
 export type TableCellTone =
-  | 'default'
-  | 'muted'
-  | 'subtle'
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'danger';
+  'default' | 'muted' | 'subtle' | 'brand' | 'success' | 'warning' | 'danger';
 
 export interface TableProps
   extends Omit<TableHTMLAttributes<HTMLTableElement>, 'color'>, StyledComponentProps {

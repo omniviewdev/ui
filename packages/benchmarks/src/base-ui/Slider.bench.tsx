@@ -4,16 +4,20 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Slider } from '@omniviewdev/base-ui';
 
 describe('Slider', () => {
-  benchRender('mount', () => (
-    <Slider defaultValue={50}>
-      <Slider.Control>
-        <Slider.Track>
-          <Slider.Indicator />
-          <Slider.Thumb />
-        </Slider.Track>
-      </Slider.Control>
-    </Slider>
-  ), TIER_2_OPTIONS);
+  benchRender(
+    'mount',
+    () => (
+      <Slider defaultValue={50}>
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator />
+            <Slider.Thumb />
+          </Slider.Track>
+        </Slider.Control>
+      </Slider>
+    ),
+    TIER_2_OPTIONS,
+  );
 
   benchRerender(
     'value change',

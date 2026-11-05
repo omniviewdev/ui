@@ -59,7 +59,7 @@ function main() {
   const content = renderTypesFile(tokens);
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, content, 'utf8');
-  console.log(`Generated ${output} (${Object.keys(tokens).length} theme tokens)`);
+  process.stdout.write(`Generated ${output} (${Object.keys(tokens).length} theme tokens)\n`);
 }
 
 // ESM-compatible entrypoint guard: only run main() when executed directly via tsx/node.

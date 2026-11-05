@@ -42,18 +42,19 @@ export interface AIBranchProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onC
   children: ReactNode;
 }
 
-export const AIBranch = forwardRef<HTMLDivElement, AIBranchProps>(
-  function AIBranch({ count, active, onChange, className, children, ...rest }, ref) {
-    const contextValue = useMemo(() => ({ count, active, onChange }), [count, active, onChange]);
-    return (
-      <BranchContext.Provider value={contextValue}>
-        <div ref={ref} className={cn(styles.Root, className)} {...rest}>
-          {children}
-        </div>
-      </BranchContext.Provider>
-    );
-  },
-);
+export const AIBranch = forwardRef<HTMLDivElement, AIBranchProps>(function AIBranch(
+  { count, active, onChange, className, children, ...rest },
+  ref,
+) {
+  const contextValue = useMemo(() => ({ count, active, onChange }), [count, active, onChange]);
+  return (
+    <BranchContext.Provider value={contextValue}>
+      <div ref={ref} className={cn(styles.Root, className)} {...rest}>
+        {children}
+      </div>
+    </BranchContext.Provider>
+  );
+});
 
 // ── AIBranchContent ──────────────────────────────────────────────────
 
@@ -85,12 +86,7 @@ export interface AIBranchSelectorProps extends HTMLAttributes<HTMLDivElement> {
 export const AIBranchSelector = forwardRef<HTMLDivElement, AIBranchSelectorProps>(
   function AIBranchSelector({ align, className, children, ...rest }, ref) {
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Selector, className)}
-        data-align={align}
-        {...rest}
-      >
+      <div ref={ref} className={cn(styles.Selector, className)} data-align={align} {...rest}>
         {children ?? (
           <>
             <AIBranchPrevious />

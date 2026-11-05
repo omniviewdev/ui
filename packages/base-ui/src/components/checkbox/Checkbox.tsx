@@ -111,15 +111,10 @@ const CheckboxItem = forwardRef<ElementRef<typeof BaseCheckbox.Root>, CheckboxIt
         {...props}
       >
         {useFlattened ? (
-          <BaseCheckbox.Indicator
-            keepMounted
-            className={styles.ControlIndicator}
-          />
+          <BaseCheckbox.Indicator keepMounted className={styles.ControlIndicator} />
         ) : (
           <CheckboxControl>
-            <CheckboxIndicator keepMounted={keepIndicatorMounted}>
-              {indicator}
-            </CheckboxIndicator>
+            <CheckboxIndicator keepMounted={keepIndicatorMounted}>{indicator}</CheckboxIndicator>
           </CheckboxControl>
         )}
         {hasContent ? (

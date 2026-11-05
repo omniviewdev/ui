@@ -2,7 +2,9 @@ import { createRequire } from 'node:module';
 
 // Use Base UI's declared toolchain: Vite already depends on PostCSS. Resolve
 // through that dependency rather than relying on hoisting or a .pnpm path.
-export const baseUIRequire = createRequire(new URL('../../packages/base-ui/package.json', import.meta.url));
+export const baseUIRequire = createRequire(
+  new URL('../../packages/base-ui/package.json', import.meta.url),
+);
 const viteRequire = createRequire(baseUIRequire.resolve('vite/package.json'));
 export const postcss = viteRequire('postcss');
 const tokenize = viteRequire('postcss/lib/tokenize');

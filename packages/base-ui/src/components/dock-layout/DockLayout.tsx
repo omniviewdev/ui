@@ -1,7 +1,6 @@
 import {
   forwardRef,
   useCallback,
-
   useRef,
   useState,
   type CSSProperties,
@@ -50,7 +49,11 @@ export interface DockLayoutProps extends HTMLAttributes<HTMLDivElement> {
 
 // ─── Layout helpers ─────────────────────────────
 
-function updateNodeInTree(root: DockNode, nodeId: string, updater: (leaf: DockLeaf) => DockLeaf): DockNode {
+function updateNodeInTree(
+  root: DockNode,
+  nodeId: string,
+  updater: (leaf: DockLeaf) => DockLeaf,
+): DockNode {
   if (root.type === 'leaf') {
     return root.id === nodeId ? updater(root) : root;
   }
@@ -104,10 +107,12 @@ function findSplitPath(root: DockNode, splitId: string): number[] | null {
 
 /** Generate a stable identity for a split based on its leaf descendants. */
 function getSplitId(node: DockSplit): string {
-  return node.children.map((child) => {
-    if (child.type === 'leaf') return child.id;
-    return `[${getSplitId(child)}]`;
-  }).join(',');
+  return node.children
+    .map((child) => {
+      if (child.type === 'leaf') return child.id;
+      return `[${getSplitId(child)}]`;
+    })
+    .join(',');
 }
 
 function updateSizesByPath(root: DockNode, path: number[], newSizes: number[]): DockNode {
@@ -173,7 +178,10 @@ function DockDivider({ direction, valueNow = 50, onDrag }: DockDividerProps) {
       let delta = 0;
       if ((isHorizontal && e.key === 'ArrowRight') || (!isHorizontal && e.key === 'ArrowDown')) {
         delta = DIVIDER_KEYBOARD_STEP;
-      } else if ((isHorizontal && e.key === 'ArrowLeft') || (!isHorizontal && e.key === 'ArrowUp')) {
+      } else if (
+        (isHorizontal && e.key === 'ArrowLeft') ||
+        (!isHorizontal && e.key === 'ArrowUp')
+      ) {
         delta = -DIVIDER_KEYBOARD_STEP;
       }
       if (delta !== 0) {
@@ -323,12 +331,7 @@ function DockLeafContainer({ leaf, onTabClick, onTabClose }: DockLeafContainerPr
         onTabClick={handleTabClick}
         onTabClose={handleTabClose}
       />
-      <div
-        id={panelId}
-        className={styles.Panel}
-        role="tabpanel"
-        aria-labelledby={activeTabElId}
-      >
+      <div id={panelId} className={styles.Panel} role="tabpanel" aria-labelledby={activeTabElId}>
         {activeContent}
       </div>
     </div>
@@ -339,10 +342,20 @@ interface DockSplitContainerProps {
   node: DockSplit;
   onTabClick: (leafId: string, tabId: string) => void;
   onTabClose: (leafId: string, tabId: string) => void;
-  onDividerDrag: (splitId: string, direction: DockDirection, dividerIndex: number, delta: number) => void;
+  onDividerDrag: (
+    splitId: string,
+    direction: DockDirection,
+    dividerIndex: number,
+    delta: number,
+  ) => void;
 }
 
-function DockSplitContainer({ node, onTabClick, onTabClose, onDividerDrag }: DockSplitContainerProps) {
+function DockSplitContainer({
+  node,
+  onTabClick,
+  onTabClose,
+  onDividerDrag,
+}: DockSplitContainerProps) {
   const count = node.children.length;
   const sizes = node.sizes ?? Array(count).fill(1);
   const total = sizes.reduce((a, b) => a + b, 0);
@@ -372,7 +385,9 @@ function DockSplitContainer({ node, onTabClick, onTabClose, onDividerDrag }: Doc
             i > 0 ? (
               <DockDivider
                 direction={node.direction}
-                valueNow={total > 0 ? ((sizes.slice(0, i).reduce((a, b) => a + b, 0)) / total) * 100 : 50}
+                valueNow={
+                  total > 0 ? (sizes.slice(0, i).reduce((a, b) => a + b, 0) / total) * 100 : 50
+                }
                 onDrag={(delta) => onDividerDrag(splitId, node.direction, i - 1, delta)}
               />
             ) : null
@@ -387,18 +402,34 @@ interface DockNodeRendererProps {
   node: DockNode;
   onTabClick: (leafId: string, tabId: string) => void;
   onTabClose: (leafId: string, tabId: string) => void;
-  onDividerDrag: (splitId: string, direction: DockDirection, dividerIndex: number, delta: number) => void;
+  onDividerDrag: (
+    splitId: string,
+    direction: DockDirection,
+    dividerIndex: number,
+    delta: number,
+  ) => void;
   dividerBefore?: ReactNode;
 }
 
-function DockNodeRenderer({ node, onTabClick, onTabClose, onDividerDrag, dividerBefore }: DockNodeRendererProps) {
+function DockNodeRenderer({
+  node,
+  onTabClick,
+  onTabClose,
+  onDividerDrag,
+  dividerBefore,
+}: DockNodeRendererProps) {
   return (
     <>
       {dividerBefore}
       {node.type === 'leaf' ? (
         <DockLeafContainer leaf={node} onTabClick={onTabClick} onTabClose={onTabClose} />
       ) : (
-        <DockSplitContainer node={node} onTabClick={onTabClick} onTabClose={onTabClose} onDividerDrag={onDividerDrag} />
+        <DockSplitContainer
+          node={node}
+          onTabClick={onTabClick}
+          onTabClose={onTabClose}
+          onDividerDrag={onDividerDrag}
+        />
       )}
     </>
   );
@@ -406,113 +437,112 @@ function DockNodeRenderer({ node, onTabClick, onTabClose, onDividerDrag, divider
 
 // ─── Main Component ─────────────────────────────
 
-const DockLayoutRoot = forwardRef<HTMLDivElement, DockLayoutProps>(
-  function DockLayoutRoot({ className, layout, onLayoutChange, ...props }, ref) {
-    const [internalLayout, setInternalLayout] = useState(layout);
-    const containerRef = useRef<HTMLDivElement>(null);
+const DockLayoutRoot = forwardRef<HTMLDivElement, DockLayoutProps>(function DockLayoutRoot(
+  { className, layout, onLayoutChange, ...props },
+  ref,
+) {
+  const [internalLayout, setInternalLayout] = useState(layout);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    // Use controlled layout if onLayoutChange is provided, otherwise internal state
-    const currentLayout = onLayoutChange ? layout : internalLayout;
+  // Use controlled layout if onLayoutChange is provided, otherwise internal state
+  const currentLayout = onLayoutChange ? layout : internalLayout;
 
-    const emitChange = useCallback(
-      (newLayout: DockNode) => {
-        if (onLayoutChange) {
-          onLayoutChange(newLayout);
-        } else {
-          setInternalLayout(newLayout);
-        }
-      },
-      [onLayoutChange],
-    );
+  const emitChange = useCallback(
+    (newLayout: DockNode) => {
+      if (onLayoutChange) {
+        onLayoutChange(newLayout);
+      } else {
+        setInternalLayout(newLayout);
+      }
+    },
+    [onLayoutChange],
+  );
 
-    const handleTabClick = useCallback(
-      (leafId: string, tabId: string) => {
-        const newLayout = updateNodeInTree(currentLayout, leafId, (leaf) => ({
-          ...leaf,
-          activeTab: tabId,
-        }));
+  const handleTabClick = useCallback(
+    (leafId: string, tabId: string) => {
+      const newLayout = updateNodeInTree(currentLayout, leafId, (leaf) => ({
+        ...leaf,
+        activeTab: tabId,
+      }));
+      emitChange(newLayout);
+    },
+    [currentLayout, emitChange],
+  );
+
+  const handleTabClose = useCallback(
+    (leafId: string, tabId: string) => {
+      const newLayout = removeTabFromTree(currentLayout, leafId, tabId);
+      if (newLayout) {
         emitChange(newLayout);
-      },
-      [currentLayout, emitChange],
-    );
+      }
+    },
+    [currentLayout, emitChange],
+  );
 
-    const handleTabClose = useCallback(
-      (leafId: string, tabId: string) => {
-        const newLayout = removeTabFromTree(currentLayout, leafId, tabId);
-        if (newLayout) {
-          emitChange(newLayout);
-        }
-      },
-      [currentLayout, emitChange],
-    );
+  const handleDividerDrag = useCallback(
+    (splitId: string, direction: DockDirection, dividerIndex: number, delta: number) => {
+      const root = containerRef.current;
+      if (!root) return;
 
-    const handleDividerDrag = useCallback(
-      (splitId: string, direction: DockDirection, dividerIndex: number, delta: number) => {
-        const root = containerRef.current;
-        if (!root) return;
+      // Find the actual split element by its structural ID to get accurate dimensions
+      // Fall back to root container if not found
+      const splitEl = root.querySelector<HTMLElement>(`[data-ov-split-id="${splitId}"]`) ?? root;
+      const containerSize = direction === 'horizontal' ? splitEl.offsetWidth : splitEl.offsetHeight;
 
-        // Find the actual split element by its structural ID to get accurate dimensions
-        // Fall back to root container if not found
-        const splitEl = root.querySelector<HTMLElement>(`[data-ov-split-id="${splitId}"]`) ?? root;
-        const containerSize = direction === 'horizontal'
-          ? splitEl.offsetWidth
-          : splitEl.offsetHeight;
+      if (containerSize === 0) return;
 
-        if (containerSize === 0) return;
+      // Find the split by its structural ID
+      const path = findSplitPath(currentLayout, splitId);
+      if (path == null) return;
 
-        // Find the split by its structural ID
-        const path = findSplitPath(currentLayout, splitId);
-        if (path == null) return;
+      const split = findSplitByIndex(currentLayout, path);
+      if (!split) return;
 
-        const split = findSplitByIndex(currentLayout, path);
-        if (!split) return;
+      const count = split.children.length;
+      const existingSizes = split.sizes ?? Array(count).fill(1);
+      const total = existingSizes.reduce((a, b) => a + b, 0);
+      const deltaFraction = (delta / containerSize) * total;
 
-        const count = split.children.length;
-        const existingSizes = split.sizes ?? Array(count).fill(1);
-        const total = existingSizes.reduce((a, b) => a + b, 0);
-        const deltaFraction = (delta / containerSize) * total;
+      const newSizes = [...existingSizes];
+      const minFraction = 0.05 * total;
 
-        const newSizes = [...existingSizes];
-        const minFraction = 0.05 * total;
+      const left = newSizes[dividerIndex];
+      const right = newSizes[dividerIndex + 1];
+      if (left == null || right == null) return;
 
-        const left = newSizes[dividerIndex];
-        const right = newSizes[dividerIndex + 1];
-        if (left == null || right == null) return;
+      newSizes[dividerIndex] = Math.max(minFraction, left + deltaFraction);
+      newSizes[dividerIndex + 1] = Math.max(minFraction, right - deltaFraction);
 
-        newSizes[dividerIndex] = Math.max(minFraction, left + deltaFraction);
-        newSizes[dividerIndex + 1] = Math.max(minFraction, right - deltaFraction);
+      const newLayout = updateSizesByPath(currentLayout, path, newSizes);
+      emitChange(newLayout);
+    },
+    [currentLayout, emitChange],
+  );
 
-        const newLayout = updateSizesByPath(currentLayout, path, newSizes);
-        emitChange(newLayout);
-      },
-      [currentLayout, emitChange],
-    );
+  // Merge refs
+  const setRefs = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+      if (typeof ref === 'function') {
+        ref(node);
+      } else if (ref) {
+        ref.current = node;
+      }
+    },
+    [ref],
+  );
 
-    // Merge refs
-    const setRefs = useCallback(
-      (node: HTMLDivElement | null) => {
-        containerRef.current = node;
-        if (typeof ref === 'function') {
-          ref(node);
-        } else if (ref) {
-          ref.current = node;
-        }
-      },
-      [ref],
-    );
-
-    return (
-      <div ref={setRefs} className={cn(styles.Root, className)} {...props}>
-        <DockNodeRenderer
-          node={currentLayout}
-          onTabClick={handleTabClick}
-          onTabClose={handleTabClose}
-          onDividerDrag={handleDividerDrag}
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={setRefs} className={cn(styles.Root, className)} {...props}>
+      <DockNodeRenderer
+        node={currentLayout}
+        onTabClick={handleTabClick}
+        onTabClose={handleTabClose}
+        onDividerDrag={handleDividerDrag}
+      />
+    </div>
+  );
+});
 
 DockLayoutRoot.displayName = 'DockLayout';
 

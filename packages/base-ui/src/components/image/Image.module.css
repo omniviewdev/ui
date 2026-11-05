@@ -33,7 +33,7 @@
   --_ov-radius: 0;
 }
 .Root[data-ov-radius='sm'] {
-  --_ov-radius: 4px; /* --ov-primitive-radius-sm; no --ov-radius-sm semantic token (closest: --ov-radius-control at 6px) */
+  --_ov-radius: var(--ov-radius-sm);
 }
 .Root[data-ov-radius='md'] {
   --_ov-radius: var(--ov-radius-control);

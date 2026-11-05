@@ -25,7 +25,9 @@ export const ThemeSwitcher = memo(function ThemeSwitcher({ className }: ThemeSwi
           onChange={(event) => setTheme(event.target.value)}
         >
           {themes.map((theme) => (
-            <option key={theme.id} value={theme.id}>{theme.name}</option>
+            <option key={theme.id} value={theme.id}>
+              {theme.name}
+            </option>
           ))}
         </select>
       </label>

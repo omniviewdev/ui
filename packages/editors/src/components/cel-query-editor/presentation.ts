@@ -1,6 +1,9 @@
 import { utf16ToUtf8, utf8ToUtf16 } from '@omniviewdev/base-ui';
 
-export interface SourcePosition { lineNumber: number; column: number }
+export interface SourcePosition {
+  lineNumber: number;
+  column: number;
+}
 
 /** Source positions retain the host's line endings and UTF-8 byte contract. */
 export function sourcePosition(text: string, byteOffset: number): SourcePosition {
@@ -19,8 +22,12 @@ export function sourcePosition(text: string, byteOffset: number): SourcePosition
 }
 
 export function sourceOffset(text: string, position: SourcePosition): number {
-  if (!Number.isSafeInteger(position.lineNumber) || position.lineNumber < 1 ||
-      !Number.isSafeInteger(position.column) || position.column < 1)
+  if (
+    !Number.isSafeInteger(position.lineNumber) ||
+    position.lineNumber < 1 ||
+    !Number.isSafeInteger(position.column) ||
+    position.column < 1
+  )
     throw new RangeError('Expected a one-based source position');
   let line = 1;
   let start = 0;
@@ -69,10 +76,22 @@ export function latestRequestGate() {
 
 export function automaticCompletion(callback: () => void, delay = 250) {
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const cancel = () => { clearTimeout(timer); timer = undefined; };
+  const cancel = () => {
+    clearTimeout(timer);
+    timer = undefined;
+  };
   return {
-    schedule(delayMs = delay) { cancel(); timer = setTimeout(() => { timer = undefined; callback(); }, delayMs); },
-    immediate() { cancel(); callback(); },
+    schedule(delayMs = delay) {
+      cancel();
+      timer = setTimeout(() => {
+        timer = undefined;
+        callback();
+      }, delayMs);
+    },
+    immediate() {
+      cancel();
+      callback();
+    },
     cancel,
   };
 }

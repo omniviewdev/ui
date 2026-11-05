@@ -359,7 +359,12 @@ export function QueryBuilder({
   const blocked = disabled || Boolean(availability && availability.status !== 'ready');
   const [loading, setLoading] = useState(Boolean(analyze && !blocked));
   // Invalidate request presentation with its inputs; effects only own the remote request.
-  const [analysisInputs, setAnalysisInputs] = useState(() => ({ value, contextKey, analyze, blocked }));
+  const [analysisInputs, setAnalysisInputs] = useState(() => ({
+    value,
+    contextKey,
+    analyze,
+    blocked,
+  }));
   if (
     analysisInputs.value !== value ||
     analysisInputs.contextKey !== contextKey ||

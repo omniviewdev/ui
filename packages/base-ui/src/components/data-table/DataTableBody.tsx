@@ -1,7 +1,7 @@
-import { forwardRef, Fragment, memo, useMemo, type HTMLAttributes, type ReactNode } from 'react';
-import { flexRender } from '@tanstack/react-table';
+import { forwardRef, Fragment, memo, type HTMLAttributes, type ReactNode } from 'react';
+import { flexRender, type RowData } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
-import { useDataTableContext } from './context/DataTableContext';
+import { useDataTableContext, type DataTableContextValue } from './context/DataTableContext';
 import { getPinningStyles } from './utils/getPinningStyles';
 import { getCellSizeStyles } from './utils/getCellSizeStyles';
 import styles from './DataTable.module.css';
@@ -11,44 +11,51 @@ export interface DataTableBodyProps extends HTMLAttributes<HTMLTableSectionEleme
   renderExpandedRow?: (row: unknown) => ReactNode;
 }
 
-export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyProps>(
-  function DataTableBody({ className, renderExpandedRow, ...props }, ref) {
-    const { table, features, state, options } = useDataTableContext();
-    const rows = useMemo(() => table.getRowModel().rows, [table, state, options]);
-    const isResizing = state.columnResizing.isResizingColumn;
-    // Column layout is shared by every row and does not change with row data.
-    // Keep live row/cell rendering outside this cache: renderers can read state.
-    const columnLayouts = useMemo(
-      () => new Map(table.getVisibleLeafColumns().map((column) => {
+type DataTableBodyRenderProps = DataTableBodyProps & {
+  context: DataTableContextValue<RowData>;
+};
+
+// Read mutable table getters at the subscribed context boundary, not a stable table identity.
+function readBodySnapshot({ table }: DataTableContextValue<RowData>) {
+  return {
+    rows: table.getRowModel().rows,
+    columnLayouts: new Map(
+      table.getVisibleLeafColumns().map((column) => {
         const meta = column.columnDef.meta as Record<string, unknown> | undefined;
-        return [column, {
-          style: {
-            ...getCellSizeStyles(column),
-            ...getPinningStyles(column),
+        return [
+          column,
+          {
+            style: {
+              ...getCellSizeStyles(column),
+              ...getPinningStyles(column),
+            },
+            pinned: column.getIsPinned() || undefined,
+            align: meta?.align as string | undefined,
           },
-          pinned: column.getIsPinned() || undefined,
-          align: meta?.align as string | undefined,
-        }];
-      })),
-      [
-        table,
-        options.columns,
-        options.enableColumnResizing,
-        options.defaultColumn?.enableResizing,
-        options.defaultColumn?.size,
-        options.defaultColumn?.minSize,
-        options.defaultColumn?.maxSize,
-        options.groupedColumnMode,
-        state.grouping,
-        state.columnVisibility,
-        state.columnOrder,
-        state.columnPinning,
-        state.columnSizing,
-      ],
-    );
+        ];
+      }),
+    ),
+  };
+}
 
+export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyProps>(
+  function DataTableBody(props, ref) {
+    const context = useDataTableContext<RowData>();
+    return <DataTableBodyRender {...props} context={context} ref={ref} />;
+  },
+);
 
-    const rowElements = useMemo(() => rows.map((row) => {
+// A subscribed snapshot prop invalidates cached output when table state or options change.
+const DataTableBodyRender = memo(
+  forwardRef<HTMLTableSectionElement, DataTableBodyRenderProps>(function DataTableBodyRender(
+    { className, renderExpandedRow, context, ...props },
+    ref,
+  ) {
+    const { features, state } = context;
+    const { rows, columnLayouts } = readBodySnapshot(context);
+    const isResizing = state.columnResizing.isResizingColumn;
+
+    const rowElements = rows.map((row) => {
       const isSelected = row.getIsSelected();
       const isExpanded = row.getIsExpanded();
 
@@ -88,7 +95,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
           )}
         </Fragment>
       );
-    }), [rows, state, options, columnLayouts, features.rowExpansion, renderExpandedRow]);
+    });
     if (rows.length === 0) return null;
 
     if (isResizing) {
@@ -104,7 +111,7 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
         {rowElements}
       </tbody>
     );
-  },
+  }),
 );
 
 DataTableBody.displayName = 'DataTable.Body';

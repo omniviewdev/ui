@@ -7,36 +7,37 @@ These should be done when implementing the new components, to bring existing cod
 ### 1. Use base-ui `Collapsible` instead of hand-rolled CSS Grid collapse
 
 **Files:**
+
 - `ThinkingBlock.tsx` — replace `.CollapseWrapper` / `.CollapseInner` divs with `<Collapsible>` / `<CollapsibleContent>`
 - `ChainOfThought.tsx` — same pattern
 - `ThinkingBlock.module.css` — remove `.CollapseWrapper`, `.CollapseInner` rules
 - `ChainOfThought.module.css` — remove `.CollapseWrapper`, `.CollapseInner`, `.CollapseContent` rules
 
 **Current pattern (duplicated in both):**
+
 ```tsx
 <div className={styles.CollapseWrapper} aria-hidden={!isOpen}>
-  <div className={styles.CollapseInner}>
-    {content}
-  </div>
+  <div className={styles.CollapseInner}>{content}</div>
 </div>
 ```
 
 **Target pattern:**
+
 ```tsx
 <Collapsible open={isOpen} onOpenChange={toggle}>
-  <CollapsibleContent>
-    {content}
-  </CollapsibleContent>
+  <CollapsibleContent>{content}</CollapsibleContent>
 </Collapsible>
 ```
 
 ### 2. Use base-ui `Chip` for search result tags
 
 **Files:**
+
 - `ChainOfThought.tsx` — `ChainOfThoughtSearchResult` currently renders `<span className={styles.StepTag}>`
 - `ChainOfThought.module.css` — `.StepTag` styles duplicate Chip styling
 
 **Current:**
+
 ```tsx
 <span className={cn(styles.StepTag, className)} {...rest}>
   {children ?? label}
@@ -44,6 +45,7 @@ These should be done when implementing the new components, to bring existing cod
 ```
 
 **Target:**
+
 ```tsx
 <Chip size="sm" variant="soft" className={cn(styles.StepTag, className)} {...rest}>
   {children ?? label}
@@ -55,6 +57,7 @@ This aligns with how `AIFollowUp`, `AIContextIndicator`, `AICostIndicator`, and 
 ### 3. Deduplicate BrainIcon
 
 **Files:**
+
 - `ThinkingBlock.tsx` — defines `BrainIcon` (lines 20-44)
 - `ChainOfThought.tsx` — defines identical `BrainIcon` (lines 21-45)
 

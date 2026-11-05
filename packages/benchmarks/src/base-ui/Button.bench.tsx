@@ -5,11 +5,15 @@ import { Button } from '@omniviewdev/base-ui';
 
 describe('Button', () => {
   benchRender('mount', () => <Button>Click</Button>, TIER_2_OPTIONS);
-  benchRender('mount with decorators', () => (
-    <Button startDecorator={<span>+</span>} endDecorator={<span>→</span>}>
-      Action
-    </Button>
-  ), TIER_2_OPTIONS);
+  benchRender(
+    'mount with decorators',
+    () => (
+      <Button startDecorator={<span>+</span>} endDecorator={<span>→</span>}>
+        Action
+      </Button>
+    ),
+    TIER_2_OPTIONS,
+  );
   benchRerender(
     'variant change',
     { initialProps: { variant: 'solid' as const }, updatedProps: { variant: 'outline' as const } },

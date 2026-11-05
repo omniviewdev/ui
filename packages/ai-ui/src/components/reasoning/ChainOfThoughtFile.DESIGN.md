@@ -44,6 +44,7 @@ interface ChainOfThoughtFilesProps extends HTMLAttributes<HTMLDivElement> {
 ## Usage
 
 ### In a chain of thought step
+
 ```tsx
 <ChainOfThoughtStep
   label="Analyzing pod logs"
@@ -72,6 +73,7 @@ interface ChainOfThoughtFilesProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 ### Mixed with search result tags
+
 ```tsx
 <ChainOfThoughtStep label="Checking metrics" status="complete">
   <ChainOfThoughtFiles>

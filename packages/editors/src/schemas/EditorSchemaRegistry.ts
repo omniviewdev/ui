@@ -20,9 +20,6 @@
  */
 
 const DEBUG = false;
-function log(...args: unknown[]) {
-  if (DEBUG) console.log('[schema-registry]', ...args);
-}
 function warn(...args: unknown[]) {
   if (DEBUG) console.warn('[schema-registry]', ...args);
 }
@@ -111,7 +108,6 @@ class EditorSchemaRegistryImpl {
    * @internal
    */
   _setYamlHandle(handle: YamlHandle): void {
-    log('_setYamlHandle called — handle keys:', Object.keys(handle));
     this._yamlHandle = handle;
   }
 
@@ -120,16 +116,12 @@ class EditorSchemaRegistryImpl {
    * Notifies all listeners (active editors) to reconfigure.
    */
   register(schema: EditorSchema): void {
-    log('register() — uri:', schema.uri, 'fileMatch:', schema.fileMatch,
-      'schema keys:', Object.keys(schema.schema).slice(0, 10));
     this._schemas.set(schema.uri, schema);
     this._notify();
   }
 
   /** Register multiple schemas at once. */
   registerAll(schemas: EditorSchema[]): void {
-    log('registerAll() —', schemas.length, 'schemas:',
-      schemas.map(s => s.uri));
     for (const s of schemas) {
       this._schemas.set(s.uri, s);
     }
@@ -138,16 +130,13 @@ class EditorSchemaRegistryImpl {
 
   /** Unregister a schema by URI. */
   unregister(uri: string): boolean {
-    log('unregister() — uri:', uri);
     const deleted = this._schemas.delete(uri);
     if (deleted) this._notify();
-    else log('  schema not found, nothing to unregister');
     return deleted;
   }
 
   /** Clear all registered schemas. */
   clear(): void {
-    log('clear() — removing', this._schemas.size, 'schemas');
     this._schemas.clear();
     this._notify();
   }
@@ -157,9 +146,7 @@ class EditorSchemaRegistryImpl {
    * model URI string. Uses the same glob-like matching that monaco-yaml uses.
    */
   getSchemasForUri(modelUri: string): EditorSchema[] {
-    return this.schemas.filter((s) =>
-      s.fileMatch.some((pattern) => globMatch(pattern, modelUri)),
-    );
+    return this.schemas.filter((s) => s.fileMatch.some((pattern) => globMatch(pattern, modelUri)));
   }
 
   /** Whether the YAML handle has been injected (workers initialized). */
@@ -170,10 +157,8 @@ class EditorSchemaRegistryImpl {
   /** Subscribe to schema changes. Returns an unsubscribe function. */
   onChange(listener: SchemaChangeListener): () => void {
     this._listeners.add(listener);
-    log('onChange() — listener added, total listeners:', this._listeners.size);
     return () => {
       this._listeners.delete(listener);
-      log('onChange() — listener removed, total listeners:', this._listeners.size);
     };
   }
 
@@ -196,12 +181,10 @@ class EditorSchemaRegistryImpl {
       ...(s.name && { name: s.name }),
       ...(s.description && { description: s.description }),
     }));
-    log('applyYamlSchemas() — pushing', schemas.length, 'schemas');
     this._yamlHandle.update({
       enableSchemaRequest: false,
       schemas: mapped,
     });
-    log('applyYamlSchemas() — update() called successfully');
   }
 
   /**
@@ -235,25 +218,10 @@ class EditorSchemaRegistryImpl {
     };
 
     const jsonDefaults = m.json?.jsonDefaults;
-    log('applyJsonSchemas() —', this.schemas.length, 'schemas, jsonDefaults available:',
-      !!jsonDefaults);
     jsonDefaults?.setDiagnosticsOptions(diagnosticsOptions);
   }
 
-  /** Log the current state of the registry for debugging. */
-  debugState(): void {
-    log('=== Registry State ===');
-    log('  Schemas:', this._schemas.size);
-    for (const [uri, schema] of this._schemas) {
-      log(`    ${uri} → fileMatch: ${JSON.stringify(schema.fileMatch)}`);
-    }
-    log('  Listeners:', this._listeners.size);
-    log('  YAML handle:', this._yamlHandle ? 'SET' : 'NOT SET');
-    log('======================');
-  }
-
   private _notify(): void {
-    log('_notify() — notifying', this._listeners.size, 'listeners');
     for (const fn of this._listeners) {
       try {
         fn();

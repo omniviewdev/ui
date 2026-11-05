@@ -367,7 +367,11 @@ const EditorTabsRoot = forwardRef<HTMLDivElement, EditorTabsProps>(function Edit
           aria-orientation="horizontal"
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          {...styleDataAttributes({ variant: variant as StyledComponentProps['variant'], color, size })}
+          {...styleDataAttributes({
+            variant: variant as StyledComponentProps['variant'],
+            color,
+            size,
+          })}
         >
           <EditorTabScrollButton direction="left" />
           <EditorTabScrollShadow side="left" />

@@ -59,23 +59,34 @@ const baseLogColumns: ColumnDef<LogEntry, unknown>[] = [
 
 const selectColumn: ColumnDef<LogEntry, unknown> = {
   id: 'select',
-  header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ state, all: table.getIsAllRowsSelected(), some: table.getIsSomeRowsSelected(), allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
-    <Checkbox
-      checked={selection.all}
-      indeterminate={selection.some}
-      onCheckedChange={() => table.toggleAllRowsSelected()}
-      size="sm"
-      aria-label="Select all rows"
-    />
-  ))}</Subscribe>),
-  cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-    <Checkbox
-      checked={!!snapshot.selection[row.id]}
-      onCheckedChange={() => row.toggleSelected()}
-      size="sm"
-      aria-label={`Select row ${row.index + 1}`}
-    />
-  ))}</Subscribe>),
+  header: ({ table }) => (
+    <Subscribe source={table.store} selector={(state) => state}>
+      {() => (
+        <Checkbox
+          checked={table.getIsAllRowsSelected()}
+          indeterminate={!table.getIsAllRowsSelected() && table.getIsSomeRowsSelected()}
+          onCheckedChange={() => table.toggleAllRowsSelected()}
+          size="sm"
+          aria-label="Select all rows"
+        />
+      )}
+    </Subscribe>
+  ),
+  cell: ({ row, table }) => (
+    <Subscribe
+      source={table.store}
+      selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+    >
+      {(snapshot) => (
+        <Checkbox
+          checked={!!snapshot.selection[row.id]}
+          onCheckedChange={() => row.toggleSelected()}
+          size="sm"
+          aria-label={`Select row ${row.index + 1}`}
+        />
+      )}
+    </Subscribe>
+  ),
   size: 40,
   enableSorting: false,
   enableResizing: false,
@@ -186,7 +197,11 @@ function LiveUpdatesStory() {
       setData((prev) =>
         prev.map((entry, i) =>
           i % 3 === tick % 3
-            ? { ...entry, level: levels[(levels.indexOf(entry.level) + 1) % levels.length]!, message: `Updated (tick ${tick})` }
+            ? {
+                ...entry,
+                level: levels[(levels.indexOf(entry.level) + 1) % levels.length]!,
+                message: `Updated (tick ${tick})`,
+              }
             : entry,
         ),
       );
@@ -253,8 +268,8 @@ function FixedHeightPinnedColumnsStory() {
   return (
     <div style={{ width: 600, maxWidth: '100%' }}>
       <p>
-        Scroll horizontally: selection and actions must stay at opposite edges.
-        Tall service content must not overlap the next fixed-height row.
+        Scroll horizontally: selection and actions must stay at opposite edges. Tall service content
+        must not overlap the next fixed-height row.
       </p>
       <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
         <button
@@ -296,7 +311,8 @@ export const FixedHeightPinnedColumns: Story = {
     const left = row?.querySelector<HTMLElement>('[data-ov-pinned="start"]');
     const right = row?.querySelector<HTMLElement>('[data-ov-pinned="end"]');
     const tall = row?.querySelector<HTMLElement>('[data-tall-cell]');
-    if (!row || !left || !right || !tall) throw new Error('Fixed-height pinning cells did not render');
+    if (!row || !left || !right || !tall)
+      throw new Error('Fixed-height pinning cells did not render');
     const assertNear = (actual: number, expected: number, label: string) => {
       if (Math.abs(actual - expected) > 1) {
         throw new Error(`${label}: expected ${expected}, received ${actual}`);
@@ -346,7 +362,11 @@ export const FixedHeightPinnedColumns: Story = {
     viewport.dispatchEvent(new Event('scroll'));
     await nextFrame();
     const unpinnedLeft = viewport.getBoundingClientRect().left + viewport.clientLeft;
-    assertNear(left.getBoundingClientRect().left, unpinnedLeft - viewport.scrollLeft, 'Unpinned selection cell');
+    assertNear(
+      left.getBoundingClientRect().left,
+      unpinnedLeft - viewport.scrollLeft,
+      'Unpinned selection cell',
+    );
     assertNear(
       right.getBoundingClientRect().right,
       unpinnedLeft + viewport.scrollWidth - viewport.scrollLeft,

@@ -19,8 +19,14 @@ new RuleTester({
     '<p title="quoted text" />',
   ],
   invalid: [
-    { code: '<p>don\'t</p>', errors: [{ messageId: 'unescaped', data: { character: "'" }, line: 1, column: 7 }] },
+    {
+      code: "<p>don't</p>",
+      errors: [{ messageId: 'unescaped', data: { character: "'" }, line: 1, column: 7 }],
+    },
     { code: '<p>"quoted"</p>', errors: [{ messageId: 'unescaped' }, { messageId: 'unescaped' }] },
-    { code: '<p>line one\nsecond \'line</p>', errors: [{ messageId: 'unescaped', line: 2, column: 8 }] },
+    {
+      code: "<p>line one\nsecond 'line</p>",
+      errors: [{ messageId: 'unescaped', line: 2, column: 8 }],
+    },
   ],
 });

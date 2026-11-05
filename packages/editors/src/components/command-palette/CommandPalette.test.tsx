@@ -9,7 +9,12 @@ const commands: CommandItem[] = [
   { id: 'disabled', label: 'Disabled Command', disabled: true },
   { id: 'find', label: 'Find in Files', group: 'Search' },
   { id: 'save', label: 'Save File', group: 'File' },
-  { id: 'terminal', label: 'Toggle Terminal', description: 'Show the integrated terminal', group: 'View' },
+  {
+    id: 'terminal',
+    label: 'Toggle Terminal',
+    description: 'Show the integrated terminal',
+    group: 'View',
+  },
 ];
 
 function setup(items = commands) {
@@ -28,12 +33,19 @@ function activeOption(input: HTMLElement) {
 function Launcher() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('');
-  return <>
-    <button onClick={() => setOpen(true)}>Open palette</button>
-    <button>Outside</button>
-    <output>{selected}</output>
-    <CommandPalette open={open} commands={commands} onClose={() => setOpen(false)} onSelect={(command) => setSelected(command.id)} />
-  </>;
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open palette</button>
+      <button>Outside</button>
+      <output>{selected}</output>
+      <CommandPalette
+        open={open}
+        commands={commands}
+        onClose={() => setOpen(false)}
+        onSelect={(command) => setSelected(command.id)}
+      />
+    </>
+  );
 }
 
 describe('CommandPalette real interactions', () => {
@@ -52,8 +64,10 @@ describe('CommandPalette real interactions', () => {
   it('keeps interleaved groups in caller order for display and Arrow/Enter activation', () => {
     const { input, onSelect, onClose } = setup();
     expect(screen.getAllByRole('option').map((item) => item.textContent)).toEqual([
-      expect.stringContaining('Open File'), expect.stringContaining('Find in Files'),
-      expect.stringContaining('Save File'), expect.stringContaining('Toggle Terminal'),
+      expect.stringContaining('Open File'),
+      expect.stringContaining('Find in Files'),
+      expect.stringContaining('Save File'),
+      expect.stringContaining('Toggle Terminal'),
     ]);
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.keyDown(input, { key: 'Enter' });
@@ -73,13 +87,16 @@ describe('CommandPalette real interactions', () => {
     expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[2]);
   });
 
-  it.each(['integrated', 'view', 'tgt'])('matches static description/group/subsequence input: %s', async (query) => {
-    const user = userEvent.setup();
-    const { input, onSelect } = setup();
-    await user.type(input, query);
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[4]);
-  });
+  it.each(['integrated', 'view', 'tgt'])(
+    'matches static description/group/subsequence input: %s',
+    async (query) => {
+      const user = userEvent.setup();
+      const { input, onSelect } = setup();
+      await user.type(input, query);
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[4]);
+    },
+  );
 
   it('replaces an active result with current data and a valid current selection', () => {
     const { input, props, rerender, onSelect } = setup();
@@ -123,7 +140,12 @@ describe('CommandPalette real interactions', () => {
     expect(screen.queryAllByRole('option')).toEqual([]);
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSelect).not.toHaveBeenCalled();
-    rerender(<CommandPalette {...props} {...{ loading: true, error: 'Commands unavailable. Try again.' }} />);
+    rerender(
+      <CommandPalette
+        {...props}
+        {...{ loading: true, error: 'Commands unavailable. Try again.' }}
+      />,
+    );
     expect(screen.getByRole('alert')).toHaveTextContent('Commands unavailable. Try again.');
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     fireEvent.keyDown(input, { key: 'Enter' });
@@ -132,30 +154,40 @@ describe('CommandPalette real interactions', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  it.each(['Enter', 'Escape', 'ArrowDown'])('ignores %s during composition and Safari IME keycode 229', (key) => {
-    const { input, onSelect, onClose } = setup();
-    fireEvent.compositionStart(input);
-    fireEvent.keyDown(input, { key });
-    fireEvent.compositionEnd(input);
-    fireEvent.keyDown(input, { key, isComposing: true });
-    fireEvent.keyDown(input, { key, keyCode: 229 });
-    expect(onSelect).not.toHaveBeenCalled();
-    expect(onClose).not.toHaveBeenCalled();
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[0]);
-  });
+  it.each(['Enter', 'Escape', 'ArrowDown'])(
+    'ignores %s during composition and Safari IME keycode 229',
+    (key) => {
+      const { input, onSelect, onClose } = setup();
+      fireEvent.compositionStart(input);
+      fireEvent.keyDown(input, { key });
+      fireEvent.compositionEnd(input);
+      fireEvent.keyDown(input, { key, isComposing: true });
+      fireEvent.keyDown(input, { key, keyCode: 229 });
+      expect(onSelect).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[0]);
+    },
+  );
 
-  it.each(['Escape', 'Enter', 'backdrop'])('restores opener focus after %s dismissal, including effect replay', async (key) => {
-    const user = userEvent.setup();
-    render(<StrictMode><Launcher /></StrictMode>);
-    const opener = screen.getByRole('button', { name: 'Open palette' });
-    await user.click(opener);
-    expect(screen.getByTestId('command-palette-input')).toHaveFocus();
-    if (key === 'backdrop') await user.click(screen.getByTestId('command-palette-overlay'));
-    else await user.keyboard(`{${key}}`);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(opener).toHaveFocus();
-  });
+  it.each(['Escape', 'Enter', 'backdrop'])(
+    'restores opener focus after %s dismissal, including effect replay',
+    async (key) => {
+      const user = userEvent.setup();
+      render(
+        <StrictMode>
+          <Launcher />
+        </StrictMode>,
+      );
+      const opener = screen.getByRole('button', { name: 'Open palette' });
+      await user.click(opener);
+      expect(screen.getByTestId('command-palette-input')).toHaveFocus();
+      if (key === 'backdrop') await user.click(screen.getByTestId('command-palette-overlay'));
+      else await user.keyboard(`{${key}}`);
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(opener).toHaveFocus();
+    },
+  );
 
   it('keeps keyboard navigation and Escape working after clicking a group heading', async () => {
     const user = userEvent.setup();
@@ -185,7 +217,9 @@ describe('CommandPalette real interactions', () => {
     await user.keyboard('{Escape}');
     await user.click(screen.getByRole('button', { name: 'Open palette' }));
     expect(screen.getByTestId('command-palette-input')).toHaveValue('');
-    expect(activeOption(screen.getByTestId('command-palette-input'))).toHaveTextContent('Open File');
+    expect(activeOption(screen.getByTestId('command-palette-input'))).toHaveTextContent(
+      'Open File',
+    );
   });
 
   it('lets Enter activate Clear search rather than the current command', async () => {
@@ -237,7 +271,9 @@ describe('CommandPalette real interactions', () => {
     const ref = createRef<HTMLDivElement>();
     const onSelect = vi.fn();
     const onClose = vi.fn();
-    render(<CommandPalette ref={ref} open commands={commands} onSelect={onSelect} onClose={onClose} />);
+    render(
+      <CommandPalette ref={ref} open commands={commands} onSelect={onSelect} onClose={onClose} />,
+    );
     expect(ref.current).toBe(screen.getByRole('dialog'));
     await user.click(screen.getByRole('option', { name: /Find in Files/ }));
     expect(onSelect).toHaveBeenCalledExactlyOnceWith(commands[2]);

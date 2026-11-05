@@ -26,7 +26,10 @@ const meta = {
     direction: 'horizontal',
     defaultSize: 300,
     minSize: 100,
-    children: [<PaneContent key="left" label="First Pane" color="var(--ov-color-bg-surface)" />, <PaneContent key="right" label="Second Pane" color="var(--ov-color-bg-base)" />],
+    children: [
+      <PaneContent key="left" label="First Pane" color="var(--ov-color-bg-surface)" />,
+      <PaneContent key="right" label="Second Pane" color="var(--ov-color-bg-base)" />,
+    ],
   },
   argTypes: {
     direction: { control: 'radio', options: ['horizontal', 'vertical'] },
@@ -84,7 +87,11 @@ export const WithConstraints: Story = {
     <div style={{ height: 300, border: '1px solid var(--ov-color-border-default)' }}>
       <ResizableSplitPane defaultSize={300} minSize={150} maxSize={500}>
         {[
-          <PaneContent key="left" label="Min: 150px, Max: 500px" color="var(--ov-color-bg-surface)" />,
+          <PaneContent
+            key="left"
+            label="Min: 150px, Max: 500px"
+            color="var(--ov-color-bg-surface)"
+          />,
           <PaneContent key="right" label="Flexible" color="var(--ov-color-bg-base)" />,
         ]}
       </ResizableSplitPane>
@@ -101,7 +108,11 @@ export const Nested: Story = {
           <ResizableSplitPane key="right" direction="vertical" defaultSize={250}>
             {[
               <PaneContent key="top" label="Editor" color="var(--ov-color-bg-base)" />,
-              <PaneContent key="bottom" label="Terminal" color="var(--ov-color-bg-surface-raised)" />,
+              <PaneContent
+                key="bottom"
+                label="Terminal"
+                color="var(--ov-color-bg-surface-raised)"
+              />,
             ]}
           </ResizableSplitPane>,
         ]}

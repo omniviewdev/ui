@@ -6,8 +6,22 @@ import type { FileTableItem } from './FileTableContext';
 
 const items: FileTableItem[] = [
   { id: 'f1', name: 'src', type: 'folder', modified: '2026-03-10T14:00:00Z' },
-  { id: 'f2', name: 'package.json', type: 'file', size: 862, modified: '2026-03-10T12:00:00Z', extension: 'json' },
-  { id: 'f3', name: 'README.md', type: 'file', size: 510, modified: '2026-03-09T10:00:00Z', extension: 'md' },
+  {
+    id: 'f2',
+    name: 'package.json',
+    type: 'file',
+    size: 862,
+    modified: '2026-03-10T12:00:00Z',
+    extension: 'json',
+  },
+  {
+    id: 'f3',
+    name: 'README.md',
+    type: 'file',
+    size: 510,
+    modified: '2026-03-09T10:00:00Z',
+    extension: 'md',
+  },
   { id: 'f4', name: 'public', type: 'folder', modified: '2026-03-01T09:00:00Z' },
 ];
 

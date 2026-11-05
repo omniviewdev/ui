@@ -12,10 +12,7 @@ export interface AICostIndicatorProps extends Omit<HTMLAttributes<HTMLSpanElemen
 }
 
 export const AICostIndicator = forwardRef<HTMLSpanElement, AICostIndicatorProps>(
-  function AICostIndicator(
-    { cost, currency = '$', className, ...rest },
-    ref,
-  ) {
+  function AICostIndicator({ cost, currency = '$', className, ...rest }, ref) {
     return (
       <Chip
         ref={ref}
@@ -26,7 +23,8 @@ export const AICostIndicator = forwardRef<HTMLSpanElement, AICostIndicatorProps>
         startDecorator={<LuCoins size={12} />}
         {...rest}
       >
-        {currency}{cost.toFixed(4)}
+        {currency}
+        {cost.toFixed(4)}
       </Chip>
     );
   },

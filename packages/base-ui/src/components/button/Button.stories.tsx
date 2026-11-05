@@ -11,13 +11,7 @@ import type { ButtonProps } from './Button';
 import { Button } from './Button';
 
 type DecoratorIconOption =
-  | 'none'
-  | 'play'
-  | 'search'
-  | 'refresh'
-  | 'command'
-  | 'download'
-  | 'sparkles';
+  'none' | 'play' | 'search' | 'refresh' | 'command' | 'download' | 'sparkles';
 
 type ButtonStoryArgs = ButtonProps & {
   startIcon: DecoratorIconOption;
@@ -68,7 +62,19 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     startIcon: { control: 'select', options: DECORATOR_ICON_OPTIONS },
     endIcon: { control: 'select', options: DECORATOR_ICON_OPTIONS },

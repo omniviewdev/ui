@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { LuChevronRight, LuMinus, LuSlash, LuHouse, LuFolder, LuSettings, LuFile } from 'react-icons/lu';
+import {
+  LuChevronRight,
+  LuMinus,
+  LuSlash,
+  LuHouse,
+  LuFolder,
+  LuSettings,
+  LuFile,
+} from 'react-icons/lu';
 import { Breadcrumbs } from './Breadcrumbs';
 
 const meta = {

@@ -13,25 +13,23 @@ export interface AIStopButtonProps extends Omit<HTMLAttributes<HTMLButtonElement
   label?: string;
 }
 
-export const AIStopButton = forwardRef<HTMLButtonElement, AIStopButtonProps>(
-  function AIStopButton(
-    { onStop, stopping = false, label, className, ...rest },
-    ref,
-  ) {
-    return (
-      <Button
-        ref={ref}
-        variant="outline"
-        color="neutral"
-        size="sm"
-        disabled={stopping}
-        onClick={onStop}
-        startDecorator={<LuSquare size={14} />}
-        className={cn(styles.Root, className)}
-        {...rest}
-      >
-        {stopping ? 'Stopping...' : (label ?? 'Stop generating')}
-      </Button>
-    );
-  },
-);
+export const AIStopButton = forwardRef<HTMLButtonElement, AIStopButtonProps>(function AIStopButton(
+  { onStop, stopping = false, label, className, ...rest },
+  ref,
+) {
+  return (
+    <Button
+      ref={ref}
+      variant="outline"
+      color="neutral"
+      size="sm"
+      disabled={stopping}
+      onClick={onStop}
+      startDecorator={<LuSquare size={14} />}
+      className={cn(styles.Root, className)}
+      {...rest}
+    >
+      {stopping ? 'Stopping...' : (label ?? 'Stop generating')}
+    </Button>
+  );
+});

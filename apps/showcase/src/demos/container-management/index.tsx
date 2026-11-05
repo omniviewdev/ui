@@ -2,14 +2,7 @@ import '@omniviewdev/editors/styles.css';
 
 import { useState, useCallback } from 'react';
 import { StatusBar } from '@omniviewdev/base-ui';
-import {
-  LuContainer,
-  LuPlay,
-  LuSquare,
-  LuPause,
-  LuRefreshCw,
-  LuCircleAlert,
-} from 'react-icons/lu';
+import { LuContainer, LuPlay, LuSquare, LuPause, LuRefreshCw, LuCircleAlert } from 'react-icons/lu';
 import { ContainerList } from './components/ContainerList';
 import { ContainerDetail } from './components/ContainerDetail';
 import { containers, clusterStats } from './data';
@@ -30,9 +23,7 @@ export default function ContainerManagementDemo() {
   return (
     <div className={styles.root}>
       <div className={styles.content}>
-        {selectedContainer && (
-          <ContainerDetail container={selectedContainer} onBack={handleBack} />
-        )}
+        {selectedContainer && <ContainerDetail container={selectedContainer} onBack={handleBack} />}
         <div
           className={styles.listWrapper}
           style={{ display: selectedContainer ? 'none' : 'contents' }}
@@ -82,12 +73,10 @@ export default function ContainerManagementDemo() {
 
         <StatusBar.Section align="end">
           <StatusBar.Item>
-            Mem: {Math.round(clusterStats.totalMemoryMB / 1024 * 10) / 10} GB
+            Mem: {Math.round((clusterStats.totalMemoryMB / 1024) * 10) / 10} GB
           </StatusBar.Item>
           <StatusBar.Separator />
-          <StatusBar.Item>
-            Avg CPU: {clusterStats.avgCpu.toFixed(1)}%
-          </StatusBar.Item>
+          <StatusBar.Item>Avg CPU: {clusterStats.avgCpu.toFixed(1)}%</StatusBar.Item>
         </StatusBar.Section>
       </StatusBar>
     </div>

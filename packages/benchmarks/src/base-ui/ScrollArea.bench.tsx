@@ -11,11 +11,7 @@ const contentB = <div>Scrollable content block B with extra text</div>;
 describe('ScrollArea', () => {
   benchRender(
     'mount',
-    () => (
-      <ScrollArea className={styles.Viewport}>
-        {contentA}
-      </ScrollArea>
-    ),
+    () => <ScrollArea className={styles.Viewport}>{contentA}</ScrollArea>,
     TIER_2_OPTIONS,
   );
 

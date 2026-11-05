@@ -5,6 +5,10 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const allowedHosts = (process.env.STORYBOOK_ALLOWED_HOSTS ?? '')
+  .split(',')
+  .map((host) => host.trim())
+  .filter(Boolean);
 
 /**
  * Strip the broken `//# sourceMappingURL=marked.umd.js.map` reference from
@@ -28,6 +32,7 @@ function stripBrokenSourcemaps(): Plugin {
 }
 
 const config: StorybookConfig = {
+  core: { allowedHosts },
   stories: [
     '../packages/base-ui/src/**/*.stories.@(ts|tsx)',
     '../packages/ai-ui/src/**/*.stories.@(ts|tsx)',
@@ -46,12 +51,26 @@ const config: StorybookConfig = {
   },
 
   viteFinal: async (config) => {
+    if (allowedHosts.length > 0) {
+      config.server ??= {};
+      config.server.allowedHosts = allowedHosts;
+    }
     // --- Alias: resolve @omniviewdev/base-ui to source (from ai-ui config) ---
     config.resolve = config.resolve ?? {};
     const aliases = config.resolve.alias ?? [];
     config.resolve.alias = [
-      { find: '@omniviewdev/base-ui', replacement: path.resolve(__dirname, '../packages/base-ui/src/index.ts') },
-      { find: '@omniviewdev/editors', replacement: path.resolve(__dirname, '../packages/editors/src/index.ts') },
+      {
+        find: /^@omniviewdev\/base-ui\/metrics$/,
+        replacement: path.resolve(__dirname, '../packages/base-ui/src/metrics/index.ts'),
+      },
+      {
+        find: /^@omniviewdev\/base-ui$/,
+        replacement: path.resolve(__dirname, '../packages/base-ui/src/index.ts'),
+      },
+      {
+        find: '@omniviewdev/editors',
+        replacement: path.resolve(__dirname, '../packages/editors/src/index.ts'),
+      },
       ...(Array.isArray(aliases)
         ? aliases
         : Object.entries(aliases).map(([find, replacement]) => ({ find, replacement }))),

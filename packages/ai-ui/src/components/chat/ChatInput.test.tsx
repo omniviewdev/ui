@@ -102,14 +102,7 @@ describe('ChatInput', () => {
   });
 
   it('does not render toolbar when no actions provided', () => {
-    renderAI(
-      <ChatInput
-        value=""
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        data-testid="ci"
-      />,
-    );
+    renderAI(<ChatInput value="" onChange={vi.fn()} onSubmit={vi.fn()} data-testid="ci" />);
     const root = screen.getByTestId('ci');
     // Only the textarea should be a child — no toolbar div
     expect(root.children).toHaveLength(1);

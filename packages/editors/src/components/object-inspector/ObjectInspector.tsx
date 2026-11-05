@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useMemo, useState, type CSSProperties, type HTMLAttributes } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useMemo,
+  useState,
+  type CSSProperties,
+  type HTMLAttributes,
+} from 'react';
 import styles from './ObjectInspector.module.css';
 
 export type InspectorFormat = 'json' | 'yaml';
@@ -128,7 +135,7 @@ function TreeNode({
   }>({ active: false, previous: false });
   // Auto-expand when search matches a descendant
   const hasDescendantMatch = useMemo(
-    () => searchQuery ? subtreeMatches(value, searchQuery, ancestors, searchCache) : false,
+    () => (searchQuery ? subtreeMatches(value, searchQuery, ancestors, searchCache) : false),
     [searchQuery, value, ancestors, searchCache],
   );
 
@@ -358,7 +365,16 @@ function needsYamlQuoting(s: string): boolean {
 
 /** Quote a YAML scalar with double quotes, escaping special chars. */
 function quoteYaml(s: string): string {
-  return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/\r/g, '\\r') + '"';
+  return (
+    '"' +
+    s
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\t/g, '\\t')
+      .replace(/\r/g, '\\r') +
+    '"'
+  );
 }
 
 /** Safely serialize a string as a YAML scalar. */

@@ -23,7 +23,10 @@ describe('Collapsible', () => {
   it('renders open when defaultOpen', () => {
     render(<TestCollapsible defaultOpen data-testid="root" />);
     expect(screen.getByTestId('root')).toHaveAttribute('data-ov-open', 'true');
-    expect(screen.getByText('Hidden content').parentElement).toHaveAttribute('aria-hidden', 'false');
+    expect(screen.getByText('Hidden content').parentElement).toHaveAttribute(
+      'aria-hidden',
+      'false',
+    );
   });
 
   it('toggles on trigger click', async () => {
@@ -55,7 +58,9 @@ describe('Collapsible', () => {
       const [open, setOpen] = useState(false);
       return (
         <>
-          <button type="button" onClick={() => setOpen((v) => !v)}>External</button>
+          <button type="button" onClick={() => setOpen((v) => !v)}>
+            External
+          </button>
           <Collapsible open={open} onOpenChange={setOpen} data-testid="root">
             <CollapsibleTrigger>Toggle</CollapsibleTrigger>
             <CollapsibleContent>Content</CollapsibleContent>

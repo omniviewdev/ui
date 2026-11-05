@@ -17,25 +17,37 @@ describe('custom-property dependency cycles', () => {
   });
 
   it('accepts chains and diamonds without treating shared dependencies as cycles', () => {
-    assert.deepEqual(findDependencyCycles(new Map([
-      ['--a', new Set(['--b', '--c'])],
-      ['--b', new Set(['--d'])],
-      ['--c', new Set(['--d'])],
-      ['--d', new Set()],
-    ])), []);
+    assert.deepEqual(
+      findDependencyCycles(
+        new Map([
+          ['--a', new Set(['--b', '--c'])],
+          ['--b', new Set(['--d'])],
+          ['--c', new Set(['--d'])],
+          ['--d', new Set()],
+        ]),
+      ),
+      [],
+    );
   });
 
   it('catches disappearing-divider self references in every variant', () => {
-    const css = ['soft', 'solid', 'outline', 'ghost'].map((variant) => `
+    const css = ['soft', 'solid', 'outline', 'ghost']
+      .map(
+        (variant) => `
       .Divider[data-variant='${variant}'] {
         --line: var(--line);
         border-top: 1px solid var(--line);
       }
-    `).join('\n');
-    assert.deepEqual(findCustomPropertyCycles(css).map(({ selector, properties }) => ({ selector, properties })),
+    `,
+      )
+      .join('\n');
+    assert.deepEqual(
+      findCustomPropertyCycles(css).map(({ selector, properties }) => ({ selector, properties })),
       ['ghost', 'outline', 'soft', 'solid'].map((variant) => ({
-        selector: `.Divider[data-variant='${variant}']`, properties: ['--line'],
-      })));
+        selector: `.Divider[data-variant='${variant}']`,
+        properties: ['--line'],
+      })),
+    );
   });
 
   it('includes fallback dependencies and multiline functions but ignores strings and comments', () => {
@@ -48,15 +60,21 @@ describe('custom-property dependency cycles', () => {
         /* --comment: var(--comment); */
       }
     `);
-    assert.deepEqual(cycles.map(({ properties }) => properties), [['--a', '--b']]);
+    assert.deepEqual(
+      cycles.map(({ properties }) => properties),
+      [['--a', '--b']],
+    );
   });
 
   it('does not join inherited values on parents and children into a same-element cycle', () => {
-    assert.deepEqual(findCustomPropertyCycles(`
+    assert.deepEqual(
+      findCustomPropertyCycles(`
       .Parent { --a: var(--b); }
       .Parent > .Child { --b: var(--a); }
       .Parent > .Child::before { --a: var(--b); }
-    `), []);
+    `),
+      [],
+    );
   });
 
   it('combines repeated identical selectors and respects winning declarations', () => {
@@ -68,18 +86,23 @@ describe('custom-property dependency cycles', () => {
       .Important { --a: var(--a); }
       .Important { --a: blue !important; }
     `;
-    assert.deepEqual(findCustomPropertyCycles(css).map(({ selector, properties }) => ({ selector, properties })),
-      [{ selector: '.Cycle', properties: ['--a', '--b'] }]);
+    assert.deepEqual(
+      findCustomPropertyCycles(css).map(({ selector, properties }) => ({ selector, properties })),
+      [{ selector: '.Cycle', properties: ['--a', '--b'] }],
+    );
   });
 
   it('keeps mutually exclusive media scopes separate and handles selector lists', () => {
-    assert.deepEqual(findCustomPropertyCycles(`
+    assert.deepEqual(
+      findCustomPropertyCycles(`
       @media (width < 500px) { .Item { --a: var(--b); } }
       @media (width >= 500px) { .Item { --b: var(--a); } }
       .First, .Second { --line: var(--line); }
-    `).map(({ selector, properties }) => ({ selector, properties })), [
-      { selector: '.First', properties: ['--line'] },
-      { selector: '.Second', properties: ['--line'] },
-    ]);
+    `).map(({ selector, properties }) => ({ selector, properties })),
+      [
+        { selector: '.First', properties: ['--line'] },
+        { selector: '.Second', properties: ['--line'] },
+      ],
+    );
   });
 });

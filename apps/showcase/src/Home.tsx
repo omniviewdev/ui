@@ -11,9 +11,7 @@ export function Home({ onSelectApp }: HomeProps) {
     <div className={styles.home}>
       <div className={styles.header}>
         <Typography.Heading level={1}>Omniview Showcase</Typography.Heading>
-        <Typography tone="muted">
-          Interactive demos built entirely with Omniview UI
-        </Typography>
+        <Typography tone="muted">Interactive demos built entirely with Omniview UI</Typography>
       </div>
 
       <Card.Group columns={3} className={styles.grid}>

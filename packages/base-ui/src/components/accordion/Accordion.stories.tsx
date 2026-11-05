@@ -160,14 +160,34 @@ export const SidebarPanel: Story = {
       }}
     >
       <Accordion size="sm" exclusive defaultExpanded={['explorer']} style={{ flex: 1 }}>
-        <Accordion.Item id="editors" title="Open Editors" icon={<LuFile />} count={2} disableContentPadding>
-          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)', lineHeight: 1.8, padding: '0 8px 6px' }}>
+        <Accordion.Item
+          id="editors"
+          title="Open Editors"
+          icon={<LuFile />}
+          count={2}
+          disableContentPadding
+        >
+          <div
+            style={{
+              fontSize: '0.75rem',
+              color: 'var(--ov-color-fg-muted)',
+              lineHeight: 1.8,
+              padding: '0 8px 6px',
+            }}
+          >
             <div>Welcome.tsx</div>
             <div>package.json</div>
           </div>
         </Accordion.Item>
         <Accordion.Item id="explorer" title="Explorer" icon={<LuFolder />} disableContentPadding>
-          <div style={{ fontSize: '0.75rem', color: 'var(--ov-color-fg-muted)', lineHeight: 1.8, padding: '0 8px 6px' }}>
+          <div
+            style={{
+              fontSize: '0.75rem',
+              color: 'var(--ov-color-fg-muted)',
+              lineHeight: 1.8,
+              padding: '0 8px 6px',
+            }}
+          >
             <div>src/</div>
             <div>public/</div>
             <div>node_modules/</div>

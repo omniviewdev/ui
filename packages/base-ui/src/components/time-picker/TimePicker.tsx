@@ -39,9 +39,7 @@ export function TimePicker(props: TimePickerProps) {
   // Internal state for uncontrolled usage — tracks the most recent value so
   // the DateField reflects clears, typed edits, and column selections even
   // when the parent does not pass `value`.
-  const [internalValue, setInternalValue] = useState<Date | null>(
-    value ?? defaultValue ?? null,
-  );
+  const [internalValue, setInternalValue] = useState<Date | null>(value ?? defaultValue ?? null);
   // Prefer the controlled `value` when the parent provides it.
   const current = value !== undefined ? value : internalValue;
   // Stable fallback for TimeColumns when current is null — avoids creating

@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { ToggleButton } from '@omniviewdev/base-ui';
 
 describe('ToggleButton', () => {
-  benchRender(
-    'mount',
-    () => <ToggleButton value="bold">Bold</ToggleButton>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <ToggleButton value="bold">Bold</ToggleButton>, TIER_2_OPTIONS);
 
   benchRerender(
     'pressed toggle',
@@ -24,5 +20,14 @@ describe('ToggleButton', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 200', 200, (i) => <ToggleButton key={i} value={`opt-${i}`}>Option {i}</ToggleButton>, TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 200',
+    200,
+    (i) => (
+      <ToggleButton key={i} value={`opt-${i}`}>
+        Option {i}
+      </ToggleButton>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

@@ -3,6 +3,7 @@ import {
   memo,
   useCallback,
   useMemo,
+  useLayoutEffect,
   useRef,
   type CSSProperties,
   type ForwardedRef,
@@ -12,14 +13,9 @@ import {
   type ReactNode,
   type RefAttributes,
 } from 'react';
-import {
-  flexRender,
-  type Cell,
-  type TableState,
-  type RowData,
-} from '@tanstack/react-table';
+import { flexRender, type Cell, type TableState, type RowData } from '@tanstack/react-table';
 import type { DataTableFeatures, DataTableInstance, DataTableRow } from './types';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizerSnapshot } from '../../system/useVirtualizerSnapshot';
 import { cn } from '../../system/classnames';
 import { useDataTableContext, useScrollElement } from './context/DataTableContext';
 import { getPinningStyles } from './utils/getPinningStyles';
@@ -32,7 +28,48 @@ interface ColumnLayout {
   pinned: 'start' | 'end' | undefined;
 }
 
-type ColumnLayouts = ReadonlyMap<string, ColumnLayout>;
+interface ColumnLayouts {
+  columns: ReadonlyMap<string, ColumnLayout>;
+  state: Pick<
+    TableState<DataTableFeatures>,
+    'columnVisibility' | 'columnOrder' | 'columnPinning' | 'columnSizing'
+  >;
+  options: {
+    meta: unknown;
+    enableRowSelection: unknown;
+    enableMultiRowSelection: unknown;
+    enableSubRowSelection: unknown;
+    getRowCanExpand: unknown;
+    enableExpanding: unknown;
+  };
+}
+
+function readTableSnapshot<TData extends RowData>(context: { table: DataTableInstance<TData> }) {
+  return {
+    rows: context.table.getRowModel().rows,
+    columns: context.table.getVisibleLeafColumns(),
+  };
+}
+
+function readColumnLayouts<TData extends RowData>(
+  columns: ReturnType<DataTableInstance<TData>['getVisibleLeafColumns']>,
+  state: ColumnLayouts['state'],
+  options: ColumnLayouts['options'],
+): ColumnLayouts {
+  return {
+    state,
+    options,
+    columns: new Map(
+      columns.map((column) => [
+        column.id,
+        {
+          style: { ...getCellSizeStyles(column), ...getPinningStyles(column) },
+          pinned: column.getIsPinned() || undefined,
+        },
+      ]),
+    ),
+  };
+}
 
 interface DataCellProps<TData extends RowData> {
   cell: Cell<DataTableFeatures, TData, unknown>;
@@ -46,7 +83,7 @@ interface DataCellProps<TData extends RowData> {
 
 function DataCellInner<TData extends RowData>({ cell, table, layout }: DataCellProps<TData>) {
   // Every rendered cell belongs to a visible column in this layout snapshot.
-  const presentation = layout.get(cell.column.id)!;
+  const presentation = layout.columns.get(cell.column.id)!;
   const content = flexRender(cell.column.columnDef.cell, { ...cell.getContext(), table });
   const meta = cell.column.columnDef.meta as { align?: string } | undefined;
   return (
@@ -56,9 +93,7 @@ function DataCellInner<TData extends RowData>({ cell, table, layout }: DataCellP
       data-ov-pinned={presentation.pinned}
       data-ov-align={meta?.align}
     >
-      <span className={styles.CellContent}>
-        {content}
-      </span>
+      <span className={styles.CellContent}>{content}</span>
     </td>
   );
 }
@@ -70,8 +105,7 @@ function DataCellInner<TData extends RowData>({ cell, table, layout }: DataCellP
  */
 const DataCell = memo(DataCellInner, (previous, next) => {
   const meta = next.cell.column.columnDef.meta as
-    | { dataTableCellDependencies?: 'data' }
-    | undefined;
+    { dataTableCellDependencies?: 'data' } | undefined;
   return (
     previous.original === next.original &&
     previous.layout === next.layout &&
@@ -135,10 +169,7 @@ function VirtualRowInner<TData extends RowData>({
   getRowProps,
   onRowClick,
 }: VirtualRowProps<TData>) {
-  const { className, style, onClick, ...extraProps } = useMemo(
-    () => getRowProps?.(row) ?? {},
-    [row, state, layout, getRowProps],
-  );
+  const { className, style, onClick, ...extraProps } = getRowProps?.(row) ?? {};
   const cells = table.getRow(row.id).getVisibleCells();
   const rowStyle = {
     ...style,
@@ -187,7 +218,8 @@ function VirtualRowInner<TData extends RowData>({
                 (interactive &&
                   interactive !== event.currentTarget &&
                   event.currentTarget.contains(interactive))
-              ) return;
+              )
+                return;
               onClick?.(event);
               if (!event.defaultPrevented) onRowClick?.(row, event);
             }
@@ -229,28 +261,32 @@ function VirtualBodyInner<TData extends RowData>(
   }: DataTableVirtualBodyProps<TData>,
   ref: ForwardedRef<HTMLTableSectionElement>,
 ) {
-  'use no memo';
   const context = useDataTableContext<TData>();
   const { table } = context;
   const scrollElement = useScrollElement();
-  const rows = useMemo(() => table.getRowModel().rows, [table, context.state, context.options]);
+  const { rows, columns } = readTableSnapshot(context);
   const { state, options } = context;
+  const getIsRowExpanded = options.getIsRowExpanded;
   const hasDetails = context.features.rowExpansion && renderExpandedRow != null;
   const slots = useMemo(() => {
     const result: Slot<TData>[] = [];
     for (const row of rows) {
       result.push({ key: JSON.stringify(['row', row.id]), row, detail: false });
-      if (hasDetails && row.getIsExpanded())
+      const expanded =
+        getIsRowExpanded?.(row) ??
+        (state.expanded === true ||
+          (Object.hasOwn(state.expanded, row.id) && !!state.expanded[row.id]));
+      if (hasDetails && expanded)
         result.push({ key: JSON.stringify(['detail', row.id]), row, detail: true });
     }
     return result;
-  }, [rows, state.expanded, hasDetails]);
+  }, [rows, state.expanded, hasDetails, getIsRowExpanded]);
   const getItemKey = useCallback((index: number) => slots[index]!.key, [slots]);
   const estimateSize = useCallback(
     (index: number) => (slots[index]?.detail ? estimateExpandedRowSize : estimateRowSize),
     [slots, estimateExpandedRowSize, estimateRowSize],
   );
-  const virtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
+  const virtualizer = useVirtualizerSnapshot<HTMLDivElement, HTMLTableRowElement>({
     count: slots.length,
     getItemKey,
     getScrollElement: () => scrollElement,
@@ -260,7 +296,20 @@ function VirtualBodyInner<TData extends RowData>(
   // Preserve data-only memoization across immutable patches. Geometry and arbitrary
   // cell renderers still observe all table-state slices, including custom controls.
   const cellState = useMemo(
-    () => state,
+    () => ({
+      columnFilters: state.columnFilters,
+      globalFilter: state.globalFilter,
+      sorting: state.sorting,
+      grouping: state.grouping,
+      expanded: state.expanded,
+      pagination: state.pagination,
+      rowSelection: state.rowSelection,
+      columnVisibility: state.columnVisibility,
+      columnOrder: state.columnOrder,
+      columnPinning: state.columnPinning,
+      columnSizing: state.columnSizing,
+      columnResizing: state.columnResizing,
+    }),
     [
       state.columnFilters,
       state.globalFilter,
@@ -276,16 +325,26 @@ function VirtualBodyInner<TData extends RowData>(
       state.columnResizing,
     ],
   );
-  const columns = table.getVisibleLeafColumns();
   const layout = useMemo(
-    // Mutable column getters stay inside the existing virtualizer boundary.
-    () => new Map<string, ColumnLayout>(columns.map((column) => [
-      column.id,
-      {
-        style: { ...getCellSizeStyles(column), ...getPinningStyles(column) },
-        pinned: column.getIsPinned() || undefined,
-      },
-    ])),
+    // Keep the selected immutable inputs with the derived column layout.
+    () =>
+      readColumnLayouts(
+        columns,
+        {
+          columnVisibility: state.columnVisibility,
+          columnOrder: state.columnOrder,
+          columnPinning: state.columnPinning,
+          columnSizing: state.columnSizing,
+        },
+        {
+          meta: options.meta,
+          enableRowSelection: options.enableRowSelection,
+          enableMultiRowSelection: options.enableMultiRowSelection,
+          enableSubRowSelection: options.enableSubRowSelection,
+          getRowCanExpand: options.getRowCanExpand,
+          enableExpanding: options.enableExpanding,
+        },
+      ),
     [
       columns,
       options.meta,
@@ -301,16 +360,19 @@ function VirtualBodyInner<TData extends RowData>(
     ],
   );
   const clickRef = useRef(onRowClick);
-  clickRef.current = onRowClick;
+  useLayoutEffect(() => {
+    clickRef.current = onRowClick;
+  }, [onRowClick]);
   const handleClick = useCallback(
-    (row: DataTableRow<TData>, event: MouseEvent<HTMLTableRowElement>) => clickRef.current?.(row, event),
+    (row: DataTableRow<TData>, event: MouseEvent<HTMLTableRowElement>) =>
+      clickRef.current?.(row, event),
     [],
   );
 
   if (rows.length === 0) return null;
   const bodyStyle = {
     ...style,
-    '--_dt-body-height': `${virtualizer.getTotalSize()}px`,
+    '--_dt-body-height': `${virtualizer.totalSize}px`,
   } as CSSProperties;
   delete bodyStyle.display;
   delete bodyStyle.position;
@@ -322,7 +384,7 @@ function VirtualBodyInner<TData extends RowData>(
       className={cn(styles.Body, styles.VirtualBody, className)}
       style={bodyStyle}
     >
-      {virtualizer.getVirtualItems().map((item) => {
+      {virtualizer.virtualItems.map((item) => {
         const slot = slots[item.index];
         if (!slot) return null;
         const { row } = slot;
@@ -366,6 +428,8 @@ function VirtualBodyInner<TData extends RowData>(
   );
 }
 
-export const DataTableVirtualBody = forwardRef(VirtualBodyInner) as <TData extends RowData = RowData>(
+export const DataTableVirtualBody = forwardRef(VirtualBodyInner) as <
+  TData extends RowData = RowData,
+>(
   props: DataTableVirtualBodyProps<TData> & RefAttributes<HTMLTableSectionElement>,
 ) => ReactElement | null;

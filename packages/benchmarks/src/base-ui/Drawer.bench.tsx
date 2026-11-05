@@ -23,7 +23,13 @@ describe('Drawer', () => {
       updatedProps: { open: false },
     },
     (props) => (
-      <Drawer open={props.open} onOpenChange={noop} anchor="bottom" defaultSize={320} animate={false}>
+      <Drawer
+        open={props.open}
+        onOpenChange={noop}
+        anchor="bottom"
+        defaultSize={320}
+        animate={false}
+      >
         <Drawer.Content>Drawer content</Drawer.Content>
       </Drawer>
     ),

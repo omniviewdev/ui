@@ -21,30 +21,16 @@ export function InspectTab({ container }: InspectTabProps) {
           <DescriptionList.Item label="ID" copyable>
             {container.id}
           </DescriptionList.Item>
-          <DescriptionList.Item label="Name">
-            {container.name}
-          </DescriptionList.Item>
-          <DescriptionList.Item label="Image">
-            {container.image}
-          </DescriptionList.Item>
-          <DescriptionList.Item label="Status">
-            {container.status}
-          </DescriptionList.Item>
-          <DescriptionList.Item label="Network">
-            {container.network}
-          </DescriptionList.Item>
-          <DescriptionList.Item label="Uptime">
-            {container.uptime}
-          </DescriptionList.Item>
+          <DescriptionList.Item label="Name">{container.name}</DescriptionList.Item>
+          <DescriptionList.Item label="Image">{container.image}</DescriptionList.Item>
+          <DescriptionList.Item label="Status">{container.status}</DescriptionList.Item>
+          <DescriptionList.Item label="Network">{container.network}</DescriptionList.Item>
+          <DescriptionList.Item label="Uptime">{container.uptime}</DescriptionList.Item>
           <DescriptionList.Item label="Created">
             {new Date(container.created).toLocaleString()}
           </DescriptionList.Item>
-          <DescriptionList.Item label="Ports">
-            {formatPorts(container)}
-          </DescriptionList.Item>
-          <DescriptionList.Item label="Disk">
-            {container.disk}
-          </DescriptionList.Item>
+          <DescriptionList.Item label="Ports">{formatPorts(container)}</DescriptionList.Item>
+          <DescriptionList.Item label="Disk">{container.disk}</DescriptionList.Item>
           <DescriptionList.Item label="Memory">
             {container.memory} / {container.memoryLimit} MB
           </DescriptionList.Item>

@@ -14,10 +14,7 @@ export interface AIRetryButtonProps extends Omit<HTMLAttributes<HTMLButtonElemen
 }
 
 export const AIRetryButton = forwardRef<HTMLButtonElement, AIRetryButtonProps>(
-  function AIRetryButton(
-    { onRetry, retrying = false, label = 'Retry', className, ...rest },
-    ref,
-  ) {
+  function AIRetryButton({ onRetry, retrying = false, label = 'Retry', className, ...rest }, ref) {
     return (
       <Button
         ref={ref}

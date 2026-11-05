@@ -77,6 +77,7 @@ Each file has one clear responsibility. Pure transforms (`keyTransform.ts`) are 
 ## Task 1: Token Key Generator Script
 
 **Files:**
+
 - Create: `packages/base-ui/scripts/generate-token-keys.ts`
 - Create: `packages/base-ui/src/theme/generated/tokenKeys.ts` (output artifact, committed)
 - Create: `packages/base-ui/scripts/generate-token-keys.test.ts`
@@ -159,7 +160,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
 const PREFIXES = ['color', 'syntax', 'terminal'] as const;
-type Prefix = typeof PREFIXES[number];
+type Prefix = (typeof PREFIXES)[number];
 
 export interface ExtractedKeys {
   colors: string[];
@@ -277,6 +278,7 @@ git commit -m "feat(base-ui): add token key generator for theme registry"
 ## Task 2: Registry Types
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/registry/types.ts`
 
 These are pure type definitions with no runtime. No tests needed for types themselves; type-level tests follow in Task 11.
@@ -286,21 +288,11 @@ These are pure type definitions with no runtime. No tests needed for types thems
 Create `packages/base-ui/src/theme/registry/types.ts`:
 
 ```typescript
-import type {
-  ColorTokenKey,
-  SyntaxTokenKey,
-  TerminalTokenKey,
-} from '../generated/tokenKeys';
+import type { ColorTokenKey, SyntaxTokenKey, TerminalTokenKey } from '../generated/tokenKeys';
 
 /** The built-in modes that a custom theme can inherit from. */
 export type BuiltInThemeMode =
-  | 'dark'
-  | 'light'
-  | 'high-contrast-dark'
-  | 'high-contrast-light'
-  | 'obsidian'
-  | 'carbon'
-  | 'void';
+  'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light' | 'obsidian' | 'carbon' | 'void';
 
 export const BUILT_IN_THEME_MODES: readonly BuiltInThemeMode[] = [
   'dark',
@@ -374,6 +366,7 @@ git commit -m "feat(base-ui): define theme registry types"
 ## Task 3: Key Transform & Validation Helpers
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/registry/keyTransform.ts`
 - Create: `packages/base-ui/src/theme/registry/keyTransform.test.ts`
 
@@ -386,11 +379,7 @@ Create `packages/base-ui/src/theme/registry/keyTransform.test.ts`:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { dottedKeyToCssVar, validateKeys } from './keyTransform';
-import {
-  COLOR_TOKEN_KEYS,
-  SYNTAX_TOKEN_KEYS,
-  TERMINAL_TOKEN_KEYS,
-} from '../generated/tokenKeys';
+import { COLOR_TOKEN_KEYS, SYNTAX_TOKEN_KEYS, TERMINAL_TOKEN_KEYS } from '../generated/tokenKeys';
 
 describe('dottedKeyToCssVar', () => {
   it('transforms dotted key to ov-prefixed CSS variable', () => {
@@ -400,9 +389,7 @@ describe('dottedKeyToCssVar', () => {
   });
 
   it('handles deeper hierarchies with multiple dots', () => {
-    expect(dottedKeyToCssVar('color.bg.surface.raised')).toBe(
-      '--ov-color-bg-surface-raised',
-    );
+    expect(dottedKeyToCssVar('color.bg.surface.raised')).toBe('--ov-color-bg-surface-raised');
   });
 });
 
@@ -413,8 +400,9 @@ describe('validateKeys', () => {
   });
 
   it('returns unknown keys as invalid', () => {
-    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], COLOR_TOKEN_KEYS))
-      .toEqual(['color.bogus.nope']);
+    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], COLOR_TOKEN_KEYS)).toEqual([
+      'color.bogus.nope',
+    ]);
   });
 
   it('handles empty input', () => {
@@ -475,6 +463,7 @@ git commit -m "feat(base-ui): add theme registry key transform helpers"
 ## Task 4: Built-in Theme Stubs
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/registry/builtIns.ts`
 - Create: `packages/base-ui/src/theme/registry/builtIns.test.ts`
 
@@ -568,6 +557,7 @@ git commit -m "feat(base-ui): add built-in theme definitions"
 ## Task 5: Registry Core — Registration & Events
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/registry/registry.ts`
 - Create: `packages/base-ui/src/theme/registry/registry.test.ts`
 
@@ -668,11 +658,7 @@ Expected: FAIL — module not found.
 Create `packages/base-ui/src/theme/registry/registry.ts`:
 
 ```typescript
-import {
-  COLOR_TOKEN_KEYS,
-  SYNTAX_TOKEN_KEYS,
-  TERMINAL_TOKEN_KEYS,
-} from '../generated/tokenKeys';
+import { COLOR_TOKEN_KEYS, SYNTAX_TOKEN_KEYS, TERMINAL_TOKEN_KEYS } from '../generated/tokenKeys';
 import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
 import { validateKeys } from './keyTransform';
 import type {
@@ -802,6 +788,7 @@ git commit -m "feat(base-ui): theme registry registration & events"
 ## Task 6: Registry `apply()` — DOM Writes
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/registry/registry.ts`
 - Modify: `packages/base-ui/src/theme/registry/registry.test.ts`
 
@@ -921,11 +908,7 @@ Expected: FAIL — the new `apply()` tests fail (`apply() not yet implemented`).
 Replace `packages/base-ui/src/theme/registry/registry.ts` with:
 
 ```typescript
-import {
-  COLOR_TOKEN_KEYS,
-  SYNTAX_TOKEN_KEYS,
-  TERMINAL_TOKEN_KEYS,
-} from '../generated/tokenKeys';
+import { COLOR_TOKEN_KEYS, SYNTAX_TOKEN_KEYS, TERMINAL_TOKEN_KEYS } from '../generated/tokenKeys';
 import { BUILT_IN_THEME_DEFINITIONS, BUILT_IN_THEME_IDS } from './builtIns';
 import { dottedKeyToCssVar, validateKeys } from './keyTransform';
 import { LIGHT_THEME_MODES } from './types';
@@ -1092,6 +1075,7 @@ git commit -m "feat(base-ui): implement theme registry apply() with DOM writes"
 ## Task 7: SSR Guard Test
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/registry/registry.test.ts`
 
 Verify `apply()` does not throw when `document` is undefined and still updates internal state + emits the event.
@@ -1146,6 +1130,7 @@ git commit -m "test(base-ui): verify theme registry SSR guard"
 ## Task 8: Registry Barrel Export
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/registry/index.ts`
 - Modify: `packages/base-ui/src/theme/index.ts`
 
@@ -1156,10 +1141,7 @@ Expose the public surface.
 Create `packages/base-ui/src/theme/registry/index.ts`:
 
 ```typescript
-export {
-  themeRegistry,
-  createThemeRegistry,
-} from './registry';
+export { themeRegistry, createThemeRegistry } from './registry';
 export type {
   ThemeDefinition,
   ThemeInfo,
@@ -1202,6 +1184,7 @@ git commit -m "feat(base-ui): export theme registry public API"
 ## Task 9: Widen `ThemeMode` Type & Update types.ts
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/types.ts`
 
 `ThemeMode` widens to accept any registered theme id while preserving autocomplete for built-ins.
@@ -1211,7 +1194,8 @@ git commit -m "feat(base-ui): export theme registry public API"
 Confirm contents — should match the snapshot captured during spec review:
 
 ```typescript
-export type ThemeMode = 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light' | 'obsidian' | 'carbon' | 'void';
+export type ThemeMode =
+  'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light' | 'obsidian' | 'carbon' | 'void';
 // ...etc
 ```
 
@@ -1251,6 +1235,7 @@ git commit -m "refactor(base-ui): widen ThemeMode to accept custom theme ids"
 ## Task 10: `useThemeRegistry` Hook
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/useThemeRegistry.ts`
 - Create: `packages/base-ui/src/theme/useThemeRegistry.test.tsx`
 - Modify: `packages/base-ui/src/theme/index.ts`
@@ -1325,6 +1310,7 @@ git commit -m "feat(base-ui): add useThemeRegistry hook"
 ## Task 11: ThemeProvider Refactor — Delegate to Registry
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/ThemeProvider.tsx`
 - Create: `packages/base-ui/src/theme/ThemeProvider.test.tsx`
 
@@ -1572,6 +1558,7 @@ git commit -m "refactor(base-ui): delegate theme activation to registry"
 ## Task 12: Type-Level Tests
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/types.test-d.ts`
 - Modify: `packages/base-ui/package.json` (add `tsd` devDep + `test:types` script)
 
@@ -1600,15 +1587,8 @@ Create `packages/base-ui/src/theme/types.test-d.ts`:
 
 ```typescript
 import { expectError, expectType } from 'tsd';
-import type {
-  BuiltInThemeMode,
-  ThemeDefinition,
-} from './registry/types';
-import type {
-  ColorTokenKey,
-  SyntaxTokenKey,
-  TerminalTokenKey,
-} from './generated/tokenKeys';
+import type { BuiltInThemeMode, ThemeDefinition } from './registry/types';
+import type { ColorTokenKey, SyntaxTokenKey, TerminalTokenKey } from './generated/tokenKeys';
 
 // BuiltInThemeMode accepts the 7 known ids.
 expectType<BuiltInThemeMode>('dark');
@@ -1670,6 +1650,7 @@ git commit -m "test(base-ui): add type-level tests for theme registry"
 ## Task 13: Storybook — Sample Custom Theme & Toolbar
 
 **Files:**
+
 - Create: `packages/base-ui/.storybook/sampleCustomThemes.ts`
 - Modify: `packages/base-ui/.storybook/preview.tsx` (or `preview.ts`)
 
@@ -1744,6 +1725,7 @@ pnpm --filter @omniviewdev/base-ui storybook
 ```
 
 Open the Storybook UI (typically http://localhost:6006). Confirm:
+
 - The theme dropdown lists all 7 built-ins PLUS "Solarized Dark"
 - Selecting "Solarized Dark" visibly changes a test component's background
 - `document.documentElement` in DevTools shows `data-ov-theme="dark"` and `data-ov-theme-custom="solarized-dark"`
@@ -1763,6 +1745,7 @@ git commit -m "feat(base-ui): register sample custom theme in Storybook"
 ## Task 14: Visual Regression Snapshot Baseline
 
 **Files:**
+
 - Create: `packages/base-ui/src/theme/__snapshots__/registry-visual.test.tsx`
 
 A compact visual snapshot suite that renders a handful of representative components under each built-in theme plus the sample custom theme. These snapshots catch accidental token-leakage regressions.
@@ -1847,6 +1830,7 @@ git commit -m "test(base-ui): visual regression snapshots for themed components"
 ## Task 15: Update THEMING Docs
 
 **Files:**
+
 - Modify: `packages/base-ui/docs/THEMING.md` (or create a section within it)
 
 Add an "Authoring Custom Themes" section documenting `ThemeDefinition`, the dotted token key format, the `base` inheritance model, and the Wails/Go integration pattern.
@@ -1879,6 +1863,7 @@ git commit -m "docs(base-ui): document custom theme authoring"
 ## Task 16: COMPONENT_STATUS Update & Final Verification
 
 **Files:**
+
 - Modify: `packages/base-ui/docs/COMPONENT_STATUS.md`
 
 Note the new theme extensibility surface alongside the existing ThemeProvider entry.

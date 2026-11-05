@@ -60,7 +60,7 @@
 
 /* ─── DateField inside shell — grows to fill available space ─────────────── */
 
-.shell > [role="group"] {
+.shell > [role='group'] {
   flex: 1;
   min-width: 0;
 }
@@ -82,7 +82,7 @@
   transition: color var(--ov-duration-interactive) var(--ov-ease-standard);
 }
 
-.iconButton:not(:disabled):not([aria-disabled="true"]):hover {
+.iconButton:not(:disabled):not([aria-disabled='true']):hover {
   color: var(--ov-color-fg-default);
 }
 

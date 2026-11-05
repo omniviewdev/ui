@@ -94,9 +94,7 @@ const AvatarRoot = forwardRef<ElementRef<typeof BaseAvatar.Root>, AvatarRootProp
     );
 
     return (
-      <AvatarStyleContext.Provider
-        value={contextValue}
-      >
+      <AvatarStyleContext.Provider value={contextValue}>
         <BaseAvatar.Root
           ref={ref}
           className={withBaseClassName(styles.Root, className)}

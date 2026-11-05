@@ -16,13 +16,17 @@ const __dirname = path.dirname(__filename);
  * V8 flags match Reassure's recommendations: disable JIT for stable measurements.
  */
 export default defineConfig({
-  plugins: [
-    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
-  ],
+  plugins: [react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } })],
   resolve: {
     alias: [
-      { find: '@omniviewdev/base-ui', replacement: path.resolve(__dirname, '../base-ui/src/index.ts') },
-      { find: '@omniviewdev/editors', replacement: path.resolve(__dirname, '../editors/src/index.ts') },
+      {
+        find: '@omniviewdev/base-ui',
+        replacement: path.resolve(__dirname, '../base-ui/src/index.ts'),
+      },
+      {
+        find: '@omniviewdev/editors',
+        replacement: path.resolve(__dirname, '../editors/src/index.ts'),
+      },
       {
         find: /^react-syntax-highlighter(\/.*)?$/,
         replacement: path.resolve(__dirname, 'src/stubs/react-syntax-highlighter.ts'),

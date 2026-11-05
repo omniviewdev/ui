@@ -149,7 +149,12 @@ function WithIconInTitleDemo() {
 
   return (
     <>
-      <Button variant="solid" color="danger" startDecorator={<LuTrash2 />} onClick={() => setOpen(true)}>
+      <Button
+        variant="solid"
+        color="danger"
+        startDecorator={<LuTrash2 />}
+        onClick={() => setOpen(true)}
+      >
         Delete Item
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} size="sm">
@@ -162,7 +167,12 @@ function WithIconInTitleDemo() {
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button variant="solid" color="danger" startDecorator={<LuTrash2 />} onClick={() => setOpen(false)}>
+          <Button
+            variant="solid"
+            color="danger"
+            startDecorator={<LuTrash2 />}
+            onClick={() => setOpen(false)}
+          >
             Delete
           </Button>
         </Dialog.Footer>

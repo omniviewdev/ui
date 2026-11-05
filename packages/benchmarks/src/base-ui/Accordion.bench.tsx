@@ -8,9 +8,15 @@ describe('Accordion', () => {
     'mount with 3 items',
     () => (
       <Accordion>
-        <Accordion.Item id="a" title="Section A">Content A</Accordion.Item>
-        <Accordion.Item id="b" title="Section B">Content B</Accordion.Item>
-        <Accordion.Item id="c" title="Section C">Content C</Accordion.Item>
+        <Accordion.Item id="a" title="Section A">
+          Content A
+        </Accordion.Item>
+        <Accordion.Item id="b" title="Section B">
+          Content B
+        </Accordion.Item>
+        <Accordion.Item id="c" title="Section C">
+          Content C
+        </Accordion.Item>
       </Accordion>
     ),
     TIER_2_OPTIONS,
@@ -24,9 +30,15 @@ describe('Accordion', () => {
     },
     (props) => (
       <Accordion defaultExpanded={props.expanded}>
-        <Accordion.Item id="a" title="Section A">Content A</Accordion.Item>
-        <Accordion.Item id="b" title="Section B">Content B</Accordion.Item>
-        <Accordion.Item id="c" title="Section C">Content C</Accordion.Item>
+        <Accordion.Item id="a" title="Section A">
+          Content A
+        </Accordion.Item>
+        <Accordion.Item id="b" title="Section B">
+          Content B
+        </Accordion.Item>
+        <Accordion.Item id="c" title="Section C">
+          Content C
+        </Accordion.Item>
       </Accordion>
     ),
     TIER_2_OPTIONS,

@@ -51,19 +51,7 @@ function computeZone(
 }
 
 export const Meter = forwardRef<HTMLDivElement, MeterProps>(function Meter(
-  {
-    value,
-    min = 0,
-    max = 100,
-    low,
-    high,
-    optimum,
-    size = 'md',
-    color,
-    label,
-    className,
-    ...props
-  },
+  { value, min = 0, max = 100, low, high, optimum, size = 'md', color, label, className, ...props },
   ref,
 ) {
   const clamped = Math.min(max, Math.max(min, value));

@@ -6,12 +6,7 @@ import { cn } from '../../system/classnames';
 import styles from './Visualization.module.css';
 
 export type VisualizationStatus =
-  | 'ready'
-  | 'loading'
-  | 'empty'
-  | 'error'
-  | 'unavailable'
-  | 'denied';
+  'ready' | 'loading' | 'empty' | 'error' | 'unavailable' | 'denied';
 export interface VisualizationPanelProps extends Omit<HTMLAttributes<HTMLElement>, 'color'> {
   title: string;
   status: VisualizationStatus;

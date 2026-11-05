@@ -16,7 +16,17 @@ export interface ToggleButtonProps
 }
 
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(function ToggleButton(
-  { className, variant, color, size, square = false, startDecorator, endDecorator, children, ...props },
+  {
+    className,
+    variant,
+    color,
+    size,
+    square = false,
+    startDecorator,
+    endDecorator,
+    children,
+    ...props
+  },
   ref,
 ) {
   return (

@@ -14,28 +14,26 @@ export interface ToolResultProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
   onExpand?: () => void;
 }
 
-export const ToolResult = forwardRef<HTMLDivElement, ToolResultProps>(
-  function ToolResult(
-    { content, status, truncated = false, onExpand, className, ...rest },
-    ref,
-  ) {
-    return (
-      <Card
-        ref={ref as React.Ref<HTMLElement>}
-        as="div"
-        className={cn(styles.Root, className)}
-        data-ov-status={status}
-        {...rest}
-      >
-        <Card.Body>{content}</Card.Body>
-        {truncated && onExpand && (
-          <Card.Footer>
-            <Button variant="ghost" onClick={onExpand}>
-              Show more
-            </Button>
-          </Card.Footer>
-        )}
-      </Card>
-    );
-  },
-);
+export const ToolResult = forwardRef<HTMLDivElement, ToolResultProps>(function ToolResult(
+  { content, status, truncated = false, onExpand, className, ...rest },
+  ref,
+) {
+  return (
+    <Card
+      ref={ref as React.Ref<HTMLElement>}
+      as="div"
+      className={cn(styles.Root, className)}
+      data-ov-status={status}
+      {...rest}
+    >
+      <Card.Body>{content}</Card.Body>
+      {truncated && onExpand && (
+        <Card.Footer>
+          <Button variant="ghost" onClick={onExpand}>
+            Show more
+          </Button>
+        </Card.Footer>
+      )}
+    </Card>
+  );
+});

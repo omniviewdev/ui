@@ -106,7 +106,9 @@ export const InChatInput: Story = {
   render: function Render() {
     const [value, setValue] = useState('');
     const [model, setModel] = useState('claude-sonnet-4');
-    const submit = () => { setValue(''); };
+    const submit = () => {
+      setValue('');
+    };
     return (
       <ChatInput
         value={value}

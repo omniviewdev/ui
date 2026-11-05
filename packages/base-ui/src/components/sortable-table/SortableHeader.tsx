@@ -22,11 +22,7 @@ function SortIcon({ direction }: { direction: 'asc' | 'desc' }) {
       aria-label={label}
       role="img"
     >
-      {direction === 'asc' ? (
-        <path d="M5 2L8.5 7H1.5L5 2Z" />
-      ) : (
-        <path d="M5 8L1.5 3H8.5L5 8Z" />
-      )}
+      {direction === 'asc' ? <path d="M5 2L8.5 7H1.5L5 2Z" /> : <path d="M5 8L1.5 3H8.5L5 8Z" />}
     </svg>
   );
 }

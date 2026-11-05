@@ -8,21 +8,23 @@ describe('Tooltip competitive', () => {
   // Measures overhead of tooltip machinery even when closed.
   // Raw baseline is just the trigger element — no tooltip logic.
   benchCompare('mount (closed)', {
-    'raw': () => wrapRaw(<span>Hover me</span>),
-    '@omniviewdev/base-ui': () => wrapOv(
-      <OvTooltip.Root>
-        <OvTooltip.Trigger>Hover me</OvTooltip.Trigger>
-        <OvTooltip.Portal>
-          <OvTooltip.Positioner>
-            <OvTooltip.Popup>Tooltip text</OvTooltip.Popup>
-          </OvTooltip.Positioner>
-        </OvTooltip.Portal>
-      </OvTooltip.Root>,
-    ),
-    '@mui/material': () => wrapMui(
-      <MuiTooltip title="Tooltip text">
-        <span>Hover me</span>
-      </MuiTooltip>,
-    ),
+    raw: () => wrapRaw(<span>Hover me</span>),
+    '@omniviewdev/base-ui': () =>
+      wrapOv(
+        <OvTooltip.Root>
+          <OvTooltip.Trigger>Hover me</OvTooltip.Trigger>
+          <OvTooltip.Portal>
+            <OvTooltip.Positioner>
+              <OvTooltip.Popup>Tooltip text</OvTooltip.Popup>
+            </OvTooltip.Positioner>
+          </OvTooltip.Portal>
+        </OvTooltip.Root>,
+      ),
+    '@mui/material': () =>
+      wrapMui(
+        <MuiTooltip title="Tooltip text">
+          <span>Hover me</span>
+        </MuiTooltip>,
+      ),
   });
 });

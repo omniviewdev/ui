@@ -97,7 +97,12 @@ function Workbench() {
   const generation = useRef(0);
   const active = useRef<AbortController | null>(null);
   const adapter = useMemo(() => createCelDevelopmentAdapter(profileId), [profileId]);
-  useEffect(() => () => { void adapter.dispose(); }, [adapter]);
+  useEffect(
+    () => () => {
+      void adapter.dispose();
+    },
+    [adapter],
+  );
   const profile = catalog?.profiles.find((candidate) => candidate.id === profileId);
   const contextKey = `development:${profileId}`;
   const latest = useRef({ document: value.code, contextKey, variables });
@@ -282,7 +287,9 @@ function Workbench() {
                   check={adapter.check}
                   hover={adapter.hover}
                   signature={adapter.signature}
-                  onDocumentClose={(uri) => { void adapter.closeDocument(uri); }}
+                  onDocumentClose={(uri) => {
+                    void adapter.closeDocument(uri);
+                  }}
                 />
               )}
               request={adapter.languageService}

@@ -25,7 +25,6 @@ describe('MultiSelect', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
 
-
   it('renders overflow chip count when selected values exceed maxVisibleChips', () => {
     renderWithTheme(
       <MultiSelect
@@ -39,12 +38,7 @@ describe('MultiSelect', () => {
   });
 
   it('applies xs size data attribute to control', () => {
-    renderWithTheme(
-      <MultiSelect
-        items={['default', 'kube-public']}
-        size="xs"
-      />,
-    );
+    renderWithTheme(<MultiSelect items={['default', 'kube-public']} size="xs" />);
 
     const control = document.querySelector('[data-ov-slot="control"]');
     expect(control).not.toBeNull();
@@ -52,12 +46,7 @@ describe('MultiSelect', () => {
   });
 
   it('applies xl size data attribute to control', () => {
-    renderWithTheme(
-      <MultiSelect
-        items={['default', 'kube-public']}
-        size="xl"
-      />,
-    );
+    renderWithTheme(<MultiSelect items={['default', 'kube-public']} size="xl" />);
 
     const control = document.querySelector('[data-ov-slot="control"]');
     expect(control).not.toBeNull();
@@ -65,12 +54,7 @@ describe('MultiSelect', () => {
   });
 
   it('applies discovery color data attribute to control', () => {
-    renderWithTheme(
-      <MultiSelect
-        items={['default', 'kube-public']}
-        color="discovery"
-      />,
-    );
+    renderWithTheme(<MultiSelect items={['default', 'kube-public']} color="discovery" />);
 
     const control = document.querySelector('[data-ov-slot="control"]');
     expect(control).not.toBeNull();
@@ -78,12 +62,7 @@ describe('MultiSelect', () => {
   });
 
   it('applies secondary color data attribute to control', () => {
-    renderWithTheme(
-      <MultiSelect
-        items={['default', 'kube-public']}
-        color="secondary"
-      />,
-    );
+    renderWithTheme(<MultiSelect items={['default', 'kube-public']} color="secondary" />);
 
     const control = document.querySelector('[data-ov-slot="control"]');
     expect(control).not.toBeNull();

@@ -43,7 +43,7 @@ export const Embedded: Story = {
       </AIArtifactHeader>
       <AIArtifactContent>
         <pre style={{ margin: 0, padding: 12, fontSize: 13, lineHeight: 1.5, overflow: 'auto' }}>
-{`apiVersion: apps/v1
+          {`apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
@@ -74,7 +74,11 @@ export const Panel: Story = {
   render: function Render() {
     const [open, setOpen] = useState(true);
     if (!open) {
-      return <button type="button" onClick={() => setOpen(true)}>Open artifact panel</button>;
+      return (
+        <button type="button" onClick={() => setOpen(true)}>
+          Open artifact panel
+        </button>
+      );
     }
     return (
       <AIArtifact variant="panel" open={open} style={{ height: 400 }}>
@@ -84,14 +88,18 @@ export const Panel: Story = {
             <AIArtifactDescription>Restricts traffic between namespaces</AIArtifactDescription>
           </div>
           <AIArtifactActions>
-            <AIArtifactAction icon={LuExternalLink} label="Open in editor" tooltip="Open in editor" />
+            <AIArtifactAction
+              icon={LuExternalLink}
+              label="Open in editor"
+              tooltip="Open in editor"
+            />
             <AIArtifactAction icon={LuCopy} label="Copy" tooltip="Copy" />
           </AIArtifactActions>
           <AIArtifactClose onClick={() => setOpen(false)} />
         </AIArtifactHeader>
         <AIArtifactContent>
           <pre style={{ margin: 0, padding: 16, fontSize: 13, lineHeight: 1.5, overflow: 'auto' }}>
-{`apiVersion: networking.k8s.io/v1
+            {`apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: deny-all-ingress

@@ -19,11 +19,17 @@ describe('ScrollArea', () => {
 
   it('accepts xs and xl sizes', () => {
     const { rerender } = renderWithTheme(
-      <ScrollArea size="xs" data-testid="scroll"><p>Content</p></ScrollArea>,
+      <ScrollArea size="xs" data-testid="scroll">
+        <p>Content</p>
+      </ScrollArea>,
     );
     expect(screen.getByTestId('scroll')).toHaveAttribute('data-ov-size', 'xs');
 
-    rerender(<ScrollArea size="xl" data-testid="scroll"><p>Content</p></ScrollArea>);
+    rerender(
+      <ScrollArea size="xl" data-testid="scroll">
+        <p>Content</p>
+      </ScrollArea>,
+    );
     expect(screen.getByTestId('scroll')).toHaveAttribute('data-ov-size', 'xl');
   });
 

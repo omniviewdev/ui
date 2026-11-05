@@ -112,27 +112,39 @@ vi.mock('@xterm/xterm', () => ({
 }));
 
 vi.mock('@xterm/addon-fit', () => ({
-  FitAddon: vi.fn(function () { return mockFitAddon; }),
+  FitAddon: vi.fn(function () {
+    return mockFitAddon;
+  }),
 }));
 
 vi.mock('@xterm/addon-search', () => ({
-  SearchAddon: vi.fn(function () { return mockSearchAddon; }),
+  SearchAddon: vi.fn(function () {
+    return mockSearchAddon;
+  }),
 }));
 
 vi.mock('@xterm/addon-serialize', () => ({
-  SerializeAddon: vi.fn(function () { return mockSerializeAddon; }),
+  SerializeAddon: vi.fn(function () {
+    return mockSerializeAddon;
+  }),
 }));
 
 vi.mock('@xterm/addon-unicode11', () => ({
-  Unicode11Addon: vi.fn(function () { return mockUnicode11Addon; }),
+  Unicode11Addon: vi.fn(function () {
+    return mockUnicode11Addon;
+  }),
 }));
 
 vi.mock('@xterm/addon-webgl', () => ({
-  WebglAddon: vi.fn(function () { return mockWebglAddon; }),
+  WebglAddon: vi.fn(function () {
+    return mockWebglAddon;
+  }),
 }));
 
 vi.mock('@xterm/addon-web-links', () => ({
-  WebLinksAddon: vi.fn(function () { return mockWebLinksAddon; }),
+  WebLinksAddon: vi.fn(function () {
+    return mockWebLinksAddon;
+  }),
 }));
 
 // Mock document.fonts.ready
@@ -162,22 +174,36 @@ beforeEach(async () => {
 
   // Re-establish mock constructor implementations cleared by clearAllMocks
   const { Terminal: TerminalCtor } = await import('@xterm/xterm');
-  (TerminalCtor as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (options: Record<string, unknown>) {
+  (TerminalCtor as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (
+    options: Record<string, unknown>,
+  ) {
     mockTerminal.options = options;
     return mockTerminal;
   });
   const { FitAddon } = await import('@xterm/addon-fit');
-  (FitAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockFitAddon; });
+  (FitAddon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockFitAddon;
+  });
   const { SearchAddon } = await import('@xterm/addon-search');
-  (SearchAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockSearchAddon; });
+  (SearchAddon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockSearchAddon;
+  });
   const { SerializeAddon } = await import('@xterm/addon-serialize');
-  (SerializeAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockSerializeAddon; });
+  (SerializeAddon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockSerializeAddon;
+  });
   const { Unicode11Addon } = await import('@xterm/addon-unicode11');
-  (Unicode11Addon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockUnicode11Addon; });
+  (Unicode11Addon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockUnicode11Addon;
+  });
   const { WebglAddon } = await import('@xterm/addon-webgl');
-  (WebglAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockWebglAddon; });
+  (WebglAddon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockWebglAddon;
+  });
   const { WebLinksAddon } = await import('@xterm/addon-web-links');
-  (WebLinksAddon as ReturnType<typeof vi.fn>).mockImplementation(function () { return mockWebLinksAddon; });
+  (WebLinksAddon as ReturnType<typeof vi.fn>).mockImplementation(function () {
+    return mockWebLinksAddon;
+  });
 });
 
 afterEach(() => {
@@ -193,7 +219,6 @@ async function waitForInit() {
     });
   }
 }
-
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
   return <ThemeProvider themeId="dark">{children}</ThemeProvider>;
@@ -348,9 +373,7 @@ describe('Terminal', () => {
     const { Terminal: MockTerminal } = await import('@xterm/xterm');
     render(<Terminal disableStdin />);
     await waitForInit();
-    expect(MockTerminal).toHaveBeenCalledWith(
-      expect.objectContaining({ disableStdin: true }),
-    );
+    expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ disableStdin: true }));
   });
 
   it('passes cursorStyle to xterm constructor', async () => {
@@ -667,18 +690,14 @@ describe('Terminal', () => {
     const { Terminal: MockTerminal } = await import('@xterm/xterm');
     render(<Terminal fontWeight="normal" />);
     await waitForInit();
-    expect(MockTerminal).toHaveBeenCalledWith(
-      expect.objectContaining({ fontWeight: 'normal' }),
-    );
+    expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ fontWeight: 'normal' }));
   });
 
   it('passes fontWeightBold to xterm constructor', async () => {
     const { Terminal: MockTerminal } = await import('@xterm/xterm');
     render(<Terminal fontWeightBold="bold" />);
     await waitForInit();
-    expect(MockTerminal).toHaveBeenCalledWith(
-      expect.objectContaining({ fontWeightBold: 'bold' }),
-    );
+    expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ fontWeightBold: 'bold' }));
   });
 
   it('calls onWriteParsed through stable ref', async () => {
@@ -785,27 +804,21 @@ describe('Terminal', () => {
       const { Terminal: MockTerminal } = await import('@xterm/xterm');
       render(<Terminal lineHeight={1.2} />);
       await waitForInit();
-      expect(MockTerminal).toHaveBeenCalledWith(
-        expect.objectContaining({ lineHeight: 1.2 }),
-      );
+      expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ lineHeight: 1.2 }));
     });
 
     it('passes letterSpacing to constructor', async () => {
       const { Terminal: MockTerminal } = await import('@xterm/xterm');
       render(<Terminal letterSpacing={1} />);
       await waitForInit();
-      expect(MockTerminal).toHaveBeenCalledWith(
-        expect.objectContaining({ letterSpacing: 1 }),
-      );
+      expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ letterSpacing: 1 }));
     });
 
     it('passes rows and cols to constructor', async () => {
       const { Terminal: MockTerminal } = await import('@xterm/xterm');
       render(<Terminal rows={30} cols={120} />);
       await waitForInit();
-      expect(MockTerminal).toHaveBeenCalledWith(
-        expect.objectContaining({ rows: 30, cols: 120 }),
-      );
+      expect(MockTerminal).toHaveBeenCalledWith(expect.objectContaining({ rows: 30, cols: 120 }));
     });
 
     it('passes screenReaderMode to constructor', async () => {
@@ -977,20 +990,26 @@ describe('Terminal', () => {
   it('rebuilds its theme from current tokens when switching custom themes with the same base', async () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'terminal-test' } as const;
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:terminal-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.terminal.bg': '#111111' },
-    }, owner);
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:terminal-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.terminal.bg': '#222222' },
-    }, owner);
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:terminal-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#111111' },
+      },
+      owner,
+    );
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:terminal-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#222222' },
+      },
+      owner,
+    );
 
     const mounted = rtlRender(
       <ThemeProvider themeId="plugin:terminal-test/first" registry={registry}>
@@ -1006,22 +1025,23 @@ describe('Terminal', () => {
       </ThemeProvider>,
     );
 
-    expect(mockTerminal.options.theme).toEqual(
-      expect.objectContaining({ background: '#222222' }),
-    );
+    expect(mockTerminal.options.theme).toEqual(expect.objectContaining({ background: '#222222' }));
     expect(XTerminal).toHaveBeenCalledTimes(1);
   });
 
   it('rebuilds its theme when the active registration is replaced with the same ID and base', async () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'terminal-reload-test' } as const;
-    const dispose = registry.register({
-      schemaVersion: 1,
-      id: 'plugin:terminal-reload-test/theme',
-      name: 'Reloadable',
-      base: 'dark',
-      tokens: { 'color.terminal.bg': '#111111' },
-    }, owner);
+    const dispose = registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:terminal-reload-test/theme',
+        name: 'Reloadable',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#111111' },
+      },
+      owner,
+    );
 
     rtlRender(
       <ThemeProvider themeId="plugin:terminal-reload-test/theme" registry={registry}>
@@ -1032,38 +1052,45 @@ describe('Terminal', () => {
 
     act(() => {
       dispose();
-      registry.register({
-        schemaVersion: 1,
-        id: 'plugin:terminal-reload-test/theme',
-        name: 'Reloaded',
-        base: 'dark',
-        tokens: { 'color.terminal.bg': '#222222' },
-      }, owner);
+      registry.register(
+        {
+          schemaVersion: 1,
+          id: 'plugin:terminal-reload-test/theme',
+          name: 'Reloaded',
+          base: 'dark',
+          tokens: { 'color.terminal.bg': '#222222' },
+        },
+        owner,
+      );
     });
 
-    expect(mockTerminal.options.theme).toEqual(
-      expect.objectContaining({ background: '#222222' }),
-    );
+    expect(mockTerminal.options.theme).toEqual(expect.objectContaining({ background: '#222222' }));
     expect(XTerminal).toHaveBeenCalledTimes(1);
   });
 
   it('applies a same-base theme switch that occurs while WebGL initialization is pending', async () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'terminal-init-test' } as const;
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:terminal-init-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.terminal.bg': '#111111' },
-    }, owner);
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:terminal-init-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.terminal.bg': '#222222' },
-    }, owner);
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:terminal-init-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#111111' },
+      },
+      owner,
+    );
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:terminal-init-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.terminal.bg': '#222222' },
+      },
+      owner,
+    );
 
     mockTerminal.open.mockImplementationOnce(() => {
       flushSync(() => {
@@ -1082,9 +1109,7 @@ describe('Terminal', () => {
 
     await waitForInit();
 
-    expect(mockTerminal.options.theme).toEqual(
-      expect.objectContaining({ background: '#222222' }),
-    );
+    expect(mockTerminal.options.theme).toEqual(expect.objectContaining({ background: '#222222' }));
     expect(XTerminal).toHaveBeenCalledTimes(1);
   });
 });

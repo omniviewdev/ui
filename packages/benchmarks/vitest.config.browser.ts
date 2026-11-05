@@ -10,9 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isCI = !!process.env.CI;
 
 export default defineConfig(async () => {
-  const plugins = [
-    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
-  ];
+  const plugins = [react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } })];
 
   if (isCI) {
     plugins.push(codspeed() as never);
@@ -37,10 +35,7 @@ export default defineConfig(async () => {
           {
             browser: 'chromium',
             launch: {
-              args: [
-                '--enable-precise-memory-info',
-                '--js-flags=--expose-gc',
-              ],
+              args: ['--enable-precise-memory-info', '--js-flags=--expose-gc'],
             },
           },
         ],

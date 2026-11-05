@@ -124,20 +124,17 @@ export function useTabDetach({
   // Tear down listener and pending rAF if the component unmounts mid-drag.
   useEffect(() => cleanup, [cleanup]);
 
-  const handleDetachDragEnd = useCallback(
-    () => {
-      if (dragModeRef.current === 'detach-armed' && activeIdRef.current && onDetachCommit) {
-        const tab = tabs.find((t) => t.id === activeIdRef.current);
-        onDetachCommit({
-          id: activeIdRef.current,
-          payload: tab?.payload,
-          ...pointerRef.current,
-        });
-      }
-      cleanup();
-    },
-    [tabs, onDetachCommit, cleanup],
-  );
+  const handleDetachDragEnd = useCallback(() => {
+    if (dragModeRef.current === 'detach-armed' && activeIdRef.current && onDetachCommit) {
+      const tab = tabs.find((t) => t.id === activeIdRef.current);
+      onDetachCommit({
+        id: activeIdRef.current,
+        payload: tab?.payload,
+        ...pointerRef.current,
+      });
+    }
+    cleanup();
+  }, [tabs, onDetachCommit, cleanup]);
 
   const handleDetachDragCancel = useCallback(() => {
     cleanup();

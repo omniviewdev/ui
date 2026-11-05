@@ -7,11 +7,7 @@ const codeA = 'const x = 1;\nconsole.log(x);';
 const codeB = 'const y = 2;\nconsole.log(y);';
 
 describe('CodeBlock', () => {
-  benchRender(
-    'mount',
-    () => <CodeBlock language="typescript">{codeA}</CodeBlock>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <CodeBlock language="typescript">{codeA}</CodeBlock>, TIER_2_OPTIONS);
 
   benchRerender(
     'code change',

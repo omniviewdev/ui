@@ -127,10 +127,12 @@ if (!existsSync(resultsDir)) {
 const latest = loadJSON(join(resultsDir, 'latest.json'));
 
 if (!latest) {
-  console.error('No results/competitive/latest.json found. Run `pnpm bench:competitive:json` first.');
+  console.error(
+    'No results/competitive/latest.json found. Run `pnpm bench:competitive:json` first.',
+  );
   process.exit(1);
 }
 
 const report = generateReport(latest);
 writeFileSync(join(resultsDir, 'report.md'), report);
-console.log('Wrote results/competitive/report.md');
+process.stdout.write('Wrote results/competitive/report.md\n');

@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIMessageActions } from './AIMessageActions';
 
@@ -12,23 +13,23 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   args: {
-    onCopy: () => console.log('copy'),
-    onRegenerate: () => console.log('regenerate'),
-    onEdit: () => console.log('edit'),
-    onFeedback: (v) => console.log('feedback', v),
+    onCopy: action('copy'),
+    onRegenerate: action('regenerate'),
+    onEdit: action('edit'),
+    onFeedback: action('feedback'),
     feedback: null,
   },
 };
 
 export const AllActions: Story = {
   args: {
-    onCopy: () => console.log('copy'),
-    onRegenerate: () => console.log('regenerate'),
-    onEdit: () => console.log('edit'),
-    onShare: () => console.log('share'),
-    onBranch: () => console.log('branch'),
-    onDelete: () => console.log('delete'),
-    onFeedback: (v) => console.log('feedback', v),
+    onCopy: action('copy'),
+    onRegenerate: action('regenerate'),
+    onEdit: action('edit'),
+    onShare: action('share'),
+    onBranch: action('branch'),
+    onDelete: action('delete'),
+    onFeedback: action('feedback'),
     feedback: null,
   },
 };

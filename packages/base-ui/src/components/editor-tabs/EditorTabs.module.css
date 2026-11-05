@@ -10,9 +10,8 @@
 .Root {
   --_ov-tab-height: var(--ov-size-tab-height);
   --_ov-tab-bg: var(--ov-color-tab-bg);
-  /* Component-local shadow aliases — no matching --ov-shadow-* tier for dragging/ghost elevations */
-  --_shadow-drag: 0 2px 8px rgb(0 0 0 / 0.25);
-  --_shadow-ghost: 0 4px 16px rgb(0 0 0 / 0.3);
+  --_shadow-drag: var(--ov-shadow-drag);
+  --_shadow-ghost: var(--ov-shadow-drag-ghost);
   --_ov-tab-fg: var(--ov-color-tab-fg);
   --_ov-tab-active-bg: var(--ov-color-tab-active-bg);
   --_ov-tab-active-fg: var(--ov-color-tab-active-fg);
@@ -22,7 +21,7 @@
   --_ov-tab-modified-border: var(--ov-color-tab-modified-border);
   --_ov-tab-border: var(--ov-color-tab-border);
   --_ov-tab-divider: var(--ov-color-border-muted);
-  --_ov-tab-font-size: var(--ov-primitive-font-size-13, 0.8125rem);
+  --_ov-tab-font-size: var(--ov-font-size-md, 0.8125rem);
   --_ov-tab-padding-x: 10px;
   --_ov-tab-padding-trailing: 6px;
   --_ov-tab-close-size: 16px;
@@ -184,7 +183,9 @@
 
 .Root[data-ov-size='sm'] {
   --_ov-tab-height: 28px;
-  --_ov-tab-font-size: var(--ov-font-size-caption); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
+  --_ov-tab-font-size: var(
+    --ov-font-size-caption
+  ); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
   --_ov-tab-padding-x: 8px;
   --_ov-tab-padding-trailing: 4px;
 }
@@ -235,7 +236,9 @@
   padding: 0 3px;
   border-radius: var(--ov-radius-pill, 999px);
   background: var(--ov-color-state-hover);
-  font-size: var(--ov-font-size-caption); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
+  font-size: var(
+    --ov-font-size-caption
+  ); /* 0.6875rem (11px) original; caption (12px) is closest semantic token */
   line-height: 1;
 }
 

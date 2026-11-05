@@ -103,14 +103,20 @@ SegmentedControlRoot.displayName = 'SegmentedControl';
 // SegmentedControl.Item
 // ---------------------------------------------------------------------------
 
-export interface SegmentedControlItemProps extends Omit<HTMLAttributes<HTMLLabelElement>, 'onChange'> {
+export interface SegmentedControlItemProps extends Omit<
+  HTMLAttributes<HTMLLabelElement>,
+  'onChange'
+> {
   value: string;
   disabled?: boolean;
   children: ReactNode;
 }
 
 const SegmentedControlItem = forwardRef<HTMLLabelElement, SegmentedControlItemProps>(
-  function SegmentedControlItem({ value, disabled: itemDisabled, className, children, ...rest }, ref) {
+  function SegmentedControlItem(
+    { value, disabled: itemDisabled, className, children, ...rest },
+    ref,
+  ) {
     const ctx = useSegmentedControl();
     const inputRef = useRef<HTMLInputElement>(null);
     const isDisabled = ctx.disabled || itemDisabled;

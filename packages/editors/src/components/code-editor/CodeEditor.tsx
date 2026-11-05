@@ -15,15 +15,6 @@ import { editorSchemas } from '../../schemas';
 import styles from './CodeEditor.module.css';
 
 // ---------------------------------------------------------------------------
-// Debug logging (set to false for production)
-// ---------------------------------------------------------------------------
-
-const DEBUG = false;
-function log(...args: unknown[]) {
-  if (DEBUG) console.log('[CodeEditor]', ...args);
-}
-
-// ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
@@ -105,10 +96,7 @@ export interface CodeEditorProps {
    * `monaco` namespace for advanced configuration (custom keybindings,
    * language registration, LSP server attachment, etc.).
    */
-  onMount?: (
-    editor: monaco.editor.IStandaloneCodeEditor,
-    monacoInstance: typeof monaco,
-  ) => void;
+  onMount?: (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => void;
 
   /**
    * Called whenever the editor's validation markers change. Provides a parsed
@@ -227,25 +215,25 @@ function getOrCreateModel(
 ): monaco.editor.ITextModel {
   if (path) {
     const uri = monaco.Uri.parse(path);
-    log('getOrCreateModel — parsed URI:', uri.toString(), '| language:', language);
     const existing = monaco.editor.getModel(uri);
     if (existing) {
-      log('  reusing existing model');
       return existing;
     }
-    log('  creating new model with URI');
     return monaco.editor.createModel(value, language, uri);
   }
-  log('getOrCreateModel — no path, creating anonymous model | language:', language);
   return monaco.editor.createModel(value, language);
 }
 
 function severityToString(severity: monaco.MarkerSeverity): DiagnosticSeverity {
   switch (severity) {
-    case monaco.MarkerSeverity.Error: return 'error';
-    case monaco.MarkerSeverity.Warning: return 'warning';
-    case monaco.MarkerSeverity.Info: return 'info';
-    default: return 'hint';
+    case monaco.MarkerSeverity.Error:
+      return 'error';
+    case monaco.MarkerSeverity.Warning:
+      return 'warning';
+    case monaco.MarkerSeverity.Info:
+      return 'info';
+    default:
+      return 'hint';
   }
 }
 
@@ -266,359 +254,348 @@ function markersTodiagnostics(model: monaco.editor.ITextModel): EditorDiagnostic
 // Component
 // ---------------------------------------------------------------------------
 
-export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
-  function CodeEditor(
-    {
-      value,
-      onChange,
-      onMount: onMountProp,
-      onDiagnostics,
-      onCursorChange,
-      language,
-      filename,
-      readOnly = false,
-      lineNumbers = true,
-      minimap = false,
-      wordWrap = false,
-      tabSize = 2,
-      diagnostics = false,
-      quickSuggestions = false,
-      syntaxHighlighting = true,
-      height = '100%',
-      width = '100%',
-      bordered = true,
-      className,
-    },
-    ref,
-  ) {
-    const theme = useEditorTheme();
-    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const [isReady, setIsReady] = useState(false);
-    const preventTriggerChangeEvent = useRef(false);
-    const subscriptionRef = useRef<monaco.IDisposable | null>(null);
-    const markerSubscriptionRef = useRef<monaco.IDisposable | null>(null);
-    const cursorSubscriptionRef = useRef<monaco.IDisposable | null>(null);
+export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(
+  {
+    value,
+    onChange,
+    onMount: onMountProp,
+    onDiagnostics,
+    onCursorChange,
+    language,
+    filename,
+    readOnly = false,
+    lineNumbers = true,
+    minimap = false,
+    wordWrap = false,
+    tabSize = 2,
+    diagnostics = false,
+    quickSuggestions = false,
+    syntaxHighlighting = true,
+    height = '100%',
+    width = '100%',
+    bordered = true,
+    className,
+  },
+  ref,
+) {
+  const theme = useEditorTheme();
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const preventTriggerChangeEvent = useRef(false);
+  const subscriptionRef = useRef<monaco.IDisposable | null>(null);
+  const markerSubscriptionRef = useRef<monaco.IDisposable | null>(null);
+  const cursorSubscriptionRef = useRef<monaco.IDisposable | null>(null);
 
-    const resolvedLanguage = language ?? (filename ? detectLanguage(filename) : undefined);
+  const resolvedLanguage = language ?? (filename ? detectLanguage(filename) : undefined);
 
-    log('render — filename:', filename, '| resolvedLanguage:', resolvedLanguage);
-
-    // Pretty-print JSON when the language is JSON
-    const displayValue = useMemo(() => {
-      if (resolvedLanguage === 'json' && value) {
-        try {
-          return JSON.stringify(JSON.parse(value), null, 2);
-        } catch {
-          return value;
-        }
+  // Pretty-print JSON when the language is JSON
+  const displayValue = useMemo(() => {
+    if (resolvedLanguage === 'json' && value) {
+      try {
+        return JSON.stringify(JSON.parse(value), null, 2);
+      } catch {
+        return value;
       }
-      return value;
-    }, [resolvedLanguage, value]);
+    }
+    return value;
+  }, [resolvedLanguage, value]);
 
-    // -----------------------------------------------------------------------
-    // Mount / Unmount
-    // -----------------------------------------------------------------------
+  // -----------------------------------------------------------------------
+  // Mount / Unmount
+  // -----------------------------------------------------------------------
 
-    useEffect(() => {
-      if (!containerRef.current) return;
-
-      log('=== MOUNT ===');
-
-      // Theme
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-      monaco.editor.setTheme(OV_MONACO_THEME);
-
-      // TypeScript / JavaScript compiler options (global — JSX & target config)
-      monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-        jsx: 2, // JsxEmit.React
-        jsxFactory: 'React.createElement',
-        allowNonTsExtensions: true,
-        allowJs: true,
-        target: 99, // ESNext
-      });
-
-      // Model — the URI drives schema fileMatch
-      const model = getOrCreateModel(
-        displayValue,
-        syntaxHighlighting ? resolvedLanguage : 'plaintext',
-        filename,
-      );
-      log('  model created — uri:', model.uri.toString());
-
-      const editor = monaco.editor.create(containerRef.current, {
-        model,
-        readOnly,
-        lineNumbers: lineNumbers ? 'on' : 'off',
-        minimap: { enabled: minimap },
-        wordWrap: wordWrap ? 'on' : 'off',
-        quickSuggestions: quickSuggestions
-          ? { other: true, strings: true, comments: false }
-          : false,
-        scrollBeyondLastLine: false,
-        automaticLayout: true,
-        fontSize: 13,
-        fontFamily: 'var(--ov-font-family-mono, monospace)',
-        tabSize,
-        renderValidationDecorations: diagnostics ? 'on' : 'off',
-      });
-
-      editorRef.current = editor;
-
-      // Apply registered schemas so completions/validation are live
-      editorSchemas.applyYamlSchemas();
-      editorSchemas.applyJsonSchemas(monaco);
-
-      onMountProp?.(editor, monaco);
-      setIsReady(true);
-      log('=== MOUNT COMPLETE ===');
-
-      return () => {
-        log('=== UNMOUNT ===');
-        subscriptionRef.current?.dispose();
-        subscriptionRef.current = null;
-        markerSubscriptionRef.current?.dispose();
-        markerSubscriptionRef.current = null;
-        cursorSubscriptionRef.current?.dispose();
-        cursorSubscriptionRef.current = null;
-        // Detach model before disposing to avoid WordHighlighter "Canceled" errors
-        const m = editor.getModel();
-        editor.setModel(null);
-        m?.dispose();
-        editor.dispose();
-        editorRef.current = null;
-        setIsReady(false);
-      };
-      // Intentional mount-once effect — props like value, language, readOnly,
-      // theme, filename, and callbacks are synced via dedicated effects below.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // -----------------------------------------------------------------------
-    // Prop → editor syncing
-    // -----------------------------------------------------------------------
-
-    // Value
-    useEffect(() => {
-      const editor = editorRef.current;
-      if (!editor || !isReady || displayValue === undefined) return;
-      if (editor.getOption(monaco.editor.EditorOption.readOnly)) {
-        editor.setValue(displayValue);
-      } else if (displayValue !== editor.getValue()) {
-        const model = editor.getModel();
-        if (!model) return;
-        preventTriggerChangeEvent.current = true;
-        editor.executeEdits('', [
-          {
-            range: model.getFullModelRange(),
-            text: displayValue,
-            forceMoveMarkers: true,
-          },
-        ]);
-        editor.pushUndoStop();
-        preventTriggerChangeEvent.current = false;
-      }
-    }, [displayValue, isReady]);
-
-    // Options
-    useEffect(() => {
-      if (!editorRef.current || !isReady) return;
-      editorRef.current.updateOptions({
-        readOnly,
-        lineNumbers: lineNumbers ? 'on' : 'off',
-        minimap: { enabled: minimap },
-        wordWrap: wordWrap ? 'on' : 'off',
-        quickSuggestions: quickSuggestions
-          ? { other: true, strings: true, comments: false }
-          : false,
-        tabSize,
-        renderValidationDecorations: diagnostics ? 'on' : 'off',
-      });
-    }, [readOnly, lineNumbers, minimap, wordWrap, quickSuggestions, tabSize, diagnostics, isReady]);
-
-    // Language (including syntax highlighting toggle)
-    useEffect(() => {
-      if (!editorRef.current || !isReady) return;
-      const model = editorRef.current.getModel();
-      if (model) {
-        const lang = syntaxHighlighting ? (resolvedLanguage ?? 'plaintext') : 'plaintext';
-        log('setModelLanguage →', lang);
-        monaco.editor.setModelLanguage(model, lang);
-      }
-    }, [resolvedLanguage, syntaxHighlighting, isReady]);
-
-    // Filename → model URI swap (for schema fileMatch)
-    const prevFilenameRef = useRef(filename);
-    useEffect(() => {
-      const editor = editorRef.current;
-      if (!editor || !isReady) return;
-      if (prevFilenameRef.current === filename) return;
-      log('filename changed:', prevFilenameRef.current, '→', filename);
-      prevFilenameRef.current = filename;
-
-      const currentModel = editor.getModel();
-      const currentValue = currentModel?.getValue?.() ?? displayValue;
-      // Detach model before disposing to avoid WordHighlighter "Canceled" errors
-      editor.setModel(null);
-      currentModel?.dispose();
-      const newModel = getOrCreateModel(currentValue, syntaxHighlighting ? resolvedLanguage : 'plaintext', filename);
-      editor.setModel(newModel);
-      log('  new model set — uri:', newModel.uri.toString());
-    }, [filename, isReady, resolvedLanguage, syntaxHighlighting, displayValue]);
+  useEffect(() => {
+    if (!containerRef.current) return;
 
     // Theme
-    useEffect(() => {
-      if (!isReady) return;
-      monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
-      monaco.editor.setTheme(OV_MONACO_THEME);
-    }, [isReady, theme.registration]);
+    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
+    monaco.editor.setTheme(OV_MONACO_THEME);
 
-    // onChange subscription
-    useEffect(() => {
-      if (!editorRef.current || !isReady) return;
-      subscriptionRef.current?.dispose();
-      if (onChange) {
-        subscriptionRef.current = editorRef.current.onDidChangeModelContent(() => {
-          if (!preventTriggerChangeEvent.current) {
-            onChange(editorRef.current!.getValue());
-          }
-        });
-      }
-    }, [onChange, isReady]);
+    // TypeScript / JavaScript compiler options (global — JSX & target config)
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      jsx: 2, // JsxEmit.React
+      jsxFactory: 'React.createElement',
+      allowNonTsExtensions: true,
+      allowJs: true,
+      target: 99, // ESNext
+    });
 
-    // onDiagnostics subscription — listen to marker changes on the model
-    useEffect(() => {
-      if (!isReady) return;
-      markerSubscriptionRef.current?.dispose();
-      if (onDiagnostics) {
-        markerSubscriptionRef.current = monaco.editor.onDidChangeMarkers((uris) => {
-          const model = editorRef.current?.getModel();
-          if (!model) return;
-          const modelUri = model.uri.toString();
-          if (uris.some((u) => u.toString() === modelUri)) {
-            onDiagnostics(markersTodiagnostics(model));
-          }
-        });
-      }
-    }, [onDiagnostics, isReady]);
-
-    // onCursorChange subscription
-    useEffect(() => {
-      if (!editorRef.current || !isReady) return;
-      cursorSubscriptionRef.current?.dispose();
-      if (onCursorChange) {
-        cursorSubscriptionRef.current = editorRef.current.onDidChangeCursorPosition((e) => {
-          onCursorChange({
-            lineNumber: e.position.lineNumber,
-            column: e.position.column,
-          });
-        });
-      }
-    }, [onCursorChange, isReady]);
-
-    // Live schema updates — re-apply whenever the registry changes
-    useEffect(() => {
-      if (!isReady) return;
-      return editorSchemas.onChange(() => {
-        editorSchemas.applyYamlSchemas();
-        editorSchemas.applyJsonSchemas(monaco);
-      });
-    }, [isReady]);
-
-    // -----------------------------------------------------------------------
-    // Imperative handle
-    // -----------------------------------------------------------------------
-
-    useImperativeHandle(ref, () => ({
-      getEditor: () => editorRef.current,
-      getMonaco: () => monaco,
-      focus: () => editorRef.current?.focus(),
-      getDiagnostics: () => {
-        const model = editorRef.current?.getModel();
-        return model ? markersTodiagnostics(model) : [];
-      },
-      getDebugState: (): EditorDebugState => {
-        const editor = editorRef.current;
-        const model = editor?.getModel() ?? null;
-        const markers = model
-          ? monaco.editor.getModelMarkers({ resource: model.uri })
-          : [];
-        const modelUri = model?.uri.toString() ?? null;
-
-        // Diagnostics breakdown
-        const diagnosticsBySeverity: Record<DiagnosticSeverity, number> = {
-          error: 0, warning: 0, info: 0, hint: 0,
-        };
-        const diagnosticsBySource: Record<string, number> = {};
-        for (const m of markers) {
-          const sev = severityToString(m.severity);
-          diagnosticsBySeverity[sev]++;
-          const src = m.source ?? 'unknown';
-          diagnosticsBySource[src] = (diagnosticsBySource[src] ?? 0) + 1;
-        }
-
-        // Schema matching
-        const matchingSchemas = modelUri
-          ? editorSchemas.getSchemasForUri(modelUri).map((s) => ({
-              uri: s.uri,
-              name: s.name,
-              fileMatch: s.fileMatch,
-            }))
-          : [];
-
-        const pos = editor?.getPosition() ?? null;
-        const sels = editor?.getSelections() ?? [];
-
-        return {
-          modelUri,
-          modelLanguage: model?.getLanguageId() ?? null,
-          modelLineCount: model?.getLineCount() ?? 0,
-          modelContentLength: model?.getValueLength() ?? 0,
-          modelVersionId: model?.getVersionId() ?? 0,
-          modelEOL: model?.getEOL() ?? null,
-          cursorPosition: pos ? { lineNumber: pos.lineNumber, column: pos.column } : null,
-          selections: sels.map((s) => ({
-            startLineNumber: s.startLineNumber,
-            startColumn: s.startColumn,
-            endLineNumber: s.endLineNumber,
-            endColumn: s.endColumn,
-          })),
-          diagnosticsTotal: markers.length,
-          diagnosticsBySeverity,
-          diagnosticsBySource,
-          registeredSchemaCount: editorSchemas.schemas.length,
-          matchingSchemas,
-          isReadOnly: editor?.getOption(monaco.editor.EditorOption.readOnly) ?? false,
-          isFocused: editor?.hasWidgetFocus() ?? false,
-          totalModelCount: monaco.editor.getModels().length,
-          registeredLanguageCount: monaco.languages.getLanguages().length,
-          yamlHandleSet: editorSchemas.isYamlReady,
-        };
-      },
-    }));
-
-    // -----------------------------------------------------------------------
-    // Render
-    // -----------------------------------------------------------------------
-
-    const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
-
-    return (
-      <div
-        className={cn(styles.Root, className)}
-        style={
-          {
-            '--_editor-height': toDim(height),
-            '--_editor-width': toDim(width),
-          } as CSSProperties
-        }
-        data-testid="code-editor"
-        {...(!bordered ? { 'data-borderless': '' } : {})}
-      >
-        <div ref={containerRef} className={styles.Inner} />
-      </div>
+    // Model — the URI drives schema fileMatch
+    const model = getOrCreateModel(
+      displayValue,
+      syntaxHighlighting ? resolvedLanguage : 'plaintext',
+      filename,
     );
-  },
-);
+
+    const editor = monaco.editor.create(containerRef.current, {
+      model,
+      readOnly,
+      lineNumbers: lineNumbers ? 'on' : 'off',
+      minimap: { enabled: minimap },
+      wordWrap: wordWrap ? 'on' : 'off',
+      quickSuggestions: quickSuggestions ? { other: true, strings: true, comments: false } : false,
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 13,
+      fontFamily: 'var(--ov-font-family-mono, monospace)',
+      tabSize,
+      renderValidationDecorations: diagnostics ? 'on' : 'off',
+    });
+
+    editorRef.current = editor;
+
+    // Apply registered schemas so completions/validation are live
+    editorSchemas.applyYamlSchemas();
+    editorSchemas.applyJsonSchemas(monaco);
+
+    onMountProp?.(editor, monaco);
+    setIsReady(true);
+
+    return () => {
+      subscriptionRef.current?.dispose();
+      subscriptionRef.current = null;
+      markerSubscriptionRef.current?.dispose();
+      markerSubscriptionRef.current = null;
+      cursorSubscriptionRef.current?.dispose();
+      cursorSubscriptionRef.current = null;
+      // Detach model before disposing to avoid WordHighlighter "Canceled" errors
+      const m = editor.getModel();
+      editor.setModel(null);
+      m?.dispose();
+      editor.dispose();
+      editorRef.current = null;
+      setIsReady(false);
+    };
+    // Intentional mount-once effect — props like value, language, readOnly,
+    // theme, filename, and callbacks are synced via dedicated effects below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // -----------------------------------------------------------------------
+  // Prop → editor syncing
+  // -----------------------------------------------------------------------
+
+  // Value
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !isReady || displayValue === undefined) return;
+    if (editor.getOption(monaco.editor.EditorOption.readOnly)) {
+      editor.setValue(displayValue);
+    } else if (displayValue !== editor.getValue()) {
+      const model = editor.getModel();
+      if (!model) return;
+      preventTriggerChangeEvent.current = true;
+      editor.executeEdits('', [
+        {
+          range: model.getFullModelRange(),
+          text: displayValue,
+          forceMoveMarkers: true,
+        },
+      ]);
+      editor.pushUndoStop();
+      preventTriggerChangeEvent.current = false;
+    }
+  }, [displayValue, isReady]);
+
+  // Options
+  useEffect(() => {
+    if (!editorRef.current || !isReady) return;
+    editorRef.current.updateOptions({
+      readOnly,
+      lineNumbers: lineNumbers ? 'on' : 'off',
+      minimap: { enabled: minimap },
+      wordWrap: wordWrap ? 'on' : 'off',
+      quickSuggestions: quickSuggestions ? { other: true, strings: true, comments: false } : false,
+      tabSize,
+      renderValidationDecorations: diagnostics ? 'on' : 'off',
+    });
+  }, [readOnly, lineNumbers, minimap, wordWrap, quickSuggestions, tabSize, diagnostics, isReady]);
+
+  // Language (including syntax highlighting toggle)
+  useEffect(() => {
+    if (!editorRef.current || !isReady) return;
+    const model = editorRef.current.getModel();
+    if (model) {
+      const lang = syntaxHighlighting ? (resolvedLanguage ?? 'plaintext') : 'plaintext';
+      monaco.editor.setModelLanguage(model, lang);
+    }
+  }, [resolvedLanguage, syntaxHighlighting, isReady]);
+
+  // Filename → model URI swap (for schema fileMatch)
+  const prevFilenameRef = useRef(filename);
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !isReady) return;
+    if (prevFilenameRef.current === filename) return;
+    prevFilenameRef.current = filename;
+
+    const currentModel = editor.getModel();
+    const currentValue = currentModel?.getValue?.() ?? displayValue;
+    // Detach model before disposing to avoid WordHighlighter "Canceled" errors
+    editor.setModel(null);
+    currentModel?.dispose();
+    const newModel = getOrCreateModel(
+      currentValue,
+      syntaxHighlighting ? resolvedLanguage : 'plaintext',
+      filename,
+    );
+    editor.setModel(newModel);
+  }, [filename, isReady, resolvedLanguage, syntaxHighlighting, displayValue]);
+
+  // Theme
+  useEffect(() => {
+    if (!isReady) return;
+    monaco.editor.defineTheme(OV_MONACO_THEME, buildMonacoTheme(theme.base, containerRef.current));
+    monaco.editor.setTheme(OV_MONACO_THEME);
+  }, [isReady, theme.registration, theme.base]);
+
+  // onChange subscription
+  useEffect(() => {
+    if (!editorRef.current || !isReady) return;
+    subscriptionRef.current?.dispose();
+    if (onChange) {
+      subscriptionRef.current = editorRef.current.onDidChangeModelContent(() => {
+        if (!preventTriggerChangeEvent.current) {
+          onChange(editorRef.current!.getValue());
+        }
+      });
+    }
+  }, [onChange, isReady]);
+
+  // onDiagnostics subscription — listen to marker changes on the model
+  useEffect(() => {
+    if (!isReady) return;
+    markerSubscriptionRef.current?.dispose();
+    if (onDiagnostics) {
+      markerSubscriptionRef.current = monaco.editor.onDidChangeMarkers((uris) => {
+        const model = editorRef.current?.getModel();
+        if (!model) return;
+        const modelUri = model.uri.toString();
+        if (uris.some((u) => u.toString() === modelUri)) {
+          onDiagnostics(markersTodiagnostics(model));
+        }
+      });
+    }
+  }, [onDiagnostics, isReady]);
+
+  // onCursorChange subscription
+  useEffect(() => {
+    if (!editorRef.current || !isReady) return;
+    cursorSubscriptionRef.current?.dispose();
+    if (onCursorChange) {
+      cursorSubscriptionRef.current = editorRef.current.onDidChangeCursorPosition((e) => {
+        onCursorChange({
+          lineNumber: e.position.lineNumber,
+          column: e.position.column,
+        });
+      });
+    }
+  }, [onCursorChange, isReady]);
+
+  // Live schema updates — re-apply whenever the registry changes
+  useEffect(() => {
+    if (!isReady) return;
+    return editorSchemas.onChange(() => {
+      editorSchemas.applyYamlSchemas();
+      editorSchemas.applyJsonSchemas(monaco);
+    });
+  }, [isReady]);
+
+  // -----------------------------------------------------------------------
+  // Imperative handle
+  // -----------------------------------------------------------------------
+
+  useImperativeHandle(ref, () => ({
+    getEditor: () => editorRef.current,
+    getMonaco: () => monaco,
+    focus: () => editorRef.current?.focus(),
+    getDiagnostics: () => {
+      const model = editorRef.current?.getModel();
+      return model ? markersTodiagnostics(model) : [];
+    },
+    getDebugState: (): EditorDebugState => {
+      const editor = editorRef.current;
+      const model = editor?.getModel() ?? null;
+      const markers = model ? monaco.editor.getModelMarkers({ resource: model.uri }) : [];
+      const modelUri = model?.uri.toString() ?? null;
+
+      // Diagnostics breakdown
+      const diagnosticsBySeverity: Record<DiagnosticSeverity, number> = {
+        error: 0,
+        warning: 0,
+        info: 0,
+        hint: 0,
+      };
+      const diagnosticsBySource: Record<string, number> = {};
+      for (const m of markers) {
+        const sev = severityToString(m.severity);
+        diagnosticsBySeverity[sev]++;
+        const src = m.source ?? 'unknown';
+        diagnosticsBySource[src] = (diagnosticsBySource[src] ?? 0) + 1;
+      }
+
+      // Schema matching
+      const matchingSchemas = modelUri
+        ? editorSchemas.getSchemasForUri(modelUri).map((s) => ({
+            uri: s.uri,
+            name: s.name,
+            fileMatch: s.fileMatch,
+          }))
+        : [];
+
+      const pos = editor?.getPosition() ?? null;
+      const sels = editor?.getSelections() ?? [];
+
+      return {
+        modelUri,
+        modelLanguage: model?.getLanguageId() ?? null,
+        modelLineCount: model?.getLineCount() ?? 0,
+        modelContentLength: model?.getValueLength() ?? 0,
+        modelVersionId: model?.getVersionId() ?? 0,
+        modelEOL: model?.getEOL() ?? null,
+        cursorPosition: pos ? { lineNumber: pos.lineNumber, column: pos.column } : null,
+        selections: sels.map((s) => ({
+          startLineNumber: s.startLineNumber,
+          startColumn: s.startColumn,
+          endLineNumber: s.endLineNumber,
+          endColumn: s.endColumn,
+        })),
+        diagnosticsTotal: markers.length,
+        diagnosticsBySeverity,
+        diagnosticsBySource,
+        registeredSchemaCount: editorSchemas.schemas.length,
+        matchingSchemas,
+        isReadOnly: editor?.getOption(monaco.editor.EditorOption.readOnly) ?? false,
+        isFocused: editor?.hasWidgetFocus() ?? false,
+        totalModelCount: monaco.editor.getModels().length,
+        registeredLanguageCount: monaco.languages.getLanguages().length,
+        yamlHandleSet: editorSchemas.isYamlReady,
+      };
+    },
+  }));
+
+  // -----------------------------------------------------------------------
+  // Render
+  // -----------------------------------------------------------------------
+
+  const toDim = (v: string | number) => (typeof v === 'number' ? `${v}px` : v);
+
+  return (
+    <div
+      className={cn(styles.Root, className)}
+      style={
+        {
+          '--_editor-height': toDim(height),
+          '--_editor-width': toDim(width),
+        } as CSSProperties
+      }
+      data-testid="code-editor"
+      {...(!bordered ? { 'data-borderless': '' } : {})}
+    >
+      <div ref={containerRef} className={styles.Inner} />
+    </div>
+  );
+});
 
 CodeEditor.displayName = 'CodeEditor';

@@ -12,37 +12,46 @@ const options = Array.from({ length: 5 }, (_, i) => ({
 
 describe('Select competitive', () => {
   benchCompare('mount (closed)', {
-    'raw': () => wrapRaw(
-      <select defaultValue="option-0">
-        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>,
-    ),
-    '@omniviewdev/base-ui': () => wrapOv(
-      <OvSelect.Root defaultValue="option-0">
-        <OvSelect.Trigger>
-          <OvSelect.Value placeholder="Choose..." />
-        </OvSelect.Trigger>
-        <OvSelect.Portal>
-          <OvSelect.Positioner>
-            <OvSelect.Popup>
-              <OvSelect.List>
-                {options.map((o) => (
-                  <OvSelect.Item key={o.value} value={o.value}>
-                    <OvSelect.ItemText>{o.label}</OvSelect.ItemText>
-                  </OvSelect.Item>
-                ))}
-              </OvSelect.List>
-            </OvSelect.Popup>
-          </OvSelect.Positioner>
-        </OvSelect.Portal>
-      </OvSelect.Root>,
-    ),
-    '@mui/material': () => wrapMui(
-      <MuiSelect defaultValue="option-0" size="small">
-        {options.map((o) => (
-          <MuiMenuItem key={o.value} value={o.value}>{o.label}</MuiMenuItem>
-        ))}
-      </MuiSelect>,
-    ),
+    raw: () =>
+      wrapRaw(
+        <select defaultValue="option-0">
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>,
+      ),
+    '@omniviewdev/base-ui': () =>
+      wrapOv(
+        <OvSelect.Root defaultValue="option-0">
+          <OvSelect.Trigger>
+            <OvSelect.Value placeholder="Choose..." />
+          </OvSelect.Trigger>
+          <OvSelect.Portal>
+            <OvSelect.Positioner>
+              <OvSelect.Popup>
+                <OvSelect.List>
+                  {options.map((o) => (
+                    <OvSelect.Item key={o.value} value={o.value}>
+                      <OvSelect.ItemText>{o.label}</OvSelect.ItemText>
+                    </OvSelect.Item>
+                  ))}
+                </OvSelect.List>
+              </OvSelect.Popup>
+            </OvSelect.Positioner>
+          </OvSelect.Portal>
+        </OvSelect.Root>,
+      ),
+    '@mui/material': () =>
+      wrapMui(
+        <MuiSelect defaultValue="option-0" size="small">
+          {options.map((o) => (
+            <MuiMenuItem key={o.value} value={o.value}>
+              {o.label}
+            </MuiMenuItem>
+          ))}
+        </MuiSelect>,
+      ),
   });
 });

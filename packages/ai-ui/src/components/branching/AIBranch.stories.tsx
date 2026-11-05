@@ -33,18 +33,41 @@ export const Playground: Story = {
       <AIBranch count={3} active={active} onChange={setActive}>
         <AIBranchSelector />
         <AIBranchContent index={0}>
-          <div style={{ padding: 16, border: '1px solid var(--ov-color-border-default)', borderRadius: 8, marginTop: 8 }}>
+          <div
+            style={{
+              padding: 16,
+              border: '1px solid var(--ov-color-border-default)',
+              borderRadius: 8,
+              marginTop: 8,
+            }}
+          >
             <strong>Branch 1:</strong> The original response about React hooks and state management.
           </div>
         </AIBranchContent>
         <AIBranchContent index={1}>
-          <div style={{ padding: 16, border: '1px solid var(--ov-color-border-default)', borderRadius: 8, marginTop: 8 }}>
-            <strong>Branch 2:</strong> An alternative approach using context and reducers for global state.
+          <div
+            style={{
+              padding: 16,
+              border: '1px solid var(--ov-color-border-default)',
+              borderRadius: 8,
+              marginTop: 8,
+            }}
+          >
+            <strong>Branch 2:</strong> An alternative approach using context and reducers for global
+            state.
           </div>
         </AIBranchContent>
         <AIBranchContent index={2}>
-          <div style={{ padding: 16, border: '1px solid var(--ov-color-border-default)', borderRadius: 8, marginTop: 8 }}>
-            <strong>Branch 3:</strong> A third take focusing on server-side state with TanStack Query.
+          <div
+            style={{
+              padding: 16,
+              border: '1px solid var(--ov-color-border-default)',
+              borderRadius: 8,
+              marginTop: 8,
+            }}
+          >
+            <strong>Branch 3:</strong> A third take focusing on server-side state with TanStack
+            Query.
           </div>
         </AIBranchContent>
       </AIBranch>
@@ -59,12 +82,16 @@ export const Regenerate: Story = {
     return (
       <AIBranch count={2} active={active} onChange={setActive}>
         <AIBranchContent index={0}>
-          <div style={{ padding: 16, background: 'var(--ov-color-surface-subtle)', borderRadius: 8 }}>
+          <div
+            style={{ padding: 16, background: 'var(--ov-color-surface-subtle)', borderRadius: 8 }}
+          >
             Here is the original response to your question about Kubernetes pod scheduling.
           </div>
         </AIBranchContent>
         <AIBranchContent index={1}>
-          <div style={{ padding: 16, background: 'var(--ov-color-surface-subtle)', borderRadius: 8 }}>
+          <div
+            style={{ padding: 16, background: 'var(--ov-color-surface-subtle)', borderRadius: 8 }}
+          >
             Here is a regenerated response with more detail about node affinity rules and taints.
           </div>
         </AIBranchContent>

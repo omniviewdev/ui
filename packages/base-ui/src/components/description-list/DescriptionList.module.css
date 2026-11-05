@@ -1,7 +1,7 @@
 .Root {
   /* Default = md. Label is muted/smaller, value sits one step larger. */
-  --_ov-font-size-label: var(--ov-primitive-font-size-11);
-  --_ov-font-size-value: var(--ov-primitive-font-size-13);
+  --_ov-font-size-label: var(--ov-font-size-xs);
+  --_ov-font-size-value: var(--ov-font-size-md);
   --_ov-gap: 10px;
   --_ov-item-gap: 4px;
 
@@ -14,29 +14,29 @@
 
 /* Size variants */
 .Root[data-ov-size='xs'] {
-  --_ov-font-size-label: var(--ov-primitive-font-size-11);
-  --_ov-font-size-value: var(--ov-primitive-font-size-11);
+  --_ov-font-size-label: var(--ov-font-size-xs);
+  --_ov-font-size-value: var(--ov-font-size-xs);
   --_ov-gap: 6px;
   --_ov-item-gap: 2px;
 }
 
 .Root[data-ov-size='sm'] {
-  --_ov-font-size-label: var(--ov-primitive-font-size-11);
-  --_ov-font-size-value: var(--ov-primitive-font-size-12);
+  --_ov-font-size-label: var(--ov-font-size-xs);
+  --_ov-font-size-value: var(--ov-font-size-sm);
   --_ov-gap: 8px;
   --_ov-item-gap: 2px;
 }
 
 .Root[data-ov-size='lg'] {
-  --_ov-font-size-label: var(--ov-primitive-font-size-12);
-  --_ov-font-size-value: var(--ov-primitive-font-size-14);
+  --_ov-font-size-label: var(--ov-font-size-sm);
+  --_ov-font-size-value: var(--ov-font-size-lg);
   --_ov-gap: 12px;
   --_ov-item-gap: 6px;
 }
 
 .Root[data-ov-size='xl'] {
-  --_ov-font-size-label: var(--ov-primitive-font-size-13);
-  --_ov-font-size-value: var(--ov-primitive-font-size-16);
+  --_ov-font-size-label: var(--ov-font-size-md);
+  --_ov-font-size-value: var(--ov-font-size-xl);
   --_ov-gap: 16px;
   --_ov-item-gap: 8px;
 }

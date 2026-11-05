@@ -30,10 +30,15 @@ describe('Collapsible', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => (
-    <Collapsible key={i}>
-      <CollapsibleTrigger>Section {i}</CollapsibleTrigger>
-      <CollapsibleContent>Content {i}</CollapsibleContent>
-    </Collapsible>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => (
+      <Collapsible key={i}>
+        <CollapsibleTrigger>Section {i}</CollapsibleTrigger>
+        <CollapsibleContent>Content {i}</CollapsibleContent>
+      </Collapsible>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

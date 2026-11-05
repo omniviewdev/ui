@@ -14,12 +14,12 @@
 
 ## File Structure
 
-| File | Action | Responsibility |
-|------|--------|---------------|
-| `packages/base-ui/src/theme/types.ts` | Modify | Add new theme IDs to `ThemeMode` union |
-| `packages/base-ui/src/theme/ThemeProvider.tsx` | Modify | Update `isThemeMode` guard and `color-scheme` mapping |
-| `packages/base-ui/src/theme/styles.css` | Modify | Add 3 new `data-ov-theme` CSS blocks after line 815 |
-| `apps/showcase/src/Dock.tsx` | Modify | Replace light/dark toggle with Menu-based theme picker |
+| File                                           | Action | Responsibility                                         |
+| ---------------------------------------------- | ------ | ------------------------------------------------------ |
+| `packages/base-ui/src/theme/types.ts`          | Modify | Add new theme IDs to `ThemeMode` union                 |
+| `packages/base-ui/src/theme/ThemeProvider.tsx` | Modify | Update `isThemeMode` guard and `color-scheme` mapping  |
+| `packages/base-ui/src/theme/styles.css`        | Modify | Add 3 new `data-ov-theme` CSS blocks after line 815    |
+| `apps/showcase/src/Dock.tsx`                   | Modify | Replace light/dark toggle with Menu-based theme picker |
 
 ---
 
@@ -28,6 +28,7 @@
 ### Task 1: Extend ThemeMode type
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/types.ts:1`
 
 - [ ] **Step 1: Update ThemeMode union**
@@ -42,13 +43,7 @@ With:
 
 ```ts
 export type ThemeMode =
-  | 'dark'
-  | 'light'
-  | 'high-contrast-dark'
-  | 'high-contrast-light'
-  | 'obsidian'
-  | 'carbon'
-  | 'void';
+  'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light' | 'obsidian' | 'carbon' | 'void';
 ```
 
 - [ ] **Step 2: Commit**
@@ -63,6 +58,7 @@ git commit -m "feat(theme): extend ThemeMode with obsidian, carbon, void"
 ### Task 2: Update ThemeProvider
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/ThemeProvider.tsx:33-37,71-72`
 
 - [ ] **Step 1: Update isThemeMode guard**
@@ -95,8 +91,7 @@ const isThemeMode = (value: string): value is ThemeMode =>
 Replace lines 71-72:
 
 ```ts
-      root.style.colorScheme =
-        theme === 'light' || theme === 'high-contrast-light' ? 'light' : 'dark';
+root.style.colorScheme = theme === 'light' || theme === 'high-contrast-light' ? 'light' : 'dark';
 ```
 
 No change needed — the existing logic already maps anything that isn't `'light'` or `'high-contrast-light'` to `'dark'`, so `'obsidian'`, `'carbon'`, and `'void'` will correctly get `colorScheme = 'dark'`. Skip this step.
@@ -113,6 +108,7 @@ git commit -m "feat(theme): update isThemeMode guard for new dark themes"
 ### Task 3: Add Obsidian theme tokens
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/styles.css` — insert after line 815 (end of `high-contrast-light` block)
 
 - [ ] **Step 1: Add Obsidian CSS block**
@@ -120,7 +116,6 @@ git commit -m "feat(theme): update isThemeMode guard for new dark themes"
 Insert after line 815 (`}` closing high-contrast-light):
 
 ```css
-
 /* ---------------------------------------------------------------------------
  * Obsidian — near-black neutral, punchy cobalt accent
  * --------------------------------------------------------------------------- */
@@ -179,12 +174,12 @@ git commit -m "feat(theme): add Obsidian dark theme palette"
 ### Task 4: Add Carbon theme tokens
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/styles.css` — insert after the Obsidian block
 
 - [ ] **Step 1: Add Carbon CSS block**
 
 ```css
-
 /* ---------------------------------------------------------------------------
  * Carbon — pure achromatic grays, maximum content clarity
  * --------------------------------------------------------------------------- */
@@ -243,12 +238,12 @@ git commit -m "feat(theme): add Carbon dark theme palette"
 ### Task 5: Add Void theme tokens
 
 **Files:**
+
 - Modify: `packages/base-ui/src/theme/styles.css` — insert after the Carbon block
 
 - [ ] **Step 1: Add Void CSS block**
 
 ```css
-
 /* ---------------------------------------------------------------------------
  * Void — ultra-deep warm-neutral grays, luxury feel
  * --------------------------------------------------------------------------- */
@@ -309,6 +304,7 @@ git commit -m "feat(theme): add Void dark theme palette"
 ### Task 6: Replace dock toggle with theme picker
 
 **Files:**
+
 - Modify: `apps/showcase/src/Dock.tsx`
 
 The current dock has a simple sun/moon toggle button (lines 95-117). Replace it with a Menu-based picker that shows all available themes grouped by category.
@@ -351,7 +347,7 @@ const THEME_OPTIONS: { id: ThemeMode; label: string }[] = [
 Remove line 14:
 
 ```ts
-  const isDark = theme === 'dark' || theme === 'high-contrast-dark';
+const isDark = theme === 'dark' || theme === 'high-contrast-dark';
 ```
 
 - [ ] **Step 4: Replace the theme toggle section**
@@ -359,41 +355,32 @@ Remove line 14:
 Replace lines 95-117 (the entire `<div className={styles.bottom}>` block) with:
 
 ```tsx
-      <div className={styles.bottom}>
-        <Separator />
-        <Menu.Root>
-          <Menu.Trigger
-            render={({ color: _, ...props }) => (
-              <IconButton
-                {...props}
-                variant="ghost"
-                color="neutral"
-                size="md"
-                aria-label="Switch theme"
-              >
-                <LuPalette />
-              </IconButton>
-            )}
-          />
-          <Menu.Portal>
-            <Menu.Positioner side="right" sideOffset={8} align="end">
-              <Menu.Popup>
-                <Menu.RadioGroup
-                  value={theme}
-                  onValueChange={(value) => setTheme(value as ThemeMode)}
-                >
-                  {THEME_OPTIONS.map((opt) => (
-                    <Menu.RadioItem key={opt.id} value={opt.id}>
-                      {opt.label}
-                      <Menu.RadioItemIndicator />
-                    </Menu.RadioItem>
-                  ))}
-                </Menu.RadioGroup>
-              </Menu.Popup>
-            </Menu.Positioner>
-          </Menu.Portal>
-        </Menu.Root>
-      </div>
+<div className={styles.bottom}>
+  <Separator />
+  <Menu.Root>
+    <Menu.Trigger
+      render={({ color: _, ...props }) => (
+        <IconButton {...props} variant="ghost" color="neutral" size="md" aria-label="Switch theme">
+          <LuPalette />
+        </IconButton>
+      )}
+    />
+    <Menu.Portal>
+      <Menu.Positioner side="right" sideOffset={8} align="end">
+        <Menu.Popup>
+          <Menu.RadioGroup value={theme} onValueChange={(value) => setTheme(value as ThemeMode)}>
+            {THEME_OPTIONS.map((opt) => (
+              <Menu.RadioItem key={opt.id} value={opt.id}>
+                {opt.label}
+                <Menu.RadioItemIndicator />
+              </Menu.RadioItem>
+            ))}
+          </Menu.RadioGroup>
+        </Menu.Popup>
+      </Menu.Positioner>
+    </Menu.Portal>
+  </Menu.Root>
+</div>
 ```
 
 - [ ] **Step 5: Commit**
@@ -426,6 +413,7 @@ Expected: No type errors.
 - [ ] **Step 3: Verify in browser**
 
 Open the showcase app. Click the palette icon in the dock bottom. The menu should show all 7 themes. Select each of the new themes (Void, Obsidian, Carbon) and verify:
+
 - Backgrounds are visibly deeper/darker than the classic "Dark" theme
 - Text contrast is crisp (primary text near white)
 - Accent blue is vibrant

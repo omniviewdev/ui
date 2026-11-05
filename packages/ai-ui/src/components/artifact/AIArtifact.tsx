@@ -16,21 +16,22 @@ export interface AIArtifactProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export const AIArtifact = forwardRef<HTMLDivElement, AIArtifactProps>(
-  function AIArtifact({ open, variant = 'embedded', className, children, ...rest }, ref) {
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-variant={variant}
-        data-ov-open={open}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+export const AIArtifact = forwardRef<HTMLDivElement, AIArtifactProps>(function AIArtifact(
+  { open, variant = 'embedded', className, children, ...rest },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Root, className)}
+      data-ov-variant={variant}
+      data-ov-open={open}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+});
 
 /* -------------------------------------------------------------------------- */
 /*  AIArtifactHeader                                                          */

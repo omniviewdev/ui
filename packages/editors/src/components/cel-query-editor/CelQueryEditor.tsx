@@ -1,15 +1,18 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type * as Monaco from 'monaco-editor';
 import type {
-  QueryEditorRenderProps, QueryHoverService, QuerySignatureService, QueryLanguageService,
+  QueryEditorRenderProps,
+  QueryHoverService,
+  QuerySignatureService,
+  QueryLanguageService,
 } from '@omniviewdev/base-ui';
 import { attachCelBridge, type CelEditorBridge } from './bridge';
 import { CEL_LANGUAGE_ID } from './language';
 import styles from './CelQueryEditor.module.css';
 
-// Uses CodeEditor's existing Monaco instance/theme/worker ownership, loaded only in code mode.
-const LazyCodeEditor = lazy(() => import('../code-editor/CodeEditor').then(module => ({ default: module.CodeEditor })));
+// Reuses CodeEditor's Monaco instance, theme, and worker ownership.
+import { CodeEditor } from '../code-editor/CodeEditor';
 let nextEditorId = 0;
 
 export interface CelQueryEditorProps extends QueryEditorRenderProps {
@@ -28,9 +31,21 @@ export interface CelQueryEditorProps extends QueryEditorRenderProps {
 /** Controlled, contextual CEL surface. This component never parses or evaluates CEL. */
 export function CelQueryEditor(props: CelQueryEditorProps) {
   const {
-    document, contextKey, request, check, hover, signature, disabled, availability,
-    debounceMs = 250, maxSuggestions = 100, label = 'CEL query', placeholder = 'Enter a CEL expression…',
-    minHeight = 52, maxHeight = 180, className,
+    document,
+    contextKey,
+    request,
+    check,
+    hover,
+    signature,
+    disabled,
+    availability,
+    debounceMs = 250,
+    maxSuggestions = 100,
+    label = 'CEL query',
+    placeholder = 'Enter a CEL expression…',
+    minHeight = 52,
+    maxHeight = 180,
+    className,
   } = props;
   const latest = useRef(props);
   useLayoutEffect(() => {
@@ -66,8 +81,21 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
 
   useEffect(() => {
     bridgeRef.current?.refresh();
-  }, [document.text, document.version, contextKey, request, check, hover, signature,
-    disabled, availability?.status, availability?.message, maxSuggestions, debounceMs, instance]);
+  }, [
+    document.text,
+    document.version,
+    contextKey,
+    request,
+    check,
+    hover,
+    signature,
+    disabled,
+    availability?.status,
+    availability?.message,
+    maxSuggestions,
+    debounceMs,
+    instance,
+  ]);
 
   useEffect(() => {
     const editor = instance?.editor;
@@ -82,18 +110,33 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
   }
 
   return (
-    <div className={`${styles.Root} ${className ?? ''}`} data-testid="cel-query-editor"
-      data-context-key={contextKey} data-availability={availability?.status ?? 'ready'}>
+    <div
+      className={`${styles.Root} ${className ?? ''}`}
+      data-testid="cel-query-editor"
+      data-context-key={contextKey}
+      data-availability={availability?.status ?? 'ready'}
+    >
       <div className={styles.Label}>{label}</div>
-      <div className={styles.Surface}
-        style={{ '--_cel-editor-min-height': `${minHeight}px` } as CSSProperties}>
-        <Suspense fallback={<div role="status" className={styles.Loading}>Loading CEL editor…</div>}>
-          <LazyCodeEditor
+      <div
+        className={styles.Surface}
+        style={{ '--_cel-editor-min-height': `${minHeight}px` } as CSSProperties}
+      >
+        <Suspense
+          fallback={
+            <div role="status" className={styles.Loading}>
+              Loading CEL editor…
+            </div>
+          }
+        >
+          <CodeEditor
             value={document.text}
-            onChange={text => {
+            onChange={(text) => {
               const current = latest.current;
               // Keep an immediate snapshot for manual requests before the controlled render commits.
-              latest.current = { ...current, document: { text, version: current.document.version + 1 } };
+              latest.current = {
+                ...current,
+                document: { text, version: current.document.version + 1 },
+              };
               current.onChange(text);
             }}
             filename={filename}
@@ -109,13 +152,27 @@ export function CelQueryEditor(props: CelQueryEditorProps) {
             onMount={mount}
           />
         </Suspense>
-        {!document.text && !blocked ? <div className={styles.Placeholder} aria-hidden="true">{placeholder}</div> : null}
+        {!document.text && !blocked ? (
+          <div className={styles.Placeholder} aria-hidden="true">
+            {placeholder}
+          </div>
+        ) : null}
       </div>
       {message || availability?.message ? (
-        <div role={availability?.status === 'denied' || availability?.status === 'error' ? 'alert' : 'status'}
-          className={styles.Message}>{message ?? availability?.message}</div>
+        <div
+          role={
+            availability?.status === 'denied' || availability?.status === 'error'
+              ? 'alert'
+              : 'status'
+          }
+          className={styles.Message}
+        >
+          {message ?? availability?.message}
+        </div>
       ) : null}
-      <div className={styles.Hint}>Ctrl+Space suggestions · ⌘/Ctrl+Enter run · Enter accepts a suggestion</div>
+      <div className={styles.Hint}>
+        Ctrl+Space suggestions · ⌘/Ctrl+Enter run · Enter accepts a suggestion
+      </div>
     </div>
   );
 }

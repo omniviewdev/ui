@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIErrorMessage } from './AIErrorMessage';
 
@@ -6,7 +7,8 @@ const meta: Meta<typeof AIErrorMessage> = {
   component: AIErrorMessage,
   tags: ['autodocs'],
   args: {
-    message: 'The model encountered an unexpected error while generating a response. Please try again.',
+    message:
+      'The model encountered an unexpected error while generating a response. Please try again.',
   },
   decorators: [
     (Story) => (
@@ -22,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   args: {
-    onRetry: () => console.log('retry'),
+    onRetry: action('retry'),
   },
 };
 

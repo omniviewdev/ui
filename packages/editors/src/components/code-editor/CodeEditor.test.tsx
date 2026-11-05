@@ -7,7 +7,6 @@ import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
 let mockEditorInstance: Record<string, unknown>;
 let mockModel: Record<string, unknown>;
 
-
 const mockCreate = vi.fn();
 const mockGetModel = vi.fn();
 const mockCreateModel = vi.fn();
@@ -83,7 +82,6 @@ vi.mock('../../schemas', () => ({
   },
 }));
 
-
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetModel.mockReturnValue(null);
@@ -110,20 +108,12 @@ describe('CodeEditor', () => {
 
   it('detects language from filename', () => {
     render(<CodeEditor value="" filename="app.tsx" />);
-    expect(mockCreateModel).toHaveBeenCalledWith(
-      '',
-      'typescript',
-      expect.anything(),
-    );
+    expect(mockCreateModel).toHaveBeenCalledWith('', 'typescript', expect.anything());
   });
 
   it('uses explicit language over filename detection', () => {
     render(<CodeEditor value="" language="python" filename="app.tsx" />);
-    expect(mockCreateModel).toHaveBeenCalledWith(
-      '',
-      'python',
-      expect.anything(),
-    );
+    expect(mockCreateModel).toHaveBeenCalledWith('', 'python', expect.anything());
   });
 
   it('passes readOnly to editor options', () => {
@@ -138,19 +128,13 @@ describe('CodeEditor', () => {
     const json = '{"a":1}';
     render(<CodeEditor value={json} language="json" />);
     const formatted = JSON.stringify({ a: 1 }, null, 2);
-    expect(mockCreateModel).toHaveBeenCalledWith(
-      formatted,
-      'json',
-    );
+    expect(mockCreateModel).toHaveBeenCalledWith(formatted, 'json');
   });
 
   it('passes through invalid JSON unchanged', () => {
     const badJson = '{not valid json}';
     render(<CodeEditor value={badJson} language="json" />);
-    expect(mockCreateModel).toHaveBeenCalledWith(
-      badJson,
-      'json',
-    );
+    expect(mockCreateModel).toHaveBeenCalledWith(badJson, 'json');
   });
 
   it('merges className', () => {
@@ -217,20 +201,26 @@ describe('CodeEditor', () => {
   it('rebuilds its theme from current tokens when switching custom themes with the same base', () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'editor-test' } as const;
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:editor-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#111111' },
-    }, owner);
-    registry.register({
-      schemaVersion: 1,
-      id: 'plugin:editor-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#222222' },
-    }, owner);
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:editor-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#111111' },
+      },
+      owner,
+    );
+    registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:editor-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      },
+      owner,
+    );
 
     const mounted = rtlRender(
       <ThemeProvider themeId="plugin:editor-test/first" registry={registry}>
@@ -255,20 +245,26 @@ describe('CodeEditor', () => {
     const firstRegistry = createThemeRegistry();
     const secondRegistry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'global-theme-test' } as const;
-    const disposeFirst = firstRegistry.register({
-      schemaVersion: 1,
-      id: 'plugin:global-theme-test/first',
-      name: 'First',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#111111' },
-    }, owner);
-    secondRegistry.register({
-      schemaVersion: 1,
-      id: 'plugin:global-theme-test/second',
-      name: 'Second',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#222222' },
-    }, owner);
+    const disposeFirst = firstRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:global-theme-test/first',
+        name: 'First',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#111111' },
+      },
+      owner,
+    );
+    secondRegistry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:global-theme-test/second',
+        name: 'Second',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#222222' },
+      },
+      owner,
+    );
     const firstRoot = document.createElement('div');
     const secondRoot = document.createElement('div');
     document.body.append(firstRoot, secondRoot);
@@ -310,13 +306,16 @@ describe('CodeEditor', () => {
 
     act(() => {
       disposeFirst();
-      firstRegistry.register({
-        schemaVersion: 1,
-        id: 'plugin:global-theme-test/first',
-        name: 'First reloaded',
-        base: 'dark',
-        tokens: { 'color.editor.bg': '#333333' },
-      }, owner);
+      firstRegistry.register(
+        {
+          schemaVersion: 1,
+          id: 'plugin:global-theme-test/first',
+          name: 'First reloaded',
+          base: 'dark',
+          tokens: { 'color.editor.bg': '#333333' },
+        },
+        owner,
+      );
     });
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(
@@ -332,13 +331,16 @@ describe('CodeEditor', () => {
   it('rebuilds its theme when the active registration is replaced with the same ID and base', () => {
     const registry = createThemeRegistry();
     const owner = { kind: 'plugin', id: 'editor-reload-test' } as const;
-    const dispose = registry.register({
-      schemaVersion: 1,
-      id: 'plugin:editor-reload-test/theme',
-      name: 'Reloadable',
-      base: 'dark',
-      tokens: { 'color.editor.bg': '#111111' },
-    }, owner);
+    const dispose = registry.register(
+      {
+        schemaVersion: 1,
+        id: 'plugin:editor-reload-test/theme',
+        name: 'Reloadable',
+        base: 'dark',
+        tokens: { 'color.editor.bg': '#111111' },
+      },
+      owner,
+    );
 
     rtlRender(
       <ThemeProvider themeId="plugin:editor-reload-test/theme" registry={registry}>
@@ -348,13 +350,16 @@ describe('CodeEditor', () => {
 
     act(() => {
       dispose();
-      registry.register({
-        schemaVersion: 1,
-        id: 'plugin:editor-reload-test/theme',
-        name: 'Reloaded',
-        base: 'dark',
-        tokens: { 'color.editor.bg': '#222222' },
-      }, owner);
+      registry.register(
+        {
+          schemaVersion: 1,
+          id: 'plugin:editor-reload-test/theme',
+          name: 'Reloaded',
+          base: 'dark',
+          tokens: { 'color.editor.bg': '#222222' },
+        },
+        owner,
+      );
     });
 
     expect(mockDefineTheme).toHaveBeenLastCalledWith(

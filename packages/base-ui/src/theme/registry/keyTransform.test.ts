@@ -10,9 +10,7 @@ describe('dottedKeyToCssVar', () => {
   });
 
   it('handles deeper hierarchies with multiple dots', () => {
-    expect(dottedKeyToCssVar('color.bg.surface.raised')).toBe(
-      '--ov-color-bg-surface-raised',
-    );
+    expect(dottedKeyToCssVar('color.bg.surface.raised')).toBe('--ov-color-bg-surface-raised');
   });
 });
 
@@ -23,8 +21,9 @@ describe('validateKeys', () => {
   });
 
   it('returns unknown keys as invalid', () => {
-    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], THEME_TOKEN_METADATA))
-      .toEqual(['color.bogus.nope']);
+    expect(validateKeys(['color.bg.base', 'color.bogus.nope'], THEME_TOKEN_METADATA)).toEqual([
+      'color.bogus.nope',
+    ]);
   });
 
   it('handles empty input', () => {

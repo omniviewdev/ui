@@ -23,14 +23,16 @@ function Reader() {
   const theme = useTheme();
   return (
     <div>
-      <output data-testid="state">{JSON.stringify({
-        requestedThemeId: theme.requestedThemeId,
-        activeThemeId: theme.activeTheme.id,
-        isFallback: theme.isFallback,
-        density: theme.density,
-        motion: theme.motion,
-        textSize: theme.textSize,
-      })}</output>
+      <output data-testid="state">
+        {JSON.stringify({
+          requestedThemeId: theme.requestedThemeId,
+          activeThemeId: theme.activeTheme.id,
+          isFallback: theme.isFallback,
+          density: theme.density,
+          motion: theme.motion,
+          textSize: theme.textSize,
+        })}
+      </output>
       <button onClick={() => theme.setTheme('light')}>theme</button>
       <button onClick={() => theme.setDensity('compact')}>density</button>
       <button onClick={() => theme.setMotion('reduced')}>motion</button>
@@ -43,9 +45,19 @@ function read() {
   return JSON.parse(screen.getByTestId('state').textContent!);
 }
 
-function Harness({ initial = 'dark', registry = createThemeRegistry() }: { initial?: string; registry?: ThemeRegistry }) {
+function Harness({
+  initial = 'dark',
+  registry = createThemeRegistry(),
+}: {
+  initial?: string;
+  registry?: ThemeRegistry;
+}) {
   const [themeId, setThemeId] = useState(initial);
-  return <ThemeProvider themeId={themeId} onThemeChange={setThemeId} registry={registry}><Reader /></ThemeProvider>;
+  return (
+    <ThemeProvider themeId={themeId} onThemeChange={setThemeId} registry={registry}>
+      <Reader />
+    </ThemeProvider>
+  );
 }
 
 afterEach(() => {
@@ -60,17 +72,31 @@ afterEach(() => {
 describe('controlled ThemeProvider', () => {
   it('resolves and applies a known controlled selection', () => {
     render(<Harness initial="light" />);
-    expect(read()).toMatchObject({ requestedThemeId: 'light', activeThemeId: 'light', isFallback: false });
+    expect(read()).toMatchObject({
+      requestedThemeId: 'light',
+      activeThemeId: 'light',
+      isFallback: false,
+    });
     expect(document.documentElement.dataset.ovTheme).toBe('light');
   });
 
   it('falls back while preserving a missing requested id, then activates it after registration', () => {
     const registry = createThemeRegistry();
     render(<Harness initial="plugin:acme/slate" registry={registry} />);
-    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'void', isFallback: true });
+    expect(read()).toMatchObject({
+      requestedThemeId: 'plugin:acme/slate',
+      activeThemeId: 'void',
+      isFallback: true,
+    });
 
-    act(() => { registry.register(pluginTheme, owner); });
-    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'plugin:acme/slate', isFallback: false });
+    act(() => {
+      registry.register(pluginTheme, owner);
+    });
+    expect(read()).toMatchObject({
+      requestedThemeId: 'plugin:acme/slate',
+      activeThemeId: 'plugin:acme/slate',
+      isFallback: false,
+    });
   });
 
   it('falls back when the active registration is removed', () => {
@@ -78,25 +104,41 @@ describe('controlled ThemeProvider', () => {
     const dispose = registry.register(pluginTheme, owner);
     render(<Harness initial="plugin:acme/slate" registry={registry} />);
     act(dispose);
-    expect(read()).toMatchObject({ requestedThemeId: 'plugin:acme/slate', activeThemeId: 'void', isFallback: true });
+    expect(read()).toMatchObject({
+      requestedThemeId: 'plugin:acme/slate',
+      activeThemeId: 'void',
+      isFallback: true,
+    });
     expect(document.documentElement.style.getPropertyValue('--ov-color-bg-base')).toBe('');
   });
 
   it('uses the configured fallback theme', () => {
-    render(<ThemeProvider themeId="missing" fallbackThemeId="light"><Reader /></ThemeProvider>);
+    render(
+      <ThemeProvider themeId="missing" fallbackThemeId="light">
+        <Reader />
+      </ThemeProvider>,
+    );
     expect(read()).toMatchObject({ activeThemeId: 'light', isFallback: true });
   });
 
   it('setTheme only requests a controlled change', () => {
     const onThemeChange = vi.fn();
-    render(<ThemeProvider themeId="dark" onThemeChange={onThemeChange}><Reader /></ThemeProvider>);
+    render(
+      <ThemeProvider themeId="dark" onThemeChange={onThemeChange}>
+        <Reader />
+      </ThemeProvider>,
+    );
     fireEvent.click(screen.getByText('theme'));
     expect(onThemeChange).toHaveBeenCalledWith('light');
     expect(read()).toMatchObject({ requestedThemeId: 'dark', activeThemeId: 'dark' });
   });
 
   it('keeps density and motion as provider-local state and applies attributes', () => {
-    render(<ThemeProvider themeId="dark" initialDensity="comfortable" initialMotion="normal"><Reader /></ThemeProvider>);
+    render(
+      <ThemeProvider themeId="dark" initialDensity="comfortable" initialMotion="normal">
+        <Reader />
+      </ThemeProvider>,
+    );
     fireEvent.click(screen.getByText('density'));
     fireEvent.click(screen.getByText('motion'));
     expect(read()).toMatchObject({ density: 'compact', motion: 'reduced' });
@@ -140,43 +182,56 @@ describe('controlled ThemeProvider', () => {
     root.remove();
   });
 
-  it.each(['dark', 'light', 'void'])('resolves scaled text aliases locally for %s roots', (themeId) => {
-    const root = document.createElement('div');
-    document.body.append(root);
-    const mounted = render(
-      <ThemeProvider themeId={themeId} root={root} initialTextSize="125">
-        <Reader />
-      </ThemeProvider>,
-    );
-    const styles = getComputedStyle(root);
-    expect(styles.getPropertyValue('--ov-font-size-body').trim()).toBe(
-      'var(--ov-primitive-font-size-14)',
-    );
-    expect(styles.getPropertyValue('--ov-size-button-font-size-md').trim()).toBe(
-      'var(--ov-primitive-font-size-13)',
-    );
-    expect(styles.getPropertyValue('--ov-font-size-md').trim()).toBe(
-      'var(--ov-size-button-font-size-md)',
-    );
-    expect(styles.getPropertyValue('--ov-primitive-font-size-14').replace(/\s/g, '')).toBe(
-      'calc(1rem*var(--_ov-ui-text-scale,1))',
-    );
-    expect(styles.fontSize).toBe('var(--ov-primitive-font-size-14)');
-    mounted.unmount();
-    root.remove();
-  });
+  it.each(['dark', 'light', 'void'])(
+    'resolves scaled text aliases locally for %s roots',
+    (themeId) => {
+      const root = document.createElement('div');
+      document.body.append(root);
+      const mounted = render(
+        <ThemeProvider themeId={themeId} root={root} initialTextSize="125">
+          <Reader />
+        </ThemeProvider>,
+      );
+      const styles = getComputedStyle(root);
+      expect(styles.getPropertyValue('--ov-font-size-body').trim()).toBe(
+        'var(--ov-primitive-font-size-14)',
+      );
+      expect(styles.getPropertyValue('--ov-size-button-font-size-md').trim()).toBe(
+        'var(--ov-primitive-font-size-13)',
+      );
+      expect(styles.getPropertyValue('--ov-font-size-md').trim()).toBe(
+        'var(--ov-size-button-font-size-md)',
+      );
+      expect(styles.getPropertyValue('--ov-primitive-font-size-14').replace(/\s/g, '')).toBe(
+        'calc(1rem*var(--_ov-ui-text-scale,1))',
+      );
+      expect(styles.fontSize).toBe('var(--ov-primitive-font-size-14)');
+      mounted.unmount();
+      root.remove();
+    },
+  );
 
   it('removes density and motion attributes when the root changes', () => {
     const firstRoot = document.createElement('div');
     const secondRoot = document.createElement('div');
     const mounted = render(
-      <ThemeProvider themeId="dark" root={firstRoot} initialDensity="compact" initialMotion="reduced">
+      <ThemeProvider
+        themeId="dark"
+        root={firstRoot}
+        initialDensity="compact"
+        initialMotion="reduced"
+      >
         <Reader />
       </ThemeProvider>,
     );
 
     mounted.rerender(
-      <ThemeProvider themeId="dark" root={secondRoot} initialDensity="compact" initialMotion="reduced">
+      <ThemeProvider
+        themeId="dark"
+        root={secondRoot}
+        initialDensity="compact"
+        initialMotion="reduced"
+      >
         <Reader />
       </ThemeProvider>,
     );
@@ -190,11 +245,15 @@ describe('controlled ThemeProvider', () => {
   it('removes density and motion attributes when its root becomes null', () => {
     const root = document.createElement('div');
     const mounted = render(
-      <ThemeProvider themeId="dark" root={root}><Reader /></ThemeProvider>,
+      <ThemeProvider themeId="dark" root={root}>
+        <Reader />
+      </ThemeProvider>,
     );
 
     mounted.rerender(
-      <ThemeProvider themeId="dark" root={null}><Reader /></ThemeProvider>,
+      <ThemeProvider themeId="dark" root={null}>
+        <Reader />
+      </ThemeProvider>,
     );
 
     expect(root.dataset.ovDensity).toBeUndefined();
@@ -209,7 +268,9 @@ describe('controlled ThemeProvider', () => {
       </ThemeProvider>,
     );
     const later = render(
-      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={root}>
+        <span />
+      </ThemeProvider>,
     );
 
     later.unmount();
@@ -225,16 +286,25 @@ describe('controlled ThemeProvider', () => {
     const originalRoot = document.createElement('div');
     const nextRoot = document.createElement('div');
     render(
-      <ThemeProvider themeId="dark" root={originalRoot} initialDensity="compact" initialMotion="reduced">
+      <ThemeProvider
+        themeId="dark"
+        root={originalRoot}
+        initialDensity="compact"
+        initialMotion="reduced"
+      >
         <span />
       </ThemeProvider>,
     );
     const later = render(
-      <ThemeProvider themeId="light" root={originalRoot}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={originalRoot}>
+        <span />
+      </ThemeProvider>,
     );
 
     later.rerender(
-      <ThemeProvider themeId="light" root={nextRoot}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={nextRoot}>
+        <span />
+      </ThemeProvider>,
     );
 
     expect(originalRoot.dataset.ovDensity).toBe('compact');
@@ -251,11 +321,15 @@ describe('controlled ThemeProvider', () => {
       </ThemeProvider>,
     );
     const later = render(
-      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={root}>
+        <span />
+      </ThemeProvider>,
     );
 
     later.rerender(
-      <ThemeProvider themeId="light" root={null}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={null}>
+        <span />
+      </ThemeProvider>,
     );
 
     expect(root.dataset.ovDensity).toBe('compact');
@@ -270,7 +344,9 @@ describe('controlled ThemeProvider', () => {
       </ThemeProvider>,
     );
     const later = render(
-      <ThemeProvider themeId="light" root={root}><span /></ThemeProvider>,
+      <ThemeProvider themeId="light" root={root}>
+        <span />
+      </ThemeProvider>,
     );
 
     earlier.unmount();
@@ -292,7 +368,11 @@ describe('controlled ThemeProvider', () => {
   });
 
   it('supports Strict Mode without losing applied state', () => {
-    render(<StrictMode><Harness initial="light" /></StrictMode>);
+    render(
+      <StrictMode>
+        <Harness initial="light" />
+      </StrictMode>,
+    );
     expect(document.documentElement.dataset.ovTheme).toBe('light');
   });
 
@@ -343,5 +423,4 @@ describe('controlled ThemeProvider', () => {
     mounted.unmount();
     root.remove();
   });
-
 });

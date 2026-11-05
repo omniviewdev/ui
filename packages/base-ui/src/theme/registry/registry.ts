@@ -120,11 +120,7 @@ export function createThemeRegistry(): ThemeRegistry {
         );
       }
       if (!ownerMatches(registered.owner, owner)) {
-        throw new ThemeValidationError(
-          'owner_mismatch',
-          'owner',
-          `Theme "${id}" owner mismatch`,
-        );
+        throw new ThemeValidationError('owner_mismatch', 'owner', `Theme "${id}" owner mismatch`);
       }
       themes.delete(id);
       invalidateSnapshot();

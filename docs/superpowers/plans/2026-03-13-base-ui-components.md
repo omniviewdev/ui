@@ -16,35 +16,35 @@
 
 ### Modified files
 
-| File | Responsibility |
-|------|---------------|
-| `packages/base-ui/src/components/tabs/Tabs.tsx` | Add `endDecorator` prop to `TabsTab` |
-| `packages/base-ui/src/components/tabs/Tabs.module.css` | Add `.TabDecorator` class |
-| `packages/base-ui/src/components/tabs/index.ts` | No change needed (type re-exported already) |
-| `packages/base-ui/src/components/tabs/Tabs.test.tsx` | Add test for `endDecorator` |
-| `packages/base-ui/src/components/tabs/Tabs.stories.tsx` | Add story showing badges |
-| `packages/base-ui/src/components/index.ts` | Add `sortable-table` and `file-table` exports |
-| `apps/showcase/src/demos/file-explorer/components/FilePane.tsx` | Refactor to use `FileTable` |
-| `apps/showcase/src/demos/file-explorer/components/TransferPanel.tsx` | Refactor to use `Tabs` + `Progress` |
-| `apps/showcase/src/demos/file-explorer/components/TransferPanel.module.css` | Remove hand-rolled tab/progress styles |
-| `apps/showcase/src/demos/file-explorer/data.ts` | Move `formatBytes`, `formatDate`, `fileTypeLabel` to base-ui |
+| File                                                                        | Responsibility                                               |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `packages/base-ui/src/components/tabs/Tabs.tsx`                             | Add `endDecorator` prop to `TabsTab`                         |
+| `packages/base-ui/src/components/tabs/Tabs.module.css`                      | Add `.TabDecorator` class                                    |
+| `packages/base-ui/src/components/tabs/index.ts`                             | No change needed (type re-exported already)                  |
+| `packages/base-ui/src/components/tabs/Tabs.test.tsx`                        | Add test for `endDecorator`                                  |
+| `packages/base-ui/src/components/tabs/Tabs.stories.tsx`                     | Add story showing badges                                     |
+| `packages/base-ui/src/components/index.ts`                                  | Add `sortable-table` and `file-table` exports                |
+| `apps/showcase/src/demos/file-explorer/components/FilePane.tsx`             | Refactor to use `FileTable`                                  |
+| `apps/showcase/src/demos/file-explorer/components/TransferPanel.tsx`        | Refactor to use `Tabs` + `Progress`                          |
+| `apps/showcase/src/demos/file-explorer/components/TransferPanel.module.css` | Remove hand-rolled tab/progress styles                       |
+| `apps/showcase/src/demos/file-explorer/data.ts`                             | Move `formatBytes`, `formatDate`, `fileTypeLabel` to base-ui |
 
 ### New files
 
-| File | Responsibility |
-|------|---------------|
-| `packages/base-ui/src/components/sortable-table/useSortableTable.ts` | Headless sorting hook |
-| `packages/base-ui/src/components/sortable-table/useSortableTable.test.ts` | Hook tests |
-| `packages/base-ui/src/components/sortable-table/SortableHeader.tsx` | Clickable column header with sort indicator |
-| `packages/base-ui/src/components/sortable-table/SortableHeader.module.css` | Header styles |
-| `packages/base-ui/src/components/sortable-table/SortableHeader.test.tsx` | Header component tests |
-| `packages/base-ui/src/components/sortable-table/index.ts` | Public exports |
-| `packages/base-ui/src/components/file-table/FileTable.tsx` | Root, Header, Body, Status, Column compounds |
-| `packages/base-ui/src/components/file-table/FileTable.module.css` | Table styles |
-| `packages/base-ui/src/components/file-table/FileTableContext.tsx` | Shared context |
-| `packages/base-ui/src/components/file-table/utils.ts` | formatBytes, formatDate, fileTypeLabel |
-| `packages/base-ui/src/components/file-table/FileTable.test.tsx` | Integration tests |
-| `packages/base-ui/src/components/file-table/index.ts` | Public exports |
+| File                                                                       | Responsibility                               |
+| -------------------------------------------------------------------------- | -------------------------------------------- |
+| `packages/base-ui/src/components/sortable-table/useSortableTable.ts`       | Headless sorting hook                        |
+| `packages/base-ui/src/components/sortable-table/useSortableTable.test.ts`  | Hook tests                                   |
+| `packages/base-ui/src/components/sortable-table/SortableHeader.tsx`        | Clickable column header with sort indicator  |
+| `packages/base-ui/src/components/sortable-table/SortableHeader.module.css` | Header styles                                |
+| `packages/base-ui/src/components/sortable-table/SortableHeader.test.tsx`   | Header component tests                       |
+| `packages/base-ui/src/components/sortable-table/index.ts`                  | Public exports                               |
+| `packages/base-ui/src/components/file-table/FileTable.tsx`                 | Root, Header, Body, Status, Column compounds |
+| `packages/base-ui/src/components/file-table/FileTable.module.css`          | Table styles                                 |
+| `packages/base-ui/src/components/file-table/FileTableContext.tsx`          | Shared context                               |
+| `packages/base-ui/src/components/file-table/utils.ts`                      | formatBytes, formatDate, fileTypeLabel       |
+| `packages/base-ui/src/components/file-table/FileTable.test.tsx`            | Integration tests                            |
+| `packages/base-ui/src/components/file-table/index.ts`                      | Public exports                               |
 
 ---
 
@@ -53,6 +53,7 @@
 ### Task 1: Tabs.Tab `endDecorator`
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/tabs/Tabs.tsx`
 - Modify: `packages/base-ui/src/components/tabs/Tabs.module.css`
 - Modify: `packages/base-ui/src/components/tabs/Tabs.test.tsx`
@@ -170,13 +171,61 @@ export const WithBadges: Story = {
   render: (args) => (
     <Tabs.Root {...args} defaultValue="queued" style={{ width: 520 }}>
       <Tabs.List aria-label="Transfer status">
-        <Tabs.Tab value="queued" endDecorator={<span style={{ fontSize: 10, background: 'var(--ov-color-info-soft)', color: 'var(--ov-color-info)', padding: '0 4px', borderRadius: 999, fontWeight: 600 }}>2</span>}>
+        <Tabs.Tab
+          value="queued"
+          endDecorator={
+            <span
+              style={{
+                fontSize: 10,
+                background: 'var(--ov-color-info-soft)',
+                color: 'var(--ov-color-info)',
+                padding: '0 4px',
+                borderRadius: 999,
+                fontWeight: 600,
+              }}
+            >
+              2
+            </span>
+          }
+        >
           Queued
         </Tabs.Tab>
-        <Tabs.Tab value="failed" endDecorator={<span style={{ fontSize: 10, background: 'var(--ov-color-danger-soft)', color: 'var(--ov-color-danger)', padding: '0 4px', borderRadius: 999, fontWeight: 600 }}>1</span>}>
+        <Tabs.Tab
+          value="failed"
+          endDecorator={
+            <span
+              style={{
+                fontSize: 10,
+                background: 'var(--ov-color-danger-soft)',
+                color: 'var(--ov-color-danger)',
+                padding: '0 4px',
+                borderRadius: 999,
+                fontWeight: 600,
+              }}
+            >
+              1
+            </span>
+          }
+        >
           Failed
         </Tabs.Tab>
-        <Tabs.Tab value="completed" endDecorator={<span style={{ fontSize: 10, background: 'var(--ov-color-success-soft)', color: 'var(--ov-color-success)', padding: '0 4px', borderRadius: 999, fontWeight: 600 }}>5</span>}>
+        <Tabs.Tab
+          value="completed"
+          endDecorator={
+            <span
+              style={{
+                fontSize: 10,
+                background: 'var(--ov-color-success-soft)',
+                color: 'var(--ov-color-success)',
+                padding: '0 4px',
+                borderRadius: 999,
+                fontWeight: 600,
+              }}
+            >
+              5
+            </span>
+          }
+        >
           Completed
         </Tabs.Tab>
         <Tabs.Indicator />
@@ -206,6 +255,7 @@ git commit -m "feat(tabs): add endDecorator prop to Tabs.Tab"
 ### Task 2: `useSortableTable` Hook
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/sortable-table/useSortableTable.ts`
 - Create: `packages/base-ui/src/components/sortable-table/useSortableTable.test.ts`
 - Create: `packages/base-ui/src/components/sortable-table/index.ts`
@@ -249,9 +299,7 @@ describe('useSortableTable', () => {
       }),
     );
 
-    expect(result.current.sortedData.map((i) => i.name)).toEqual([
-      'apple', 'banana', 'cherry',
-    ]);
+    expect(result.current.sortedData.map((i) => i.name)).toEqual(['apple', 'banana', 'cherry']);
     expect(result.current.sort).toEqual({ key: 'name', direction: 'asc' });
   });
 
@@ -267,9 +315,7 @@ describe('useSortableTable', () => {
     act(() => result.current.onSort('name'));
 
     expect(result.current.sort.direction).toBe('desc');
-    expect(result.current.sortedData.map((i) => i.name)).toEqual([
-      'cherry', 'banana', 'apple',
-    ]);
+    expect(result.current.sortedData.map((i) => i.name)).toEqual(['cherry', 'banana', 'apple']);
   });
 
   it('switches to ascending when clicking a different column', () => {
@@ -322,11 +368,8 @@ describe('useSortableTable', () => {
   });
 
   it('sorts undefined values last', () => {
-    const itemsWithUndefined = [
-      ...items,
-      { id: '4', name: 'date-less', size: 0, date: '' },
-    ];
-    const colsWithUndef: SortableColumnDef<typeof itemsWithUndefined[0]>[] = [
+    const itemsWithUndefined = [...items, { id: '4', name: 'date-less', size: 0, date: '' }];
+    const colsWithUndef: SortableColumnDef<(typeof itemsWithUndefined)[0]>[] = [
       { id: 'date', header: 'Date', accessor: (i) => i.date || undefined },
     ];
 
@@ -362,9 +405,7 @@ describe('useSortableTable', () => {
   });
 
   it('defaults to first sortable column when no defaultSort given', () => {
-    const { result } = renderHook(() =>
-      useSortableTable({ data: items, columns }),
-    );
+    const { result } = renderHook(() => useSortableTable({ data: items, columns }));
 
     expect(result.current.sort.key).toBe('name');
     expect(result.current.sort.direction).toBe('asc');
@@ -505,6 +546,7 @@ git commit -m "feat(sortable-table): add useSortableTable hook"
 ### Task 3: `SortableHeader` Component
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/sortable-table/SortableHeader.tsx`
 - Create: `packages/base-ui/src/components/sortable-table/SortableHeader.module.css`
 - Create: `packages/base-ui/src/components/sortable-table/SortableHeader.test.tsx`
@@ -692,11 +734,7 @@ function SortIcon({ direction }: { direction: 'asc' | 'desc' }) {
       aria-label={label}
       role="img"
     >
-      {direction === 'asc' ? (
-        <path d="M5 2L8.5 7H1.5L5 2Z" />
-      ) : (
-        <path d="M5 8L1.5 3H8.5L5 8Z" />
-      )}
+      {direction === 'asc' ? <path d="M5 2L8.5 7H1.5L5 2Z" /> : <path d="M5 8L1.5 3H8.5L5 8Z" />}
     </svg>
   );
 }
@@ -805,6 +843,7 @@ git commit -m "feat(sortable-table): add useSortableTable hook and SortableHeade
 ### Task 4: FileTable Utilities
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/file-table/utils.ts`
 
 - [ ] **Step 1: Create utility functions**
@@ -835,12 +874,26 @@ export function fileTypeLabel(node: { type: string; extension?: string }): strin
   if (node.type === 'folder') return 'Directory';
   if (!node.extension) return 'File';
   const map: Record<string, string> = {
-    ts: 'ts-file', tsx: 'tsx-file', js: 'js-file', jsx: 'jsx-file',
-    json: 'json-file', yaml: 'yaml-file', yml: 'yaml-file',
-    css: 'css-file', html: 'html-file', md: 'markdown',
-    png: 'image', jpg: 'image', webp: 'image', svg: 'svg-file',
-    ico: 'icon', woff2: 'font', gz: 'archive', txt: 'text-file',
-    cjs: 'js-file', gitignore: 'config',
+    ts: 'ts-file',
+    tsx: 'tsx-file',
+    js: 'js-file',
+    jsx: 'jsx-file',
+    json: 'json-file',
+    yaml: 'yaml-file',
+    yml: 'yaml-file',
+    css: 'css-file',
+    html: 'html-file',
+    md: 'markdown',
+    png: 'image',
+    jpg: 'image',
+    webp: 'image',
+    svg: 'svg-file',
+    ico: 'icon',
+    woff2: 'font',
+    gz: 'archive',
+    txt: 'text-file',
+    cjs: 'js-file',
+    gitignore: 'config',
   };
   return map[node.extension] ?? `${node.extension}-file`;
 }
@@ -858,6 +911,7 @@ git commit -m "feat(file-table): add formatting utilities"
 ### Task 5: FileTable Context + Compound Component
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/file-table/FileTableContext.tsx`
 - Create: `packages/base-ui/src/components/file-table/FileTable.tsx`
 - Create: `packages/base-ui/src/components/file-table/FileTable.module.css`
@@ -1033,7 +1087,11 @@ export function FileTableHeader({ children }: FileTableHeaderProps) {
         {ctx.extraColumns.map((col) => (
           <th
             key={col.id}
-            style={col.width ? { width: typeof col.width === 'number' ? `${col.width}px` : col.width } : undefined}
+            style={
+              col.width
+                ? { width: typeof col.width === 'number' ? `${col.width}px` : col.width }
+                : undefined
+            }
           >
             <SortableHeader
               columnId={col.id}
@@ -1066,17 +1124,16 @@ export function FileTableBody({ rowActions }: FileTableBodyProps) {
     <tbody>
       {/* ".." parent row */}
       {ctx.showParent && (
-        <tr
-          className={styles.ParentRow}
-          onDoubleClick={ctx.onNavigateUp}
-        >
+        <tr className={styles.ParentRow} onDoubleClick={ctx.onNavigateUp}>
           <td />
           <td>..</td>
           <td />
           <td />
           <td />
           <td />
-          {ctx.extraColumns.map((col) => <td key={col.id} />)}
+          {ctx.extraColumns.map((col) => (
+            <td key={col.id} />
+          ))}
         </tr>
       )}
       {ctx.sortedItems.map((item) => (
@@ -1094,13 +1151,7 @@ export function FileTableBody({ rowActions }: FileTableBodyProps) {
             </span>
           </td>
           <td>{item.name}</td>
-          <td>
-            {actions && (
-              <span className={styles.RowActions}>
-                {actions(item)}
-              </span>
-            )}
-          </td>
+          <td>{actions && <span className={styles.RowActions}>{actions(item)}</span>}</td>
           <td className={styles.SizeCell}>
             {item.size != null ? formatBytes(item.size) : item.type === 'folder' ? '—' : '0 B'}
           </td>
@@ -1159,89 +1210,100 @@ export interface FileTableRootProps extends Omit<HTMLAttributes<HTMLDivElement>,
   children: ReactNode;
 }
 
-export const FileTableRoot = forwardRef<HTMLDivElement, FileTableRootProps>(
-  function FileTableRoot(
-    {
+export const FileTableRoot = forwardRef<HTMLDivElement, FileTableRootProps>(function FileTableRoot(
+  {
+    items,
+    onNavigate,
+    onSelect,
+    selectedId,
+    showParent,
+    onNavigateUp,
+    defaultSort,
+    children,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  const [extraColumns, setExtraColumns] = useState<FileTableColumnConfig[]>([]);
+
+  // Build sortable column defs from built-in + extra columns
+  const sortableColumns = useMemo<SortableColumnDef<FileTableItem>[]>(() => {
+    const builtIn: SortableColumnDef<FileTableItem>[] = [
+      { id: 'name', header: 'Filename', accessor: (i) => i.name },
+      { id: 'size', header: 'Size', accessor: (i) => i.size ?? 0 },
+      { id: 'type', header: 'Type', accessor: (i) => i.extension ?? '' },
+      { id: 'modified', header: 'Modified', accessor: (i) => i.modified ?? '' },
+    ];
+
+    const extra: SortableColumnDef<FileTableItem>[] = extraColumns
+      .filter((c) => c.sortable)
+      .map((c) => ({
+        id: c.id,
+        header: c.header,
+        accessor: c.sortAccessor ?? (() => undefined),
+        sortFn: c.sortFn,
+      }));
+
+    return [...builtIn, ...extra];
+  }, [extraColumns]);
+
+  const {
+    sortedData: rawSorted,
+    sort,
+    onSort,
+  } = useSortableTable({
+    data: items,
+    columns: sortableColumns,
+    defaultSort: defaultSort ?? { key: 'name', direction: 'asc' },
+  });
+
+  // Apply folder-first ordering on top of sort
+  const sortedItems = useMemo(() => {
+    return [...rawSorted].sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+      return 0; // preserve sort order within same type
+    });
+  }, [rawSorted]);
+
+  const ctxValue = useMemo(
+    () => ({
       items,
-      onNavigate,
-      onSelect,
+      sortedItems,
+      sort,
+      onSort,
       selectedId,
+      onSelect,
+      onNavigate,
       showParent,
       onNavigateUp,
-      defaultSort,
-      children,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const [extraColumns, setExtraColumns] = useState<FileTableColumnConfig[]>([]);
+      extraColumns,
+      setExtraColumns,
+    }),
+    [
+      items,
+      sortedItems,
+      sort,
+      onSort,
+      selectedId,
+      onSelect,
+      onNavigate,
+      showParent,
+      onNavigateUp,
+      extraColumns,
+    ],
+  );
 
-    // Build sortable column defs from built-in + extra columns
-    const sortableColumns = useMemo<SortableColumnDef<FileTableItem>[]>(() => {
-      const builtIn: SortableColumnDef<FileTableItem>[] = [
-        { id: 'name', header: 'Filename', accessor: (i) => i.name },
-        { id: 'size', header: 'Size', accessor: (i) => i.size ?? 0 },
-        { id: 'type', header: 'Type', accessor: (i) => i.extension ?? '' },
-        { id: 'modified', header: 'Modified', accessor: (i) => i.modified ?? '' },
-      ];
-
-      const extra: SortableColumnDef<FileTableItem>[] = extraColumns
-        .filter((c) => c.sortable)
-        .map((c) => ({
-          id: c.id,
-          header: c.header,
-          accessor: c.sortAccessor ?? (() => undefined),
-          sortFn: c.sortFn,
-        }));
-
-      return [...builtIn, ...extra];
-    }, [extraColumns]);
-
-    const { sortedData: rawSorted, sort, onSort } = useSortableTable({
-      data: items,
-      columns: sortableColumns,
-      defaultSort: defaultSort ?? { key: 'name', direction: 'asc' },
-    });
-
-    // Apply folder-first ordering on top of sort
-    const sortedItems = useMemo(() => {
-      return [...rawSorted].sort((a, b) => {
-        if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
-        return 0; // preserve sort order within same type
-      });
-    }, [rawSorted]);
-
-    const ctxValue = useMemo(
-      () => ({
-        items,
-        sortedItems,
-        sort,
-        onSort,
-        selectedId,
-        onSelect,
-        onNavigate,
-        showParent,
-        onNavigateUp,
-        extraColumns,
-        setExtraColumns,
-      }),
-      [items, sortedItems, sort, onSort, selectedId, onSelect, onNavigate, showParent, onNavigateUp, extraColumns],
-    );
-
-    return (
-      <FileTableProvider value={ctxValue}>
-        <div ref={ref} className={`${styles.Root}${className ? ` ${className}` : ''}`} {...rest}>
-          <div className={styles.TableWrap}>
-            <table className={styles.Table}>
-              {children}
-            </table>
-          </div>
+  return (
+    <FileTableProvider value={ctxValue}>
+      <div ref={ref} className={`${styles.Root}${className ? ` ${className}` : ''}`} {...rest}>
+        <div className={styles.TableWrap}>
+          <table className={styles.Table}>{children}</table>
         </div>
-      </FileTableProvider>
-    );
-  },
-);
+      </div>
+    </FileTableProvider>
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Compound export
@@ -1395,8 +1457,20 @@ Create `packages/base-ui/src/components/file-table/FileTable.module.css`:
 Create `packages/base-ui/src/components/file-table/index.ts`:
 
 ```tsx
-export { FileTable, FileTableColumn, FileTableRoot, FileTableHeader, FileTableBody, FileTableStatus } from './FileTable';
-export type { FileTableRootProps, FileTableColumnProps, FileTableBodyProps, FileTableHeaderProps } from './FileTable';
+export {
+  FileTable,
+  FileTableColumn,
+  FileTableRoot,
+  FileTableHeader,
+  FileTableBody,
+  FileTableStatus,
+} from './FileTable';
+export type {
+  FileTableRootProps,
+  FileTableColumnProps,
+  FileTableBodyProps,
+  FileTableHeaderProps,
+} from './FileTable';
 export type { FileTableItem } from './FileTableContext';
 export { formatBytes, formatDate, fileTypeLabel } from './utils';
 ```
@@ -1427,6 +1501,7 @@ git commit -m "feat(file-table): add FileTable compound component"
 ### Task 6: FileTable Tests
 
 **Files:**
+
 - Create: `packages/base-ui/src/components/file-table/FileTable.test.tsx`
 
 - [ ] **Step 1: Write integration tests**
@@ -1442,8 +1517,22 @@ import type { FileTableItem } from './FileTableContext';
 
 const items: FileTableItem[] = [
   { id: 'f1', name: 'src', type: 'folder', modified: '2026-03-10T14:00:00Z' },
-  { id: 'f2', name: 'package.json', type: 'file', size: 862, modified: '2026-03-10T12:00:00Z', extension: 'json' },
-  { id: 'f3', name: 'README.md', type: 'file', size: 510, modified: '2026-03-09T10:00:00Z', extension: 'md' },
+  {
+    id: 'f2',
+    name: 'package.json',
+    type: 'file',
+    size: 862,
+    modified: '2026-03-10T12:00:00Z',
+    extension: 'json',
+  },
+  {
+    id: 'f3',
+    name: 'README.md',
+    type: 'file',
+    size: 510,
+    modified: '2026-03-09T10:00:00Z',
+    extension: 'md',
+  },
   { id: 'f4', name: 'public', type: 'folder', modified: '2026-03-01T09:00:00Z' },
 ];
 
@@ -1470,7 +1559,7 @@ describe('FileTable', () => {
     renderTable();
     const rows = screen.getAllByRole('row');
     // row 0 = header, row 1 & 2 = folders, row 3 & 4 = files
-    expect(rows[1]).toHaveTextContent('public');  // p before s
+    expect(rows[1]).toHaveTextContent('public'); // p before s
     expect(rows[2]).toHaveTextContent('src');
   });
 
@@ -1571,6 +1660,7 @@ git commit -m "test(file-table): add FileTable integration tests"
 ### Task 7: Refactor TransferPanel to use Tabs + Progress
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/file-explorer/components/TransferPanel.tsx`
 - Modify: `apps/showcase/src/demos/file-explorer/components/TransferPanel.module.css`
 
@@ -1593,10 +1683,14 @@ export interface TransferPanelProps {
 
 function statusColor(status: Transfer['status']): 'info' | 'danger' | 'success' | 'neutral' {
   switch (status) {
-    case 'processing': return 'info';
-    case 'failed': return 'danger';
-    case 'completed': return 'success';
-    default: return 'neutral';
+    case 'processing':
+      return 'info';
+    case 'failed':
+      return 'danger';
+    case 'completed':
+      return 'success';
+    default:
+      return 'neutral';
   }
 }
 
@@ -1653,13 +1747,19 @@ function TransferTable({ transfers }: { transfers: Transfer[] }) {
 }
 
 export function TransferPanel({ transfers }: TransferPanelProps) {
-  const counts = useMemo(() => ({
-    queued: transfers.filter((t) => t.status === 'queued' || t.status === 'processing').length,
-    failed: transfers.filter((t) => t.status === 'failed').length,
-    completed: transfers.filter((t) => t.status === 'completed').length,
-  }), [transfers]);
+  const counts = useMemo(
+    () => ({
+      queued: transfers.filter((t) => t.status === 'queued' || t.status === 'processing').length,
+      failed: transfers.filter((t) => t.status === 'failed').length,
+      completed: transfers.filter((t) => t.status === 'completed').length,
+    }),
+    [transfers],
+  );
 
-  const queued = useMemo(() => transfers.filter((t) => t.status === 'queued' || t.status === 'processing'), [transfers]);
+  const queued = useMemo(
+    () => transfers.filter((t) => t.status === 'queued' || t.status === 'processing'),
+    [transfers],
+  );
   const failed = useMemo(() => transfers.filter((t) => t.status === 'failed'), [transfers]);
   const completed = useMemo(() => transfers.filter((t) => t.status === 'completed'), [transfers]);
 
@@ -1667,13 +1767,34 @@ export function TransferPanel({ transfers }: TransferPanelProps) {
     <div className={styles.root}>
       <Tabs.Root defaultValue="queued" variant="flat" size="sm">
         <Tabs.List className={styles.tabList} aria-label="Transfer status">
-          <Tabs.Tab value="queued" endDecorator={<Badge size="sm" color="info">{counts.queued}</Badge>}>
+          <Tabs.Tab
+            value="queued"
+            endDecorator={
+              <Badge size="sm" color="info">
+                {counts.queued}
+              </Badge>
+            }
+          >
             Queued
           </Tabs.Tab>
-          <Tabs.Tab value="failed" endDecorator={<Badge size="sm" color="danger">{counts.failed}</Badge>}>
+          <Tabs.Tab
+            value="failed"
+            endDecorator={
+              <Badge size="sm" color="danger">
+                {counts.failed}
+              </Badge>
+            }
+          >
             Failed Transfers
           </Tabs.Tab>
-          <Tabs.Tab value="completed" endDecorator={<Badge size="sm" color="success">{counts.completed}</Badge>}>
+          <Tabs.Tab
+            value="completed"
+            endDecorator={
+              <Badge size="sm" color="success">
+                {counts.completed}
+              </Badge>
+            }
+          >
             Completed Transfers
           </Tabs.Tab>
           <Tabs.Indicator />
@@ -1778,10 +1899,18 @@ Rewrite `apps/showcase/src/demos/file-explorer/components/TransferPanel.module.c
   font-size: 11px;
 }
 
-.statusLabel[data-status='processing'] { color: var(--ov-color-info, #5b9bd5); }
-.statusLabel[data-status='completed'] { color: var(--ov-color-success, #6abf69); }
-.statusLabel[data-status='failed'] { color: var(--ov-color-danger, #dc5050); }
-.statusLabel[data-status='queued'] { color: var(--ov-color-fg-muted); }
+.statusLabel[data-status='processing'] {
+  color: var(--ov-color-info, #5b9bd5);
+}
+.statusLabel[data-status='completed'] {
+  color: var(--ov-color-success, #6abf69);
+}
+.statusLabel[data-status='failed'] {
+  color: var(--ov-color-danger, #dc5050);
+}
+.statusLabel[data-status='queued'] {
+  color: var(--ov-color-fg-muted);
+}
 
 .empty {
   display: flex;
@@ -1811,6 +1940,7 @@ git commit -m "refactor(file-explorer): use Tabs + Progress in TransferPanel"
 ### Task 8: Refactor FilePane to use FileTable
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/file-explorer/components/FilePane.tsx`
 - Modify: `apps/showcase/src/demos/file-explorer/components/FilePane.module.css`
 - Modify: `apps/showcase/src/demos/file-explorer/data.ts`
@@ -1820,6 +1950,7 @@ git commit -m "refactor(file-explorer): use Tabs + Progress in TransferPanel"
 In `apps/showcase/src/demos/file-explorer/data.ts`, replace the local `formatBytes`, `formatDate`, `fileTypeLabel` with imports from base-ui. Remove the local function definitions and add re-exports:
 
 At the top of the file, add:
+
 ```tsx
 // Re-export formatting utilities from base-ui for backward compat
 export { formatBytes, formatDate, fileTypeLabel } from '@omniviewdev/base-ui';
@@ -1832,6 +1963,7 @@ Remove the local `formatBytes`, `formatDate`, and `fileTypeLabel` function defin
 Replace the inline `<table>` section in `apps/showcase/src/demos/file-explorer/components/FilePane.tsx` with `FileTable`. The tree, breadcrumbs, header, and action bar remain as-is — only the table and status sections change.
 
 Key changes in FilePane.tsx:
+
 - Import `FileTable` and `IconButton` from `@omniviewdev/base-ui`
 - Remove inline sort state (`sortKey`, `sortAsc`, `handleSort`, `sortItems`, `renderTh`)
 - Remove inline `tableItems` and `counts` computations
@@ -1852,7 +1984,9 @@ Key changes in FilePane.tsx:
       <FileTable.Column
         id="owner"
         header="Owner / Group"
-        accessor={(item) => `${(item as any).owner ?? 'sftpclient'} / ${(item as any).group ?? 'sftp'}`}
+        accessor={(item) =>
+          `${(item as any).owner ?? 'sftpclient'} / ${(item as any).group ?? 'sftp'}`
+        }
         width={100}
       />
     )}
@@ -1889,6 +2023,7 @@ Key changes in FilePane.tsx:
 - [ ] **Step 3: Simplify FilePane.module.css**
 
 Remove the inline table styles from `FilePane.module.css`:
+
 - Remove `.fileTable`, `.fileTable th`, `.fileTable td`, `.fileTable tbody tr`, etc.
 - Remove `.colIcon`, `.colName`, `.colTransfer`, `.colSize`, `.colType`, `.colModified`, `.colOwner`, `.colPermissions`
 - Remove `.fileIcon`, `.transferBtn`, `.parentRow`, `.nameCell`, `.sizeCell`, `.typeCell`, `.dateCell`, `.ownerCell`
@@ -1905,6 +2040,7 @@ Expected: No errors
 
 Run: `cd apps/showcase && pnpm dev`
 Open the file explorer demo and verify:
+
 - File table renders with sortable headers
 - Folder-first sorting works
 - ".." navigation works

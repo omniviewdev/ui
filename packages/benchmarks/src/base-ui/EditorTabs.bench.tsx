@@ -8,11 +8,7 @@ const tabs20 = makeEditorTabs(20);
 const tabs40 = makeEditorTabs(40);
 
 describe('EditorTabs', () => {
-  benchRender(
-    'mount 20 tabs',
-    () => <EditorTabs tabs={tabs20} activeId="tab-0" />,
-    TIER_1_OPTIONS,
-  );
+  benchRender('mount 20 tabs', () => <EditorTabs tabs={tabs20} activeId="tab-0" />, TIER_1_OPTIONS);
 
   benchRerender(
     'tabs change (20 → 40)',

@@ -1,0 +1,123 @@
+.root {
+  container-type: inline-size;
+  inline-size: 100%;
+  max-inline-size: 820px;
+  color: var(--ov-color-fg-default);
+  font-family: var(--ov-font-sans);
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block-end: 10px;
+}
+.chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip,
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 26px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 5px;
+  background: var(--ov-color-bg-surface);
+  color: var(--ov-color-fg-muted);
+  padding: 3px 8px;
+  font: inherit;
+  font-size: 11px;
+}
+.chip {
+  cursor: pointer;
+}
+.chip:hover {
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-bg-control-hover);
+}
+.chip svg,
+.add svg {
+  inline-size: 12px;
+  block-size: 12px;
+}
+.swatch {
+  display: inline-block;
+  flex: 0 0 7px;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 2px;
+  background: var(--ov-color-chart-series-2);
+}
+[data-metric='memory'] > .swatch {
+  background: var(--ov-color-chart-series-4);
+}
+.fixture {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-end: 14px;
+  color: var(--ov-color-fg-muted);
+  font-size: 10px;
+}
+.fixtureBadge {
+  padding: 2px 6px;
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 4px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+.empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--ov-color-fg-muted);
+  font-size: 12px;
+}
+@container (max-width: 620px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  max-width: 320px;
+  padding: 0 10px;
+  color: var(--ov-color-fg-muted);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 5px;
+  background: var(--ov-color-bg-surface);
+  font-size: 12px;
+}
+.source svg {
+  width: 13px;
+  height: 13px;
+}
+.selection {
+  margin-bottom: 14px;
+}
+.add {
+  border-style: dashed;
+}
+.values {
+  min-height: 66px;
+  padding-bottom: 12px;
+}
+.fixture {
+  margin-top: 12px;
+  margin-bottom: 0;
+}

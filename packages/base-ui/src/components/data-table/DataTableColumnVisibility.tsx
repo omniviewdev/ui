@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes } from 'react';
 import { LuColumns3 } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
@@ -11,9 +11,9 @@ export type DataTableColumnVisibilityProps = HTMLAttributes<HTMLDivElement>;
 
 export const DataTableColumnVisibility = forwardRef<HTMLDivElement, DataTableColumnVisibilityProps>(
   function DataTableColumnVisibility({ className, ...props }, ref) {
-    const { table, state, options } = useDataTableContext();
+    const { table, state } = useDataTableContext();
 
-    const allColumns = useMemo(() => table.getAllLeafColumns().filter((col) => col.getCanHide()), [table, state, options]);
+    const allColumns = table.getAllLeafColumns().filter((col) => col.getCanHide());
 
     return (
       <div ref={ref} className={cn(styles.ColumnVisibility, className)} {...props}>

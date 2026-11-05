@@ -27,20 +27,17 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
       );
       const idx = buttons.indexOf(e.target as HTMLButtonElement);
       if (idx === -1) return;
-      const next = e.key === 'ArrowDown'
-        ? buttons[(idx + 1) % buttons.length]
-        : buttons[(idx - 1 + buttons.length) % buttons.length];
+      const next =
+        e.key === 'ArrowDown'
+          ? buttons[(idx + 1) % buttons.length]
+          : buttons[(idx - 1 + buttons.length) % buttons.length];
       next?.focus();
     },
     [onSelectApp],
   );
 
   return (
-    <nav
-      className={styles.dock}
-      aria-label="Demo apps"
-      onKeyDown={handleKeyDown}
-    >
+    <nav className={styles.dock} aria-label="Demo apps" onKeyDown={handleKeyDown}>
       <Tooltip.Root>
         <Tooltip.Trigger
           render={
@@ -97,12 +94,7 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
         <Menu.Root>
           <Menu.Trigger
             render={
-              <IconButton
-                variant="ghost"
-                color="neutral"
-                size="md"
-                aria-label="Switch theme"
-              >
+              <IconButton variant="ghost" color="neutral" size="md" aria-label="Switch theme">
                 <LuPalette />
               </IconButton>
             }
@@ -110,10 +102,7 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
           <Menu.Portal>
             <Menu.Positioner side="right" sideOffset={8} align="end">
               <Menu.Popup>
-                <Menu.RadioGroup
-                  value={requestedThemeId}
-                  onValueChange={setTheme}
-                >
+                <Menu.RadioGroup value={requestedThemeId} onValueChange={setTheme}>
                   {themes.map((t) => (
                     <Menu.RadioItem key={t.id} value={t.id}>
                       {t.name}

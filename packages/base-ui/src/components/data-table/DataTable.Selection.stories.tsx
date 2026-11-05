@@ -32,23 +32,34 @@ const podData: Pod[] = Array.from({ length: 8 }, (_, i) => ({
 
 const selectColumn: ColumnDef<Pod, unknown> = {
   id: 'select',
-  header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ state, all: table.getIsAllRowsSelected(), some: table.getIsSomeRowsSelected(), allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
-    <Checkbox
-      checked={selection.all}
-      indeterminate={selection.some}
-      onCheckedChange={() => table.toggleAllRowsSelected()}
-      size="sm"
-      aria-label="Select all rows"
-    />
-  ))}</Subscribe>),
-  cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-    <Checkbox
-      checked={!!snapshot.selection[row.id]}
-      onCheckedChange={() => row.toggleSelected()}
-      size="sm"
-      aria-label={`Select row ${row.index + 1}`}
-    />
-  ))}</Subscribe>),
+  header: ({ table }) => (
+    <Subscribe source={table.store} selector={(state) => state}>
+      {() => (
+        <Checkbox
+          checked={table.getIsAllRowsSelected()}
+          indeterminate={!table.getIsAllRowsSelected() && table.getIsSomeRowsSelected()}
+          onCheckedChange={() => table.toggleAllRowsSelected()}
+          size="sm"
+          aria-label="Select all rows"
+        />
+      )}
+    </Subscribe>
+  ),
+  cell: ({ row, table }) => (
+    <Subscribe
+      source={table.store}
+      selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+    >
+      {(snapshot) => (
+        <Checkbox
+          checked={!!snapshot.selection[row.id]}
+          onCheckedChange={() => row.toggleSelected()}
+          size="sm"
+          aria-label={`Select row ${row.index + 1}`}
+        />
+      )}
+    </Subscribe>
+  ),
   size: 40,
   enableSorting: false,
   enableResizing: false,
@@ -73,7 +84,19 @@ const meta: Meta<SelectionStoryArgs> = {
   tags: ['autodocs'],
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   },
 };

@@ -18,8 +18,8 @@ Each demo operates on mock data with no backend. All interactions (expand, click
 Each demo must import the CSS for any workspace package it uses. The showcase shell already imports `@omniviewdev/base-ui/styles.css` in `main.tsx`. Demos using `@omniviewdev/ai-ui` or `@omniviewdev/editors` must import their CSS at the demo level:
 
 ```tsx
-import '@omniviewdev/ai-ui/styles.css';    // AI Chat demo
-import '@omniviewdev/editors/styles.css';   // IDE Editor, Container Management (Terminal)
+import '@omniviewdev/ai-ui/styles.css'; // AI Chat demo
+import '@omniviewdev/editors/styles.css'; // IDE Editor, Container Management (Terminal)
 ```
 
 ---
@@ -54,19 +54,19 @@ All dividers are ResizableSplitPane (nested: outer splits local+remote from deta
 
 ### Components
 
-| Component | Usage |
-|-----------|-------|
-| TreeList | File/folder hierarchy in both panes |
-| Breadcrumbs | Current path in each pane |
-| Toolbar | Top action bar with buttons and search |
-| IconButton, Button | Toolbar actions |
-| SearchInput | Filter tree nodes |
-| ContextMenu | Right-click on files/folders (copy, move, rename, delete, new folder) |
-| ResizableSplitPane | Three-column layout (nested) |
-| DescriptionList | File metadata in detail panel |
-| CodeBlock | File content preview in detail panel |
-| StatusBar | Bottom bar with item counts and sizes |
-| Toast | Action feedback ("File copied", "Folder created") |
+| Component          | Usage                                                                 |
+| ------------------ | --------------------------------------------------------------------- |
+| TreeList           | File/folder hierarchy in both panes                                   |
+| Breadcrumbs        | Current path in each pane                                             |
+| Toolbar            | Top action bar with buttons and search                                |
+| IconButton, Button | Toolbar actions                                                       |
+| SearchInput        | Filter tree nodes                                                     |
+| ContextMenu        | Right-click on files/folders (copy, move, rename, delete, new folder) |
+| ResizableSplitPane | Three-column layout (nested)                                          |
+| DescriptionList    | File metadata in detail panel                                         |
+| CodeBlock          | File content preview in detail panel                                  |
+| StatusBar          | Bottom bar with item counts and sizes                                 |
+| Toast              | Action feedback ("File copied", "Folder created")                     |
 
 ### Mock Data
 
@@ -147,24 +147,24 @@ Selecting a command triggers the corresponding action.
 
 ### Components
 
-| Component | Usage |
-|-----------|-------|
-| CodeEditor | Source code editing with syntax highlighting |
-| DiffViewer | Side-by-side file diff |
-| Terminal | Integrated terminal with mock output |
-| CommandPalette | Ctrl+K command launcher |
-| MarkdownPreview | README rendering |
-| EditorTabs | Tab management for mixed content types |
-| TreeList | File tree sidebar |
-| NavList | Sidebar icon strip navigation |
-| List | Search results, git status |
-| SearchInput | Find-in-files |
-| StatusDot | Git file status indicators |
-| Badge | File count badges |
-| ResizableSplitPane | Sidebar/editor and editor/terminal splits |
-| IconButton, Tooltip | Sidebar icon strip |
-| Separator | Visual dividers |
-| DockLayout | Overall IDE frame (icon strip + switchable panels) |
+| Component           | Usage                                              |
+| ------------------- | -------------------------------------------------- |
+| CodeEditor          | Source code editing with syntax highlighting       |
+| DiffViewer          | Side-by-side file diff                             |
+| Terminal            | Integrated terminal with mock output               |
+| CommandPalette      | Ctrl+K command launcher                            |
+| MarkdownPreview     | README rendering                                   |
+| EditorTabs          | Tab management for mixed content types             |
+| TreeList            | File tree sidebar                                  |
+| NavList             | Sidebar icon strip navigation                      |
+| List                | Search results, git status                         |
+| SearchInput         | Find-in-files                                      |
+| StatusDot           | Git file status indicators                         |
+| Badge               | File count badges                                  |
+| ResizableSplitPane  | Sidebar/editor and editor/terminal splits          |
+| IconButton, Tooltip | Sidebar icon strip                                 |
+| Separator           | Visual dividers                                    |
+| DockLayout          | Overall IDE frame (icon strip + switchable panels) |
 
 ### Mock Data
 
@@ -244,31 +244,31 @@ After the pre-built messages, ChatSuggestions appear. Clicking one or typing a m
 
 ### Components
 
-| Component | Usage |
-|-----------|-------|
-| ChatMessageList | Virtualized scrollable message container |
-| ChatBubble | Individual message rendering |
-| ChatAvatar | Role-specific avatars |
-| ChatInput | Multi-line input with submit |
-| ChatSuggestions | Initial prompt suggestions |
-| AIMessageActions | Copy, regenerate, edit actions per message |
-| AIConversationHeader | Top bar with model selector |
-| AIModelSelector | Model dropdown |
-| AIMarkdown | Markdown response rendering |
-| AICodeBlock | Code blocks within responses |
-| AIInlineCitation | Numbered citation badges |
-| AISources | Source reference list |
-| AIFollowUp | Follow-up question chips |
-| AIContextIndicator | Attached context sources |
+| Component                                                                                                                                     | Usage                                                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| ChatMessageList                                                                                                                               | Virtualized scrollable message container                       |
+| ChatBubble                                                                                                                                    | Individual message rendering                                   |
+| ChatAvatar                                                                                                                                    | Role-specific avatars                                          |
+| ChatInput                                                                                                                                     | Multi-line input with submit                                   |
+| ChatSuggestions                                                                                                                               | Initial prompt suggestions                                     |
+| AIMessageActions                                                                                                                              | Copy, regenerate, edit actions per message                     |
+| AIConversationHeader                                                                                                                          | Top bar with model selector                                    |
+| AIModelSelector                                                                                                                               | Model dropdown                                                 |
+| AIMarkdown                                                                                                                                    | Markdown response rendering                                    |
+| AICodeBlock                                                                                                                                   | Code blocks within responses                                   |
+| AIInlineCitation                                                                                                                              | Numbered citation badges                                       |
+| AISources                                                                                                                                     | Source reference list                                          |
+| AIFollowUp                                                                                                                                    | Follow-up question chips                                       |
+| AIContextIndicator                                                                                                                            | Attached context sources                                       |
 | AIArtifact, AIArtifactHeader, AIArtifactTitle, AIArtifactDescription, AIArtifactActions, AIArtifactAction, AIArtifactContent, AIArtifactClose | Side panel artifact (separate named exports, NOT dot-notation) |
-| AIBranch, AIBranchContent, AIBranchSelector, AIBranchPrevious, AIBranchNext, AIBranchIndicator | Branch navigation (separate named exports, NOT dot-notation) |
-| ThinkingBlock | Collapsible thinking/reasoning display |
-| ToolCall | Tool invocation with status and duration |
-| ToolResult | Tool output card |
-| StreamingText | Streaming text with cursor |
-| TypingIndicator | Three-dot typing animation |
-| AIStopButton | Stop generation button |
-| ResizableSplitPane | Chat/artifact split |
+| AIBranch, AIBranchContent, AIBranchSelector, AIBranchPrevious, AIBranchNext, AIBranchIndicator                                                | Branch navigation (separate named exports, NOT dot-notation)   |
+| ThinkingBlock                                                                                                                                 | Collapsible thinking/reasoning display                         |
+| ToolCall                                                                                                                                      | Tool invocation with status and duration                       |
+| ToolResult                                                                                                                                    | Tool output card                                               |
+| StreamingText                                                                                                                                 | Streaming text with cursor                                     |
+| TypingIndicator                                                                                                                               | Three-dot typing animation                                     |
+| AIStopButton                                                                                                                                  | Stop generation button                                         |
+| ResizableSplitPane                                                                                                                            | Chat/artifact split                                            |
 
 ### Mock Data
 
@@ -314,6 +314,7 @@ Docker Desktop-style container dashboard with a data table list view and a full-
 ```
 
 **DataTable features exercised:**
+
 - Column sorting (click headers)
 - Column resizing (drag borders)
 - Row selection with select-all checkbox
@@ -354,34 +355,34 @@ Full page replacement with breadcrumb navigation back to list.
 
 **Tabs:**
 
-| Tab | Components | Content |
-|-----|-----------|---------|
-| Logs | Terminal | Scrolling color-coded container logs |
-| Inspect | DescriptionList + ObjectInspector | Top-level metadata + nested config JSON tree |
-| Stats | Card.Group + Card.Stat + Meter | CPU, memory, network, disk with utilization meters |
-| Files | TreeList | Mock container filesystem (`/app`, `/etc`, `/var/log`) |
+| Tab     | Components                        | Content                                                |
+| ------- | --------------------------------- | ------------------------------------------------------ |
+| Logs    | Terminal                          | Scrolling color-coded container logs                   |
+| Inspect | DescriptionList + ObjectInspector | Top-level metadata + nested config JSON tree           |
+| Stats   | Card.Group + Card.Stat + Meter    | CPU, memory, network, disk with utilization meters     |
+| Files   | TreeList                          | Mock container filesystem (`/app`, `/etc`, `/var/log`) |
 
 ### Components
 
-| Component | Usage |
-|-----------|-------|
-| DataTable | Container list with sorting, filtering, resizing, selection, virtual scroll |
-| FilterBar | Status and text filtering |
-| Tabs | Detail view tab navigation |
-| Terminal | Container log output |
-| DescriptionList | Container metadata |
-| ObjectInspector | Nested container config inspection |
-| TreeList | Container filesystem |
-| Card, Card.Stat, Card.Group | Stats overview |
-| Meter | CPU/memory utilization (inline in table and in stats) |
-| Badge | Container status labels |
-| StatusDot | Status color indicators |
-| Breadcrumbs | List ↔ detail navigation |
-| IconButton, Button | Action buttons |
-| Typography.Heading, Typography.Code | Container name heading, inline code for IDs/images/ports |
-| StatusBar | Resource summary |
-| Toolbar | Bulk actions |
-| Toast | Action feedback |
+| Component                           | Usage                                                                       |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| DataTable                           | Container list with sorting, filtering, resizing, selection, virtual scroll |
+| FilterBar                           | Status and text filtering                                                   |
+| Tabs                                | Detail view tab navigation                                                  |
+| Terminal                            | Container log output                                                        |
+| DescriptionList                     | Container metadata                                                          |
+| ObjectInspector                     | Nested container config inspection                                          |
+| TreeList                            | Container filesystem                                                        |
+| Card, Card.Stat, Card.Group         | Stats overview                                                              |
+| Meter                               | CPU/memory utilization (inline in table and in stats)                       |
+| Badge                               | Container status labels                                                     |
+| StatusDot                           | Status color indicators                                                     |
+| Breadcrumbs                         | List ↔ detail navigation                                                    |
+| IconButton, Button                  | Action buttons                                                              |
+| Typography.Heading, Typography.Code | Container name heading, inline code for IDs/images/ports                    |
+| StatusBar                           | Resource summary                                                            |
+| Toolbar                             | Bulk actions                                                                |
+| Toast                               | Action feedback                                                             |
 
 ### Mock Data
 
@@ -404,58 +405,58 @@ This demo uses `Terminal` and `ObjectInspector` from `@omniviewdev/editors`. Ter
 
 ## Cross-Demo Component Coverage
 
-| Package | Component | File Explorer | IDE Editor | AI Chat | Container Mgmt |
-|---------|-----------|:---:|:---:|:---:|:---:|
-| base-ui | TreeList | ✓ | ✓ | | ✓ |
-| base-ui | DataTable | | | | ✓ |
-| base-ui | EditorTabs | | ✓ | | |
-| base-ui | ResizableSplitPane | ✓ | ✓ | ✓ | |
-| base-ui | Tabs | | | | ✓ |
-| base-ui | Toolbar | ✓ | | | ✓ |
-| base-ui | Breadcrumbs | ✓ | | | ✓ |
-| base-ui | ContextMenu | ✓ | | | |
-| base-ui | StatusBar | ✓ | | | ✓ |
-| base-ui | FilterBar | | | | ✓ |
-| base-ui | NavList | | ✓ | | |
-| base-ui | List | | ✓ | | |
-| base-ui | SearchInput | ✓ | ✓ | | |
-| base-ui | DescriptionList | ✓ | | | ✓ |
-| base-ui | Card (compound) | | | | ✓ |
-| base-ui | Badge | | ✓ | | ✓ |
-| base-ui | StatusDot | | ✓ | | ✓ |
-| base-ui | Meter | | | | ✓ |
-| base-ui | Toast | ✓ | | | ✓ |
-| base-ui | Separator | | ✓ | | |
-| base-ui | DockLayout | | ✓ | | |
-| base-ui | CodeBlock | ✓ | | | |
-| editors | CodeEditor | | ✓ | | |
-| editors | DiffViewer | | ✓ | | |
-| editors | Terminal | | ✓ | | ✓ |
-| editors | CommandPalette | | ✓ | | |
-| editors | MarkdownPreview | | ✓ | | |
-| editors | ObjectInspector | | | | ✓ |
-| ai-ui | ChatMessageList | | | ✓ | |
-| ai-ui | ChatBubble | | | ✓ | |
-| ai-ui | ChatAvatar | | | ✓ | |
-| ai-ui | ChatInput | | | ✓ | |
-| ai-ui | ChatSuggestions | | | ✓ | |
-| ai-ui | AIMessageActions | | | ✓ | |
-| ai-ui | AIConversationHeader | | | ✓ | |
-| ai-ui | AIModelSelector | | | ✓ | |
-| ai-ui | AIMarkdown | | | ✓ | |
-| ai-ui | AICodeBlock | | | ✓ | |
-| ai-ui | AIInlineCitation | | | ✓ | |
-| ai-ui | AISources | | | ✓ | |
-| ai-ui | AIFollowUp | | | ✓ | |
-| ai-ui | AIContextIndicator | | | ✓ | |
-| ai-ui | AIArtifact (named exports) | | | ✓ | |
-| ai-ui | AIBranch (named exports) | | | ✓ | |
-| ai-ui | ThinkingBlock | | | ✓ | |
-| ai-ui | ToolCall | | | ✓ | |
-| ai-ui | ToolResult | | | ✓ | |
-| ai-ui | StreamingText | | | ✓ | |
-| ai-ui | TypingIndicator | | | ✓ | |
-| ai-ui | AIStopButton | | | ✓ | |
+| Package | Component                  | File Explorer | IDE Editor | AI Chat | Container Mgmt |
+| ------- | -------------------------- | :-----------: | :--------: | :-----: | :------------: |
+| base-ui | TreeList                   |       ✓       |     ✓      |         |       ✓        |
+| base-ui | DataTable                  |               |            |         |       ✓        |
+| base-ui | EditorTabs                 |               |     ✓      |         |                |
+| base-ui | ResizableSplitPane         |       ✓       |     ✓      |    ✓    |                |
+| base-ui | Tabs                       |               |            |         |       ✓        |
+| base-ui | Toolbar                    |       ✓       |            |         |       ✓        |
+| base-ui | Breadcrumbs                |       ✓       |            |         |       ✓        |
+| base-ui | ContextMenu                |       ✓       |            |         |                |
+| base-ui | StatusBar                  |       ✓       |            |         |       ✓        |
+| base-ui | FilterBar                  |               |            |         |       ✓        |
+| base-ui | NavList                    |               |     ✓      |         |                |
+| base-ui | List                       |               |     ✓      |         |                |
+| base-ui | SearchInput                |       ✓       |     ✓      |         |                |
+| base-ui | DescriptionList            |       ✓       |            |         |       ✓        |
+| base-ui | Card (compound)            |               |            |         |       ✓        |
+| base-ui | Badge                      |               |     ✓      |         |       ✓        |
+| base-ui | StatusDot                  |               |     ✓      |         |       ✓        |
+| base-ui | Meter                      |               |            |         |       ✓        |
+| base-ui | Toast                      |       ✓       |            |         |       ✓        |
+| base-ui | Separator                  |               |     ✓      |         |                |
+| base-ui | DockLayout                 |               |     ✓      |         |                |
+| base-ui | CodeBlock                  |       ✓       |            |         |                |
+| editors | CodeEditor                 |               |     ✓      |         |                |
+| editors | DiffViewer                 |               |     ✓      |         |                |
+| editors | Terminal                   |               |     ✓      |         |       ✓        |
+| editors | CommandPalette             |               |     ✓      |         |                |
+| editors | MarkdownPreview            |               |     ✓      |         |                |
+| editors | ObjectInspector            |               |            |         |       ✓        |
+| ai-ui   | ChatMessageList            |               |            |    ✓    |                |
+| ai-ui   | ChatBubble                 |               |            |    ✓    |                |
+| ai-ui   | ChatAvatar                 |               |            |    ✓    |                |
+| ai-ui   | ChatInput                  |               |            |    ✓    |                |
+| ai-ui   | ChatSuggestions            |               |            |    ✓    |                |
+| ai-ui   | AIMessageActions           |               |            |    ✓    |                |
+| ai-ui   | AIConversationHeader       |               |            |    ✓    |                |
+| ai-ui   | AIModelSelector            |               |            |    ✓    |                |
+| ai-ui   | AIMarkdown                 |               |            |    ✓    |                |
+| ai-ui   | AICodeBlock                |               |            |    ✓    |                |
+| ai-ui   | AIInlineCitation           |               |            |    ✓    |                |
+| ai-ui   | AISources                  |               |            |    ✓    |                |
+| ai-ui   | AIFollowUp                 |               |            |    ✓    |                |
+| ai-ui   | AIContextIndicator         |               |            |    ✓    |                |
+| ai-ui   | AIArtifact (named exports) |               |            |    ✓    |                |
+| ai-ui   | AIBranch (named exports)   |               |            |    ✓    |                |
+| ai-ui   | ThinkingBlock              |               |            |    ✓    |                |
+| ai-ui   | ToolCall                   |               |            |    ✓    |                |
+| ai-ui   | ToolResult                 |               |            |    ✓    |                |
+| ai-ui   | StreamingText              |               |            |    ✓    |                |
+| ai-ui   | TypingIndicator            |               |            |    ✓    |                |
+| ai-ui   | AIStopButton               |               |            |    ✓    |                |
 
 ### Coverage Notes
 
@@ -465,17 +466,17 @@ This demo uses `Terminal` and `ObjectInspector` from `@omniviewdev/editors`. Ter
 
 ## Known Gaps to Investigate
 
-| Gap | Demo | Description |
-|-----|------|-------------|
-| TreeList + dnd-kit | File Explorer | No cross-pane drag-and-drop support for file transfer |
-| DockLayout sidebar pattern | IDE Editor | May not support VS Code-style icon strip + switchable panels. Fallback: flex layout with IconButton column + conditional panel rendering + ResizableSplitPane |
-| EditorTabs mixed content | IDE Editor | Tabs rendering different component types (code, diff, preview) |
-| ChatMessageList variable heights | AI Chat | Virtualizer handling of mixed-height messages |
-| Artifact panel layout | AI Chat | May need a dedicated component for chat + side panel pattern |
-| Streaming coordination | AI Chat | Timing utilities for multi-component animation sequences |
-| DataTable + FilterBar | Container Mgmt | Integration glue between these two components |
-| Meter inline variant | Container Mgmt | Rendering Meter inside DataTable cells at small sizes |
-| Bulk action pattern | Container Mgmt | No standard component for "selection → toolbar" pattern |
+| Gap                              | Demo           | Description                                                                                                                                                   |
+| -------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TreeList + dnd-kit               | File Explorer  | No cross-pane drag-and-drop support for file transfer                                                                                                         |
+| DockLayout sidebar pattern       | IDE Editor     | May not support VS Code-style icon strip + switchable panels. Fallback: flex layout with IconButton column + conditional panel rendering + ResizableSplitPane |
+| EditorTabs mixed content         | IDE Editor     | Tabs rendering different component types (code, diff, preview)                                                                                                |
+| ChatMessageList variable heights | AI Chat        | Virtualizer handling of mixed-height messages                                                                                                                 |
+| Artifact panel layout            | AI Chat        | May need a dedicated component for chat + side panel pattern                                                                                                  |
+| Streaming coordination           | AI Chat        | Timing utilities for multi-component animation sequences                                                                                                      |
+| DataTable + FilterBar            | Container Mgmt | Integration glue between these two components                                                                                                                 |
+| Meter inline variant             | Container Mgmt | Rendering Meter inside DataTable cells at small sizes                                                                                                         |
+| Bulk action pattern              | Container Mgmt | No standard component for "selection → toolbar" pattern                                                                                                       |
 
 ## Conventions
 

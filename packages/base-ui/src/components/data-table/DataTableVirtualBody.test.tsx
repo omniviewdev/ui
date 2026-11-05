@@ -15,17 +15,27 @@ const originalClientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 
 const originalClientWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth');
 
 beforeAll(() => {
-  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, get: () => 400 });
-  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get: () => 800 });
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    configurable: true,
+    get: () => 400,
+  });
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+    configurable: true,
+    get: () => 800,
+  });
   Object.defineProperty(Element.prototype, 'clientHeight', { configurable: true, get: () => 400 });
   Object.defineProperty(Element.prototype, 'clientWidth', { configurable: true, get: () => 800 });
 });
 
 afterAll(() => {
-  if (originalOffsetHeight) Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
-  if (originalOffsetWidth) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth);
-  if (originalClientHeight) Object.defineProperty(Element.prototype, 'clientHeight', originalClientHeight);
-  if (originalClientWidth) Object.defineProperty(Element.prototype, 'clientWidth', originalClientWidth);
+  if (originalOffsetHeight)
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
+  if (originalOffsetWidth)
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth);
+  if (originalClientHeight)
+    Object.defineProperty(Element.prototype, 'clientHeight', originalClientHeight);
+  if (originalClientWidth)
+    Object.defineProperty(Element.prototype, 'clientWidth', originalClientWidth);
 });
 
 interface Pod {

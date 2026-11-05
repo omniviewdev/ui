@@ -5,11 +5,11 @@ export interface Container {
   name: string;
   image: string;
   status: ContainerStatus;
-  cpu: number;       // 0-100 percentage
-  memory: number;    // MB
+  cpu: number; // 0-100 percentage
+  memory: number; // MB
   memoryLimit: number; // MB
   ports: PortMapping[];
-  created: string;   // ISO date
+  created: string; // ISO date
   uptime: string;
   network: string;
   disk: string;

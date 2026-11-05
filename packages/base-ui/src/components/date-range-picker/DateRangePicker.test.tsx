@@ -50,9 +50,7 @@ describe('DateRangePicker', () => {
   // 3. Clicking icon button opens the calendar
   it('clicking icon button opens the calendar', async () => {
     const user = userEvent.setup();
-    render(
-      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />,
-    );
+    render(<DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />);
     expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Open calendar' }));
     expect(screen.getByRole('grid')).toBeInTheDocument();
@@ -113,11 +111,7 @@ describe('DateRangePicker', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const { container } = render(
-      <DateRangePicker
-        value={{ start: null, end: null }}
-        onChange={onChange}
-        locale="en-US"
-      />,
+      <DateRangePicker value={{ start: null, end: null }} onChange={onChange} locale="en-US" />,
     );
     const [startGroup] = container.querySelectorAll('[role="group"]');
     if (!startGroup) throw new Error('No start DateField group found');
@@ -162,9 +156,7 @@ describe('DateRangePicker', () => {
   // 8. Escape closes the popover
   it('Escape closes the popover', async () => {
     const user = userEvent.setup();
-    render(
-      <DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />,
-    );
+    render(<DateRangePicker value={{ start: null, end: null }} onChange={() => {}} />);
     await user.click(screen.getByRole('button', { name: 'Open calendar' }));
     expect(screen.getByRole('grid')).toBeInTheDocument();
     await user.keyboard('{Escape}');

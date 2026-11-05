@@ -49,13 +49,14 @@ describe('CodeBlock', () => {
   });
 
   it('renders discovery and secondary colors', () => {
-    const { rerender } = renderWithTheme(
-      <CodeBlock code="hello" color="discovery" />,
-    );
+    const { rerender } = renderWithTheme(<CodeBlock code="hello" color="discovery" />);
     const root = screen.getByText('hello').closest('[data-ov-color]');
     expect(root).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(<CodeBlock code="hello" color="secondary" />);
-    expect(screen.getByText('hello').closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'secondary');
+    expect(screen.getByText('hello').closest('[data-ov-color]')).toHaveAttribute(
+      'data-ov-color',
+      'secondary',
+    );
   });
 });

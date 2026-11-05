@@ -43,10 +43,14 @@ function luminance([red, green, blue]: [number, number, number]): number {
 function contrast(left: string, right: string): number {
   const leftColor = parseColor(left);
   const rightColor = parseColor(right);
-  if (!leftColor || !rightColor) throw new Error(`Expected solid colors, received '${left}' and '${right}'`);
+  if (!leftColor || !rightColor)
+    throw new Error(`Expected solid colors, received '${left}' and '${right}'`);
   const leftLuminance = luminance(leftColor);
   const rightLuminance = luminance(rightColor);
-  return (Math.max(leftLuminance, rightLuminance) + 0.05) / (Math.min(leftLuminance, rightLuminance) + 0.05);
+  return (
+    (Math.max(leftLuminance, rightLuminance) + 0.05) /
+    (Math.min(leftLuminance, rightLuminance) + 0.05)
+  );
 }
 
 let styleElement: HTMLStyleElement;
@@ -79,7 +83,9 @@ describe('built-in theme catalog', () => {
     expect(BUILT_IN_THEMES.find((theme) => theme.id === 'light')?.appearance).toBe('light');
     expect(BUILT_IN_THEMES.every((theme) => theme.builtIn)).toBe(true);
     expect(Object.isFrozen(BUILT_IN_THEMES)).toBe(true);
-    expect(BUILT_IN_THEMES.every((theme) => Object.isFrozen(theme) && Object.isFrozen(theme.owner))).toBe(true);
+    expect(
+      BUILT_IN_THEMES.every((theme) => Object.isFrozen(theme) && Object.isFrozen(theme.owner)),
+    ).toBe(true);
   });
 
   it('provides an immutable ID set and type guard', () => {
@@ -91,15 +97,19 @@ describe('built-in theme catalog', () => {
 
   it('provides an explicit static selector and complete surface tokens for every built-in', () => {
     for (const theme of BUILT_IN_THEMES) {
-      const selector = theme.id === 'dark'
-        ? /:root\s*,\s*\[data-ov-theme=['"]dark['"]\]\s*\{/
-        : new RegExp(`\\[data-ov-theme=['"]${theme.id}['"]\\]\\s*\\{`);
+      const selector =
+        theme.id === 'dark'
+          ? /:root\s*,\s*\[data-ov-theme=['"]dark['"]\]\s*\{/
+          : new RegExp(`\\[data-ov-theme=['"]${theme.id}['"]\\]\\s*\\{`);
       expect(styles, `${theme.id} must have an explicit selector`).toMatch(selector);
 
       document.documentElement.dataset.ovTheme = theme.id;
       const computedStyle = getComputedStyle(document.documentElement);
       for (const token of REQUIRED_SURFACE_TOKENS) {
-        expect(computedStyle.getPropertyValue(token).trim(), `${theme.id} must compute ${token}`).not.toBe('');
+        expect(
+          computedStyle.getPropertyValue(token).trim(),
+          `${theme.id} must compute ${token}`,
+        ).not.toBe('');
       }
     }
   });
@@ -110,18 +120,33 @@ describe('built-in theme catalog', () => {
       const computedStyle = getComputedStyle(document.documentElement);
       const value = (token: string) => computedStyle.getPropertyValue(token).trim();
 
-      expect(contrast(value('--ov-color-fg-default'), value('--ov-color-bg-base')), `${theme.id} base text`).toBeGreaterThanOrEqual(4.5);
-      expect(contrast(value('--ov-color-fg-default'), value('--ov-color-bg-surface')), `${theme.id} surface text`).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrast(value('--ov-color-fg-default'), value('--ov-color-bg-base')),
+        `${theme.id} base text`,
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrast(value('--ov-color-fg-default'), value('--ov-color-bg-surface')),
+        `${theme.id} surface text`,
+      ).toBeGreaterThanOrEqual(4.5);
       for (const surface of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
-        for (const cue of ['--ov-color-border-control', '--ov-color-border-focus', '--ov-color-state-focus-ring']) {
-          expect(contrast(value(cue), value(surface)), `${theme.id} ${cue} against ${surface}`).toBeGreaterThanOrEqual(3);
+        for (const cue of [
+          '--ov-color-border-control',
+          '--ov-color-border-focus',
+          '--ov-color-state-focus-ring',
+        ]) {
+          expect(
+            contrast(value(cue), value(surface)),
+            `${theme.id} ${cue} against ${surface}`,
+          ).toBeGreaterThanOrEqual(3);
         }
       }
     }
   });
 
   it('keeps normal structural boundaries quieter than control identification', () => {
-    for (const { id } of BUILT_IN_THEMES.filter((theme) => !theme.id.startsWith('high-contrast-'))) {
+    for (const { id } of BUILT_IN_THEMES.filter(
+      (theme) => !theme.id.startsWith('high-contrast-'),
+    )) {
       document.documentElement.dataset.ovTheme = id;
       const computedStyle = getComputedStyle(document.documentElement);
       const value = (token: string) => computedStyle.getPropertyValue(token).trim();
@@ -144,11 +169,21 @@ describe('built-in theme catalog', () => {
       const computedStyle = getComputedStyle(document.documentElement);
       const foreground = computedStyle.getPropertyValue('--ov-color-fg-default').trim();
       for (const background of ['--ov-color-bg-base', '--ov-color-bg-surface']) {
-        expect(contrast(foreground, computedStyle.getPropertyValue(background).trim()), `${id} ${background}`).toBeGreaterThanOrEqual(7);
-      }
-      for (const boundary of ['--ov-color-border-muted', '--ov-color-border-default', '--ov-color-border-control']) {
         expect(
-          contrast(computedStyle.getPropertyValue(boundary).trim(), computedStyle.getPropertyValue('--ov-color-bg-surface').trim()),
+          contrast(foreground, computedStyle.getPropertyValue(background).trim()),
+          `${id} ${background}`,
+        ).toBeGreaterThanOrEqual(7);
+      }
+      for (const boundary of [
+        '--ov-color-border-muted',
+        '--ov-color-border-default',
+        '--ov-color-border-control',
+      ]) {
+        expect(
+          contrast(
+            computedStyle.getPropertyValue(boundary).trim(),
+            computedStyle.getPropertyValue('--ov-color-bg-surface').trim(),
+          ),
           `${id} intentional ${boundary}`,
         ).toBeGreaterThanOrEqual(3);
       }

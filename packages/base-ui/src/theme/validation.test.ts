@@ -44,8 +44,16 @@ describe('validateThemeDefinition', () => {
     [{ ...valid, name: '' }, 'invalid_metadata', 'name'],
     [{ ...valid, base: 'missing' }, 'unknown_base', 'base'],
     [{ ...valid, tokens: { 'color.not.real': '#000' } }, 'unknown_token', 'tokens.color.not.real'],
-    [{ ...valid, tokens: { 'color.bg.base': 'url(https://example.com/x)' } }, 'invalid_value', 'tokens.color.bg.base'],
-    [{ ...valid, tokens: { 'syntax.style.keyword': 'blink' } }, 'invalid_value', 'tokens.syntax.style.keyword'],
+    [
+      { ...valid, tokens: { 'color.bg.base': 'url(https://example.com/x)' } },
+      'invalid_value',
+      'tokens.color.bg.base',
+    ],
+    [
+      { ...valid, tokens: { 'syntax.style.keyword': 'blink' } },
+      'invalid_value',
+      'tokens.syntax.style.keyword',
+    ],
   ])('rejects invalid definitions', (input, code, path) => {
     expectValidationError(input, code as ThemeValidationError['code'], path as string);
   });
@@ -73,16 +81,23 @@ describe('validateThemeDefinition', () => {
     expectValidationError({ ...valid, tokens }, 'unknown_token', 'tokens');
   });
 
-  it.each(['x'.repeat(257), 'red;', 'red{color:blue}', 'URL(https://example.com/x)']) (
+  it.each(['x'.repeat(257), 'red;', 'red{color:blue}', 'URL(https://example.com/x)'])(
     'rejects unsafe or oversized color values',
     (value) => {
-      expectValidationError({ ...valid, tokens: { 'color.bg.base': value } }, 'invalid_value', 'tokens.color.bg.base');
+      expectValidationError(
+        { ...valid, tokens: { 'color.bg.base': value } },
+        'invalid_value',
+        'tokens.color.bg.base',
+      );
     },
   );
 
   it('uses the injected color syntax validator', () => {
     const rejectColor = vi.fn(() => false);
-    expectValidationErrorWith({ ...valid, tokens: { 'color.bg.base': 'not-a-color' } }, rejectColor);
+    expectValidationErrorWith(
+      { ...valid, tokens: { 'color.bg.base': 'not-a-color' } },
+      rejectColor,
+    );
     expect(rejectColor).toHaveBeenCalledWith('not-a-color');
   });
 
@@ -166,7 +181,12 @@ describe('validateThemeDefinition', () => {
     'italic underline',
     'bold italic underline',
   ])('accepts the supported font style %s', (value) => {
-    expect(validateThemeDefinition({ ...valid, tokens: { 'syntax.style.keyword': value } }, supportsColor)).toBeDefined();
+    expect(
+      validateThemeDefinition(
+        { ...valid, tokens: { 'syntax.style.keyword': value } },
+        supportsColor,
+      ),
+    ).toBeDefined();
   });
 
   it('returns a detached deeply frozen definition', () => {

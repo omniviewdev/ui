@@ -1,4 +1,3 @@
-
 import { memo, type ReactNode } from 'react';
 
 interface MemoizedRowProps {

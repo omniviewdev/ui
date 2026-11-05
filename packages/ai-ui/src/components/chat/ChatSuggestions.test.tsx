@@ -25,9 +25,7 @@ describe('ChatSuggestions', () => {
   });
 
   it('renders nothing when suggestions is empty', () => {
-    const { container } = renderAI(
-      <ChatSuggestions suggestions={[]} onSelect={vi.fn()} />,
-    );
+    const { container } = renderAI(<ChatSuggestions suggestions={[]} onSelect={vi.fn()} />);
     expect(container.firstChild).toBeNull();
   });
 
@@ -38,9 +36,7 @@ describe('ChatSuggestions', () => {
   });
 
   it('has role list', () => {
-    renderAI(
-      <ChatSuggestions suggestions={suggestions} onSelect={vi.fn()} data-testid="cs" />,
-    );
+    renderAI(<ChatSuggestions suggestions={suggestions} onSelect={vi.fn()} data-testid="cs" />);
     expect(screen.getByTestId('cs')).toHaveAttribute('role', 'list');
   });
 });

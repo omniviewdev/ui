@@ -3,11 +3,7 @@ import { setupMonacoWorkers } from '@omniviewdev/editors';
 setupMonacoWorkers();
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import {
-  ResizableSplitPane,
-  EditorTabs,
-  Tabs,
-} from '@omniviewdev/base-ui';
+import { ResizableSplitPane, EditorTabs, Tabs } from '@omniviewdev/base-ui';
 import type { TabDescriptor } from '@omniviewdev/base-ui';
 import {
   CodeEditor,
@@ -181,15 +177,10 @@ export default function IdeEditorDemo() {
               )}
               {activeTab?.type === 'markdown' && (
                 <div className={styles.markdownWrapper}>
-                  <MarkdownPreview
-                    key={activeTab.id}
-                    content={activeTab.file.content}
-                  />
+                  <MarkdownPreview key={activeTab.id} content={activeTab.file.content} />
                 </div>
               )}
-              {activeTab == null && (
-                <div className={styles.emptyEditor}>No file open</div>
-              )}
+              {activeTab == null && <div className={styles.emptyEditor}>No file open</div>}
             </div>
 
             {showTerminal ? (

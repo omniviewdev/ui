@@ -118,30 +118,28 @@ export const ChainOfThought = forwardRef<HTMLDivElement, ChainOfThoughtProps>(
         >
           {/* Header */}
           {headerContent ?? (
-            <ChainOfThoughtHeader>
-              {header ?? 'Chain of Thought'}
-            </ChainOfThoughtHeader>
+            <ChainOfThoughtHeader>{header ?? 'Chain of Thought'}</ChainOfThoughtHeader>
           )}
 
           {/* Collapsible content */}
           <Collapsible open={isOpen}>
             <CollapsibleContent>
               <div className={styles.CollapseContent}>
-              {useDeclarativeAPI
-                ? steps.map((step) => (
-                    <ChainOfThoughtStep
-                      key={step.id}
-                      icon={step.icon}
-                      label={step.label}
-                      description={step.description ?? step.content}
-                      status={step.status}
-                      tags={step.tags}
-                      role="listitem"
-                    >
-                      {step.children}
-                    </ChainOfThoughtStep>
-                  ))
-                : children}
+                {useDeclarativeAPI
+                  ? steps.map((step) => (
+                      <ChainOfThoughtStep
+                        key={step.id}
+                        icon={step.icon}
+                        label={step.label}
+                        description={step.description ?? step.content}
+                        status={step.status}
+                        tags={step.tags}
+                        role="listitem"
+                      >
+                        {step.children}
+                      </ChainOfThoughtStep>
+                    ))
+                  : children}
               </div>
             </CollapsibleContent>
           </Collapsible>
@@ -172,9 +170,7 @@ export function ChainOfThoughtHeader({ children, className, ...rest }: ChainOfTh
       <span className={styles.HeaderIcon} aria-hidden="true">
         <BrainIcon size={16} />
       </span>
-      <span className={styles.HeaderLabel}>
-        {children ?? 'Chain of Thought'}
-      </span>
+      <span className={styles.HeaderLabel}>{children ?? 'Chain of Thought'}</span>
       <span
         className={styles.HeaderChevron}
         data-ov-open={isOpen ? 'true' : 'false'}
@@ -231,7 +227,9 @@ export function ChainOfThoughtStep({
         {tags && tags.length > 0 && status !== 'pending' && (
           <div className={styles.StepTags}>
             {tags.map((tag) => (
-              <span key={tag} className={styles.StepTag}>{tag}</span>
+              <span key={tag} className={styles.StepTag}>
+                {tag}
+              </span>
             ))}
           </div>
         )}
@@ -292,12 +290,8 @@ export function ChainOfThoughtImage({
 }: ChainOfThoughtImageProps) {
   return (
     <div className={cn(styles.StepImage, className)} {...rest}>
-      <div className={styles.StepImageContent}>
-        {children}
-      </div>
-      {caption && (
-        <span className={styles.StepImageCaption}>{caption}</span>
-      )}
+      <div className={styles.StepImageContent}>{children}</div>
+      {caption && <span className={styles.StepImageCaption}>{caption}</span>}
     </div>
   );
 }
@@ -319,11 +313,7 @@ export interface ChainOfThoughtFilesProps extends HTMLAttributes<HTMLDivElement>
   children: ReactNode;
 }
 
-export function ChainOfThoughtFiles({
-  children,
-  className,
-  ...rest
-}: ChainOfThoughtFilesProps) {
+export function ChainOfThoughtFiles({ children, className, ...rest }: ChainOfThoughtFilesProps) {
   return (
     <div className={cn(styles.StepTags, className)} {...rest}>
       {children}

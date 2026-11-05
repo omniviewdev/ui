@@ -320,32 +320,71 @@ function SearchStory(args: TerminalProps) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ display: 'flex', gap: 8, padding: 8, background: '#1e1e1e', borderBottom: '1px solid #333' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          padding: 8,
+          background: '#1e1e1e',
+          borderBottom: '1px solid #333',
+        }}
+      >
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search..."
-          style={{ padding: '4px 8px', background: '#2d2d2d', color: '#fff', border: '1px solid #555', borderRadius: 4, fontSize: 13 }}
+          style={{
+            padding: '4px 8px',
+            background: '#2d2d2d',
+            color: '#fff',
+            border: '1px solid #555',
+            borderRadius: 4,
+            fontSize: 13,
+          }}
         />
         <button
           type="button"
           onClick={() => ref.current?.findNext(searchTerm)}
-          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+          style={{
+            padding: '4px 12px',
+            background: '#0e639c',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
         >
           Find Next
         </button>
         <button
           type="button"
           onClick={() => ref.current?.findPrevious(searchTerm)}
-          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+          style={{
+            padding: '4px 12px',
+            background: '#0e639c',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
         >
           Find Previous
         </button>
         <button
           type="button"
           onClick={() => ref.current?.clearSearch()}
-          style={{ padding: '4px 12px', background: '#333', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+          style={{
+            padding: '4px 12px',
+            background: '#333',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
         >
           Clear
         </button>
@@ -369,7 +408,12 @@ function ReadOnlyStory(args: TerminalProps) {
     let i = 0;
     const interval = setInterval(() => {
       if (!ref.current) return;
-      const level = i % 7 === 0 ? '\x1b[31mERROR\x1b[0m' : i % 3 === 0 ? '\x1b[33mWARN\x1b[0m' : '\x1b[32mINFO\x1b[0m';
+      const level =
+        i % 7 === 0
+          ? '\x1b[31mERROR\x1b[0m'
+          : i % 3 === 0
+            ? '\x1b[33mWARN\x1b[0m'
+            : '\x1b[32mINFO\x1b[0m';
       const ts = new Date().toISOString();
       ref.current.writeln(`${ts}  ${level}  app.server  Event #${i + 1}`);
       i++;
@@ -413,7 +457,15 @@ function RendererPanel({ renderer }: { renderer: 'webgl' | 'dom' }) {
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '4px 8px', background: '#1e1e1e', color: '#ccc', fontSize: 12, borderBottom: '1px solid #333' }}>
+      <div
+        style={{
+          padding: '4px 8px',
+          background: '#1e1e1e',
+          color: '#ccc',
+          fontSize: 12,
+          borderBottom: '1px solid #333',
+        }}
+      >
         {renderer.toUpperCase()}
       </div>
       <div style={{ flex: 1 }}>
@@ -453,7 +505,15 @@ function SerializationStory(args: TerminalProps) {
         <button
           type="button"
           onClick={() => setBuffer(ref.current?.getBufferContent() ?? '')}
-          style={{ padding: '4px 12px', background: '#0e639c', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
+          style={{
+            padding: '4px 12px',
+            background: '#0e639c',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
         >
           Save Buffer
         </button>
@@ -462,7 +522,18 @@ function SerializationStory(args: TerminalProps) {
         <Terminal ref={ref} {...args} />
       </div>
       {buffer && (
-        <pre style={{ margin: 0, padding: 8, background: '#111', color: '#aaa', fontSize: 12, maxHeight: 120, overflow: 'auto', borderTop: '1px solid #333' }}>
+        <pre
+          style={{
+            margin: 0,
+            padding: 8,
+            background: '#111',
+            color: '#aaa',
+            fontSize: 12,
+            maxHeight: 120,
+            overflow: 'auto',
+            borderTop: '1px solid #333',
+          }}
+        >
           {buffer}
         </pre>
       )}

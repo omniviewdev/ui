@@ -562,7 +562,7 @@ export const fileTree: FileTreeNode[] = [
 // ─── Initial Tabs ─────────────────────────────────────────────────────────────
 
 const getFile = (id: string): IDEFile => {
-  const f = projectFiles.find(f => f.id === id);
+  const f = projectFiles.find((f) => f.id === id);
   if (!f) throw new Error(`File not found: ${id}`);
   return f;
 };

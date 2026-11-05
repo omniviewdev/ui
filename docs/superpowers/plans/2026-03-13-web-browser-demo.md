@@ -17,6 +17,7 @@
 ### Task 1: Add pill variant CSS to EditorTabs
 
 **Files:**
+
 - Modify: `packages/base-ui/src/components/editor-tabs/EditorTabs.module.css:33-69` (variant section)
 - Modify: `packages/base-ui/src/components/editor-tabs/EditorTabs.tsx:39` (type extension)
 
@@ -128,6 +129,7 @@ git commit -m "feat(editor-tabs): add variant='pill' for rounded browser-style t
 ### Task 2: Create types and default data
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/types.ts`
 - Create: `apps/showcase/src/demos/web-browser/data.ts`
 
@@ -197,6 +199,7 @@ git commit -m "feat(web-browser): add types and default data"
 ### Task 3: Create CSS module for the browser demo
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/index.module.css`
 
 **Note:** This must be created before the components in Chunk 3, since they import `styles from '../index.module.css'`.
@@ -393,6 +396,7 @@ git commit -m "feat(web-browser): add CSS module for browser demo"
 ### Task 4: Create useBrowser hook
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/hooks/useBrowser.ts`
 
 - [ ] **Step 1: Create the hook**
@@ -455,9 +459,7 @@ export function useBrowser(): UseBrowserReturn {
 
   const updateActiveTab = useCallback(
     (updater: (tab: BrowserTab) => BrowserTab) => {
-      setTabs((prev) =>
-        prev.map((t) => (t.id === activeTabId ? updater(t) : t)),
-      );
+      setTabs((prev) => prev.map((t) => (t.id === activeTabId ? updater(t) : t)));
     },
     [activeTabId],
   );
@@ -472,9 +474,7 @@ export function useBrowser(): UseBrowserReturn {
   const startBlockedTimeout = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      updateActiveTab((t) =>
-        t.loading ? { ...t, loading: false, error: 'blocked' } : t,
-      );
+      updateActiveTab((t) => (t.loading ? { ...t, loading: false, error: 'blocked' } : t));
     }, BLOCKED_TIMEOUT_MS);
   }, [updateActiveTab]);
 
@@ -537,14 +537,11 @@ export function useBrowser(): UseBrowserReturn {
     startBlockedTimeout();
   }, [updateActiveTab, startBlockedTimeout]);
 
-  const addTab = useCallback(
-    (url?: string) => {
-      const tab = createTab(url);
-      setTabs((prev) => [...prev, tab]);
-      setActiveTabId(tab.id);
-    },
-    [],
-  );
+  const addTab = useCallback((url?: string) => {
+    const tab = createTab(url);
+    setTabs((prev) => [...prev, tab]);
+    setActiveTabId(tab.id);
+  }, []);
 
   const closeTab = useCallback(
     (id: string) => {
@@ -619,18 +616,14 @@ git commit -m "feat(web-browser): add useBrowser state management hook"
 ### Task 5: BrowserToolbar component
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/components/BrowserToolbar.tsx`
 
 - [ ] **Step 1: Create BrowserToolbar**
 
 ```tsx
 import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
-import {
-  LuArrowLeft,
-  LuArrowRight,
-  LuRotateCw,
-  LuLock,
-} from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuRotateCw, LuLock } from 'react-icons/lu';
 import { IconButton, Input } from '@omniviewdev/base-ui';
 import { ensureProtocol } from '../data';
 import styles from '../index.module.css';
@@ -694,13 +687,7 @@ export function BrowserToolbar({
       >
         <LuArrowRight size={14} />
       </IconButton>
-      <IconButton
-        variant="ghost"
-        size="sm"
-        dense
-        aria-label="Refresh"
-        onClick={onRefresh}
-      >
+      <IconButton variant="ghost" size="sm" dense aria-label="Refresh" onClick={onRefresh}>
         <LuRotateCw size={14} />
       </IconButton>
       <Input.Root size="sm" className={styles.addressBar}>
@@ -728,6 +715,7 @@ git commit -m "feat(web-browser): add BrowserToolbar component"
 ### Task 6: BookmarksBar component
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/components/BookmarksBar.tsx`
 
 - [ ] **Step 1: Create BookmarksBar**
@@ -772,6 +760,7 @@ git commit -m "feat(web-browser): add BookmarksBar component"
 ### Task 7: NewTabPage component
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/components/NewTabPage.tsx`
 
 - [ ] **Step 1: Create NewTabPage**
@@ -839,6 +828,7 @@ git commit -m "feat(web-browser): add NewTabPage component"
 ### Task 8: ErrorPage and BrowserViewport components
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/web-browser/components/ErrorPage.tsx`
 - Create: `apps/showcase/src/demos/web-browser/components/BrowserViewport.tsx`
 
@@ -940,6 +930,7 @@ git commit -m "feat(web-browser): add ErrorPage and BrowserViewport components"
 ### Task 9: Wire up the main demo component
 
 **Files:**
+
 - Modify: `apps/showcase/src/demos/web-browser/index.tsx` (replace placeholder)
 
 - [ ] **Step 1: Replace placeholder with full demo**
@@ -1024,10 +1015,7 @@ export default function WebBrowser() {
       />
 
       {/* Bookmarks bar */}
-      <BookmarksBar
-        bookmarks={DEFAULT_BOOKMARKS}
-        onNavigate={browser.navigate}
-      />
+      <BookmarksBar bookmarks={DEFAULT_BOOKMARKS} onNavigate={browser.navigate} />
 
       {/* Loading indicator */}
       {browser.activeTab.loading && (

@@ -39,7 +39,8 @@ describe('Tabs', () => {
 
     expect(screen.getByTestId('badge')).toBeVisible();
     expect(screen.getByTestId('badge')).toHaveTextContent('3');
-    expect(screen.getByRole('tab', { name: /Queued/ })).toContainElement(screen.getByTestId('badge'));
+    expect(screen.getByRole('tab', { name: /Queued/ })).toContainElement(
+      screen.getByTestId('badge'),
+    );
   });
-
 });

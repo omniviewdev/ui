@@ -115,10 +115,7 @@ export const FindBar = forwardRef<HTMLDivElement, FindBarProps>(function FindBar
     [onRegexChange],
   );
 
-  const handleClose = useCallback(
-    () => onOpenChange?.(false),
-    [onOpenChange],
-  );
+  const handleClose = useCallback(() => onOpenChange?.(false), [onOpenChange]);
 
   const handleReplaceTextChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => onReplaceTextChange?.(e.target.value),

@@ -37,7 +37,7 @@ export const SuccessResult: Story = {
 export const ErrorResult: Story = {
   args: {
     status: 'error',
-    content: 'Error: ENOENT: no such file or directory, open \'/src/missing.ts\'',
+    content: "Error: ENOENT: no such file or directory, open '/src/missing.ts'",
   },
 };
 

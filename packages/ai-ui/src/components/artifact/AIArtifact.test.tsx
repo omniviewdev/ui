@@ -27,12 +27,20 @@ describe('AIArtifact', () => {
   });
 
   it('sets variant data attribute to panel', () => {
-    renderAI(<AIArtifact variant="panel" data-testid="art">x</AIArtifact>);
+    renderAI(
+      <AIArtifact variant="panel" data-testid="art">
+        x
+      </AIArtifact>,
+    );
     expect(screen.getByTestId('art')).toHaveAttribute('data-ov-variant', 'panel');
   });
 
   it('sets open data attribute', () => {
-    renderAI(<AIArtifact open data-testid="art">x</AIArtifact>);
+    renderAI(
+      <AIArtifact open data-testid="art">
+        x
+      </AIArtifact>,
+    );
     expect(screen.getByTestId('art')).toHaveAttribute('data-ov-open', 'true');
   });
 
@@ -43,7 +51,11 @@ describe('AIArtifact', () => {
   });
 
   it('merges className', () => {
-    renderAI(<AIArtifact className="custom" data-testid="art">x</AIArtifact>);
+    renderAI(
+      <AIArtifact className="custom" data-testid="art">
+        x
+      </AIArtifact>,
+    );
     expect(screen.getByTestId('art').className).toContain('custom');
   });
 });

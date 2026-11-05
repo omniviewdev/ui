@@ -1,10 +1,5 @@
 import { useState, useCallback, type KeyboardEvent } from 'react';
-import {
-  LuArrowLeft,
-  LuArrowRight,
-  LuRotateCw,
-  LuLock,
-} from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuRotateCw, LuLock } from 'react-icons/lu';
 import { IconButton, Input, Toolbar } from '@omniviewdev/base-ui';
 import { ensureProtocol, NEW_TAB_URL } from '../data';
 import styles from '../index.module.css';
@@ -68,12 +63,7 @@ export function BrowserToolbar({
         >
           <LuArrowRight />
         </IconButton>
-        <IconButton
-          variant="ghost"
-          size="sm"
-          aria-label="Refresh"
-          onClick={onRefresh}
-        >
+        <IconButton variant="ghost" size="sm" aria-label="Refresh" onClick={onRefresh}>
           <LuRotateCw />
         </IconButton>
       </Toolbar.Group>

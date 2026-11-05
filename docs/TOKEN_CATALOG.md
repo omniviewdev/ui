@@ -44,7 +44,6 @@ Only `Card interactive` consumes these new aliases. Existing palette defaults
 remain unchanged. Card aliases map to surface/default, control-hover/strong,
 and selected/accent-strong roles respectively; geometry has no prior token.
 
-
 ## Canonical token prefixes
 
 - Primitives: `--ov-primitive-*`

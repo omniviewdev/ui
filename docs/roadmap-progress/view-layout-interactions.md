@@ -32,23 +32,23 @@ The original integrated `feature/resource-intelligence-table-ui` checkout had un
 
 Launched the existing focused `KeyboardAndPointerLayoutBuilder` story from this clean worktree on unique port **6191** with `npx --yes pnpm@12.14.0 exec storybook dev -p 6191 --ci --no-open`. All scenarios below were re-exercised after the main-based transplant. Screenshots inspected; final browser error log empty. The earlier isolated verification used port 6187.
 
-| Scenario | Observed result |
-| --- | --- |
-| Earlier/Later via keyboard | Order changed and the same move control retained focus, including boundary states. |
-| Space/Right/Space drag | Keyed order changed; drop restored its own drag-handle focus. |
-| Actual pointer drag | Restricted scope moved to first position. |
-| Continuous pointer resize | Reached 3×3, maximum 6×4, then minimum 1×1 in one gesture; resize focus retained. |
-| Arrow-key resize | Reached 6×4 maxima and 1×1 minima without exceeding bounds; resize focus retained. |
-| Host update during pointer drag | Scheduled external reversed order and Capacity 4×2 geometry survived the subsequent drop unchanged. |
-| Host update during accepted resize | External order/4×2 geometry survived further pointer movement; binding stayed `opaque.capacity`. |
-| Disabled/read-only | Pointer drag/resize, keyboard drag/resize and move/remove/configure did not mutate layout; content actions remained usable. |
-| Host rejects edits | Resize/removal requests did not change controlled data; rejected removal kept its button focus. |
-| Missing renderer | Exact configuration retained; unavailable panel remained resizable with binding preserved; restoring renderer recovered content. |
-| Selection and external removal | Keyed selection survived a move, cleared on host removal, did not revive on reset; host trigger kept focus. |
-| Removal focus | Next survivor, previous survivor, then empty layout received focus; Tab continued into survivor controls. |
-| Preview | Editing controls disappeared without unmounting panels; content actions worked. External removal of a focused resize control focused its panel. |
-| Configure/Inspect close | Returned focus to the actual opening trigger, not a previously configured panel's trigger. |
-| External controlled reorder | Focused Capacity resize control stayed focused and connected across external order/geometry replacement. |
+| Scenario                           | Observed result                                                                                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Earlier/Later via keyboard         | Order changed and the same move control retained focus, including boundary states.                                                              |
+| Space/Right/Space drag             | Keyed order changed; drop restored its own drag-handle focus.                                                                                   |
+| Actual pointer drag                | Restricted scope moved to first position.                                                                                                       |
+| Continuous pointer resize          | Reached 3×3, maximum 6×4, then minimum 1×1 in one gesture; resize focus retained.                                                               |
+| Arrow-key resize                   | Reached 6×4 maxima and 1×1 minima without exceeding bounds; resize focus retained.                                                              |
+| Host update during pointer drag    | Scheduled external reversed order and Capacity 4×2 geometry survived the subsequent drop unchanged.                                             |
+| Host update during accepted resize | External order/4×2 geometry survived further pointer movement; binding stayed `opaque.capacity`.                                                |
+| Disabled/read-only                 | Pointer drag/resize, keyboard drag/resize and move/remove/configure did not mutate layout; content actions remained usable.                     |
+| Host rejects edits                 | Resize/removal requests did not change controlled data; rejected removal kept its button focus.                                                 |
+| Missing renderer                   | Exact configuration retained; unavailable panel remained resizable with binding preserved; restoring renderer recovered content.                |
+| Selection and external removal     | Keyed selection survived a move, cleared on host removal, did not revive on reset; host trigger kept focus.                                     |
+| Removal focus                      | Next survivor, previous survivor, then empty layout received focus; Tab continued into survivor controls.                                       |
+| Preview                            | Editing controls disappeared without unmounting panels; content actions worked. External removal of a focused resize control focused its panel. |
+| Configure/Inspect close            | Returned focus to the actual opening trigger, not a previously configured panel's trigger.                                                      |
+| External controlled reorder        | Focused Capacity resize control stayed focused and connected across external order/geometry replacement.                                        |
 
 Browser scripts awaited sensor/collision updates and used normal-duration keyboard presses. Early automation selector/timing failures were investigated, not counted as passing evidence. No extra runtime/test scaffolding is shipped.
 

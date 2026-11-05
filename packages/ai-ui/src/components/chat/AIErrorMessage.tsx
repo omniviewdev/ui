@@ -19,12 +19,7 @@ export const AIErrorMessage = forwardRef<HTMLDivElement, AIErrorMessageProps>(
     ref,
   ) {
     return (
-      <Banner
-        ref={ref}
-        color="danger"
-        className={cn(styles.Root, className)}
-        {...rest}
-      >
+      <Banner ref={ref} color="danger" className={cn(styles.Root, className)} {...rest}>
         <Banner.Icon>
           <LuTriangleAlert size={16} />
         </Banner.Icon>

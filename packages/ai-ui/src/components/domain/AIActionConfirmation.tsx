@@ -42,9 +42,7 @@ export const AIActionConfirmation = forwardRef<HTMLDivElement, AIActionConfirmat
     },
     ref,
   ) {
-    const defaultIcon = destructive
-      ? <LuTriangleAlert size={16} />
-      : <LuShieldCheck size={16} />;
+    const defaultIcon = destructive ? <LuTriangleAlert size={16} /> : <LuShieldCheck size={16} />;
 
     const defaultConfirmLabel = destructive ? 'Confirm' : 'Apply';
 
@@ -63,9 +61,7 @@ export const AIActionConfirmation = forwardRef<HTMLDivElement, AIActionConfirmat
         <Banner.Content>
           <Banner.Title>{title}</Banner.Title>
           <p className={styles.Description}>{description}</p>
-          {resource && (
-            <code className={styles.Resource}>{resource}</code>
-          )}
+          {resource && <code className={styles.Resource}>{resource}</code>}
         </Banner.Content>
         <Banner.Actions>
           <Button size="sm" variant="ghost" color="neutral" onClick={onCancel}>

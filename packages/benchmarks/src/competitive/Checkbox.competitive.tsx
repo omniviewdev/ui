@@ -6,7 +6,7 @@ import { wrapOv, wrapMui, wrapRaw } from './implementations/wrappers';
 
 describe('Checkbox competitive', () => {
   benchCompare('mount', {
-    'raw': () => wrapRaw(<input type="checkbox" />),
+    raw: () => wrapRaw(<input type="checkbox" />),
     '@omniviewdev/base-ui': () => wrapOv(<OvCheckbox />),
     '@mui/material': () => wrapMui(<MuiCheckbox />),
   });

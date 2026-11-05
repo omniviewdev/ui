@@ -29,8 +29,7 @@ export class ThemeValidationError extends Error {
 const ID_PATTERN = /^[A-Za-z0-9._~%/:-]+$/;
 const CSS_NUMBER = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?$/i;
 const CSS_PERCENTAGE = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?%$/i;
-const CSS_ANGLE =
-  /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?(?:deg|grad|rad|turn)?$/i;
+const CSS_ANGLE = /^[+-]?(?:(?:\d+(?:\.\d*)?)|(?:\.\d+))(?:e[+-]?\d+)?(?:deg|grad|rad|turn)?$/i;
 const CSS_COLOR_PROFILES: Readonly<Record<string, true>> = Object.freeze({
   srgb: true,
   'srgb-linear': true,
@@ -100,16 +99,15 @@ function structurallySupportsColor(value: string): boolean {
   if (components.some((part) => part.length === 0)) return false;
 
   if (commaSyntax) {
-    if (alpha !== undefined || (name !== 'rgb' && name !== 'rgba' && name !== 'hsl' && name !== 'hsla')) {
+    if (
+      alpha !== undefined ||
+      (name !== 'rgb' && name !== 'rgba' && name !== 'hsl' && name !== 'hsla')
+    ) {
       return false;
     }
     if (components.length !== 3 && components.length !== 4) return false;
     const legacyAlpha = components[3];
-    if (
-      legacyAlpha !== undefined &&
-      !isNumber(legacyAlpha) &&
-      !isPercentage(legacyAlpha)
-    ) {
+    if (legacyAlpha !== undefined && !isNumber(legacyAlpha) && !isPercentage(legacyAlpha)) {
       return false;
     }
 
@@ -184,7 +182,11 @@ function optionalMetadata(
   const value = input[field];
   if (value === undefined) return undefined;
   if (typeof value !== 'string' || (maximum !== undefined && value.length > maximum)) {
-    fail('invalid_metadata', field, `${field} must be a string${maximum === undefined ? '' : ` of at most ${maximum} characters`}`);
+    fail(
+      'invalid_metadata',
+      field,
+      `${field} must be a string${maximum === undefined ? '' : ` of at most ${maximum} characters`}`,
+    );
   }
   return value;
 }
@@ -209,7 +211,11 @@ export function validateThemeDefinition(
   ) {
     fail('invalid_id', 'id', 'Theme ID is invalid');
   }
-  if (typeof candidate.name !== 'string' || candidate.name.length === 0 || candidate.name.length > 80) {
+  if (
+    typeof candidate.name !== 'string' ||
+    candidate.name.length === 0 ||
+    candidate.name.length > 80
+  ) {
     fail('invalid_metadata', 'name', 'Theme name must contain 1 to 80 characters');
   }
   if (typeof candidate.base !== 'string' || !isBuiltInThemeId(candidate.base)) {
@@ -219,7 +225,11 @@ export function validateThemeDefinition(
   const author = optionalMetadata(candidate, 'author', 120);
   const version = optionalMetadata(candidate, 'version');
   const description = optionalMetadata(candidate, 'description', 500);
-  if (typeof candidate.tokens !== 'object' || candidate.tokens === null || Array.isArray(candidate.tokens)) {
+  if (
+    typeof candidate.tokens !== 'object' ||
+    candidate.tokens === null ||
+    Array.isArray(candidate.tokens)
+  ) {
     fail('invalid_metadata', 'tokens', 'Theme tokens must be an object');
   }
 

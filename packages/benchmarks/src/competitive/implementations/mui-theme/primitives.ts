@@ -57,7 +57,7 @@ export const brand = {
  * These values are the single source of truth for neutral colors.
  */
 export const gray = {
-  50:  '#ECF0F6', // --ov-scale-gray-13
+  50: '#ECF0F6', // --ov-scale-gray-13
   100: '#CBD5E1', // --ov-scale-gray-12
   200: '#ABB8CC', // --ov-scale-gray-11
   300: '#8B9BB5', // --ov-scale-gray-10
@@ -200,9 +200,10 @@ export const getDesignTokens = (mode: PaletteMode) => ({
     },
     grey: gray,
     // Matches --ov-border-default / --ov-border-muted
-    divider: mode === 'dark'
-      ? 'rgba(62, 79, 102, 0.6)' // alpha(--ov-scale-gray-8, 0.6)
-      : 'rgba(208, 215, 222, 0.6)', // alpha(--ov-border-default light, 0.6)
+    divider:
+      mode === 'dark'
+        ? 'rgba(62, 79, 102, 0.6)' // alpha(--ov-scale-gray-8, 0.6)
+        : 'rgba(208, 215, 222, 0.6)', // alpha(--ov-border-default light, 0.6)
     background: {
       // Matches --ov-bg-base / --ov-bg-surface
       default: mode === 'dark' ? '#0D1117' : '#FFFFFF',
@@ -239,7 +240,12 @@ export const typography = {
     'Arial',
     'sans-serif',
   ].join(','),
-  h1: { fontSize: defaultTheme.typography.pxToRem(48), fontWeight: 600, lineHeight: 1.2, letterSpacing: -0.5 },
+  h1: {
+    fontSize: defaultTheme.typography.pxToRem(48),
+    fontWeight: 600,
+    lineHeight: 1.2,
+    letterSpacing: -0.5,
+  },
   h2: { fontSize: defaultTheme.typography.pxToRem(36), fontWeight: 600, lineHeight: 1.2 },
   h3: { fontSize: defaultTheme.typography.pxToRem(30), fontWeight: 600, lineHeight: 1.2 },
   h4: { fontSize: defaultTheme.typography.pxToRem(24), fontWeight: 600, lineHeight: 1.5 },

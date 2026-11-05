@@ -146,7 +146,11 @@ describe('host-prepared table state', () => {
     const onExpandedChange = vi.fn();
     const onGlobalFilterChange = vi.fn();
     const onColumnFiltersChange = vi.fn();
-    const initial: Partial<TableState<DataTableFeatures>> = { expanded: {}, globalFilter: '', columnFilters: [] };
+    const initial: Partial<TableState<DataTableFeatures>> = {
+      expanded: {},
+      globalFilter: '',
+      columnFilters: [],
+    };
     const { result, rerender } = renderHook(
       ({ state }) =>
         useDataTable({
@@ -182,15 +186,30 @@ describe('host-prepared table state', () => {
     const preparedColumns: ColumnDef<Prepared, unknown>[] = [
       {
         id: 'content',
-        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => (row.original.group ? (
-          <button aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])} onClick={() => row.toggleExpanded()}>
-            {row.original.name} ({row.original.count})
-          </button>
-        ) : (
-          <button aria-pressed={!!snapshot.selection[row.id]} onClick={() => row.toggleSelected()}>
-            Select {row.original.name}
-          </button>
-        ))}</Subscribe>),
+        cell: ({ row, table }) => (
+          <Subscribe
+            source={table.store}
+            selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+          >
+            {(snapshot) =>
+              row.original.group ? (
+                <button
+                  aria-expanded={snapshot.expanded === true || !!snapshot.expanded[row.id]}
+                  onClick={() => row.toggleExpanded()}
+                >
+                  {row.original.name} ({row.original.count})
+                </button>
+              ) : (
+                <button
+                  aria-pressed={!!snapshot.selection[row.id]}
+                  onClick={() => row.toggleSelected()}
+                >
+                  Select {row.original.name}
+                </button>
+              )
+            }
+          </Subscribe>
+        ),
       },
     ];
     function PreparedGroups() {
@@ -255,24 +274,31 @@ function Detail({ name, onLifetime }: { name: string; onLifetime: (mounted: bool
 const interactiveColumns: ColumnDef<Item, unknown>[] = [
   {
     id: 'controls',
-    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-      <>
-        <button
-          aria-label={`Expand ${row.original.name}`}
-          aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
-          onClick={() => row.toggleExpanded()}
-        >
-          Details
-        </button>
-        <button
-          aria-label={`Select ${row.original.name}`}
-          aria-pressed={!!snapshot.selection[row.id]}
-          onClick={() => row.toggleSelected()}
-        >
-          Select
-        </button>
-      </>
-    ))}</Subscribe>),
+    cell: ({ row, table }) => (
+      <Subscribe
+        source={table.store}
+        selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+      >
+        {(snapshot) => (
+          <>
+            <button
+              aria-label={`Expand ${row.original.name}`}
+              aria-expanded={snapshot.expanded === true || !!snapshot.expanded[row.id]}
+              onClick={() => row.toggleExpanded()}
+            >
+              Details
+            </button>
+            <button
+              aria-label={`Select ${row.original.name}`}
+              aria-pressed={!!snapshot.selection[row.id]}
+              onClick={() => row.toggleSelected()}
+            >
+              Select
+            </button>
+          </>
+        )}
+      </Subscribe>
+    ),
   },
   ...columns,
 ];
@@ -396,19 +422,26 @@ describe.each([false, true])('mounted row freshness (virtual=%s)', (virtual) => 
         ...columns,
         {
           id: 'actions',
-          cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-            <>
-              <button
-                aria-pressed={!!snapshot.selection[row.id]}
-                onClick={() => row.toggleSelected()}
-              >
-                Select {row.original.name}
-              </button>
-              <button onClick={() => onInspect(row.original)}>
-                Inspect {row.original.name}
-              </button>
-            </>
-          ))}</Subscribe>),
+          cell: ({ row, table }) => (
+            <Subscribe
+              source={table.store}
+              selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+            >
+              {(snapshot) => (
+                <>
+                  <button
+                    aria-pressed={!!snapshot.selection[row.id]}
+                    onClick={() => row.toggleSelected()}
+                  >
+                    Select {row.original.name}
+                  </button>
+                  <button onClick={() => onInspect(row.original)}>
+                    Inspect {row.original.name}
+                  </button>
+                </>
+              )}
+            </Subscribe>
+          ),
         },
       ],
       [onInspect],
@@ -441,11 +474,10 @@ describe.each([false, true])('mounted row freshness (virtual=%s)', (virtual) => 
   it('refreshes same-ID values, derived state and callbacks without remounting the table', async () => {
     const user = userEvent.setup();
     const onInspect = vi.fn();
-    const { rerender } = renderWithTheme(
-      <FreshnessTable items={data} onInspect={onInspect} />,
-    );
+    const { rerender } = renderWithTheme(<FreshnessTable items={data} onInspect={onInspect} />);
     const bodyNames = () =>
-      screen.getAllByRole('row')
+      screen
+        .getAllByRole('row')
         .filter((row) => row.querySelector('td'))
         .map((row) => row.querySelector('td')!.textContent);
 
@@ -458,7 +490,8 @@ describe.each([false, true])('mounted row freshness (virtual=%s)', (virtual) => 
     expect(bodyNames()).toEqual(['Aardvark', 'Alpha']);
     expect(screen.queryByText('Beta', { exact: true })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Select Aardvark' })).toHaveAttribute(
-      'aria-pressed', 'true',
+      'aria-pressed',
+      'true',
     );
     await user.click(screen.getByRole('button', { name: 'Inspect Aardvark' }));
     expect(onInspect).toHaveBeenLastCalledWith(patched);
@@ -466,7 +499,8 @@ describe.each([false, true])('mounted row freshness (virtual=%s)', (virtual) => 
 
     await user.click(screen.getByRole('button', { name: 'Select Aardvark' }));
     expect(screen.getByRole('button', { name: 'Select Aardvark' })).toHaveAttribute(
-      'aria-pressed', 'false',
+      'aria-pressed',
+      'false',
     );
     await user.click(screen.getByRole('button', { name: /sort by name/i }));
     expect(bodyNames()).toEqual(['Alpha', 'Aardvark']);

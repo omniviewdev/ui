@@ -1,0 +1,420 @@
+{
+  "componentEntries": 17,
+  "componentStories": 67,
+  "defaultAudit": [
+    {
+      "id": "metrics-components-metricvalue--default",
+      "text": "21.656\nm",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 0,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-capacitybar--default",
+      "text": "376\nMiB\n73.44 % of limit\n0 B\n512 MiB limit\nRequest 256 MiB\nThreshold 409.6 MiB\nThreshold 486.4 MiB",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 0,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-slosummary--default",
+      "text": "Budget remaining\nObjective 99.9 % · Last 30 days\n60\n%\nObserved\n99.96 %\n1 hour\n0.4×\n24 hours\n0.7×",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 0,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-gauge--default",
+      "text": "216\nm\nCPU saturation\n0 m\n500 m",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-sparkline--default",
+      "text": "",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-rankedbars--default",
+      "text": "api-server\n186 m\nbackground-worker\n124 m\ngateway\n82 m\nscheduler\n36 m",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 0,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-histogram--default",
+      "text": "Count\n64\n(0 ms, 25 ms] · 18 count",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-heatmap--default",
+      "text": "Count\n0–67\n25 ms\n50 ms\n100 ms\n250 ms\n>250 ms\n5:30:00 AM\n8:30:00 AM",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-smallmultiples--default",
+      "text": "Instance 1\n21.66 m\nInstance 2\n24.66 m\nInstance 3\n27.66 m\nInstance 4\n30.66 m\nPrevious\n1 / 2\nNext",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 4,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-metricdetails--default",
+      "text": "Kind local monitoring / Prometheus\nSample\tUpdated\tValid until\nCurrent\t08:30:00 AM\t08:31:00 AM\nHistory\t08:30:00 AM\t08:32:00 AM\ncluster\nkind-kind\nnamespace\nkube-system\npod\nkube-apiserver-kind-control-plane\nDiagnostics",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 5
+    },
+    {
+      "id": "metrics-components-timeserieschart--default",
+      "text": "30 m\n20 m\n10 m\n0 m\n05:30 AM\n07:00 AM\n08:30 AM",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-stackedtimeserieschart--default",
+      "text": "40 m\n30 m\n20 m\n10 m\n0 m\n05:30 AM\n07:00 AM\n08:30 AM\nCPU usage\nWorker",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-statetimeline--default",
+      "text": "API\nWorker\nGateway\nReady\nPending\nFailed\nUnknown\nAPI · Pending · 11/5/2026, 5:30:00 AM–5:33:00 AM",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 1,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-metriclegend--default",
+      "text": "CPU usage\nWorker",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 0,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-metricdisplaypicker--default",
+      "text": "",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 4,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-timerangecontrol--default",
+      "text": "Last 30 minutes\nRefresh",
+      "cards": 0,
+      "footers": [],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 2,
+      "rows": 3
+    },
+    {
+      "id": "metrics-components-metricpanel--default",
+      "text": "CPU usage\n21.656\nm\n30 m\n20 m\n10 m\n0 m\n05:30 AM\n07:00 AM\n08:30 AM\nDetails",
+      "cards": 1,
+      "footers": [
+        {
+          "text": "Details",
+          "display": "flex",
+          "marker": "none",
+          "swatches": 1
+        }
+      ],
+      "overflow": false,
+      "previewError": false,
+      "svgs": 6,
+      "rows": 5
+    }
+  ],
+  "additionalVariantsRendered": 50,
+  "footerProof": [
+    {
+      "id": "metrics-compositions--pod",
+      "opened": true,
+      "summaries": [
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(180, 155, 250)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(255, 184, 108)"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "id": "metrics-compositions--pod-advanced",
+      "opened": true,
+      "summaries": [
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(180, 155, 250)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "id": "metrics-compositions--service",
+      "opened": true,
+      "summaries": [
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "id": "metrics-compositions--cluster",
+      "opened": true,
+      "summaries": [
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "id": "metrics-compositions--large-data",
+      "opened": true,
+      "summaries": [
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(180, 155, 250)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        },
+        {
+          "className": "_PanelDetails_l6ry0_47",
+          "marker": "none",
+          "swatch": "rgb(129, 166, 255)"
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "themeProof": [
+    {
+      "theme": "void",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(20, 21, 23)",
+      "valueColor": "rgb(180, 155, 250)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(31, 33, 37)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(247, 248, 250)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "obsidian",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(22, 24, 28)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "carbon",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(22, 22, 22)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "solarized-dark",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(7, 54, 66)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "solarized-light",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(238, 232, 213)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "high-contrast-dark",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(10, 10, 10)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    },
+    {
+      "theme": "high-contrast-light",
+      "height": 332,
+      "width": 398,
+      "background": "rgb(255, 255, 255)",
+      "valueColor": "rgb(166, 125, 232)",
+      "footerHeight": 34,
+      "overflow": false
+    }
+  ],
+  "refreshGeometry": {
+    "before": {
+      "height": 332,
+      "plotTop": 171.8699951171875
+    },
+    "after": {
+      "height": 332,
+      "plotTop": 171.8699951171875
+    },
+    "keyboardOpened": true,
+    "keyboardClosed": true
+  },
+  "relativeAndAbsoluteRanges": {
+    "sameCard": true,
+    "samePath": true,
+    "detailsOpen": true
+  },
+  "finalTableMeasurements": {
+    "cluster": {
+      "rows": 13,
+      "capacityWidth": 120,
+      "capacityHeight": 24,
+      "cellHeight": 42,
+      "overflow": false
+    },
+    "large-data": {
+      "rows": 13,
+      "capacityWidth": 120,
+      "capacityHeight": 24,
+      "cellHeight": 42,
+      "overflow": false
+    }
+  },
+  "packedConsumer": {
+    "strictMetricsTypes": true,
+    "productionBuild": true,
+    "runtimeRendered": true,
+    "detailsOpened": true,
+    "consoleErrors": 0
+  },
+  "storybookConsoleErrors": 0
+}

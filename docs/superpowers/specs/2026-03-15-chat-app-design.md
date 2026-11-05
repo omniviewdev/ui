@@ -45,10 +45,12 @@ The sidebar is resizable via `ResizableSplitPane`. The thread panel slides in wh
 ### 3. Message Area
 
 #### Channel Header
+
 - Channel name (bold) with `#` prefix (or user avatar for DMs)
 - Right side: member count, search icon, pinned icon, info icon (all ghost `IconButton`)
 
 #### Message List
+
 - Scrollable via `ScrollArea`
 - Date separators: "Today", "Yesterday", "March 14"
 - Each message: `Avatar` (36px, rounded-rect), display name (bold), timestamp (muted), body
@@ -64,6 +66,7 @@ The sidebar is resizable via `ResizableSplitPane`. The thread panel slides in wh
 - **Hover actions:** floating toolbar on hover — emoji react, reply in thread, bookmark, more (`ContextMenu`)
 
 #### Message Composer
+
 - Multiline `TextArea` with placeholder "Message #channel-name"
 - Formatting toolbar: Bold, Italic, Strikethrough, Code, Link, Ordered List, Bulleted List (ghost `IconButton`, small)
 - Right side: emoji picker button, attachment button, send button
@@ -89,7 +92,7 @@ All state managed by a `useChat` hook (pattern matches `useBrowser` from web-bro
 interface Workspace {
   id: string;
   name: string;
-  avatar: string;       // initials or emoji
+  avatar: string; // initials or emoji
   channels: Channel[];
   users: User[];
 }
@@ -99,13 +102,13 @@ interface Channel {
   name: string;
   type: 'channel' | 'dm';
   unreadCount: number;
-  members: string[];     // user IDs
+  members: string[]; // user IDs
 }
 
 interface User {
   id: string;
   name: string;
-  avatar: string;        // initials or emoji
+  avatar: string; // initials or emoji
   status: 'online' | 'away' | 'dnd' | 'offline';
 }
 
@@ -135,8 +138,8 @@ interface UseChatReturn {
   activeWorkspace: Workspace;
   activeChannel: Channel;
   activeThread: Message | null;
-  messages: Message[];          // for active channel
-  threadMessages: Message[];    // replies for active thread (stored internally, not on Message)
+  messages: Message[]; // for active channel
+  threadMessages: Message[]; // replies for active thread (stored internally, not on Message)
   typingUsers: User[];
 
   // Actions
@@ -145,8 +148,8 @@ interface UseChatReturn {
   openThread: (messageId: string) => void;
   closeThread: () => void;
   sendMessage: (content: string) => void;
-  sendThreadReply: (content: string) => void;   // appends to activeThread, increments parent replyCount
-  toggleReaction: (messageId: string, emoji: string) => void;  // adds/removes currentUser from reaction
+  sendThreadReply: (content: string) => void; // appends to activeThread, increments parent replyCount
+  toggleReaction: (messageId: string, emoji: string) => void; // adds/removes currentUser from reaction
 }
 ```
 
@@ -189,12 +192,14 @@ apps/showcase/src/demos/chat-app/
 ## Scope Boundaries
 
 **In scope:**
+
 - All visual features described above
 - Interactive state: switching workspaces/channels, opening/closing threads, sending messages (appended to local state), toggling reactions, typing indicators
 - Hover actions toolbar on messages
 - Rich composer with formatting toolbar (buttons are visual; they don't transform text, just demonstrate the toolbar UI)
 
 **Out of scope:**
+
 - Actual rich text editing (bold/italic rendering in composed messages)
 - File upload functionality
 - Search functionality (icon present, no implementation)

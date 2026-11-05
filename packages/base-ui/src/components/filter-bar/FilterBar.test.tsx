@@ -16,7 +16,11 @@ describe('FilterBar', () => {
   });
 
   it('applies size data attribute', () => {
-    renderWithTheme(<FilterBar data-testid="fb" size="sm">content</FilterBar>);
+    renderWithTheme(
+      <FilterBar data-testid="fb" size="sm">
+        content
+      </FilterBar>,
+    );
     expect(screen.getByTestId('fb')).toHaveAttribute('data-ov-size', 'sm');
   });
 
@@ -113,7 +117,11 @@ describe('FilterBar', () => {
   });
 
   it('merges className', () => {
-    renderWithTheme(<FilterBar data-testid="fb" className="custom">content</FilterBar>);
+    renderWithTheme(
+      <FilterBar data-testid="fb" className="custom">
+        content
+      </FilterBar>,
+    );
     expect(screen.getByTestId('fb')).toHaveClass('custom');
   });
 });

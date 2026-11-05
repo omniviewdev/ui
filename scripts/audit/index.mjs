@@ -27,31 +27,31 @@ function loadBaseline() {
 }
 
 async function main() {
-  console.log('🔍 Running UI library audit...\n');
+  process.stdout.write('🔍 Running UI library audit...\n' + '\n');
 
-  console.log('  Scanning token/styling consistency...');
+  process.stdout.write('  Scanning token/styling consistency...' + '\n');
   const tokenFindings = await scanTokenConsistency();
-  console.log(`  → ${tokenFindings.length} findings\n`);
+  process.stdout.write(`  → ${tokenFindings.length} findings\n` + '\n');
 
-  console.log('  Scanning theme coverage & IDE aliases...');
+  process.stdout.write('  Scanning theme coverage & IDE aliases...' + '\n');
   const themeFindings = await scanThemeCoverage();
-  console.log(`  → ${themeFindings.length} findings\n`);
+  process.stdout.write(`  → ${themeFindings.length} findings\n` + '\n');
 
-  console.log('  Scanning custom-property dependency cycles...');
+  process.stdout.write('  Scanning custom-property dependency cycles...' + '\n');
   const cycleFindings = await scanCustomPropertyCycles();
-  console.log(`  → ${cycleFindings.length} findings\n`);
+  process.stdout.write(`  → ${cycleFindings.length} findings\n` + '\n');
 
-  console.log('  Scanning convention violations...');
+  process.stdout.write('  Scanning convention violations...' + '\n');
   const conventionFindings = await scanConventionViolations();
-  console.log(`  → ${conventionFindings.length} findings\n`);
+  process.stdout.write(`  → ${conventionFindings.length} findings\n` + '\n');
 
-  console.log('  Scanning React performance...');
+  process.stdout.write('  Scanning React performance...' + '\n');
   const perfFindings = await scanReactPerformance();
-  console.log(`  → ${perfFindings.length} findings\n`);
+  process.stdout.write(`  → ${perfFindings.length} findings\n` + '\n');
 
-  console.log('  Scanning accessibility...');
+  process.stdout.write('  Scanning accessibility...' + '\n');
   const a11yFindings = await scanAccessibility();
-  console.log(`  → ${a11yFindings.length} findings\n`);
+  process.stdout.write(`  → ${a11yFindings.length} findings\n` + '\n');
 
   const allFindings = [
     ...tokenFindings,
@@ -62,14 +62,14 @@ async function main() {
     ...a11yFindings,
   ];
 
-  const { outPath, total, high, medium, low } = generateReport(allFindings);
+  const { outPath, total, high, medium, low } = await generateReport(allFindings);
 
-  console.log('━'.repeat(50));
-  console.log(`\n📊 Audit complete: ${total} findings`);
-  console.log(`   🔴 High: ${high}`);
-  console.log(`   🟡 Medium: ${medium}`);
-  console.log(`   🔵 Low: ${low}`);
-  console.log(`\n📄 Report written to: ${outPath}\n`);
+  process.stdout.write('━'.repeat(50) + '\n');
+  process.stdout.write(`\n📊 Audit complete: ${total} findings` + '\n');
+  process.stdout.write(`   🔴 High: ${high}` + '\n');
+  process.stdout.write(`   🟡 Medium: ${medium}` + '\n');
+  process.stdout.write(`   🔵 Low: ${low}` + '\n');
+  process.stdout.write(`\n📄 Report written to: ${outPath}\n` + '\n');
 
   // Strict mode: fail only on NEW High findings not in the baseline
   const baseline = loadBaseline();
@@ -85,12 +85,12 @@ async function main() {
   }
 
   if (high > 0) {
-    console.log(`ℹ️  ${high} High finding(s) in baseline (known/intentional).`);
+    process.stdout.write(`ℹ️  ${high} High finding(s) in baseline (known/intentional).` + '\n');
   }
-  console.log('✅ No new High severity findings. Audit passed.\n');
+  process.stdout.write('✅ No new High severity findings. Audit passed.\n' + '\n');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Audit failed:', err);
   process.exit(1);
 });

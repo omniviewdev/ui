@@ -30,5 +30,14 @@ export function useColumnSizeVars<TData extends RowData>(
     }
     return vars;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table, options, state.grouping, columnSizing, columnResizing, columnVisibility, columnOrder, columnPinning]);
+  }, [
+    table,
+    options,
+    state.grouping,
+    columnSizing,
+    columnResizing,
+    columnVisibility,
+    columnOrder,
+    columnPinning,
+  ]);
 }

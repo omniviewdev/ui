@@ -31,31 +31,35 @@ const TYPE_ICONS = {
   document: LuFile,
 } as const;
 
-export const AIAttachment = forwardRef<HTMLDivElement, AIAttachmentProps>(
-  function AIAttachment(
-    { name, size, type, previewUrl, onRemove, className, ...rest },
-    ref,
-  ) {
-    const Icon = TYPE_ICONS[type];
+export const AIAttachment = forwardRef<HTMLDivElement, AIAttachmentProps>(function AIAttachment(
+  { name, size, type, previewUrl, onRemove, className, ...rest },
+  ref,
+) {
+  const Icon = TYPE_ICONS[type];
 
-    return (
-      <Card ref={ref} className={cn(styles.Root, className)} size="sm" {...rest}>
-        {previewUrl && type === 'image' && (
-          <img src={previewUrl} alt={name} className={styles.Preview} />
-        )}
-        <Card.Body>
-          <div className={styles.Info}>
-            <Icon size={16} />
-            <span className={styles.Name}>{name}</span>
-            {size != null && <span className={styles.Size}>{formatSize(size)}</span>}
-            {onRemove && (
-              <IconButton size="sm" variant="ghost" color="neutral" aria-label="Remove attachment" onClick={onRemove}>
-                <LuX size={14} />
-              </IconButton>
-            )}
-          </div>
-        </Card.Body>
-      </Card>
-    );
-  },
-);
+  return (
+    <Card ref={ref} className={cn(styles.Root, className)} size="sm" {...rest}>
+      {previewUrl && type === 'image' && (
+        <img src={previewUrl} alt={name} className={styles.Preview} />
+      )}
+      <Card.Body>
+        <div className={styles.Info}>
+          <Icon size={16} />
+          <span className={styles.Name}>{name}</span>
+          {size != null && <span className={styles.Size}>{formatSize(size)}</span>}
+          {onRemove && (
+            <IconButton
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              aria-label="Remove attachment"
+              onClick={onRemove}
+            >
+              <LuX size={14} />
+            </IconButton>
+          )}
+        </div>
+      </Card.Body>
+    </Card>
+  );
+});

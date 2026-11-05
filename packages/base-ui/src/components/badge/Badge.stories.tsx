@@ -21,7 +21,19 @@ const meta = {
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['standard', 'dot'] },
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     position: {
       control: 'select',
       options: ['top-right', 'top-left', 'bottom-right', 'bottom-left'],

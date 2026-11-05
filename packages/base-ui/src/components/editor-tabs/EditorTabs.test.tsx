@@ -96,9 +96,9 @@ describe('EditorTabs', () => {
       </>,
     );
 
-    expect(
-      screen.getByRole('tab', { name: 'zsh' }).closest('[role="tablist"]'),
-    ).toBe(screen.getByRole('tablist', { name: 'Terminal tabs' }));
+    expect(screen.getByRole('tab', { name: 'zsh' }).closest('[role="tablist"]')).toBe(
+      screen.getByRole('tablist', { name: 'Terminal tabs' }),
+    );
     expect(screen.getByRole('tablist', { name: 'Page tabs' })).toContainElement(
       screen.getByRole('tab', { name: 'Home' }),
     );

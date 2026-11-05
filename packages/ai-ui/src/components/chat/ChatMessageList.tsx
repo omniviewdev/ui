@@ -35,15 +35,7 @@ export interface ChatMessageListProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageListProps>(
   function ChatMessageList(
-    {
-      autoScroll = true,
-      onScrollToTop,
-      count,
-      estimateSize = 80,
-      renderItem,
-      className,
-      ...rest
-    },
+    { autoScroll = true, onScrollToTop, count, estimateSize = 80, renderItem, className, ...rest },
     ref,
   ) {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -67,13 +59,17 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
       }
     }, []);
 
-    useImperativeHandle(ref, () => ({
-      scrollToBottom,
-      scrollToIndex: (index: number) => {
-        virtualizer.scrollToIndex(index, { align: 'start' });
-      },
-      getScrollElement: () => scrollRef.current,
-    }), [scrollToBottom, virtualizer]);
+    useImperativeHandle(
+      ref,
+      () => ({
+        scrollToBottom,
+        scrollToIndex: (index: number) => {
+          virtualizer.scrollToIndex(index, { align: 'start' });
+        },
+        getScrollElement: () => scrollRef.current,
+      }),
+      [scrollToBottom, virtualizer],
+    );
 
     const handleScroll = useCallback(() => {
       const el = scrollRef.current;
@@ -121,11 +117,7 @@ export const ChatMessageList = forwardRef<ChatMessageListHandle, ChatMessageList
 
     return (
       <div className={cn(styles.Wrapper, className)} {...rest}>
-        <div
-          ref={scrollRef}
-          className={styles.Root}
-          onScroll={handleScroll}
-        >
+        <div ref={scrollRef} className={styles.Root} onScroll={handleScroll}>
           <div
             className={styles.Inner}
             style={{ '--_chat-list-height': `${virtualizer.getTotalSize()}px` } as CSSProperties}

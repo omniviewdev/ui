@@ -72,6 +72,7 @@ interface AIWebPreviewConsoleProps extends HTMLAttributes<HTMLDivElement> {
 ## Usage
 
 ### Basic — render generated HTML
+
 ```tsx
 <AIWebPreview htmlContent={generatedHtml}>
   <AIWebPreviewToolbar />
@@ -80,6 +81,7 @@ interface AIWebPreviewConsoleProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 ### With console output
+
 ```tsx
 <AIWebPreview src="https://preview.example.com/dashboard">
   <AIWebPreviewToolbar showUrl />
@@ -89,6 +91,7 @@ interface AIWebPreviewConsoleProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 ### In an artifact panel
+
 ```tsx
 <AIArtifact variant="panel" open>
   <AIArtifactHeader>

@@ -1,0 +1,32 @@
+.Small {
+  width: 100%;
+  max-width: 398px;
+  min-width: 0;
+}
+.Wide {
+  width: 100%;
+  max-width: 820px;
+  min-width: 0;
+}
+.Stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-4);
+}
+.Caption {
+  color: var(--ov-color-fg-muted);
+  font-size: 11px;
+}
+.PanelValue {
+  min-height: 66px;
+  padding-bottom: 12px;
+}
+.Control {
+  font: inherit;
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-bg-surface);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+}

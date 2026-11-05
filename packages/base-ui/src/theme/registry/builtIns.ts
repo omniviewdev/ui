@@ -2,7 +2,9 @@ import { validateThemeDefinition } from '../validation';
 import { BUILT_IN_THEMES } from './catalog';
 import type { ThemeDefinition } from './types';
 
-const SOLARIZED_TOKENS: Readonly<Record<'solarized-dark' | 'solarized-light', ThemeDefinition['tokens']>> = {
+const SOLARIZED_TOKENS: Readonly<
+  Record<'solarized-dark' | 'solarized-light', ThemeDefinition['tokens']>
+> = {
   'solarized-dark': {
     'color.bg.base': '#002b36',
     'color.bg.surface': '#073642',

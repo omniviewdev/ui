@@ -5,7 +5,7 @@ async function* simulateStream(text: string, delayMs = 30): AsyncGenerator<strin
   const words = text.split(' ');
   for (const word of words) {
     yield word + ' ';
-    await new Promise(r => setTimeout(r, delayMs));
+    await new Promise((r) => setTimeout(r, delayMs));
   }
 }
 

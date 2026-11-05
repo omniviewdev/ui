@@ -36,8 +36,17 @@ function getMissingMemoFindings(file, _content, fullText) {
 
     // Only flag leaf components (no children usage, no memo, no forwardRef)
     if (!hasMemo && !hasForwardRef && !hasChildren) {
-      findings.push(finding('Medium', 'Performance', 'Missing memo', file, 1, '',
-        `Exported leaf component "${componentName}" without React.memo — consider wrapping`));
+      findings.push(
+        finding(
+          'Medium',
+          'Performance',
+          'Missing memo',
+          file,
+          1,
+          '',
+          `Exported leaf component "${componentName}" without React.memo — consider wrapping`,
+        ),
+      );
     }
   }
 
@@ -51,7 +60,7 @@ export async function scanReactPerformance() {
 
   for (const file of tsxFiles) {
     const content = readLines(file);
-    const fullText = content.map(l => l.line).join('\n');
+    const fullText = content.map((l) => l.line).join('\n');
 
     // --- Missing memo on exported components (Medium) — per-component check ---
     const hasExport = /export\s+(?:const|function)\s+[A-Z]/.test(fullText);
@@ -63,23 +72,46 @@ export async function scanReactPerformance() {
     // --- Inline object/array/function props (Medium) ---
     for (const { line, num } of content) {
       // Skip lines that are type definitions, comments, or imports
-      if (line.trim().startsWith('//') || line.trim().startsWith('*') ||
-          line.trim().startsWith('import') || line.trim().startsWith('type') ||
-          line.trim().startsWith('interface')) continue;
+      if (
+        line.trim().startsWith('//') ||
+        line.trim().startsWith('*') ||
+        line.trim().startsWith('import') ||
+        line.trim().startsWith('type') ||
+        line.trim().startsWith('interface')
+      )
+        continue;
 
       // Inline object literals as props
       if (INLINE_OBJ_PROP.test(line)) {
         // Exclude style={{}} (caught by convention scanner) and common exceptions
         if (!/style\s*=/.test(line)) {
-          results.push(finding('Medium', 'Performance', 'Inline object prop', file, num, line,
-            'Object literal as prop — creates new reference each render'));
+          results.push(
+            finding(
+              'Medium',
+              'Performance',
+              'Inline object prop',
+              file,
+              num,
+              line,
+              'Object literal as prop — creates new reference each render',
+            ),
+          );
         }
       }
 
       // Inline array literals as props
       if (INLINE_ARR_PROP.test(line)) {
-        results.push(finding('Medium', 'Performance', 'Inline array prop', file, num, line,
-          'Array literal as prop — creates new reference each render'));
+        results.push(
+          finding(
+            'Medium',
+            'Performance',
+            'Inline array prop',
+            file,
+            num,
+            line,
+            'Array literal as prop — creates new reference each render',
+          ),
+        );
       }
 
       // Inline arrow functions as props to child components
@@ -90,13 +122,22 @@ export async function scanReactPerformance() {
         const currentLineHasTag = /<[A-Z]/.test(line) || /<[a-z]/.test(line);
 
         if (currentLineHasTag) {
-          results.push(finding('Medium', 'Performance', 'Inline function prop', file, num, line,
-            'Arrow function as prop — causes child re-renders, use useCallback'));
+          results.push(
+            finding(
+              'Medium',
+              'Performance',
+              'Inline function prop',
+              file,
+              num,
+              line,
+              'Arrow function as prop — causes child re-renders, use useCallback',
+            ),
+          );
         } else {
           // Scan the previous 3-5 lines for an unclosed JSX opening tag
           const windowStart = Math.max(0, num - 5 - 1); // num is 1-based, content is 0-based
           const windowEnd = num - 1; // exclusive, up to (not including) current line
-          const windowLines = content.slice(windowStart, windowEnd).map(l => l.line);
+          const windowLines = content.slice(windowStart, windowEnd).map((l) => l.line);
 
           // Look for a JSX opening tag that hasn't been closed yet
           // An unclosed tag would have <Component or <element without a matching >
@@ -113,8 +154,17 @@ export async function scanReactPerformance() {
           }
 
           if (foundOpenTag) {
-            results.push(finding('Medium', 'Performance', 'Inline function prop', file, num, line,
-              'Arrow function as prop — causes child re-renders, use useCallback'));
+            results.push(
+              finding(
+                'Medium',
+                'Performance',
+                'Inline function prop',
+                file,
+                num,
+                line,
+                'Arrow function as prop — causes child re-renders, use useCallback',
+              ),
+            );
           }
         }
       }

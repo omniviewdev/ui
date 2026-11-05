@@ -17,23 +17,24 @@ export interface AISourcesProps extends Omit<HTMLAttributes<HTMLDivElement>, 'co
   onNavigate?: (source: AISource) => void;
 }
 
-export const AISources = forwardRef<HTMLDivElement, AISourcesProps>(
-  function AISources({ sources, onNavigate, className, ...rest }, ref) {
-    if (sources.length === 0) return null;
+export const AISources = forwardRef<HTMLDivElement, AISourcesProps>(function AISources(
+  { sources, onNavigate, className, ...rest },
+  ref,
+) {
+  if (sources.length === 0) return null;
 
-    return (
-      <div ref={ref} className={cn(styles.Root, className)} data-ov-ai-sources {...rest}>
-        <div className={styles.Title}>Sources</div>
-        <List selectionMode="none" density="compact" size="sm">
-          {sources.map((source, i) => (
-            <List.Item key={source.id} itemKey={source.id} onClick={() => onNavigate?.(source)}>
-              <List.ItemIcon>{i + 1}</List.ItemIcon>
-              <List.ItemLabel>{source.label}</List.ItemLabel>
-              {source.detail && <List.ItemDescription>{source.detail}</List.ItemDescription>}
-            </List.Item>
-          ))}
-        </List>
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref} className={cn(styles.Root, className)} data-ov-ai-sources {...rest}>
+      <div className={styles.Title}>Sources</div>
+      <List selectionMode="none" density="compact" size="sm">
+        {sources.map((source, i) => (
+          <List.Item key={source.id} itemKey={source.id} onClick={() => onNavigate?.(source)}>
+            <List.ItemIcon>{i + 1}</List.ItemIcon>
+            <List.ItemLabel>{source.label}</List.ItemLabel>
+            {source.detail && <List.ItemDescription>{source.detail}</List.ItemDescription>}
+          </List.Item>
+        ))}
+      </List>
+    </div>
+  );
+});

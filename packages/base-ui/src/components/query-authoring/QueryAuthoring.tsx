@@ -100,7 +100,11 @@ export function QueryAuthoring({
   }, [value, contextKey, blocked]);
   // Reset presentation during the input transition, not after a stale frame commits.
   const [conversionInputs, setConversionInputs] = useState(() => ({
-    value, contextKey, toBuilder, toCode, blocked,
+    value,
+    contextKey,
+    toBuilder,
+    toCode,
+    blocked,
   }));
   if (
     conversionInputs.value !== value ||
@@ -149,7 +153,11 @@ export function QueryAuthoring({
       } else if (mode === 'builder' && typeof result.value !== 'string')
         onChange({ ...value, mode, builder: result.value });
       else if (mode === 'code' && typeof result.value === 'string')
-        onChange({ ...value, mode, code: { ...value.code, text: result.value, version: value.code.version + 1 } });
+        onChange({
+          ...value,
+          mode,
+          code: { ...value.code, text: result.value, version: value.code.version + 1 },
+        });
     } catch (reason) {
       if (!abort.signal.aborted && active.current === operation)
         setNotice(
@@ -253,7 +261,10 @@ export function QueryAuthoring({
             contextKey,
             request,
             onChange: (text) =>
-              onChange({ ...value, code: { ...value.code, text, version: value.code.version + 1 } }),
+              onChange({
+                ...value,
+                code: { ...value.code, text, version: value.code.version + 1 },
+              }),
             onSubmit: onRun
               ? () => {
                   if (!running && !converting) onRun(value);

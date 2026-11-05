@@ -2,8 +2,16 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { ROOT } from './utils.mjs';
+import { format, resolveConfig } from 'prettier';
 
-const EXT_LANG = { '.css': 'css', '.ts': 'ts', '.tsx': 'tsx', '.js': 'js', '.jsx': 'jsx', '.mjs': 'js' };
+const EXT_LANG = {
+  '.css': 'css',
+  '.ts': 'ts',
+  '.tsx': 'tsx',
+  '.js': 'js',
+  '.jsx': 'jsx',
+  '.mjs': 'js',
+};
 
 function langFromFile(filePath) {
   const dot = filePath.lastIndexOf('.');
@@ -11,7 +19,7 @@ function langFromFile(filePath) {
   return EXT_LANG[filePath.slice(dot)] ?? '';
 }
 
-export function generateReport(findings) {
+export async function generateReport(findings) {
   const grouped = {};
   for (const f of findings) {
     const key = `${f.severity}|${f.category}|${f.check}`;
@@ -27,7 +35,9 @@ export function generateReport(findings) {
   });
 
   // Summary — single-pass accumulation
-  let highCount = 0, medCount = 0, lowCount = 0;
+  let highCount = 0,
+    medCount = 0,
+    lowCount = 0;
   for (const f of findings) {
     if (f.severity === 'High') highCount++;
     else if (f.severity === 'Medium') medCount++;
@@ -69,6 +79,7 @@ export function generateReport(findings) {
 
   const outPath = `${ROOT}/docs/superpowers/specs/audit-findings.md`;
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, md);
+  const formatting = await resolveConfig(outPath);
+  writeFileSync(outPath, await format(md, { ...formatting, filepath: outPath }));
   return { outPath, total: findings.length, high: highCount, medium: medCount, low: lowCount };
 }

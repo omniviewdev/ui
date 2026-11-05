@@ -22,6 +22,30 @@ export type ThemeTokenKey =
   | 'color.ansi.red'
   | 'color.ansi.white'
   | 'color.ansi.yellow'
+  | 'color.avatar.palette.1.bg'
+  | 'color.avatar.palette.1.fg'
+  | 'color.avatar.palette.10.bg'
+  | 'color.avatar.palette.10.fg'
+  | 'color.avatar.palette.11.bg'
+  | 'color.avatar.palette.11.fg'
+  | 'color.avatar.palette.12.bg'
+  | 'color.avatar.palette.12.fg'
+  | 'color.avatar.palette.2.bg'
+  | 'color.avatar.palette.2.fg'
+  | 'color.avatar.palette.3.bg'
+  | 'color.avatar.palette.3.fg'
+  | 'color.avatar.palette.4.bg'
+  | 'color.avatar.palette.4.fg'
+  | 'color.avatar.palette.5.bg'
+  | 'color.avatar.palette.5.fg'
+  | 'color.avatar.palette.6.bg'
+  | 'color.avatar.palette.6.fg'
+  | 'color.avatar.palette.7.bg'
+  | 'color.avatar.palette.7.fg'
+  | 'color.avatar.palette.8.bg'
+  | 'color.avatar.palette.8.fg'
+  | 'color.avatar.palette.9.bg'
+  | 'color.avatar.palette.9.fg'
   | 'color.bg.base'
   | 'color.bg.control'
   | 'color.bg.control.hover'
@@ -47,6 +71,24 @@ export type ThemeTokenKey =
   | 'color.card.hover.border'
   | 'color.card.selected.bg'
   | 'color.card.selected.border'
+  | 'color.chart.axis'
+  | 'color.chart.cursor'
+  | 'color.chart.grid'
+  | 'color.chart.heatmap.1'
+  | 'color.chart.heatmap.2'
+  | 'color.chart.heatmap.3'
+  | 'color.chart.heatmap.4'
+  | 'color.chart.heatmap.5'
+  | 'color.chart.missing'
+  | 'color.chart.selection'
+  | 'color.chart.series.1'
+  | 'color.chart.series.2'
+  | 'color.chart.series.3'
+  | 'color.chart.series.4'
+  | 'color.chart.series.5'
+  | 'color.chart.series.6'
+  | 'color.chart.series.7'
+  | 'color.chart.series.8'
   | 'color.danger'
   | 'color.danger.soft'
   | 'color.datepicker.cell.bg'
@@ -117,6 +159,7 @@ export type ThemeTokenKey =
   | 'color.scrollarea.track'
   | 'color.secondary'
   | 'color.secondary.soft'
+  | 'color.shadow.pinned'
   | 'color.state.focus.ring'
   | 'color.state.hover'
   | 'color.state.pressed'
@@ -178,7 +221,10 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.ansi.bright.blue': { cssVariable: '--ov-color-ansi-bright-blue', valueKind: 'color' },
   'color.ansi.bright.cyan': { cssVariable: '--ov-color-ansi-bright-cyan', valueKind: 'color' },
   'color.ansi.bright.green': { cssVariable: '--ov-color-ansi-bright-green', valueKind: 'color' },
-  'color.ansi.bright.magenta': { cssVariable: '--ov-color-ansi-bright-magenta', valueKind: 'color' },
+  'color.ansi.bright.magenta': {
+    cssVariable: '--ov-color-ansi-bright-magenta',
+    valueKind: 'color',
+  },
   'color.ansi.bright.red': { cssVariable: '--ov-color-ansi-bright-red', valueKind: 'color' },
   'color.ansi.bright.white': { cssVariable: '--ov-color-ansi-bright-white', valueKind: 'color' },
   'color.ansi.bright.yellow': { cssVariable: '--ov-color-ansi-bright-yellow', valueKind: 'color' },
@@ -188,6 +234,102 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.ansi.red': { cssVariable: '--ov-color-ansi-red', valueKind: 'color' },
   'color.ansi.white': { cssVariable: '--ov-color-ansi-white', valueKind: 'color' },
   'color.ansi.yellow': { cssVariable: '--ov-color-ansi-yellow', valueKind: 'color' },
+  'color.avatar.palette.1.bg': {
+    cssVariable: '--ov-color-avatar-palette-1-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.1.fg': {
+    cssVariable: '--ov-color-avatar-palette-1-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.10.bg': {
+    cssVariable: '--ov-color-avatar-palette-10-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.10.fg': {
+    cssVariable: '--ov-color-avatar-palette-10-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.11.bg': {
+    cssVariable: '--ov-color-avatar-palette-11-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.11.fg': {
+    cssVariable: '--ov-color-avatar-palette-11-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.12.bg': {
+    cssVariable: '--ov-color-avatar-palette-12-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.12.fg': {
+    cssVariable: '--ov-color-avatar-palette-12-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.2.bg': {
+    cssVariable: '--ov-color-avatar-palette-2-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.2.fg': {
+    cssVariable: '--ov-color-avatar-palette-2-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.3.bg': {
+    cssVariable: '--ov-color-avatar-palette-3-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.3.fg': {
+    cssVariable: '--ov-color-avatar-palette-3-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.4.bg': {
+    cssVariable: '--ov-color-avatar-palette-4-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.4.fg': {
+    cssVariable: '--ov-color-avatar-palette-4-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.5.bg': {
+    cssVariable: '--ov-color-avatar-palette-5-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.5.fg': {
+    cssVariable: '--ov-color-avatar-palette-5-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.6.bg': {
+    cssVariable: '--ov-color-avatar-palette-6-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.6.fg': {
+    cssVariable: '--ov-color-avatar-palette-6-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.7.bg': {
+    cssVariable: '--ov-color-avatar-palette-7-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.7.fg': {
+    cssVariable: '--ov-color-avatar-palette-7-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.8.bg': {
+    cssVariable: '--ov-color-avatar-palette-8-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.8.fg': {
+    cssVariable: '--ov-color-avatar-palette-8-fg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.9.bg': {
+    cssVariable: '--ov-color-avatar-palette-9-bg',
+    valueKind: 'color',
+  },
+  'color.avatar.palette.9.fg': {
+    cssVariable: '--ov-color-avatar-palette-9-fg',
+    valueKind: 'color',
+  },
   'color.bg.base': { cssVariable: '--ov-color-bg-base', valueKind: 'color' },
   'color.bg.control': { cssVariable: '--ov-color-bg-control', valueKind: 'color' },
   'color.bg.control.hover': { cssVariable: '--ov-color-bg-control-hover', valueKind: 'color' },
@@ -212,25 +354,73 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.card.hover.bg': { cssVariable: '--ov-color-card-hover-bg', valueKind: 'color' },
   'color.card.hover.border': { cssVariable: '--ov-color-card-hover-border', valueKind: 'color' },
   'color.card.selected.bg': { cssVariable: '--ov-color-card-selected-bg', valueKind: 'color' },
-  'color.card.selected.border': { cssVariable: '--ov-color-card-selected-border', valueKind: 'color' },
+  'color.card.selected.border': {
+    cssVariable: '--ov-color-card-selected-border',
+    valueKind: 'color',
+  },
+  'color.chart.axis': { cssVariable: '--ov-color-chart-axis', valueKind: 'color' },
+  'color.chart.cursor': { cssVariable: '--ov-color-chart-cursor', valueKind: 'color' },
+  'color.chart.grid': { cssVariable: '--ov-color-chart-grid', valueKind: 'color' },
+  'color.chart.heatmap.1': { cssVariable: '--ov-color-chart-heatmap-1', valueKind: 'color' },
+  'color.chart.heatmap.2': { cssVariable: '--ov-color-chart-heatmap-2', valueKind: 'color' },
+  'color.chart.heatmap.3': { cssVariable: '--ov-color-chart-heatmap-3', valueKind: 'color' },
+  'color.chart.heatmap.4': { cssVariable: '--ov-color-chart-heatmap-4', valueKind: 'color' },
+  'color.chart.heatmap.5': { cssVariable: '--ov-color-chart-heatmap-5', valueKind: 'color' },
+  'color.chart.missing': { cssVariable: '--ov-color-chart-missing', valueKind: 'color' },
+  'color.chart.selection': { cssVariable: '--ov-color-chart-selection', valueKind: 'color' },
+  'color.chart.series.1': { cssVariable: '--ov-color-chart-series-1', valueKind: 'color' },
+  'color.chart.series.2': { cssVariable: '--ov-color-chart-series-2', valueKind: 'color' },
+  'color.chart.series.3': { cssVariable: '--ov-color-chart-series-3', valueKind: 'color' },
+  'color.chart.series.4': { cssVariable: '--ov-color-chart-series-4', valueKind: 'color' },
+  'color.chart.series.5': { cssVariable: '--ov-color-chart-series-5', valueKind: 'color' },
+  'color.chart.series.6': { cssVariable: '--ov-color-chart-series-6', valueKind: 'color' },
+  'color.chart.series.7': { cssVariable: '--ov-color-chart-series-7', valueKind: 'color' },
+  'color.chart.series.8': { cssVariable: '--ov-color-chart-series-8', valueKind: 'color' },
   'color.danger': { cssVariable: '--ov-color-danger', valueKind: 'color' },
   'color.danger.soft': { cssVariable: '--ov-color-danger-soft', valueKind: 'color' },
   'color.datepicker.cell.bg': { cssVariable: '--ov-color-datepicker-cell-bg', valueKind: 'color' },
-  'color.datepicker.cell.bg.hover': { cssVariable: '--ov-color-datepicker-cell-bg-hover', valueKind: 'color' },
-  'color.datepicker.cell.bg.selected': { cssVariable: '--ov-color-datepicker-cell-bg-selected', valueKind: 'color' },
-  'color.datepicker.cell.bg.today': { cssVariable: '--ov-color-datepicker-cell-bg-today', valueKind: 'color' },
+  'color.datepicker.cell.bg.hover': {
+    cssVariable: '--ov-color-datepicker-cell-bg-hover',
+    valueKind: 'color',
+  },
+  'color.datepicker.cell.bg.selected': {
+    cssVariable: '--ov-color-datepicker-cell-bg-selected',
+    valueKind: 'color',
+  },
+  'color.datepicker.cell.bg.today': {
+    cssVariable: '--ov-color-datepicker-cell-bg-today',
+    valueKind: 'color',
+  },
   'color.datepicker.cell.fg': { cssVariable: '--ov-color-datepicker-cell-fg', valueKind: 'color' },
-  'color.datepicker.cell.fg.disabled': { cssVariable: '--ov-color-datepicker-cell-fg-disabled', valueKind: 'color' },
-  'color.datepicker.cell.fg.other.month': { cssVariable: '--ov-color-datepicker-cell-fg-other-month', valueKind: 'color' },
-  'color.datepicker.cell.fg.selected': { cssVariable: '--ov-color-datepicker-cell-fg-selected', valueKind: 'color' },
-  'color.datepicker.cell.fg.today': { cssVariable: '--ov-color-datepicker-cell-fg-today', valueKind: 'color' },
-  'color.datepicker.header.bg': { cssVariable: '--ov-color-datepicker-header-bg', valueKind: 'color' },
+  'color.datepicker.cell.fg.disabled': {
+    cssVariable: '--ov-color-datepicker-cell-fg-disabled',
+    valueKind: 'color',
+  },
+  'color.datepicker.cell.fg.other.month': {
+    cssVariable: '--ov-color-datepicker-cell-fg-other-month',
+    valueKind: 'color',
+  },
+  'color.datepicker.cell.fg.selected': {
+    cssVariable: '--ov-color-datepicker-cell-fg-selected',
+    valueKind: 'color',
+  },
+  'color.datepicker.cell.fg.today': {
+    cssVariable: '--ov-color-datepicker-cell-fg-today',
+    valueKind: 'color',
+  },
+  'color.datepicker.header.bg': {
+    cssVariable: '--ov-color-datepicker-header-bg',
+    valueKind: 'color',
+  },
   'color.diff.insert.bg': { cssVariable: '--ov-color-diff-insert-bg', valueKind: 'color' },
   'color.diff.remove.bg': { cssVariable: '--ov-color-diff-remove-bg', valueKind: 'color' },
   'color.discovery': { cssVariable: '--ov-color-discovery', valueKind: 'color' },
   'color.discovery.soft': { cssVariable: '--ov-color-discovery-soft', valueKind: 'color' },
   'color.drawer.handle': { cssVariable: '--ov-color-drawer-handle', valueKind: 'color' },
-  'color.drawer.handle.hover': { cssVariable: '--ov-color-drawer-handle-hover', valueKind: 'color' },
+  'color.drawer.handle.hover': {
+    cssVariable: '--ov-color-drawer-handle-hover',
+    valueKind: 'color',
+  },
   'color.editor.bg': { cssVariable: '--ov-color-editor-bg', valueKind: 'color' },
   'color.editor.bracket.1': { cssVariable: '--ov-color-editor-bracket-1', valueKind: 'color' },
   'color.editor.bracket.2': { cssVariable: '--ov-color-editor-bracket-2', valueKind: 'color' },
@@ -238,27 +428,72 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.editor.bracket.4': { cssVariable: '--ov-color-editor-bracket-4', valueKind: 'color' },
   'color.editor.bracket.5': { cssVariable: '--ov-color-editor-bracket-5', valueKind: 'color' },
   'color.editor.bracket.6': { cssVariable: '--ov-color-editor-bracket-6', valueKind: 'color' },
-  'color.editor.bracket.match.bg': { cssVariable: '--ov-color-editor-bracket-match-bg', valueKind: 'color' },
-  'color.editor.bracket.match.border': { cssVariable: '--ov-color-editor-bracket-match-border', valueKind: 'color' },
+  'color.editor.bracket.match.bg': {
+    cssVariable: '--ov-color-editor-bracket-match-bg',
+    valueKind: 'color',
+  },
+  'color.editor.bracket.match.border': {
+    cssVariable: '--ov-color-editor-bracket-match-border',
+    valueKind: 'color',
+  },
   'color.editor.cursor': { cssVariable: '--ov-color-editor-cursor', valueKind: 'color' },
   'color.editor.fg': { cssVariable: '--ov-color-editor-fg', valueKind: 'color' },
-  'color.editor.find.match.bg': { cssVariable: '--ov-color-editor-find-match-bg', valueKind: 'color' },
-  'color.editor.find.match.border': { cssVariable: '--ov-color-editor-find-match-border', valueKind: 'color' },
-  'color.editor.find.range.bg': { cssVariable: '--ov-color-editor-find-range-bg', valueKind: 'color' },
+  'color.editor.find.match.bg': {
+    cssVariable: '--ov-color-editor-find-match-bg',
+    valueKind: 'color',
+  },
+  'color.editor.find.match.border': {
+    cssVariable: '--ov-color-editor-find-match-border',
+    valueKind: 'color',
+  },
+  'color.editor.find.range.bg': {
+    cssVariable: '--ov-color-editor-find-range-bg',
+    valueKind: 'color',
+  },
   'color.editor.group.bg': { cssVariable: '--ov-color-editor-group-bg', valueKind: 'color' },
-  'color.editor.group.border': { cssVariable: '--ov-color-editor-group-border', valueKind: 'color' },
-  'color.editor.group.drop.border': { cssVariable: '--ov-color-editor-group-drop-border', valueKind: 'color' },
-  'color.editor.group.header.bg': { cssVariable: '--ov-color-editor-group-header-bg', valueKind: 'color' },
-  'color.editor.indent.guide': { cssVariable: '--ov-color-editor-indent-guide', valueKind: 'color' },
-  'color.editor.indent.guide.active': { cssVariable: '--ov-color-editor-indent-guide-active', valueKind: 'color' },
-  'color.editor.line.highlight.bg': { cssVariable: '--ov-color-editor-line-highlight-bg', valueKind: 'color' },
-  'color.editor.line.highlight.border': { cssVariable: '--ov-color-editor-line-highlight-border', valueKind: 'color' },
+  'color.editor.group.border': {
+    cssVariable: '--ov-color-editor-group-border',
+    valueKind: 'color',
+  },
+  'color.editor.group.drop.border': {
+    cssVariable: '--ov-color-editor-group-drop-border',
+    valueKind: 'color',
+  },
+  'color.editor.group.header.bg': {
+    cssVariable: '--ov-color-editor-group-header-bg',
+    valueKind: 'color',
+  },
+  'color.editor.indent.guide': {
+    cssVariable: '--ov-color-editor-indent-guide',
+    valueKind: 'color',
+  },
+  'color.editor.indent.guide.active': {
+    cssVariable: '--ov-color-editor-indent-guide-active',
+    valueKind: 'color',
+  },
+  'color.editor.line.highlight.bg': {
+    cssVariable: '--ov-color-editor-line-highlight-bg',
+    valueKind: 'color',
+  },
+  'color.editor.line.highlight.border': {
+    cssVariable: '--ov-color-editor-line-highlight-border',
+    valueKind: 'color',
+  },
   'color.editor.line.number': { cssVariable: '--ov-color-editor-line-number', valueKind: 'color' },
-  'color.editor.line.number.active': { cssVariable: '--ov-color-editor-line-number-active', valueKind: 'color' },
+  'color.editor.line.number.active': {
+    cssVariable: '--ov-color-editor-line-number-active',
+    valueKind: 'color',
+  },
   'color.editor.link': { cssVariable: '--ov-color-editor-link', valueKind: 'color' },
   'color.editor.ruler': { cssVariable: '--ov-color-editor-ruler', valueKind: 'color' },
-  'color.editor.selection.bg': { cssVariable: '--ov-color-editor-selection-bg', valueKind: 'color' },
-  'color.editor.selection.inactive.bg': { cssVariable: '--ov-color-editor-selection-inactive-bg', valueKind: 'color' },
+  'color.editor.selection.bg': {
+    cssVariable: '--ov-color-editor-selection-bg',
+    valueKind: 'color',
+  },
+  'color.editor.selection.inactive.bg': {
+    cssVariable: '--ov-color-editor-selection-inactive-bg',
+    valueKind: 'color',
+  },
   'color.editor.whitespace': { cssVariable: '--ov-color-editor-whitespace', valueKind: 'color' },
   'color.fg.default': { cssVariable: '--ov-color-fg-default', valueKind: 'color' },
   'color.fg.disabled': { cssVariable: '--ov-color-fg-disabled', valueKind: 'color' },
@@ -279,10 +514,14 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.progress.fill': { cssVariable: '--ov-color-progress-fill', valueKind: 'color' },
   'color.progress.track': { cssVariable: '--ov-color-progress-track', valueKind: 'color' },
   'color.scrollarea.thumb': { cssVariable: '--ov-color-scrollarea-thumb', valueKind: 'color' },
-  'color.scrollarea.thumb.hover': { cssVariable: '--ov-color-scrollarea-thumb-hover', valueKind: 'color' },
+  'color.scrollarea.thumb.hover': {
+    cssVariable: '--ov-color-scrollarea-thumb-hover',
+    valueKind: 'color',
+  },
   'color.scrollarea.track': { cssVariable: '--ov-color-scrollarea-track', valueKind: 'color' },
   'color.secondary': { cssVariable: '--ov-color-secondary', valueKind: 'color' },
   'color.secondary.soft': { cssVariable: '--ov-color-secondary-soft', valueKind: 'color' },
+  'color.shadow.pinned': { cssVariable: '--ov-color-shadow-pinned', valueKind: 'color' },
   'color.state.focus.ring': { cssVariable: '--ov-color-state-focus-ring', valueKind: 'color' },
   'color.state.hover': { cssVariable: '--ov-color-state-hover', valueKind: 'color' },
   'color.state.pressed': { cssVariable: '--ov-color-state-pressed', valueKind: 'color' },
@@ -299,13 +538,22 @@ export const THEME_TOKEN_METADATA: Readonly<
   'color.tab.hover.fg': { cssVariable: '--ov-color-tab-hover-fg', valueKind: 'color' },
   'color.tab.inactive.bg': { cssVariable: '--ov-color-tab-inactive-bg', valueKind: 'color' },
   'color.tab.inactive.fg': { cssVariable: '--ov-color-tab-inactive-fg', valueKind: 'color' },
-  'color.tab.modified.border': { cssVariable: '--ov-color-tab-modified-border', valueKind: 'color' },
+  'color.tab.modified.border': {
+    cssVariable: '--ov-color-tab-modified-border',
+    valueKind: 'color',
+  },
   'color.terminal.bg': { cssVariable: '--ov-color-terminal-bg', valueKind: 'color' },
   'color.terminal.border': { cssVariable: '--ov-color-terminal-border', valueKind: 'color' },
   'color.terminal.cursor': { cssVariable: '--ov-color-terminal-cursor', valueKind: 'color' },
   'color.terminal.fg': { cssVariable: '--ov-color-terminal-fg', valueKind: 'color' },
-  'color.terminal.selection.bg': { cssVariable: '--ov-color-terminal-selection-bg', valueKind: 'color' },
-  'color.terminal.selection.fg': { cssVariable: '--ov-color-terminal-selection-fg', valueKind: 'color' },
+  'color.terminal.selection.bg': {
+    cssVariable: '--ov-color-terminal-selection-bg',
+    valueKind: 'color',
+  },
+  'color.terminal.selection.fg': {
+    cssVariable: '--ov-color-terminal-selection-fg',
+    valueKind: 'color',
+  },
   'color.warning': { cssVariable: '--ov-color-warning', valueKind: 'color' },
   'color.warning.soft': { cssVariable: '--ov-color-warning-soft', valueKind: 'color' },
   'syntax.class': { cssVariable: '--ov-syntax-class', valueKind: 'color' },

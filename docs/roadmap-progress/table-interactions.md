@@ -28,7 +28,6 @@ Plan: add a table-local native expansion toggle (row-specific label + expanded s
 - `DataTable.Interactions.stories.tsx`: 2,000 prepared cloud/container/hypervisor fixtures, delayed host reorder/removal/collapse commands, nested table selection, detail notes/height changes and expand-all mounting probe.
 - `DataTable.Prepared.stories.tsx`, `DataTable.Nested.stories.tsx`: corrected disclosure usage; prepared examples no longer depend on unsnapshotted visualization package. `packages/base-ui/CHANGELOG.md` records changed behavior.
 
-
 ## Verification
 
 - Source snapshot equality: `diff -qr` succeeded (no differences immediately after copy).

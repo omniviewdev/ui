@@ -33,7 +33,9 @@ describe('visual regression — representative components under each theme', () 
   for (const info of themeRegistry.getSnapshot().themes) {
     it(`matches snapshot under theme '${info.id}'`, () => {
       const { container } = render(
-        <ThemeProvider themeId={info.id}><Fixture /></ThemeProvider>,
+        <ThemeProvider themeId={info.id}>
+          <Fixture />
+        </ThemeProvider>,
       );
       // Capture both the outer HTML and the resolved theme attributes so
       // snapshots regress when attribute behavior changes.

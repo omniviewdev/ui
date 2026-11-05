@@ -41,11 +41,16 @@ describe('Breadcrumbs', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 50', 50, (i) => (
-    <Breadcrumbs key={i}>
-      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
-      <Breadcrumbs.Item href="/section">Section</Breadcrumbs.Item>
-      <Breadcrumbs.Item active>Page {i}</Breadcrumbs.Item>
-    </Breadcrumbs>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 50',
+    50,
+    (i) => (
+      <Breadcrumbs key={i}>
+        <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+        <Breadcrumbs.Item href="/section">Section</Breadcrumbs.Item>
+        <Breadcrumbs.Item active>Page {i}</Breadcrumbs.Item>
+      </Breadcrumbs>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

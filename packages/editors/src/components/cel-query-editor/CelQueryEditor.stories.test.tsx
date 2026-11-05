@@ -17,9 +17,15 @@ vi.mock('../../development/cel-language-service', () => ({
       profile,
       documents,
       profiles: vi.fn(async () => ({ profiles: [] })),
-      languageService: (uri: string) => { documents.add(uri); },
-      closeDocument: vi.fn(async (uri: string) => { documents.delete(uri); }),
-      dispose: vi.fn(async () => { documents.clear(); }),
+      languageService: (uri: string) => {
+        documents.add(uri);
+      },
+      closeDocument: vi.fn(async (uri: string) => {
+        documents.delete(uri);
+      }),
+      dispose: vi.fn(async () => {
+        documents.clear();
+      }),
     };
     lifecycle.adapters.push(adapter);
     return adapter;
@@ -42,10 +48,22 @@ vi.mock('./CelQueryEditor', () => ({
 
 vi.mock('@omniviewdev/base-ui', () => {
   const Container = ({ children }: { children?: React.ReactNode }) => <div>{children}</div>;
-  return { Popover: { Root: Container, Trigger: Container, Portal: Container, Positioner: Container, Popup: Container, Title: Container } };
+  return {
+    Popover: {
+      Root: Container,
+      Trigger: Container,
+      Portal: Container,
+      Positioner: Container,
+      Popup: Container,
+      Title: Container,
+    },
+  };
 });
 
-beforeEach(() => { lifecycle.adapters.length = 0; lifecycle.nextURI = 0; });
+beforeEach(() => {
+  lifecycle.adapters.length = 0;
+  lifecycle.nextURI = 0;
+});
 
 describe.each([
   ['contextual', ContextualAndIsolated],
@@ -53,12 +71,18 @@ describe.each([
 ] as const)('%s CEL story document ownership', (_name, story) => {
   it('closes only the unmounted cloud document and disposes both adapters on teardown', async () => {
     const Story = story.render as () => React.ReactNode;
-    const { unmount } = render(<StrictMode><Story /></StrictMode>);
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Unmount cloud editor' })).toBeInTheDocument());
+    const { unmount } = render(
+      <StrictMode>
+        <Story />
+      </StrictMode>,
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Unmount cloud editor' })).toBeInTheDocument(),
+    );
     const podURI = screen.getByLabelText('Pod CEL query').getAttribute('data-model-uri')!;
     const cloudURI = screen.getByLabelText('Cloud CEL query').getAttribute('data-model-uri')!;
-    const pod = lifecycle.adapters.find(adapter => adapter.documents.has(podURI))!;
-    const cloud = lifecycle.adapters.find(adapter => adapter.documents.has(cloudURI))!;
+    const pod = lifecycle.adapters.find((adapter) => adapter.documents.has(podURI))!;
+    const cloud = lifecycle.adapters.find((adapter) => adapter.documents.has(cloudURI))!;
     expect(pod).toBeDefined();
     expect(cloud).toBeDefined();
     const podCloses = pod.closeDocument.mock.calls.length;

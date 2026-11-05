@@ -287,6 +287,21 @@ describe('controlled toast presentation', () => {
     expect(screen.getByText('Generated toast')).toBeVisible();
   });
 
+  it('admits a new presentation when its ID is reused during exit', () => {
+    const { api } = setup();
+    const firstDismiss = vi.fn();
+    const secondDismiss = vi.fn();
+    act(() => api().toast('First', { id: 'same', duration: 0, onDismiss: firstDismiss }));
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    act(() => api().toast('Second', { id: 'same', duration: 0, onDismiss: secondDismiss }));
+    expect(screen.getByText('Second')).toBeVisible();
+    act(() => vi.advanceTimersByTime(200));
+    expect(screen.getByText('Second')).toBeVisible();
+    act(() => api().dismiss('same'));
+    expect(firstDismiss).toHaveBeenCalledExactlyOnceWith('close');
+    expect(secondDismiss).toHaveBeenCalledExactlyOnceWith('programmatic');
+  });
+
   it('upserts and patches content without moving, remounting, or announcing progress', () => {
     const { api } = setup();
     const card = (count: number) => (

@@ -11,7 +11,10 @@ export interface AIModel {
   description?: string;
 }
 
-export interface AIModelSelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color' | 'onChange'> {
+export interface AIModelSelectorProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'color' | 'onChange'
+> {
   /** Available models */
   models: AIModel[];
   /** Currently selected model ID */
@@ -30,7 +33,17 @@ export interface AIModelSelectorProps extends Omit<HTMLAttributes<HTMLDivElement
 
 export const AIModelSelector = forwardRef<HTMLDivElement, AIModelSelectorProps>(
   function AIModelSelector(
-    { models, value, onChange, disabled, size = 'sm', variant = 'outline', showIcon = true, className, ...rest },
+    {
+      models,
+      value,
+      onChange,
+      disabled,
+      size = 'sm',
+      variant = 'outline',
+      showIcon = true,
+      className,
+      ...rest
+    },
     ref,
   ) {
     const handleValueChange = useCallback(

@@ -78,7 +78,13 @@ const reactiveFeatures = {
   pagination: true,
 };
 
-function ReactiveTable({ rows = reactivePeople, pageSize = 1 }: { rows?: Person[]; pageSize?: number }) {
+function ReactiveTable({
+  rows = reactivePeople,
+  pageSize = 1,
+}: {
+  rows?: Person[];
+  pageSize?: number;
+}) {
   const table = useTable({
     features: dataTableFeatures,
     data: rows,
@@ -103,11 +109,18 @@ const layoutColumns: ColumnDef<Person, unknown>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-      <button aria-pressed={!!snapshot.selection[row.id]} onClick={() => row.toggleSelected()}>
-        {row.original.name}
-      </button>
-    ))}</Subscribe>),
+    cell: ({ row, table }) => (
+      <Subscribe
+        source={table.store}
+        selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+      >
+        {(snapshot) => (
+          <button aria-pressed={!!snapshot.selection[row.id]} onClick={() => row.toggleSelected()}>
+            {row.original.name}
+          </button>
+        )}
+      </Subscribe>
+    ),
   },
   ...columns.slice(1),
 ];
@@ -125,10 +138,14 @@ function LayoutTable() {
 
   return (
     <>
-      <button onClick={() => table.setColumnPinning({ start: ['name', 'age'], end: [] })}>Pin details</button>
+      <button onClick={() => table.setColumnPinning({ start: ['name', 'age'], end: [] })}>
+        Pin details
+      </button>
       <button onClick={() => table.setColumnSizing({ name: 240 })}>Widen name</button>
       <button onClick={() => table.getColumn('name')?.toggleVisibility()}>Toggle name</button>
-      <button onClick={() => table.setColumnPinning({ start: ['age', 'name'], end: [] })}>Pin age first</button>
+      <button onClick={() => table.setColumnPinning({ start: ['age', 'name'], end: [] })}>
+        Pin age first
+      </button>
       <button onClick={() => table.setColumnPinning({ start: [], end: [] })}>Unpin details</button>
       <DataTable.Root table={table}>
         <DataTable.Container>
@@ -179,18 +196,26 @@ describe('stable table controller reactivity', () => {
     await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
 
     expect(
-      within(screen.getByRole('table')).getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
+      within(screen.getByRole('table'))
+        .getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
         .map((cell) => cell.textContent),
     ).toEqual(['Alice', 'Bob', 'Charlie']);
-    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'ascending');
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    );
 
     await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
 
     expect(
-      within(screen.getByRole('table')).getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
+      within(screen.getByRole('table'))
+        .getAllByRole('cell', { name: /^(Alice|Bob|Charlie)$/ })
         .map((cell) => cell.textContent),
     ).toEqual(['Charlie', 'Bob', 'Alice']);
-    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'descending');
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toHaveAttribute(
+      'aria-sort',
+      'descending',
+    );
   });
 
   it('moves between page windows and updates navigation availability', async () => {
@@ -238,9 +263,33 @@ type AutomaticRow = {
 };
 
 const automaticRows: AutomaticRow[] = [
-  { name: 'pod-10', label: 'Zulu', replicas: 10, enabled: true, tags: ['ops'], created: new Date('2026-01-10'), metadata: { group: 'ten' } },
-  { name: 'Pod-2', label: 'alpha', replicas: 2, enabled: false, tags: ['dev'], created: new Date('2026-01-02'), metadata: { group: 'two' } },
-  { name: 'pod-1', label: 'bravo', replicas: 0, enabled: false, tags: ['ops', 'dev'], created: new Date('2026-01-01'), metadata: { group: 'zero' } },
+  {
+    name: 'pod-10',
+    label: 'Zulu',
+    replicas: 10,
+    enabled: true,
+    tags: ['ops'],
+    created: new Date('2026-01-10'),
+    metadata: { group: 'ten' },
+  },
+  {
+    name: 'Pod-2',
+    label: 'alpha',
+    replicas: 2,
+    enabled: false,
+    tags: ['dev'],
+    created: new Date('2026-01-02'),
+    metadata: { group: 'two' },
+  },
+  {
+    name: 'pod-1',
+    label: 'bravo',
+    replicas: 0,
+    enabled: false,
+    tags: ['ops', 'dev'],
+    created: new Date('2026-01-01'),
+    metadata: { group: 'zero' },
+  },
 ];
 
 const automaticColumns: ColumnDef<AutomaticRow, unknown>[] = [
@@ -264,7 +313,10 @@ function AutomaticTable({ filter }: { filter?: { id: string; value: unknown } })
   return (
     <DataTable.Root table={table} features={{ sorting: true, filtering: true }}>
       {filter && (
-        <button type="button" onClick={() => table.setColumnFilters([{ id: filter.id, value: filter.value }])}>
+        <button
+          type="button"
+          onClick={() => table.setColumnFilters([{ id: filter.id, value: filter.value }])}
+        >
           Apply filter
         </button>
       )}
@@ -277,7 +329,9 @@ function AutomaticTable({ filter }: { filter?: { id: string; value: unknown } })
 }
 
 function automaticNames() {
-  return screen.getAllByRole('cell', { name: /^(pod-10|Pod-2|pod-1)$/ }).map((cell) => cell.textContent);
+  return screen
+    .getAllByRole('cell', { name: /^(pod-10|Pod-2|pod-1)$/ })
+    .map((cell) => cell.textContent);
 }
 
 describe('automatic value behavior', () => {
@@ -292,11 +346,31 @@ describe('automatic value behavior', () => {
   });
 
   it.each([
-    { kind: 'numeric ranges including zero', filter: { id: 'replicas', value: [0, 2] }, expected: ['Pod-2', 'pod-1'] },
-    { kind: 'false booleans', filter: { id: 'enabled', value: false }, expected: ['Pod-2', 'pod-1'] },
-    { kind: 'array membership', filter: { id: 'tags', value: ['ops'] }, expected: ['pod-10', 'pod-1'] },
-    { kind: 'date ranges', filter: { id: 'created', value: [new Date('2026-01-01'), new Date('2026-01-02')] }, expected: ['Pod-2', 'pod-1'] },
-    { kind: 'object identity', filter: { id: 'metadata', value: automaticRows[1]!.metadata }, expected: ['Pod-2'] },
+    {
+      kind: 'numeric ranges including zero',
+      filter: { id: 'replicas', value: [0, 2] },
+      expected: ['Pod-2', 'pod-1'],
+    },
+    {
+      kind: 'false booleans',
+      filter: { id: 'enabled', value: false },
+      expected: ['Pod-2', 'pod-1'],
+    },
+    {
+      kind: 'array membership',
+      filter: { id: 'tags', value: ['ops'] },
+      expected: ['pod-10', 'pod-1'],
+    },
+    {
+      kind: 'date ranges',
+      filter: { id: 'created', value: [new Date('2026-01-01'), new Date('2026-01-02')] },
+      expected: ['Pod-2', 'pod-1'],
+    },
+    {
+      kind: 'object identity',
+      filter: { id: 'metadata', value: automaticRows[1]!.metadata },
+      expected: ['Pod-2'],
+    },
   ])('filters $kind through the column API', async ({ filter, expected }) => {
     const user = userEvent.setup();
     renderWithTheme(<AutomaticTable filter={filter} />);

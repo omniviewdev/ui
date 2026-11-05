@@ -6,9 +6,10 @@ import { ChatAvatar } from './ChatAvatar';
 const MESSAGES = Array.from({ length: 50 }, (_, i) => ({
   id: i,
   role: (i % 2 === 0 ? 'user' : 'assistant') as 'user' | 'assistant',
-  content: i % 2 === 0
-    ? `User message #${i + 1}: Can you help me with task ${Math.floor(i / 2) + 1}?`
-    : `Assistant message #${i + 1}: Sure! Here's the solution for task ${Math.floor(i / 2) + 1}. Let me walk you through the approach step by step.`,
+  content:
+    i % 2 === 0
+      ? `User message #${i + 1}: Can you help me with task ${Math.floor(i / 2) + 1}?`
+      : `Assistant message #${i + 1}: Sure! Here's the solution for task ${Math.floor(i / 2) + 1}. Let me walk you through the approach step by step.`,
 }));
 
 const meta: Meta<typeof ChatMessageList> = {

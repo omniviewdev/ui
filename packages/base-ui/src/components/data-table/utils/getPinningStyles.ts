@@ -6,7 +6,9 @@ import type { DataTableColumn } from '../types';
  * Returns CSS custom properties for pinned column offsets and boundary shadows.
  * Data attributes select sticky positioning in the table stylesheet.
  */
-export function getPinningStyles<TData extends RowData>(column: DataTableColumn<TData, unknown>): CSSProperties {
+export function getPinningStyles<TData extends RowData>(
+  column: DataTableColumn<TData, unknown>,
+): CSSProperties {
   const isPinned = column.getIsPinned();
   if (!isPinned) return {};
 

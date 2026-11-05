@@ -1,4 +1,10 @@
-import type { Container, ContainerDetail, ContainerStats, ContainerStatus, FileSystemNode } from './types';
+import type {
+  Container,
+  ContainerDetail,
+  ContainerStats,
+  ContainerStatus,
+  FileSystemNode,
+} from './types';
 import type { StatusDotStatus } from '@omniviewdev/base-ui';
 
 // ---------------------------------------------------------------------------
@@ -46,8 +52,16 @@ function generateLogs(containerName: string): string {
     const ts = new Date(now.getTime() - i * 3000);
     const timestamp = ts.toISOString();
     const level = LOG_LEVELS[seeded(i + containerName.length, 0, LOG_LEVELS.length - 1)]!;
-    const msg = LOG_MESSAGES[seeded(i * 7 + containerName.charCodeAt(0), 0, LOG_MESSAGES.length - 1)]!;
-    const prefix = level === 'ERROR' ? '\x1b[31m' : level === 'WARN' ? '\x1b[33m' : level === 'INFO' ? '\x1b[32m' : '\x1b[36m';
+    const msg =
+      LOG_MESSAGES[seeded(i * 7 + containerName.charCodeAt(0), 0, LOG_MESSAGES.length - 1)]!;
+    const prefix =
+      level === 'ERROR'
+        ? '\x1b[31m'
+        : level === 'WARN'
+          ? '\x1b[33m'
+          : level === 'INFO'
+            ? '\x1b[32m'
+            : '\x1b[36m';
     lines.push(`${prefix}${timestamp}  ${level.padEnd(5)}\x1b[0m  ${containerName}  ${msg}`);
   }
 
@@ -81,7 +95,7 @@ function generateConfig(container: Container): Record<string, unknown> {
       Labels: {
         'com.docker.compose.service': container.name,
         'org.opencontainers.image.title': container.name,
-        'maintainer': 'platform-team@example.com',
+        maintainer: 'platform-team@example.com',
       },
       Env: [
         'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
@@ -140,10 +154,25 @@ export function containerFilesystem(name: string): FileSystemNode[] {
             { id: `${name}-hosts`, name: 'hosts', type: 'file', size: 174 },
             { id: `${name}-hostname`, name: 'hostname', type: 'file', size: 12 },
             { id: `${name}-resolv`, name: 'resolv.conf', type: 'file', size: 96 },
-            { id: `${name}-config-dir`, name: 'app', type: 'directory', children: [
-              { id: `${name}-app-conf`, name: 'config.yaml', type: 'file', size: seeded(seed, 512, 4096) },
-              { id: `${name}-app-secret`, name: 'secrets.env', type: 'file', size: seeded(seed + 1, 64, 256) },
-            ]},
+            {
+              id: `${name}-config-dir`,
+              name: 'app',
+              type: 'directory',
+              children: [
+                {
+                  id: `${name}-app-conf`,
+                  name: 'config.yaml',
+                  type: 'file',
+                  size: seeded(seed, 512, 4096),
+                },
+                {
+                  id: `${name}-app-secret`,
+                  name: 'secrets.env',
+                  type: 'file',
+                  size: seeded(seed + 1, 64, 256),
+                },
+              ],
+            },
           ],
         },
         {
@@ -151,12 +180,37 @@ export function containerFilesystem(name: string): FileSystemNode[] {
           name: 'app',
           type: 'directory',
           children: [
-            { id: `${name}-main`, name: 'main', type: 'file', size: seeded(seed + 2, 1024 * 5, 1024 * 20) },
-            { id: `${name}-static`, name: 'static', type: 'directory', children: [
-              { id: `${name}-index`, name: 'index.html', type: 'file', size: seeded(seed + 3, 2048, 8192) },
-              { id: `${name}-bundle`, name: 'bundle.js', type: 'file', size: seeded(seed + 4, 102400, 512000) },
-              { id: `${name}-style`, name: 'style.css', type: 'file', size: seeded(seed + 5, 4096, 32768) },
-            ]},
+            {
+              id: `${name}-main`,
+              name: 'main',
+              type: 'file',
+              size: seeded(seed + 2, 1024 * 5, 1024 * 20),
+            },
+            {
+              id: `${name}-static`,
+              name: 'static',
+              type: 'directory',
+              children: [
+                {
+                  id: `${name}-index`,
+                  name: 'index.html',
+                  type: 'file',
+                  size: seeded(seed + 3, 2048, 8192),
+                },
+                {
+                  id: `${name}-bundle`,
+                  name: 'bundle.js',
+                  type: 'file',
+                  size: seeded(seed + 4, 102400, 512000),
+                },
+                {
+                  id: `${name}-style`,
+                  name: 'style.css',
+                  type: 'file',
+                  size: seeded(seed + 5, 4096, 32768),
+                },
+              ],
+            },
           ],
         },
         {
@@ -164,10 +218,25 @@ export function containerFilesystem(name: string): FileSystemNode[] {
           name: 'var',
           type: 'directory',
           children: [
-            { id: `${name}-log`, name: 'log', type: 'directory', children: [
-              { id: `${name}-app-log`, name: 'app.log', type: 'file', size: seeded(seed + 6, 1024 * 100, 1024 * 1024) },
-              { id: `${name}-err-log`, name: 'error.log', type: 'file', size: seeded(seed + 7, 1024, 1024 * 50) },
-            ]},
+            {
+              id: `${name}-log`,
+              name: 'log',
+              type: 'directory',
+              children: [
+                {
+                  id: `${name}-app-log`,
+                  name: 'app.log',
+                  type: 'file',
+                  size: seeded(seed + 6, 1024 * 100, 1024 * 1024),
+                },
+                {
+                  id: `${name}-err-log`,
+                  name: 'error.log',
+                  type: 'file',
+                  size: seeded(seed + 7, 1024, 1024 * 50),
+                },
+              ],
+            },
           ],
         },
         {
@@ -205,12 +274,18 @@ function generateStats(seed: number): ContainerStats {
 
 export function containerStatusColor(status: ContainerStatus): StatusDotStatus {
   switch (status) {
-    case 'running':    return 'success';
-    case 'stopped':    return 'neutral';
-    case 'paused':     return 'warning';
-    case 'restarting': return 'pending';
-    case 'exited':     return 'danger';
-    default:           return 'neutral';
+    case 'running':
+      return 'success';
+    case 'stopped':
+      return 'neutral';
+    case 'paused':
+      return 'warning';
+    case 'restarting':
+      return 'pending';
+    case 'exited':
+      return 'danger';
+    default:
+      return 'neutral';
   }
 }
 
@@ -227,7 +302,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 34.2,
     memory: 512,
     memoryLimit: 1024,
-    ports: [{ host: 8080, container: 8080, protocol: 'tcp' }, { host: 9090, container: 9090, protocol: 'tcp' }],
+    ports: [
+      { host: 8080, container: 8080, protocol: 'tcp' },
+      { host: 9090, container: 9090, protocol: 'tcp' },
+    ],
     created: '2026-03-10T08:00:00Z',
     uptime: '2d 4h 12m',
     network: 'app-net',
@@ -269,7 +347,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 8.7,
     memory: 64,
     memoryLimit: 256,
-    ports: [{ host: 80, container: 80, protocol: 'tcp' }, { host: 443, container: 443, protocol: 'tcp' }],
+    ports: [
+      { host: 80, container: 80, protocol: 'tcp' },
+      { host: 443, container: 443, protocol: 'tcp' },
+    ],
     created: '2026-03-10T07:50:00Z',
     uptime: '2d 4h 22m',
     network: 'app-net',
@@ -311,7 +392,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 45.6,
     memory: 1536,
     memoryLimit: 4096,
-    ports: [{ host: 9200, container: 9200, protocol: 'tcp' }, { host: 9300, container: 9300, protocol: 'tcp' }],
+    ports: [
+      { host: 9200, container: 9200, protocol: 'tcp' },
+      { host: 9300, container: 9300, protocol: 'tcp' },
+    ],
     created: '2026-03-09T12:00:00Z',
     uptime: '3d 0h 12m',
     network: 'logging',
@@ -339,7 +423,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 9.3,
     memory: 256,
     memoryLimit: 512,
-    ports: [{ host: 5672, container: 5672, protocol: 'tcp' }, { host: 15672, container: 15672, protocol: 'tcp' }],
+    ports: [
+      { host: 5672, container: 5672, protocol: 'tcp' },
+      { host: 15672, container: 15672, protocol: 'tcp' },
+    ],
     created: '2026-03-10T10:00:00Z',
     uptime: '2d 2h 12m',
     network: 'app-net',
@@ -367,7 +454,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 6.2,
     memory: 96,
     memoryLimit: 256,
-    ports: [{ host: 80, container: 80, protocol: 'tcp' }, { host: 443, container: 443, protocol: 'tcp' }],
+    ports: [
+      { host: 80, container: 80, protocol: 'tcp' },
+      { host: 443, container: 443, protocol: 'tcp' },
+    ],
     created: '2026-03-11T14:00:00Z',
     uptime: '22h 12m',
     network: 'edge',
@@ -381,7 +471,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 14.9,
     memory: 512,
     memoryLimit: 2048,
-    ports: [{ host: 9000, container: 9000, protocol: 'tcp' }, { host: 9001, container: 9001, protocol: 'tcp' }],
+    ports: [
+      { host: 9000, container: 9000, protocol: 'tcp' },
+      { host: 9001, container: 9001, protocol: 'tcp' },
+    ],
     created: '2026-03-10T07:30:00Z',
     uptime: '2d 4h 42m',
     network: 'storage',
@@ -465,7 +558,10 @@ const NAMED_CONTAINERS: Container[] = [
     cpu: 7.3,
     memory: 128,
     memoryLimit: 512,
-    ports: [{ host: 80, container: 80, protocol: 'tcp' }, { host: 8080, container: 8080, protocol: 'tcp' }],
+    ports: [
+      { host: 80, container: 80, protocol: 'tcp' },
+      { host: 8080, container: 8080, protocol: 'tcp' },
+    ],
     created: '2026-03-10T08:00:00Z',
     uptime: '2d 4h 12m',
     network: 'edge',
@@ -568,5 +664,8 @@ export const clusterStats = {
   restarting: containers.filter((c) => c.status === 'restarting').length,
   exited: containers.filter((c) => c.status === 'exited').length,
   totalMemoryMB: containers.reduce((acc, c) => acc + c.memory, 0),
-  avgCpu: (() => { const running = containers.filter((c) => c.status === 'running').length; return running > 0 ? containers.reduce((acc, c) => acc + c.cpu, 0) / running : 0; })(),
+  avgCpu: (() => {
+    const running = containers.filter((c) => c.status === 'running').length;
+    return running > 0 ? containers.reduce((acc, c) => acc + c.cpu, 0) / running : 0;
+  })(),
 };

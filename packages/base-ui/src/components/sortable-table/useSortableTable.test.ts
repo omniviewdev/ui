@@ -32,9 +32,7 @@ describe('useSortableTable', () => {
       }),
     );
 
-    expect(result.current.sortedData.map((i) => i.name)).toEqual([
-      'apple', 'banana', 'cherry',
-    ]);
+    expect(result.current.sortedData.map((i) => i.name)).toEqual(['apple', 'banana', 'cherry']);
     expect(result.current.sort).toEqual({ key: 'name', direction: 'asc' });
   });
 
@@ -50,9 +48,7 @@ describe('useSortableTable', () => {
     act(() => result.current.onSort('name'));
 
     expect(result.current.sort.direction).toBe('desc');
-    expect(result.current.sortedData.map((i) => i.name)).toEqual([
-      'cherry', 'banana', 'apple',
-    ]);
+    expect(result.current.sortedData.map((i) => i.name)).toEqual(['cherry', 'banana', 'apple']);
   });
 
   it('switches to ascending when clicking a different column', () => {
@@ -105,11 +101,8 @@ describe('useSortableTable', () => {
   });
 
   it('sorts undefined values last', () => {
-    const itemsWithUndefined = [
-      ...items,
-      { id: '4', name: 'date-less', size: 0, date: '' },
-    ];
-    const colsWithUndef: SortableColumnDef<typeof itemsWithUndefined[0]>[] = [
+    const itemsWithUndefined = [...items, { id: '4', name: 'date-less', size: 0, date: '' }];
+    const colsWithUndef: SortableColumnDef<(typeof itemsWithUndefined)[0]>[] = [
       { id: 'date', header: 'Date', accessor: (i) => i.date || undefined },
     ];
 
@@ -143,9 +136,7 @@ describe('useSortableTable', () => {
   });
 
   it('defaults to first sortable column when no defaultSort given', () => {
-    const { result } = renderHook(() =>
-      useSortableTable({ data: items, columns }),
-    );
+    const { result } = renderHook(() => useSortableTable({ data: items, columns }));
 
     expect(result.current.sort.key).toBe('name');
     expect(result.current.sort.direction).toBe('asc');

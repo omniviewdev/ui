@@ -211,24 +211,36 @@ describe('safe mode conversion', () => {
     const change = vi.fn();
     const run = vi.fn();
     const value: QueryAuthoringValue = {
-      mode: 'code', code: { text: 'cpu > 1', version: 7 }, builder: initial,
+      mode: 'code',
+      code: { text: 'cpu > 1', version: 7 },
+      builder: initial,
     };
     const editor = vi.fn((props: QueryEditorRenderProps) => (
       <input
         aria-label="Injected CEL editor"
         value={props.document.text}
         disabled={props.disabled || props.availability?.status === 'denied'}
-        onChange={event => props.onChange(event.target.value)}
-        onKeyDown={event => { if (event.ctrlKey && event.key === 'Enter') props.onSubmit?.(); }}
+        onChange={(event) => props.onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.ctrlKey && event.key === 'Enter') props.onSubmit?.();
+        }}
       />
     ));
-    const props = { value, onChange: change, onRun: run, fields, contextKey: 'vm', renderEditor: editor };
+    const props = {
+      value,
+      onChange: change,
+      onRun: run,
+      fields,
+      contextKey: 'vm',
+      renderEditor: editor,
+    };
     const { rerender } = render(<QueryAuthoring {...props} />);
     const input = screen.getByRole('textbox', { name: 'Injected CEL editor' });
     expect(screen.getAllByRole('textbox')).toHaveLength(1);
     fireEvent.change(input, { target: { value: 'cpu > minimumCpu' } });
     expect(change).toHaveBeenCalledWith({
-      ...value, code: { text: 'cpu > minimumCpu', version: 8 },
+      ...value,
+      code: { text: 'cpu > minimumCpu', version: 8 },
     });
     expect(change.mock.calls[0]?.[0].builder).toBe(initial);
     fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true });
@@ -236,7 +248,9 @@ describe('safe mode conversion', () => {
     rerender(<QueryAuthoring {...props} availability={{ status: 'denied', message: 'Denied.' }} />);
     expect(screen.getByRole('textbox', { name: 'Injected CEL editor' })).toBeDisabled();
     expect(editor.mock.lastCall?.[0]).toMatchObject({
-      contextKey: 'vm', document: value.code, availability: { status: 'denied' },
+      contextKey: 'vm',
+      document: value.code,
+      availability: { status: 'denied' },
     });
   });
   it('cancels conversion when the scope changes and ignores late conversion', async () => {

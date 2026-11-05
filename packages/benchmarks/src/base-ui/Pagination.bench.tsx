@@ -6,11 +6,7 @@ import { Pagination } from '@omniviewdev/base-ui';
 const noop = () => {};
 
 describe('Pagination', () => {
-  benchRender(
-    'mount',
-    () => <Pagination count={10} page={1} onChange={noop} />,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <Pagination count={10} page={1} onChange={noop} />, TIER_2_OPTIONS);
 
   benchRerender(
     'page change',

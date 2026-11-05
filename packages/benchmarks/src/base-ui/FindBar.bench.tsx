@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { FindBar } from '@omniviewdev/base-ui';
 
 describe('FindBar', () => {
-  benchRender(
-    'mount',
-    () => <FindBar open query="" />,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <FindBar open query="" />, TIER_2_OPTIONS);
 
   benchRerender(
     'value change',

@@ -13,12 +13,7 @@ import {
   ROW_HEIGHT,
 } from '@omniviewdev/base-ui';
 import { useDataTable, Checkbox } from '@omniviewdev/base-ui';
-import {
-  LuPlay,
-  LuSquare,
-  LuTrash2,
-  LuRefreshCw,
-} from 'react-icons/lu';
+import { LuPlay, LuSquare, LuTrash2, LuRefreshCw } from 'react-icons/lu';
 import type { Container, ContainerStatus } from '../types';
 import { containerStatusColor } from '../data';
 import styles from './ContainerList.module.css';
@@ -79,25 +74,43 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
     () => [
       {
         id: 'select',
-        header: ({ table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, allPage: table.getIsAllPageRowsSelected(), somePage: table.getIsSomePageRowsSelected() })}>{(selection) => ((
-          <Checkbox
-            checked={selection.allPage}
-            indeterminate={selection.somePage && !selection.allPage}
-            onCheckedChange={() => table.toggleAllPageRowsSelected()}
-            variant="outline"
-            size="sm"
-            aria-label="Select all"
-          />
-        ))}</Subscribe>),
-        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-          <Checkbox
-            checked={!!snapshot.selection[row.id]}
-            onCheckedChange={() => row.toggleSelected()}
-            variant="outline"
-            size="sm"
-            aria-label={`Select ${row.original.name}`}
-          />
-        ))}</Subscribe>),
+        header: ({ table }) => (
+          <Subscribe
+            source={table.store}
+            selector={(state) => ({
+              selection: state.rowSelection,
+              allPage: table.getIsAllPageRowsSelected(),
+              somePage: table.getIsSomePageRowsSelected(),
+            })}
+          >
+            {(selection) => (
+              <Checkbox
+                checked={selection.allPage}
+                indeterminate={selection.somePage && !selection.allPage}
+                onCheckedChange={() => table.toggleAllPageRowsSelected()}
+                variant="outline"
+                size="sm"
+                aria-label="Select all"
+              />
+            )}
+          </Subscribe>
+        ),
+        cell: ({ row, table }) => (
+          <Subscribe
+            source={table.store}
+            selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+          >
+            {(snapshot) => (
+              <Checkbox
+                checked={!!snapshot.selection[row.id]}
+                onCheckedChange={() => row.toggleSelected()}
+                variant="outline"
+                size="sm"
+                aria-label={`Select ${row.original.name}`}
+              />
+            )}
+          </Subscribe>
+        ),
         size: 36,
         enableSorting: false,
         enableResizing: false,
@@ -180,7 +193,9 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                 size="sm"
                 aria-label={`Memory: ${row.memory} MB / ${row.memoryLimit} MB`}
               />
-              <span className={styles.meterLabel}>{row.memory} / {row.memoryLimit} MB</span>
+              <span className={styles.meterLabel}>
+                {row.memory} / {row.memoryLimit} MB
+              </span>
             </div>
           );
         },
@@ -207,7 +222,9 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
                 aria-label={isRunning ? `Stop ${row.name}` : `Start ${row.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toastRef.current(`${isRunning ? 'Stopping' : 'Starting'} ${row.name}`, { severity: 'info' });
+                  toastRef.current(`${isRunning ? 'Stopping' : 'Starting'} ${row.name}`, {
+                    severity: 'info',
+                  });
                 }}
               >
                 {isRunning ? <LuSquare /> : <LuPlay />}
@@ -278,14 +295,13 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
               Status: {STATUS_LABELS[statusFilter]}
             </FilterBar.Chip>
           )}
-          {!statusFilter && STATUS_OPTIONS.map((s) => (
-            <FilterBar.Chip key={s} onClick={() => setStatusFilter(s)}>
-              {STATUS_LABELS[s]}
-            </FilterBar.Chip>
-          ))}
-          {(statusFilter || search) && (
-            <FilterBar.Clear onClick={handleClearFilters} />
-          )}
+          {!statusFilter &&
+            STATUS_OPTIONS.map((s) => (
+              <FilterBar.Chip key={s} onClick={() => setStatusFilter(s)}>
+                {STATUS_LABELS[s]}
+              </FilterBar.Chip>
+            ))}
+          {(statusFilter || search) && <FilterBar.Clear onClick={handleClearFilters} />}
         </FilterBar>
       </div>
 
@@ -319,11 +335,7 @@ export function ContainerList({ containers, onSelectContainer }: ContainerListPr
             Delete
           </Button>
           <div className={styles.spacer} />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => table.resetRowSelection()}
-          >
+          <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()}>
             Clear selection
           </Button>
         </div>

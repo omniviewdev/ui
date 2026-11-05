@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, useEffect, useRef, useState, type HTMLAttributes } from 'react';
 import { Button, Spinner } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
 import styles from './AIMessageEditor.module.css';
@@ -71,13 +65,7 @@ export const AIMessageEditor = forwardRef<HTMLDivElement, AIMessageEditorProps>(
           rows={3}
         />
         <div className={styles.Actions}>
-          <Button
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            onClick={onCancel}
-            disabled={saving}
-          >
+          <Button variant="ghost" color="neutral" size="sm" onClick={onCancel} disabled={saving}>
             Cancel
           </Button>
           <Button

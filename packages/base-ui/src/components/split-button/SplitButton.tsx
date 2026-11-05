@@ -17,7 +17,8 @@ import styles from './SplitButton.module.css';
 
 /* ---------------------------------- Types --------------------------------- */
 
-export type SplitButtonColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'discovery' | 'secondary';
+export type SplitButtonColor =
+  'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'discovery' | 'secondary';
 
 export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
   variant?: ComponentVariant;
@@ -26,8 +27,10 @@ export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   disabled?: boolean;
 }
 
-export interface SplitButtonActionProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
+export interface SplitButtonActionProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'color'
+> {
   disabled?: boolean;
 }
 
@@ -129,9 +132,7 @@ const SplitButtonMenu = forwardRef<HTMLDivElement, SplitButtonMenuProps>(functio
         </Menu.Trigger>
         <Menu.Portal>
           <Menu.Positioner side="bottom" align="end" sideOffset={4}>
-            <Menu.Popup>
-              {children}
-            </Menu.Popup>
+            <Menu.Popup>{children}</Menu.Popup>
           </Menu.Positioner>
         </Menu.Portal>
       </Menu>

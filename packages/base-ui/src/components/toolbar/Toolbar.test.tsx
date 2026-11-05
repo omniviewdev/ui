@@ -23,7 +23,11 @@ describe('Toolbar', () => {
   });
 
   it('applies role="toolbar" when explicitly set', () => {
-    renderWithTheme(<Toolbar role="toolbar" aria-label="Actions">content</Toolbar>);
+    renderWithTheme(
+      <Toolbar role="toolbar" aria-label="Actions">
+        content
+      </Toolbar>,
+    );
 
     expect(screen.getByRole('toolbar')).toBeInTheDocument();
   });
@@ -39,7 +43,11 @@ describe('Toolbar', () => {
   });
 
   it('defaults size to md', () => {
-    renderWithTheme(<Toolbar role="toolbar" aria-label="Actions">content</Toolbar>);
+    renderWithTheme(
+      <Toolbar role="toolbar" aria-label="Actions">
+        content
+      </Toolbar>,
+    );
 
     expect(screen.getByRole('toolbar')).toHaveAttribute('data-ov-size', 'md');
   });

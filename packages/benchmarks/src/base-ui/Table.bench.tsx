@@ -62,8 +62,22 @@ describe('Table', () => {
   benchRerender(
     'rows change',
     {
-      initialProps: { children: <>{header}{rowsA}</> as ReactNode },
-      updatedProps: { children: <>{header}{rowsB}</> as ReactNode },
+      initialProps: {
+        children: (
+          <>
+            {header}
+            {rowsA}
+          </>
+        ) as ReactNode,
+      },
+      updatedProps: {
+        children: (
+          <>
+            {header}
+            {rowsB}
+          </>
+        ) as ReactNode,
+      },
     },
     (props) => <Table {...props} />,
     TIER_2_OPTIONS,

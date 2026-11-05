@@ -25,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "26.13.0"
+          node-version: '26.13.0'
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: npm install --global npm@11
@@ -41,8 +41,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           publish-script: pnpm release
           version-script: pnpm version-packages
-          pr-title: "chore: version packages"
-          commit-message: "chore: version packages"
+          pr-title: 'chore: version packages'
+          commit-message: 'chore: version packages'
         env:
           # The GitHub changelog formatter reads this in the version script.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

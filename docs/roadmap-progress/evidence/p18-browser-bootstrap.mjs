@@ -7,15 +7,22 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import vm from 'node:vm';
 
-const [packageFile, bundleDirectory, descriptorFile, outputFile, executablePath] = process.argv.slice(2);
-assert(packageFile && bundleDirectory && descriptorFile && outputFile,
-  'Expected host E2E package.json, extracted bundle, fresh inspect JSON and new private output path');
+const [packageFile, bundleDirectory, descriptorFile, outputFile, executablePath] =
+  process.argv.slice(2);
+assert(
+  packageFile && bundleDirectory && descriptorFile && outputFile,
+  'Expected host E2E package.json, extracted bundle, fresh inspect JSON and new private output path',
+);
 const require = createRequire(resolve(packageFile));
 const { chromium } = require('@playwright/test');
 const automationVersion = require('@playwright/test/package.json').version;
 const descriptor = JSON.parse(await readFile(descriptorFile, 'utf8'));
 const instance = descriptor.instance;
-assert.equal(descriptor.launchPhase, 'ready', 'Use a fresh canonical workspace inspect after launch');
+assert.equal(
+  descriptor.launchPhase,
+  'ready',
+  'Use a fresh canonical workspace inspect after launch',
+);
 assert.equal(instance?.kind, 'development');
 assert.equal(descriptor.manifest.workspaceID, instance.workspaceID);
 assert.equal(instance.instanceID, instance.workspaceID);
@@ -28,24 +35,44 @@ const cohort = {
   ui: '229a060885acea203410b1b113c68e4016d81b97',
 };
 for (const [id, commit] of Object.entries(cohort)) {
-  assert.equal(instance.repositories.find(repository => repository.id === id)?.commit, commit,
-    `This historical-cohort reproduction requires the recorded ${id} revision`);
+  assert.equal(
+    instance.repositories.find((repository) => repository.id === id)?.commit,
+    commit,
+    `This historical-cohort reproduction requires the recorded ${id} revision`,
+  );
 }
-assert.equal(instance.process.source, instance.repositories.find(repository => repository.id === 'omniview').path);
+assert.equal(
+  instance.process.source,
+  instance.repositories.find((repository) => repository.id === 'omniview').path,
+);
 const endpoint = new URL(instance.endpoints.browser);
 assert.equal(endpoint.protocol, 'http:');
 assert.equal(endpoint.hostname, '127.0.0.1');
 assert(!endpoint.username && !endpoint.password && !endpoint.search && !endpoint.hash);
 endpoint.hash = '/__p18-editor-feasibility';
-const helperSource = await readFile(resolve(bundleDirectory, 'browser-measurement-functions.js'), 'utf8');
-const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+const helperSource = await readFile(
+  resolve(bundleDirectory, 'browser-measurement-functions.js'),
+  'utf8',
+);
+const browser = await chromium.launch({
+  headless: true,
+  ...(executablePath ? { executablePath } : {}),
+});
 const result = {
-  method: 'portable Playwright adapter over archived helpers; new observations, not historical timing equivalence',
-  automationVersion, browserVersion: browser.version(), cohort,
-  workspaceID: instance.workspaceID, generation: instance.generation, candidates: {},
-  limitations: ['loaded-shell mount, not cold app start', 'script focus, not OS focus/paint',
+  method:
+    'portable Playwright adapter over archived helpers; new observations, not historical timing equivalence',
+  automationVersion,
+  browserVersion: browser.version(),
+  cohort,
+  workspaceID: instance.workspaceID,
+  generation: instance.generation,
+  candidates: {},
+  limitations: [
+    'loaded-shell mount, not cold app start',
+    'script focus, not OS focus/paint',
     'Worker instrumentation records construction and explicit terminate only; CDP supplies live targets',
-    'no OS clipboard, IME, VoiceOver, native AX, native heap or production semantics proof'],
+    'no OS clipboard, IME, VoiceOver, native AX, native heap or production semantics proof',
+  ],
 };
 
 // Install before navigation, including host-owned workers created before the route mounts.
@@ -58,7 +85,12 @@ function instrumentWorkers() {
     constructor(url, options) {
       super(url, options);
       this.p18WorkerID = records.length;
-      records.push({ kind: 'constructed', id: this.p18WorkerID, url: String(url), at: performance.now() });
+      records.push({
+        kind: 'constructed',
+        id: this.p18WorkerID,
+        url: String(url),
+        at: performance.now(),
+      });
     }
     terminate() {
       records.push({ kind: 'terminate-called', id: this.p18WorkerID, at: performance.now() });
@@ -74,27 +106,37 @@ async function freshPage() {
     const page = await context.newPage();
     page.setDefaultTimeout(30_000);
     await page.goto(endpoint.href, { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(expected => {
-      const identity = window.__OMNIVIEW_BOOTSTRAP__?.identity;
-      return identity?.instanceID === expected.instanceID && identity?.generation === expected.generation
-        && identity?.kind === 'development' && window.__P18?.source === 'p18-host-comparison-37c896d0-v1';
-    }, { instanceID: instance.instanceID, generation: instance.generation });
+    await page.waitForFunction(
+      (expected) => {
+        const identity = window.__OMNIVIEW_BOOTSTRAP__?.identity;
+        return (
+          identity?.instanceID === expected.instanceID &&
+          identity?.generation === expected.generation &&
+          identity?.kind === 'development' &&
+          window.__P18?.source === 'p18-host-comparison-37c896d0-v1'
+        );
+      },
+      { instanceID: instance.instanceID, generation: instance.generation },
+    );
     await page.waitForSelector('[data-testid="p18-comparison"]', { state: 'visible' });
     // Supply only the small Puppeteer-shaped surface used by the unchanged archived helpers.
     const p18tab = {
-      evaluate: expression => page.evaluate(expression),
+      evaluate: (expression) => page.evaluate(expression),
       async run(fn, { args = [], timeout = 30 } = {}) {
         const listeners = [];
         const compatiblePage = new Proxy(page, {
           get(target, property) {
             if (property === 'createCDPSession') return () => context.newCDPSession(page);
-            if (property === 'waitForSelector') return (selector, options = {}) => target.waitForSelector(selector, {
-              state: options.hidden ? 'hidden' : options.visible ? 'visible' : 'attached',
-            });
-            if (property === 'on') return (event, listener) => {
-              listeners.push([event, listener]);
-              target.on(event, listener);
-            };
+            if (property === 'waitForSelector')
+              return (selector, options = {}) =>
+                target.waitForSelector(selector, {
+                  state: options.hidden ? 'hidden' : options.visible ? 'visible' : 'attached',
+                });
+            if (property === 'on')
+              return (event, listener) => {
+                listeners.push([event, listener]);
+                target.on(event, listener);
+              };
             const value = Reflect.get(target, property);
             return typeof value === 'function' ? value.bind(target) : value;
           },
@@ -104,7 +146,10 @@ async function freshPage() {
           return await Promise.race([
             fn({ page: compatiblePage }, ...args),
             new Promise((_, reject) => {
-              timer = setTimeout(() => reject(new Error(`Archived helper exceeded ${timeout}s deadline`)), timeout * 1000);
+              timer = setTimeout(
+                () => reject(new Error(`Archived helper exceeded ${timeout}s deadline`)),
+                timeout * 1000,
+              );
             }),
           ]);
         } finally {
@@ -123,13 +168,19 @@ async function freshPage() {
 }
 
 async function waitForDisposal(page, candidate, count) {
-  await page.waitForFunction(({ candidate, count }) => {
-    const evidence = window.__P18;
-    const events = evidence.events.filter(event => event.candidate === candidate);
-    return events.filter(event => event.kind === 'adapter-disposed').length === count
-      && (candidate !== 'monaco' || (events.filter(event => event.kind === 'document-closed').length === count
-        && evidence.monaco.editor.getModels().length === 0));
-  }, { candidate, count });
+  await page.waitForFunction(
+    ({ candidate, count }) => {
+      const evidence = window.__P18;
+      const events = evidence.events.filter((event) => event.candidate === candidate);
+      return (
+        events.filter((event) => event.kind === 'adapter-disposed').length === count &&
+        (candidate !== 'monaco' ||
+          (events.filter((event) => event.kind === 'document-closed').length === count &&
+            evidence.monaco.editor.getModels().length === 0))
+      );
+    },
+    { candidate, count },
+  );
 }
 
 try {
@@ -143,7 +194,9 @@ try {
       samples.warm20 = await latency.p18cycle(candidate, 20);
       await waitForDisposal(latency.page, candidate, 21);
       samples.afterLatency = await latency.p18measure('after-first-and-warm20');
-    } finally { await latency.context.close(); }
+    } finally {
+      await latency.context.close();
+    }
     const heap = await freshPage();
     try {
       samples.before = await heap.p18measure('before');
@@ -154,15 +207,21 @@ try {
       await waitForDisposal(heap.page, candidate, 40);
       samples.after40 = await heap.p18measure('after40');
       samples.events = await heap.page.evaluate(() => window.__P18.events);
-    } finally { await heap.context.close(); }
+    } finally {
+      await heap.context.close();
+    }
   }
 } catch (error) {
   result.failure = { name: error.name, message: error.message };
   process.exitCode = 1;
 } finally {
-  try { await browser.close(); }
-  finally {
+  try {
+    await browser.close();
+  } finally {
     // Resource URLs may contain dev HMR credentials. Keep new output private and review before sharing.
-    await writeFile(outputFile, JSON.stringify(result, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
+    await writeFile(outputFile, JSON.stringify(result, null, 2) + '\n', {
+      flag: 'wx',
+      mode: 0o600,
+    });
   }
 }

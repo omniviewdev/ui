@@ -39,7 +39,8 @@
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows var(--_ov-collapsible-duration, 200ms) var(--ov-ease-standard, ease);
+  transition: grid-template-rows var(--_ov-collapsible-duration, 200ms)
+    var(--ov-ease-standard, ease);
 }
 
 .Root[data-ov-open='true'] .Content {

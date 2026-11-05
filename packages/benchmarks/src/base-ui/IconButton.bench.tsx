@@ -6,7 +6,11 @@ import { IconButton } from '@omniviewdev/base-ui';
 describe('IconButton', () => {
   benchRender(
     'mount',
-    () => <IconButton aria-label="Edit"><span>E</span></IconButton>,
+    () => (
+      <IconButton aria-label="Edit">
+        <span>E</span>
+      </IconButton>
+    ),
     TIER_2_OPTIONS,
   );
 
@@ -16,9 +20,22 @@ describe('IconButton', () => {
       initialProps: { variant: 'soft' as const, 'aria-label': 'Edit' },
       updatedProps: { variant: 'outline' as const, 'aria-label': 'Edit' },
     },
-    (props) => <IconButton {...props}><span>E</span></IconButton>,
+    (props) => (
+      <IconButton {...props}>
+        <span>E</span>
+      </IconButton>
+    ),
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 200', 200, (i) => <IconButton key={i} aria-label={`Action ${i}`}><span>E</span></IconButton>, TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 200',
+    200,
+    (i) => (
+      <IconButton key={i} aria-label={`Action ${i}`}>
+        <span>E</span>
+      </IconButton>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

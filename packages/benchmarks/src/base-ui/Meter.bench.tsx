@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Meter } from '@omniviewdev/base-ui';
 
 describe('Meter', () => {
-  benchRender(
-    'mount',
-    () => <Meter value={60} label="CPU Usage" />,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <Meter value={60} label="CPU Usage" />, TIER_2_OPTIONS);
 
   benchRerender(
     'value change',
@@ -20,5 +16,10 @@ describe('Meter', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => <Meter key={i} value={i % 100} label={`Metric ${i}`} />, TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => <Meter key={i} value={i % 100} label={`Metric ${i}`} />,
+    TIER_2_OPTIONS,
+  );
 });

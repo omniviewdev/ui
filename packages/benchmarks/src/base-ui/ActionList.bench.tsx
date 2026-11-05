@@ -21,8 +21,8 @@ describe('ActionList', () => {
   benchRerender(
     'disabled toggle',
     {
-      initialProps: { disabled: false  },
-      updatedProps: { disabled: true  },
+      initialProps: { disabled: false },
+      updatedProps: { disabled: true },
     },
     (props) => (
       <ActionList>

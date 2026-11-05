@@ -73,10 +73,16 @@ export const WithColors: Story = {
   name: 'Color Variants',
   render: () => (
     <StatRow size="md">
-      <StatRow.Item icon={<LuCircleCheck />} color="success">Healthy</StatRow.Item>
+      <StatRow.Item icon={<LuCircleCheck />} color="success">
+        Healthy
+      </StatRow.Item>
       <StatRow.Item icon={<LuCpu />}>4 cores</StatRow.Item>
-      <StatRow.Item icon={<LuThermometer />} color="warning">78°C</StatRow.Item>
-      <StatRow.Item icon={<LuCircleX />} color="danger">2 errors</StatRow.Item>
+      <StatRow.Item icon={<LuThermometer />} color="warning">
+        78°C
+      </StatRow.Item>
+      <StatRow.Item icon={<LuCircleX />} color="danger">
+        2 errors
+      </StatRow.Item>
     </StatRow>
   ),
 };

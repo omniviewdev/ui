@@ -32,57 +32,70 @@ interface AIStepDividerProps extends HTMLAttributes<HTMLDivElement> {
 ## Usage
 
 ### Basic — plain step marker
+
 ```tsx
 <AIStepDivider />
 ```
 
 ### Numbered step
+
 ```tsx
 <AIStepDivider step={2} />
 // Renders: ——— Step 2 ———
 ```
 
 ### Custom label
+
 ```tsx
 <AIStepDivider label="Agent re-evaluating after tool results" />
 ```
 
 ### In a message parts loop (AI SDK integration)
+
 ```tsx
-{message.parts.map((part, i) => {
-  switch (part.type) {
-    case 'step-start':
-      return <AIStepDivider key={i} step={stepCount++} />;
-    case 'text':
-      return <AIMarkdown key={i} content={part.text} />;
-    case 'reasoning':
-      return <ThinkingBlock key={i} content={part.text} />;
-  }
-})}
+{
+  message.parts.map((part, i) => {
+    switch (part.type) {
+      case 'step-start':
+        return <AIStepDivider key={i} step={stepCount++} />;
+      case 'text':
+        return <AIMarkdown key={i} content={part.text} />;
+      case 'reasoning':
+        return <ThinkingBlock key={i} content={part.text} />;
+    }
+  });
+}
 ```
 
 ### In a LangGraph flow
+
 ```tsx
-{nodes.map((node, i) => (
-  <Fragment key={node.id}>
-    {i > 0 && <AIStepDivider step={i + 1} label={node.name} />}
-    <NodeContent node={node} />
-  </Fragment>
-))}
+{
+  nodes.map((node, i) => (
+    <Fragment key={node.id}>
+      {i > 0 && <AIStepDivider step={i + 1} label={node.name} />}
+      <NodeContent node={node} />
+    </Fragment>
+  ));
+}
 ```
 
 ## Visual Design
 
 **`variant="line"` (default):**
+
 ```
 ────────── Step 2 ──────────
 ```
+
 Thin horizontal rule with centered label. Muted color, small font.
 
 **`variant="pill"`:**
+
 ```
             [ Step 2 ]
 ```
+
 Rounded pill/chip centered on a faint divider line.
 
 ## Base UI Dependencies

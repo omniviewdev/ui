@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { CodeEditor, type CodeEditorProps, type EditorDiagnostic, type CursorPosition } from './CodeEditor';
+import {
+  CodeEditor,
+  type CodeEditorProps,
+  type EditorDiagnostic,
+  type CursorPosition,
+} from './CodeEditor';
 import { editorSchemas, type EditorSchema } from '../../schemas';
 import { k8sSchemas, gvrFileMatch, type K8sSchemaEntry } from '../../schemas/kubernetes';
 
@@ -31,7 +36,19 @@ const meta: Meta<typeof CodeEditor> = {
   argTypes: {
     language: {
       control: 'select',
-      options: ['auto', 'typescript', 'javascript', 'python', 'json', 'css', 'html', 'yaml', 'go', 'rust', 'markdown'],
+      options: [
+        'auto',
+        'typescript',
+        'javascript',
+        'python',
+        'json',
+        'css',
+        'html',
+        'yaml',
+        'go',
+        'rust',
+        'markdown',
+      ],
     },
     readOnly: { control: 'boolean' },
     lineNumbers: { control: 'boolean' },
@@ -202,7 +219,9 @@ function SyntaxToggleStory(args: CodeEditorProps) {
   const [enabled, setEnabled] = useState(true);
   return (
     <div>
-      <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 13 }}>
+      <label
+        style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 13 }}
+      >
         <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
         Syntax Highlighting
       </label>
@@ -436,16 +455,24 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
 
   return (
     <div>
-      <div style={{ marginBottom: 8, fontSize: 13, fontWeight: 500 }}>
-        Runtime Schema Loading
-      </div>
+      <div style={{ marginBottom: 8, fontSize: 13, fontWeight: 500 }}>Runtime Schema Loading</div>
       <div style={{ marginBottom: 4, fontSize: 12, opacity: 0.6 }}>
         Simulates per-cluster schema loading. Schemas are fetched lazily and registered at runtime.
         Each schema matches a structured filename:{' '}
-        <code style={{ fontSize: 11 }}>&lt;plugin&gt;/&lt;connectionId&gt;/&lt;group&gt;::&lt;version&gt;::&lt;resource&gt;.yaml</code>
+        <code style={{ fontSize: 11 }}>
+          &lt;plugin&gt;/&lt;connectionId&gt;/&lt;group&gt;::&lt;version&gt;::&lt;resource&gt;.yaml
+        </code>
       </div>
 
-      <div style={{ marginBottom: 12, display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div
+        style={{
+          marginBottom: 12,
+          display: 'flex',
+          gap: 6,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        }}
+      >
         {k8sSchemas.map((entry) => (
           <button
             type="button"
@@ -510,9 +537,7 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
               borderRadius: 3,
               border: '1px solid var(--ov-color-border-default)',
               background:
-                activeGvr === entry.gvr
-                  ? 'var(--ov-color-bg-elevated, #2a2a2a)'
-                  : 'transparent',
+                activeGvr === entry.gvr ? 'var(--ov-color-bg-elevated, #2a2a2a)' : 'transparent',
               color: 'var(--ov-color-fg-default)',
               cursor: 'pointer',
               opacity: activeGvr === entry.gvr ? 1 : 0.6,
@@ -542,44 +567,54 @@ function RuntimeSchemaStory(args: CodeEditorProps) {
       />
 
       {/* Status bar */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '4px 8px',
-        fontSize: 11,
-        fontFamily: 'monospace',
-        background: 'var(--ov-color-bg-inset, #1a1a1a)',
-        borderTop: '1px solid var(--ov-color-border-default, #333)',
-        opacity: 0.8,
-      }}>
-        <span>Ln {cursor.lineNumber}, Col {cursor.column}</span>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '4px 8px',
+          fontSize: 11,
+          fontFamily: 'monospace',
+          background: 'var(--ov-color-bg-inset, #1a1a1a)',
+          borderTop: '1px solid var(--ov-color-border-default, #333)',
+          opacity: 0.8,
+        }}
+      >
+        <span>
+          Ln {cursor.lineNumber}, Col {cursor.column}
+        </span>
         <span>
           {diagnosticsList.length === 0
             ? 'No problems'
-            : `${diagnosticsList.filter(d => d.severity === 'error').length} errors, ${diagnosticsList.filter(d => d.severity === 'warning').length} warnings`}
+            : `${diagnosticsList.filter((d) => d.severity === 'error').length} errors, ${diagnosticsList.filter((d) => d.severity === 'warning').length} warnings`}
         </span>
       </div>
 
       {/* Problems panel */}
       {diagnosticsList.length > 0 && (
-        <div style={{
-          maxHeight: 120,
-          overflow: 'auto',
-          fontSize: 11,
-          fontFamily: 'monospace',
-          background: 'var(--ov-color-bg-inset, #1a1a1a)',
-          borderTop: '1px solid var(--ov-color-border-default, #333)',
-        }}>
+        <div
+          style={{
+            maxHeight: 120,
+            overflow: 'auto',
+            fontSize: 11,
+            fontFamily: 'monospace',
+            background: 'var(--ov-color-bg-inset, #1a1a1a)',
+            borderTop: '1px solid var(--ov-color-border-default, #333)',
+          }}
+        >
           {diagnosticsList.map((d, i) => (
-            <div key={i} style={{
-              padding: '2px 8px',
-              color: d.severity === 'error'
-                ? 'var(--ov-color-error, #f44)'
-                : d.severity === 'warning'
-                  ? 'var(--ov-color-warning, #fa0)'
-                  : 'var(--ov-color-fg-muted, #888)',
-            }}>
+            <div
+              key={i}
+              style={{
+                padding: '2px 8px',
+                color:
+                  d.severity === 'error'
+                    ? 'var(--ov-color-error, #f44)'
+                    : d.severity === 'warning'
+                      ? 'var(--ov-color-warning, #fa0)'
+                      : 'var(--ov-color-fg-muted, #888)',
+              }}
+            >
               [{d.severity}] Ln {d.startLineNumber}:{d.startColumn} — {d.message}
               {d.source && <span style={{ opacity: 0.5 }}> ({d.source})</span>}
             </div>

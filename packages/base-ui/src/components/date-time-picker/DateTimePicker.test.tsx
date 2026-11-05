@@ -18,11 +18,7 @@ describe('DateTimePicker', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <DateTimePicker
-        value={new Date(2026, 3, 12, 9, 30)}
-        onChange={onChange}
-        hourCycle={24}
-      />,
+      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />,
     );
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
     await user.click(screen.getByRole('gridcell', { name: /^20/ }));
@@ -39,11 +35,7 @@ describe('DateTimePicker', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <DateTimePicker
-        value={new Date(2026, 3, 12, 9, 30)}
-        onChange={onChange}
-        hourCycle={24}
-      />,
+      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />,
     );
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
     // TimeColumns renders a listbox for hours in the popup
@@ -59,11 +51,7 @@ describe('DateTimePicker', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <DateTimePicker
-        value={new Date(2026, 3, 12, 9, 30)}
-        onChange={onChange}
-        hourCycle={24}
-      />,
+      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} hourCycle={24} />,
     );
     // The DateField trigger is always visible (no need to open popover)
     const hourSections = screen.getAllByRole('spinbutton', { name: /hour/i });
@@ -76,9 +64,7 @@ describe('DateTimePicker', () => {
   });
 
   it('disabled state applies to the DateField and icon button', () => {
-    render(
-      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} disabled />,
-    );
+    render(<DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} disabled />);
     const iconButton = screen.getByRole('button', { name: /open calendar/i });
     expect(iconButton).toBeDisabled();
     const shell = screen.getByTestId('date-time-picker-shell');
@@ -88,9 +74,7 @@ describe('DateTimePicker', () => {
   it('Clear button resets the date and time', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} />,
-    );
+    render(<DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={onChange} />);
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
     await user.click(screen.getByRole('button', { name: 'Clear' }));
     expect(onChange).toHaveBeenCalledWith(null);
@@ -98,9 +82,7 @@ describe('DateTimePicker', () => {
 
   it('Done button closes the popover', async () => {
     const user = userEvent.setup();
-    render(
-      <DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />,
-    );
+    render(<DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);
     await user.click(screen.getByRole('button', { name: /open calendar/i }));
     await user.click(screen.getByRole('button', { name: 'Done' }));
     expect(screen.queryByRole('grid')).not.toBeInTheDocument();

@@ -104,6 +104,7 @@ interface AIArtifactContentProps extends HTMLAttributes<HTMLDivElement> {
 ## Usage
 
 ### Embedded in a message (inline artifact)
+
 ```tsx
 <ChatBubble role="assistant" avatar={...}>
   <AIMarkdown content="Here's the updated deployment manifest:" />
@@ -124,6 +125,7 @@ interface AIArtifactContentProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 ### Side panel mode
+
 ```tsx
 <ResizableSplitPane>
   <ChatMessageList ... />
@@ -153,6 +155,7 @@ interface AIArtifactContentProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 ### With LangGraph tool output
+
 ```tsx
 // Agent generates a K8s manifest as a tool result
 function handleToolResult(result: ToolResult) {
@@ -170,11 +173,13 @@ function handleToolResult(result: ToolResult) {
 ## Visual Design
 
 **Embedded variant:**
+
 - Bordered card within the message flow
 - Compact header with filename and inline action icons
 - No close button (it's part of the message)
 
 **Panel variant:**
+
 - Full-height side panel with subtle background
 - Header with title, description, close button
 - Sticky action bar

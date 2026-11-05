@@ -77,7 +77,9 @@ describe('ThinkingBlock', () => {
 
   it('sets streaming state while stream is active', async () => {
     let resolve: () => void;
-    const gate = new Promise<void>((r) => { resolve = r; });
+    const gate = new Promise<void>((r) => {
+      resolve = r;
+    });
 
     async function* gen(): AsyncGenerator<string> {
       yield 'chunk';

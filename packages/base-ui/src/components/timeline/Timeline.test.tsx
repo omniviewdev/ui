@@ -41,7 +41,9 @@ describe('Timeline', () => {
   it('applies color data attribute', () => {
     renderWithTheme(
       <Timeline>
-        <Timeline.Item color="success" data-testid="item">OK</Timeline.Item>
+        <Timeline.Item color="success" data-testid="item">
+          OK
+        </Timeline.Item>
       </Timeline>,
     );
 
@@ -237,14 +239,18 @@ describe('Timeline', () => {
   it('renders discovery and secondary colors', () => {
     const { rerender } = renderWithTheme(
       <Timeline>
-        <Timeline.Item color="discovery" data-testid="item">Event</Timeline.Item>
+        <Timeline.Item color="discovery" data-testid="item">
+          Event
+        </Timeline.Item>
       </Timeline>,
     );
     expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(
       <Timeline>
-        <Timeline.Item color="secondary" data-testid="item">Event</Timeline.Item>
+        <Timeline.Item color="secondary" data-testid="item">
+          Event
+        </Timeline.Item>
       </Timeline>,
     );
     expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'secondary');

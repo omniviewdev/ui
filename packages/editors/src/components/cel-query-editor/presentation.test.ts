@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { latestRequestGate, sourcePosition, sourceOffset, completionMatches, automaticCompletion } from './presentation';
+import {
+  latestRequestGate,
+  sourcePosition,
+  sourceOffset,
+  completionMatches,
+  automaticCompletion,
+} from './presentation';
 
 describe('CEL source presentation', () => {
   it('maps exact Unicode and CRLF source positions without splitting code points', () => {

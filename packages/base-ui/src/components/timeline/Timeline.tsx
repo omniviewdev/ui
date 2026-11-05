@@ -66,81 +66,79 @@ export interface TimelineItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   children: ReactNode;
 }
 
-const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
-  function TimelineItem(
-    {
-      timestamp,
-      icon,
-      color = 'neutral',
-      details,
-      defaultExpanded = false,
-      expanded: expandedProp,
-      onExpandedChange,
-      className,
-      children,
-      ...props
-    },
-    ref,
-  ) {
-    const { size } = useTimeline();
-    const hasIcon = icon != null;
-    const hasDetails = details != null;
-
-    const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
-    const isControlled = expandedProp !== undefined;
-    const expanded = isControlled ? expandedProp : internalExpanded;
-
-    const toggleExpanded = useCallback(
-      (e: MouseEvent) => {
-        e.stopPropagation();
-        const next = !expanded;
-        if (!isControlled) setInternalExpanded(next);
-        onExpandedChange?.(next);
-      },
-      [expanded, isControlled, onExpandedChange],
-    );
-
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Item, className)}
-        data-ov-color={color}
-        data-ov-size={size}
-        data-ov-expandable={hasDetails || undefined}
-        data-ov-expanded={hasDetails ? expanded : undefined}
-        {...props}
-      >
-        {timestamp != null && <div className={styles.Timestamp}>{timestamp}</div>}
-        <div className={styles.Indicator}>
-          <span className={styles.Dot} data-ov-has-icon={hasIcon}>
-            {hasIcon ? icon : null}
-          </span>
-          <span className={styles.Connector} aria-hidden="true" />
-        </div>
-        <div className={styles.Content}>
-          {hasDetails ? (
-            <>
-              <button
-                type="button"
-                className={styles.ExpandTrigger}
-                onClick={toggleExpanded}
-                aria-expanded={expanded}
-              >
-                <LuChevronRight className={styles.Chevron} aria-hidden="true" />
-                <span>{children}</span>
-              </button>
-              <div className={styles.Details} aria-hidden={!expanded}>
-                <div className={styles.DetailsInner}>{details}</div>
-              </div>
-            </>
-          ) : (
-            children
-          )}
-        </div>
-      </div>
-    );
+const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(function TimelineItem(
+  {
+    timestamp,
+    icon,
+    color = 'neutral',
+    details,
+    defaultExpanded = false,
+    expanded: expandedProp,
+    onExpandedChange,
+    className,
+    children,
+    ...props
   },
-);
+  ref,
+) {
+  const { size } = useTimeline();
+  const hasIcon = icon != null;
+  const hasDetails = details != null;
+
+  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
+  const isControlled = expandedProp !== undefined;
+  const expanded = isControlled ? expandedProp : internalExpanded;
+
+  const toggleExpanded = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      const next = !expanded;
+      if (!isControlled) setInternalExpanded(next);
+      onExpandedChange?.(next);
+    },
+    [expanded, isControlled, onExpandedChange],
+  );
+
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Item, className)}
+      data-ov-color={color}
+      data-ov-size={size}
+      data-ov-expandable={hasDetails || undefined}
+      data-ov-expanded={hasDetails ? expanded : undefined}
+      {...props}
+    >
+      {timestamp != null && <div className={styles.Timestamp}>{timestamp}</div>}
+      <div className={styles.Indicator}>
+        <span className={styles.Dot} data-ov-has-icon={hasIcon}>
+          {hasIcon ? icon : null}
+        </span>
+        <span className={styles.Connector} aria-hidden="true" />
+      </div>
+      <div className={styles.Content}>
+        {hasDetails ? (
+          <>
+            <button
+              type="button"
+              className={styles.ExpandTrigger}
+              onClick={toggleExpanded}
+              aria-expanded={expanded}
+            >
+              <LuChevronRight className={styles.Chevron} aria-hidden="true" />
+              <span>{children}</span>
+            </button>
+            <div className={styles.Details} aria-hidden={!expanded}>
+              <div className={styles.DetailsInner}>{details}</div>
+            </div>
+          </>
+        ) : (
+          children
+        )}
+      </div>
+    </div>
+  );
+});
 
 TimelineItem.displayName = 'Timeline.Item';
 
@@ -153,16 +151,17 @@ export interface TimelineGroupProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const TimelineGroup = forwardRef<HTMLDivElement, TimelineGroupProps>(
-  function TimelineGroup({ label, className, children, ...props }, ref) {
-    return (
-      <div ref={ref} className={cn(styles.Group, className)} {...props}>
-        <div className={styles.GroupLabel}>{label}</div>
-        {children}
-      </div>
-    );
-  },
-);
+const TimelineGroup = forwardRef<HTMLDivElement, TimelineGroupProps>(function TimelineGroup(
+  { label, className, children, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.Group, className)} {...props}>
+      <div className={styles.GroupLabel}>{label}</div>
+      {children}
+    </div>
+  );
+});
 
 TimelineGroup.displayName = 'Timeline.Group';
 

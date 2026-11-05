@@ -44,33 +44,35 @@ export interface ResizableSplitPaneHandleProps extends HTMLAttributes<HTMLDivEle
 
 const KEYBOARD_STEP = 10;
 
-const Pane = forwardRef<HTMLDivElement, ResizableSplitPanePaneProps>(
-  function Pane({ className, children, ...props }, ref) {
-    return (
-      <div ref={ref} className={cn(styles.Pane, className)} {...props}>
-        {children}
-      </div>
-    );
-  },
-);
+const Pane = forwardRef<HTMLDivElement, ResizableSplitPanePaneProps>(function Pane(
+  { className, children, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.Pane, className)} {...props}>
+      {children}
+    </div>
+  );
+});
 
 Pane.displayName = 'ResizableSplitPane.Pane';
 
-const Handle = forwardRef<HTMLDivElement, ResizableSplitPaneHandleProps>(
-  function Handle({ className, direction = 'horizontal', ...props }, ref) {
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.Handle, className)}
-        data-ov-direction={direction}
-        role="separator"
-        tabIndex={0}
-        aria-orientation={direction === 'horizontal' ? 'vertical' : 'horizontal'}
-        {...props}
-      />
-    );
-  },
-);
+const Handle = forwardRef<HTMLDivElement, ResizableSplitPaneHandleProps>(function Handle(
+  { className, direction = 'horizontal', ...props },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Handle, className)}
+      data-ov-direction={direction}
+      role="separator"
+      tabIndex={0}
+      aria-orientation={direction === 'horizontal' ? 'vertical' : 'horizontal'}
+      {...props}
+    />
+  );
+});
 
 Handle.displayName = 'ResizableSplitPane.Handle';
 
@@ -134,19 +136,16 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
 
     // Direct DOM update for 60fps drag — bypasses React reconciliation
     const handleRef = useRef<HTMLDivElement>(null);
-    const applySize = useCallback(
-      (newSize: number) => {
-        const el = rootRef.current;
-        if (el) {
-          el.style.setProperty('--_ov-split-size', `${newSize}px`);
-        }
-        // Keep aria-valuenow in sync during drag without a React re-render
-        handleRef.current?.setAttribute('aria-valuenow', String(newSize));
-        sizeRef.current = newSize;
-        onResizeRef.current?.(newSize);
-      },
-      [],
-    );
+    const applySize = useCallback((newSize: number) => {
+      const el = rootRef.current;
+      if (el) {
+        el.style.setProperty('--_ov-split-size', `${newSize}px`);
+      }
+      // Keep aria-valuenow in sync during drag without a React re-render
+      handleRef.current?.setAttribute('aria-valuenow', String(newSize));
+      sizeRef.current = newSize;
+      onResizeRef.current?.(newSize);
+    }, []);
 
     const handlePointerDown = useCallback(
       (e: React.PointerEvent) => {
@@ -197,10 +196,7 @@ const ResizableSplitPaneRoot = forwardRef<HTMLDivElement, ResizableSplitPaneProp
         let delta = 0;
         let handled = false;
 
-        if (
-          (isHorizontal && e.key === 'ArrowRight') ||
-          (!isHorizontal && e.key === 'ArrowDown')
-        ) {
+        if ((isHorizontal && e.key === 'ArrowRight') || (!isHorizontal && e.key === 'ArrowDown')) {
           delta = grow;
           handled = true;
         } else if (

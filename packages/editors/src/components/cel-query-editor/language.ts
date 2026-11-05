@@ -10,15 +10,24 @@ export function registerCelLanguage(monaco: typeof Monaco) {
   monaco.languages.register({ id: CEL_LANGUAGE_ID, extensions: ['.cel'], aliases: ['CEL'] });
   monaco.languages.setLanguageConfiguration(CEL_LANGUAGE_ID, {
     comments: { lineComment: '//' },
-    brackets: [['{', '}'], ['[', ']'], ['(', ')']],
+    brackets: [
+      ['{', '}'],
+      ['[', ']'],
+      ['(', ')'],
+    ],
     autoClosingPairs: [
-      { open: '{', close: '}' }, { open: '[', close: ']' }, { open: '(', close: ')' },
+      { open: '{', close: '}' },
+      { open: '[', close: ']' },
+      { open: '(', close: ')' },
       { open: '"', close: '"', notIn: ['string', 'comment'] },
       { open: "'", close: "'", notIn: ['string', 'comment'] },
     ],
     surroundingPairs: [
-      { open: '{', close: '}' }, { open: '[', close: ']' }, { open: '(', close: ')' },
-      { open: '"', close: '"' }, { open: "'", close: "'" },
+      { open: '{', close: '}' },
+      { open: '[', close: ']' },
+      { open: '(', close: ')' },
+      { open: '"', close: '"' },
+      { open: "'", close: "'" },
     ],
     wordPattern: /[a-zA-Z_][a-zA-Z_0-9]*/g,
   });
@@ -40,10 +49,26 @@ export function registerCelLanguage(monaco: typeof Monaco) {
         [/[.,]/, 'delimiter'],
         [/\s+/, 'white'],
       ],
-      single: [[/\\./, 'string.escape'], [/'/, 'string', '@pop'], [/[^'\\]+/, 'string']],
-      double: [[/\\./, 'string.escape'], [/"/, 'string', '@pop'], [/[^"\\]+/, 'string']],
-      tripleSingle: [[/'''/, 'string', '@pop'], [/\\./, 'string.escape'], [/[^'\\]+|'/, 'string']],
-      tripleDouble: [[/"""/, 'string', '@pop'], [/\\./, 'string.escape'], [/[^"\\]+|"/, 'string']],
+      single: [
+        [/\\./, 'string.escape'],
+        [/'/, 'string', '@pop'],
+        [/[^'\\]+/, 'string'],
+      ],
+      double: [
+        [/\\./, 'string.escape'],
+        [/"/, 'string', '@pop'],
+        [/[^"\\]+/, 'string'],
+      ],
+      tripleSingle: [
+        [/'''/, 'string', '@pop'],
+        [/\\./, 'string.escape'],
+        [/[^'\\]+|'/, 'string'],
+      ],
+      tripleDouble: [
+        [/"""/, 'string', '@pop'],
+        [/\\./, 'string.escape'],
+        [/[^"\\]+|"/, 'string'],
+      ],
     },
   });
 }

@@ -37,9 +37,15 @@ export const WithIcons: Story = {
   name: 'With icons',
   render: (args) => (
     <SegmentedControl {...args} defaultValue="list">
-      <SegmentedControl.Item value="list"><LuList /> List</SegmentedControl.Item>
-      <SegmentedControl.Item value="grid"><LuLayoutGrid /> Grid</SegmentedControl.Item>
-      <SegmentedControl.Item value="table"><LuTable /> Table</SegmentedControl.Item>
+      <SegmentedControl.Item value="list">
+        <LuList /> List
+      </SegmentedControl.Item>
+      <SegmentedControl.Item value="grid">
+        <LuLayoutGrid /> Grid
+      </SegmentedControl.Item>
+      <SegmentedControl.Item value="table">
+        <LuTable /> Table
+      </SegmentedControl.Item>
     </SegmentedControl>
   ),
 };

@@ -11,18 +11,9 @@ const ROOT = fileURLToPath(new URL('../../', import.meta.url)).replace(/\/$/, ''
  * Excludes stories, tests, node_modules, dist, styles.css by default.
  */
 export async function findFiles(pattern, opts = {}) {
-  const {
-    excludeStories = true,
-    excludeTests = true,
-    excludeStylesCSS = true,
-    cwd = ROOT,
-  } = opts;
+  const { excludeStories = true, excludeTests = true, excludeStylesCSS = true, cwd = ROOT } = opts;
 
-  const ignore = [
-    '**/node_modules/**',
-    '**/dist/**',
-    '**/storybook-static/**',
-  ];
+  const ignore = ['**/node_modules/**', '**/dist/**', '**/storybook-static/**'];
   if (excludeStories) ignore.push('**/*.stories.tsx', '**/*.stories.ts');
   if (excludeTests) ignore.push('**/*.test.tsx', '**/*.test.ts');
   if (excludeStylesCSS) ignore.push('**/theme/styles.css');

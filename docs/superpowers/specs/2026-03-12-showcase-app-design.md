@@ -99,7 +99,13 @@ export interface DemoApp {
 }
 
 export const apps: DemoApp[] = [
-  { id: 'file-explorer', name: 'File Explorer', description: '...', icon: FolderIcon, component: lazy(() => import('./demos/file-explorer')) },
+  {
+    id: 'file-explorer',
+    name: 'File Explorer',
+    description: '...',
+    icon: FolderIcon,
+    component: lazy(() => import('./demos/file-explorer')),
+  },
   // ... one entry per demo
 ];
 ```
@@ -165,15 +171,15 @@ Until a demo is built out, it exports a component rendering `EmptyState` from ba
 
 ### Demo Catalog
 
-| Demo | Primary Packages | Key Components |
-|------|-----------------|----------------|
-| File Explorer | base-ui | TreeList, Toolbar, Breadcrumbs, ContextMenu, StatusBar, ResizableSplitPane |
-| Web Browser | base-ui | EditorTabs, Input, ActionList, Menu |
-| IDE Editor | base-ui, editors | CodeEditor, EditorTabs, TreeList, CommandPalette, Terminal, ResizableSplitPane |
-| AI Chat | base-ui, ai-ui | ChatMessageList, ChatBubble, ChatInput, AIMarkdown, ThinkingBlock, ToolCall |
-| Notes | base-ui, editors | MarkdownPreview, TreeList, EditorTabs, Toolbar |
-| Container Mgmt | base-ui | DataTable, Tabs, StatusDot, Badge, Card, DescriptionList, Timeline |
-| Chat App | base-ui | NavList, Avatar, Input, Typography, Separator, Badge |
+| Demo           | Primary Packages | Key Components                                                                 |
+| -------------- | ---------------- | ------------------------------------------------------------------------------ |
+| File Explorer  | base-ui          | TreeList, Toolbar, Breadcrumbs, ContextMenu, StatusBar, ResizableSplitPane     |
+| Web Browser    | base-ui          | EditorTabs, Input, ActionList, Menu                                            |
+| IDE Editor     | base-ui, editors | CodeEditor, EditorTabs, TreeList, CommandPalette, Terminal, ResizableSplitPane |
+| AI Chat        | base-ui, ai-ui   | ChatMessageList, ChatBubble, ChatInput, AIMarkdown, ThinkingBlock, ToolCall    |
+| Notes          | base-ui, editors | MarkdownPreview, TreeList, EditorTabs, Toolbar                                 |
+| Container Mgmt | base-ui          | DataTable, Tabs, StatusDot, Badge, Card, DescriptionList, Timeline             |
+| Chat App       | base-ui          | NavList, Avatar, Input, Typography, Separator, Badge                           |
 
 File Explorer covers both local and remote (S3/SFTP) exploration patterns. The Slack-like chat is the "Chat App" entry.
 

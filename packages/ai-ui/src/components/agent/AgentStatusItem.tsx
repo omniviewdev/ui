@@ -18,12 +18,7 @@ export const AgentStatusItem = forwardRef<HTMLDivElement, AgentStatusItemProps>(
     const StatusIcon = AGENT_STATUS_ICONS[status];
 
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-status={status}
-        {...rest}
-      >
+      <div ref={ref} className={cn(styles.Root, className)} data-ov-status={status} {...rest}>
         <span className={styles.Icon} data-ov-status={status}>
           <StatusIcon size={14} />
         </span>

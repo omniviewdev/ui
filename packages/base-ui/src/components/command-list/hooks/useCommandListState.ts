@@ -8,11 +8,7 @@ import type {
   ProcessedItem,
   CommandGroup,
 } from '../types';
-import {
-  DEFAULT_PLACEHOLDER,
-  DEFAULT_OVERSCAN,
-  DEFAULT_ESTIMATED_ITEM_SIZE,
-} from '../constants';
+import { DEFAULT_PLACEHOLDER, DEFAULT_OVERSCAN, DEFAULT_ESTIMATED_ITEM_SIZE } from '../constants';
 import { useControllableState } from '../../list/hooks/useControllableState';
 import { useCommandListStore } from './useCommandListStore';
 import { useTheme } from '../../../theme/useTheme';

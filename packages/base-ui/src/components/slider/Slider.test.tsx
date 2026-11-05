@@ -101,7 +101,12 @@ describe('Slider', () => {
 
   it('renders discovery and secondary colors', () => {
     const { rerender } = renderWithTheme(
-      <Slider.Root color="discovery" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+      <Slider.Root
+        color="discovery"
+        defaultValue={30}
+        data-testid="slider-root"
+        aria-label="Volume"
+      >
         <Slider.Control>
           <Slider.Track>
             <Slider.Indicator />
@@ -113,7 +118,12 @@ describe('Slider', () => {
     expect(screen.getByTestId('slider-root')).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(
-      <Slider.Root color="secondary" defaultValue={30} data-testid="slider-root" aria-label="Volume">
+      <Slider.Root
+        color="secondary"
+        defaultValue={30}
+        data-testid="slider-root"
+        aria-label="Volume"
+      >
         <Slider.Control>
           <Slider.Track>
             <Slider.Indicator />

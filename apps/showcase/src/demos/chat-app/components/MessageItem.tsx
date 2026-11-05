@@ -132,7 +132,13 @@ function HoverActions({
       <Menu.Root>
         <Menu.Trigger
           render={(props) => (
-            <IconButton {...props} color="neutral" variant="ghost" size="sm" aria-label="More actions">
+            <IconButton
+              {...props}
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              aria-label="More actions"
+            >
               <LuEllipsis size={14} />
             </IconButton>
           )}
@@ -184,9 +190,7 @@ export function MessageItem({
   }
 
   // Collect unique replier avatars for thread indicator (up to 3)
-  const threadAvatarUsers = threadReplierIds
-    .slice(0, 3)
-    .map((uid) => getUserById(users, uid));
+  const threadAvatarUsers = threadReplierIds.slice(0, 3).map((uid) => getUserById(users, uid));
 
   return (
     <div className={styles.message}>
@@ -205,19 +209,19 @@ export function MessageItem({
           onToggle={(emoji) => onToggleReaction(message.id, emoji)}
         />
         {message.replyCount > 0 && onOpenThread && (
-          <button
-            className={styles.threadIndicator}
-            onClick={() => onOpenThread(message.id)}
-          >
+          <button className={styles.threadIndicator} onClick={() => onOpenThread(message.id)}>
             <span className={styles.threadAvatars}>
-              {threadAvatarUsers.length > 0
-                ? threadAvatarUsers.map((u) => (
-                    <Avatar key={u.id} name={u.name} shape="circle" size="sm" />
-                  ))
-                : <Avatar name={user.name} shape="circle" size="sm" />
-              }
+              {threadAvatarUsers.length > 0 ? (
+                threadAvatarUsers.map((u) => (
+                  <Avatar key={u.id} name={u.name} shape="circle" size="sm" />
+                ))
+              ) : (
+                <Avatar name={user.name} shape="circle" size="sm" />
+              )}
             </span>
-            <span>{message.replyCount} {message.replyCount === 1 ? 'reply' : 'replies'}</span>
+            <span>
+              {message.replyCount} {message.replyCount === 1 ? 'reply' : 'replies'}
+            </span>
           </button>
         )}
       </div>

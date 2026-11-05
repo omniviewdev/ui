@@ -96,18 +96,8 @@ export interface UseDateFieldReturn {
  * represent a complete valid datetime.
  */
 export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
-  const {
-    value,
-    onChange,
-    mode,
-    locale,
-    hourCycle,
-    showSeconds,
-    min,
-    max,
-    disabled,
-    readOnly,
-  } = options;
+  const { value, onChange, mode, locale, hourCycle, showSeconds, min, max, disabled, readOnly } =
+    options;
 
   // Build the initial section template (types + order + min/max) without value.
   const template = useMemo(
@@ -127,10 +117,7 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
   const lastSyncedValue = useRef<Date | null>(value);
   const lastTemplateKey = useRef<string>(JSON.stringify(template.map((s) => s.type)));
 
-  const currentTemplateKey = useMemo(
-    () => JSON.stringify(template.map((s) => s.type)),
-    [template],
-  );
+  const currentTemplateKey = useMemo(() => JSON.stringify(template.map((s) => s.type)), [template]);
 
   // When the template changes (mode/locale/hourCycle/showSeconds), rebuild from value.
   useEffect(() => {
@@ -168,8 +155,7 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
     // Suppress onChange if the parsed date falls outside [min, max].
     if (!isDateInRange(next, min, max)) return;
     const prev = lastSyncedValue.current;
-    const changed =
-      prev === null || prev.getTime() !== next.getTime();
+    const changed = prev === null || prev.getTime() !== next.getTime();
     if (changed) {
       lastSyncedValue.current = next;
       onChangeRef.current?.(next);
@@ -244,9 +230,7 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
 
       // Tab navigation — allow native Tab to leave the component when at boundaries.
       if (e.key === 'Tab') {
-        const moved = e.shiftKey
-          ? focusPrevious(focusedIndex)
-          : focusNext(focusedIndex);
+        const moved = e.shiftKey ? focusPrevious(focusedIndex) : focusNext(focusedIndex);
         if (moved) {
           e.preventDefault();
         }

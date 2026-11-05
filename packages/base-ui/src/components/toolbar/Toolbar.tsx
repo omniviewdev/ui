@@ -17,14 +17,7 @@ const ToolbarRoot = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar(
   { className, size = 'md', ...props },
   ref,
 ) {
-  return (
-    <div
-      ref={ref}
-      className={cn(styles.Root, className)}
-      data-ov-size={size}
-      {...props}
-    />
-  );
+  return <div ref={ref} className={cn(styles.Root, className)} data-ov-size={size} {...props} />;
 });
 
 ToolbarRoot.displayName = 'Toolbar';

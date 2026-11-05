@@ -61,7 +61,7 @@ export const WithResults: Story = {
         expanded: true,
         result: (
           <pre style={{ margin: 0, fontSize: 12, whiteSpace: 'pre-wrap' }}>
-{`NAME                         READY   STATUS    RESTARTS   AGE
+            {`NAME                         READY   STATUS    RESTARTS   AGE
 api-server-7b9f4c8d6-abc12  1/1     Running   0          2d
 api-server-7b9f4c8d6-def34  1/1     Running   0          2d
 worker-5d8f9a3b2-ghi56      1/1     Running   0          5h`}
@@ -75,7 +75,8 @@ worker-5d8f9a3b2-ghi56      1/1     Running   0          5h`}
         status: 'error' as const,
         duration: 120,
         expanded: true,
-        result: 'Error from server: container "app" in pod "api-server-7b9f4c8d6-abc12" is waiting to start: CrashLoopBackOff',
+        result:
+          'Error from server: container "app" in pod "api-server-7b9f4c8d6-abc12" is waiting to start: CrashLoopBackOff',
         resultStatus: 'error' as const,
       },
     ],
@@ -172,9 +173,7 @@ const TOOL_STEPS: ToolStep[] = [
     args: { file: 'memory-limit-patch.yaml' },
     startDelay: 200,
     lineDelay: 150,
-    outputLines: [
-      'deployment.apps/payments-api configured',
-    ],
+    outputLines: ['deployment.apps/payments-api configured'],
   },
   {
     name: 'kubectl rollout status',
@@ -242,9 +241,7 @@ function AnimatedToolCalls() {
       const stream = createLineStream(step.outputLines, step.lineDelay);
 
       // Update the call to include the stream — ToolCall children will show it
-      setCalls((prev) =>
-        prev.map((c) => (c.id === callId ? { ...c, stream } : c)),
-      );
+      setCalls((prev) => prev.map((c) => (c.id === callId ? { ...c, stream } : c)));
 
       // Calculate total stream duration
       const totalStreamTime = step.outputLines.length * step.lineDelay + 100;
@@ -303,9 +300,12 @@ function AnimatedToolCalls() {
           {phase === 'done' ? 'Replay' : phase === 'running' ? 'Running...' : 'Start'}
         </button>
         <span style={{ fontSize: 12, color: 'var(--ov-color-fg-muted)' }}>
-          {phase === 'idle' && 'Simulates a real agentic debugging session with streaming tool output'}
-          {phase === 'running' && `Executing step ${Math.min(stepIndex + 1, TOOL_STEPS.length)} of ${TOOL_STEPS.length}...`}
-          {phase === 'done' && `All ${TOOL_STEPS.length} tool calls complete — click Replay to run again`}
+          {phase === 'idle' &&
+            'Simulates a real agentic debugging session with streaming tool output'}
+          {phase === 'running' &&
+            `Executing step ${Math.min(stepIndex + 1, TOOL_STEPS.length)} of ${TOOL_STEPS.length}...`}
+          {phase === 'done' &&
+            `All ${TOOL_STEPS.length} tool calls complete — click Replay to run again`}
         </span>
       </div>
 
@@ -369,12 +369,15 @@ function AnimatedSingleToolCall() {
       setTimeout(() => {
         setStream(createLineStream(lines, 500));
         // After all lines stream, mark complete
-        setTimeout(() => {
-          setStatus('success');
-          setDuration(2800);
-          setStream(undefined);
-          setStaticResult(lines.join('\n'));
-        }, lines.length * 500 + 200);
+        setTimeout(
+          () => {
+            setStatus('success');
+            setDuration(2800);
+            setStream(undefined);
+            setStaticResult(lines.join('\n'));
+          },
+          lines.length * 500 + 200,
+        );
       }, 300);
     }, 400);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -30,7 +30,15 @@ Both transports use the same dispatcher and existing `Service.Complete/Check/Hov
 Initialize with standard client capabilities and explicit development context:
 
 ```json
-{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":["utf-16","utf-8"]}},"initializationOptions":{"profileId":"pod","resourceType":"Pod"}}}
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "capabilities": { "general": { "positionEncodings": ["utf-16", "utf-8"] } },
+    "initializationOptions": { "profileId": "pod", "resourceType": "Pod" }
+  }
+}
 ```
 
 `profileId` must be `pod`, `cloud` or `vm`; `resourceType` is optional descriptive metadata (at most 256 bytes), not authority or schema selection. Context is immutable for the session: shut down and initialize another session to change it. External clients must supply these initialization options too; there is no custom HTTP dependency or URI-based authorization convention. Document URIs are arbitrary absolute URIs (at most 2048 bytes), isolated per client. Use `languageId:"cel"` and integer document versions; changes contain exactly one full `{text}` replacement and strictly increase the version. Invalid notifications are ignored without changing the last accepted snapshot. Close documents when their editor is disposed.
@@ -57,8 +65,8 @@ Bounds: 64 HTTP sessions, 16 open documents per session, 8 pending requests per 
 
 ```json
 {
-  "document": {"text": "resource.status.phase == desiredPhase", "version": 1},
-  "cursor": {"offset": 37, "unit": "utf8-byte"},
+  "document": { "text": "resource.status.phase == desiredPhase", "version": 1 },
+  "cursor": { "offset": 37, "unit": "utf8-byte" },
   "contextKey": "story-context-revision",
   "fixtureProfile": "pod"
 }

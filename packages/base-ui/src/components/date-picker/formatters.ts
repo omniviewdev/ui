@@ -24,12 +24,11 @@ const SUNDAY_START_PREFIXES = ['he', 'pt-br', 'zh-cn', 'ja', 'ko', 'th'];
  */
 export function getWeekStartsOnForLocale(locale?: string): WeekStart {
   try {
-    const info = (new Intl.Locale(locale ?? 'en-US') as unknown as {
+    const info = new Intl.Locale(locale ?? 'en-US') as unknown as {
       getWeekInfo?: () => { firstDay: number };
       weekInfo?: { firstDay: number };
-    });
-    const first =
-      info.getWeekInfo?.().firstDay ?? info.weekInfo?.firstDay ?? undefined;
+    };
+    const first = info.getWeekInfo?.().firstDay ?? info.weekInfo?.firstDay ?? undefined;
     if (first !== undefined) {
       return (first === 7 ? 0 : first) as WeekStart;
     }

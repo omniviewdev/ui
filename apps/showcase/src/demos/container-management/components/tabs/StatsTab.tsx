@@ -1,10 +1,5 @@
 import { Card, Meter } from '@omniviewdev/base-ui';
-import {
-  LuCpu,
-  LuMemoryStick,
-  LuNetwork,
-  LuHardDrive,
-} from 'react-icons/lu';
+import { LuCpu, LuMemoryStick, LuNetwork, LuHardDrive } from 'react-icons/lu';
 import type { ContainerDetail } from '../../types';
 import styles from './StatsTab.module.css';
 
@@ -65,11 +60,13 @@ export function StatsTab({ container }: StatsTabProps) {
             />
             <SparkBar values={stats.cpuHistory} color="var(--ov-color-brand-500)" />
             <Card.KeyValue label="Avg (20s)">
-              {(stats.cpuHistory.length > 0 ? stats.cpuHistory.reduce((a, b) => a + b, 0) / stats.cpuHistory.length : 0).toFixed(1)}%
+              {(stats.cpuHistory.length > 0
+                ? stats.cpuHistory.reduce((a, b) => a + b, 0) / stats.cpuHistory.length
+                : 0
+              ).toFixed(1)}
+              %
             </Card.KeyValue>
-            <Card.KeyValue label="PIDs">
-              {stats.pids}
-            </Card.KeyValue>
+            <Card.KeyValue label="PIDs">{stats.pids}</Card.KeyValue>
           </Card.Body>
         </Card>
 
@@ -97,12 +94,8 @@ export function StatsTab({ container }: StatsTabProps) {
               aria-label={`Memory: ${memMB} MB / ${container.memoryLimit} MB`}
             />
             <SparkBar values={stats.memoryHistory} color="var(--ov-color-success-500)" />
-            <Card.KeyValue label="Limit">
-              {container.memoryLimit} MB
-            </Card.KeyValue>
-            <Card.KeyValue label="Usage">
-              {latestMem.toFixed(1)}%
-            </Card.KeyValue>
+            <Card.KeyValue label="Limit">{container.memoryLimit} MB</Card.KeyValue>
+            <Card.KeyValue label="Usage">{latestMem.toFixed(1)}%</Card.KeyValue>
           </Card.Body>
         </Card>
 
@@ -117,15 +110,9 @@ export function StatsTab({ container }: StatsTabProps) {
             </Card.Title>
           </Card.Header>
           <Card.Body>
-            <Card.KeyValue label="Received">
-              {stats.networkRx}
-            </Card.KeyValue>
-            <Card.KeyValue label="Transmitted">
-              {stats.networkTx}
-            </Card.KeyValue>
-            <Card.KeyValue label="Network">
-              {container.network}
-            </Card.KeyValue>
+            <Card.KeyValue label="Received">{stats.networkRx}</Card.KeyValue>
+            <Card.KeyValue label="Transmitted">{stats.networkTx}</Card.KeyValue>
+            <Card.KeyValue label="Network">{container.network}</Card.KeyValue>
           </Card.Body>
         </Card>
 
@@ -140,15 +127,9 @@ export function StatsTab({ container }: StatsTabProps) {
             </Card.Title>
           </Card.Header>
           <Card.Body>
-            <Card.KeyValue label="Read">
-              {stats.diskRead}
-            </Card.KeyValue>
-            <Card.KeyValue label="Written">
-              {stats.diskWrite}
-            </Card.KeyValue>
-            <Card.KeyValue label="Total Size">
-              {container.disk}
-            </Card.KeyValue>
+            <Card.KeyValue label="Read">{stats.diskRead}</Card.KeyValue>
+            <Card.KeyValue label="Written">{stats.diskWrite}</Card.KeyValue>
+            <Card.KeyValue label="Total Size">{container.disk}</Card.KeyValue>
           </Card.Body>
         </Card>
       </Card.Group>

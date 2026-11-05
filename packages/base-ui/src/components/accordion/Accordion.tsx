@@ -154,7 +154,9 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(function Ac
       {/* Collapsible content */}
       <div id={panelId} role="region" aria-labelledby={headerId} className={styles.ContentWrapper}>
         <div className={styles.Content}>
-          <div className={cn(styles.ContentInner, disableContentPadding && styles.ContentNoPad)}>{children}</div>
+          <div className={cn(styles.ContentInner, disableContentPadding && styles.ContentNoPad)}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

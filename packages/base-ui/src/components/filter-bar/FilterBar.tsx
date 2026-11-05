@@ -52,12 +52,7 @@ const FilterBarRoot = forwardRef<HTMLDivElement, FilterBarProps>(function Filter
   const contextValue = useMemo(() => ({ size }), [size]);
   return (
     <FilterBarContext.Provider value={contextValue}>
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-size={size}
-        {...props}
-      >
+      <div ref={ref} className={cn(styles.Root, className)} data-ov-size={size} {...props}>
         {children}
       </div>
     </FilterBarContext.Provider>
@@ -75,42 +70,43 @@ export interface FilterBarChipProps extends Omit<HTMLAttributes<HTMLElement>, 'c
   children: ReactNode;
 }
 
-const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(
-  function FilterBarChip({ onRemove, children, ...props }, ref) {
-    const { size } = useFilterBar();
+const FilterBarChip = forwardRef<HTMLElement, FilterBarChipProps>(function FilterBarChip(
+  { onRemove, children, ...props },
+  ref,
+) {
+  const { size } = useFilterBar();
 
-    const handleRemoveClick = useCallback(
-      (e: MouseEvent) => {
-        e.stopPropagation();
-        onRemove?.();
-      },
-      [onRemove],
-    );
+  const handleRemoveClick = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      onRemove?.();
+    },
+    [onRemove],
+  );
 
-    return (
-      <Chip
-        ref={ref}
-        variant="outline"
-        size={size}
-        endDecorator={
-          onRemove ? (
-            <IconButton
-              variant="ghost"
-              size={ICON_BUTTON_SIZE[size]}
-              aria-label="Remove filter"
-              onClick={handleRemoveClick}
-            >
-              <LuX />
-            </IconButton>
-          ) : undefined
-        }
-        {...props}
-      >
-        {children}
-      </Chip>
-    );
-  },
-);
+  return (
+    <Chip
+      ref={ref}
+      variant="outline"
+      size={size}
+      endDecorator={
+        onRemove ? (
+          <IconButton
+            variant="ghost"
+            size={ICON_BUTTON_SIZE[size]}
+            aria-label="Remove filter"
+            onClick={handleRemoveClick}
+          >
+            <LuX />
+          </IconButton>
+        ) : undefined
+      }
+      {...props}
+    >
+      {children}
+    </Chip>
+  );
+});
 
 FilterBarChip.displayName = 'FilterBar.Chip';
 
@@ -123,23 +119,24 @@ export interface FilterBarAddProps extends Omit<HTMLAttributes<HTMLButtonElement
   children?: ReactNode;
 }
 
-const FilterBarAdd = forwardRef<HTMLButtonElement, FilterBarAddProps>(
-  function FilterBarAdd({ children, ...props }, ref) {
-    const { size } = useFilterBar();
+const FilterBarAdd = forwardRef<HTMLButtonElement, FilterBarAddProps>(function FilterBarAdd(
+  { children, ...props },
+  ref,
+) {
+  const { size } = useFilterBar();
 
-    return (
-      <IconButton
-        ref={ref as never}
-        variant="ghost"
-        size={ICON_BUTTON_SIZE[size]}
-        aria-label="Add filter"
-        {...props}
-      >
-        {children ?? <LuPlus />}
-      </IconButton>
-    );
-  },
-);
+  return (
+    <IconButton
+      ref={ref as never}
+      variant="ghost"
+      size={ICON_BUTTON_SIZE[size]}
+      aria-label="Add filter"
+      {...props}
+    >
+      {children ?? <LuPlus />}
+    </IconButton>
+  );
+});
 
 FilterBarAdd.displayName = 'FilterBar.Add';
 
@@ -152,23 +149,24 @@ export interface FilterBarClearProps extends Omit<HTMLAttributes<HTMLButtonEleme
   children?: ReactNode;
 }
 
-const FilterBarClear = forwardRef<HTMLButtonElement, FilterBarClearProps>(
-  function FilterBarClear({ children, ...props }, ref) {
-    const { size } = useFilterBar();
+const FilterBarClear = forwardRef<HTMLButtonElement, FilterBarClearProps>(function FilterBarClear(
+  { children, ...props },
+  ref,
+) {
+  const { size } = useFilterBar();
 
-    return (
-      <IconButton
-        ref={ref as never}
-        variant="ghost"
-        size={ICON_BUTTON_SIZE[size]}
-        aria-label={typeof children === 'string' ? children : 'Clear all'}
-        {...props}
-      >
-        {children ?? <LuX />}
-      </IconButton>
-    );
-  },
-);
+  return (
+    <IconButton
+      ref={ref as never}
+      variant="ghost"
+      size={ICON_BUTTON_SIZE[size]}
+      aria-label={typeof children === 'string' ? children : 'Clear all'}
+      {...props}
+    >
+      {children ?? <LuX />}
+    </IconButton>
+  );
+});
 
 FilterBarClear.displayName = 'FilterBar.Clear';
 

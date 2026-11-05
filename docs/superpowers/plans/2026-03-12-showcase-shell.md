@@ -17,6 +17,7 @@
 ### Task 1: Create package.json
 
 **Files:**
+
 - Create: `apps/showcase/package.json`
 
 - [ ] **Step 1: Create the apps directory and package.json**
@@ -62,6 +63,7 @@ Expected: Lockfile updates, workspace links resolve.
 ### Task 2: Create vite.config.ts
 
 **Files:**
+
 - Create: `apps/showcase/vite.config.ts`
 
 - [ ] **Step 1: Write vite config**
@@ -91,6 +93,7 @@ Note: This is a SPA config (no `build.lib`), unlike the library packages.
 ### Task 3: Create tsconfig.json
 
 **Files:**
+
 - Create: `apps/showcase/tsconfig.json`
 
 - [ ] **Step 1: Write tsconfig**
@@ -111,6 +114,7 @@ Note: This is a SPA config (no `build.lib`), unlike the library packages.
 ### Task 4: Create index.html entry point
 
 **Files:**
+
 - Create: `apps/showcase/index.html`
 
 - [ ] **Step 1: Write index.html**
@@ -135,6 +139,7 @@ Note: This is a SPA config (no `build.lib`), unlike the library packages.
 ### Task 5: Create main.tsx entry
 
 **Files:**
+
 - Create: `apps/showcase/src/main.tsx`
 
 - [ ] **Step 1: Write main.tsx**
@@ -160,6 +165,7 @@ createRoot(document.getElementById('root')!).render(
 ### Task 6: Create minimal App.tsx and verify dev server
 
 **Files:**
+
 - Create: `apps/showcase/src/App.tsx`
 
 - [ ] **Step 1: Write minimal App.tsx**
@@ -200,6 +206,7 @@ git commit -m "feat(showcase): scaffold package with vite, react, theme"
 ### Task 7: Create the app registry
 
 **Files:**
+
 - Create: `apps/showcase/src/registry.ts`
 
 - [ ] **Step 1: Write the registry**
@@ -283,6 +290,7 @@ export const apps: DemoApp[] = [
 ### Task 8: Create placeholder demos
 
 **Files:**
+
 - Create: `apps/showcase/src/demos/file-explorer/index.tsx`
 - Create: `apps/showcase/src/demos/web-browser/index.tsx`
 - Create: `apps/showcase/src/demos/ide-editor/index.tsx`
@@ -294,6 +302,7 @@ export const apps: DemoApp[] = [
 - [ ] **Step 1: Create all 7 placeholder components**
 
 `apps/showcase/src/demos/file-explorer/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuFolder } from 'react-icons/lu';
@@ -304,6 +313,7 @@ export default function FileExplorerDemo() {
 ```
 
 `apps/showcase/src/demos/web-browser/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuGlobe } from 'react-icons/lu';
@@ -314,6 +324,7 @@ export default function WebBrowserDemo() {
 ```
 
 `apps/showcase/src/demos/ide-editor/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuCode } from 'react-icons/lu';
@@ -324,6 +335,7 @@ export default function IdeEditorDemo() {
 ```
 
 `apps/showcase/src/demos/ai-chat/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuBot } from 'react-icons/lu';
@@ -334,6 +346,7 @@ export default function AiChatDemo() {
 ```
 
 `apps/showcase/src/demos/notes/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuFileText } from 'react-icons/lu';
@@ -344,6 +357,7 @@ export default function NotesDemo() {
 ```
 
 `apps/showcase/src/demos/container-management/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuContainer } from 'react-icons/lu';
@@ -354,6 +368,7 @@ export default function ContainerManagementDemo() {
 ```
 
 `apps/showcase/src/demos/chat-app/index.tsx`:
+
 ```tsx
 import { EmptyState } from '@omniviewdev/base-ui';
 import { LuMessageCircle } from 'react-icons/lu';
@@ -377,6 +392,7 @@ git commit -m "feat(showcase): add app registry and placeholder demos"
 ### Task 9: Create the Dock component
 
 **Files:**
+
 - Create: `apps/showcase/src/Dock.tsx`
 - Create: `apps/showcase/src/Dock.module.css`
 
@@ -453,20 +469,17 @@ export function Dock({ activeApp, onSelectApp }: DockProps) {
       );
       const idx = buttons.indexOf(e.target as HTMLButtonElement);
       if (idx === -1) return;
-      const next = e.key === 'ArrowDown'
-        ? buttons[(idx + 1) % buttons.length]
-        : buttons[(idx - 1 + buttons.length) % buttons.length];
+      const next =
+        e.key === 'ArrowDown'
+          ? buttons[(idx + 1) % buttons.length]
+          : buttons[(idx - 1 + buttons.length) % buttons.length];
       next?.focus();
     },
     [onSelectApp],
   );
 
   return (
-    <nav
-      className={styles.dock}
-      aria-label="Demo apps"
-      onKeyDown={handleKeyDown}
-    >
+    <nav className={styles.dock} aria-label="Demo apps" onKeyDown={handleKeyDown}>
       <Tooltip content="Home" placement="right">
         <IconButton
           variant={activeApp === null ? 'filled' : 'ghost'}
@@ -527,6 +540,7 @@ git commit -m "feat(showcase): add Dock component with icon buttons and theme sw
 ### Task 10: Create the Home screen
 
 **Files:**
+
 - Create: `apps/showcase/src/Home.tsx`
 - Create: `apps/showcase/src/Home.module.css`
 
@@ -617,11 +631,7 @@ export function Home({ onSelectApp }: HomeProps) {
 
       <div className={styles.grid}>
         {apps.map((app) => (
-          <Card
-            key={app.id}
-            className={styles.card}
-            onClick={() => onSelectApp(app.id)}
-          >
+          <Card key={app.id} className={styles.card} onClick={() => onSelectApp(app.id)}>
             <div className={styles.cardContent}>
               <div className={styles.iconBox}>
                 <app.icon />
@@ -646,6 +656,7 @@ export function Home({ onSelectApp }: HomeProps) {
 ### Task 11: Wire up App.tsx shell layout
 
 **Files:**
+
 - Modify: `apps/showcase/src/App.tsx` (replace minimal placeholder)
 - Create: `apps/showcase/src/App.module.css`
 
@@ -704,6 +715,7 @@ export function App() {
 Run: `cd /Users/joshuapare/Repos/omniviewdev/ui/feat/demos && pnpm showcase`
 
 Verify:
+
 - Home screen shows with title "Omniview Showcase" and 7 app cards
 - Left dock shows home icon + 7 app icons + theme switcher at bottom
 - Clicking a dock icon or card shows the "Coming soon" EmptyState for that demo
@@ -726,6 +738,7 @@ git commit -m "feat(showcase): complete shell with dock, home screen, and lazy r
 ### Task 12: Add global reset styles
 
 **Files:**
+
 - Create: `apps/showcase/src/global.css`
 - Modify: `apps/showcase/src/main.tsx` (add import)
 

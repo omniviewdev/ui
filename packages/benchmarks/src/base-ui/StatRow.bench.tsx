@@ -21,11 +21,7 @@ const itemsB = (
 );
 
 describe('StatRow', () => {
-  benchRender(
-    'mount',
-    () => <StatRow>{itemsA}</StatRow>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <StatRow>{itemsA}</StatRow>, TIER_2_OPTIONS);
 
   benchRerender(
     'value change',
@@ -37,10 +33,15 @@ describe('StatRow', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => (
-    <StatRow key={i}>
-      <StatRow.Item>CPU: {i}%</StatRow.Item>
-      <StatRow.Item>Mem: {i} GB</StatRow.Item>
-    </StatRow>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => (
+      <StatRow key={i}>
+        <StatRow.Item>CPU: {i}%</StatRow.Item>
+        <StatRow.Item>Mem: {i} GB</StatRow.Item>
+      </StatRow>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

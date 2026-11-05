@@ -3,7 +3,7 @@ export type MessageRole = 'user' | 'assistant';
 export interface ChatMessage {
   id: string;
   role: MessageRole;
-  content: string;          // markdown content
+  content: string; // markdown content
   thinking?: {
     text: string;
     durationMs: number;
@@ -12,7 +12,7 @@ export interface ChatMessage {
   citations?: CitationData[];
   sources?: SourceData[];
   branches?: BranchData[];
-  contextFiles?: string[];   // for AIContextIndicator
+  contextFiles?: string[]; // for AIContextIndicator
   artifact?: ArtifactData;
 }
 
@@ -52,11 +52,4 @@ export interface ArtifactData {
 
 /** Phases of the scripted replay state machine */
 export type ReplayPhase =
-  | 'idle'
-  | 'typing'
-  | 'thinking'
-  | 'tool-call'
-  | 'streaming'
-  | 'artifact'
-  | 'follow-up'
-  | 'done';
+  'idle' | 'typing' | 'thinking' | 'tool-call' | 'streaming' | 'artifact' | 'follow-up' | 'done';

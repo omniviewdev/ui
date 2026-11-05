@@ -6,16 +6,16 @@ import { SearchInput } from '@omniviewdev/base-ui';
 const noop = () => {};
 
 describe('SearchInput', () => {
-  benchRender('mount', () => (
-    <SearchInput placeholder="Search..." value="" onValueChange={noop} />
-  ), TIER_2_OPTIONS);
+  benchRender(
+    'mount',
+    () => <SearchInput placeholder="Search..." value="" onValueChange={noop} />,
+    TIER_2_OPTIONS,
+  );
 
   benchRerender(
     'value change',
     { initialProps: { value: '' }, updatedProps: { value: 'search query' } },
-    (props) => (
-      <SearchInput placeholder="Search..." onValueChange={noop} {...props} />
-    ),
+    (props) => <SearchInput placeholder="Search..." onValueChange={noop} {...props} />,
     TIER_2_OPTIONS,
   );
 });

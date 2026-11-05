@@ -108,9 +108,11 @@ export interface TerminalProps {
   /** Font family override. */
   fontFamily?: string;
   /** Font weight ('normal', 'bold', '100'-'900'). */
-  fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+  fontWeight?:
+    'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
   /** Font weight for bold text. */
-  fontWeightBold?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+  fontWeightBold?:
+    'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
   /** Enable cursor blink. */
   cursorBlink?: boolean;
   /** Cursor style. */
@@ -342,12 +344,36 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
 
   // Stable refs for callbacks to avoid re-initializing terminal
   const callbacksRef = useRef({
-    onData, onBinaryData, onResize, onSignal, onError, onClose, onReady,
-    onBell, onTitleChange, onKey, onSelectionChange, onLineFeed, onScroll, onWriteParsed,
+    onData,
+    onBinaryData,
+    onResize,
+    onSignal,
+    onError,
+    onClose,
+    onReady,
+    onBell,
+    onTitleChange,
+    onKey,
+    onSelectionChange,
+    onLineFeed,
+    onScroll,
+    onWriteParsed,
   });
   callbacksRef.current = {
-    onData, onBinaryData, onResize, onSignal, onError, onClose, onReady,
-    onBell, onTitleChange, onKey, onSelectionChange, onLineFeed, onScroll, onWriteParsed,
+    onData,
+    onBinaryData,
+    onResize,
+    onSignal,
+    onError,
+    onClose,
+    onReady,
+    onBell,
+    onTitleChange,
+    onKey,
+    onSelectionChange,
+    onLineFeed,
+    onScroll,
+    onWriteParsed,
   };
 
   const fit = useCallback(() => {
@@ -397,11 +423,15 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       t?.scrollToBottom?.();
     },
     findNext: (term: string, options?: TerminalSearchOptions): boolean => {
-      const s = searchAddonRef.current as { findNext?: (t: string, o?: TerminalSearchOptions) => boolean } | null;
+      const s = searchAddonRef.current as {
+        findNext?: (t: string, o?: TerminalSearchOptions) => boolean;
+      } | null;
       return s?.findNext?.(term, options) ?? false;
     },
     findPrevious: (term: string, options?: TerminalSearchOptions): boolean => {
-      const s = searchAddonRef.current as { findPrevious?: (t: string, o?: TerminalSearchOptions) => boolean } | null;
+      const s = searchAddonRef.current as {
+        findPrevious?: (t: string, o?: TerminalSearchOptions) => boolean;
+      } | null;
       return s?.findPrevious?.(term, options) ?? false;
     },
     clearSearch: () => {
@@ -462,21 +492,28 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       // Wait for fonts to be ready to prevent wrong char width measurements
       await document.fonts.ready;
 
-      const [{ Terminal: XTerminal }, { FitAddon }, { SearchAddon }, { SerializeAddon }, { Unicode11Addon }] =
-        await Promise.all([
-          import('@xterm/xterm'),
-          import('@xterm/addon-fit'),
-          import('@xterm/addon-search'),
-          import('@xterm/addon-serialize'),
-          import('@xterm/addon-unicode11'),
-        ]);
+      const [
+        { Terminal: XTerminal },
+        { FitAddon },
+        { SearchAddon },
+        { SerializeAddon },
+        { Unicode11Addon },
+      ] = await Promise.all([
+        import('@xterm/xterm'),
+        import('@xterm/addon-fit'),
+        import('@xterm/addon-search'),
+        import('@xterm/addon-serialize'),
+        import('@xterm/addon-unicode11'),
+      ]);
 
       if (disposed) return;
 
       const xtermTheme = buildXtermTheme(container);
       const termOptions: Record<string, unknown> = {
         fontSize,
-        fontFamily: fontFamily || "'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace",
+        fontFamily:
+          fontFamily ||
+          "'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace",
         theme: xtermTheme,
         allowTransparency,
         cursorBlink,
@@ -498,13 +535,17 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
       if (initialRows !== undefined) termOptions.rows = initialRows;
       if (initialCols !== undefined) termOptions.cols = initialCols;
       if (screenReaderMode !== undefined) termOptions.screenReaderMode = screenReaderMode;
-      if (minimumContrastRatio !== undefined) termOptions.minimumContrastRatio = minimumContrastRatio;
+      if (minimumContrastRatio !== undefined)
+        termOptions.minimumContrastRatio = minimumContrastRatio;
 
       const term = new XTerminal(termOptions);
 
       if (customKeyEventHandler) {
-        (term as unknown as { attachCustomKeyEventHandler: (h: (e: KeyboardEvent) => boolean) => void })
-          .attachCustomKeyEventHandler(customKeyEventHandler);
+        (
+          term as unknown as {
+            attachCustomKeyEventHandler: (h: (e: KeyboardEvent) => boolean) => void;
+          }
+        ).attachCustomKeyEventHandler(customKeyEventHandler);
       }
 
       const loadedAddons: Array<{ dispose: () => void }> = [];
@@ -610,11 +651,13 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
         },
       );
 
-      (term as unknown as { onKey: (cb: (e: { key: string; domEvent: KeyboardEvent }) => void) => void }).onKey(
-        (event: { key: string; domEvent: KeyboardEvent }) => {
-          callbacksRef.current.onKey?.(event);
-        },
-      );
+      (
+        term as unknown as {
+          onKey: (cb: (e: { key: string; domEvent: KeyboardEvent }) => void) => void;
+        }
+      ).onKey((event: { key: string; domEvent: KeyboardEvent }) => {
+        callbacksRef.current.onKey?.(event);
+      });
 
       (term as unknown as { onSelectionChange: (cb: () => void) => void }).onSelectionChange(() => {
         callbacksRef.current.onSelectionChange?.();
@@ -624,9 +667,11 @@ export const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Termi
         callbacksRef.current.onLineFeed?.();
       });
 
-      (term as unknown as { onScroll: (cb: (p: number) => void) => void }).onScroll((pos: number) => {
-        callbacksRef.current.onScroll?.(pos);
-      });
+      (term as unknown as { onScroll: (cb: (p: number) => void) => void }).onScroll(
+        (pos: number) => {
+          callbacksRef.current.onScroll?.(pos);
+        },
+      );
 
       (term as unknown as { onWriteParsed: (cb: () => void) => void }).onWriteParsed(() => {
         callbacksRef.current.onWriteParsed?.();

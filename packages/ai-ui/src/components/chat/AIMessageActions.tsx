@@ -1,7 +1,16 @@
 import { forwardRef, useCallback, type HTMLAttributes } from 'react';
 import { IconButton } from '@omniviewdev/base-ui';
 import { cn } from '../../system/classnames';
-import { LuCopy, LuRefreshCw, LuPencil, LuThumbsUp, LuThumbsDown, LuShare2, LuGitBranch, LuTrash2 } from '../../system/icons';
+import {
+  LuCopy,
+  LuRefreshCw,
+  LuPencil,
+  LuThumbsUp,
+  LuThumbsDown,
+  LuShare2,
+  LuGitBranch,
+  LuTrash2,
+} from '../../system/icons';
 import styles from './AIMessageActions.module.css';
 
 export interface AIMessageActionsProps extends HTMLAttributes<HTMLDivElement> {
@@ -25,47 +34,88 @@ export interface AIMessageActionsProps extends HTMLAttributes<HTMLDivElement> {
 
 export const AIMessageActions = forwardRef<HTMLDivElement, AIMessageActionsProps>(
   function AIMessageActions(
-    { onCopy, onRegenerate, onEdit, onShare, onBranch, onDelete, feedback, onFeedback, className, ...rest },
+    {
+      onCopy,
+      onRegenerate,
+      onEdit,
+      onShare,
+      onBranch,
+      onDelete,
+      feedback,
+      onFeedback,
+      className,
+      ...rest
+    },
     ref,
   ) {
-    const handlePositiveFeedback = useCallback(
-      () => onFeedback?.('positive'),
-      [onFeedback],
-    );
-    const handleNegativeFeedback = useCallback(
-      () => onFeedback?.('negative'),
-      [onFeedback],
-    );
+    const handlePositiveFeedback = useCallback(() => onFeedback?.('positive'), [onFeedback]);
+    const handleNegativeFeedback = useCallback(() => onFeedback?.('negative'), [onFeedback]);
 
     return (
       <div ref={ref} className={cn(styles.Root, className)} {...rest}>
         {onCopy && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Copy message" onClick={onCopy}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Copy message"
+            onClick={onCopy}
+          >
             <LuCopy size={14} />
           </IconButton>
         )}
         {onRegenerate && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Regenerate response" onClick={onRegenerate}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Regenerate response"
+            onClick={onRegenerate}
+          >
             <LuRefreshCw size={14} />
           </IconButton>
         )}
         {onEdit && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Edit message" onClick={onEdit}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Edit message"
+            onClick={onEdit}
+          >
             <LuPencil size={14} />
           </IconButton>
         )}
         {onShare && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Share message" onClick={onShare}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Share message"
+            onClick={onShare}
+          >
             <LuShare2 size={14} />
           </IconButton>
         )}
         {onBranch && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Branch conversation" onClick={onBranch}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Branch conversation"
+            onClick={onBranch}
+          >
             <LuGitBranch size={14} />
           </IconButton>
         )}
         {onDelete && (
-          <IconButton size="sm" variant="ghost" color="neutral" aria-label="Delete message" onClick={onDelete}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            aria-label="Delete message"
+            onClick={onDelete}
+          >
             <LuTrash2 size={14} />
           </IconButton>
         )}

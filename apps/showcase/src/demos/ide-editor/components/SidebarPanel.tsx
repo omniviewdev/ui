@@ -3,13 +3,7 @@ import { LuFile, LuFolder, LuFolderOpen } from 'react-icons/lu';
 import { Accordion, TreeList, SearchInput, StatusDot } from '@omniviewdev/base-ui';
 import type { Key } from '@omniviewdev/base-ui';
 import type { SidebarPanel as SidebarPanelType, SearchResult, GitStatusEntry } from '../types';
-import {
-  fileTree,
-  projectFiles,
-  searchResults,
-  gitStatus,
-  type FileTreeNode,
-} from '../data';
+import { fileTree, projectFiles, searchResults, gitStatus, type FileTreeNode } from '../data';
 import styles from './SidebarPanel.module.css';
 
 // ─── FileTreePanel ────────────────────────────────────────────────────────────
@@ -61,11 +55,15 @@ function FileTreePanel({ onOpenFile }: FileTreePanelProps) {
                 />
                 <TreeList.ItemToggle itemKey={node.key} />
                 <TreeList.ItemIcon>
-                  {item.type === 'folder'
-                    ? node.isExpanded
-                      ? <LuFolderOpen aria-hidden />
-                      : <LuFolder aria-hidden />
-                    : <LuFile aria-hidden />}
+                  {item.type === 'folder' ? (
+                    node.isExpanded ? (
+                      <LuFolderOpen aria-hidden />
+                    ) : (
+                      <LuFolder aria-hidden />
+                    )
+                  ) : (
+                    <LuFile aria-hidden />
+                  )}
                 </TreeList.ItemIcon>
                 <TreeList.ItemLabel>{item.name}</TreeList.ItemLabel>
               </TreeList.Item>
@@ -125,7 +123,10 @@ function SearchPanel({ onOpenFile }: SearchPanelProps) {
             type="button"
             key={`${result.file}-${result.line}-${i}`}
             className={styles.resultItem}
-            onClick={() => { const id = resolveFileId(result.file); if (id) onOpenFile(id); }}
+            onClick={() => {
+              const id = resolveFileId(result.file);
+              if (id) onOpenFile(id);
+            }}
           >
             <span className={styles.resultFile}>{result.file}</span>
             <span className={styles.resultMatch}>{result.context.trim()}</span>
@@ -143,10 +144,14 @@ function SearchPanel({ onOpenFile }: SearchPanelProps) {
 
 function statusToStatusDot(status: GitStatusEntry['status']): 'warning' | 'success' | 'neutral' {
   switch (status) {
-    case 'modified': return 'warning';
-    case 'staged': return 'success';
-    case 'untracked': return 'neutral';
-    default: return status satisfies never;
+    case 'modified':
+      return 'warning';
+    case 'staged':
+      return 'success';
+    case 'untracked':
+      return 'neutral';
+    default:
+      return status satisfies never;
   }
 }
 

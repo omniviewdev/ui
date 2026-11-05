@@ -121,9 +121,7 @@ describe('DockLayout', () => {
 
   it('keeps activeTab unchanged when clicking the already-active tab', () => {
     const onChange = vi.fn();
-    renderWithTheme(
-      <DockLayout layout={singleLeaf} onLayoutChange={onChange} />,
-    );
+    renderWithTheme(<DockLayout layout={singleLeaf} onLayoutChange={onChange} />);
 
     fireEvent.click(screen.getByRole('tab', { name: 'File 1' }));
 
@@ -182,9 +180,7 @@ describe('DockLayout', () => {
   });
 
   it('merges className', () => {
-    renderWithTheme(
-      <DockLayout className="custom" layout={singleLeaf} data-testid="dock" />,
-    );
+    renderWithTheme(<DockLayout className="custom" layout={singleLeaf} data-testid="dock" />);
     expect(screen.getByTestId('dock')).toHaveClass('custom');
   });
 
@@ -202,9 +198,7 @@ describe('DockLayout', () => {
     const layout: DockLeaf = {
       type: 'leaf',
       id: 'leaf-1',
-      tabs: [
-        { id: 'tab-1', title: 'Permanent', closable: false, content: 'Permanent content' },
-      ],
+      tabs: [{ id: 'tab-1', title: 'Permanent', closable: false, content: 'Permanent content' }],
     };
 
     renderWithTheme(<DockLayout layout={layout} />);
@@ -255,7 +249,9 @@ describe('DockLayout', () => {
 
   it('navigates to first/last tab with Home/End and moves focus', async () => {
     const user = userEvent.setup();
-    renderWithTheme(<DockLayout layout={{ ...singleLeaf, activeTab: 'tab-2' }} data-testid="dock" />);
+    renderWithTheme(
+      <DockLayout layout={{ ...singleLeaf, activeTab: 'tab-2' }} data-testid="dock" />,
+    );
 
     const tab2 = screen.getByRole('tab', { name: 'File 2' });
     tab2.focus();

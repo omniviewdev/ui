@@ -1,4 +1,12 @@
-import { createContext, forwardRef, useCallback, useContext, useMemo, type CSSProperties, type KeyboardEvent } from 'react';
+import {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useMemo,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react';
 import { LuArrowUp, LuArrowDown } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import { List } from '../list';
@@ -122,7 +130,9 @@ const RowListHeader = forwardRef<HTMLDivElement, RowListHeaderProps>(function Ro
               } as CSSProperties
             }
             onClick={col.sortable && onSortChange ? () => handleHeaderClick(col) : undefined}
-            onKeyDown={col.sortable && onSortChange ? (e) => handleHeaderKeyDown(col, e) : undefined}
+            onKeyDown={
+              col.sortable && onSortChange ? (e) => handleHeaderKeyDown(col, e) : undefined
+            }
           >
             {col.header}
             {col.sortable && isSorted && <SortIconComponent className={styles.SortIcon} />}

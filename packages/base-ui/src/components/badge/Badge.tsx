@@ -4,7 +4,8 @@ import styles from './Badge.module.css';
 
 export type BadgeVariant = 'standard' | 'dot';
 export type BadgePosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-export type BadgeColor = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'discovery' | 'secondary';
+export type BadgeColor =
+  'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'discovery' | 'secondary';
 export type BadgeSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type BadgeOverlap = 'rectangular' | 'circular';
 

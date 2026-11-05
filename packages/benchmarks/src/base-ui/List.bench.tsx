@@ -22,11 +22,7 @@ const fourItems = (
 );
 
 describe('List', () => {
-  benchRender(
-    'mount with 3 items',
-    () => <List>{threeItems}</List>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount with 3 items', () => <List>{threeItems}</List>, TIER_2_OPTIONS);
 
   benchRerender(
     'items change',

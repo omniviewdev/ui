@@ -42,11 +42,7 @@ function SelectableListBench({
 // ---------------------------------------------------------------------------
 
 describe('SelectableList', () => {
-  benchRender(
-    'mount 200 items',
-    () => <SelectableListBench data={rows200} />,
-    TIER_1_OPTIONS,
-  );
+  benchRender('mount 200 items', () => <SelectableListBench data={rows200} />, TIER_1_OPTIONS);
 
   benchRerender(
     'selection change (0 -> 50 selected)',

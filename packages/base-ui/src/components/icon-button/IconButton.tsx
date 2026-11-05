@@ -11,13 +11,7 @@ export const IconButton = forwardRef<HTMLElement, IconButtonProps>(function Icon
   { className, ...props },
   ref,
 ) {
-  return (
-    <Button
-      ref={ref}
-      className={withBaseClassName(styles.Root, className)}
-      {...props}
-    />
-  );
+  return <Button ref={ref} className={withBaseClassName(styles.Root, className)} {...props} />;
 });
 
 IconButton.displayName = 'IconButton';

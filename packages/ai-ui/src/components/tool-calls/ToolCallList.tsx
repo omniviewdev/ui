@@ -24,30 +24,27 @@ export interface ToolCallListProps extends HTMLAttributes<HTMLDivElement> {
   calls: ToolCallListItem[];
 }
 
-export const ToolCallList = forwardRef<HTMLDivElement, ToolCallListProps>(
-  function ToolCallList({ calls, className, ...rest }, ref) {
-    if (calls.length === 0) return null;
+export const ToolCallList = forwardRef<HTMLDivElement, ToolCallListProps>(function ToolCallList(
+  { calls, className, ...rest },
+  ref,
+) {
+  if (calls.length === 0) return null;
 
-    return (
-      <div ref={ref} className={cn(styles.Root, className)} role="list" {...rest}>
-        {calls.map((call) => (
-          <ToolCall
-            key={call.id}
-            name={call.name}
-            arguments={call.arguments}
-            status={call.status}
-            duration={call.duration}
-            expanded={call.expanded}
-            role="listitem"
-          >
-            {call.result && (
-              <div data-ov-status={call.resultStatus ?? 'success'}>
-                {call.result}
-              </div>
-            )}
-          </ToolCall>
-        ))}
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref} className={cn(styles.Root, className)} role="list" {...rest}>
+      {calls.map((call) => (
+        <ToolCall
+          key={call.id}
+          name={call.name}
+          arguments={call.arguments}
+          status={call.status}
+          duration={call.duration}
+          expanded={call.expanded}
+          role="listitem"
+        >
+          {call.result && <div data-ov-status={call.resultStatus ?? 'success'}>{call.result}</div>}
+        </ToolCall>
+      ))}
+    </div>
+  );
+});

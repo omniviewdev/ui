@@ -9,17 +9,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Separate config so `pnpm bench` (regression) never pulls in MUI.
 
 export default defineConfig(async () => {
-  const plugins = [
-    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
-  ];
+  const plugins = [react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } })];
 
   return {
     plugins,
     resolve: {
       alias: [
-        { find: '@omniviewdev/base-ui', replacement: path.resolve(__dirname, '../base-ui/src/index.ts') },
-        { find: '@omniviewdev/editors', replacement: path.resolve(__dirname, '../editors/src/index.ts') },
-        { find: /^react-syntax-highlighter(\/.*)?$/, replacement: path.resolve(__dirname, 'src/stubs/react-syntax-highlighter.ts') },
+        {
+          find: '@omniviewdev/base-ui',
+          replacement: path.resolve(__dirname, '../base-ui/src/index.ts'),
+        },
+        {
+          find: '@omniviewdev/editors',
+          replacement: path.resolve(__dirname, '../editors/src/index.ts'),
+        },
+        {
+          find: /^react-syntax-highlighter(\/.*)?$/,
+          replacement: path.resolve(__dirname, 'src/stubs/react-syntax-highlighter.ts'),
+        },
       ],
     },
     test: {
@@ -31,12 +38,7 @@ export default defineConfig(async () => {
       pool: 'forks',
       fileParallelism: false,
       testTimeout: 60_000,
-      execArgv: [
-        '--expose-gc',
-        '--hash-seed=1',
-        '--random-seed=1',
-        '--max-old-space-size=4096',
-      ],
+      execArgv: ['--expose-gc', '--hash-seed=1', '--random-seed=1', '--max-old-space-size=4096'],
     },
   };
 });

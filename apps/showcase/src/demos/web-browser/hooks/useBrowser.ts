@@ -55,9 +55,7 @@ export function useBrowser(): UseBrowserReturn {
 
   const updateActiveTab = useCallback(
     (updater: (tab: BrowserTab) => BrowserTab) => {
-      setTabs((prev) =>
-        prev.map((t) => (t.id === activeTabId ? updater(t) : t)),
-      );
+      setTabs((prev) => prev.map((t) => (t.id === activeTabId ? updater(t) : t)));
     },
     [activeTabId],
   );
@@ -72,9 +70,7 @@ export function useBrowser(): UseBrowserReturn {
   const startBlockedTimeout = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      updateActiveTab((t) =>
-        t.loading ? { ...t, loading: false, error: 'blocked' as const } : t,
-      );
+      updateActiveTab((t) => (t.loading ? { ...t, loading: false, error: 'blocked' as const } : t));
     }, BLOCKED_TIMEOUT_MS);
   }, [updateActiveTab]);
 
@@ -141,14 +137,11 @@ export function useBrowser(): UseBrowserReturn {
     startBlockedTimeout();
   }, [updateActiveTab, startBlockedTimeout]);
 
-  const addTab = useCallback(
-    (url?: string) => {
-      const tab = createTab(url);
-      setTabs((prev) => [...prev, tab]);
-      setActiveTabId(tab.id);
-    },
-    [],
-  );
+  const addTab = useCallback((url?: string) => {
+    const tab = createTab(url);
+    setTabs((prev) => [...prev, tab]);
+    setActiveTabId(tab.id);
+  }, []);
 
   const closeTab = useCallback(
     (id: string) => {

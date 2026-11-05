@@ -36,6 +36,7 @@ interface AIMessageEditorProps extends HTMLAttributes<HTMLDivElement> {
 ## Usage
 
 ### In a chat message
+
 ```tsx
 function UserMessage({ message, onEdit }) {
   const [editing, setEditing] = useState(false);
@@ -63,6 +64,7 @@ function UserMessage({ message, onEdit }) {
 ```
 
 ### With AI SDK
+
 ```tsx
 const { sendMessage } = useChat();
 
@@ -73,6 +75,7 @@ function handleEdit(messageId: string, newText: string) {
 ```
 
 ### With LangGraph
+
 ```tsx
 function handleEdit(checkpointId: string, newText: string) {
   // Fork from checkpoint, submit new user message

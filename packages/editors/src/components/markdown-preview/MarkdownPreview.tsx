@@ -1,4 +1,15 @@
-import { Children, forwardRef, isValidElement, lazy, Suspense, useId, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react';
+import {
+  Children,
+  forwardRef,
+  isValidElement,
+  lazy,
+  Suspense,
+  useId,
+  useMemo,
+  type ComponentType,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
@@ -39,7 +50,13 @@ function hastText(node: any): string {
 }
 
 /** Accordion wrapper for <details>/<summary> that uses useId() for a stable, deterministic ID. */
-function DetailsAccordion({ summaryText, children }: { summaryText: string; children: ReactNode[] }) {
+function DetailsAccordion({
+  summaryText,
+  children,
+}: {
+  summaryText: string;
+  children: ReactNode[];
+}) {
   const id = useId();
   const itemId = `md-details-${id}`;
   return (
@@ -84,9 +101,7 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
   th: ({ children, style }: MdProps) => (
     <Table.HeaderCell style={style}>{children}</Table.HeaderCell>
   ),
-  td: ({ children, style }: MdProps) => (
-    <Table.Cell style={style}>{children}</Table.Cell>
-  ),
+  td: ({ children, style }: MdProps) => <Table.Cell style={style}>{children}</Table.Cell>,
 
   // Links
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,9 +122,7 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
     // Extract summary text from the hast AST (before React renders it)
     let summaryText = 'Details';
     if (node?.children) {
-      const summaryNode = node.children.find(
-        (c: MdProps) => c.tagName === 'summary',
-      );
+      const summaryNode = node.children.find((c: MdProps) => c.tagName === 'summary');
       if (summaryNode) {
         const text = hastText(summaryNode).trim();
         if (text) summaryText = text;
@@ -130,7 +143,9 @@ const markdownComponents: Record<string, ComponentType<MdProps>> = {
   },
   // Mark summary so details can filter it out; text is extracted from hast node
   summary: ({ children }: MdProps) => (
-    <span hidden data-md-summary>{children}</span>
+    <span hidden data-md-summary>
+      {children}
+    </span>
   ),
 
   // Task list checkboxes — use compound parts for inline rendering

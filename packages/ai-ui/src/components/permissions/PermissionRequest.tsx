@@ -56,10 +56,7 @@ export const PermissionRequest = forwardRef<HTMLDivElement, PermissionRequestPro
             {content && (
               <div className={styles.CodeBlock}>
                 <pre
-                  className={cn(
-                    styles.Code,
-                    isCollapsible && !expanded && styles.CodeCollapsed,
-                  )}
+                  className={cn(styles.Code, isCollapsible && !expanded && styles.CodeCollapsed)}
                 >
                   {content}
                 </pre>

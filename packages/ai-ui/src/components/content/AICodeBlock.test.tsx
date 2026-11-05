@@ -26,9 +26,7 @@ describe('AICodeBlock', () => {
   });
 
   it('shows line numbers when enabled', () => {
-    renderAI(
-      <AICodeBlock code={'line1\nline2\nline3'} showLineNumbers data-testid="cb" />,
-    );
+    renderAI(<AICodeBlock code={'line1\nline2\nline3'} showLineNumbers data-testid="cb" />);
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();

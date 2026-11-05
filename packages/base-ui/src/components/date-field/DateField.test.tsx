@@ -164,12 +164,7 @@ describe('DateField — keyboard navigation', () => {
   it('Arrow Up toggles meridiem', async () => {
     const user = userEvent.setup();
     const { container } = render(
-      <DateField
-        value={new Date(2026, 0, 1, 9, 0)}
-        mode="time"
-        hourCycle={12}
-        locale="en-US"
-      />,
+      <DateField value={new Date(2026, 0, 1, 9, 0)} mode="time" hourCycle={12} locale="en-US" />,
     );
     const meridiem = getSection(container, 'meridiem');
     await user.click(meridiem);
@@ -328,8 +323,7 @@ describe('DateField — validation + commit', () => {
     for (const c of onChange.mock.calls) {
       const d = c[0] as Date;
       if (d) {
-        const isFeb30 =
-          d.getMonth() === 1 && d.getDate() === 30;
+        const isFeb30 = d.getMonth() === 1 && d.getDate() === 30;
         expect(isFeb30).toBe(false);
       }
     }
@@ -357,12 +351,7 @@ describe('DateField — validation + commit', () => {
     const onChange = vi.fn();
     // Start with March 31, 2026 — then change month to April via ArrowUp.
     const { container } = render(
-      <DateField
-        value={new Date(2026, 2, 31)}
-        onChange={onChange}
-        locale="en-US"
-        mode="date"
-      />,
+      <DateField value={new Date(2026, 2, 31)} onChange={onChange} locale="en-US" mode="date" />,
     );
     const month = getSection(container, 'month');
     const day = getSection(container, 'day');

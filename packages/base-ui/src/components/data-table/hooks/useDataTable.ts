@@ -17,7 +17,9 @@ import {
 
 type DataTableState = TableState<DataTableFeatures>;
 
-export function useDataTable<TData extends RowData = RowData>(options: UseDataTableOptions<TData>): DataTableInstance<TData> {
+export function useDataTable<TData extends RowData = RowData>(
+  options: UseDataTableOptions<TData>,
+): DataTableInstance<TData> {
   const features = { ...DEFAULT_FEATURES, ...options.features };
   const [internalState, setInternalState] = useState<Partial<DataTableState>>(() => ({
     sorting: [],

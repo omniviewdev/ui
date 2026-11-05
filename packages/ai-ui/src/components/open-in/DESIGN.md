@@ -85,6 +85,7 @@ interface AIOpenInLabelProps extends HTMLAttributes<HTMLSpanElement> {
 ## Usage
 
 ### Basic
+
 ```tsx
 <AIOpenIn query={currentMessage}>
   <AIOpenInTrigger />
@@ -104,6 +105,7 @@ interface AIOpenInLabelProps extends HTMLAttributes<HTMLSpanElement> {
 ```
 
 ### In message actions
+
 ```tsx
 <AIMessageActions onCopy={...} onRegenerate={...}>
   <AIOpenIn query={message.text}>

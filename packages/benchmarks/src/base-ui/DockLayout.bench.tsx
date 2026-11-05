@@ -20,9 +20,7 @@ function makeTwoPanel(): DockNode {
       {
         type: 'leaf',
         id: 'right',
-        tabs: [
-          { id: 'tab-3', title: 'File C', content: <div>Content C</div> },
-        ],
+        tabs: [{ id: 'tab-3', title: 'File C', content: <div>Content C</div> }],
         activeTab: 'tab-3',
       },
     ],
@@ -59,11 +57,7 @@ function makeThreePanelVertical(): DockNode {
 }
 
 describe('DockLayout', () => {
-  benchRender(
-    'mount 2-panel layout',
-    () => <DockLayout layout={makeTwoPanel()} />,
-    TIER_1_OPTIONS,
-  );
+  benchRender('mount 2-panel layout', () => <DockLayout layout={makeTwoPanel()} />, TIER_1_OPTIONS);
 
   benchRerender(
     'layout change (2-panel → 3-panel vertical)',

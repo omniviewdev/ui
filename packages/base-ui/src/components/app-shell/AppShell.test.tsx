@@ -83,12 +83,7 @@ describe('AppShell', () => {
 
   it('applies custom dimensions', () => {
     renderWithTheme(
-      <AppShell
-        sidebarWidth={300}
-        headerHeight={50}
-        footerHeight={30}
-        data-testid="shell"
-      >
+      <AppShell sidebarWidth={300} headerHeight={50} footerHeight={30} data-testid="shell">
         <AppShell.Content>Content</AppShell.Content>
       </AppShell>,
     );
@@ -167,10 +162,18 @@ describe('AppShell', () => {
   it('merges className on sub-components', () => {
     renderWithTheme(
       <AppShell>
-        <AppShell.Header className="h-cls" data-testid="header">H</AppShell.Header>
-        <AppShell.Sidebar className="s-cls" data-testid="sidebar">S</AppShell.Sidebar>
-        <AppShell.Content className="c-cls" data-testid="content">C</AppShell.Content>
-        <AppShell.Footer className="f-cls" data-testid="footer">F</AppShell.Footer>
+        <AppShell.Header className="h-cls" data-testid="header">
+          H
+        </AppShell.Header>
+        <AppShell.Sidebar className="s-cls" data-testid="sidebar">
+          S
+        </AppShell.Sidebar>
+        <AppShell.Content className="c-cls" data-testid="content">
+          C
+        </AppShell.Content>
+        <AppShell.Footer className="f-cls" data-testid="footer">
+          F
+        </AppShell.Footer>
       </AppShell>,
     );
 

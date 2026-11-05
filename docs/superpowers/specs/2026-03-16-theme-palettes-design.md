@@ -8,11 +8,11 @@
 
 ## Themes
 
-| ID | Name | Character |
-|----|------|-----------|
-| `obsidian` | Obsidian | Near-black neutral bases, punchy cobalt accent. JetBrains/LM Studio energy. |
-| `carbon` | Carbon | Pure achromatic grays. No color tint — content is the only color. VS Code One Dark Pro vibes. |
-| `void` | Void | Ultra-deep warm-neutral grays. Luxury/high-end feel. User's preferred default. |
+| ID         | Name     | Character                                                                                     |
+| ---------- | -------- | --------------------------------------------------------------------------------------------- |
+| `obsidian` | Obsidian | Near-black neutral bases, punchy cobalt accent. JetBrains/LM Studio energy.                   |
+| `carbon`   | Carbon   | Pure achromatic grays. No color tint — content is the only color. VS Code One Dark Pro vibes. |
+| `void`     | Void     | Ultra-deep warm-neutral grays. Luxury/high-end feel. User's preferred default.                |
 
 All three share the same token structure and override the same semantic tokens as existing themes.
 
@@ -22,60 +22,60 @@ All three share the same token structure and override the same semantic tokens a
 
 ### Background Stack
 
-| Token | Obsidian | Carbon | Void |
-|-------|----------|--------|------|
-| `bg-inset` | `#0e1015` | `#0a0a0a` | `#09090b` |
-| `bg-base` | `#12141a` | `#0f0f0f` | `#0e0f11` |
-| `bg-surface` | `#16181c` | `#161616` | `#141517` |
-| `bg-surface-raised` | `#1c1f25` | `#1e1e1e` | `#1a1b1e` |
+| Token                | Obsidian  | Carbon    | Void      |
+| -------------------- | --------- | --------- | --------- |
+| `bg-inset`           | `#0e1015` | `#0a0a0a` | `#09090b` |
+| `bg-base`            | `#12141a` | `#0f0f0f` | `#0e0f11` |
+| `bg-surface`         | `#16181c` | `#161616` | `#141517` |
+| `bg-surface-raised`  | `#1c1f25` | `#1e1e1e` | `#1a1b1e` |
 | `bg-surface-overlay` | `#1c1f25` | `#1e1e1e` | `#1a1b1e` |
-| `bg-elevated` | `#252830` | `#282828` | `#232528` |
+| `bg-elevated`        | `#252830` | `#282828` | `#232528` |
 
 ### Foreground / Text
 
-| Token | Obsidian | Carbon | Void |
-|-------|----------|--------|------|
-| `fg-default` | `#e8eaed` | `#e5e5e5` | `#e6e7ea` |
-| `fg-muted` | `#8b8f9a` | `#8c8c8c` | `#898c94` |
-| `fg-subtle` | `#6b7385` | `#737373` | `#6e7179` |
+| Token         | Obsidian  | Carbon    | Void      |
+| ------------- | --------- | --------- | --------- |
+| `fg-default`  | `#e8eaed` | `#e5e5e5` | `#e6e7ea` |
+| `fg-muted`    | `#8b8f9a` | `#8c8c8c` | `#898c94` |
+| `fg-subtle`   | `#6b7385` | `#737373` | `#6e7179` |
 | `fg-disabled` | `#4e5566` | `#555555` | `#505359` |
-| `fg-inverse` | `#0e1015` | `#0a0a0a` | `#09090b` |
+| `fg-inverse`  | `#0e1015` | `#0a0a0a` | `#09090b` |
 
 ### Borders
 
-| Token | Obsidian | Carbon | Void |
-|-------|----------|--------|------|
-| `border-muted` | `#1e2128` | `#222222` | `#1e1f22` |
+| Token            | Obsidian  | Carbon    | Void      |
+| ---------------- | --------- | --------- | --------- |
+| `border-muted`   | `#1e2128` | `#222222` | `#1e1f22` |
 | `border-default` | `#232730` | `#2a2a2a` | `#232528` |
-| `border-strong` | `#2e3340` | `#363636` | `#2e3033` |
-| `border-focus` | `#4d7cff` | `#4b8cff` | `#508aff` |
+| `border-strong`  | `#2e3340` | `#363636` | `#2e3033` |
+| `border-focus`   | `#4d7cff` | `#4b8cff` | `#508aff` |
 
 ### Brand / Accent
 
-| Token | Obsidian | Carbon | Void |
-|-------|----------|--------|------|
-| `brand-500` | `#4d7cff` | `#4b8cff` | `#508aff` |
-| `brand-400` | `#6391ff` | `#69a0ff` | `#6b9bff` |
-| `brand-300` | `#82a8ff` | `#8db5ff` | `#8aafff` |
-| `accent-soft` | `rgb(77 124 255 / 0.14)` | `rgb(75 140 255 / 0.14)` | `rgb(80 138 255 / 0.12)` |
-| `accent-strong` | `#82a8ff` | `#8db5ff` | `#8aafff` |
+| Token           | Obsidian                 | Carbon                   | Void                     |
+| --------------- | ------------------------ | ------------------------ | ------------------------ |
+| `brand-500`     | `#4d7cff`                | `#4b8cff`                | `#508aff`                |
+| `brand-400`     | `#6391ff`                | `#69a0ff`                | `#6b9bff`                |
+| `brand-300`     | `#82a8ff`                | `#8db5ff`                | `#8aafff`                |
+| `accent-soft`   | `rgb(77 124 255 / 0.14)` | `rgb(75 140 255 / 0.14)` | `rgb(80 138 255 / 0.12)` |
+| `accent-strong` | `#82a8ff`                | `#8db5ff`                | `#8aafff`                |
 
 ### State & Status
 
-| Token | Obsidian | Carbon | Void |
-|-------|----------|--------|------|
-| `success` | `#34a56f` | `#34a56f` | `#34a56f` |
-| `success-soft` | `rgb(52 165 111 / 0.15)` | `rgb(52 165 111 / 0.15)` | `rgb(52 165 111 / 0.13)` |
-| `warning` | `#d4942e` | `#d4942e` | `#d4942e` |
-| `warning-soft` | `rgb(212 148 46 / 0.15)` | `rgb(212 148 46 / 0.15)` | `rgb(212 148 46 / 0.13)` |
-| `danger` | `#d45555` | `#d45555` | `#d45555` |
-| `danger-soft` | `rgb(212 85 85 / 0.15)` | `rgb(212 85 85 / 0.15)` | `rgb(212 85 85 / 0.13)` |
-| `info` | `var(--ov-color-brand-400)` | `var(--ov-color-brand-400)` | `var(--ov-color-brand-400)` |
-| `info-soft` | `rgb(99 145 255 / 0.15)` | `rgb(105 160 255 / 0.15)` | `rgb(107 155 255 / 0.13)` |
-| `state-hover` | `rgb(160 170 185 / 0.09)` | `rgb(160 160 160 / 0.09)` | `rgb(160 165 175 / 0.08)` |
-| `state-pressed` | `rgb(160 170 185 / 0.16)` | `rgb(160 160 160 / 0.16)` | `rgb(160 165 175 / 0.14)` |
-| `state-selected` | `rgb(77 124 255 / 0.18)` | `rgb(75 140 255 / 0.18)` | `rgb(80 138 255 / 0.15)` |
-| `state-focus-ring` | `#4d7cff` | `#4b8cff` | `#508aff` |
+| Token              | Obsidian                    | Carbon                      | Void                        |
+| ------------------ | --------------------------- | --------------------------- | --------------------------- |
+| `success`          | `#34a56f`                   | `#34a56f`                   | `#34a56f`                   |
+| `success-soft`     | `rgb(52 165 111 / 0.15)`    | `rgb(52 165 111 / 0.15)`    | `rgb(52 165 111 / 0.13)`    |
+| `warning`          | `#d4942e`                   | `#d4942e`                   | `#d4942e`                   |
+| `warning-soft`     | `rgb(212 148 46 / 0.15)`    | `rgb(212 148 46 / 0.15)`    | `rgb(212 148 46 / 0.13)`    |
+| `danger`           | `#d45555`                   | `#d45555`                   | `#d45555`                   |
+| `danger-soft`      | `rgb(212 85 85 / 0.15)`     | `rgb(212 85 85 / 0.15)`     | `rgb(212 85 85 / 0.13)`     |
+| `info`             | `var(--ov-color-brand-400)` | `var(--ov-color-brand-400)` | `var(--ov-color-brand-400)` |
+| `info-soft`        | `rgb(99 145 255 / 0.15)`    | `rgb(105 160 255 / 0.15)`   | `rgb(107 155 255 / 0.13)`   |
+| `state-hover`      | `rgb(160 170 185 / 0.09)`   | `rgb(160 160 160 / 0.09)`   | `rgb(160 165 175 / 0.08)`   |
+| `state-pressed`    | `rgb(160 170 185 / 0.16)`   | `rgb(160 160 160 / 0.16)`   | `rgb(160 165 175 / 0.14)`   |
+| `state-selected`   | `rgb(77 124 255 / 0.18)`    | `rgb(75 140 255 / 0.18)`    | `rgb(80 138 255 / 0.15)`    |
+| `state-focus-ring` | `#4d7cff`                   | `#4b8cff`                   | `#508aff`                   |
 
 ### Design Rationale
 
@@ -96,10 +96,10 @@ Add three new `data-ov-theme` blocks after the existing high-contrast-light bloc
 ### 2. Type Extension (`packages/base-ui/src/theme/types.ts`)
 
 Extend `ThemeMode`:
+
 ```ts
 export type ThemeMode =
-  | 'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light'
-  | 'obsidian' | 'carbon' | 'void';
+  'dark' | 'light' | 'high-contrast-dark' | 'high-contrast-light' | 'obsidian' | 'carbon' | 'void';
 ```
 
 ### 3. Theme Provider (`packages/base-ui/src/theme/ThemeProvider.tsx`)

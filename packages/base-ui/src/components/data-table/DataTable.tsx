@@ -34,22 +34,20 @@ export interface DataTableRootProps<TData extends RowData = RowData>
   ref?: RefAttributes<HTMLDivElement>['ref'];
 }
 
-function DataTableRoot<TData extends RowData>(
-  {
-    className,
-    variant,
-    color,
-    size,
-    table,
-    features: featuresProp,
-    stickyHeader = false,
-    hoverable = false,
-    striped = false,
-    children,
-    ref,
-    ...props
-  }: DataTableRootProps<TData>,
-) {
+function DataTableRoot<TData extends RowData>({
+  className,
+  variant,
+  color,
+  size,
+  table,
+  features: featuresProp,
+  stickyHeader = false,
+  hoverable = false,
+  striped = false,
+  children,
+  ref,
+  ...props
+}: DataTableRootProps<TData>) {
   const features = { ...DEFAULT_FEATURES, ...featuresProp };
 
   return (

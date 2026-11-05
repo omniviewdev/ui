@@ -42,9 +42,7 @@ const splitLayout: DockSplit = {
     {
       type: 'leaf',
       id: 'preview',
-      tabs: [
-        { id: 'preview', title: 'Preview', content: <PanelContent label="Live preview" /> },
-      ],
+      tabs: [{ id: 'preview', title: 'Preview', content: <PanelContent label="Live preview" /> }],
     },
   ],
   sizes: [2, 1],
@@ -58,7 +56,12 @@ const ideLayout: DockSplit = {
       type: 'leaf',
       id: 'explorer',
       tabs: [
-        { id: 'files', title: 'Explorer', closable: false, content: <PanelContent label="File tree" /> },
+        {
+          id: 'files',
+          title: 'Explorer',
+          closable: false,
+          content: <PanelContent label="File tree" />,
+        },
       ],
     },
     {
@@ -82,7 +85,11 @@ const ideLayout: DockSplit = {
               type: 'leaf',
               id: 'editor-2',
               tabs: [
-                { id: 'config', title: 'config.json', content: <PanelContent label="config.json" /> },
+                {
+                  id: 'config',
+                  title: 'config.json',
+                  content: <PanelContent label="config.json" />,
+                },
               ],
             },
           ],
@@ -92,9 +99,18 @@ const ideLayout: DockSplit = {
           type: 'leaf',
           id: 'terminal',
           tabs: [
-            { id: 'term', title: 'Terminal', closable: false, content: <PanelContent label="$ _" /> },
+            {
+              id: 'term',
+              title: 'Terminal',
+              closable: false,
+              content: <PanelContent label="$ _" />,
+            },
             { id: 'output', title: 'Output', content: <PanelContent label="Build output" /> },
-            { id: 'problems', title: 'Problems', content: <PanelContent label="0 errors, 0 warnings" /> },
+            {
+              id: 'problems',
+              title: 'Problems',
+              content: <PanelContent label="0 errors, 0 warnings" />,
+            },
           ],
           activeTab: 'term',
         },
@@ -161,7 +177,12 @@ export const SinglePanel: Story = {
       type: 'leaf',
       id: 'single',
       tabs: [
-        { id: 'welcome', title: 'Welcome', closable: false, content: <PanelContent label="Welcome to the IDE" /> },
+        {
+          id: 'welcome',
+          title: 'Welcome',
+          closable: false,
+          content: <PanelContent label="Welcome to the IDE" />,
+        },
       ],
     };
     return (

@@ -45,7 +45,10 @@ type MultiSelectStoryArgs = PrimitiveArgs & Pick<ObjectArgs, 'defaultIds'>;
 
 const sharedArgTypes = {
   variant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
-  color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+  color: {
+    control: 'select',
+    options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'],
+  },
   size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
   label: { control: 'text' },
   placeholder: { control: 'text' },

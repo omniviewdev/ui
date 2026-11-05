@@ -21,11 +21,7 @@ const contentB = (
 );
 
 describe('StatusBar', () => {
-  benchRender(
-    'mount',
-    () => <StatusBar>{contentA}</StatusBar>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <StatusBar>{contentA}</StatusBar>, TIER_2_OPTIONS);
 
   benchRerender(
     'content change',

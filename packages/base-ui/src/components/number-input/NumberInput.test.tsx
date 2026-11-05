@@ -70,7 +70,9 @@ describe('NumberInput', () => {
         </NumberInput.Group>
       </NumberInput.Root>,
     );
-    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-size]')).toHaveAttribute('data-ov-size', 'xl');
+    expect(
+      screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-size]'),
+    ).toHaveAttribute('data-ov-size', 'xl');
   });
 
   it('renders discovery and secondary colors', () => {
@@ -83,7 +85,9 @@ describe('NumberInput', () => {
         </NumberInput.Group>
       </NumberInput.Root>,
     );
-    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'discovery');
+    expect(
+      screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]'),
+    ).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(
       <NumberInput.Root defaultValue={1} color="secondary">
@@ -94,6 +98,8 @@ describe('NumberInput', () => {
         </NumberInput.Group>
       </NumberInput.Root>,
     );
-    expect(screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]')).toHaveAttribute('data-ov-color', 'secondary');
+    expect(
+      screen.getByRole('textbox', { name: 'Value' }).closest('[data-ov-color]'),
+    ).toHaveAttribute('data-ov-color', 'secondary');
   });
 });

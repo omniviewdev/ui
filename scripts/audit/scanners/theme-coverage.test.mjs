@@ -7,21 +7,29 @@ describe('catalog-driven theme coverage', () => {
     const ids = await loadBuiltInThemeIds();
     assert.ok(ids.includes('void'));
     assert.ok(ids.includes('solarized-dark'));
-    const css = ids.filter((id) => id !== 'solarized-dark')
-      .map((id) => `[data-ov-theme='${id}'] { --ov-color-border-control: black; }`).join('\n');
+    const css = ids
+      .filter((id) => id !== 'solarized-dark')
+      .map((id) => `[data-ov-theme='${id}'] { --ov-color-border-control: black; }`)
+      .join('\n');
     assert.deepEqual(findThemeCoverageGaps(css, ids), [
       { token: '--ov-color-border-control', missingThemes: ['solarized-dark'] },
     ]);
   });
 
   it('supports newly cataloged themes without changing a scanner list', () => {
-    assert.deepEqual(findThemeCoverageGaps(`
+    assert.deepEqual(
+      findThemeCoverageGaps(
+        `
       [data-ov-theme=dark] { --ov-color-border-control: black; }
       [data-ov-theme='new-theme'] { --ov-color-border-overlay: gray; }
-    `, ['dark', 'new-theme']), [
-      { token: '--ov-color-border-control', missingThemes: ['new-theme'] },
-      { token: '--ov-color-border-overlay', missingThemes: ['dark'] },
-    ]);
+    `,
+        ['dark', 'new-theme'],
+      ),
+      [
+        { token: '--ov-color-border-control', missingThemes: ['new-theme'] },
+        { token: '--ov-color-border-overlay', missingThemes: ['dark'] },
+      ],
+    );
   });
 
   it('merges repeated blocks, parses selector lists and ignores commented declarations', () => {
@@ -37,7 +45,8 @@ describe('catalog-driven theme coverage', () => {
       }
     `;
     assert.deepEqual([...parseThemeBlocks(css).get('dark')].sort(), [
-      '--ov-color-border-control', '--ov-color-border-overlay',
+      '--ov-color-border-control',
+      '--ov-color-border-overlay',
     ]);
     assert.deepEqual(findThemeCoverageGaps(css, ['dark', 'light']), []);
   });
@@ -55,10 +64,16 @@ describe('catalog-driven theme coverage', () => {
   });
 
   it('excludes primitives and default-only shared aliases from per-theme override coverage', () => {
-    assert.deepEqual(findThemeCoverageGaps(`
+    assert.deepEqual(
+      findThemeCoverageGaps(
+        `
       :root { --ov-color-shared-alias: var(--ov-color-border-control); }
       [data-ov-theme='dark'] { --ov-primitive-black: black; --ov-color-border-control: black; }
       [data-ov-theme='light'] { --ov-color-border-control: white; }
-    `, ['dark', 'light']), []);
+    `,
+        ['dark', 'light'],
+      ),
+      [],
+    );
   });
 });

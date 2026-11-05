@@ -44,5 +44,4 @@ describe('Popover', () => {
     ),
     TIER_1_OPTIONS,
   );
-
 });

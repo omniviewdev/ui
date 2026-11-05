@@ -4,12 +4,16 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { TextArea } from '@omniviewdev/base-ui';
 
 describe('TextArea', () => {
-  benchRender('mount', () => (
-    <TextArea>
-      <TextArea.Label>Label</TextArea.Label>
-      <TextArea.Control placeholder="Enter text" rows={4} />
-    </TextArea>
-  ), TIER_2_OPTIONS);
+  benchRender(
+    'mount',
+    () => (
+      <TextArea>
+        <TextArea.Label>Label</TextArea.Label>
+        <TextArea.Control placeholder="Enter text" rows={4} />
+      </TextArea>
+    ),
+    TIER_2_OPTIONS,
+  );
 
   benchRerender(
     'disabled toggle',
@@ -23,10 +27,15 @@ describe('TextArea', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 50', 50, (i) => (
-    <TextArea key={i}>
-      <TextArea.Label>Field {i}</TextArea.Label>
-      <TextArea.Control placeholder={`Enter text ${i}`} rows={3} />
-    </TextArea>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 50',
+    50,
+    (i) => (
+      <TextArea key={i}>
+        <TextArea.Label>Field {i}</TextArea.Label>
+        <TextArea.Control placeholder={`Enter text ${i}`} rows={3} />
+      </TextArea>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

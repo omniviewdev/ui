@@ -1,29 +1,11 @@
 import { useState, useCallback } from 'react';
-import {
-  ChatBubble,
-  ChatAvatar,
-  AIContextIndicator,
-  AIMessageActions,
-} from '@omniviewdev/ai-ui';
+import { ChatBubble, ChatAvatar, AIContextIndicator, AIMessageActions } from '@omniviewdev/ai-ui';
 import type { ContextItem } from '@omniviewdev/ai-ui';
-import {
-  AIBranch,
-  AIBranchContent,
-  AIBranchSelector,
-} from '@omniviewdev/ai-ui';
-import {
-  AISources,
-} from '@omniviewdev/ai-ui';
-import {
-  AIMarkdown,
-} from '@omniviewdev/ai-ui';
-import {
-  ThinkingBlock,
-} from '@omniviewdev/ai-ui';
-import {
-  ToolCall,
-  ToolResult,
-} from '@omniviewdev/ai-ui';
+import { AIBranch, AIBranchContent, AIBranchSelector } from '@omniviewdev/ai-ui';
+import { AISources } from '@omniviewdev/ai-ui';
+import { AIMarkdown } from '@omniviewdev/ai-ui';
+import { ThinkingBlock } from '@omniviewdev/ai-ui';
+import { ToolCall, ToolResult } from '@omniviewdev/ai-ui';
 import type { ChatMessage } from '../types';
 import styles from './MessageRenderer.module.css';
 
@@ -53,10 +35,7 @@ export function MessageRenderer({ message, onCopy }: MessageRendererProps) {
         avatar={message.role === 'user' ? <ChatAvatar role={message.role} /> : undefined}
         actions={
           message.role === 'assistant' ? (
-            <AIMessageActions
-              onCopy={handleCopy}
-              onRegenerate={() => {}}
-            />
+            <AIMessageActions onCopy={handleCopy} onRegenerate={() => {}} />
           ) : undefined
         }
       >
@@ -67,27 +46,25 @@ export function MessageRenderer({ message, onCopy }: MessageRendererProps) {
 
         {/* Thinking block */}
         {message.thinking && (
-          <ThinkingBlock
-            content={message.thinking.text}
-            duration={message.thinking.durationMs}
-          />
+          <ThinkingBlock content={message.thinking.text} duration={message.thinking.durationMs} />
         )}
 
         {/* Tool calls */}
-        {message.toolCalls && message.toolCalls.map((tc) => (
-          <div key={tc.id} className={styles.ToolCallWrapper}>
-            <ToolCall
-              name={tc.name}
-              status={tc.status}
-              duration={tc.durationMs}
-              arguments={tc.input ? { query: tc.input } : undefined}
-            >
-              {tc.output && tc.status === 'success' && (
-                <ToolResult content={tc.output} status="success" />
-              )}
-            </ToolCall>
-          </div>
-        ))}
+        {message.toolCalls &&
+          message.toolCalls.map((tc) => (
+            <div key={tc.id} className={styles.ToolCallWrapper}>
+              <ToolCall
+                name={tc.name}
+                status={tc.status}
+                duration={tc.durationMs}
+                arguments={tc.input ? { query: tc.input } : undefined}
+              >
+                {tc.output && tc.status === 'success' && (
+                  <ToolResult content={tc.output} status="success" />
+                )}
+              </ToolCall>
+            </div>
+          ))}
 
         {/* Main content — with branches or plain */}
         {hasBranches ? (

@@ -41,7 +41,8 @@ export const WithResource: Story = {
 export const Destructive: Story = {
   args: {
     title: 'Delete Namespace',
-    description: 'This will permanently delete the namespace and all resources within it. This action cannot be undone.',
+    description:
+      'This will permanently delete the namespace and all resources within it. This action cannot be undone.',
     resource: 'staging',
     destructive: true,
   },
@@ -51,7 +52,8 @@ export const DestructiveWithCustomLabels: Story = {
   name: 'Destructive (Custom Labels)',
   args: {
     title: 'Remove Node from Cluster',
-    description: 'The node will be cordoned, drained, and removed. Running workloads will be rescheduled.',
+    description:
+      'The node will be cordoned, drained, and removed. Running workloads will be rescheduled.',
     resource: 'worker-node-03',
     destructive: true,
     confirmLabel: 'Remove Node',
@@ -63,7 +65,8 @@ export const SafeAction: Story = {
   name: 'Safe Action',
   args: {
     title: 'Apply ConfigMap',
-    description: 'Update the ConfigMap with new environment variables. Existing pods will need a restart.',
+    description:
+      'Update the ConfigMap with new environment variables. Existing pods will need a restart.',
     resource: 'production/app-config',
   },
 };

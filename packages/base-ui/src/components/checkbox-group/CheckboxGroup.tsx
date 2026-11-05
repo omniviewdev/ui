@@ -1,5 +1,11 @@
 import { CheckboxGroup as BaseCheckboxGroup } from '@base-ui/react/checkbox-group';
-import { createContext, forwardRef, useContext, useMemo, type ComponentPropsWithoutRef } from 'react';
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useMemo,
+  type ComponentPropsWithoutRef,
+} from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
 import {

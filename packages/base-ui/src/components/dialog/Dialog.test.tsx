@@ -64,10 +64,16 @@ describe('Dialog', () => {
       return (
         <Dialog open={open} onClose={() => setOpen(false)}>
           <Dialog.Title>Create resource</Dialog.Title>
-          <input aria-label="Name" value={draft} onChange={event => setDraft(event.target.value)} />
-          <Popover.Root onOpenChange={(_open, details) => {
-            if (details.reason === 'focus-out') details.cancel();
-          }}>
+          <input
+            aria-label="Name"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+          />
+          <Popover.Root
+            onOpenChange={(_open, details) => {
+              if (details.reason === 'focus-out') details.cancel();
+            }}
+          >
             <Popover.Trigger>Help</Popover.Trigger>
             <Popover.Portal>
               <Popover.Positioner>
@@ -91,7 +97,9 @@ describe('Dialog', () => {
     expect(screen.getByRole('dialog', { name: 'Create resource' })).toBeVisible();
     expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('keep this draft');
     await user.keyboard('{Escape}');
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Create resource' })).toBeNull());
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'Create resource' })).toBeNull(),
+    );
   });
 
   it('closes normally after help has already dismissed on focus-out', async () => {
@@ -104,7 +112,9 @@ describe('Dialog', () => {
           <Popover.Trigger>Help</Popover.Trigger>
           <Popover.Portal>
             <Popover.Positioner>
-              <Popover.Popup aria-label="Name help" initialFocus={false}>Name semantics</Popover.Popup>
+              <Popover.Popup aria-label="Name help" initialFocus={false}>
+                Name semantics
+              </Popover.Popup>
             </Popover.Positioner>
           </Popover.Portal>
         </Popover.Root>
@@ -113,14 +123,23 @@ describe('Dialog', () => {
     await user.click(screen.getByRole('button', { name: 'Help' }));
     await waitFor(() => expect(screen.getByRole('dialog', { name: 'Name help' })).toBeVisible());
     screen.getByRole('textbox', { name: 'Name' }).focus();
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Help' })).toHaveAttribute('aria-expanded', 'false'));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Help' })).toHaveAttribute(
+        'aria-expanded',
+        'false',
+      ),
+    );
     await user.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('does not close when a document-level keyboard handler prevents Escape', () => {
     const onClose = vi.fn();
-    renderWithTheme(<Dialog open onClose={onClose}>Content</Dialog>);
+    renderWithTheme(
+      <Dialog open onClose={onClose}>
+        Content
+      </Dialog>,
+    );
     const preventEscape = (event: KeyboardEvent) => event.preventDefault();
     document.addEventListener('keydown', preventEscape);
     try {

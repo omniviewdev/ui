@@ -20,8 +20,16 @@ import type { dataTableFeatures } from './constants';
 
 export type DataTableFeatures = typeof dataTableFeatures;
 export type DataTableRow<TData extends RowData> = Row<DataTableFeatures, TData>;
-export type DataTableColumnDef<TData extends RowData, TValue = unknown> = ColumnDef<DataTableFeatures, TData, TValue>;
-export type DataTableColumn<TData extends RowData, TValue = unknown> = Column<DataTableFeatures, TData, TValue>;
+export type DataTableColumnDef<TData extends RowData, TValue = unknown> = ColumnDef<
+  DataTableFeatures,
+  TData,
+  TValue
+>;
+export type DataTableColumn<TData extends RowData, TValue = unknown> = Column<
+  DataTableFeatures,
+  TData,
+  TValue
+>;
 export type DataTableInstance<TData extends RowData> = ReactTable<DataTableFeatures, TData>;
 
 // ---------------------------------------------------------------------------

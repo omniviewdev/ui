@@ -103,18 +103,22 @@ export const HandleContrast: Story = {
     };
 
     // Measure idle paint, not a hover/focus cue or an intermediate theme transition.
-    if (handle.parentElement?.matches(':hover')) throw new Error('Move the pointer off the resize handle');
+    if (handle.parentElement?.matches(':hover'))
+      throw new Error('Move the pointer off the resize handle');
     const previousTransition = handle.style.transition;
     handle.style.transition = 'none';
     try {
       for (const { id } of BUILT_IN_THEMES) {
         root.dataset.ovTheme = id;
         const barBounds = handle.getBoundingClientRect();
-        if (barBounds.width <= 0 || barBounds.height <= 0) throw new Error(`${id}: resize bar is not visible`);
+        if (barBounds.width <= 0 || barBounds.height <= 0)
+          throw new Error(`${id}: resize bar is not visible`);
         const foreground = luminance(getComputedStyle(handle).backgroundColor);
         const background = luminance(getComputedStyle(drawer).backgroundColor);
-        const ratio = (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
-        if (ratio < 3) throw new Error(`${id}: idle resize bar contrast ${ratio.toFixed(2)}:1 is below 3:1`);
+        const ratio =
+          (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+        if (ratio < 3)
+          throw new Error(`${id}: idle resize bar contrast ${ratio.toFixed(2)}:1 is below 3:1`);
       }
     } finally {
       if (previousTheme === null) root.removeAttribute('data-ov-theme');

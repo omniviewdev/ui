@@ -44,16 +44,12 @@ describe('Meter', () => {
   });
 
   it('computes zone=medium when value is in optimum range', () => {
-    renderWithTheme(
-      <Meter value={50} low={25} high={75} optimum={50} aria-label="Temp" />,
-    );
+    renderWithTheme(<Meter value={50} low={25} high={75} optimum={50} aria-label="Temp" />);
     expect(screen.getByRole('meter')).toHaveAttribute('data-ov-zone', 'medium');
   });
 
   it('computes zone=high when value far from optimum', () => {
-    renderWithTheme(
-      <Meter value={90} low={25} high={75} optimum={10} aria-label="Temp" />,
-    );
+    renderWithTheme(<Meter value={90} low={25} high={75} optimum={10} aria-label="Temp" />);
     expect(screen.getByRole('meter')).toHaveAttribute('data-ov-zone', 'high');
   });
 

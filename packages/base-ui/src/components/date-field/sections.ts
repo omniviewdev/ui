@@ -131,7 +131,10 @@ function partTypeToSectionType(part: Intl.DateTimeFormatPart['type']): SectionTy
   }
 }
 
-function getMinMax(type: SectionType, hourCycle: 12 | 24): { min: number | null; max: number | null } {
+function getMinMax(
+  type: SectionType,
+  hourCycle: 12 | 24,
+): { min: number | null; max: number | null } {
   switch (type) {
     case 'year':
       return { min: 1, max: 9999 };
@@ -461,10 +464,7 @@ export function getNextEditableIndex(sections: Section[], from: number | null): 
 /**
  * Find the previous editable section index before `from`, or null if none.
  */
-export function getPreviousEditableIndex(
-  sections: Section[],
-  from: number | null,
-): number | null {
+export function getPreviousEditableIndex(sections: Section[], from: number | null): number | null {
   const editable = getEditableIndices(sections);
   if (editable.length === 0) return null;
   if (from === null) return editable[editable.length - 1] ?? null;
@@ -606,8 +606,7 @@ export function applyDigitToSection(
 
   if (candidateNum <= max && candidate.length <= maxLength) {
     // Accept the append. Advance when we reach maxLength OR no more digits can be added.
-    const shouldAdvance =
-      candidate.length === maxLength || candidateNum * 10 > max;
+    const shouldAdvance = candidate.length === maxLength || candidateNum * 10 > max;
 
     if (shouldAdvance) {
       // On advance, make sure the stored value has leading zeros up to maxLength.
@@ -695,4 +694,3 @@ export function applyPaste(sections: Section[], text: string): Section[] {
 
   return clampDayToMonth(result);
 }
-

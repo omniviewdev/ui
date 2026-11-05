@@ -4,11 +4,7 @@ import { TIER_2_OPTIONS } from '../utils/bench-options';
 import { Spinner } from '@omniviewdev/base-ui';
 
 describe('Spinner', () => {
-  benchRender(
-    'mount',
-    () => <Spinner />,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount', () => <Spinner />, TIER_2_OPTIONS);
 
   benchRerender(
     'size change',

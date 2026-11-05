@@ -27,8 +27,8 @@ export const InContext: Story = {
     <p style={{ color: 'var(--ov-color-fg-default)', fontSize: 14, lineHeight: 1.6 }}>
       The Kubernetes scheduler assigns pods to nodes based on resource availability
       <AIInlineCitation index={1} onNavigate={() => {}} /> and affinity rules
-      <AIInlineCitation index={2} onNavigate={() => {}} />. When a node runs out of resources,
-      the eviction manager will start removing lower-priority pods
+      <AIInlineCitation index={2} onNavigate={() => {}} />. When a node runs out of resources, the
+      eviction manager will start removing lower-priority pods
       <AIInlineCitation index={3} onNavigate={() => {}} />.
     </p>
   ),

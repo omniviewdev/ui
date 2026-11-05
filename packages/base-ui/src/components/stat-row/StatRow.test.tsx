@@ -70,7 +70,9 @@ describe('StatRow', () => {
   it('applies color data attribute on item', () => {
     renderWithTheme(
       <StatRow>
-        <StatRow.Item color="success" data-testid="item">OK</StatRow.Item>
+        <StatRow.Item color="success" data-testid="item">
+          OK
+        </StatRow.Item>
       </StatRow>,
     );
 
@@ -112,7 +114,9 @@ describe('StatRow', () => {
   it('merges className on root and item', () => {
     renderWithTheme(
       <StatRow className="custom-root" data-testid="row">
-        <StatRow.Item className="custom-item" data-testid="item">V</StatRow.Item>
+        <StatRow.Item className="custom-item" data-testid="item">
+          V
+        </StatRow.Item>
       </StatRow>,
     );
 
@@ -134,14 +138,18 @@ describe('StatRow', () => {
   it('renders discovery and secondary colors on item', () => {
     const { rerender } = renderWithTheme(
       <StatRow>
-        <StatRow.Item color="discovery" data-testid="item">Val</StatRow.Item>
+        <StatRow.Item color="discovery" data-testid="item">
+          Val
+        </StatRow.Item>
       </StatRow>,
     );
     expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'discovery');
 
     rerender(
       <StatRow>
-        <StatRow.Item color="secondary" data-testid="item">Val</StatRow.Item>
+        <StatRow.Item color="secondary" data-testid="item">
+          Val
+        </StatRow.Item>
       </StatRow>,
     );
     expect(screen.getByTestId('item')).toHaveAttribute('data-ov-color', 'secondary');

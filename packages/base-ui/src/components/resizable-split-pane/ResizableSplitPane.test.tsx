@@ -7,9 +7,7 @@ import { ResizableSplitPane } from './ResizableSplitPane';
 describe('ResizableSplitPane', () => {
   it('renders two panes with a handle', () => {
     renderWithTheme(
-      <ResizableSplitPane data-testid="split">
-        {['Left', 'Right']}
-      </ResizableSplitPane>,
+      <ResizableSplitPane data-testid="split">{['Left', 'Right']}</ResizableSplitPane>,
     );
 
     const el = screen.getByTestId('split');
@@ -159,11 +157,7 @@ describe('ResizableSplitPane', () => {
 
   it('forwards ref', () => {
     const ref = createRef<HTMLDivElement>();
-    renderWithTheme(
-      <ResizableSplitPane ref={ref}>
-        {['A', 'B']}
-      </ResizableSplitPane>,
-    );
+    renderWithTheme(<ResizableSplitPane ref={ref}>{['A', 'B']}</ResizableSplitPane>);
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
@@ -194,11 +188,7 @@ describe('ResizableSplitPane', () => {
   });
 
   it('renders vertical handle with horizontal aria-orientation', () => {
-    renderWithTheme(
-      <ResizableSplitPane direction="vertical">
-        {['A', 'B']}
-      </ResizableSplitPane>,
-    );
+    renderWithTheme(<ResizableSplitPane direction="vertical">{['A', 'B']}</ResizableSplitPane>);
 
     const handle = screen.getByRole('separator');
     expect(handle).toHaveAttribute('aria-orientation', 'horizontal');
@@ -225,11 +215,7 @@ describe('ResizableSplitPane', () => {
   });
 
   it('sets data-ov-dragging during drag and removes after', () => {
-    renderWithTheme(
-      <ResizableSplitPane data-testid="split">
-        {['A', 'B']}
-      </ResizableSplitPane>,
-    );
+    renderWithTheme(<ResizableSplitPane data-testid="split">{['A', 'B']}</ResizableSplitPane>);
 
     const el = screen.getByTestId('split');
     const handle = screen.getByRole('separator');

@@ -17,17 +17,13 @@ describe('ToolResult', () => {
   });
 
   it('shows expand button when truncated', () => {
-    renderAI(
-      <ToolResult content="partial..." status="success" truncated onExpand={vi.fn()} />,
-    );
+    renderAI(<ToolResult content="partial..." status="success" truncated onExpand={vi.fn()} />);
     expect(screen.getByText('Show more')).toBeInTheDocument();
   });
 
   it('calls onExpand when expand button clicked', async () => {
     const onExpand = vi.fn();
-    renderAI(
-      <ToolResult content="partial..." status="success" truncated onExpand={onExpand} />,
-    );
+    renderAI(<ToolResult content="partial..." status="success" truncated onExpand={onExpand} />);
     await userEvent.click(screen.getByText('Show more'));
     expect(onExpand).toHaveBeenCalledTimes(1);
   });
@@ -44,9 +40,7 @@ describe('ToolResult', () => {
   });
 
   it('merges className', () => {
-    renderAI(
-      <ToolResult content="test" status="success" className="custom" data-testid="tr" />,
-    );
+    renderAI(<ToolResult content="test" status="success" className="custom" data-testid="tr" />);
     expect(screen.getByTestId('tr').className).toContain('custom');
   });
 });

@@ -31,10 +31,7 @@ export interface DateFieldProps {
  * The component is a thin wrapper over `useDateField`; consumers who need
  * custom layouts can reach for the hook directly.
  */
-export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function DateField(
-  props,
-  ref,
-) {
+export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function DateField(props, ref) {
   const {
     value,
     onChange,

@@ -55,9 +55,7 @@ describe('AIMessageEditor', () => {
   });
 
   it('shows spinner when saving=true', () => {
-    renderAI(
-      <AIMessageEditor {...defaults} defaultValue="a" saving autoFocus={false} />,
-    );
+    renderAI(<AIMessageEditor {...defaults} defaultValue="a" saving autoFocus={false} />);
     // Spinner renders as a span with role status
     expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Save/ })).toBeDisabled();
@@ -71,12 +69,7 @@ describe('AIMessageEditor', () => {
 
   it('merges className', () => {
     renderAI(
-      <AIMessageEditor
-        {...defaults}
-        className="custom"
-        data-testid="editor"
-        autoFocus={false}
-      />,
+      <AIMessageEditor {...defaults} className="custom" data-testid="editor" autoFocus={false} />,
     );
     expect(screen.getByTestId('editor').className).toContain('custom');
   });

@@ -235,4 +235,3 @@ and `--ov-size-card-focus-ring-width: 2px`; neither replaces an existing token.
 The fixed rail avoids layout shift across card sizes and densities. The separate
 focus width preserves selected-state visibility during keyboard navigation.
 See [Token Catalog](TOKEN_CATALOG.md#interactive-cards) for the alias contract.
-

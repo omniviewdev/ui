@@ -38,11 +38,21 @@ export const Running: Story = {
 };
 
 export const Success: Story = {
-  args: { name: 'write_file', status: 'success', arguments: { path: '/src/utils.ts' }, duration: 120 },
+  args: {
+    name: 'write_file',
+    status: 'success',
+    arguments: { path: '/src/utils.ts' },
+    duration: 120,
+  },
 };
 
 export const Error: Story = {
-  args: { name: 'delete_file', status: 'error', arguments: { path: '/protected/config.yaml' }, duration: 50 },
+  args: {
+    name: 'delete_file',
+    status: 'error',
+    arguments: { path: '/protected/config.yaml' },
+    duration: 50,
+  },
 };
 
 export const NoArguments: Story = {
@@ -71,7 +81,7 @@ export const WithResult: Story = {
       defaultExpanded
     >
       <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-{`NAME                            READY   STATUS    RESTARTS   AGE
+        {`NAME                            READY   STATUS    RESTARTS   AGE
 payments-api-8c4d5e7f1-jkl89   1/1     Running   0          2d
 payments-api-8c4d5e7f1-mno12   1/1     Running   0          2d
 payments-api-8c4d5e7f1-pqr34   1/1     Running   0          2d`}
@@ -90,7 +100,7 @@ export const RunningWithOutput: Story = {
       defaultExpanded
     >
       <pre style={{ margin: 0, whiteSpace: 'pre-wrap', color: 'var(--ov-color-fg-muted)' }}>
-{`Waiting for deployment "payments-api" rollout to finish: 1 of 3 updated replicas are available...`}
+        {`Waiting for deployment "payments-api" rollout to finish: 1 of 3 updated replicas are available...`}
       </pre>
     </ToolCall>
   ),
@@ -107,7 +117,9 @@ export const ErrorWithOutput: Story = {
       defaultExpanded
     >
       <div style={{ color: 'var(--ov-color-danger-default)' }}>
-        Error from server (Forbidden): deployments.apps &quot;payments-api&quot; is forbidden: User &quot;dev-user&quot; cannot patch resource &quot;deployments&quot; in namespace &quot;production&quot;
+        Error from server (Forbidden): deployments.apps &quot;payments-api&quot; is forbidden: User
+        &quot;dev-user&quot; cannot patch resource &quot;deployments&quot; in namespace
+        &quot;production&quot;
       </div>
     </ToolCall>
   ),
@@ -118,7 +130,7 @@ export const ResultOnly: Story = {
   render: () => (
     <ToolCall name="list_namespaces" status="success" duration={80} defaultExpanded>
       <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-{`default
+        {`default
 kube-system
 kube-public
 production

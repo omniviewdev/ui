@@ -17,4 +17,3 @@ configure({
   runs: 20,
   warmupRuns: 3,
 });
-

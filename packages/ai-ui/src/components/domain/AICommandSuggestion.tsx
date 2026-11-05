@@ -33,7 +33,13 @@ export const AICommandSuggestion = forwardRef<HTMLDivElement, AICommandSuggestio
           <LuCornerDownRight size={14} className={styles.CommandIcon} />
           <code className={styles.Code}>{command}</code>
           {onCopy && (
-            <IconButton size="sm" variant="ghost" color="neutral" aria-label="Copy command" onClick={onCopy}>
+            <IconButton
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              aria-label="Copy command"
+              onClick={onCopy}
+            >
               <LuCopy size={14} />
             </IconButton>
           )}

@@ -23,7 +23,6 @@ export function useListStore(disabledKeys: Set<Key>): ListStore {
     registeredKeys: [],
   });
 
-
   const emit = useCallback(() => {
     versionRef.current += 1;
     snapshotRef.current = {

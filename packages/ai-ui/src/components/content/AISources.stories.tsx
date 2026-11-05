@@ -20,9 +20,17 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   args: {
     sources: [
-      { id: '1', label: 'Kubernetes Docs: Pod Scheduling', detail: 'kubernetes.io/docs/concepts/scheduling' },
+      {
+        id: '1',
+        label: 'Kubernetes Docs: Pod Scheduling',
+        detail: 'kubernetes.io/docs/concepts/scheduling',
+      },
       { id: '2', label: 'Node Affinity Rules', detail: 'kubernetes.io/docs/tasks/configure-pod' },
-      { id: '3', label: 'Resource Management', detail: 'kubernetes.io/docs/concepts/configuration' },
+      {
+        id: '3',
+        label: 'Resource Management',
+        detail: 'kubernetes.io/docs/concepts/configuration',
+      },
     ],
     onNavigate: (source) => alert(`Navigate to: ${source.label}`),
   },
@@ -30,9 +38,7 @@ export const Playground: Story = {
 
 export const SingleSource: Story = {
   args: {
-    sources: [
-      { id: '1', label: 'React Documentation', detail: 'react.dev/reference/react' },
-    ],
+    sources: [{ id: '1', label: 'React Documentation', detail: 'react.dev/reference/react' }],
     onNavigate: () => {},
   },
 };

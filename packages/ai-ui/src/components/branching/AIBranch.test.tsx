@@ -2,12 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderAI } from '../../test/render';
-import {
-  AIBranch,
-  AIBranchContent,
-  AIBranchSelector,
-  AIBranchIndicator,
-} from './AIBranch';
+import { AIBranch, AIBranchContent, AIBranchSelector, AIBranchIndicator } from './AIBranch';
 
 describe('AIBranch', () => {
   it('renders only the active branch content', () => {

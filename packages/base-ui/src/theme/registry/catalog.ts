@@ -32,7 +32,15 @@ const summary = (
   appearance: 'dark' | 'light',
   description: string,
 ): Readonly<ThemeSummary> =>
-  Object.freeze({ id, name, base: id, appearance, description, builtIn: true, owner: builtinOwner() });
+  Object.freeze({
+    id,
+    name,
+    base: id,
+    appearance,
+    description,
+    builtIn: true,
+    owner: builtinOwner(),
+  });
 
 export const BUILT_IN_THEMES: readonly Readonly<ThemeSummary>[] = Object.freeze([
   summary('void', 'Void', 'dark', 'Ultra-deep warm-neutral theme'),

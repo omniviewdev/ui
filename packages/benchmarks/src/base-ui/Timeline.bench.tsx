@@ -25,11 +25,7 @@ function fourItems() {
 }
 
 describe('Timeline', () => {
-  benchRender(
-    'mount with 3 items',
-    () => <Timeline>{threeItems()}</Timeline>,
-    TIER_2_OPTIONS,
-  );
+  benchRender('mount with 3 items', () => <Timeline>{threeItems()}</Timeline>, TIER_2_OPTIONS);
 
   benchRerender(
     'items change',

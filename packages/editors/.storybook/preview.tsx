@@ -11,7 +11,15 @@ const preview: Preview = {
       defaultValue: 'dark',
       toolbar: {
         icon: 'paintbrush',
-        items: ['dark', 'light', 'high-contrast-dark', 'high-contrast-light', 'obsidian', 'carbon', 'void'],
+        items: [
+          'dark',
+          'light',
+          'high-contrast-dark',
+          'high-contrast-light',
+          'obsidian',
+          'carbon',
+          'void',
+        ],
       },
     },
   },
@@ -20,7 +28,10 @@ const preview: Preview = {
       const theme = context.globals.theme ?? 'dark';
 
       return (
-        <ThemeProvider themeId={theme} onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}>
+        <ThemeProvider
+          themeId={theme}
+          onThemeChange={(themeId) => context.updateGlobals({ theme: themeId })}
+        >
           <div
             style={{
               width: '100%',

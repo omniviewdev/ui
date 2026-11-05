@@ -103,9 +103,7 @@ describe('FindBar', () => {
 
   it('toggles case sensitivity via ToggleButton', () => {
     const handleToggle = vi.fn();
-    renderWithTheme(
-      <FindBar open caseSensitive={false} onCaseSensitiveChange={handleToggle} />,
-    );
+    renderWithTheme(<FindBar open caseSensitive={false} onCaseSensitiveChange={handleToggle} />);
 
     fireEvent.click(screen.getByLabelText('Match case'));
     expect(handleToggle).toHaveBeenCalledWith(true);

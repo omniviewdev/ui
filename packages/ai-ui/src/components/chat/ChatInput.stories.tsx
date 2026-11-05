@@ -141,7 +141,13 @@ export const FullToolbar: Story = {
         endActions={
           <>
             {value.length > 0 && (
-              <span style={{ fontSize: 'var(--ov-font-size-xs)', color: 'var(--ov-color-fg-subtle)', fontVariantNumeric: 'tabular-nums' }}>
+              <span
+                style={{
+                  fontSize: 'var(--ov-font-size-xs)',
+                  color: 'var(--ov-color-fg-subtle)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
                 ~{Math.ceil(value.length / 4)} tokens
               </span>
             )}
@@ -173,7 +179,9 @@ export const WithModelSelector: Story = {
   render: function Render(args) {
     const [value, setValue] = useState('');
     const [model, setModel] = useState('claude-sonnet-4');
-    const submit = () => { setValue(''); };
+    const submit = () => {
+      setValue('');
+    };
     return (
       <ChatInput
         {...args}
@@ -193,7 +201,12 @@ export const WithModelSelector: Story = {
               variant="ghost"
               showIcon={false}
             />
-            <Button size="sm" variant="ghost" color="neutral" endDecorator={<LuChevronDown size={12} />}>
+            <Button
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              endDecorator={<LuChevronDown size={12} />}
+            >
               High
             </Button>
           </>
@@ -267,8 +280,12 @@ export const Streaming: Story = {
 export const Multiline: Story = {
   name: 'Multiline Content',
   render: function Render(args) {
-    const [value, setValue] = useState('Can you help me refactor this function?\n\nIt currently has too many parameters and the logic is hard to follow.\n\nHere is the code:\nfunction process(a, b, c, d, e) { ... }');
-    const submit = () => { setValue(''); };
+    const [value, setValue] = useState(
+      'Can you help me refactor this function?\n\nIt currently has too many parameters and the logic is hard to follow.\n\nHere is the code:\nfunction process(a, b, c, d, e) { ... }',
+    );
+    const submit = () => {
+      setValue('');
+    };
     return (
       <ChatInput
         {...args}

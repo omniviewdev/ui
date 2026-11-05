@@ -267,7 +267,9 @@ describe('useTabDetach', () => {
       result.current.handleDetachDragStart(makeDragStartEvent('tab1'));
     });
 
-    const pointerMoveHandler = addSpy.mock.calls.find((call: unknown[]) => call[0] === 'pointermove')?.[1];
+    const pointerMoveHandler = addSpy.mock.calls.find(
+      (call: unknown[]) => call[0] === 'pointermove',
+    )?.[1];
 
     act(() => {
       result.current.handleDetachDragCancel();

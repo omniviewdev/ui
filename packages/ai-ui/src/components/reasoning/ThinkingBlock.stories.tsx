@@ -7,7 +7,8 @@ const meta: Meta<typeof ThinkingBlock> = {
   component: ThinkingBlock,
   tags: ['autodocs'],
   args: {
-    content: 'Let me analyze this step by step:\n\n1. First, I need to understand the context\n2. Then, I\'ll consider different approaches\n3. Finally, I\'ll provide the best solution\n\nThis reasoning process helps me give you more accurate and thoughtful responses.',
+    content:
+      "Let me analyze this step by step:\n\n1. First, I need to understand the context\n2. Then, I'll consider different approaches\n3. Finally, I'll provide the best solution\n\nThis reasoning process helps me give you more accurate and thoughtful responses.",
     streaming: false,
     defaultExpanded: true,
   },
@@ -33,7 +34,8 @@ export const Playground: Story = {};
 
 export const WithDuration: Story = {
   args: {
-    content: 'After careful analysis, the issue is in the event handler binding. The component re-renders on every state change because the handler is not memoized.',
+    content:
+      'After careful analysis, the issue is in the event handler binding. The component re-renders on every state change because the handler is not memoized.',
     duration: 4000,
     defaultExpanded: true,
   },

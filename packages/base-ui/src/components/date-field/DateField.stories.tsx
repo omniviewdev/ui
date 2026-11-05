@@ -39,14 +39,7 @@ function TimeMode24hStory(args: DateFieldProps) {
 function TimeMode12hStory(args: DateFieldProps) {
   const [value, setValue] = useState<Date | null>(null);
   return (
-    <DateField
-      {...args}
-      mode="time"
-      hourCycle={12}
-      showSeconds
-      value={value}
-      onChange={setValue}
-    />
+    <DateField {...args} mode="time" hourCycle={12} showSeconds value={value} onChange={setValue} />
   );
 }
 

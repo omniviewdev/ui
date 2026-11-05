@@ -7,7 +7,7 @@ import { StreamingText } from './StreamingText';
 /** Helper: create an async iterable from an array of chunks */
 async function* chunksOf(chunks: string[], delayMs = 0): AsyncGenerator<string> {
   for (const chunk of chunks) {
-    if (delayMs > 0) await new Promise(r => setTimeout(r, delayMs));
+    if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs));
     yield chunk;
   }
 }
@@ -78,7 +78,9 @@ describe('StreamingText', () => {
   it('sets data-ov-streaming to true while streaming', async () => {
     // Use a stream that we can control timing on
     let resolve: () => void;
-    const gate = new Promise<void>(r => { resolve = r; });
+    const gate = new Promise<void>((r) => {
+      resolve = r;
+    });
 
     async function* controlledStream(): AsyncGenerator<string> {
       yield 'first ';

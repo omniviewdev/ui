@@ -1,10 +1,4 @@
-import {
-  Children,
-  forwardRef,
-  isValidElement,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { Children, forwardRef, isValidElement, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../system/classnames';
 import type { ComponentColor, ComponentSize } from '../../system/types';
 import styles from './StatRow.module.css';
@@ -43,12 +37,7 @@ const StatRowRoot = forwardRef<HTMLDivElement, StatRowProps>(function StatRow(
   });
 
   return (
-    <div
-      ref={ref}
-      className={cn(styles.Root, className)}
-      data-ov-size={size}
-      {...props}
-    >
+    <div ref={ref} className={cn(styles.Root, className)} data-ov-size={size} {...props}>
       {separated}
     </div>
   );

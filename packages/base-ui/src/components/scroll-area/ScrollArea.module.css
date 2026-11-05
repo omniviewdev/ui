@@ -10,7 +10,10 @@
 }
 
 .Root[data-ov-size='xs'] {
-  --_ov-scrollbar-size: var(--ov-size-scrollarea-scrollbar-xs, var(--ov-size-scrollarea-scrollbar-sm));
+  --_ov-scrollbar-size: var(
+    --ov-size-scrollarea-scrollbar-xs,
+    var(--ov-size-scrollarea-scrollbar-sm)
+  );
   scrollbar-width: thin;
 }
 
@@ -25,7 +28,10 @@
 }
 
 .Root[data-ov-size='xl'] {
-  --_ov-scrollbar-size: var(--ov-size-scrollarea-scrollbar-xl, var(--ov-size-scrollarea-scrollbar-lg));
+  --_ov-scrollbar-size: var(
+    --ov-size-scrollarea-scrollbar-xl,
+    var(--ov-size-scrollarea-scrollbar-lg)
+  );
   scrollbar-width: auto;
 }
 

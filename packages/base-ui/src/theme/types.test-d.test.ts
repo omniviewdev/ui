@@ -1,11 +1,6 @@
 import { assertType, describe, expectTypeOf, it } from 'vitest';
 import type { ThemeTokenKey } from './generated/tokenKeys';
-import type {
-  BuiltInThemeId,
-  ThemeDefinition,
-  ThemeDefinitionV1,
-  ThemeOwner,
-} from './schema';
+import type { BuiltInThemeId, ThemeDefinition, ThemeDefinitionV1, ThemeOwner } from './schema';
 
 describe('theme schema', () => {
   it('defines the nine built-in theme IDs', () => {

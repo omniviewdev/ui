@@ -21,12 +21,26 @@ export function fileTypeLabel(node: { type: string; extension?: string }): strin
   if (node.type === 'folder') return 'Directory';
   if (!node.extension) return 'File';
   const map: Record<string, string> = {
-    ts: 'ts-file', tsx: 'tsx-file', js: 'js-file', jsx: 'jsx-file',
-    json: 'json-file', yaml: 'yaml-file', yml: 'yaml-file',
-    css: 'css-file', html: 'html-file', md: 'markdown',
-    png: 'image', jpg: 'image', webp: 'image', svg: 'svg-file',
-    ico: 'icon', woff2: 'font', gz: 'archive', txt: 'text-file',
-    cjs: 'js-file', gitignore: 'config',
+    ts: 'ts-file',
+    tsx: 'tsx-file',
+    js: 'js-file',
+    jsx: 'jsx-file',
+    json: 'json-file',
+    yaml: 'yaml-file',
+    yml: 'yaml-file',
+    css: 'css-file',
+    html: 'html-file',
+    md: 'markdown',
+    png: 'image',
+    jpg: 'image',
+    webp: 'image',
+    svg: 'svg-file',
+    ico: 'icon',
+    woff2: 'font',
+    gz: 'archive',
+    txt: 'text-file',
+    cjs: 'js-file',
+    gitignore: 'config',
   };
   return map[node.extension] ?? `${node.extension}-file`;
 }

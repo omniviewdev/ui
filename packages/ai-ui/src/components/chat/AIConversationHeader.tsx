@@ -29,12 +29,24 @@ export const AIConversationHeader = forwardRef<HTMLDivElement, AIConversationHea
         <div className={styles.Actions}>
           {actions}
           {onNewChat && (
-            <IconButton size="sm" variant="ghost" color="neutral" aria-label="New chat" onClick={onNewChat}>
+            <IconButton
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              aria-label="New chat"
+              onClick={onNewChat}
+            >
               <LuPlus size={16} />
             </IconButton>
           )}
           {onSettings && (
-            <IconButton size="sm" variant="ghost" color="neutral" aria-label="Settings" onClick={onSettings}>
+            <IconButton
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              aria-label="Settings"
+              onClick={onSettings}
+            >
               <LuSettings size={16} />
             </IconButton>
           )}

@@ -18,11 +18,35 @@ export const CURRENT_USER = USERS[0]!; // Alice Chen
 // ── Channels ───────────────────────────────────────────────────────────────
 
 export const CHANNELS: Channel[] = [
-  { id: 'ch-general', name: 'general', type: 'channel', unreadCount: 0, members: ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'] },
-  { id: 'ch-engineering', name: 'engineering', type: 'channel', unreadCount: 2, members: ['u1', 'u2', 'u3', 'u6'] },
+  {
+    id: 'ch-general',
+    name: 'general',
+    type: 'channel',
+    unreadCount: 0,
+    members: ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'],
+  },
+  {
+    id: 'ch-engineering',
+    name: 'engineering',
+    type: 'channel',
+    unreadCount: 2,
+    members: ['u1', 'u2', 'u3', 'u6'],
+  },
   { id: 'ch-design', name: 'design', type: 'channel', unreadCount: 3, members: ['u1', 'u3', 'u4'] },
-  { id: 'ch-random', name: 'random', type: 'channel', unreadCount: 0, members: ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'] },
-  { id: 'ch-deployments', name: 'deployments', type: 'channel', unreadCount: 0, members: ['u1', 'u2', 'u6'] },
+  {
+    id: 'ch-random',
+    name: 'random',
+    type: 'channel',
+    unreadCount: 0,
+    members: ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'],
+  },
+  {
+    id: 'ch-deployments',
+    name: 'deployments',
+    type: 'channel',
+    unreadCount: 0,
+    members: ['u1', 'u2', 'u6'],
+  },
 ];
 
 export const DM_CHANNELS: Channel[] = [
@@ -47,7 +71,13 @@ export const WORKSPACES: Workspace[] = [
     name: 'Open Source',
     avatar: 'OS',
     channels: [
-      { id: 'ch-contrib', name: 'contributors', type: 'channel', unreadCount: 0, members: ['u1', 'u2'] },
+      {
+        id: 'ch-contrib',
+        name: 'contributors',
+        type: 'channel',
+        unreadCount: 0,
+        members: ['u1', 'u2'],
+      },
     ],
     users: [USERS[0]!, USERS[1]!],
   },
@@ -95,7 +125,7 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-2',
       channelId: 'ch-general',
       userId: 'u3',
-      content: 'Nice! I\'ll start testing after standup.',
+      content: "Nice! I'll start testing after standup.",
       timestamp: yesterdayAt(9, 17),
       reactions: [],
       replyCount: 0,
@@ -104,7 +134,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-3',
       channelId: 'ch-general',
       userId: 'u1',
-      content: 'Hey everyone, the new component library docs are live at https://docs.omniview.dev/components. Please review when you get a chance!',
+      content:
+        'Hey everyone, the new component library docs are live at https://docs.omniview.dev/components. Please review when you get a chance!',
       timestamp: todayAt(10, 32),
       reactions: [
         { emoji: '🚀', userIds: ['u2', 'u3', 'u6'] },
@@ -116,7 +147,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-4',
       channelId: 'ch-general',
       userId: 'u2',
-      content: 'Looks great @Alice! I noticed the DataTable docs are missing the sorting examples though.',
+      content:
+        'Looks great @Alice! I noticed the DataTable docs are missing the sorting examples though.',
       timestamp: todayAt(10, 34),
       reactions: [],
       replyCount: 0,
@@ -125,7 +157,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-5',
       channelId: 'ch-general',
       userId: 'u6',
-      content: '@Bob good catch. I\'ll add those this afternoon. Also want to add the virtualization section.',
+      content:
+        "@Bob good catch. I'll add those this afternoon. Also want to add the virtualization section.",
       timestamp: todayAt(10, 36),
       reactions: [{ emoji: '👍', userIds: ['u2'] }],
       replyCount: 0,
@@ -134,7 +167,7 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-6',
       channelId: 'ch-general',
       userId: 'u4',
-      content: 'Reminder: design review at 2pm today. I\'ll share the Figma link in #design.',
+      content: "Reminder: design review at 2pm today. I'll share the Figma link in #design.",
       timestamp: todayAt(11, 0),
       reactions: [{ emoji: '📅', userIds: ['u1', 'u3'] }],
       replyCount: 0,
@@ -146,7 +179,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-eng-1',
       channelId: 'ch-engineering',
       userId: 'u2',
-      content: 'PR #142 is ready for review — refactored the auth middleware to support JWT rotation.\n\n```typescript\nconst rotateToken = async (token: string) => {\n  const decoded = verify(token, currentKey);\n  return sign(decoded.payload, nextKey);\n};\n```',
+      content:
+        'PR #142 is ready for review — refactored the auth middleware to support JWT rotation.\n\n```typescript\nconst rotateToken = async (token: string) => {\n  const decoded = verify(token, currentKey);\n  return sign(decoded.payload, nextKey);\n};\n```',
       timestamp: todayAt(9, 0),
       reactions: [{ emoji: '👀', userIds: ['u1'] }],
       replyCount: 2,
@@ -155,7 +189,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-eng-2',
       channelId: 'ch-engineering',
       userId: 'u6',
-      content: 'I\'m seeing some flaky tests in CI. The `useVirtualizer` hook tests timeout intermittently. Anyone else hitting this?',
+      content:
+        "I'm seeing some flaky tests in CI. The `useVirtualizer` hook tests timeout intermittently. Anyone else hitting this?",
       timestamp: todayAt(9, 45),
       reactions: [{ emoji: '🤔', userIds: ['u2'] }],
       replyCount: 0,
@@ -164,7 +199,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-eng-3',
       channelId: 'ch-engineering',
       userId: 'u1',
-      content: '@Frank yeah, I think it\'s a race condition with the resize observer. Try wrapping the assertion in `waitFor`:\n\n```typescript\nawait waitFor(() => {\n  expect(virtualizer.getVirtualItems()).toHaveLength(10);\n});\n```',
+      content:
+        "@Frank yeah, I think it's a race condition with the resize observer. Try wrapping the assertion in `waitFor`:\n\n```typescript\nawait waitFor(() => {\n  expect(virtualizer.getVirtualItems()).toHaveLength(10);\n});\n```",
       timestamp: todayAt(9, 52),
       reactions: [{ emoji: '🙏', userIds: ['u6'] }],
       replyCount: 0,
@@ -173,7 +209,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-eng-4',
       channelId: 'ch-engineering',
       userId: 'u3',
-      content: 'Heads up — I\'m bumping React to 19.1 in the next release. No breaking changes expected but keep an eye on the compiler output.',
+      content:
+        "Heads up — I'm bumping React to 19.1 in the next release. No breaking changes expected but keep an eye on the compiler output.",
       timestamp: todayAt(11, 30),
       reactions: [],
       replyCount: 0,
@@ -185,7 +222,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-des-1',
       channelId: 'ch-design',
       userId: 'u4',
-      content: 'New icon set proposal attached. Going for a more rounded, friendly feel to match the pill tab direction.',
+      content:
+        'New icon set proposal attached. Going for a more rounded, friendly feel to match the pill tab direction.',
       timestamp: todayAt(10, 0),
       reactions: [{ emoji: '😍', userIds: ['u1', 'u3'] }],
       replyCount: 0,
@@ -194,7 +232,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-des-2',
       channelId: 'ch-design',
       userId: 'u3',
-      content: 'Love the direction! Can we also look at the spacing tokens? I think `--ov-space-stack-md` is too tight for card layouts.',
+      content:
+        'Love the direction! Can we also look at the spacing tokens? I think `--ov-space-stack-md` is too tight for card layouts.',
       timestamp: todayAt(10, 15),
       reactions: [],
       replyCount: 0,
@@ -203,7 +242,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-des-3',
       channelId: 'ch-design',
       userId: 'u4',
-      content: 'Agreed. I\'ll put together a comparison with 12px vs 16px spacing and share at the 2pm review.',
+      content:
+        "Agreed. I'll put together a comparison with 12px vs 16px spacing and share at the 2pm review.",
       timestamp: todayAt(10, 20),
       reactions: [{ emoji: '👍', userIds: ['u3'] }],
       replyCount: 0,
@@ -212,7 +252,7 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-des-4',
       channelId: 'ch-design',
       userId: 'u4',
-      content: 'Here\'s the updated icon set: [file:icons-v3-rounded.fig]',
+      content: "Here's the updated icon set: [file:icons-v3-rounded.fig]",
       timestamp: todayAt(10, 30),
       reactions: [{ emoji: '🎨', userIds: ['u1', 'u3'] }],
       replyCount: 0,
@@ -239,7 +279,8 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-dep-1',
       channelId: 'ch-deployments',
       userId: 'u2',
-      content: '🟢 **Production deploy successful**\n`v2.4.1` rolled out to all regions. No errors in the first 5 minutes.',
+      content:
+        '🟢 **Production deploy successful**\n`v2.4.1` rolled out to all regions. No errors in the first 5 minutes.',
       timestamp: todayAt(8, 30),
       reactions: [{ emoji: '🎉', userIds: ['u1', 'u3', 'u6'] }],
       replyCount: 0,
@@ -251,7 +292,7 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-dm-1',
       channelId: 'dm-bob',
       userId: 'u2',
-      content: 'Hey, can you review my PR when you get a sec? It\'s the auth middleware one.',
+      content: "Hey, can you review my PR when you get a sec? It's the auth middleware one.",
       timestamp: todayAt(9, 5),
       reactions: [],
       replyCount: 0,
@@ -260,7 +301,7 @@ export const MESSAGES: Record<string, Message[]> = {
       id: 'msg-dm-2',
       channelId: 'dm-bob',
       userId: 'u1',
-      content: 'Sure! I\'ll take a look after standup.',
+      content: "Sure! I'll take a look after standup.",
       timestamp: todayAt(9, 8),
       reactions: [{ emoji: '🙌', userIds: ['u2'] }],
       replyCount: 0,
@@ -295,7 +336,7 @@ export const THREAD_REPLIES: Record<string, Message[]> = {
       id: 'reply-3-3',
       channelId: 'ch-general',
       userId: 'u1',
-      content: 'Good idea @Carol. I\'ll draft one this week.',
+      content: "Good idea @Carol. I'll draft one this week.",
       timestamp: todayAt(10, 50),
       reactions: [],
       replyCount: 0,
@@ -306,7 +347,8 @@ export const THREAD_REPLIES: Record<string, Message[]> = {
       id: 'reply-eng-1',
       channelId: 'ch-engineering',
       userId: 'u1',
-      content: 'Looks solid. One question — should `rotateToken` handle expired tokens or let them fail?',
+      content:
+        'Looks solid. One question — should `rotateToken` handle expired tokens or let them fail?',
       timestamp: todayAt(9, 20),
       reactions: [],
       replyCount: 0,
@@ -315,7 +357,8 @@ export const THREAD_REPLIES: Record<string, Message[]> = {
       id: 'reply-eng-2',
       channelId: 'ch-engineering',
       userId: 'u2',
-      content: 'Good question. I think we should let them fail and force a re-auth. Added a comment in the PR.',
+      content:
+        'Good question. I think we should let them fail and force a re-auth. Added a comment in the PR.',
       timestamp: todayAt(9, 25),
       reactions: [{ emoji: '👍', userIds: ['u1'] }],
       replyCount: 0,
@@ -326,7 +369,14 @@ export const THREAD_REPLIES: Record<string, Message[]> = {
 // ── Helpers for components ─────────────────────────────────────────────────
 
 export function getUserById(users: User[], id: string): User {
-  return users.find((u) => u.id === id) ?? { id, name: 'Unknown', avatar: '?', status: 'offline' as const };
+  return (
+    users.find((u) => u.id === id) ?? {
+      id,
+      name: 'Unknown',
+      avatar: '?',
+      status: 'offline' as const,
+    }
+  );
 }
 
 export function formatTime(timestamp: number): string {
@@ -346,11 +396,17 @@ export function formatDateSeparator(timestamp: number): string {
 }
 
 /** Presence status → StatusDot status mapping */
-export function presenceToStatus(status: User['status']): 'success' | 'warning' | 'danger' | 'neutral' {
+export function presenceToStatus(
+  status: User['status'],
+): 'success' | 'warning' | 'danger' | 'neutral' {
   switch (status) {
-    case 'online': return 'success';
-    case 'away': return 'warning';
-    case 'dnd': return 'danger';
-    case 'offline': return 'neutral';
+    case 'online':
+      return 'success';
+    case 'away':
+      return 'warning';
+    case 'dnd':
+      return 'danger';
+    case 'offline':
+      return 'neutral';
   }
 }

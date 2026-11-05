@@ -38,14 +38,19 @@ describe('Tooltip', () => {
     TIER_2_OPTIONS,
   );
 
-  benchMountMany('mount 100', 100, (i) => (
-    <Tooltip key={i}>
-      <Tooltip.Trigger>Item {i}</Tooltip.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Positioner>
-          <Tooltip.Popup>Tooltip {i}</Tooltip.Popup>
-        </Tooltip.Positioner>
-      </Tooltip.Portal>
-    </Tooltip>
-  ), TIER_2_OPTIONS);
+  benchMountMany(
+    'mount 100',
+    100,
+    (i) => (
+      <Tooltip key={i}>
+        <Tooltip.Trigger>Item {i}</Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner>
+            <Tooltip.Popup>Tooltip {i}</Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip>
+    ),
+    TIER_2_OPTIONS,
+  );
 });

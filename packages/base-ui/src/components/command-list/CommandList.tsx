@@ -392,7 +392,9 @@ const CommandListResults = forwardRef<HTMLDivElement, CommandListResultsProps>(
                       score: procItem.score,
                       highlights: procItem.highlights,
                     };
-                    return <Fragment key={procItem.key}>{renderItem(procItem.item, meta)}</Fragment>;
+                    return (
+                      <Fragment key={procItem.key}>{renderItem(procItem.item, meta)}</Fragment>
+                    );
                   })}
                 </div>
               );

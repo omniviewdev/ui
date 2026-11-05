@@ -38,12 +38,7 @@ const StatusBarRoot = forwardRef<HTMLDivElement, StatusBarProps>(function Status
   const contextValue = useMemo(() => ({ size }), [size]);
   return (
     <StatusBarContext.Provider value={contextValue}>
-      <div
-        ref={ref}
-        className={cn(styles.Root, className)}
-        data-ov-size={size}
-        {...props}
-      >
+      <div ref={ref} className={cn(styles.Root, className)} data-ov-size={size} {...props}>
         {children}
       </div>
     </StatusBarContext.Provider>
@@ -64,12 +59,7 @@ export interface StatusBarSectionProps extends HTMLAttributes<HTMLDivElement> {
 const StatusBarSection = forwardRef<HTMLDivElement, StatusBarSectionProps>(
   function StatusBarSection({ align = 'start', className, ...props }, ref) {
     return (
-      <div
-        ref={ref}
-        className={cn(styles.Section, className)}
-        data-ov-align={align}
-        {...props}
-      />
+      <div ref={ref} className={cn(styles.Section, className)} data-ov-align={align} {...props} />
     );
   },
 );
@@ -86,26 +76,27 @@ export interface StatusBarItemProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const StatusBarItem = forwardRef<HTMLDivElement, StatusBarItemProps>(
-  function StatusBarItem({ onClick, active, className, children, ...props }, ref) {
-    const isClickable = !!onClick;
-    const Element = isClickable ? 'button' : 'div';
+const StatusBarItem = forwardRef<HTMLDivElement, StatusBarItemProps>(function StatusBarItem(
+  { onClick, active, className, children, ...props },
+  ref,
+) {
+  const isClickable = !!onClick;
+  const Element = isClickable ? 'button' : 'div';
 
-    return (
-      <Element
-        ref={ref as never}
-        className={cn(styles.Item, className)}
-        data-ov-active={active ? 'true' : undefined}
-        data-ov-clickable={isClickable ? 'true' : undefined}
-        onClick={onClick}
-        {...(isClickable ? { type: 'button' as const } : {})}
-        {...(props as Record<string, unknown>)}
-      >
-        {children}
-      </Element>
-    );
-  },
-);
+  return (
+    <Element
+      ref={ref as never}
+      className={cn(styles.Item, className)}
+      data-ov-active={active ? 'true' : undefined}
+      data-ov-clickable={isClickable ? 'true' : undefined}
+      onClick={onClick}
+      {...(isClickable ? { type: 'button' as const } : {})}
+      {...(props as Record<string, unknown>)}
+    >
+      {children}
+    </Element>
+  );
+});
 
 StatusBarItem.displayName = 'StatusBar.Item';
 
@@ -117,14 +108,7 @@ export type StatusBarIndicatorProps = Omit<StatusDotProps, 'size'>;
 
 const StatusBarIndicator = forwardRef<HTMLSpanElement, StatusBarIndicatorProps>(
   function StatusBarIndicator({ className, ...props }, ref) {
-    return (
-      <StatusDot
-        ref={ref}
-        size="sm"
-        className={cn(styles.Indicator, className)}
-        {...props}
-      />
-    );
+    return <StatusDot ref={ref} size="sm" className={cn(styles.Indicator, className)} {...props} />;
   },
 );
 
@@ -143,11 +127,7 @@ const StatusBarProgress = forwardRef<HTMLDivElement, StatusBarProgressProps>(
     return (
       <div className={cn(styles.Progress, className)}>
         {label != null && <span className={styles.ProgressLabel}>{label}</span>}
-        <Progress
-          ref={ref}
-          size="sm"
-          {...props}
-        />
+        <Progress ref={ref} size="sm" {...props} />
       </div>
     );
   },
@@ -185,7 +165,9 @@ const StatusBarIconItem = forwardRef<HTMLDivElement, StatusBarIconItemProps>(
         {...(isClickable ? { type: 'button' as const } : {})}
         {...(props as Record<string, unknown>)}
       >
-        <span className={styles.IconItemIcon} aria-hidden="true">{icon}</span>
+        <span className={styles.IconItemIcon} aria-hidden="true">
+          {icon}
+        </span>
         <span>{children}</span>
       </Element>
     );

@@ -91,6 +91,7 @@ interface AIBranchIndicatorProps extends HTMLAttributes<HTMLSpanElement> {}
 ## Integration
 
 ### Vercel AI SDK
+
 ```tsx
 // regenerate() creates a new branch for the same message
 const { regenerate } = useChat();
@@ -98,6 +99,7 @@ const { regenerate } = useChat();
 ```
 
 ### LangGraph
+
 ```tsx
 // Each checkpoint is a potential branch point
 // Use thread.get_state(checkpoint_id) to load alternate branches

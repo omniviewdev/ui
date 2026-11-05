@@ -33,11 +33,7 @@ export function ChannelSidebar({
             <NavList.GroupHeader>Channels</NavList.GroupHeader>
             <NavList.GroupItems>
               {channels.map((ch) => (
-                <ChannelItem
-                  key={ch.id}
-                  channel={ch}
-                  onClick={() => onSwitchChannel(ch.id)}
-                />
+                <ChannelItem key={ch.id} channel={ch} onClick={() => onSwitchChannel(ch.id)} />
               ))}
             </NavList.GroupItems>
           </NavList.Group>
@@ -49,11 +45,7 @@ export function ChannelSidebar({
                 const otherUserId = dm.members.find((id) => id !== workspace.users[0]?.id);
                 const otherUser = otherUserId ? getUserById(workspace.users, otherUserId) : null;
                 return (
-                  <NavList.Item
-                    key={dm.id}
-                    itemKey={dm.id}
-                    onClick={() => onSwitchChannel(dm.id)}
-                  >
+                  <NavList.Item key={dm.id} itemKey={dm.id} onClick={() => onSwitchChannel(dm.id)}>
                     <NavList.ItemIcon className={styles.dmAvatar}>
                       <Avatar name={otherUser?.name ?? dm.name} shape="rounded" size="sm" />
                       {otherUser && (
@@ -96,13 +88,7 @@ export function ChannelSidebar({
   );
 }
 
-function ChannelItem({
-  channel,
-  onClick,
-}: {
-  channel: Channel;
-  onClick: () => void;
-}) {
+function ChannelItem({ channel, onClick }: { channel: Channel; onClick: () => void }) {
   return (
     <NavList.Item itemKey={channel.id} onClick={onClick} unread={channel.unreadCount > 0}>
       <NavList.ItemIcon>

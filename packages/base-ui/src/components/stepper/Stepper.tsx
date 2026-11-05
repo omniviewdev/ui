@@ -98,10 +98,7 @@ const StepperRoot = forwardRef<HTMLDivElement, StepperProps>(function StepperRoo
 
   const steps = processChildren(children);
 
-  const contextValue = useMemo(
-    () => ({ activeStep, orientation }),
-    [activeStep, orientation],
-  );
+  const contextValue = useMemo(() => ({ activeStep, orientation }), [activeStep, orientation]);
 
   return (
     <StepperContext.Provider value={contextValue}>

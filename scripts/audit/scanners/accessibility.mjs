@@ -17,9 +17,13 @@ export async function scanAccessibility() {
 
     for (const { line, num } of lines) {
       // Skip comments, imports, types
-      if (line.trim().startsWith('//') || line.trim().startsWith('*') ||
-          line.trim().startsWith('import') || line.trim().startsWith('type') ||
-          line.trim().startsWith('interface')) {
+      if (
+        line.trim().startsWith('//') ||
+        line.trim().startsWith('*') ||
+        line.trim().startsWith('import') ||
+        line.trim().startsWith('type') ||
+        line.trim().startsWith('interface')
+      ) {
         // Only reset buffer if we were actively buffering a tag
         if (inTag) {
           inTag = false;
@@ -30,7 +34,10 @@ export async function scanAccessibility() {
 
       // Detect the start of a JSX opening tag for elements we care about
       if (!inTag) {
-        if (/<(?:div|span|li|td|tr|img|a)\b[\s>]/.test(line) || /<(?:div|span|li|td|tr|img|a)\b\s*$/.test(line)) {
+        if (
+          /<(?:div|span|li|td|tr|img|a)\b[\s>]/.test(line) ||
+          /<(?:div|span|li|td|tr|img|a)\b\s*$/.test(line)
+        ) {
           inTag = true;
           tagBuffer = line;
           tagStartNum = num;
@@ -54,7 +61,10 @@ export async function scanAccessibility() {
           if (/onClick/.test(ctx) && /<(?:div|span|li|td|tr|img|a)\b/.test(ctx)) {
             // Anchor tags with href are natively keyboard-accessible — skip them
             const isAnchorWithHref = /<a\b/.test(ctx) && /href\s*=/.test(ctx);
-            if (isAnchorWithHref) { tagBuffer = ''; continue; }
+            if (isAnchorWithHref) {
+              tagBuffer = '';
+              continue;
+            }
 
             const hasKeyboardHandler = /onKeyDown|onKeyUp/.test(ctx);
             const hasRoleButton = /role\s*=\s*["']button["']/.test(ctx);
@@ -62,11 +72,29 @@ export async function scanAccessibility() {
             // A keyboard handler is always required for clickable non-button elements
             if (!hasKeyboardHandler) {
               if (hasRoleButton && hasTabIndex) {
-                results.push(finding('Medium', 'Accessibility', 'Missing keyboard handler', file, tagStartNum, tagStartLine,
-                  'Element has role="button" + tabIndex but no onKeyDown/onKeyUp — add Enter/Space handler'));
+                results.push(
+                  finding(
+                    'Medium',
+                    'Accessibility',
+                    'Missing keyboard handler',
+                    file,
+                    tagStartNum,
+                    tagStartLine,
+                    'Element has role="button" + tabIndex but no onKeyDown/onKeyUp — add Enter/Space handler',
+                  ),
+                );
               } else {
-                results.push(finding('Medium', 'Accessibility', 'Missing keyboard handler', file, tagStartNum, tagStartLine,
-                  'Clickable non-button element without onKeyDown/onKeyUp'));
+                results.push(
+                  finding(
+                    'Medium',
+                    'Accessibility',
+                    'Missing keyboard handler',
+                    file,
+                    tagStartNum,
+                    tagStartLine,
+                    'Clickable non-button element without onKeyDown/onKeyUp',
+                  ),
+                );
               }
             }
           }
@@ -74,8 +102,17 @@ export async function scanAccessibility() {
           // Interactive elements without ARIA (Medium)
           if (/onClick|onPress/.test(ctx) && /<(?:div|span)\s/.test(ctx)) {
             if (!/aria-|role=/.test(ctx)) {
-              results.push(finding('Medium', 'Accessibility', 'Missing ARIA', file, tagStartNum, tagStartLine,
-                'Interactive div/span without role or aria-* attribute'));
+              results.push(
+                finding(
+                  'Medium',
+                  'Accessibility',
+                  'Missing ARIA',
+                  file,
+                  tagStartNum,
+                  tagStartLine,
+                  'Interactive div/span without role or aria-* attribute',
+                ),
+              );
             }
           }
 

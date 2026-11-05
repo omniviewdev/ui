@@ -18,52 +18,25 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export const AIStepDivider = forwardRef<HTMLDivElement, AIStepDividerProps>(
-  function AIStepDivider(
-    {
-      step,
-      label,
-      timestamp,
-      variant = 'line',
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const text = label ?? (step != null ? `Step ${step}` : undefined);
-    const hasLabel = text != null;
+export const AIStepDivider = forwardRef<HTMLDivElement, AIStepDividerProps>(function AIStepDivider(
+  { step, label, timestamp, variant = 'line', className, ...rest },
+  ref,
+) {
+  const text = label ?? (step != null ? `Step ${step}` : undefined);
+  const hasLabel = text != null;
 
-    // Plain separator — no label, no timestamp
-    if (!hasLabel && !timestamp) {
-      return (
-        <Separator
-          ref={ref as React.Ref<HTMLHRElement>}
-          className={className}
-          data-ov-variant={variant}
-        />
-      );
-    }
+  // Plain separator — no label, no timestamp
+  if (!hasLabel && !timestamp) {
+    return (
+      <Separator
+        ref={ref as React.Ref<HTMLHRElement>}
+        className={className}
+        data-ov-variant={variant}
+      />
+    );
+  }
 
-    if (variant === 'pill') {
-      return (
-        <div
-          ref={ref}
-          className={cn(styles.Root, className)}
-          role="separator"
-          data-ov-variant={variant}
-          {...rest}
-        >
-          <span className={styles.Line} />
-          {hasLabel && <Chip size="sm">{text}</Chip>}
-          {timestamp && (
-            <span className={styles.Timestamp}>{formatTime(timestamp)}</span>
-          )}
-          <span className={styles.Line} />
-        </div>
-      );
-    }
-
-    // line variant (default)
+  if (variant === 'pill') {
     return (
       <div
         ref={ref}
@@ -73,12 +46,26 @@ export const AIStepDivider = forwardRef<HTMLDivElement, AIStepDividerProps>(
         {...rest}
       >
         <span className={styles.Line} />
-        {hasLabel && <span className={styles.Label}>{text}</span>}
-        {timestamp && (
-          <span className={styles.Timestamp}>{formatTime(timestamp)}</span>
-        )}
+        {hasLabel && <Chip size="sm">{text}</Chip>}
+        {timestamp && <span className={styles.Timestamp}>{formatTime(timestamp)}</span>}
         <span className={styles.Line} />
       </div>
     );
-  },
-);
+  }
+
+  // line variant (default)
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Root, className)}
+      role="separator"
+      data-ov-variant={variant}
+      {...rest}
+    >
+      <span className={styles.Line} />
+      {hasLabel && <span className={styles.Label}>{text}</span>}
+      {timestamp && <span className={styles.Timestamp}>{formatTime(timestamp)}</span>}
+      <span className={styles.Line} />
+    </div>
+  );
+});

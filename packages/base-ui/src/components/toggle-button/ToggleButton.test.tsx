@@ -54,9 +54,15 @@ describe('ToggleButton', () => {
 
   it('renders discovery and secondary colors', () => {
     const { rerender } = renderWithTheme(<ToggleButton color="discovery">Tag</ToggleButton>);
-    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-color', 'discovery');
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute(
+      'data-ov-color',
+      'discovery',
+    );
 
     rerender(<ToggleButton color="secondary">Tag</ToggleButton>);
-    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute('data-ov-color', 'secondary');
+    expect(screen.getByRole('button', { name: 'Tag' })).toHaveAttribute(
+      'data-ov-color',
+      'secondary',
+    );
   });
 });

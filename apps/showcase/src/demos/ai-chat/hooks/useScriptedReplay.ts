@@ -53,24 +53,36 @@ export function useScriptedReplay(options: UseScriptedReplayOptions) {
     let elapsed = 0;
 
     // Phase: typing (user message arrived — show typing indicator)
-    schedule(() => {
-      setState((s) => ({ ...s, phase: 'typing' }));
-    }, (elapsed += 50));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, phase: 'typing' }));
+      },
+      (elapsed += 50),
+    );
 
     // Phase: thinking
-    schedule(() => {
-      setState((s) => ({ ...s, phase: 'thinking', thinkingText }));
-    }, (elapsed += 500));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, phase: 'thinking', thinkingText }));
+      },
+      (elapsed += 500),
+    );
 
     // Phase: tool-call (running)
-    schedule(() => {
-      setState((s) => ({ ...s, phase: 'tool-call', toolCallStatus: 'running' }));
-    }, (elapsed += 2000));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, phase: 'tool-call', toolCallStatus: 'running' }));
+      },
+      (elapsed += 2000),
+    );
 
     // Tool-call success
-    schedule(() => {
-      setState((s) => ({ ...s, toolCallStatus: 'success' }));
-    }, (elapsed += 1000));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, toolCallStatus: 'success' }));
+      },
+      (elapsed += 1000),
+    );
 
     // Phase: streaming — start after tool call resolves
     const streamingStart = elapsed + 300;
@@ -86,22 +98,31 @@ export function useScriptedReplay(options: UseScriptedReplayOptions) {
     for (let t = 1; t <= totalTicks; t++) {
       const end = Math.min(t * charsPerTick, streamedText.length);
       const chunk = streamedText.slice(0, end);
-      schedule(() => {
-        setState((s) => ({ ...s, streamedText: chunk }));
-      }, streamingStart + t * msPerTick);
+      schedule(
+        () => {
+          setState((s) => ({ ...s, streamedText: chunk }));
+        },
+        streamingStart + t * msPerTick,
+      );
     }
 
     const streamingEnd = streamingStart + totalTicks * msPerTick;
 
     // Phase: artifact — appears after streaming complete
-    schedule(() => {
-      setState((s) => ({ ...s, phase: 'artifact', artifact }));
-    }, (elapsed = streamingEnd + 200));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, phase: 'artifact', artifact }));
+      },
+      (elapsed = streamingEnd + 200),
+    );
 
     // Phase: follow-up
-    schedule(() => {
-      setState((s) => ({ ...s, phase: 'follow-up', followUps }));
-    }, (elapsed += 500));
+    schedule(
+      () => {
+        setState((s) => ({ ...s, phase: 'follow-up', followUps }));
+      },
+      (elapsed += 500),
+    );
 
     // Phase: done
     schedule(() => {

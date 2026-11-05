@@ -200,11 +200,7 @@ describe('Bug: Column resizing not working', () => {
     });
 
     return (
-      <DataTable.Root
-        table={table}
-        features={{ columnResizing: true }}
-        data-testid="dt-root"
-      >
+      <DataTable.Root table={table} features={{ columnResizing: true }} data-testid="dt-root">
         <DataTable.Container>
           <DataTable.Header />
           <DataTable.Body />
@@ -249,11 +245,7 @@ describe('Bug: Column ordering not working', () => {
     });
 
     return (
-      <DataTable.Root
-        table={table}
-        features={{ columnOrdering: true }}
-        data-testid="dt-root"
-      >
+      <DataTable.Root table={table} features={{ columnOrdering: true }} data-testid="dt-root">
         <DataTable.Container>
           <DataTable.Header />
           <DataTable.Body />
@@ -283,11 +275,7 @@ describe('Bug: Column ordering not working', () => {
       });
 
       return (
-        <DataTable.Root
-          table={table}
-          features={{ columnOrdering: true }}
-          data-testid="dt-root"
-        >
+        <DataTable.Root table={table} features={{ columnOrdering: true }} data-testid="dt-root">
           <DataTable.Container>
             <DataTable.Header />
             <DataTable.Body />

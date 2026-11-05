@@ -63,12 +63,22 @@ describe('Tooltip', () => {
     renderWithTheme(
       <Tooltip.Root size="lg" variant="solid" color="brand">
         <Menu.Root>
-          <Tooltip.Trigger render={
-            <Menu.Trigger render={<IconButton size="sm" variant="ghost" color="neutral" aria-label="Exec"><span aria-hidden>Exec</span></IconButton>} />
-          } />
+          <Tooltip.Trigger
+            render={
+              <Menu.Trigger
+                render={
+                  <IconButton size="sm" variant="ghost" color="neutral" aria-label="Exec">
+                    <span aria-hidden>Exec</span>
+                  </IconButton>
+                }
+              />
+            }
+          />
           <Menu.Portal>
             <Menu.Positioner>
-              <Menu.Popup><Menu.Item>Open console</Menu.Item></Menu.Popup>
+              <Menu.Popup>
+                <Menu.Item>Open console</Menu.Item>
+              </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>
         </Menu.Root>

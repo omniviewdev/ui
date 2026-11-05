@@ -33,11 +33,7 @@ function threeItems() {
 describe('EditableList', () => {
   benchRender(
     'mount with items',
-    () => (
-      <EditableList onCommit={noop}>
-        {threeItems()}
-      </EditableList>
-    ),
+    () => <EditableList onCommit={noop}>{threeItems()}</EditableList>,
     TIER_2_OPTIONS,
   );
 

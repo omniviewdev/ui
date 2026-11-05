@@ -1,12 +1,5 @@
 import { useMemo } from 'react';
-import {
-  Tabs,
-  Breadcrumbs,
-  IconButton,
-  Button,
-  StatusDot,
-  useToast,
-} from '@omniviewdev/base-ui';
+import { Tabs, Breadcrumbs, IconButton, Button, StatusDot, useToast } from '@omniviewdev/base-ui';
 import {
   LuArrowLeft,
   LuPlay,
@@ -55,9 +48,7 @@ export function ContainerDetail({ container, onBack }: ContainerDetailProps) {
             <Breadcrumbs.Item onClick={onBack} style={{ cursor: 'pointer' }}>
               Containers
             </Breadcrumbs.Item>
-            <Breadcrumbs.Item active>
-              {container.name}
-            </Breadcrumbs.Item>
+            <Breadcrumbs.Item active>{container.name}</Breadcrumbs.Item>
           </Breadcrumbs>
 
           <StatusDot

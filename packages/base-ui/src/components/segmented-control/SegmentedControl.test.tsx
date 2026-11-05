@@ -114,7 +114,9 @@ describe('SegmentedControl', () => {
     renderWithTheme(
       <SegmentedControl aria-label="View">
         <SegmentedControl.Item value="a">A</SegmentedControl.Item>
-        <SegmentedControl.Item value="b" disabled>B</SegmentedControl.Item>
+        <SegmentedControl.Item value="b" disabled>
+          B
+        </SegmentedControl.Item>
       </SegmentedControl>,
     );
 

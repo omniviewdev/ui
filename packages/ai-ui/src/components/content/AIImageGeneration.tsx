@@ -38,12 +38,7 @@ export const AIImageGeneration = forwardRef<HTMLDivElement, AIImageGenerationPro
         >
           {showSkeleton && (
             <div className={styles.Placeholder}>
-              <Skeleton
-                variant="rectangular"
-                width="100%"
-                height="100%"
-                animation="wave"
-              />
+              <Skeleton variant="rectangular" width="100%" height="100%" animation="wave" />
               <div className={styles.PlaceholderIcon}>
                 <LuImage size={32} />
                 {loading && <span className={styles.PlaceholderLabel}>Generating…</span>}

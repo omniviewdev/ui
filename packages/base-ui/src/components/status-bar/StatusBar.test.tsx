@@ -23,15 +23,23 @@ describe('StatusBar', () => {
   });
 
   it('applies size data attribute', () => {
-    renderWithTheme(<StatusBar data-testid="sb" size="md">content</StatusBar>);
+    renderWithTheme(
+      <StatusBar data-testid="sb" size="md">
+        content
+      </StatusBar>,
+    );
     expect(screen.getByTestId('sb')).toHaveAttribute('data-ov-size', 'md');
   });
 
   it('renders sections with align', () => {
     renderWithTheme(
       <StatusBar>
-        <StatusBar.Section align="start" data-testid="start">left</StatusBar.Section>
-        <StatusBar.Section align="end" data-testid="end">right</StatusBar.Section>
+        <StatusBar.Section align="start" data-testid="start">
+          left
+        </StatusBar.Section>
+        <StatusBar.Section align="end" data-testid="end">
+          right
+        </StatusBar.Section>
       </StatusBar>,
     );
 
@@ -71,7 +79,9 @@ describe('StatusBar', () => {
     renderWithTheme(
       <StatusBar>
         <StatusBar.Section>
-          <StatusBar.Item active data-testid="item">Active</StatusBar.Item>
+          <StatusBar.Item active data-testid="item">
+            Active
+          </StatusBar.Item>
         </StatusBar.Section>
       </StatusBar>,
     );
@@ -102,7 +112,11 @@ describe('StatusBar', () => {
   });
 
   it('merges className', () => {
-    renderWithTheme(<StatusBar data-testid="sb" className="custom">content</StatusBar>);
+    renderWithTheme(
+      <StatusBar data-testid="sb" className="custom">
+        content
+      </StatusBar>,
+    );
     expect(screen.getByTestId('sb')).toHaveClass('custom');
   });
 });
@@ -355,7 +369,9 @@ describe('StatusBar size propagation via context', () => {
     renderWithTheme(
       <StatusBar size="lg">
         <StatusBar.Section>
-          <StatusBar.IconItem icon={<svg />} data-testid="ii">Item</StatusBar.IconItem>
+          <StatusBar.IconItem icon={<svg />} data-testid="ii">
+            Item
+          </StatusBar.IconItem>
         </StatusBar.Section>
       </StatusBar>,
     );
@@ -367,7 +383,9 @@ describe('StatusBar size propagation via context', () => {
     renderWithTheme(
       <StatusBar>
         <StatusBar.Section>
-          <StatusBar.IconItem icon={<svg />} data-testid="ii">Item</StatusBar.IconItem>
+          <StatusBar.IconItem icon={<svg />} data-testid="ii">
+            Item
+          </StatusBar.IconItem>
         </StatusBar.Section>
       </StatusBar>,
     );

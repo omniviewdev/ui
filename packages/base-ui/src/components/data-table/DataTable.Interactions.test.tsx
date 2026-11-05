@@ -18,35 +18,42 @@ const columns: ColumnDef<Item, unknown>[] = [
   {
     id: 'controls',
     header: 'Controls',
-    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-      <>
-        <button aria-haspopup="menu" aria-expanded="false">
-          Actions {row.original.name}
-        </button>
-        <button
-          data-ov-expansion-toggle=""
-          aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
-          onClick={() => row.toggleExpanded()}
-        >
-          Details {row.original.name}
-        </button>
-        <button onClick={() => row.toggleSelected()}>Select {row.original.name}</button>
-        <a href="#fixture">Link {row.original.name}</a>
-        <label>
-          <input type="checkbox" /> Check {row.original.name}
-        </label>
-        <span role="button" tabIndex={0}>
-          Custom {row.original.name}
-        </span>
-        <table>
-          <tbody>
-            <tr>
-              <td>Nested {row.original.name}</td>
-            </tr>
-          </tbody>
-        </table>
-      </>
-    ))}</Subscribe>),
+    cell: ({ row, table }) => (
+      <Subscribe
+        source={table.store}
+        selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+      >
+        {(snapshot) => (
+          <>
+            <button aria-haspopup="menu" aria-expanded="false">
+              Actions {row.original.name}
+            </button>
+            <button
+              data-ov-expansion-toggle=""
+              aria-expanded={snapshot.expanded === true || !!snapshot.expanded[row.id]}
+              onClick={() => row.toggleExpanded()}
+            >
+              Details {row.original.name}
+            </button>
+            <button onClick={() => row.toggleSelected()}>Select {row.original.name}</button>
+            <a href="#fixture">Link {row.original.name}</a>
+            <label>
+              <input type="checkbox" /> Check {row.original.name}
+            </label>
+            <span role="button" tabIndex={0}>
+              Custom {row.original.name}
+            </span>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Nested {row.original.name}</td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )}
+      </Subscribe>
+    ),
   },
   { accessorKey: 'name', header: 'Name' },
 ];

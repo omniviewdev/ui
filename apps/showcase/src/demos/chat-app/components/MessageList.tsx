@@ -66,9 +66,7 @@ export function MessageList({
         return (
           <div key={msg.id}>
             {showDateSep && (
-              <div className={styles.dateSeparator}>
-                {formatDateSeparator(msg.timestamp)}
-              </div>
+              <div className={styles.dateSeparator}>{formatDateSeparator(msg.timestamp)}</div>
             )}
             <MessageItem
               message={msg}

@@ -37,7 +37,8 @@ export const UserMessage: Story = {
 export const AssistantMessage: Story = {
   args: {
     role: 'assistant',
-    children: 'Sure! Here\'s a simple quicksort implementation that handles most common cases efficiently.',
+    children:
+      "Sure! Here's a simple quicksort implementation that handles most common cases efficiently.",
   },
 };
 
@@ -51,7 +52,7 @@ export const SystemMessage: Story = {
 export const WithAvatar: Story = {
   args: {
     role: 'assistant',
-    children: 'I\'m here to help with your code!',
+    children: "I'm here to help with your code!",
     avatar: <ChatAvatar role="assistant" name="Claude" />,
   },
 };
@@ -71,8 +72,8 @@ export const Conversation: Story = {
         How do I center a div?
       </ChatBubble>
       <ChatBubble role="assistant" avatar={<ChatAvatar role="assistant" name="Claude" />}>
-        There are several ways to center a div. The most modern approach is using flexbox:
-        display: flex; justify-content: center; align-items: center;
+        There are several ways to center a div. The most modern approach is using flexbox: display:
+        flex; justify-content: center; align-items: center;
       </ChatBubble>
       <ChatBubble role="user" avatar={<ChatAvatar role="user" name="Josh" />}>
         Thanks! What about grid?

@@ -27,11 +27,7 @@ type Story = StoryObj<typeof meta>;
 // Helpers
 // ---------------------------------------------------------------------------
 
-async function* simulateStream(
-  text: string,
-  chunkSize = 3,
-  delayMs = 12,
-): AsyncGenerator<string> {
+async function* simulateStream(text: string, chunkSize = 3, delayMs = 12): AsyncGenerator<string> {
   let i = 0;
   while (i < text.length) {
     const size = Math.max(1, chunkSize + Math.floor(Math.random() * 4) - 2);
@@ -234,21 +230,12 @@ function StreamingShowcaseComponent() {
           Restart Stream
         </button>
         <span style={{ fontSize: 12, color: 'var(--ov-color-fg-muted)' }}>
-          {complete
-            ? `Complete (${chunkCount} chunks)`
-            : `Streaming... (${chunkCount} chunks)`}
+          {complete ? `Complete (${chunkCount} chunks)` : `Streaming... (${chunkCount} chunks)`}
         </span>
       </div>
 
-      <ChatBubble
-        role="assistant"
-        avatar={<ChatAvatar role="assistant" name="Claude" />}
-      >
-        <AIMarkdown
-          stream={stream}
-          onChunk={handleChunk}
-          onComplete={handleComplete}
-        />
+      <ChatBubble role="assistant" avatar={<ChatAvatar role="assistant" name="Claude" />}>
+        <AIMarkdown stream={stream} onChunk={handleChunk} onComplete={handleComplete} />
       </ChatBubble>
     </div>
   );
@@ -375,18 +362,12 @@ function StreamingConversationComponent() {
         avatar={<ChatAvatar role="user" name="Josh" />}
         timestamp={new Date(Date.now() - 30000)}
       >
-        How does Kubernetes schedule pods across nodes? I want to understand the
-        full process including node affinity and resource management.
+        How does Kubernetes schedule pods across nodes? I want to understand the full process
+        including node affinity and resource management.
       </ChatBubble>
 
-      <ChatBubble
-        role="assistant"
-        avatar={<ChatAvatar role="assistant" name="Claude" />}
-      >
-        <AIMarkdown
-          stream={stream}
-          onComplete={() => setIsStreaming(false)}
-        />
+      <ChatBubble role="assistant" avatar={<ChatAvatar role="assistant" name="Claude" />}>
+        <AIMarkdown stream={stream} onComplete={() => setIsStreaming(false)} />
       </ChatBubble>
 
       {isStreaming && (

@@ -82,8 +82,15 @@ export function QueryInput({
   const open = active && !blocked && !ime && Boolean(request);
   // Keep pending presentation tied to request inputs, including debounce and explicit retries.
   const [requestInputs, setRequestInputs] = useState(() => ({
-    text: document.text, version: document.version, uri: document.uri,
-    contextKey, request, cursor, open, debounceMs, retry,
+    text: document.text,
+    version: document.version,
+    uri: document.uri,
+    contextKey,
+    request,
+    cursor,
+    open,
+    debounceMs,
+    retry,
   }));
   if (
     requestInputs.text !== document.text ||
@@ -97,8 +104,15 @@ export function QueryInput({
     requestInputs.retry !== retry
   ) {
     setRequestInputs({
-      text: document.text, version: document.version, uri: document.uri,
-      contextKey, request, cursor, open, debounceMs, retry,
+      text: document.text,
+      version: document.version,
+      uri: document.uri,
+      contextKey,
+      request,
+      cursor,
+      open,
+      debounceMs,
+      retry,
     });
     setLoading(Boolean(open && request));
     setSelected(0);
@@ -159,9 +173,7 @@ export function QueryInput({
             );
             setResult({ ...response, completions });
             setResultCursor(cursor);
-            const firstEnabled = completions.findIndex(
-              (completion) => !completion.disabledReason,
-            );
+            const firstEnabled = completions.findIndex((completion) => !completion.disabledReason);
             setSelected(firstEnabled < 0 ? 0 : firstEnabled);
           }
         } catch (error) {
@@ -185,7 +197,17 @@ export function QueryInput({
       clearTimeout(timer);
       abort.abort();
     };
-  }, [document.text, document.version, document.uri, contextKey, request, cursor, open, debounceMs, retry]);
+  }, [
+    document.text,
+    document.version,
+    document.uri,
+    contextKey,
+    request,
+    cursor,
+    open,
+    debounceMs,
+    retry,
+  ]);
 
   useEffect(() => {
     if (open && highlighted)
@@ -215,7 +237,8 @@ export function QueryInput({
     }
   }
   function acceptCompletion(completion: QueryCompletion) {
-    if (!completion.disabledReason && completion.insertTextFormat !== 'snippet') accept(completion.edit);
+    if (!completion.disabledReason && completion.insertTextFormat !== 'snippet')
+      accept(completion.edit);
   }
   function navigate(direction: number) {
     if (!suggestions.length) return;

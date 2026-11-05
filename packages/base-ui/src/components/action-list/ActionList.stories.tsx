@@ -12,7 +12,19 @@ const meta = {
     itemVariant: 'ghost',
   },
   argTypes: {
-    color: { control: 'select', options: ['neutral', 'brand', 'success', 'warning', 'danger', 'info', 'discovery', 'secondary'] },
+    color: {
+      control: 'select',
+      options: [
+        'neutral',
+        'brand',
+        'success',
+        'warning',
+        'danger',
+        'info',
+        'discovery',
+        'secondary',
+      ],
+    },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
     itemVariant: { control: 'inline-radio', options: ['solid', 'soft', 'outline', 'ghost'] },
   },

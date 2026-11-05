@@ -54,12 +54,20 @@
   line-height: 1.3;
 }
 
-.Root h1 { font-size: var(--ov-font-size-xl, 1.25rem); }
-.Root h2 { font-size: var(--ov-font-size-lg, 1.0625rem); }
-.Root h3 { font-size: var(--ov-font-size-md, 0.9375rem); }
+.Root h1 {
+  font-size: var(--ov-font-size-xl, 1.25rem);
+}
+.Root h2 {
+  font-size: var(--ov-font-size-lg, 1.0625rem);
+}
+.Root h3 {
+  font-size: var(--ov-font-size-md, 0.9375rem);
+}
 .Root h4,
 .Root h5,
-.Root h6 { font-size: var(--ov-font-size-sm, 0.8125rem); }
+.Root h6 {
+  font-size: var(--ov-font-size-sm, 0.8125rem);
+}
 
 /* Paragraphs */
 .Root p {

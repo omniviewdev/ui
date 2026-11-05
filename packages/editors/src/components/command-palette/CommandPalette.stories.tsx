@@ -48,7 +48,9 @@ function PlaygroundStory(args: CommandPaletteProps) {
   const [lastSelected, setLastSelected] = useState<string | null>(null);
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open Command Palette</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open Command Palette
+      </button>
       <p>Arrow keys navigate, Enter selects, Escape dismisses. Focus returns here when closed.</p>
       {lastSelected && (
         <p style={{ marginTop: 8, fontSize: 13, opacity: 0.7 }}>Last selected: {lastSelected}</p>
@@ -80,7 +82,9 @@ function ManyCommandsStory(args: CommandPaletteProps) {
   }));
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open (100 commands)</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open (100 commands)
+      </button>
       <CommandPalette
         {...args}
         commands={manyCommands}
@@ -133,7 +137,9 @@ function WithDescriptionsStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open
+      </button>
       <CommandPalette
         {...args}
         commands={commands}
@@ -164,7 +170,9 @@ function WithDisabledStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open (disabled items hidden)</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open (disabled items hidden)
+      </button>
       <p>Revert, Deploy and Publish are disabled and remain hidden.</p>
       <p aria-live="polite">Last selected: {lastSelected}</p>
       <CommandPalette
@@ -187,7 +195,9 @@ function EmptyStory(args: CommandPaletteProps) {
   const [open, setOpen] = useState(true);
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open (empty)</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open (empty)
+      </button>
       <CommandPalette
         {...args}
         commands={[]}
@@ -217,7 +227,9 @@ function UngroupedStory(args: CommandPaletteProps) {
   ];
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open (ungrouped)</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open (ungrouped)
+      </button>
       <CommandPalette
         {...args}
         commands={commands}
@@ -238,7 +250,9 @@ function CustomPlaceholderStory(args: CommandPaletteProps) {
   const [open, setOpen] = useState(true);
   return (
     <div>
-      <button type="button" onClick={() => setOpen(true)}>Open</button>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open
+      </button>
       <CommandPalette
         {...args}
         placeholder="Find an action…"
@@ -259,28 +273,47 @@ function ChangingResultsStory(args: CommandPaletteProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [lastSelected, setLastSelected] = useState('None');
-  const scenarios = ['Ordered commands', 'Replaced results', 'All disabled', 'Loading', 'Error', 'Empty'];
+  const scenarios = [
+    'Ordered commands',
+    'Replaced results',
+    'All disabled',
+    'Loading',
+    'Error',
+    'Empty',
+  ];
   const ordered: CommandItem[] = [
     { id: 'alpha', label: 'Alpha action', group: 'File' },
     { id: 'beta', label: 'Beta action', group: 'Search' },
     { id: 'gamma', label: 'Gamma action', group: 'File' },
     { id: 'blocked', label: 'Unavailable action', disabled: true },
   ];
-  const results = step === 0 ? ordered
-    : step === 1 ? [{ id: 'replacement', label: 'Replacement action', group: 'Updated' }]
-    : step === 2 ? [{ id: 'replacement', label: 'Replacement action', disabled: true }]
-    : step === 5 ? [] : ordered;
+  const results =
+    step === 0
+      ? ordered
+      : step === 1
+        ? [{ id: 'replacement', label: 'Replacement action', group: 'Updated' }]
+        : step === 2
+          ? [{ id: 'replacement', label: 'Replacement action', disabled: true }]
+          : step === 5
+            ? []
+            : ordered;
 
   return (
-    <div onKeyDownCapture={(event) => {
-      if (event.altKey && event.key.toLowerCase() === 'r') {
-        event.preventDefault();
-        event.stopPropagation();
-        setStep((current) => (current + 1) % scenarios.length);
-      }
-    }}>
-      <button type="button" onClick={() => setOpen(true)}>Open Changing Results</button>
-      <p>While open, Alt+R advances: ordered → replaced → all disabled → loading → error → empty.</p>
+    <div
+      onKeyDownCapture={(event) => {
+        if (event.altKey && event.key.toLowerCase() === 'r') {
+          event.preventDefault();
+          event.stopPropagation();
+          setStep((current) => (current + 1) % scenarios.length);
+        }
+      }}
+    >
+      <button type="button" onClick={() => setOpen(true)}>
+        Open Changing Results
+      </button>
+      <p>
+        While open, Alt+R advances: ordered → replaced → all disabled → loading → error → empty.
+      </p>
       <p>Scenario: {scenarios[step]}</p>
       <p aria-live="polite">Last selected: {lastSelected}</p>
       <CommandPalette
@@ -301,7 +334,8 @@ export const ChangingResults: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Component-only result lifecycle. Alt+R replaces caller results while the input stays focused; no backend or production command registration.',
+        story:
+          'Component-only result lifecycle. Alt+R replaces caller results while the input stays focused; no backend or production command registration.',
       },
     },
   },

@@ -72,31 +72,55 @@ describe('QueryInput', () => {
       requests.push(value);
       return response(value, value.document.uri ?? 'missing identity');
     };
-    render(<>
-      <QueryInput document={{ text: 'na', version: 1, uri: 'query://first' }}
-        label="First query" contextKey="cloud" request={request} onChange={() => {}} debounceMs={0} />
-      <QueryInput document={{ text: 'na', version: 1, uri: 'query://second' }}
-        label="Second query" contextKey="cloud" request={request} onChange={() => {}} debounceMs={0} />
-    </>);
+    render(
+      <>
+        <QueryInput
+          document={{ text: 'na', version: 1, uri: 'query://first' }}
+          label="First query"
+          contextKey="cloud"
+          request={request}
+          onChange={() => {}}
+          debounceMs={0}
+        />
+        <QueryInput
+          document={{ text: 'na', version: 1, uri: 'query://second' }}
+          label="Second query"
+          contextKey="cloud"
+          request={request}
+          onChange={() => {}}
+          debounceMs={0}
+        />
+      </>,
+    );
     fireEvent.focus(screen.getByRole('combobox', { name: 'First query' }));
     expect(await screen.findByRole('option', { name: /query:\/\/first/ })).toBeInTheDocument();
     fireEvent.focus(screen.getByRole('combobox', { name: 'Second query' }));
     expect(await screen.findByRole('option', { name: /query:\/\/second/ })).toBeInTheDocument();
-    expect(requests.map(item => item.document.uri)).toEqual(['query://first', 'query://second']);
+    expect(requests.map((item) => item.document.uri)).toEqual(['query://first', 'query://second']);
   });
 
   it('excludes snippet candidates before limiting and selecting native suggestions', async () => {
     const user = userEvent.setup();
-    render(<Controlled request={async request => ({
-      ...response(request),
-      completions: [
-        { ...response(request).completions[0]!, id: 'snippet', label: 'Snippet',
-          insertTextFormat: 'snippet', edit: {
-            range: { start: 0, end: 2, unit: 'utf8-byte' }, text: '${1:item}',
-          } },
-        response(request).completions[0]!,
-      ],
-    })} />);
+    render(
+      <Controlled
+        request={async (request) => ({
+          ...response(request),
+          completions: [
+            {
+              ...response(request).completions[0]!,
+              id: 'snippet',
+              label: 'Snippet',
+              insertTextFormat: 'snippet',
+              edit: {
+                range: { start: 0, end: 2, unit: 'utf8-byte' },
+                text: '${1:item}',
+              },
+            },
+            response(request).completions[0]!,
+          ],
+        })}
+      />,
+    );
     const input = screen.getByRole('combobox');
     await user.click(input);
     await screen.findByRole('option', { name: /name/ });

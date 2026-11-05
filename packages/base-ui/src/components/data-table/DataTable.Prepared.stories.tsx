@@ -2,11 +2,7 @@ import { Subscribe } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { DataTableColumnDef as ColumnDef } from './types';
-import type {
-  ExpandedState,
-  RowSelectionState,
-  SortingState,
-} from '@tanstack/react-table';
+import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
 import { Button } from '../button/Button';
@@ -28,15 +24,12 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 type RecordRow = { id: string; name: string; status: string; revision: number };
-const fixtureRows = Array.from(
-  { length: 2000 },
-  (_, index): RecordRow => ({
-    id: `opaque:${index}`,
-    name: `Resource ${index}`,
-    status: index % 2 ? 'Available' : 'Idle',
-    revision: 0,
-  }),
-);
+const fixtureRows = Array.from({ length: 2000 }, (_, index): RecordRow => ({
+  id: `opaque:${index}`,
+  name: `Resource ${index}`,
+  status: index % 2 ? 'Available' : 'Idle',
+  revision: 0,
+}));
 const features = {
   sorting: true,
   rowExpansion: true,
@@ -49,17 +42,24 @@ const columns: ColumnDef<RecordRow, unknown>[] = [
     header: 'Selection / details',
     enableSorting: false,
     size: 180,
-    cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => ((
-      <>
-        <Checkbox
-          aria-label={`Select ${row.original.name}`}
-          disabled={!row.getCanSelect()}
-          checked={!!snapshot.selection[row.id]}
-          onCheckedChange={() => row.toggleSelected()}
-        />
-        <DataTable.ExpansionToggle row={row} label={row.original.name} />
-      </>
-    ))}</Subscribe>),
+    cell: ({ row, table }) => (
+      <Subscribe
+        source={table.store}
+        selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
+      >
+        {(snapshot) => (
+          <>
+            <Checkbox
+              aria-label={`Select ${row.original.name}`}
+              disabled={!row.getCanSelect()}
+              checked={!!snapshot.selection[row.id]}
+              onCheckedChange={() => row.toggleSelected()}
+            />
+            <DataTable.ExpansionToggle row={row} label={row.original.name} />
+          </>
+        )}
+      </Subscribe>
+    ),
   },
   { accessorKey: 'name', header: 'Name', size: 220, meta: { dataTableCellDependencies: 'data' } },
   {
@@ -109,7 +109,9 @@ function FixtureDetails({
   });
   return (
     <section aria-label={`${row.name} ${mode} details`}>
-      <h3>{row.name} {mode} details</h3>
+      <h3>
+        {row.name} {mode} details
+      </h3>
       <p>Prepared detail fixture; no resource fetching.</p>
       <Button
         disabled={loading}
@@ -133,8 +135,10 @@ function FixtureDetails({
         </DataTable.Root>
       ) : (
         <dl style={{ display: mode === 'card' ? 'flex' : 'block', gap: 16 }}>
-          <dt>State</dt><dd>{row.status}</dd>
-          <dt>Revision</dt><dd>{row.revision}</dd>
+          <dt>State</dt>
+          <dd>{row.status}</dd>
+          <dt>Revision</dt>
+          <dd>{row.revision}</dd>
         </dl>
       )}
       {loaded && (
@@ -288,15 +292,12 @@ function PreparedGroups() {
       preparedGroups.flatMap((group): PreparedRow[] => [
         { ...group, kind: 'group' },
         ...(expanded === true || expanded[group.id]
-          ? Array.from(
-              { length: group.count },
-              (_, index): PreparedRow => ({
-                id: `${group.id}:member:${index}`,
-                kind: 'member',
-                label: `Prepared member ${index + 1}`,
-                groupId: group.id,
-              }),
-            )
+          ? Array.from({ length: group.count }, (_, index): PreparedRow => ({
+              id: `${group.id}:member:${index}`,
+              kind: 'member',
+              label: `Prepared member ${index + 1}`,
+              groupId: group.id,
+            }))
           : []),
       ]),
     [expanded],
@@ -307,25 +308,34 @@ function PreparedGroups() {
         id: 'label',
         header: 'Host-prepared groups and members',
         size: 460,
-        cell: ({ row, table }) => (<Subscribe source={table.store} selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}>{(snapshot) => (row.original.kind === 'group' ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-expanded={(snapshot.expanded === true || !!snapshot.expanded[row.id])}
-            onClick={() => row.toggleExpanded()}
+        cell: ({ row, table }) => (
+          <Subscribe
+            source={table.store}
+            selector={(state) => ({ selection: state.rowSelection, expanded: state.expanded })}
           >
-            {row.original.label} ({row.original.count})
-          </Button>
-        ) : (
-          <span style={{ paddingInlineStart: 24 }}>
-            <Checkbox
-              aria-label={`Select ${row.id}`}
-              checked={!!snapshot.selection[row.id]}
-              onCheckedChange={() => row.toggleSelected()}
-            />{' '}
-            {row.original.label}
-          </span>
-        ))}</Subscribe>),
+            {(snapshot) =>
+              row.original.kind === 'group' ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-expanded={snapshot.expanded === true || !!snapshot.expanded[row.id]}
+                  onClick={() => row.toggleExpanded()}
+                >
+                  {row.original.label} ({row.original.count})
+                </Button>
+              ) : (
+                <span style={{ paddingInlineStart: 24 }}>
+                  <Checkbox
+                    aria-label={`Select ${row.id}`}
+                    checked={!!snapshot.selection[row.id]}
+                    onCheckedChange={() => row.toggleSelected()}
+                  />{' '}
+                  {row.original.label}
+                </span>
+              )
+            }
+          </Subscribe>
+        ),
       },
     ],
     [],

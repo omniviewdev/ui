@@ -11,16 +11,17 @@ export interface AITokenUsageProps extends HTMLAttributes<HTMLDivElement> {
   total?: number;
 }
 
-export const AITokenUsage = forwardRef<HTMLDivElement, AITokenUsageProps>(
-  function AITokenUsage({ inputTokens, outputTokens, total, className, ...rest }, ref) {
-    const computedTotal = total ?? inputTokens + outputTokens;
+export const AITokenUsage = forwardRef<HTMLDivElement, AITokenUsageProps>(function AITokenUsage(
+  { inputTokens, outputTokens, total, className, ...rest },
+  ref,
+) {
+  const computedTotal = total ?? inputTokens + outputTokens;
 
-    return (
-      <StatRow ref={ref} size="sm" className={cn(className)} {...rest}>
-        <StatRow.Item>{inputTokens.toLocaleString()} input</StatRow.Item>
-        <StatRow.Item>{outputTokens.toLocaleString()} output</StatRow.Item>
-        <StatRow.Item>{computedTotal.toLocaleString()} tokens</StatRow.Item>
-      </StatRow>
-    );
-  },
-);
+  return (
+    <StatRow ref={ref} size="sm" className={cn(className)} {...rest}>
+      <StatRow.Item>{inputTokens.toLocaleString()} input</StatRow.Item>
+      <StatRow.Item>{outputTokens.toLocaleString()} output</StatRow.Item>
+      <StatRow.Item>{computedTotal.toLocaleString()} tokens</StatRow.Item>
+    </StatRow>
+  );
+});

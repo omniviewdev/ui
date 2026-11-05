@@ -10,7 +10,7 @@ maintainers (or a potential fork) have full context.
 
 | Package                 | Version  | Notes                                            |
 | ----------------------- | -------- | ------------------------------------------------ |
-| `monaco-editor`         | `0.52.2` | Retained compatibility baseline                 |
+| `monaco-editor`         | `0.52.2` | Retained compatibility baseline                  |
 | `monaco-yaml`           | `5.5.1`  | YAML integration; retains worker-manager below   |
 | `monaco-worker-manager` | `2.0.1`  | Uses the legacy worker creation/startup contract |
 
@@ -152,10 +152,10 @@ normalizes differently. Use `encodeURIComponent()` for dynamic segments:
 
 ```ts
 // BAD — :: gets normalized by URI.parse, causing handle lookup miss
-uri: `https://omniview.dev/schemas/k8s/core::v1::Pod`
+uri: `https://omniview.dev/schemas/k8s/core::v1::Pod`;
 
 // GOOD — encoded segment survives URI normalization
-uri: `https://omniview.dev/schemas/k8s/${encodeURIComponent('core::v1::Pod')}`
+uri: `https://omniview.dev/schemas/k8s/${encodeURIComponent('core::v1::Pod')}`;
 ```
 
 ## Tracked follow-up: maintained YAML fork
@@ -165,9 +165,9 @@ in this change.
 
 - [ ] Create an Omniview-maintained fork of `monaco-yaml`.
 - [ ] Remove `monaco-worker-manager`; support explicit native worker injection
-  and configuration/startup for the selected Monaco version.
+      and configuration/startup for the selected Monaco version.
 - [ ] Verify real browser validation, schema completion, live schema updates,
-  idle recreation, and disposal in both Vite dev and bundled-worker delivery.
+      idle recreation, and disposal in both Vite dev and bundled-worker delivery.
 - [ ] Publish the fork and upgrade host, UI libraries, and Kubernetes together.
 
 Implementation considerations:

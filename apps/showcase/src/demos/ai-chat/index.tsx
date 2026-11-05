@@ -1,10 +1,7 @@
 import '@omniviewdev/ai-ui/styles.css';
 
 import { useState, useCallback, useRef } from 'react';
-import {
-  ResizableSplitPane,
-  IconButton,
-} from '@omniviewdev/base-ui';
+import { ResizableSplitPane, IconButton } from '@omniviewdev/base-ui';
 import {
   AIModelSelector,
   ChatMessageList,
@@ -47,7 +44,7 @@ const PHASE_ORDER = [
 ] as const;
 
 function phaseIndex(phase: string): number {
-  return PHASE_ORDER.indexOf(phase as typeof PHASE_ORDER[number]);
+  return PHASE_ORDER.indexOf(phase as (typeof PHASE_ORDER)[number]);
 }
 
 function pastPhase(current: string, target: string): boolean {
@@ -74,34 +71,43 @@ export default function AiChatDemo() {
   // Expose artifact from replay state
   const displayedArtifact = artifact ?? state.artifact;
 
-  const handleSend = useCallback((value: string) => {
-    const userMsg: ChatMessage = {
-      id: `msg-user-${Date.now()}`,
-      role: 'user',
-      content: value,
-      contextFiles: ['src/utils/math.py', 'tests/test_math.py'],
-    };
-    setMessages((prev) => [...prev, userMsg]);
-    setReplayUserMessage(userMsg);
-    setInputValue('');
-    // Reset artifact from previous replay
-    setArtifact(null);
-    // Small delay so the message renders before replay starts
-    setTimeout(() => {
-      startReplay();
-      requestAnimationFrame(() => {
-        listRef.current?.scrollToBottom();
-      });
-    }, 50);
-  }, [startReplay]);
+  const handleSend = useCallback(
+    (value: string) => {
+      const userMsg: ChatMessage = {
+        id: `msg-user-${Date.now()}`,
+        role: 'user',
+        content: value,
+        contextFiles: ['src/utils/math.py', 'tests/test_math.py'],
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      setReplayUserMessage(userMsg);
+      setInputValue('');
+      // Reset artifact from previous replay
+      setArtifact(null);
+      // Small delay so the message renders before replay starts
+      setTimeout(() => {
+        startReplay();
+        requestAnimationFrame(() => {
+          listRef.current?.scrollToBottom();
+        });
+      }, 50);
+    },
+    [startReplay],
+  );
 
-  const handleSuggestionSelect = useCallback((value: string) => {
-    handleSend(value);
-  }, [handleSend]);
+  const handleSuggestionSelect = useCallback(
+    (value: string) => {
+      handleSend(value);
+    },
+    [handleSend],
+  );
 
-  const handleFollowUpSelect = useCallback((suggestion: string) => {
-    handleSend(suggestion);
-  }, [handleSend]);
+  const handleFollowUpSelect = useCallback(
+    (suggestion: string) => {
+      handleSend(suggestion);
+    },
+    [handleSend],
+  );
 
   const handleStop = useCallback(() => {
     reset();
@@ -113,11 +119,13 @@ export default function AiChatDemo() {
     reset();
   }, [reset]);
 
-
   // Build combined item list for the virtual list
   // Static messages + replay items (cumulative, once visible they stay)
-  const isReplaying = state.phase !== 'idle' && state.phase !== 'done' || (state.phase === 'done' && replayUserMessage != null);
-  const showTyping = isReplaying && pastPhase(state.phase, 'typing') && !pastPhase(state.phase, 'thinking');
+  const isReplaying =
+    (state.phase !== 'idle' && state.phase !== 'done') ||
+    (state.phase === 'done' && replayUserMessage != null);
+  const showTyping =
+    isReplaying && pastPhase(state.phase, 'typing') && !pastPhase(state.phase, 'thinking');
   const showThinking = isReplaying && pastPhase(state.phase, 'thinking');
   const showToolCall = isReplaying && pastPhase(state.phase, 'tool-call');
   const showStreaming = isReplaying && pastPhase(state.phase, 'streaming');
@@ -160,12 +168,12 @@ export default function AiChatDemo() {
         </div>
       );
     }
-  
+
     const replayIndex = index - staticMessages.length;
     const replayItem = replayItems[replayIndex];
-  
+
     if (!replayItem) return null;
-  
+
     if (replayItem.type === 'user-replay') {
       return (
         <div className={styles.MessageItem}>
@@ -173,7 +181,7 @@ export default function AiChatDemo() {
         </div>
       );
     }
-  
+
     if (replayItem.type === 'typing') {
       return (
         <div className={styles.TypingRow}>
@@ -181,7 +189,7 @@ export default function AiChatDemo() {
         </div>
       );
     }
-  
+
     if (replayItem.type === 'assistant-replay') {
       return (
         <div className={styles.MessageItem}>
@@ -207,19 +215,20 @@ export default function AiChatDemo() {
             </div>
           )}
           {showStreaming && (
-            <AIMarkdown
-              content={state.streamedText}
-              streaming={state.phase === 'streaming'}
-            />
+            <AIMarkdown content={state.streamedText} streaming={state.phase === 'streaming'} />
           )}
         </div>
       );
     }
-  
+
     return null;
   };
 
-  const isStreaming = state.phase === 'streaming' || state.phase === 'typing' || state.phase === 'thinking' || state.phase === 'tool-call';
+  const isStreaming =
+    state.phase === 'streaming' ||
+    state.phase === 'typing' ||
+    state.phase === 'thinking' ||
+    state.phase === 'tool-call';
 
   const inputToolbarStart = (
     <>
@@ -243,7 +252,10 @@ export default function AiChatDemo() {
       color="brand"
       aria-label="Send message"
       disabled={isStreaming || !inputValue.trim()}
-      onClick={() => { const v = inputValue.trim(); if (v) handleSend(v); }}
+      onClick={() => {
+        const v = inputValue.trim();
+        if (v) handleSend(v);
+      }}
     >
       <LuArrowUp size={16} />
     </IconButton>
@@ -264,10 +276,7 @@ export default function AiChatDemo() {
         {/* Follow-up suggestions (shown after done) */}
         {showFollowUp && state.followUps.length > 0 && (
           <div className={styles.SuggestionsRow}>
-            <AIFollowUp
-              suggestions={state.followUps}
-              onSelect={handleFollowUpSelect}
-            />
+            <AIFollowUp suggestions={state.followUps} onSelect={handleFollowUpSelect} />
           </div>
         )}
 
@@ -304,10 +313,7 @@ export default function AiChatDemo() {
 
   const artifactPane = displayedArtifact ? (
     <div className={styles.ArtifactPane}>
-      <ArtifactPanel
-        artifact={displayedArtifact}
-        onClose={handleCloseArtifact}
-      />
+      <ArtifactPanel artifact={displayedArtifact} onClose={handleCloseArtifact} />
     </div>
   ) : null;
 
@@ -315,11 +321,7 @@ export default function AiChatDemo() {
     <div className={styles.Root}>
       {displayedArtifact ? (
         <div className={styles.SplitWrapper}>
-          <ResizableSplitPane
-            direction="horizontal"
-            defaultSize={900}
-            minSize={400}
-          >
+          <ResizableSplitPane direction="horizontal" defaultSize={900} minSize={400}>
             {chatPane}
             {artifactPane}
           </ResizableSplitPane>

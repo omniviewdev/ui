@@ -57,8 +57,6 @@
   --_ov-group-label-gap-after: var(--ov-size-list-group-label-gap-after-lg);
 }
 
-
-
 .Popup[data-ov-color='brand'] {
   --_ov-selected-bg: var(--ov-color-accent-soft);
 }

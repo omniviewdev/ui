@@ -74,7 +74,13 @@ export const SimulatedGeneration: Story = {
           loading={loading}
           prompt="A futuristic city skyline at sunset with flying cars"
         />
-        <p style={{ fontSize: 'var(--ov-font-size-xs)', color: 'var(--ov-color-fg-subtle)', margin: 0 }}>
+        <p
+          style={{
+            fontSize: 'var(--ov-font-size-xs)',
+            color: 'var(--ov-color-fg-subtle)',
+            margin: 0,
+          }}
+        >
           {loading ? 'Generating image… (3s simulation)' : 'Generation complete — image faded in'}
         </p>
       </div>

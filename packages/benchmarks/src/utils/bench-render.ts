@@ -74,17 +74,13 @@ export function benchRerender<P extends Record<string, unknown>>(
 
     test('rerender', async ({ bench }) => {
       try {
-        await bench(
-          'rerender',
-          { beforeAll: setup, afterAll: teardown },
-          () => {
-            if (!rerenderFn) {
-              throw new Error('benchRerender: setup did not run');
-            }
-            rerenderFn(wrapWithTheme(renderFn(updatedProps)));
-            rerenderFn(wrapWithTheme(renderFn(initialProps)));
-          },
-        ).run(opts);
+        await bench('rerender', { beforeAll: setup, afterAll: teardown }, () => {
+          if (!rerenderFn) {
+            throw new Error('benchRerender: setup did not run');
+          }
+          rerenderFn(wrapWithTheme(renderFn(updatedProps)));
+          rerenderFn(wrapWithTheme(renderFn(initialProps)));
+        }).run(opts);
       } finally {
         // Also clean up when setup, measurement, or a provider hook throws.
         teardown();

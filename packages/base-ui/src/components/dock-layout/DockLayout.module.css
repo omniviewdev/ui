@@ -121,7 +121,8 @@
   white-space: nowrap;
   border-right: 1px solid var(--ov-color-border-muted);
   user-select: none;
-  transition: color var(--ov-duration-fast, 90ms) var(--ov-ease-standard, ease),
+  transition:
+    color var(--ov-duration-fast, 90ms) var(--ov-ease-standard, ease),
     background var(--ov-duration-fast, 90ms) var(--ov-ease-standard, ease);
 }
 

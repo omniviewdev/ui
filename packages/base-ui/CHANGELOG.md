@@ -8,6 +8,7 @@
 - Give `Menu` and `ContextMenu` a shared desktop menu scale independent of general lists: 28px default rows (26px in compact density), 13px default text, 16px default icons, 2px row gaps, 6px popup padding, and a 192px minimum width. Preserve all five sizes, explicit item sizing, and submenus without changing list or trigger geometry. Propagate popup style overrides to descendant items and portalled submenus.
 - Give menu sections a visible themed divider with consistent vertical breathing room.
 - Use the same option geometry in selection popups instead of unrelated general-list sizing. Keep small options readable at 13px, retain explicit size tiers and density, and apply row gaps inside menu groups.
+- Let editor tab strips shrink horizontally while preserving header height in column layouts, and propagate explicit Select popup styles to its options.
 
 ## 0.14.0
 

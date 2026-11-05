@@ -34,7 +34,7 @@
   align-items: stretch;
   box-sizing: border-box;
   min-width: 0;
-  flex-shrink: 0;
+  min-height: var(--_ov-tab-height);
   height: var(--_ov-tab-height);
   background: var(--_ov-group-header-bg);
   border-bottom: 1px solid var(--_ov-tab-border);

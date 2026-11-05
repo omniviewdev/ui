@@ -118,7 +118,9 @@ function generateMarkdown(comparison) {
     lines.push('| Suite | Benchmark | Baseline (ops/s) | Current (ops/s) | Change |');
     lines.push('|-------|-----------|-------------------|-----------------|--------|');
     for (const r of comparison.regressions) {
-      lines.push(`| ${r.suite} | ${r.name} | ${formatHz(r.baseline_hz)} | ${formatHz(r.current_hz)} | ${r.change_pct}% |`);
+      lines.push(
+        `| ${r.suite} | ${r.name} | ${formatHz(r.baseline_hz)} | ${formatHz(r.current_hz)} | ${r.change_pct}% |`,
+      );
     }
     lines.push('');
   }
@@ -128,7 +130,9 @@ function generateMarkdown(comparison) {
     lines.push('| Suite | Benchmark | Baseline (ops/s) | Current (ops/s) | Change |');
     lines.push('|-------|-----------|-------------------|-----------------|--------|');
     for (const r of comparison.improvements) {
-      lines.push(`| ${r.suite} | ${r.name} | ${formatHz(r.baseline_hz)} | ${formatHz(r.current_hz)} | +${r.change_pct}% |`);
+      lines.push(
+        `| ${r.suite} | ${r.name} | ${formatHz(r.baseline_hz)} | ${formatHz(r.current_hz)} | +${r.change_pct}% |`,
+      );
     }
     lines.push('');
   }
@@ -158,9 +162,9 @@ const comparison = generateComparison(baseline, latest);
 
 if (comparison) {
   writeFileSync(join(resultsDir, 'comparison.json'), JSON.stringify(comparison, null, 2));
-  console.log('Wrote results/comparison.json');
+  process.stdout.write('Wrote results/comparison.json\n');
 }
 
 const markdown = generateMarkdown(comparison);
 writeFileSync(join(resultsDir, 'report.md'), markdown);
-console.log('Wrote results/report.md');
+process.stdout.write('Wrote results/report.md\n');

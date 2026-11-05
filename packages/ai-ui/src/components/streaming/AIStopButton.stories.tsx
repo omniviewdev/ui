@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIStopButton } from './AIStopButton';
 
@@ -6,7 +7,7 @@ const meta = {
   component: AIStopButton,
   tags: ['autodocs'],
   args: {
-    onStop: () => console.log('stop'),
+    onStop: action('stop'),
   },
 } satisfies Meta<typeof AIStopButton>;
 

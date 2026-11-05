@@ -5,8 +5,8 @@
   --_ov-timeline-icon-size: 16px;
   --_ov-timeline-dot-size: 7px;
   --_ov-timeline-row-height: 24px;
-  --_ov-timeline-font-size: var(--ov-primitive-font-size-12);
-  --_ov-timeline-ts-font-size: var(--ov-primitive-font-size-11);
+  --_ov-timeline-font-size: var(--ov-font-size-sm);
+  --_ov-timeline-ts-font-size: var(--ov-font-size-xs);
   --_ov-timeline-gap: 12px;
   --_ov-timeline-item-gap: 12px;
   --_ov-timeline-connector-width: 2px;
@@ -20,8 +20,8 @@
   --_ov-timeline-icon-size: 11px;
   --_ov-timeline-dot-size: 4px;
   --_ov-timeline-row-height: 16px;
-  --_ov-timeline-font-size: var(--ov-primitive-font-size-11);
-  --_ov-timeline-ts-font-size: var(--ov-primitive-font-size-11);
+  --_ov-timeline-font-size: var(--ov-font-size-xs);
+  --_ov-timeline-ts-font-size: var(--ov-font-size-xs);
   --_ov-timeline-gap: 6px;
   --_ov-timeline-item-gap: 6px;
 }
@@ -30,8 +30,8 @@
   --_ov-timeline-icon-size: 14px;
   --_ov-timeline-dot-size: 6px;
   --_ov-timeline-row-height: 20px;
-  --_ov-timeline-font-size: var(--ov-primitive-font-size-11);
-  --_ov-timeline-ts-font-size: var(--ov-primitive-font-size-11);
+  --_ov-timeline-font-size: var(--ov-font-size-xs);
+  --_ov-timeline-ts-font-size: var(--ov-font-size-xs);
   --_ov-timeline-gap: 8px;
   --_ov-timeline-item-gap: 8px;
 }
@@ -40,8 +40,8 @@
   --_ov-timeline-icon-size: 18px;
   --_ov-timeline-dot-size: 8px;
   --_ov-timeline-row-height: 28px;
-  --_ov-timeline-font-size: var(--ov-primitive-font-size-13);
-  --_ov-timeline-ts-font-size: var(--ov-primitive-font-size-12);
+  --_ov-timeline-font-size: var(--ov-font-size-md);
+  --_ov-timeline-ts-font-size: var(--ov-font-size-sm);
   --_ov-timeline-gap: 14px;
   --_ov-timeline-item-gap: 14px;
 }
@@ -50,8 +50,8 @@
   --_ov-timeline-icon-size: 20px;
   --_ov-timeline-dot-size: 10px;
   --_ov-timeline-row-height: 32px;
-  --_ov-timeline-font-size: var(--ov-primitive-font-size-14);
-  --_ov-timeline-ts-font-size: var(--ov-primitive-font-size-13);
+  --_ov-timeline-font-size: var(--ov-font-size-lg);
+  --_ov-timeline-ts-font-size: var(--ov-font-size-md);
   --_ov-timeline-gap: 16px;
   --_ov-timeline-item-gap: 16px;
 }
@@ -315,5 +315,7 @@
   letter-spacing: 0.05em;
   padding-block: var(--ov-space-stack-sm);
   /* Align with content column — skip timestamp + gap + indicator + gap */
-  padding-inline-start: calc(4.5rem + var(--_ov-timeline-gap) + var(--_ov-timeline-icon-size) + var(--_ov-timeline-gap));
+  padding-inline-start: calc(
+    4.5rem + var(--_ov-timeline-gap) + var(--_ov-timeline-icon-size) + var(--_ov-timeline-gap)
+  );
 }

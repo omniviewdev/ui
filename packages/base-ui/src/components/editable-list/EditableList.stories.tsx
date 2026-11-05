@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { EditableList } from './EditableList';
@@ -270,7 +271,7 @@ export const DisabledItems: Story = {
     <EditableList
       {...args}
       disabledKeys={['2', '4']}
-      onCommit={(key, values) => console.log('commit', key, values)}
+      onCommit={action('commit')}
       style={{ width: 480 }}
     >
       <EditableList.Viewport>

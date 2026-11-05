@@ -1,18 +1,23 @@
-import { forwardRef, useMemo, useCallback, type HTMLAttributes } from 'react';
+import { forwardRef, useCallback, type HTMLAttributes } from 'react';
+import type { RowData } from '@tanstack/react-table';
 import { LuChevronsLeft, LuChevronLeft, LuChevronRight, LuChevronsRight } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
-import { useDataTableContext } from './context/DataTableContext';
+import { useDataTableContext, type DataTableContextValue } from './context/DataTableContext';
 import { IconButton } from '../icon-button';
 import styles from './DataTable.module.css';
 
 export type DataTablePaginationProps = HTMLAttributes<HTMLDivElement>;
 
+function readPaginationSnapshot<TData extends RowData>({ table }: DataTableContextValue<TData>) {
+  return { pageCount: table.getPageCount(), totalRows: table.getRowCount() };
+}
+
 export const DataTablePagination = forwardRef<HTMLDivElement, DataTablePaginationProps>(
   function DataTablePagination({ className, ...props }, ref) {
-    const { table, state, options } = useDataTableContext();
+    const context = useDataTableContext();
+    const { table, state } = context;
     const pageIndex = state.pagination.pageIndex;
-    const pageCount = useMemo(() => table.getPageCount(), [table, state, options]);
-    const totalRows = useMemo(() => table.getRowCount(), [table, state, options]);
+    const { pageCount, totalRows } = readPaginationSnapshot(context);
 
     const handleFirstPage = useCallback(() => table.firstPage(), [table]);
     const handlePreviousPage = useCallback(() => table.previousPage(), [table]);

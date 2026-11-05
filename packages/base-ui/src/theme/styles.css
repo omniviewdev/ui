@@ -3,8 +3,16 @@
   /* Resolve aliases locally so nested theme roots use their own palette. */
   --ov-color-border-chrome: var(--ov-color-border-default);
   --ov-color-bg-control: var(--ov-color-bg-surface-raised);
-  --ov-color-bg-control-hover: color-mix(in srgb, var(--ov-color-bg-control) 90%, var(--ov-color-fg-default) 10%);
-  --ov-color-bg-control-pressed: color-mix(in srgb, var(--ov-color-bg-control) 84%, var(--ov-color-fg-default) 16%);
+  --ov-color-bg-control-hover: color-mix(
+    in srgb,
+    var(--ov-color-bg-control) 90%,
+    var(--ov-color-fg-default) 10%
+  );
+  --ov-color-bg-control-pressed: color-mix(
+    in srgb,
+    var(--ov-color-bg-control) 84%,
+    var(--ov-color-fg-default) 16%
+  );
   --ov-color-tab-fg: var(--ov-color-fg-muted);
   --ov-color-tab-border: var(--ov-color-border-muted);
   --ov-color-tab-active-bg: var(--ov-color-bg-surface); /* matches editor content */
@@ -22,6 +30,41 @@
   --ov-color-card-selected-border: var(--ov-color-accent-strong);
   --ov-size-card-selection-rail: 3px;
   --ov-size-card-focus-ring-width: 2px;
+  /* Categorical identities are separate from semantic health colors. */
+  --ov-color-chart-series-1: var(--ov-primitive-blue-400);
+  --ov-color-chart-series-2: var(--ov-primitive-purple-400);
+  --ov-color-chart-series-3: var(--ov-primitive-cyan-400);
+  --ov-color-chart-series-4: var(--ov-primitive-amber-400);
+  --ov-color-chart-series-5: var(--ov-primitive-green-400);
+  --ov-color-chart-series-6: var(--ov-primitive-red-400);
+  --ov-color-chart-series-7: color-mix(
+    in srgb,
+    var(--ov-primitive-purple-400),
+    var(--ov-primitive-cyan-400)
+  );
+  --ov-color-chart-series-8: color-mix(
+    in srgb,
+    var(--ov-primitive-amber-400),
+    var(--ov-primitive-red-400)
+  );
+  --ov-color-chart-grid: color-mix(in srgb, var(--ov-color-border-muted) 65%, transparent);
+  --ov-color-chart-axis: var(--ov-color-fg-muted);
+  --ov-color-chart-cursor: var(--ov-color-fg-subtle);
+  --ov-color-chart-selection: var(--ov-color-state-selected);
+  --ov-color-chart-missing: var(--ov-color-bg-inset);
+  --ov-color-chart-heatmap-1: color-mix(
+    in srgb,
+    var(--ov-color-chart-series-1) 15%,
+    var(--ov-color-bg-base)
+  );
+  --ov-color-chart-heatmap-2: color-mix(
+    in srgb,
+    var(--ov-color-chart-series-1) 45%,
+    var(--ov-color-bg-base)
+  );
+  --ov-color-chart-heatmap-3: var(--ov-color-chart-series-1);
+  --ov-color-chart-heatmap-4: var(--ov-color-chart-series-3);
+  --ov-color-chart-heatmap-5: var(--ov-color-chart-series-4);
 }
 
 :root,
@@ -128,6 +171,7 @@
   --ov-font-weight-body: var(--ov-primitive-font-weight-regular);
   --ov-font-weight-label: var(--ov-primitive-font-weight-regular);
   --ov-font-weight-title: var(--ov-primitive-font-weight-semibold);
+  --ov-font-weight-medium: var(--ov-primitive-font-weight-medium);
 
   --ov-space-inline-control: var(--ov-primitive-space-3);
   --ov-space-stack-sm: var(--ov-primitive-space-2);
@@ -138,6 +182,41 @@
   --ov-radius-control: var(--ov-primitive-radius-md);
   --ov-radius-surface: var(--ov-primitive-radius-lg);
   --ov-shadow-surface: var(--ov-primitive-shadow-md);
+
+  /* Shared elevation roles retain their distinct surface and interaction silhouettes. */
+  --ov-shadow-surface-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --ov-shadow-surface-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.1);
+  --ov-shadow-drag: 0 2px 8px rgb(0 0 0 / 0.25);
+  --ov-shadow-drag-ghost: 0 4px 16px rgb(0 0 0 / 0.3);
+  --ov-shadow-slider-thumb: 0 0 0 1px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.24);
+  --ov-shadow-switch-thumb: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.28);
+  --ov-color-shadow-pinned: rgb(0 0 0 / 0.12);
+
+  /* Stable identity palette pairs, independent of status and theme accent colors. */
+  --ov-color-avatar-palette-1-bg: #0b8f5a;
+  --ov-color-avatar-palette-1-fg: #f5fbf9;
+  --ov-color-avatar-palette-2-bg: #1f7ae0;
+  --ov-color-avatar-palette-2-fg: #f4f8ff;
+  --ov-color-avatar-palette-3-bg: #7e57c2;
+  --ov-color-avatar-palette-3-fg: #f6f1ff;
+  --ov-color-avatar-palette-4-bg: #d56a1f;
+  --ov-color-avatar-palette-4-fg: #1a0e04;
+  --ov-color-avatar-palette-5-bg: #c94153;
+  --ov-color-avatar-palette-5-fg: #fff1f3;
+  --ov-color-avatar-palette-6-bg: #137c8b;
+  --ov-color-avatar-palette-6-fg: #ebfbff;
+  --ov-color-avatar-palette-7-bg: #556274;
+  --ov-color-avatar-palette-7-fg: #f4f7ff;
+  --ov-color-avatar-palette-8-bg: #3f9153;
+  --ov-color-avatar-palette-8-fg: #f1fff5;
+  --ov-color-avatar-palette-9-bg: #9a5a2d;
+  --ov-color-avatar-palette-9-fg: #fff5ec;
+  --ov-color-avatar-palette-10-bg: #2f5bbb;
+  --ov-color-avatar-palette-10-fg: #eff3ff;
+  --ov-color-avatar-palette-11-bg: #7f4458;
+  --ov-color-avatar-palette-11-fg: #fff2f8;
+  --ov-color-avatar-palette-12-bg: #49508f;
+  --ov-color-avatar-palette-12-fg: #f0f2ff;
 
   --ov-duration-interactive: var(--ov-primitive-duration-fast);
   --ov-duration-panel: var(--ov-primitive-duration-normal);
@@ -160,7 +239,6 @@
   --ov-size-button-padding-inline-md: 8px;
   --ov-size-button-padding-inline-lg: 12px;
   --ov-size-button-padding-inline-xl: 16px;
-
 
   /* Flat-index spacing aliases (numeric scale) — bridge from the
      --ov-primitive-space-N + .5-step values used throughout ai-ui. */
@@ -1123,6 +1201,10 @@
  * --------------------------------------------------------------------------- */
 
 [data-ov-theme='void'] {
+  --ov-color-chart-series-1: #81a6ff;
+  --ov-color-chart-series-2: #b49bfa;
+  --ov-color-chart-series-3: #73bfaa;
+  --ov-color-chart-series-4: #ffb86c;
   --ov-color-bg-base: #0e0f11;
   --ov-color-bg-surface: #141517;
   --ov-color-bg-surface-raised: #1a1b1e;
@@ -1936,7 +2018,6 @@
     scroll-behavior: auto !important;
   }
 }
-
 
 html,
 body {

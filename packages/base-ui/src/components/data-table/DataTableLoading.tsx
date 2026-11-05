@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
 import styles from './DataTable.module.css';
@@ -9,8 +9,8 @@ export interface DataTableLoadingProps extends HTMLAttributes<HTMLTableSectionEl
 
 export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoadingProps>(
   function DataTableLoading({ className, rows = 8, ...props }, ref) {
-    const { table, state, options } = useDataTableContext();
-    const visibleColumns = useMemo(() => table.getVisibleLeafColumns(), [table, state, options]);
+    const { table } = useDataTableContext();
+    const visibleColumns = table.getVisibleLeafColumns();
 
     return (
       <tbody ref={ref} className={cn(styles.Loading, className)} {...props}>
@@ -20,9 +20,11 @@ export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoa
               <td
                 key={col.id}
                 className={styles.SkeletonCell}
-                style={{
-                  '--_dt-cell-size': `var(--col-${col.id}-size)`,
-                } as CSSProperties}
+                style={
+                  {
+                    '--_dt-cell-size': `var(--col-${col.id}-size)`,
+                  } as CSSProperties
+                }
               >
                 <div className={styles.SkeletonBar} />
               </td>

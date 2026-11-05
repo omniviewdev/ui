@@ -1,0 +1,316 @@
+.Panel {
+  min-inline-size: 0;
+  border-radius: 8px;
+  background: var(--ov-color-bg-surface);
+}
+.Panel .PanelHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 8px;
+}
+.Panel .PanelHeader:has(+ .PanelBody) {
+  padding-block-end: 8px;
+}
+.PanelHeader > h3 {
+  margin: 0;
+  min-inline-size: 0;
+  flex: 1 1 100px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 600;
+}
+.PanelHeader > div {
+  position: static;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+.Panel .PanelBody {
+  min-inline-size: 0;
+  padding: 0 16px;
+}
+.PanelContent {
+  min-inline-size: 0;
+}
+.Panel .PanelFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  border-block-start: 1px solid var(--ov-color-border-default);
+  padding: 10px 16px;
+  color: var(--ov-color-fg-muted);
+  font-size: 11px;
+}
+.PanelDetails > summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-block-size: 13px;
+  list-style: none;
+  cursor: pointer;
+}
+.PanelDetails > summary::-webkit-details-marker {
+  display: none;
+}
+.PanelDetails > summary:focus-visible {
+  outline: 2px solid var(--ov-color-border-focus);
+  outline-offset: 4px;
+}
+.PanelDetails[open] > summary {
+  margin-block-end: 12px;
+}
+.DetailsSwatch {
+  inline-size: 7px;
+  block-size: 7px;
+  flex-shrink: 0;
+  border-radius: 1px;
+  background: var(--_ov-metric-color);
+}
+.PanelStatus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-2);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm);
+  line-height: 1.4;
+}
+.PanelStatus:empty {
+  display: none;
+}
+.PanelStatus:not(:empty) {
+  margin-block-end: var(--ov-space-3);
+}
+.Panel:not([data-state='data']) .PanelStatus {
+  min-block-size: 180px;
+  align-items: center;
+  justify-content: center;
+}
+.Value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--ov-space-1);
+  font-size: 34px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+  color: var(--_ov-metric-color, inherit);
+}
+.Value[data-size='sm'] {
+  font-size: var(--ov-size-card-stat-font-size-sm);
+}
+.Value[data-size='md'] {
+  font-size: var(--ov-size-card-stat-font-size-lg);
+}
+.Unit {
+  color: var(--ov-color-fg-muted);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+.Muted {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm);
+  margin: 0;
+}
+.Colored {
+  color: var(--_ov-metric-color);
+}
+.Capacity,
+.Slo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-3);
+}
+.Capacity[data-variant='compact'] {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ov-space-2);
+  inline-size: 100%;
+  min-block-size: 24px;
+}
+.Capacity[data-variant='compact'] .Track {
+  flex: 1;
+  min-inline-size: 24px;
+}
+.Track[data-missing='true'] {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ov-color-chart-grid) 0 3px,
+    var(--ov-color-border-default) 3px 4px
+  );
+}
+.MetricLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ov-space-2);
+}
+.Track {
+  position: relative;
+  height: 12px;
+  background: var(--ov-color-chart-grid);
+  border-radius: var(--ov-radius-sm);
+  overflow: visible;
+}
+.Fill {
+  display: block;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--_ov-metric-fill-start, 0%);
+  width: var(--_ov-metric-fill-size, 0%);
+  background: var(--_ov-metric-color, var(--ov-color-chart-series-1));
+  border-radius: inherit;
+}
+.Marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  inset-inline-start: var(--_ov-metric-marker-position);
+  background: var(--_ov-metric-color);
+  transform: translateX(-1px);
+}
+.Request {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  inset-inline-start: var(--_ov-metric-marker-position);
+  background: var(--ov-color-fg-default);
+  transform: translateX(-1px);
+}
+.Axis {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ov-space-2);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+.Details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-3);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm);
+}
+.Gauge {
+  position: relative;
+  max-inline-size: 256px;
+  margin-inline: auto;
+  text-align: center;
+}
+.GaugeSvg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.GaugeTrack {
+  fill: none;
+  stroke: var(--ov-color-chart-grid);
+  stroke-width: 11;
+}
+.GaugeCenter {
+  position: absolute;
+  inset-inline: 0;
+  top: 47%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ov-space-1);
+}
+.Ranking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2);
+}
+.RankRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ov-space-4);
+  width: 100%;
+  min-inline-size: 0;
+  padding: var(--ov-space-2);
+  text-align: start;
+  border-radius: var(--ov-radius-sm);
+}
+.RankRow[aria-pressed='true'],
+.RankRow[data-selected] {
+  background: var(--ov-color-bg-surface);
+  outline: 1px solid var(--ov-color-border-default);
+}
+.RankMain {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-2);
+}
+.RankLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--ov-font-size-sm);
+}
+.RankTrack {
+  display: block;
+  position: relative;
+  height: 5px;
+  border-radius: var(--ov-radius-sm);
+  background: var(--ov-color-chart-grid);
+}
+.Zero {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  inset-inline-start: var(--_ov-metric-zero-position);
+  background: var(--ov-color-chart-axis);
+}
+.RankValue {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--ov-font-size-sm);
+}
+.Badge {
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm);
+  padding: var(--ov-space-1) var(--ov-space-2);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs);
+}
+.SloDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-4);
+  margin: 0;
+}
+.SloDetails dt {
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-caption);
+}
+.SloDetails dd {
+  margin: var(--ov-space-1) 0 0;
+  font-size: var(--ov-size-card-stat-font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.Updating {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.PanelStatus:has(> .Updating:only-child) {
+  margin-block-end: 0;
+}

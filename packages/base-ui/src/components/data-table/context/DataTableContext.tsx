@@ -4,7 +4,7 @@ import type { DataTableFeatureFlags } from '../types';
 import type { RowData, TableState } from '@tanstack/react-table';
 import type { DataTableFeatures } from '../types';
 
-interface DataTableContextValue<TData extends RowData> {
+export interface DataTableContextValue<TData extends RowData> {
   table: DataTableInstance<TData>;
   features: DataTableFeatureFlags;
   state: TableState<DataTableFeatures>;
@@ -28,8 +28,10 @@ export function useDataTableContext<TData extends RowData = any>(): DataTableCon
   return ctx;
 }
 
-interface DataTableProviderProps<TData extends RowData>
-  extends Omit<DataTableContextValue<TData>, 'state' | 'options'> {
+interface DataTableProviderProps<TData extends RowData> extends Omit<
+  DataTableContextValue<TData>,
+  'state' | 'options'
+> {
   children: ReactNode;
 }
 

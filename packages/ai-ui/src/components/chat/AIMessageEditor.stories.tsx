@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AIMessageEditor } from './AIMessageEditor';
@@ -21,8 +22,8 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   args: {
     defaultValue: 'How do I configure a Kubernetes HPA?',
-    onSave: (value: string) => console.log('Saved:', value),
-    onCancel: () => console.log('Cancelled'),
+    onSave: action('Saved:'),
+    onCancel: action('Cancelled'),
   },
 };
 
@@ -30,8 +31,8 @@ export const WithPlaceholder: Story = {
   args: {
     defaultValue: '',
     placeholder: 'Edit your message...',
-    onSave: (value: string) => console.log('Saved:', value),
-    onCancel: () => console.log('Cancelled'),
+    onSave: action('Saved:'),
+    onCancel: action('Cancelled'),
   },
 };
 

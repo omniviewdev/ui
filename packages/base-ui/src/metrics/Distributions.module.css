@@ -1,0 +1,128 @@
+.Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-stack-xs);
+  min-width: 0;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.Plot {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--ov-radius-sm);
+  outline: none;
+  touch-action: pan-y;
+}
+.Plot:focus-visible {
+  outline: 2px solid var(--ov-color-chart-cursor);
+  outline-offset: 3px;
+}
+.Axis {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ov-space-stack-sm);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs);
+}
+.Inspection {
+  fill: none;
+  stroke: var(--ov-color-chart-cursor);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.Selection {
+  fill: var(--ov-color-chart-selection);
+  fill-opacity: 0.18;
+  stroke: var(--ov-color-chart-cursor);
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.InspectionText {
+  min-height: 1.5em;
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs);
+  overflow-wrap: anywhere;
+}
+.Timeline {
+  display: grid;
+  grid-template-columns: minmax(64px, 20%) minmax(0, 1fr);
+  gap: var(--ov-space-stack-sm);
+}
+.Lanes > div {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.Legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-sm);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-xs);
+}
+.Legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-xs);
+}
+.Legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.StateSwatch {
+  background: var(--_timeline-tone);
+}
+.Unknown {
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 2px,
+    var(--ov-color-chart-missing) 2px 3px
+  );
+}
+.HeatmapFrame {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--ov-space-2);
+}
+.BucketAxis {
+  position: relative;
+  color: var(--ov-color-chart-axis);
+  font-size: var(--ov-font-size-xs);
+}
+.BucketAxis > span {
+  position: absolute;
+  inset-inline-end: 0;
+  top: var(--_ov-metric-bucket-y);
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+.TimeAxis {
+  padding-inline-start: 72px;
+}
+.HeatmapFrame .Plot > path {
+  stroke: var(--ov-color-bg-surface);
+  stroke-width: 0.75px;
+  vector-effect: non-scaling-stroke;
+}
+.HeatmapTooltip {
+  position: absolute;
+  inset-block-start: 24px;
+  inset-inline-end: var(--ov-space-2);
+  max-width: min(320px, 85%);
+  padding: var(--ov-space-2);
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  color: var(--ov-color-fg-default);
+  pointer-events: none;
+}

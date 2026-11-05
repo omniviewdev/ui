@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
@@ -174,8 +175,8 @@ export const BasicCommands: StoryObj = {
         items={allCommands.slice(0, 10)}
         itemKey={(item) => item.id}
         renderItem={defaultRenderItem}
-        onAction={(key) => console.log('Action:', key)}
-        onDismiss={() => console.log('Dismissed')}
+        onAction={action('Action:')}
+        onDismiss={action('Dismissed')}
         placeholder="Type a command..."
       >
         <CommandList.Input />
@@ -256,8 +257,8 @@ export const ExternalSearch: StoryObj = {
           itemKey={(item) => item.id}
           renderItem={defaultRenderItem}
           onQueryChange={search}
-          onAction={(key) => console.log('Action:', key)}
-          onDismiss={() => console.log('Dismissed')}
+          onAction={action('Action:')}
+          onDismiss={action('Dismissed')}
           loading={loading}
           highlights={highlights}
           placeholder="Search commands (simulated server)..."
@@ -298,7 +299,7 @@ export const ClientFiltering: StoryObj = {
           // Score: exact prefix match > contains
           return label.startsWith(q) ? 100 : 50;
         }}
-        onAction={(key) => console.log('Action:', key)}
+        onAction={action('Action:')}
         placeholder="Filter commands locally..."
       >
         <CommandList.Input />
@@ -330,7 +331,7 @@ export const GroupedCommands: StoryObj = {
         groupBy={(item) => item.category ?? 'other'}
         groupOrder={['edit', 'file', 'search', 'view', 'preferences', 'git', 'debug']}
         groupLabel={(key) => categoryLabels[key] ?? key}
-        onAction={(key) => console.log('Action:', key)}
+        onAction={action('Action:')}
         placeholder="Type a command..."
       >
         <CommandList.Input />
@@ -382,7 +383,7 @@ export const LargeResultSet: StoryObj = {
           itemKey={(item) => item.id}
           renderItem={defaultRenderItem}
           onQueryChange={setQuery}
-          onAction={(key) => console.log('Action:', key)}
+          onAction={action('Action:')}
           virtualized
           placeholder={`Search ${manyCommands.length} commands...`}
         >
@@ -566,7 +567,7 @@ export const DisabledItems: StoryObj = {
         itemKey={(item) => item.id}
         renderItem={defaultRenderItem}
         disabledKeys={['save-file', 'find', 'go-to-line']}
-        onAction={(key) => console.log('Action:', key)}
+        onAction={action('Action:')}
         placeholder="Some items disabled..."
       >
         <CommandList.Input />
@@ -620,7 +621,7 @@ export const CustomRenderItem: StoryObj = {
             {item.shortcut && <CommandList.ItemShortcut keys={item.shortcut.split(' ')} />}
           </CommandList.Item>
         )}
-        onAction={(key) => console.log('Action:', key)}
+        onAction={action('Action:')}
         placeholder="Rich items..."
       >
         <CommandList.Input />
@@ -739,7 +740,7 @@ export const HybridSearch: StoryObj = {
           itemKey={(item) => item.id}
           renderItem={defaultRenderItem}
           onQueryChange={search}
-          onAction={(key) => console.log('Action:', key)}
+          onAction={action('Action:')}
           loading={loading}
           highlights={highlights}
           groupBy={(item) => item.category ?? 'other'}
@@ -798,7 +799,7 @@ export const ControlledQuery: StoryObj = {
             query={query}
             onQueryChange={setQuery}
             filterFn={(item, q) => item.label.toLowerCase().includes(q.toLowerCase())}
-            onAction={(key) => console.log('Action:', key)}
+            onAction={action('Action:')}
             placeholder="Controlled query..."
           >
             <CommandList.Input />

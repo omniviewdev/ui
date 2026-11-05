@@ -1,8 +1,7 @@
-import { dirname } from 'node:path';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
-import { DiagnosticCategory, getDefaultLibFilePath } from 'typescript';
+import { DiagnosticCategory } from 'typescript';
 
 const outputDirectory = process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY || 'dist';
 
@@ -13,15 +12,12 @@ export default defineConfig({
     dts({
       tsconfigPath: './tsconfig.build.json',
       include: ['src'],
-      outDirs: outputDirectory,
+      outDirs: process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY
+        ? outputDirectory
+        : `${outputDirectory}/.types`,
       entryRoot: 'src',
-      // Rolled declarations follow package.json's active dist entry.
-      bundleTypes: !process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY && {
-        invokeOptions: {
-          // Compiler aliases can contain only forwarding modules, not standard library declarations.
-          typescriptCompilerFolder: dirname(dirname(getDefaultLibFilePath({}))),
-        },
-      },
+      bundleTypes: false,
+      insertTypesEntry: Boolean(process.env.OMNIVIEW_BUILD_OUTPUT_DIRECTORY),
       afterDiagnostic(diagnostics) {
         for (const diagnostic of diagnostics) {
           if (diagnostic.category === DiagnosticCategory.Error) {
@@ -34,9 +30,9 @@ export default defineConfig({
   build: {
     outDir: outputDirectory,
     lib: {
-      entry: 'src/index.ts',
+      entry: { index: 'src/index.ts', metrics: 'src/metrics/index.ts' },
       formats: ['es'],
-      fileName: () => 'index.js',
+      fileName: (_format, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
       external: [/^react(?:\/|$)/, /^react-dom(?:\/|$)/, /^@base-ui\/react/],

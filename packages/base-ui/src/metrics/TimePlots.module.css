@@ -1,0 +1,177 @@
+.Chart {
+  position: relative;
+  min-width: 0;
+  color: var(--ov-color-fg-default);
+  font-size: var(--ov-font-size-xs);
+}
+.Plot {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+  outline-offset: 3px;
+}
+.Plot:focus-visible {
+  outline: 2px solid var(--ov-color-chart-cursor);
+}
+.Grid {
+  stroke: var(--ov-color-chart-grid);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.Cursor {
+  stroke: var(--ov-color-chart-cursor);
+  stroke-width: 1;
+  pointer-events: none;
+  vector-effect: non-scaling-stroke;
+}
+.Selection {
+  fill: var(--ov-color-chart-selection);
+  pointer-events: none;
+}
+.PlotFrame {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: var(--ov-space-1);
+}
+.ValueAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+  color: var(--ov-color-chart-axis);
+  font-size: var(--ov-font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+.Axis {
+  display: flex;
+  justify-content: space-between;
+  padding-inline-start: 50px;
+  color: var(--ov-color-chart-axis);
+  height: 18px;
+  line-height: 18px;
+  padding-block: 0;
+  font-variant-numeric: tabular-nums;
+}
+.Empty {
+  padding: var(--ov-space-stack-lg, 16px);
+  text-align: center;
+  color: var(--ov-color-fg-muted);
+}
+.Inspection {
+  position: absolute;
+  inset-block-start: var(--ov-space-2);
+  inset-inline-end: var(--ov-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-space-1);
+  padding: var(--ov-space-2) var(--ov-space-3);
+  color: var(--ov-color-fg-default);
+  background: var(--ov-color-bg-surface-raised);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-control);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.Inspection[hidden] {
+  display: none;
+}
+.Legend {
+  max-height: 144px;
+  overflow: auto;
+  margin-top: var(--ov-space-stack-sm, 4px);
+}
+.LegendItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-stack-sm, 4px);
+}
+.LegendWindow {
+  position: relative;
+  height: var(--_legend-height);
+}
+.VirtualLegend {
+  height: 144px;
+}
+.LegendItem {
+  min-width: 0;
+  max-width: 100%;
+}
+.LegendWindow > .LegendItem {
+  position: absolute;
+  top: var(--_legend-offset);
+  height: 32px;
+  left: 0;
+  right: 0;
+}
+.LegendButton[data-hidden] {
+  opacity: 0.45;
+}
+.LegendButton,
+.LegendStatic {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm, 4px);
+  min-width: 0;
+  max-width: 100%;
+}
+.LegendText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.Swatch {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--_legend-color);
+}
+.Sparkline {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.MultipleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ov-space-stack-lg, 16px);
+}
+.MultipleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  min-width: 0;
+  gap: var(--ov-space-stack-sm, 4px);
+  padding: var(--ov-space-stack-lg, 16px);
+  border: 1px solid var(--ov-color-border-muted);
+  border-radius: var(--ov-radius-surface);
+  background: var(--ov-color-bg-surface);
+}
+.MultipleLabel {
+  color: var(--ov-color-fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--ov-font-size-sm);
+}
+.MultipleValue {
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.Paging {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ov-space-stack-sm, 4px);
+  margin-top: var(--ov-space-stack-sm, 4px);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--ov-font-size-sm);
+}
+@media (max-width: 420px) {
+  .MultipleGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

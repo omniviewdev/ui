@@ -57,9 +57,9 @@
   /* Component-local animation duration — no --ov-duration-pulse semantic token yet */
   --_duration-pulse: 2s;
   --_easing-pulse: var(--ov-ease-pulse, ease-in-out);
-  --_toast-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 4px rgb(0 0 0 / 0.06);
+  --_toast-shadow-sm: var(--ov-shadow-surface-sm);
   --_toast-shadow-md: var(--ov-shadow-surface);
-  --_toast-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.1);
+  --_toast-shadow-lg: var(--ov-shadow-surface-lg);
 
   display: flex;
   align-items: center;

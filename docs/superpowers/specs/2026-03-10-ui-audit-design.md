@@ -22,48 +22,56 @@ Run detection rules across all 3 packages. Produce a structured findings report 
 
 ### 1.1 Token/Styling Consistency
 
-| Check | Detection | Severity |
-|-------|-----------|----------|
-| Hardcoded colors | Hex `#xxx`, `rgb()`, `hsl()` in `.module.css` (excluding `styles.css`) | High |
-| Primitive token leakage | `--ov-primitive-*` in component CSS | High |
-| Missing theme coverage | Semantic tokens in one `[data-ov-theme]` block but absent from others; also checks `[data-ov-density]` and `[data-ov-motion]` blocks | Medium |
-| Hardcoded spacing | Raw `px`/`rem`/`em` for spacing/padding/margin instead of `--ov-space-*` | Medium |
-| Hardcoded radii | Raw values for `border-radius` instead of `--ov-radius-*` | Medium |
-| Hardcoded font sizes | Raw values instead of `--ov-font-*` | Low |
-| Hardcoded z-index | Raw numbers instead of `--ov-z-*` | Low |
-| Hardcoded transitions | Raw `transition`/`animation` durations and easing instead of `--ov-duration-*`/`--ov-ease-*` (breaks `[data-ov-motion="reduced"]`) | Medium |
-| Hardcoded box-shadow | Raw `box-shadow` values instead of `--ov-shadow-*` tokens | Medium |
-| Hardcoded opacity | Raw `opacity` values where `--ov-opacity-*` families exist | Low |
-| Missing syntax tokens | Colors in editors package CSS not using `--ov-syntax-*` for syntax highlighting (per REPOSITORY_GUIDELINES rule 5) | High |
-| Missing IDE alias indirection | Components using raw semantic tokens where an IDE alias (`--ov-color-sidebar-*`, `--ov-color-editor-*`, etc.) exists | Medium |
+| Check                         | Detection                                                                                                                            | Severity |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| Hardcoded colors              | Hex `#xxx`, `rgb()`, `hsl()` in `.module.css` (excluding `styles.css`)                                                               | High     |
+| Primitive token leakage       | `--ov-primitive-*` in component CSS                                                                                                  | High     |
+| Missing theme coverage        | Semantic tokens in one `[data-ov-theme]` block but absent from others; also checks `[data-ov-density]` and `[data-ov-motion]` blocks | Medium   |
+| Hardcoded spacing             | Raw `px`/`rem`/`em` for spacing/padding/margin instead of `--ov-space-*`                                                             | Medium   |
+| Hardcoded radii               | Raw values for `border-radius` instead of `--ov-radius-*`                                                                            | Medium   |
+| Hardcoded font sizes          | Raw values instead of `--ov-font-*`                                                                                                  | Low      |
+| Hardcoded z-index             | Raw numbers instead of `--ov-z-*`                                                                                                    | Low      |
+| Hardcoded transitions         | Raw `transition`/`animation` durations and easing instead of `--ov-duration-*`/`--ov-ease-*` (breaks `[data-ov-motion="reduced"]`)   | Medium   |
+| Hardcoded box-shadow          | Raw `box-shadow` values instead of `--ov-shadow-*` tokens                                                                            | Medium   |
+| Hardcoded opacity             | Raw `opacity` values where `--ov-opacity-*` families exist                                                                           | Low      |
+| Missing syntax tokens         | Colors in editors package CSS not using `--ov-syntax-*` for syntax highlighting (per REPOSITORY_GUIDELINES rule 5)                   | High     |
+| Missing IDE alias indirection | Components using raw semantic tokens where an IDE alias (`--ov-color-sidebar-*`, `--ov-color-editor-*`, etc.) exists                 | Medium   |
 
 ### 1.2 Convention Violations
 
-| Check | Detection | Severity |
-|-------|-----------|----------|
-| Inline styles in JSX | `style={{...}}` in component files | High |
-| Missing data attributes | State styling via classes instead of `data-ov-*` / Base UI `data-*` | Medium |
-| Inconsistent exports | Components not following barrel export convention | Medium |
-| Component-local token defs | `--ov-*` defined in component CSS, reused in fewer than 3 selectors | Low |
-| CSS class naming | CSS Module classes not following PascalCase for root slots, camelCase for modifiers | Low |
+| Check                      | Detection                                                                           | Severity |
+| -------------------------- | ----------------------------------------------------------------------------------- | -------- |
+| Inline styles in JSX       | `style={{...}}` in component files                                                  | High     |
+| Missing data attributes    | State styling via classes instead of `data-ov-*` / Base UI `data-*`                 | Medium   |
+| Inconsistent exports       | Components not following barrel export convention                                   | Medium   |
+| Component-local token defs | `--ov-*` defined in component CSS, reused in fewer than 3 selectors                 | Low      |
+| CSS class naming           | CSS Module classes not following PascalCase for root slots, camelCase for modifiers | Low      |
+
+Inline-style detection uses the same AST classifier as ESLint, including through
+TypeScript assertions. Explicit string-keyed CSS custom properties are permitted
+for runtime values consumed by CSS Modules. The only permitted spread is the
+unreassigned public `style` binding destructured directly from the first parameter
+of an imported React `forwardRef` callback; aliases are resolved lexically.
+Defaulted or reassigned bindings, arbitrary local spreads, computed keys, and
+ordinary CSS properties remain violations.
 
 ### 1.3 React Performance
 
-| Check | Detection | Severity |
-|-------|-----------|----------|
-| Missing `memo` on leaf components | Exported components without `React.memo` or memo-wrapped `forwardRef` | Medium |
-| Inline object/array literals | `prop={{}}` or `prop={[]}` in component JSX | Medium |
-| Inline function handlers | Arrow functions passed as props to child components (causes child re-renders); same-component-only handlers excluded | Medium |
-| Missing `useCallback`/`useMemo` | Handlers and computed values in render body without memoization | Low |
-| Large component files | Files over ~300 lines | Low |
+| Check                             | Detection                                                                                                            | Severity |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------- |
+| Missing `memo` on leaf components | Exported components without `React.memo` or memo-wrapped `forwardRef`                                                | Medium   |
+| Inline object/array literals      | `prop={{}}` or `prop={[]}` in component JSX                                                                          | Medium   |
+| Inline function handlers          | Arrow functions passed as props to child components (causes child re-renders); same-component-only handlers excluded | Medium   |
+| Missing `useCallback`/`useMemo`   | Handlers and computed values in render body without memoization                                                      | Low      |
+| Large component files             | Files over ~300 lines                                                                                                | Low      |
 
 ### 1.4 Accessibility
 
-| Check | Detection | Severity |
-|-------|-----------|----------|
-| Missing ARIA roles | Interactive elements without `role`, `aria-label`, or `aria-labelledby` | Medium |
-| Missing keyboard handlers | Clickable non-button elements without `onKeyDown`/`onKeyUp` | Medium |
-| Hardcoded colors in HC modes | Tokens in `high-contrast-*` modes not meeting WCAG AAA | Low |
+| Check                        | Detection                                                               | Severity |
+| ---------------------------- | ----------------------------------------------------------------------- | -------- |
+| Missing ARIA roles           | Interactive elements without `role`, `aria-label`, or `aria-labelledby` | Medium   |
+| Missing keyboard handlers    | Clickable non-button elements without `onKeyDown`/`onKeyUp`             | Medium   |
+| Hardcoded colors in HC modes | Tokens in `high-contrast-*` modes not meeting WCAG AAA                  | Low      |
 
 ### Scan Exclusions
 
@@ -111,13 +119,13 @@ Add via `eslint-plugin-local-rules` or inline flat-config plugin:
 
 ## Deliverables
 
-| Deliverable | Format | Location |
-|-------------|--------|----------|
-| Audit findings report | Markdown | `docs/superpowers/specs/audit-findings.md` |
-| Component fixes | Git commits | Grouped by severity/category |
-| ESLint guardrail plugin | TypeScript | Root-level (per REPOSITORY_GUIDELINES: lint from repo root) |
-| Updated lint scripts | `package.json` | Each package |
-| This design doc | Markdown | `docs/superpowers/specs/2026-03-10-ui-audit-design.md` |
+| Deliverable             | Format         | Location                                                    |
+| ----------------------- | -------------- | ----------------------------------------------------------- |
+| Audit findings report   | Markdown       | `docs/superpowers/specs/audit-findings.md`                  |
+| Component fixes         | Git commits    | Grouped by severity/category                                |
+| ESLint guardrail plugin | TypeScript     | Root-level (per REPOSITORY_GUIDELINES: lint from repo root) |
+| Updated lint scripts    | `package.json` | Each package                                                |
+| This design doc         | Markdown       | `docs/superpowers/specs/2026-03-10-ui-audit-design.md`      |
 
 ## Non-Goals
 

@@ -4,7 +4,9 @@ import { renderWithTheme } from '../../test/render';
 import { IconButton } from './IconButton';
 
 const TestIcon = () => (
-  <svg aria-hidden viewBox="0 0 16 16"><path d="M1 1h14v14H1z" /></svg>
+  <svg aria-hidden viewBox="0 0 16 16">
+    <path d="M1 1h14v14H1z" />
+  </svg>
 );
 
 describe('IconButton', () => {
@@ -22,20 +24,28 @@ describe('IconButton', () => {
 
   it('renders with xs size', () => {
     renderWithTheme(
-      <IconButton aria-label="Tiny" size="xs"><TestIcon /></IconButton>,
+      <IconButton aria-label="Tiny" size="xs">
+        <TestIcon />
+      </IconButton>,
     );
     expect(screen.getByRole('button', { name: 'Tiny' })).toHaveAttribute('data-ov-size', 'xs');
   });
 
   it('renders with xl size', () => {
     renderWithTheme(
-      <IconButton aria-label="Big" size="xl"><TestIcon /></IconButton>,
+      <IconButton aria-label="Big" size="xl">
+        <TestIcon />
+      </IconButton>,
     );
     expect(screen.getByRole('button', { name: 'Big' })).toHaveAttribute('data-ov-size', 'xl');
   });
 
   it('does not accept dense prop', () => {
-    // @ts-expect-error dense prop was removed
-    renderWithTheme(<IconButton aria-label="X" dense><TestIcon /></IconButton>);
+    renderWithTheme(
+      // @ts-expect-error dense prop was removed
+      <IconButton aria-label="X" dense>
+        <TestIcon />
+      </IconButton>,
+    );
   });
 });

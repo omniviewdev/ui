@@ -74,7 +74,7 @@ export default defineConfig({
   },
   resolve: {
     // Monaco 0.52 publishes its ESM entry through module, not main.
-    mainFields: ['module', 'main'],
+    mainFields: ['browser', 'module', 'main'],
     alias: [
       {
         find: '@omniviewdev/base-ui',

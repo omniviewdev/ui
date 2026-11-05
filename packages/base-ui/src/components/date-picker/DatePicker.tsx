@@ -45,7 +45,7 @@ function useControlled<T>(
   return [current, set];
 }
 
-export function DatePicker(props: DatePickerProps) {
+function DatePickerRoot(props: DatePickerProps) {
   const {
     value,
     defaultValue = null,
@@ -170,4 +170,4 @@ export function DatePicker(props: DatePickerProps) {
   );
 }
 
-DatePicker.Calendar = Calendar;
+export const DatePicker = Object.assign(DatePickerRoot, { Calendar });

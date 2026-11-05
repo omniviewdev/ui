@@ -171,10 +171,7 @@
   border-radius: var(--ov-radius-pill, 999px);
   border: 1px solid var(--ov-color-fg-default);
   background: var(--_ov-thumb-bg);
-  /* elevation shadow — no semantic token maps to raw alpha-black shadow values */
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.06),
-    0 1px 2px rgb(0 0 0 / 0.28);
+  box-shadow: var(--ov-shadow-switch-thumb);
   transform: translateX(0);
   transition:
     transform var(--ov-duration-interactive) var(--ov-ease-standard),

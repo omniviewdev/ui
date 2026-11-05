@@ -1,0 +1,11 @@
+body.sb-main-padded:has(.ov-metrics-story) {
+  padding: 0;
+}
+.ov-metrics-story {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--ov-color-bg-base);
+  color: var(--ov-color-fg-default);
+}

@@ -140,63 +140,63 @@
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='1'] {
-  --_ov-fallback-bg: #0b8f5a;
-  --_ov-fallback-fg: #f5fbf9;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-1-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-1-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='2'] {
-  --_ov-fallback-bg: #1f7ae0;
-  --_ov-fallback-fg: #f4f8ff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-2-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-2-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='3'] {
-  --_ov-fallback-bg: #7e57c2;
-  --_ov-fallback-fg: #f6f1ff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-3-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-3-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='4'] {
-  --_ov-fallback-bg: #d56a1f;
-  --_ov-fallback-fg: #1a0e04;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-4-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-4-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='5'] {
-  --_ov-fallback-bg: #c94153;
-  --_ov-fallback-fg: #fff1f3;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-5-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-5-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='6'] {
-  --_ov-fallback-bg: #137c8b;
-  --_ov-fallback-fg: #ebfbff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-6-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-6-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='7'] {
-  --_ov-fallback-bg: #556274;
-  --_ov-fallback-fg: #f4f7ff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-7-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-7-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='8'] {
-  --_ov-fallback-bg: #3f9153;
-  --_ov-fallback-fg: #f1fff5;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-8-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-8-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='9'] {
-  --_ov-fallback-bg: #9a5a2d;
-  --_ov-fallback-fg: #fff5ec;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-9-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-9-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='10'] {
-  --_ov-fallback-bg: #2f5bbb;
-  --_ov-fallback-fg: #eff3ff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-10-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-10-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='11'] {
-  --_ov-fallback-bg: #7f4458;
-  --_ov-fallback-fg: #fff2f8;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-11-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-11-fg);
 }
 
 .Root[data-ov-deterministic='true'][data-ov-palette='12'] {
-  --_ov-fallback-bg: #49508f;
-  --_ov-fallback-fg: #f0f2ff;
+  --_ov-fallback-bg: var(--ov-color-avatar-palette-12-bg);
+  --_ov-fallback-fg: var(--ov-color-avatar-palette-12-fg);
 }
 
 .Image {

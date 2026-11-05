@@ -1,5 +1,6 @@
 import {
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useEffect,
@@ -223,6 +224,34 @@ interface RemoteHover {
   payload: TabDragPayload;
 }
 
+interface DragGhostViewportProps {
+  x: number;
+  y: number;
+  style?: React.CSSProperties;
+  children: ReactNode;
+}
+
+const DragGhostViewport = forwardRef<HTMLDivElement, DragGhostViewportProps>(
+  function DragGhostViewport({ x, y, style, children }, ref) {
+    return (
+      <div
+        ref={ref}
+        className={styles.DragBrokerGhost}
+        data-tab-drag-ghost=""
+        style={
+          {
+            '--_tab-drag-x': `${x}px`,
+            '--_tab-drag-y': `${y}px`,
+            ...style,
+          } as React.CSSProperties
+        }
+      >
+        {children}
+      </div>
+    );
+  },
+);
+
 export function TabDragBrokerProvider({
   children,
   onCancel,
@@ -292,9 +321,7 @@ export function TabDragBrokerProvider({
     (source: SourceSession, pointer: TabDragPointer) => {
       settleSourceSession(
         source,
-        source.session.allowTearOff
-          ? { type: 'torn-off', ...pointer }
-          : { type: 'cancelled' },
+        source.session.allowTearOff ? { type: 'torn-off', ...pointer } : { type: 'cancelled' },
       );
     },
     [settleSourceSession],
@@ -541,19 +568,9 @@ export function TabDragBrokerProvider({
       {children}
       {ghost &&
         createPortal(
-          <div
-            className={styles.DragBrokerGhost}
-            data-tab-drag-ghost=""
-            style={
-              {
-                '--_tab-drag-x': `${pointerX}px`,
-                '--_tab-drag-y': `${pointerY}px`,
-                ...ghost.style,
-              } as React.CSSProperties
-            }
-          >
+          <DragGhostViewport x={pointerX} y={pointerY} style={ghost.style}>
             <DetachGhostTab tab={ghost.tab} style={ghost.style} />
-          </div>,
+          </DragGhostViewport>,
           document.body,
         )}
     </TabDragBrokerContext.Provider>

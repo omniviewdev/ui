@@ -138,30 +138,34 @@ export const TagInput = forwardRef<HTMLDivElement, TagInputProps>(function TagIn
     setInputValue(event.target.value);
   }, []);
 
+  const onContainerClick = props.onClick;
+  const onInputFocus = inputPropsProp?.onFocus;
+  const onInputBlur = inputPropsProp?.onBlur;
+
   const handleContainerClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (!disabled) {
         inputRef.current?.focus();
       }
-      props.onClick?.(event);
+      onContainerClick?.(event);
     },
-    [disabled, props.onClick],
+    [disabled, onContainerClick],
   );
 
   const handleFocus = useCallback(
     (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(true);
-      inputPropsProp?.onFocus?.(event);
+      onInputFocus?.(event);
     },
-    [inputPropsProp?.onFocus],
+    [onInputFocus],
   );
 
   const handleBlur = useCallback(
     (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(false);
-      inputPropsProp?.onBlur?.(event);
+      onInputBlur?.(event);
     },
-    [inputPropsProp?.onBlur],
+    [onInputBlur],
   );
 
   const showPlaceholder = value.length === 0 && inputValue === '';

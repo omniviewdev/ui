@@ -51,11 +51,7 @@ export const DataTableContainer = forwardRef<HTMLDivElement, DataTableContainerP
         data-ov-table-container=""
       >
         <ScrollElementProvider element={scrollElement}>
-          <table
-            role="table"
-            className={styles.Table}
-            style={{ ...columnSizeVars } as CSSProperties}
-          >
+          <table role="table" className={styles.Table} style={columnSizeVars}>
             {children}
           </table>
         </ScrollElementProvider>

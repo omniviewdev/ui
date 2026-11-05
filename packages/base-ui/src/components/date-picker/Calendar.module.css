@@ -1,26 +1,26 @@
 .root {
   display: inline-flex;
   flex-direction: column;
-  padding: var(--ov-primitive-space-2);
+  padding: var(--ov-space-2);
   background: var(--ov-color-bg-surface-raised);
-  border-radius: var(--ov-primitive-radius-md);
+  border-radius: var(--ov-radius-md);
   color: var(--ov-color-fg-default);
-  font-family: var(--ov-primitive-font-sans);
+  font-family: var(--ov-font-sans);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ov-primitive-space-1);
-  padding: var(--ov-primitive-space-1);
+  gap: var(--ov-space-1);
+  padding: var(--ov-space-1);
   background: var(--ov-color-datepicker-header-bg);
-  border-radius: var(--ov-primitive-radius-sm);
-  margin-bottom: var(--ov-primitive-space-2);
+  border-radius: var(--ov-radius-sm);
+  margin-bottom: var(--ov-space-2);
 }
 
 .monthLabel {
-  font-weight: var(--ov-primitive-font-weight-medium);
+  font-weight: var(--ov-font-weight-medium);
 }
 
 .grid {
@@ -34,7 +34,7 @@
   place-items: center;
   height: var(--ov-size-datepicker-cell);
   color: var(--ov-color-fg-muted);
-  font-size: var(--ov-primitive-font-size-11);
+  font-size: var(--ov-font-size-xs);
 }
 
 .cell {
@@ -43,7 +43,7 @@
   height: var(--ov-size-datepicker-cell);
   width: var(--ov-size-datepicker-cell);
   border: none;
-  border-radius: var(--ov-primitive-radius-sm);
+  border-radius: var(--ov-radius-sm);
   background: var(--ov-color-datepicker-cell-bg);
   color: var(--ov-color-datepicker-cell-fg);
   cursor: pointer;

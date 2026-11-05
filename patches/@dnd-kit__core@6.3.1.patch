@@ -1,0 +1,45 @@
+diff --git a/dist/components/Accessibility/Accessibility.d.ts b/dist/components/Accessibility/Accessibility.d.ts
+index 6329e091c4a8fe12e222c7de97038e5717f15400..4265dcb2883570e527bd82ab0522d55328d3d6d4 100644
+--- a/dist/components/Accessibility/Accessibility.d.ts
++++ b/dist/components/Accessibility/Accessibility.d.ts
+@@ -1,3 +1,4 @@
++import type { JSX } from 'react';
+ /// <reference types="react" />
+ import type { Announcements, ScreenReaderInstructions } from './types';
+ interface Props {
+diff --git a/dist/components/DragOverlay/DragOverlay.d.ts b/dist/components/DragOverlay/DragOverlay.d.ts
+index fd92e1e1e8cfed0a97cf6fcfcc69480effea7514..da9f4fe1d9bd87b3144d534b4080d5e5e9b7049e 100644
+--- a/dist/components/DragOverlay/DragOverlay.d.ts
++++ b/dist/components/DragOverlay/DragOverlay.d.ts
+@@ -1,3 +1,4 @@
++import type { JSX } from 'react';
+ import React from 'react';
+ import { Modifiers } from '../../modifiers';
+ import type { PositionedOverlayProps } from './components';
+diff --git a/dist/components/DragOverlay/components/AnimationManager/AnimationManager.d.ts b/dist/components/DragOverlay/components/AnimationManager/AnimationManager.d.ts
+index 2615d0e5e4c591f370397ccf79b3bd2d635a9678..a0f6b92d583b631fe2d3e73a0954b726b74ca06b 100644
+--- a/dist/components/DragOverlay/components/AnimationManager/AnimationManager.d.ts
++++ b/dist/components/DragOverlay/components/AnimationManager/AnimationManager.d.ts
+@@ -1,3 +1,4 @@
++import type { JSX } from 'react';
+ import React from 'react';
+ import type { UniqueIdentifier } from '../../../../types';
+ export declare type Animation = (key: UniqueIdentifier, node: HTMLElement) => Promise<void> | void;
+diff --git a/dist/components/DragOverlay/components/NullifiedContextProvider/NullifiedContextProvider.d.ts b/dist/components/DragOverlay/components/NullifiedContextProvider/NullifiedContextProvider.d.ts
+index 72c9b4054848cca5536610cd6f7079f707c1fc13..3a6a0df0bfe5d15c138ddef6b6eba218eb9814eb 100644
+--- a/dist/components/DragOverlay/components/NullifiedContextProvider/NullifiedContextProvider.d.ts
++++ b/dist/components/DragOverlay/components/NullifiedContextProvider/NullifiedContextProvider.d.ts
+@@ -1,3 +1,4 @@
++import type { JSX } from 'react';
+ import React from 'react';
+ interface Props {
+     children: React.ReactNode;
+diff --git a/dist/components/DragOverlay/components/PositionedOverlay/PositionedOverlay.d.ts b/dist/components/DragOverlay/components/PositionedOverlay/PositionedOverlay.d.ts
+index 4774e06133d4589312d678c011b065fba32d3c1e..910b102aea7387d3fa10f42336e49328263e96a0 100644
+--- a/dist/components/DragOverlay/components/PositionedOverlay/PositionedOverlay.d.ts
++++ b/dist/components/DragOverlay/components/PositionedOverlay/PositionedOverlay.d.ts
+@@ -1,3 +1,4 @@
++import type { JSX } from 'react';
+ import React from 'react';
+ import type { Transform } from '@dnd-kit/utilities';
+ import type { ClientRect, UniqueIdentifier } from '../../../../types';

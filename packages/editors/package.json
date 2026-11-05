@@ -1,6 +1,6 @@
 {
   "name": "@omniviewdev/editors",
-  "version": "6.1.8",
+  "version": "6.2.0",
   "publishConfig": {
     "access": "public"
   },

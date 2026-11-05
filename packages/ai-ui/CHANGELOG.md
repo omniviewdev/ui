@@ -1,5 +1,24 @@
 # @omniviewdev/ai-ui
 
+## 6.1.9
+
+### Patch Changes
+
+- [#113](https://github.com/omniviewdev/ui/pull/113) [`877ab26`](https://github.com/omniviewdev/ui/commit/877ab2671f1e17606c154501fedd48a34424f9d1) Thanks [@joshuapare](https://github.com/joshuapare)! - Clean workspace lint, formatting, type checks, and UI audit errors without weakening checks or changing test assertions.
+
+  Correct React 19 JSX declarations in the pinned drag dependency and build portable root and metrics declaration bundles. Preserve the date picker's compound Calendar API without a recursive declaration.
+
+  Use maintained TanStack Table v9 subscriptions and compiler-safe virtualizer snapshots. Correct select-all header indeterminate state, preserve table caches, and replace story console callbacks with Storybook actions.
+
+  Move styling to semantic tokens, align inline-style auditing with supported CSS-variable bindings and public style passthrough, and generate formatter-clean audit reports. Resolve browser localization correctly and remove ineffective editor lazy loading.
+
+  Preserve exported metrics declarations in managed workspace builds. Invalidate table rows, pinned column layouts, and pagination totals from subscribed snapshots even when consumers narrow their table subscription. Inspect non-null assertions in the shared inline-style policy instead of allowing them to bypass checks.
+
+  Remove the exported, permanently disabled `editorSchemas.debugState()` helper and its dormant console logging. This editor cleanup is a minor release because the method was present in the public type surface; callers should remove debugState calls.
+
+- Updated dependencies [[`877ab26`](https://github.com/omniviewdev/ui/commit/877ab2671f1e17606c154501fedd48a34424f9d1), [`877ab26`](https://github.com/omniviewdev/ui/commit/877ab2671f1e17606c154501fedd48a34424f9d1), [`de0179b`](https://github.com/omniviewdev/ui/commit/de0179bb9feef7c4978d751ed1719b9a344a7d27), [`b465da2`](https://github.com/omniviewdev/ui/commit/b465da271c437998b551996fbf1fe10f48bfdace)]:
+  - @omniviewdev/base-ui@0.15.0
+
 ## 6.1.8
 
 ### Patch Changes

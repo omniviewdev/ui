@@ -150,12 +150,14 @@ const MenuPopup = forwardRef<ElementRef<typeof BaseMenu.Popup>, MenuPopupProps>(
 ) {
   const resolved = useResolvedStyleProps({ variant, color, size });
   return (
-    <BaseMenu.Popup
-      ref={ref}
-      className={withBaseClassName(styles.Popup, className)}
-      {...styleDataAttributes(resolved)}
-      {...props}
-    />
+    <MenuStyleContext.Provider value={resolved}>
+      <BaseMenu.Popup
+        ref={ref}
+        className={withBaseClassName(styles.Popup, className)}
+        {...styleDataAttributes(resolved)}
+        {...props}
+      />
+    </MenuStyleContext.Provider>
   );
 });
 

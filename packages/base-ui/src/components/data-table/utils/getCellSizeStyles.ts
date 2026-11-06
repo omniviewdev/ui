@@ -14,7 +14,7 @@ export function getHeaderSizeStyles<TData extends RowData>(
   const canGrow = column.getCanResize();
   return {
     '--_dt-cell-grow': canGrow ? `var(--header-${headerId}-size)` : 0,
-    '--_dt-cell-basis': canGrow ? '0px' : `calc(var(--header-${headerId}-size) * 1px)`,
+    '--_dt-cell-basis': `calc(var(--header-${headerId}-size) * 1px)`,
     '--_dt-cell-size': `var(--header-${headerId}-size)`,
   } as CSSProperties;
 }
@@ -25,7 +25,7 @@ export function getCellSizeStyles<TData extends RowData>(
   const canGrow = column.getCanResize();
   return {
     '--_dt-cell-grow': canGrow ? `var(--col-${column.id}-size)` : 0,
-    '--_dt-cell-basis': canGrow ? '0px' : `calc(var(--col-${column.id}-size) * 1px)`,
+    '--_dt-cell-basis': `calc(var(--col-${column.id}-size) * 1px)`,
     '--_dt-cell-size': `var(--col-${column.id}-size)`,
   } as CSSProperties;
 }

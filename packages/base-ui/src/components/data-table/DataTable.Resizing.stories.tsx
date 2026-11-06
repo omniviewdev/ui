@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { DataTableColumnDef as ColumnDef } from './types';
 import { DataTable } from './DataTable';
@@ -64,4 +65,110 @@ function ColumnResizingStory() {
 
 export const ColumnResizing: Story = {
   render: () => <ColumnResizingStory />,
+};
+
+const metricColumns: ColumnDef<Container, unknown>[] = [
+  { id: 'cpu', header: 'CPU usage / request', size: 180, cell: () => '125m / 500m' },
+  { id: 'memory', header: 'Memory usage / limit', size: 220, cell: () => '128 MiB / 1 GiB' },
+];
+
+function DynamicColumnsStory() {
+  const [metrics, setMetrics] = useState(false);
+  const [virtual, setVirtual] = useState(false);
+  const table = useDataTable({
+    data: containerData,
+    columns: metrics ? [...containerColumns.slice(0, 2), ...metricColumns] : containerColumns.slice(0, 2),
+    features: { columnResizing: true, columnVisibility: true },
+    getRowId: (row) => row.id,
+  });
+  return (
+    <div style={{ width: 520, maxWidth: '100%', display: 'grid', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button onClick={() => setMetrics((value) => !value)}>Toggle metric columns</button>
+        <button disabled={!metrics} onClick={() => table.getColumn('cpu')?.toggleVisibility()}>
+          Toggle CPU visibility
+        </button>
+        <button disabled={!metrics} onClick={() => table.setColumnSizing({ memory: 300 })}>
+          Resize memory to 300px
+        </button>
+        <button onClick={() => setVirtual((value) => !value)}>Toggle virtual body</button>
+      </div>
+      <DataTable.Root table={table} features={{ columnResizing: true }} size="sm">
+        <DataTable.Container height={280} aria-label="Dynamic column sizing repro">
+          <DataTable.Header />
+          {virtual ? <DataTable.VirtualBody fixedRowHeight /> : <DataTable.Body />}
+        </DataTable.Container>
+      </DataTable.Root>
+    </div>
+  );
+}
+
+export const DynamicColumns: Story = {
+  render: () => <DynamicColumnsStory />,
+  play: async ({ canvasElement }) => {
+    const viewport = canvasElement.querySelector<HTMLElement>('[data-ov-table-container]')!;
+    const frame = () => {
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => resolve());
+      return promise;
+    };
+    const click = async (label: string) => {
+      const button = Array.from(canvasElement.querySelectorAll('button')).find(
+        (element) => element.textContent === label,
+      );
+      if (!button) throw new Error(`Missing control: ${label}`);
+      button.click();
+      await frame();
+      await frame();
+    };
+    const check = (minimum: number) => {
+      const table = viewport.querySelector('table')!;
+      const width = table.getBoundingClientRect().width;
+      const expected = Math.max(viewport.clientWidth, minimum);
+      if (Math.abs(width - expected) > 1) {
+        throw new Error(`Table width: expected ${expected}, received ${width}`);
+      }
+      const headers = Array.from(table.querySelectorAll('thead th'));
+      const cells = Array.from(table.querySelectorAll('tbody tr:first-child td'));
+      if (!cells.length || cells.length !== headers.length) {
+        throw new Error('Header/body visible columns differ');
+      }
+      headers.forEach((header, index) => {
+        const head = header.getBoundingClientRect();
+        const cell = cells[index]!.getBoundingClientRect();
+        if (Math.abs(head.width - cell.width) > 1 || Math.abs(head.left - cell.left) > 1) {
+          throw new Error(`Header/body alignment differs at column ${index}`);
+        }
+      });
+      if (minimum > viewport.clientWidth && viewport.scrollWidth < minimum - 1) {
+        throw new Error('Horizontal viewport does not expose the full table width');
+      }
+    };
+    check(260);
+    await click('Toggle metric columns');
+    check(660);
+    await click('Resize memory to 300px');
+    check(740);
+    await click('Toggle CPU visibility');
+    check(560);
+    await click('Toggle CPU visibility');
+    await click('Toggle virtual body');
+    for (let attempt = 0; attempt < 60 && !viewport.querySelector('tbody tr'); attempt += 1) {
+      await frame();
+    }
+    check(740);
+    viewport.scrollLeft = 200;
+    await frame();
+    check(740);
+    await click('Toggle metric columns');
+    check(260);
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A 520px viewport starts with 260px of declared columns. Adding metrics raises the minimum table width to 660px; resizing memory raises it to 740px. Hide CPU to remove 180px. Headers and ordinary/virtual rows share the same widths; excess width scrolls instead of squeezing cells. Drag header dividers to test continuous resizing.',
+      },
+    },
+  },
 };

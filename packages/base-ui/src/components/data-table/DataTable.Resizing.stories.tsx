@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '../button';
 import type { DataTableColumnDef as ColumnDef } from './types';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -77,21 +78,35 @@ function DynamicColumnsStory() {
   const [virtual, setVirtual] = useState(false);
   const table = useDataTable({
     data: containerData,
-    columns: metrics ? [...containerColumns.slice(0, 2), ...metricColumns] : containerColumns.slice(0, 2),
+    columns: metrics
+      ? [...containerColumns.slice(0, 2), ...metricColumns]
+      : containerColumns.slice(0, 2),
     features: { columnResizing: true, columnVisibility: true },
     getRowId: (row) => row.id,
   });
   return (
     <div style={{ width: 520, maxWidth: '100%', display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <button onClick={() => setMetrics((value) => !value)}>Toggle metric columns</button>
-        <button disabled={!metrics} onClick={() => table.getColumn('cpu')?.toggleVisibility()}>
+        <Button size="sm" onClick={() => setMetrics((value) => !value)}>
+          Toggle metric columns
+        </Button>
+        <Button
+          size="sm"
+          disabled={!metrics}
+          onClick={() => table.getColumn('cpu')?.toggleVisibility()}
+        >
           Toggle CPU visibility
-        </button>
-        <button disabled={!metrics} onClick={() => table.setColumnSizing({ memory: 300 })}>
+        </Button>
+        <Button
+          size="sm"
+          disabled={!metrics}
+          onClick={() => table.setColumnSizing({ memory: 300 })}
+        >
           Resize memory to 300px
-        </button>
-        <button onClick={() => setVirtual((value) => !value)}>Toggle virtual body</button>
+        </Button>
+        <Button size="sm" onClick={() => setVirtual((value) => !value)}>
+          Toggle virtual body
+        </Button>
       </div>
       <DataTable.Root table={table} features={{ columnResizing: true }} size="sm">
         <DataTable.Container height={280} aria-label="Dynamic column sizing repro">

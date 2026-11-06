@@ -389,7 +389,9 @@ describe('Dynamic column sizing', () => {
     expect(table.style.getPropertyValue('--col-age-size')).toBe('180');
     const header = screen.getAllByRole('columnheader')[1]!;
     const cell = screen.getAllByRole('cell')[1]!;
-    expect(header.style.getPropertyValue('--_dt-cell-basis')).toBe('calc(var(--header-age-size) * 1px)');
+    expect(header.style.getPropertyValue('--_dt-cell-basis')).toBe(
+      'calc(var(--header-age-size) * 1px)',
+    );
     expect(cell.style.getPropertyValue('--_dt-cell-basis')).toBe('calc(var(--col-age-size) * 1px)');
     fireEvent.click(screen.getByText('Hide CPU'));
     expect(table.style.getPropertyValue('--_dt-table-size')).toBe('460');

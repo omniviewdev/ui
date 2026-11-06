@@ -61,7 +61,7 @@ The reference card uses a 50px header, a 66px value slot, a 180px chart includin
 
 - Units are explicit. CPU cores differ from millicores; ratios differ from percentages; duration bases and byte display systems are declared.
 - Missing or non-finite values remain unknown. Zero remains a valid sample. Capacity percentages require a finite positive bound.
-- Use `MetricCell` in tables. Its thin horizontal or vertical track precedes the compact value. Unknown bounds use a hatched track, never invented utilization. `MetricValue size="xs"` provides the same table typography independently.
+- Use `MetricCell` in tables. Its thin horizontal or vertical track precedes the compact value. Thresholds color the bar, not the neutral value. Unknown bounds use a hatched track, never invented utilization. `MetricValue size="xs"` provides the same table typography independently.
 - Series and resources have stable IDs. Independent series retain their timestamps; stacked series use an explicitly aligned frame. Missing stack values are not additive zero.
 - Histogram and heatmap buckets are ordered, contiguous, non-cumulative `(lower, upper]` intervals. Open first or last tails use null bounds. Declare count versus rate explicitly.
 - Heatmaps preserve unknown cells. State timelines preserve unknown intervals rather than inventing continuity.

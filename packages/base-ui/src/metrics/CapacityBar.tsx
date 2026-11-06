@@ -128,7 +128,7 @@ export function CapacityBar({
         </p>
       )}
       {variant === 'cell' && showValue && (
-        <MetricValue value={sample} unit={unit} size="xs" color={color} tone={active?.tone} />
+        <MetricValue value={sample} unit={unit} size="xs" />
       )}
       {variant === 'full' && (
         <div className={styles.Details}>

@@ -14,9 +14,7 @@ describe('MetricCell', () => {
     );
     expect(screen.getByText('150')).toBeVisible();
     expect(screen.getByRole('img')).toHaveAccessibleName('Usage: 150; limit: 100');
-    expect(screen.getByRole('img').firstElementChild).toHaveStyle({
-      '--_ov-metric-fill-size': '100%',
-    });
+    expect(screen.getByRole('img').firstElementChild).toHaveStyle('--_ov-metric-fill-size: 100%');
     rerender(<MetricCell value={150} unit={unit} />);
     expect(screen.getByText('150')).toBeVisible();
     expect(screen.getByRole('img')).toHaveAccessibleName(/bound unknown; absolute usage/);
@@ -36,9 +34,7 @@ describe('MetricCell', () => {
       />,
     );
     expect(screen.getByText('0')).toBeVisible();
-    expect(screen.getByRole('img').firstElementChild).toHaveStyle({
-      '--_ov-metric-fill-size': '0%',
-    });
+    expect(screen.getByRole('img').firstElementChild).toHaveStyle('--_ov-metric-fill-size: 0%');
     rerender(<MetricCell value={null} unit={unit} bound={{ kind: 'capacity', value: 100 }} />);
     expect(screen.queryByText('0')).not.toBeInTheDocument();
     expect(screen.getByText('—')).toBeVisible();

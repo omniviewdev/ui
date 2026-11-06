@@ -15,6 +15,19 @@ function getSection(container: HTMLElement, type: string): HTMLElement {
 }
 
 describe('DateField — rendering', () => {
+  it('distinguishes empty optional input from an invalid partial date', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DateField value={null} locale="en-US" mode="date" />);
+    const field = screen.getByRole('group', { name: 'Date' });
+    expect(field).not.toHaveAttribute('aria-invalid');
+    await user.click(getSection(container, 'month'));
+    await user.keyboard('02');
+    expect(field).toHaveAttribute('aria-invalid', 'true');
+    await user.click(getSection(container, 'month'));
+    await user.keyboard('{Backspace}');
+    expect(field).not.toHaveAttribute('aria-invalid');
+  });
+
   it.each(['date', 'time', 'datetime'] as const)(
     'does not emit a precision-normalizing change on %s mount, focus, or blur',
     async (mode) => {

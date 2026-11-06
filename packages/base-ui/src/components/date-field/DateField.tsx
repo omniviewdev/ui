@@ -66,6 +66,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
 
   const { sections, isValid, rootProps, getSectionProps, registerSectionRef } =
     useDateField(options);
+  const hasInput = sections.some((section) => section.type !== 'literal' && section.value !== '');
   useEffect(() => {
     onValidityChange?.(isValid);
   }, [isValid, onValidityChange]);
@@ -78,7 +79,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
       data-readonly={readOnly ? '' : undefined}
       data-bare={bare ? '' : undefined}
       aria-label={ariaLabel ?? defaultAriaLabel(mode)}
-      aria-invalid={!isValid || undefined}
+      aria-invalid={(hasInput && !isValid) || undefined}
       {...rootProps}
     >
       {sections.map((section, idx) =>

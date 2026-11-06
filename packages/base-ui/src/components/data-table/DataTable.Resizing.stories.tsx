@@ -71,7 +71,7 @@ export const ColumnResizing: Story = {
 
 const metricColumns: ColumnDef<Container, unknown>[] = [
   {
-    id: 'cpu',
+    id: 'metric:kubernetes.pod.cpu_total_usage',
     header: 'CPU usage',
     size: 180,
     cell: () => (
@@ -84,7 +84,7 @@ const metricColumns: ColumnDef<Container, unknown>[] = [
     ),
   },
   {
-    id: 'memory',
+    id: 'metric:kubernetes.pod.memory_total_usage',
     header: 'Memory usage',
     size: 220,
     cell: () => (
@@ -95,6 +95,13 @@ const metricColumns: ColumnDef<Container, unknown>[] = [
         bound={{ kind: 'limit', value: 1024 ** 3 }}
       />
     ),
+  },
+  {
+    // Would collide with the punctuation-bearing CPU ID if punctuation became underscores.
+    id: 'metric_kubernetes_pod_cpu_total_usage',
+    header: 'Collision control',
+    size: 140,
+    cell: () => 'Independent width',
   },
 ];
 
@@ -118,14 +125,16 @@ function DynamicColumnsStory() {
         <Button
           size="sm"
           disabled={!metrics}
-          onClick={() => table.getColumn('cpu')?.toggleVisibility()}
+          onClick={() =>
+            table.getColumn('metric:kubernetes.pod.cpu_total_usage')?.toggleVisibility()
+          }
         >
           Toggle CPU visibility
         </Button>
         <Button
           size="sm"
           disabled={!metrics}
-          onClick={() => table.setColumnSizing({ memory: 300 })}
+          onClick={() => table.setColumnSizing({ 'metric:kubernetes.pod.memory_total_usage': 300 })}
         >
           Resize memory to 300px
         </Button>
@@ -161,7 +170,7 @@ export const DynamicColumns: Story = {
       await frame();
       await frame();
     };
-    const check = (minimum: number) => {
+    const check = (minimum: number, columnWidths?: readonly number[]) => {
       const table = viewport.querySelector('table')!;
       const width = table.getBoundingClientRect().width;
       const expected = Math.max(viewport.clientWidth, minimum);
@@ -178,6 +187,11 @@ export const DynamicColumns: Story = {
         const cell = cells[index]!.getBoundingClientRect();
         if (Math.abs(head.width - cell.width) > 1 || Math.abs(head.left - cell.left) > 1) {
           throw new Error(`Header/body alignment differs at column ${index}`);
+        }
+        if (columnWidths && Math.abs(cell.width - columnWidths[index]!) > 1) {
+          throw new Error(
+            `Column ${index}: expected ${columnWidths[index]}px, received ${cell.width}`,
+          );
         }
       });
       table
@@ -197,20 +211,20 @@ export const DynamicColumns: Story = {
     };
     check(260);
     await click('Toggle metric columns');
-    check(660);
+    check(800, [120, 140, 180, 220, 140]);
     await click('Resize memory to 300px');
-    check(740);
+    check(880, [120, 140, 180, 300, 140]);
     await click('Toggle CPU visibility');
-    check(560);
+    check(700, [120, 140, 300, 140]);
     await click('Toggle CPU visibility');
     await click('Toggle virtual body');
     for (let attempt = 0; attempt < 60 && !viewport.querySelector('tbody tr'); attempt += 1) {
       await frame();
     }
-    check(740);
+    check(880, [120, 140, 180, 300, 140]);
     viewport.scrollLeft = 200;
     await frame();
-    check(740);
+    check(880, [120, 140, 180, 300, 140]);
     await click('Toggle metric columns');
     check(260);
   },
@@ -218,7 +232,7 @@ export const DynamicColumns: Story = {
     docs: {
       description: {
         story:
-          'A 520px viewport starts with 260px of declared columns. Adding metrics raises the minimum table width to 660px; resizing memory raises it to 740px. Hide CPU to remove 180px. Headers and ordinary/virtual rows share the same widths; excess width scrolls instead of squeezing cells. Drag header dividers to test continuous resizing.',
+          'A 520px viewport starts with 260px of declared columns. Adding metrics and an underscore-lookalike collision control raises the minimum table width to 800px; resizing memory raises it to 880px. Hide CPU to remove 180px. Metric IDs include colons, dots, and underscores. Headers and ordinary/virtual rows share the same widths; excess width scrolls instead of squeezing cells. Drag header dividers to test continuous resizing.',
       },
     },
   },

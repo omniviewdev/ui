@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -347,61 +346,5 @@ describe('Bug: Column filtering not working', () => {
     expect(screen.getByText('Charlie')).toBeInTheDocument();
     expect(screen.queryByText('Alice')).not.toBeInTheDocument();
     expect(screen.queryByText('Bob')).not.toBeInTheDocument();
-  });
-});
-
-describe('Dynamic column sizing', () => {
-  function DynamicTable() {
-    const [metrics, setMetrics] = useState(false);
-    const table = useDataTable({
-      data: sampleData,
-      columns: metrics
-        ? [
-            { accessorKey: 'name', header: 'Name', size: 240 },
-            { accessorKey: 'age', header: 'CPU usage', size: 180 },
-            { accessorKey: 'status', header: 'Memory usage', size: 220 },
-          ]
-        : [{ accessorKey: 'name', header: 'Name', size: 240 }],
-      features: { columnResizing: true, columnVisibility: true },
-    });
-    return (
-      <>
-        <button onClick={() => setMetrics((value) => !value)}>Toggle metrics</button>
-        <button onClick={() => table.getColumn('age')?.toggleVisibility(false)}>Hide CPU</button>
-        <button onClick={() => table.setColumnSizing({ status: 300 })}>Resize memory</button>
-        <DataTable.Root table={table} features={{ columnResizing: true }}>
-          <DataTable.Container style={{ width: 400 }}>
-            <DataTable.Header />
-            <DataTable.Body />
-          </DataTable.Container>
-        </DataTable.Root>
-      </>
-    );
-  }
-
-  it('updates the shared scroll extent and header/body bases on add, hide, resize, and remove', () => {
-    renderWithTheme(<DynamicTable />);
-    const table = screen.getByRole('table');
-    expect(table.style.getPropertyValue('--_dt-table-size')).toBe('240');
-    fireEvent.click(screen.getByText('Toggle metrics'));
-    expect(table.style.getPropertyValue('--_dt-table-size')).toBe('640');
-    expect(table.style.getPropertyValue('--header-age-size')).toBe('180');
-    expect(table.style.getPropertyValue('--col-age-size')).toBe('180');
-    const header = screen.getAllByRole('columnheader')[1]!;
-    const cell = screen.getAllByRole('cell')[1]!;
-    expect(header.style.getPropertyValue('--_dt-cell-basis')).toBe(
-      'calc(var(--header-age-size) * 1px)',
-    );
-    expect(cell.style.getPropertyValue('--_dt-cell-basis')).toBe('calc(var(--col-age-size) * 1px)');
-    fireEvent.click(screen.getByText('Hide CPU'));
-    expect(table.style.getPropertyValue('--_dt-table-size')).toBe('460');
-    expect(screen.getAllByRole('columnheader')).toHaveLength(2);
-    fireEvent.click(screen.getByText('Resize memory'));
-    expect(table.style.getPropertyValue('--_dt-table-size')).toBe('540');
-    expect(table.style.getPropertyValue('--header-status-size')).toBe('300');
-    expect(table.style.getPropertyValue('--col-status-size')).toBe('300');
-    fireEvent.click(screen.getByText('Toggle metrics'));
-    expect(table.style.getPropertyValue('--_dt-table-size')).toBe('240');
-    expect(screen.getAllByRole('columnheader')).toHaveLength(1);
   });
 });

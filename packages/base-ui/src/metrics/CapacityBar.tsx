@@ -22,6 +22,7 @@ export function CapacityBar({
   showValue = true,
   variant = 'full',
   className,
+  orientation = 'horizontal',
 }: CapacityBarProps) {
   const sample = value !== null && Number.isFinite(value) ? value : null;
   const maximum = bound && Number.isFinite(bound.value) && bound.value > 0 ? bound.value : null;
@@ -52,10 +53,11 @@ export function CapacityBar({
     <div
       className={cn(styles.Capacity, className)}
       data-variant={variant}
+      data-orientation={orientation}
       role="group"
       aria-label={label}
     >
-      {variant === 'compact' ? (
+      {variant === 'cell' ? null : variant === 'compact' ? (
         showValue && (
           <MetricValue value={sample} unit={unit} size="sm" color={color} tone={active?.tone} />
         )
@@ -113,10 +115,20 @@ export function CapacityBar({
             </div>
           )}
         </>
+      ) : variant === 'cell' ? (
+        <div
+          className={styles.Track}
+          data-missing="true"
+          role="img"
+          aria-label={`${label}: ${formatMetricText(sample, unit)}; bound unknown; absolute usage`}
+        />
       ) : (
         <p className={styles.Muted}>
           {bound ? 'Invalid bound' : 'No bound supplied'} · Absolute usage
         </p>
+      )}
+      {variant === 'cell' && showValue && (
+        <MetricValue value={sample} unit={unit} size="xs" color={color} tone={active?.tone} />
       )}
       {variant === 'full' && (
         <div className={styles.Details}>

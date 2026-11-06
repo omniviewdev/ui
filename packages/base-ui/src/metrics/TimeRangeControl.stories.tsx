@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { Meta, StoryObj } from '@storybook/react';
 import { TimeRangeControl } from './TimeRangeControl';
 import { Button } from '../components/button';
@@ -69,5 +70,43 @@ export const Refreshing: Story = {
         </Button>
       </div>
     );
+  },
+};
+
+/** Drafts stay local until Apply; calendar and time columns share a nested popup. */
+export const OpenSidebar: Story = {
+  ...AbsoluteRange,
+  decorators: [
+    (Story) => (
+      <div style={{ width: 320, maxWidth: '100%' }}>
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    canvasElement.querySelector<HTMLButtonElement>('button[aria-label="Time range"]')?.click();
+  },
+};
+export const OpenNarrowSidebar: Story = {
+  ...OpenSidebar,
+  decorators: [
+    (Story) => (
+      <div style={{ width: 260, maxWidth: '100%' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+export const OpenCalendarAndTime: Story = {
+  ...OpenSidebar,
+  play: async ({ canvasElement }) => {
+    flushSync(() => {
+      canvasElement.querySelector<HTMLButtonElement>('button[aria-label="Time range"]')?.click();
+    });
+    canvasElement.ownerDocument
+      .querySelector<HTMLButtonElement>(
+        'button[aria-label="Open calendar for Start (local date and time)"]',
+      )
+      ?.click();
   },
 };

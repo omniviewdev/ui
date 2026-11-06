@@ -8,6 +8,7 @@ import {
   LuTerminal,
 } from 'react-icons/lu';
 import { Menu } from './Menu';
+import { Button } from '../button';
 
 const meta = {
   title: 'Components/Menu',
@@ -149,4 +150,45 @@ export const Open: Story = {
   args: {
     defaultOpen: true,
   },
+};
+
+export const IconTriggerSizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <Menu.Root key={size} size={size}>
+          <Menu.Trigger>
+            <LuFolder />
+            Workspace {size}
+            <LuChevronRight />
+          </Menu.Trigger>
+          <Menu.Portal>
+            <Menu.Positioner>
+              <Menu.Popup>
+                <Menu.Item>Open workspace</Menu.Item>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
+      ))}
+    </div>
+  ),
+};
+
+export const CustomButtonTrigger: Story = {
+  render: () => (
+    <Menu.Root size="lg">
+      <Menu.Trigger render={<Button size="sm" variant="ghost" />}>
+        <LuFolder />
+        Workspace
+      </Menu.Trigger>
+      <Menu.Portal>
+        <Menu.Positioner>
+          <Menu.Popup>
+            <Menu.Item>Open workspace</Menu.Item>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  ),
 };

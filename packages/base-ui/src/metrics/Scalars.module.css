@@ -34,6 +34,12 @@
 }
 .PanelContent {
   min-inline-size: 0;
+  padding-block-end: var(--ov-space-stack-md);
+}
+.PanelValue {
+  min-block-size: calc(4 * var(--ov-space-stack-lg));
+  padding-block-end: var(--ov-space-stack-md);
+  box-sizing: border-box;
 }
 .Panel .PanelFooter {
   display: flex;
@@ -111,6 +117,54 @@
   font-size: 13px;
   font-weight: 400;
   letter-spacing: normal;
+}
+.Value[data-size='xs'] {
+  gap: calc(var(--ov-space-stack-sm) / 2);
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.3;
+  font-weight: var(--ov-font-weight-body);
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+.Value[data-size='xs'] .Unit {
+  font-size: 0.85em;
+}
+.Capacity[data-variant='cell'] {
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--ov-space-stack-sm) / 2);
+  min-inline-size: 0;
+  min-block-size: 1.5em;
+}
+.Capacity[data-variant='cell'] .Track {
+  flex: 0 0 calc(2 * var(--ov-space-stack-md));
+  min-inline-size: calc(2 * var(--ov-space-stack-md));
+  block-size: calc(var(--ov-space-stack-sm) / 2);
+  border-radius: var(--ov-radius-sm);
+}
+.Capacity[data-variant='cell'] .Value {
+  flex: 0 0 auto;
+}
+.Capacity[data-variant='cell'][data-orientation='vertical'] .Track {
+  flex: 0 0 calc(var(--ov-space-stack-sm) / 2);
+  inline-size: calc(var(--ov-space-stack-sm) / 2);
+  min-inline-size: calc(var(--ov-space-stack-sm) / 2);
+  block-size: 1.5em;
+}
+.Capacity[data-variant='cell'][data-orientation='vertical'] .Fill {
+  inset-block-start: auto;
+  inset-block-end: 0;
+  inline-size: 100%;
+  block-size: var(--_ov-metric-fill-size, 0%);
+}
+.Capacity[data-variant='cell'][data-orientation='vertical'] .Marker,
+.Capacity[data-variant='cell'][data-orientation='vertical'] .Request {
+  inset-inline-start: calc(var(--ov-space-stack-sm) / -4);
+  inset-block-start: auto;
+  inset-block-end: var(--_ov-metric-marker-position);
+  inline-size: var(--ov-space-stack-sm);
+  block-size: 1px;
+  transform: none;
 }
 .Muted {
   color: var(--ov-color-fg-muted);

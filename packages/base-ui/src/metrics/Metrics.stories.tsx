@@ -9,6 +9,7 @@ import { useDataTable } from '../components/data-table/hooks/useDataTable';
 import type { DataTableColumnDef } from '../components/data-table/types';
 import { MetricPanel } from './MetricPanel';
 import { MetricValue } from './MetricValue';
+import { MetricCell } from './MetricCell';
 import { CapacityBar } from './CapacityBar';
 import { Gauge } from './Gauge';
 import { RankedBars } from './RankedBars';
@@ -90,19 +91,17 @@ const tableColumns: DataTableColumnDef<RankedItem, unknown>[] = [
     accessorKey: 'value',
     header: 'CPU',
     size: 120,
-    cell: ({ row }) => <MetricValue value={row.original.value} unit={cpuUnit} size="sm" />,
+    cell: ({ row }) => <MetricCell value={row.original.value} unit={cpuUnit} />,
   },
   {
     id: 'capacity',
     header: 'Configured capacity',
     size: 200,
     cell: ({ row }) => (
-      <CapacityBar
+      <MetricCell
         value={row.original.value}
         unit={cpuUnit}
         bound={{ kind: 'limit', value: 500 }}
-        showValue={false}
-        variant="compact"
         className={styles.capacityCell}
         color="series-1"
         label={`${row.original.label} capacity`}

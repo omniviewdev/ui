@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { LuCalendarClock } from 'react-icons/lu';
 import { Popover } from '../popover/Popover';
 import { DateField } from '../date-field/DateField';
@@ -15,6 +15,10 @@ export interface DateTimePickerProps extends StyledComponentProps {
   value?: Date | null;
   defaultValue?: Date | null;
   onChange?: (value: Date | null) => void;
+  /** Reports validity of the displayed draft, including incomplete sections. */
+  onValidityChange?: (valid: boolean) => void;
+  /** Accessible name for the segmented date/time field and its calendar opener. */
+  'aria-label'?: string;
   min?: Date;
   max?: Date;
   isDateDisabled?: (date: Date) => boolean;
@@ -64,6 +68,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
     value,
     defaultValue = null,
     onChange,
+    onValidityChange,
     min,
     max,
     isDateDisabled,
@@ -77,11 +82,21 @@ export function DateTimePicker(props: DateTimePickerProps) {
     hourCycle,
     minuteStep,
     className,
+    'aria-label': ariaLabel = 'Date and time',
   } = props;
 
   const [current, setCurrent] = useControlled<Date | null>(value, defaultValue, onChange);
   const [open, setOpen] = useState(false);
   const [rangeError, setRangeError] = useState(false);
+  const [fieldValid, setFieldValid] = useState(false);
+  const currentValid =
+    current !== null &&
+    Number.isFinite(current.getTime()) &&
+    isDateInRange(current, min, max) &&
+    !isDateDisabled?.(current);
+  useEffect(() => {
+    onValidityChange?.(fieldValid && !rangeError && currentValid);
+  }, [fieldValid, rangeError, currentValid, onValidityChange]);
   // Stable fallback used when `current` is null — avoids creating a fresh
   // Date every render, which would break downstream memoization.
   const fallbackNow = useMemo(() => new Date(), []);
@@ -149,6 +164,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
         <DateField
           value={current}
           onChange={handleFieldChange}
+          onValidityChange={setFieldValid}
           mode="datetime"
           hourCycle={hourCycle}
           showSeconds={showSeconds}
@@ -157,12 +173,12 @@ export function DateTimePicker(props: DateTimePickerProps) {
           max={max}
           disabled={disabled}
           readOnly={readOnly}
-          aria-label="Date and time"
+          aria-label={ariaLabel}
           bare
         />
         <button
           type="button"
-          aria-label="Open calendar"
+          aria-label={props['aria-label'] ? `Open calendar for ${ariaLabel}` : 'Open calendar'}
           className={styles.iconButton}
           disabled={disabled}
           aria-disabled={readOnly || undefined}

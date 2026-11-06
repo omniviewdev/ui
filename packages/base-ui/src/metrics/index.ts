@@ -4,6 +4,7 @@ export type * from './types';
 export { formatMetric, formatMetricText, seriesColor, toneColor } from './format';
 export { MetricPanel } from './MetricPanel';
 export { MetricValue } from './MetricValue';
+export { MetricCell } from './MetricCell';
 export { CapacityBar } from './CapacityBar';
 export { Gauge } from './Gauge';
 export { RankedBars } from './RankedBars';

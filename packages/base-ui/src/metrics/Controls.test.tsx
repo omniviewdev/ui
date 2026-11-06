@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../test/render';
@@ -57,19 +57,30 @@ describe('Metric controls', () => {
     const change = vi.fn();
     renderWithTheme(
       <TimeRangeControl
-        value={{ mode: 'absolute', domain: { startMs: 1000, endMs: 2000 } }}
+        value={{
+          mode: 'absolute',
+          domain: {
+            startMs: new Date(2026, 10, 5, 13).getTime(),
+            endMs: new Date(2026, 10, 5, 12).getTime(),
+          },
+        }}
         onChange={change}
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Time range' }));
-    const start = screen.getByLabelText('Start (local time)');
-    const end = screen.getByLabelText('End (local time)');
-    fireEvent.change(start, { target: { value: '2026-11-05T13:00' } });
-    fireEvent.change(end, { target: { value: '2026-11-05T12:00' } });
+    expect(screen.getByRole('group', { name: 'Start (local date and time)' })).toBeVisible();
+    expect(screen.getByRole('group', { name: 'End (local date and time)' })).toBeVisible();
     await user.click(screen.getByRole('button', { name: 'Apply range' }));
     expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid start before the end.');
     expect(change).not.toHaveBeenCalled();
-    fireEvent.change(end, { target: { value: '2026-11-05T14:00' } });
+    await user.click(
+      screen.getByRole('button', { name: 'Open calendar for End (local date and time)' }),
+    );
+    await user.click(
+      within(screen.getByRole('listbox', { name: /hours/i })).getByRole('option', { name: '14' }),
+    );
+    expect(change).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'Done' }));
     await user.click(screen.getByRole('button', { name: 'Apply range' }));
     expect(change).toHaveBeenCalledWith({
       mode: 'absolute',

@@ -20,6 +20,7 @@ export function MetricPanel({
   actions,
   footer,
   details,
+  value,
   children,
   className,
   style,
@@ -69,7 +70,14 @@ export function MetricPanel({
             </span>
           )}
         </div>
-        <div className={styles.PanelContent}>{data ? children : null}</div>
+        <div className={styles.PanelContent}>
+          {data && (
+            <>
+              {value != null && <div className={styles.PanelValue}>{value}</div>}
+              {children}
+            </>
+          )}
+        </div>
       </Card.Body>
       {data && (details || footer) && (
         <Card.Footer className={styles.PanelFooter}>

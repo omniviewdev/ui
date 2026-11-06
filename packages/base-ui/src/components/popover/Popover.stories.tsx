@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../button';
 import { Popover } from './Popover';
+import { LuCalendarClock, LuCheck } from 'react-icons/lu';
 
 const meta: Meta = {
   title: 'Components/Popover',
@@ -226,5 +227,35 @@ export const LongUnbrokenContent: Story = {
         </Popover.Positioner>
       </Popover.Portal>
     </Popover.Root>
+  ),
+};
+
+export const IconControlSizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <Popover.Root key={size} size={size}>
+          <Popover.Trigger>
+            <LuCalendarClock />
+            Time range {size}
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner>
+              <Popover.Popup>
+                <Popover.Title>Time range</Popover.Title>
+                <Popover.Close>
+                  <LuCheck />
+                  Done
+                </Popover.Close>
+                <Popover.Close render={<Button variant="ghost" size={size} />}>
+                  <LuCheck />
+                  Custom button
+                </Popover.Close>
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+      ))}
+    </div>
   ),
 };

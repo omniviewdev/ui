@@ -15,6 +15,32 @@ function getSection(container: HTMLElement, type: string): HTMLElement {
 }
 
 describe('DateField — rendering', () => {
+  it.each(['date', 'time', 'datetime'] as const)(
+    'does not emit a precision-normalizing change on %s mount, focus, or blur',
+    async (mode) => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      const value = new Date(2026, 3, 12, 9, 30, 42, 123);
+      const { container, rerender } = render(
+        <DateField value={value} onChange={onChange} mode={mode} hourCycle={24} />,
+      );
+      expect(onChange).not.toHaveBeenCalled();
+      await user.click(getSection(container, mode === 'date' ? 'day' : 'hour'));
+      await user.tab();
+      await user.click(document.body);
+      expect(onChange).not.toHaveBeenCalled();
+      rerender(
+        <DateField
+          value={new Date(2026, 3, 13, 10, 31, 43, 456)}
+          onChange={onChange}
+          mode={mode}
+          hourCycle={24}
+        />,
+      );
+      expect(onChange).not.toHaveBeenCalled();
+    },
+  );
+
   it('renders sections in locale order for en-US (month-first)', () => {
     const { container } = render(<DateField value={null} locale="en-US" mode="date" />);
     const sections = Array.from(
@@ -81,6 +107,41 @@ describe('DateField — rendering', () => {
 });
 
 describe('DateField — keyboard navigation', () => {
+  it('tabs into the first section before any mouse interaction', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DateField value={null} locale="en-US" mode="datetime" />);
+    await user.tab();
+    expect(getSection(container, 'month')).toHaveFocus();
+    await user.tab();
+    expect(getSection(container, 'day')).toHaveFocus();
+  });
+
+  it('skips disabled fields but allows read-only field inspection without edits', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <>
+        <DateField value={null} disabled locale="en-US" aria-label="Disabled date" />
+        <DateField
+          value={new Date(2026, 3, 12)}
+          readOnly
+          onChange={onChange}
+          locale="en-US"
+          aria-label="Read-only date"
+        />
+      </>,
+    );
+    const disabled = screen.getByRole('group', { name: 'Disabled date' });
+    expect(disabled.querySelector('[tabindex="0"]')).toBeNull();
+    await user.tab();
+    const readonly = screen.getByRole('group', { name: 'Read-only date' });
+    expect(getSection(readonly, 'month')).toHaveFocus();
+    await user.keyboard('11{ArrowUp}{Backspace}');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(getSection(container, 'month')).toHaveAttribute('contenteditable', 'false');
+    expect(getSection(readonly, 'month')).toHaveTextContent('04');
+  });
+
   it('clicking a section focuses it', async () => {
     const user = userEvent.setup();
     const { container } = render(<DateField value={null} locale="en-US" mode="date" />);

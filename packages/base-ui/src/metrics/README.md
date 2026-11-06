@@ -40,6 +40,8 @@ import {
 
 `MetricPanel.details` owns the shared swatch-and-Details disclosure. Supply its content, not a nested disclosure. Use `open` and `onOpenChange` for persisted expansion; omit both for native uncontrolled expansion. `footer` is an additional custom slot, not a second implementation of Details.
 
+`MetricPanel.value` holds the current scalar and owns value-to-plot spacing. Put charts in `children`; child-only compositions remain supported. The panel reserves a bottom gutter between chart axes and its disclosure footer.
+
 `MetricDetails` renders a compact source row, Current/History sample table, label pairs, and collapsed diagnostics. Timestamps use epoch milliseconds. Put opaque identifiers and revisions in advanced items.
 
 The reference card uses a 50px header, a 66px value slot, a 180px chart including axes, and a 34px collapsed footer. In Void, its surface and first four series colors match the working IDE. Other themes resolve through chart tokens.
@@ -59,7 +61,7 @@ The reference card uses a 50px header, a 66px value slot, a 180px chart includin
 
 - Units are explicit. CPU cores differ from millicores; ratios differ from percentages; duration bases and byte display systems are declared.
 - Missing or non-finite values remain unknown. Zero remains a valid sample. Capacity percentages require a finite positive bound.
-- Use `CapacityBar variant="compact"` in tables. It keeps the track inline without full-card annotations; unknown samples use a hatched track.
+- Use `MetricCell` in tables. Its thin horizontal or vertical track precedes the compact value. Unknown bounds use a hatched track, never invented utilization. `MetricValue size="xs"` provides the same table typography independently.
 - Series and resources have stable IDs. Independent series retain their timestamps; stacked series use an explicitly aligned frame. Missing stack values are not additive zero.
 - Histogram and heatmap buckets are ordered, contiguous, non-cumulative `(lower, upper]` intervals. Open first or last tails use null bounds. Declare count versus rate explicitly.
 - Heatmaps preserve unknown cells. State timelines preserve unknown intervals rather than inventing continuity.

@@ -84,6 +84,8 @@ export interface MetricPanelProps {
   title: ReactNode;
   state?: MetricPanelState;
   actions?: ReactNode;
+  /** Current scalar value, separated from plot content by shared panel spacing. */
+  value?: ReactNode;
   footer?: ReactNode;
   /** Shared disclosure footer. Supply prepared metadata, not another disclosure wrapper. */
   details?: {
@@ -103,7 +105,7 @@ export interface MetricValueProps {
   unit: MetricUnit;
   color?: SeriesColor;
   tone?: MetricTone;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   format?: MetricFormatOptions;
   className?: string;
   'aria-label'?: string;
@@ -111,6 +113,17 @@ export interface MetricValueProps {
 export interface CapacityBound {
   readonly value: number;
   readonly kind: 'limit' | 'capacity' | 'allocatable' | 'request' | 'target';
+}
+export interface MetricCellProps {
+  value: number | null;
+  unit: MetricUnit;
+  bound?: CapacityBound;
+  request?: number | null;
+  label?: string;
+  thresholds?: readonly MetricThreshold[];
+  orientation?: 'horizontal' | 'vertical';
+  color?: SeriesColor;
+  className?: string;
 }
 export interface CapacityBarProps {
   value: number | null;
@@ -122,7 +135,9 @@ export interface CapacityBarProps {
   label?: string;
   showValue?: boolean;
   /** Compact mode keeps the value and track inline; labels remain available to assistive technology. */
-  variant?: 'full' | 'compact';
+  variant?: 'full' | 'compact' | 'cell';
+  /** Track direction for the fixed-density cell variant. Other variants remain horizontal. */
+  orientation?: 'horizontal' | 'vertical';
   className?: string;
 }
 export interface GaugeProps {
@@ -334,6 +349,8 @@ export interface MetricSampleDetail {
 export interface MetricDetailsProps {
   items: readonly MetricDetail[];
   source?: ReactNode;
+  /** Provider icon displayed within the shared source-row icon frame. */
+  sourceIcon?: ReactNode;
   samples?: readonly MetricSampleDetail[];
   labels?: Readonly<Record<string, string>>;
   label?: string;

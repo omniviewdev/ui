@@ -54,8 +54,7 @@ function CpuCard({
           />
         ),
       }}
-    >
-      <div className={styles.PanelValue}>
+      value={
         <MetricValue
           value={21.656}
           unit={f.cpuUnit}
@@ -63,7 +62,8 @@ function CpuCard({
           color="series-2"
           format={{ maximumFractionDigits: 3 }}
         />
-      </div>
+      }
+    >
       {display !== 'stat' && (
         <TimeSeriesChart
           series={[f.cpuSeries]}

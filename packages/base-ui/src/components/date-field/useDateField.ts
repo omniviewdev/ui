@@ -155,6 +155,12 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
     // Suppress onChange if the parsed date falls outside [min, max].
     if (!isDateInRange(next, min, max)) return;
     const prev = lastSyncedValue.current;
+    // Parsing reconstructs only the represented fields. A projection round-trip
+    // is not an edit: preserve unrepresented precision and avoid mount/focus
+    // callbacks when every displayed section still matches the supplied value.
+    const syncedSections = buildSections({ mode, locale, hourCycle, showSeconds, value: prev });
+    const syncedValidation = validateSections(syncedSections);
+    if (syncedValidation.valid && syncedValidation.date?.getTime() === next.getTime()) return;
     const changed = prev === null || prev.getTime() !== next.getTime();
     if (changed) {
       lastSyncedValue.current = next;
@@ -436,12 +442,19 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
         'aria-readonly': !!readOnly,
         contentEditable: disabled || readOnly ? 'false' : 'true',
         suppressContentEditableWarning: true,
-        tabIndex: isFocused ? 0 : -1,
+        tabIndex:
+          !disabled &&
+          (isFocused ||
+            (focusedIndex === null &&
+              index === sections.findIndex((item) => item.type !== 'literal')))
+            ? 0
+            : -1,
         spellCheck: false,
         autoCorrect: 'off',
         inputMode: section.type === 'meridiem' ? 'text' : 'numeric',
         onClick: (e) => {
           e.stopPropagation();
+          if (disabled) return;
           focusSection(index);
         },
         onFocus: () => {
@@ -471,7 +484,8 @@ export function useDateField(options: UseDateFieldOptions): UseDateFieldReturn {
   return {
     sections,
     focusedIndex,
-    isValid: validation.valid,
+    isValid:
+      validation.valid && validation.date !== null && isDateInRange(validation.date, min, max),
     rootProps,
     getSectionProps,
     registerSectionRef,

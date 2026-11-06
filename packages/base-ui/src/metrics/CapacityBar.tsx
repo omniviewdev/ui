@@ -79,26 +79,27 @@ export function CapacityBar({
             className={styles.Track}
             data-missing={sample === null || undefined}
             role="img"
-            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}`}
+            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${variant === 'cell' && requestKnown && request >= 0 ? `; request: ${formatMetricText(request, unit)}` : ''}`}
           >
             {sample !== null && <span className={styles.Fill} style={fillStyle} />}
-            {markers
-              .filter((t) => t.value >= 0 && t.value <= maximum)
-              .map((t, i) => {
-                const markerStyle: CapacityStyle = {
-                  '--_ov-metric-marker-position': `${(t.value / maximum) * 100}%`,
-                  '--_ov-metric-color': toneColor(t.tone),
-                };
-                return (
-                  <span
-                    key={i}
-                    className={styles.Marker}
-                    style={markerStyle}
-                    title={`${t.label || 'Threshold'}: ${formatMetricText(t.value, unit)}`}
-                  />
-                );
-              })}
-            {requestKnown && request >= 0 && request <= maximum && (
+            {variant !== 'cell' &&
+              markers
+                .filter((t) => t.value >= 0 && t.value <= maximum)
+                .map((t, i) => {
+                  const markerStyle: CapacityStyle = {
+                    '--_ov-metric-marker-position': `${(t.value / maximum) * 100}%`,
+                    '--_ov-metric-color': toneColor(t.tone),
+                  };
+                  return (
+                    <span
+                      key={i}
+                      className={styles.Marker}
+                      style={markerStyle}
+                      title={`${t.label || 'Threshold'}: ${formatMetricText(t.value, unit)}`}
+                    />
+                  );
+                })}
+            {variant !== 'cell' && requestKnown && request >= 0 && request <= maximum && (
               <span
                 className={styles.Request}
                 style={requestStyle}
@@ -127,9 +128,7 @@ export function CapacityBar({
           {bound ? 'Invalid bound' : 'No bound supplied'} · Absolute usage
         </p>
       )}
-      {variant === 'cell' && showValue && (
-        <MetricValue value={sample} unit={unit} size="xs" />
-      )}
+      {variant === 'cell' && showValue && <MetricValue value={sample} unit={unit} size="xs" />}
       {variant === 'full' && (
         <div className={styles.Details}>
           {sample === null && <span>No sample</span>}

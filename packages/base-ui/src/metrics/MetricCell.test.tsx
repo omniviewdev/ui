@@ -42,21 +42,6 @@ describe('MetricCell', () => {
     rerender(<MetricCell value={Infinity} unit={unit} />);
     expect(screen.getByText('—')).toBeVisible();
   });
-
-  it('places the track before the value and retains real request and threshold markers', () => {
-    renderWithTheme(
-      <MetricCell
-        value={80}
-        unit={unit}
-        request={25}
-        bound={{ kind: 'limit', value: 100 }}
-        thresholds={[{ value: 75, tone: 'warning' }]}
-      />,
-    );
-    expect(screen.getByRole('img').nextElementSibling).toHaveTextContent('80');
-    expect(screen.getByTitle('Request: 25')).toBeInTheDocument();
-    expect(screen.getByTitle('Threshold: 75')).toBeInTheDocument();
-  });
 });
 
 describe('MetricPanel value slot', () => {

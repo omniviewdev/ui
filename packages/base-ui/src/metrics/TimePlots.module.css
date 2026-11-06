@@ -42,6 +42,7 @@
   color: var(--ov-color-chart-axis);
   font-size: var(--ov-font-size-xs);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .Axis {
   display: flex;

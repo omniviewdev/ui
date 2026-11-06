@@ -63,3 +63,30 @@ export const Zero: Story = {
     ],
   },
 };
+
+export const BytesNarrow: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    unit: f.bytesUnit,
+    label: 'Memory working set',
+    series: [
+      {
+        ...f.cpuSeries,
+        id: 'memory',
+        label: 'Memory working set',
+        points: f.cpuSeries.points.map((point) => ({
+          ...point,
+          value: point.value == null ? null : point.value * 24 * 1024 ** 2,
+        })),
+      },
+    ],
+  },
+  decorators: [
+    (Story) => (
+      <div className={styles.Small}>
+        <Story />
+      </div>
+    ),
+  ],
+};

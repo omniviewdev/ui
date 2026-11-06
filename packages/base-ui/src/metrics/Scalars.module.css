@@ -263,6 +263,10 @@
   width: var(--_ov-metric-fill-size, 0%);
   background: var(--_ov-metric-color, var(--ov-color-chart-series-1));
   border-radius: inherit;
+  transition:
+    width var(--ov-duration-panel) var(--ov-ease-standard),
+    block-size var(--ov-duration-panel) var(--ov-ease-standard),
+    inset-inline-start var(--ov-duration-panel) var(--ov-ease-standard);
 }
 .Marker {
   position: absolute;

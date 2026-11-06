@@ -63,6 +63,7 @@ The reference card uses a 50px header, a 66px value slot, a 180px chart includin
 
 - Units are explicit. CPU cores differ from millicores; ratios differ from percentages; duration bases and byte display systems are declared.
 - Missing or non-finite values remain unknown. Zero remains a valid sample. Capacity percentages require a finite positive bound.
+- Capacity fills, including horizontal and vertical `MetricCell` bars, transition between supplied values using shared motion tokens. Reduced-motion settings remove that transition; missing values never animate as zero.
 
 ### Reference overlays
 

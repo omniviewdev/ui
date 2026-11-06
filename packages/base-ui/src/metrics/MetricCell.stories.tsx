@@ -213,3 +213,23 @@ export const KeyboardAndPointerReferenceInspection: Story = {
     await user.unhover(trigger);
   },
 };
+
+export const UpdatingValues: Story = {
+  render: function UpdatingCells(args) {
+    const [high, setHigh] = useState(false);
+    return (
+      <div style={{ width: 360, display: 'grid', gap: 'var(--ov-space-stack-md)' }}>
+        <Button size="sm" onClick={() => setHigh((value) => !value)}>
+          Update values
+        </Button>
+        <MetricCell {...args} value={high ? 420 : 80} label="Horizontal update" />
+        <MetricCell
+          {...args}
+          value={high ? 420 : 80}
+          orientation="vertical"
+          label="Vertical update"
+        />
+      </div>
+    );
+  },
+};

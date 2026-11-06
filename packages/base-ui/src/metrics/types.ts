@@ -83,7 +83,7 @@ export type MetricPanelState =
 export interface MetricPanelProps {
   title: ReactNode;
   state?: MetricPanelState;
-  /** Reserve default chart geometry while initial samples load; omit for stat-only panels. */
+  /** Reserve chart geometry while history loads before its domain is available. */
   loadingChart?: boolean;
   actions?: ReactNode;
   /** Current scalar value, separated from plot content by shared panel spacing. */
@@ -116,7 +116,7 @@ export interface CapacityBound {
   readonly value: number;
   readonly kind: 'limit' | 'capacity' | 'allocatable' | 'request' | 'target';
 }
-/** Loading may precede discovery of the metric unit; both slots retain their width. */
+/** Loading may precede unit discovery; one skeleton preserves the cell's row height. */
 export type MetricCellProps = {
   bound?: CapacityBound;
   request?: number | null;
@@ -132,7 +132,7 @@ export type MetricCellProps = {
 export interface CapacityBarProps {
   value: number | null;
   unit: MetricUnit;
-  /** Cell loading preserves track and value geometry without implying a zero sample. */
+  /** Cell loading uses one skeleton and preserves row geometry without implying zero. */
   loading?: boolean;
   bound?: CapacityBound;
   request?: number | null;

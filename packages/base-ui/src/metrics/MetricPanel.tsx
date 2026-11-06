@@ -104,7 +104,7 @@ export function MetricPanel({
                   </div>
                 )}
                 {children}
-                {state.kind === 'initial' && !children && loadingChart && (
+                {!children && loadingChart && (
                   <Skeleton variant="rounded" height={180} aria-hidden="true" />
                 )}
               </>

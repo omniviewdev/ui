@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../button';
+import { MetricCell } from '../../metrics/MetricCell';
 import type { DataTableColumnDef as ColumnDef } from './types';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -69,8 +70,32 @@ export const ColumnResizing: Story = {
 };
 
 const metricColumns: ColumnDef<Container, unknown>[] = [
-  { id: 'cpu', header: 'CPU usage / request', size: 180, cell: () => '125m / 500m' },
-  { id: 'memory', header: 'Memory usage / limit', size: 220, cell: () => '128 MiB / 1 GiB' },
+  {
+    id: 'cpu',
+    header: 'CPU usage',
+    size: 180,
+    cell: () => (
+      <MetricCell
+        label="CPU usage"
+        value={125}
+        unit={{ kind: 'cpu', base: 'millicores' }}
+        bound={{ kind: 'limit', value: 500 }}
+      />
+    ),
+  },
+  {
+    id: 'memory',
+    header: 'Memory usage',
+    size: 220,
+    cell: () => (
+      <MetricCell
+        label="Memory usage"
+        value={128 * 1024 ** 2}
+        unit={{ kind: 'bytes', display: 'binary' }}
+        bound={{ kind: 'limit', value: 1024 ** 3 }}
+      />
+    ),
+  },
 ];
 
 function DynamicColumnsStory() {
@@ -155,6 +180,17 @@ export const DynamicColumns: Story = {
           throw new Error(`Header/body alignment differs at column ${index}`);
         }
       });
+      table
+        .querySelectorAll<HTMLElement>('[role="group"][aria-label$="usage"]')
+        .forEach((metric) => {
+          const cell = metric.closest('td')!;
+          const style = getComputedStyle(cell);
+          const available =
+            cell.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+          if (Math.abs(metric.getBoundingClientRect().width - available) > 1) {
+            throw new Error('Responsive cell content does not fill the available column width');
+          }
+        });
       if (minimum > viewport.clientWidth && viewport.scrollWidth < minimum - 1) {
         throw new Error('Horizontal viewport does not expose the full table width');
       }

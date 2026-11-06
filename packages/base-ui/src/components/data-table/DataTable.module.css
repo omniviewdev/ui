@@ -409,6 +409,8 @@
 }
 
 .CellContent {
+  flex: 1;
+  min-inline-size: 0;
   overflow: hidden;
 }
 
@@ -419,8 +421,12 @@
 
 .Cell[data-ov-align='center'] > .CellContent {
   overflow: visible;
+  text-align: center;
 }
 
+.Cell[data-ov-align='right'] > .CellContent {
+  text-align: right;
+}
 /* --- Expand toggle --- */
 
 .ExpandToggle {

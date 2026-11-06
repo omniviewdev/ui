@@ -42,6 +42,33 @@ describe('MetricCell', () => {
     rerender(<MetricCell value={Infinity} unit={unit} />);
     expect(screen.getByText('—')).toBeVisible();
   });
+
+  it('distinguishes loading from a reported zero and unavailable samples', () => {
+    const { rerender } = renderWithTheme(<MetricCell loading label="Memory" />);
+    expect(screen.getByRole('group', { name: 'Memory: Loading' })).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
+    expect(screen.queryByText('—')).not.toBeInTheDocument();
+    rerender(<MetricCell label="Memory" value={0} unit={{ kind: 'bytes', display: 'binary' }} />);
+    expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
+    expect(screen.getByRole('img')).toHaveAccessibleName(/Memory: 0 B/);
+    rerender(
+      <MetricCell
+        label="Memory"
+        value={537 * 1024 ** 2}
+        unit={{ kind: 'bytes', display: 'binary' }}
+      />,
+    );
+    expect(screen.getByRole('img')).toHaveAccessibleName(/Memory: 537 MiB/);
+    rerender(<MetricCell loading label="Memory" />);
+    expect(screen.queryByText('537')).not.toBeInTheDocument();
+    rerender(
+      <MetricCell label="Memory" value={null} unit={{ kind: 'bytes', display: 'binary' }} />,
+    );
+    expect(screen.getByText('—')).toBeVisible();
+    expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
+  });
 });
 
 describe('MetricPanel value slot', () => {

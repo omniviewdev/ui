@@ -1,9 +1,13 @@
-import { useId, type CSSProperties } from 'react';
+import { createContext, useId, type CSSProperties } from 'react';
 import { Card } from '../components/card';
+import { Skeleton } from '../components/skeleton';
 import { cn } from '../system/classnames';
 import { seriesColor, toneColor } from './format';
 import type { MetricPanelProps } from './types';
 import styles from './Scalars.module.css';
+import loadingStyles from './MetricPanel.module.css';
+
+export const MetricPanelLoadingContext = createContext<boolean | undefined>(undefined);
 
 type NoticeStyle = CSSProperties & { '--_ov-metric-color'?: string };
 
@@ -21,6 +25,7 @@ export function MetricPanel({
   footer,
   details,
   value,
+  loadingChart = false,
   children,
   className,
   style,
@@ -36,7 +41,7 @@ export function MetricPanel({
   };
   return (
     <Card
-      className={cn(styles.Panel, className)}
+      className={cn(styles.Panel, loadingStyles.Panel, className)}
       style={style}
       aria-label={label}
       aria-labelledby={label ? undefined : titleId}
@@ -48,7 +53,10 @@ export function MetricPanel({
         {actions && <Card.Action>{actions}</Card.Action>}
       </Card.Header>
       <Card.Body className={styles.PanelBody}>
-        <div className={styles.PanelStatus} aria-live="polite">
+        <div
+          className={cn(styles.PanelStatus, loadingStyles.Status)}
+          role={state.kind === 'error' ? 'alert' : 'status'}
+        >
           {data ? (
             <>
               {state.updating && <span className={styles.Updating}>Updating…</span>}
@@ -64,22 +72,47 @@ export function MetricPanel({
               )}
             </>
           ) : (
-            <span role={state.kind === 'error' ? 'alert' : undefined}>
+            <span>
               {state.message ||
                 (state.kind !== 'error' ? messages[state.kind] : 'Unable to load samples')}
             </span>
           )}
         </div>
-        <div className={styles.PanelContent}>
-          {data && (
-            <>
-              {value != null && <div className={styles.PanelValue}>{value}</div>}
-              {children}
-            </>
-          )}
-        </div>
+        <MetricPanelLoadingContext.Provider
+          value={state.kind === 'initial' || (data && !!state.updating)}
+        >
+          <div className={cn(styles.PanelContent, loadingStyles.Content)}>
+            {(data || state.kind === 'initial') && (
+              <>
+                {value != null && (
+                  <div className={cn(styles.PanelValue, loadingStyles.Value)}>
+                    <div
+                      aria-hidden={state.kind === 'initial' || undefined}
+                      className={loadingStyles.ValueContent}
+                    >
+                      {value}
+                    </div>
+                    {state.kind === 'initial' && (
+                      <Skeleton
+                        variant="rounded"
+                        width="8ch"
+                        height="2.5em"
+                        aria-hidden="true"
+                        className={loadingStyles.ValueSkeleton}
+                      />
+                    )}
+                  </div>
+                )}
+                {children}
+                {state.kind === 'initial' && !children && loadingChart && (
+                  <Skeleton variant="rounded" height={180} aria-hidden="true" />
+                )}
+              </>
+            )}
+          </div>
+        </MetricPanelLoadingContext.Provider>
       </Card.Body>
-      {data && (details || footer) && (
+      {(data || state.kind === 'initial') && (details || footer) && (
         <Card.Footer className={styles.PanelFooter}>
           {details && (
             <details

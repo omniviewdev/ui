@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '../components/button';
 import { MetricPanel } from './MetricPanel';
 import * as f from './ComponentStoryFixtures';
 import styles from './ComponentStories.module.css';
@@ -38,6 +39,7 @@ function CpuCard({
     <MetricPanel
       title="CPU usage"
       state={state}
+      loadingChart={display !== 'stat'}
       actions={
         <MetricDisplayPicker value={display} options={f.displayOptions} onChange={setDisplay} />
       }
@@ -64,7 +66,7 @@ function CpuCard({
         />
       }
     >
-      {display !== 'stat' && (
+      {display !== 'stat' && state.kind !== 'initial' && (
         <TimeSeriesChart
           series={[f.cpuSeries]}
           unit={f.cpuUnit}
@@ -85,13 +87,9 @@ export const Refresh: Story = {
     return (
       <div className={styles.Stack}>
         <CpuCard state={{ kind: 'data', updating }} />
-        <button
-          className={styles.Control}
-          aria-pressed={updating}
-          onClick={() => setUpdating((value) => !value)}
-        >
+        <Button size="sm" aria-pressed={updating} onClick={() => setUpdating((value) => !value)}>
           {updating ? 'Complete refresh' : 'Refresh samples'}
-        </button>
+        </Button>
       </div>
     );
   },
@@ -102,7 +100,20 @@ export const Delayed: Story = {
 export const Unknown: Story = {
   render: () => <CpuCard state={{ kind: 'data', freshness: 'unknown', completeness: 'unknown' }} />,
 };
-export const Initial: Story = { args: { title: 'CPU', state: { kind: 'initial' } } };
+export const Initial: Story = { render: () => <CpuCard state={{ kind: 'initial' }} /> };
+export const InitialToData: Story = {
+  render: function InitialToDataCard() {
+    const [loaded, setLoaded] = useState(false);
+    return (
+      <div className={styles.Stack}>
+        <CpuCard state={{ kind: loaded ? 'data' : 'initial' }} />
+        <Button size="sm" onClick={() => setLoaded((current) => !current)}>
+          {loaded ? 'Reset samples' : 'Load samples'}
+        </Button>
+      </div>
+    );
+  },
+};
 export const Empty: Story = { args: { title: 'CPU', state: { kind: 'empty' } } };
 export const Denied: Story = { args: { title: 'CPU', state: { kind: 'denied' } } };
 export const Unsupported: Story = { args: { title: 'CPU', state: { kind: 'unsupported' } } };

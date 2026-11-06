@@ -1,0 +1,25 @@
+.Panel[data-state='initial'] .Status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  min-block-size: 0;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.Content {
+  position: relative;
+}
+.Value {
+  position: relative;
+}
+.Panel[data-state='initial'] .ValueContent {
+  visibility: hidden;
+}
+.ValueSkeleton {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  max-inline-size: 100%;
+}

@@ -90,3 +90,16 @@ export const BytesNarrow: Story = {
     ),
   ],
 };
+
+export const InitialLoading: Story = {
+  ...Default,
+  args: { ...Default.args, series: [], loading: true },
+};
+export const Refreshing: Story = {
+  ...Default,
+  args: { ...Default.args, loading: true },
+};
+export const Empty: Story = {
+  ...Default,
+  args: { ...Default.args, series: [] },
+};

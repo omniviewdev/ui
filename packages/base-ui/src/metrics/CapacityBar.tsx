@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
+import { Skeleton } from '../components/skeleton/Skeleton';
 import { cn } from '../system/classnames';
-import { formatMetricText, seriesColor, toneColor } from './format';
+import { formatMetric, formatMetricText, seriesColor, toneColor } from './format';
 import { MetricValue } from './MetricValue';
 import type { CapacityBarProps } from './types';
 import styles from './Scalars.module.css';
@@ -23,8 +24,10 @@ export function CapacityBar({
   variant = 'full',
   className,
   orientation = 'horizontal',
+  loading = false,
 }: CapacityBarProps) {
-  const sample = value !== null && Number.isFinite(value) ? value : null;
+  const sample = !loading && value !== null && Number.isFinite(value) ? value : null;
+  const formatted = formatMetric(sample, unit, { maximumFractionDigits: 2 });
   const maximum = bound && Number.isFinite(bound.value) && bound.value > 0 ? bound.value : null;
   const markers = thresholds.filter((t) => Number.isFinite(t.value));
   let active: (typeof markers)[number] | undefined;
@@ -49,11 +52,26 @@ export function CapacityBar({
         ? `${(request / maximum) * 100}%`
         : undefined,
   };
+  if (loading && variant === 'cell') {
+    return (
+      <div
+        className={cn(styles.Capacity, className)}
+        data-variant="cell"
+        data-orientation={orientation}
+        aria-busy="true"
+        role="group"
+        aria-label={`${label}: Loading`}
+      >
+        <Skeleton width="100%" height="0.75em" variant="rounded" aria-hidden="true" />
+      </div>
+    );
+  }
   return (
     <div
       className={cn(styles.Capacity, className)}
       data-variant={variant}
       data-orientation={orientation}
+      aria-busy={loading || undefined}
       role="group"
       aria-label={label}
     >
@@ -128,7 +146,12 @@ export function CapacityBar({
           {bound ? 'Invalid bound' : 'No bound supplied'} · Absolute usage
         </p>
       )}
-      {variant === 'cell' && showValue && <MetricValue value={sample} unit={unit} size="xs" />}
+      {variant === 'cell' && showValue && (
+        <div className={styles.CellValue} title={formatMetricText(sample, unit)}>
+          <span className={styles.CellNumber}>{formatted.value}</span>
+          <span className={styles.CellUnit}>{formatted.unit}</span>
+        </div>
+      )}
       {variant === 'full' && (
         <div className={styles.Details}>
           {sample === null && <span>No sample</span>}

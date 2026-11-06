@@ -1,5 +1,13 @@
 import { metricAxisScale } from './chartAxis';
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react';
 import type { NumericPoint, NumericSeries, TimeSeriesChartProps } from './types';
 import { formatMetricText, seriesColor, toneColor } from './format';
 import {
@@ -15,6 +23,8 @@ import {
   yPosition,
 } from './seriesGeometry';
 import { MetricLegend } from './MetricLegend';
+import { Skeleton } from '../components/skeleton';
+import { MetricPanelLoadingContext } from './MetricPanel';
 import styles from './TimePlots.module.css';
 
 const EMPTY_IDS: readonly string[] = [];
@@ -40,7 +50,10 @@ export function TimePlot({
   emphasizedSeriesId,
   label,
   className,
+  loading: requestedLoading,
 }: TimeSeriesChartProps & { bases?: readonly NumericSeries[] }) {
+  const panelLoading = useContext(MetricPanelLoadingContext);
+  const loading = requestedLoading ?? panelLoading ?? false;
   const container = useRef<HTMLDivElement>(null);
   const anchor = useRef<number | null>(null);
   const [width, setWidth] = useState(PLOT_WIDTH);
@@ -103,6 +116,7 @@ export function TimePlot({
       ),
     [valid, visible, validSeries, startMs, endMs],
   );
+  const initialLoading = loading && !drawable;
   const cursor = cursorTimeMs !== undefined ? cursorTimeMs : inspection;
   const activeCursor =
     valid &&
@@ -286,7 +300,17 @@ export function TimePlot({
     [startMs, endMs],
   );
   return (
-    <div ref={container} className={[styles.Chart, className].filter(Boolean).join(' ')}>
+    <div
+      ref={container}
+      className={[styles.Chart, className].filter(Boolean).join(' ')}
+      aria-busy={loading || undefined}
+      data-loading={initialLoading || undefined}
+    >
+      {panelLoading === undefined && (
+        <span className={styles.LoadingStatus} role="status">
+          {loading ? (initialLoading ? 'Loading samples…' : 'Updating…') : ''}
+        </span>
+      )}
       <div className={styles.PlotFrame}>
         <div className={styles.ValueAxis} aria-hidden="true">
           {axis.ticks.map((tick) => (
@@ -300,7 +324,7 @@ export function TimePlot({
           height={plotHeight}
           role="application"
           aria-label={`${label}. Arrow keys inspect samples; Shift and arrows select range; Enter starts or ends selection; Escape clears.`}
-          tabIndex={0}
+          tabIndex={initialLoading ? -1 : 0}
           onKeyDown={keyboard}
           onPointerMove={(event) => {
             setInspectionSource('pointer');
@@ -374,7 +398,16 @@ export function TimePlot({
             />
           )}
         </svg>
-        {!drawable && <div className={styles.Empty}>No drawable samples</div>}
+        {initialLoading ? (
+          <Skeleton
+            variant="rounded"
+            className={styles.LoadingPlot}
+            height={plotHeight}
+            aria-hidden="true"
+          />
+        ) : (
+          !drawable && <div className={styles.Empty}>No drawable samples</div>
+        )}
       </div>
       <div className={styles.Axis} aria-hidden="true">
         {timeLabels.map((time, index) => (

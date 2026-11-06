@@ -135,15 +135,53 @@
   gap: calc(var(--ov-space-stack-sm) / 2);
   min-inline-size: 0;
   min-block-size: 1.5em;
+  inline-size: 100%;
+  container-type: inline-size;
+  overflow: hidden;
 }
 .Capacity[data-variant='cell'] .Track {
-  flex: 0 0 calc(2 * var(--ov-space-stack-md));
+  flex: 1 1 0;
   min-inline-size: calc(2 * var(--ov-space-stack-md));
   block-size: calc(var(--ov-space-stack-sm) / 2);
   border-radius: var(--ov-radius-sm);
 }
-.Capacity[data-variant='cell'] .Value {
-  flex: 0 0 auto;
+.CellValue {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: calc(var(--ov-space-stack-sm) / 4);
+  flex: 0 0 11ch;
+  margin-inline-start: auto;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  font-size: var(--ov-font-size-caption);
+  line-height: 1.3;
+  font-weight: var(--ov-font-weight-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.CellNumber,
+.CellUnit {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+.CellUnit {
+  flex-shrink: 0;
+  color: var(--ov-color-fg-muted);
+}
+@container (inline-size < 128px) {
+  .Capacity[data-variant='cell'][data-orientation='horizontal'] .Track {
+    display: none;
+  }
+}
+@container (inline-size < 100px) {
+  .CellValue {
+    flex-shrink: 1;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
 }
 .Capacity[data-variant='cell'][data-orientation='vertical'] .Track {
   flex: 0 0 calc(var(--ov-space-stack-sm) / 2);

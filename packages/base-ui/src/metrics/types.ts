@@ -83,6 +83,8 @@ export type MetricPanelState =
 export interface MetricPanelProps {
   title: ReactNode;
   state?: MetricPanelState;
+  /** Reserve default chart geometry while initial samples load; omit for stat-only panels. */
+  loadingChart?: boolean;
   actions?: ReactNode;
   /** Current scalar value, separated from plot content by shared panel spacing. */
   value?: ReactNode;
@@ -114,9 +116,8 @@ export interface CapacityBound {
   readonly value: number;
   readonly kind: 'limit' | 'capacity' | 'allocatable' | 'request' | 'target';
 }
-export interface MetricCellProps {
-  value: number | null;
-  unit: MetricUnit;
+/** Loading may precede discovery of the metric unit; both slots retain their width. */
+export type MetricCellProps = {
   bound?: CapacityBound;
   request?: number | null;
   label?: string;
@@ -124,10 +125,15 @@ export interface MetricCellProps {
   orientation?: 'horizontal' | 'vertical';
   color?: SeriesColor;
   className?: string;
-}
+} & (
+  | { loading: true; value?: number | null; unit?: MetricUnit }
+  | { loading?: false; value: number | null; unit: MetricUnit }
+);
 export interface CapacityBarProps {
   value: number | null;
   unit: MetricUnit;
+  /** Cell loading preserves track and value geometry without implying a zero sample. */
+  loading?: boolean;
   bound?: CapacityBound;
   request?: number | null;
   thresholds?: readonly MetricThreshold[];
@@ -179,6 +185,8 @@ export interface SloSummaryProps {
 }
 export interface TimeSeriesChartProps {
   series: readonly NumericSeries[];
+  /** Show an initial Skeleton without samples; preserve supplied samples while refreshing. */
+  loading?: boolean;
   unit: MetricUnit;
   domain: TimeDomain;
   mode?: 'line' | 'area' | 'sample-bars';

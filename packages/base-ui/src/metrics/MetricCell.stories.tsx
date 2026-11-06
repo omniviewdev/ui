@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 function NarrowTable({
   orientation = 'horizontal',
-  width = 260,
+  width = 360,
 }: Pick<MetricCellProps, 'orientation'> & { width?: number }) {
   return (
     <table style={{ width, tableLayout: 'fixed', borderSpacing: 'var(--ov-space-stack-sm)' }}>

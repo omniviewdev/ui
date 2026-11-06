@@ -98,6 +98,8 @@
   border-radius: var(--ov-radius-control);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
+  max-inline-size: calc(100% - 2 * var(--ov-space-2));
+  box-sizing: border-box;
 }
 .Inspection[hidden] {
   display: none;

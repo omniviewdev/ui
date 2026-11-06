@@ -1,7 +1,9 @@
+import { normalizeReferences, referenceDomain, ReferenceLegend, ReferencePlot } from './references';
 import { metricAxisScale } from './chartAxis';
 import {
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -9,7 +11,7 @@ import {
   type PointerEvent,
 } from 'react';
 import type { NumericPoint, NumericSeries, TimeSeriesChartProps } from './types';
-import { formatMetricText, seriesColor, toneColor } from './format';
+import { formatMetricText, seriesColor } from './format';
 import {
   areaPath,
   linePath,
@@ -40,7 +42,7 @@ export function TimePlot({
   height = 180,
   maxGapMs,
   yDomain,
-  annotations = [],
+  references,
   cursorTimeMs,
   onCursorTimeChange,
   selectedRange,
@@ -57,6 +59,8 @@ export function TimePlot({
   const container = useRef<HTMLDivElement>(null);
   const anchor = useRef<number | null>(null);
   const [width, setWidth] = useState(PLOT_WIDTH);
+  const referenceLegend = useRef<HTMLDivElement>(null);
+  const [referenceHeight, setReferenceHeight] = useState(0);
   const [inspection, setInspection] = useState<number | null>(null);
   const [inspectionSource, setInspectionSource] = useState<'pointer' | 'keyboard'>('pointer');
   useEffect(() => {
@@ -69,7 +73,20 @@ export function TimePlot({
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  const plotHeight = (Number.isFinite(height) ? Math.max(50, Math.min(1200, height)) : 180) - 18;
+  useLayoutEffect(() => {
+    const element = referenceLegend.current;
+    if (!element) return;
+    const measure = () => setReferenceHeight(Math.ceil(element.getBoundingClientRect().height));
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [references]);
+  const plotHeight = Math.max(
+    32,
+    (Number.isFinite(height) ? Math.max(50, Math.min(1200, height)) : 180) - 18 - referenceHeight,
+  );
   const valid =
     validDomain(domain) &&
     (!yDomain ||
@@ -78,6 +95,7 @@ export function TimePlot({
         yDomain[1] > yDomain[0] &&
         Number.isFinite(yDomain[1] - yDomain[0])));
   const { startMs, endMs } = domain;
+  const normalizedReferences = useMemo(() => normalizeReferences(references), [references]);
   const lower = yDomain?.[0];
   const upper = yDomain?.[1];
   const visible = useMemo(
@@ -96,14 +114,17 @@ export function TimePlot({
   const axis = useMemo(
     () =>
       metricAxisScale(
-        valueDomain(
-          bases ? [...visible, ...bases] : visible,
-          { startMs, endMs },
-          lower !== undefined && upper !== undefined ? [lower, upper] : undefined,
+        referenceDomain(
+          valueDomain(
+            bases ? [...visible, ...bases] : visible,
+            { startMs, endMs },
+            lower !== undefined && upper !== undefined ? [lower, upper] : undefined,
+          ),
+          lower !== undefined && upper !== undefined ? [] : normalizedReferences,
         ),
         lower !== undefined && upper !== undefined,
       ),
-    [visible, bases, startMs, endMs, lower, upper],
+    [visible, bases, startMs, endMs, lower, upper, normalizedReferences],
   );
   const bounds = axis.domain;
   const drawable = useMemo(
@@ -357,28 +378,16 @@ export function TimePlot({
               y2={yPosition(tick, bounds, plotHeight)}
             />
           ))}
+          {valid && (
+            <ReferencePlot
+              references={normalizedReferences}
+              unit={unit}
+              domain={bounds}
+              width={PLOT_WIDTH}
+              height={plotHeight}
+            />
+          )}
           {geometry}
-          {valid &&
-            annotations
-              .filter(
-                (a) => Number.isFinite(a.value) && a.value >= bounds[0] && a.value <= bounds[1],
-              )
-              .slice(0, 32)
-              .map((a) => (
-                <g key={a.id}>
-                  <line
-                    x1={0}
-                    x2={PLOT_WIDTH}
-                    y1={yPosition(a.value, bounds, plotHeight)}
-                    y2={yPosition(a.value, bounds, plotHeight)}
-                    stroke={toneColor(a.tone)}
-                    strokeDasharray="4 4"
-                  />
-                  <title>
-                    {a.label}: {formatMetricText(a.value, unit)}
-                  </title>
-                </g>
-              ))}
           {range && range.endMs > range.startMs && (
             <rect
               className={styles.Selection}
@@ -413,6 +422,9 @@ export function TimePlot({
         {timeLabels.map((time, index) => (
           <span key={index}>{time}</span>
         ))}
+      </div>
+      <div ref={referenceLegend}>
+        <ReferenceLegend references={normalizedReferences} unit={unit} domain={bounds} />
       </div>
       <div
         className={styles.Inspection}
@@ -454,6 +466,12 @@ export function TimePlot({
                 </span>
               );
             })}
+            <ReferenceLegend
+              references={normalizedReferences}
+              unit={unit}
+              domain={bounds}
+              inspection
+            />
           </>
         ) : (
           <span>Arrow keys inspect · Shift + arrows select</span>

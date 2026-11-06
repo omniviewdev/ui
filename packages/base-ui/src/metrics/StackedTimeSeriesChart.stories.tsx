@@ -25,6 +25,7 @@ export const Default: Story = {
     unit: f.cpuUnit,
     height: 180,
     label: 'CPU by container',
+    references: f.references,
   },
   render: function Controlled(args) {
     const [cursorTimeMs, setCursor] = useState<number | null>(null);
@@ -65,4 +66,18 @@ export const Zero: Story = {
       series: f.frame.series.map((series) => ({ ...series, values: series.values.map(() => 0) })),
     },
   },
+};
+export const PinnedOffScaleReferences: Story = {
+  ...Default,
+  args: { ...Default.args, yDomain: [5, 22] },
+};
+export const NarrowReferences: Story = {
+  ...Default,
+  decorators: [
+    (Story) => (
+      <div className={styles.Small}>
+        <Story />
+      </div>
+    ),
+  ],
 };

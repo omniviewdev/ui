@@ -1,3 +1,5 @@
+import { Tooltip } from '../components/tooltip';
+import { normalizeReferences, referenceText, ReferenceLegend, ReferenceTrack } from './references';
 import type { CSSProperties } from 'react';
 import { Skeleton } from '../components/skeleton/Skeleton';
 import { cn } from '../system/classnames';
@@ -16,7 +18,7 @@ export function CapacityBar({
   value,
   unit,
   bound,
-  request,
+  references,
   thresholds = [],
   color,
   label = 'Usage',
@@ -38,19 +40,16 @@ export function CapacityBar({
   }
   const fill = active ? toneColor(active.tone) : seriesColor(label, color);
   const percent = sample !== null && maximum !== null ? sample / maximum : null;
-  const requestKnown = request != null && Number.isFinite(request);
+  const normalizedReferences = normalizeReferences(references);
+  const referenceSummary = normalizedReferences
+    .map((reference) => referenceText(reference, unit, maximum === null ? undefined : [0, maximum]))
+    .join('; ');
   const fillStyle: CapacityStyle = {
     '--_ov-metric-fill-size':
       sample !== null && maximum !== null
         ? `${Math.min(1, Math.max(0, sample / maximum)) * 100}%`
         : '0%',
     '--_ov-metric-color': fill,
-  };
-  const requestStyle: CapacityStyle = {
-    '--_ov-metric-marker-position':
-      requestKnown && maximum !== null && request >= 0 && request <= maximum
-        ? `${(request / maximum) * 100}%`
-        : undefined,
   };
   if (loading && variant === 'cell') {
     return (
@@ -97,7 +96,8 @@ export function CapacityBar({
             className={styles.Track}
             data-missing={sample === null || undefined}
             role="img"
-            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${variant === 'cell' && requestKnown && request >= 0 ? `; request: ${formatMetricText(request, unit)}` : ''}`}
+            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+            title={referenceSummary || undefined}
           >
             {sample !== null && <span className={styles.Fill} style={fillStyle} />}
             {variant !== 'cell' &&
@@ -117,13 +117,12 @@ export function CapacityBar({
                     />
                   );
                 })}
-            {variant !== 'cell' && requestKnown && request >= 0 && request <= maximum && (
-              <span
-                className={styles.Request}
-                style={requestStyle}
-                title={`Request: ${formatMetricText(request, unit)}`}
-              />
-            )}
+            <ReferenceTrack
+              references={normalizedReferences}
+              unit={unit}
+              domain={[0, maximum]}
+              orientation={variant === 'cell' ? orientation : 'horizontal'}
+            />
           </div>
           {variant === 'full' && (
             <div className={styles.Axis}>
@@ -139,7 +138,8 @@ export function CapacityBar({
           className={styles.Track}
           data-missing="true"
           role="img"
-          aria-label={`${label}: ${formatMetricText(sample, unit)}; bound unknown; absolute usage`}
+          aria-label={`${label}: ${formatMetricText(sample, unit)}; bound unknown; absolute usage; ${referenceSummary}`}
+          title={referenceSummary || undefined}
         />
       ) : (
         <p className={styles.Muted}>
@@ -147,10 +147,30 @@ export function CapacityBar({
         </p>
       )}
       {variant === 'cell' && showValue && (
-        <div className={styles.CellValue} title={formatMetricText(sample, unit)}>
-          <span className={styles.CellNumber}>{formatted.value}</span>
-          <span className={styles.CellUnit}>{formatted.unit}</span>
-        </div>
+        <Tooltip.Root>
+          <Tooltip.Trigger
+            render={<div />}
+            className={styles.CellValue}
+            tabIndex={normalizedReferences.length ? 0 : undefined}
+            aria-label={`${formatMetricText(sample, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+          >
+            <span className={styles.CellNumber}>{formatted.value}</span>
+            <span className={styles.CellUnit}>{formatted.unit}</span>
+          </Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Positioner sideOffset={4}>
+              <Tooltip.Popup>
+                <div>{formatMetricText(sample, unit)}</div>
+                <ReferenceLegend
+                  references={normalizedReferences}
+                  unit={unit}
+                  domain={maximum === null ? undefined : [0, maximum]}
+                  inspection
+                />
+              </Tooltip.Popup>
+            </Tooltip.Positioner>
+          </Tooltip.Portal>
+        </Tooltip.Root>
       )}
       {variant === 'full' && (
         <div className={styles.Details}>
@@ -159,7 +179,11 @@ export function CapacityBar({
           {sample !== null && maximum !== null && sample > maximum && (
             <span>Above {bound?.kind}</span>
           )}
-          {requestKnown && <span>Request {formatMetricText(request, unit)}</span>}
+          <ReferenceLegend
+            references={normalizedReferences}
+            unit={unit}
+            domain={maximum === null ? undefined : [0, maximum]}
+          />
           {markers.map((t, i) => {
             const thresholdStyle: CapacityStyle = { '--_ov-metric-color': toneColor(t.tone) };
             return (
@@ -169,6 +193,13 @@ export function CapacityBar({
             );
           })}
         </div>
+      )}
+      {variant === 'compact' && (
+        <ReferenceLegend
+          references={normalizedReferences}
+          unit={unit}
+          domain={maximum === null ? undefined : [0, maximum]}
+        />
       )}
     </div>
   );

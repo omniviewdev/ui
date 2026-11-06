@@ -1,0 +1,58 @@
+.Legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ov-space-1, 4px) var(--ov-space-3, 12px);
+  font-size: var(--ov-font-size-xs);
+  color: var(--ov-color-fg-muted);
+  min-width: 0;
+}
+.Item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.Swatch {
+  flex: 0 0 16px;
+  border-top-width: 2px;
+  border-top-style: var(--reference-line-style, dashed);
+}
+.Swatch[data-band] {
+  height: 6px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.Marker {
+  position: absolute;
+  inset-block: -3px;
+  inset-inline-start: var(--reference-start);
+  width: var(--reference-size);
+  border-inline-start: 2px var(--reference-line-style, dashed) currentColor;
+  pointer-events: auto;
+}
+.Marker[data-band] {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border-inline-end: 1px var(--reference-line-style, dashed) currentColor;
+}
+.Marker[data-orientation='vertical'] {
+  inset-inline: -3px;
+  inset-block-start: auto;
+  inset-block-end: var(--reference-start);
+  width: auto;
+  height: var(--reference-size);
+  border-inline-start-width: 0;
+  border-block-end: 2px var(--reference-line-style, dashed) currentColor;
+}
+.Marker[data-orientation='vertical'][data-band] {
+  border-inline-end: 0;
+  border-block-start: 1px var(--reference-line-style, dashed) currentColor;
+}
+.Swatch[data-line-style='solid'],
+.Marker[data-line-style='solid'] {
+  --reference-line-style: solid;
+}
+.Swatch[data-line-style='dotted'],
+.Marker[data-line-style='dotted'] {
+  --reference-line-style: dotted;
+}

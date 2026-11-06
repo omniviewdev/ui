@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Button } from '../components/button';
 import { MetricCell } from './MetricCell';
 import type { MetricCellProps } from './types';
+import { references } from './ComponentStoryFixtures';
+import userEvent from '@testing-library/user-event';
 
 const meta = {
   title: 'Metrics/Components/MetricCell',
@@ -49,6 +51,7 @@ function NarrowTable({
                 unit={{ kind: 'cpu', base: 'millicores' }}
                 bound={bound}
                 orientation={orientation}
+                references={references}
               />
             </td>
           </tr>
@@ -70,7 +73,7 @@ export const Bytes: Story = {
 export const ThresholdAndRequest: Story = {
   args: {
     value: 450,
-    request: 200,
+    references: [{ id: 'request', kind: 'line', label: 'Request', value: 200 }],
     thresholds: [{ value: 400, tone: 'warning', label: 'Warning' }],
   },
 };
@@ -109,6 +112,7 @@ function ResponsiveCells() {
               loading={loading ? true : undefined}
               label={`Memory sample ${index + 1}`}
               bound={{ kind: 'capacity', value: 1024 ** 3 }}
+              references={references}
             />
           ))}
           <MetricCell
@@ -129,3 +133,83 @@ function ResponsiveCells() {
 }
 
 export const ResponsiveWidthsAndStates: Story = { render: () => <ResponsiveCells /> };
+export const ReferenceEdgeCases: Story = {
+  args: { value: 26, bound: { kind: 'limit', value: 24 }, references },
+};
+export const UnknownBoundReferences: Story = { args: { value: 26, bound: undefined, references } };
+
+export const KeyboardAndPointerReferenceInspection: Story = {
+  render: () => (
+    <div style={{ width: 100, display: 'grid', gap: 'var(--ov-space-stack-md)' }}>
+      <Button size="sm">Start inspection</Button>
+      <MetricCell
+        value={0}
+        unit={{ kind: 'number' }}
+        bound={{ kind: 'limit', value: 100 }}
+        references={[
+          {
+            id: 'zero',
+            kind: 'line',
+            label: 'Zero target',
+            value: 0,
+            source: 'Current supplied configuration',
+          },
+          {
+            id: 'outside',
+            kind: 'line',
+            label: 'Configured limit',
+            value: 200,
+            source: 'Current supplied configuration',
+          },
+        ]}
+        label="Inspectable narrow cell"
+      />
+      <Button size="sm">End inspection</Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const document = canvasElement.ownerDocument;
+    const user = userEvent.setup({ document });
+    const frame = () => {
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => resolve());
+      return promise;
+    };
+    const cell = canvasElement.querySelector<HTMLElement>(
+      '[aria-label="Inspectable narrow cell"]',
+    )!;
+    const trigger = cell.querySelector<HTMLElement>('[tabindex="0"]')!;
+    const height = cell.getBoundingClientRect().height;
+    const inspect = async () => {
+      for (let attempt = 0; attempt < 120; attempt += 1) {
+        const tooltip = document.querySelector<HTMLElement>('[role="tooltip"]');
+        if (tooltip?.textContent?.includes('Current supplied configuration')) {
+          if (
+            !tooltip.textContent.includes('Zero target: 0') ||
+            !tooltip.textContent.includes('outside displayed range')
+          ) {
+            throw new Error('Reference tooltip lost zero or off-scale configuration');
+          }
+          if (Math.abs(cell.getBoundingClientRect().height - height) > 1) {
+            throw new Error('Cell inspection changed row height');
+          }
+          return;
+        }
+        await frame();
+      }
+      throw new Error('Reference tooltip did not open');
+    };
+    await user.click(canvasElement.querySelector('button')!);
+    await user.tab();
+    if (document.activeElement !== trigger)
+      throw new Error('Keyboard skipped cell reference trigger');
+    await inspect();
+    await user.keyboard('{Escape}');
+    await user.click(canvasElement.querySelectorAll('button')[1]!);
+    for (let attempt = 0; attempt < 120 && document.querySelector('[role="tooltip"]'); attempt += 1)
+      await frame();
+    await user.hover(trigger);
+    await inspect();
+    await user.unhover(trigger);
+  },
+};

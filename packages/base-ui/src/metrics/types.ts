@@ -59,12 +59,17 @@ export interface MetricThreshold {
   readonly tone: MetricTone;
   readonly label?: string;
 }
-export interface MetricAnnotation {
+/** Current supplied configuration, expressed in the component's base unit. */
+export type MetricReference = {
   readonly id: string;
-  readonly value: number;
   readonly label: string;
   readonly tone?: MetricTone;
-}
+  readonly source?: string;
+  readonly lineStyle?: 'solid' | 'dashed' | 'dotted';
+} & (
+  | { readonly kind: 'line'; readonly value?: number | null }
+  | { readonly kind: 'band'; readonly from?: number | null; readonly to?: number | null }
+);
 export interface MetricNotice {
   readonly tone: 'info' | 'warning' | 'danger';
   readonly label: string;
@@ -109,6 +114,8 @@ export interface MetricValueProps {
   tone?: MetricTone;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   format?: MetricFormatOptions;
+  /** Current configuration summary; references do not invent a numeric scale for a stat. */
+  references?: readonly MetricReference[];
   className?: string;
   'aria-label'?: string;
 }
@@ -119,7 +126,7 @@ export interface CapacityBound {
 /** Loading may precede unit discovery; one skeleton preserves the cell's row height. */
 export type MetricCellProps = {
   bound?: CapacityBound;
-  request?: number | null;
+  references?: readonly MetricReference[];
   label?: string;
   thresholds?: readonly MetricThreshold[];
   orientation?: 'horizontal' | 'vertical';
@@ -135,7 +142,7 @@ export interface CapacityBarProps {
   /** Cell loading uses one skeleton and preserves row geometry without implying zero. */
   loading?: boolean;
   bound?: CapacityBound;
-  request?: number | null;
+  references?: readonly MetricReference[];
   thresholds?: readonly MetricThreshold[];
   color?: SeriesColor;
   label?: string;
@@ -152,6 +159,7 @@ export interface GaugeProps {
   min?: number;
   max: number;
   thresholds?: readonly MetricThreshold[];
+  references?: readonly MetricReference[];
   color?: SeriesColor;
   label: string;
   className?: string;
@@ -166,6 +174,7 @@ export interface RankedBarsProps {
   items: readonly RankedItem[];
   unit: MetricUnit;
   limit?: number;
+  references?: readonly MetricReference[];
   selectedId?: string;
   onSelect?: (id: string) => void;
   className?: string;
@@ -190,10 +199,12 @@ export interface TimeSeriesChartProps {
   unit: MetricUnit;
   domain: TimeDomain;
   mode?: 'line' | 'area' | 'sample-bars';
+  /** Plot, 18px time axis, and reference legend budget; series legend is additional.
+   * Wrapped references may exceed the budget to preserve a 32px plot without clipping labels. */
   height?: number;
   maxGapMs?: number;
   yDomain?: readonly [number, number];
-  annotations?: readonly MetricAnnotation[];
+  references?: readonly MetricReference[];
   cursorTimeMs?: number | null;
   onCursorTimeChange?: (timeMs: number | null) => void;
   selectedRange?: TimeDomain | null;

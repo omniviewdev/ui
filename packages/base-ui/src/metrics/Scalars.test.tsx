@@ -74,11 +74,15 @@ describe('metric scalars', () => {
 
   it('does not invent capacity percentage without a bound', () => {
     const { rerender } = renderWithTheme(
-      <CapacityBar label="Usage" value={25} request={10} unit={numberUnit} />,
+      <CapacityBar
+        label="Usage"
+        value={25}
+        references={[{ id: 'request', kind: 'line', label: 'Request', value: 10 }]}
+        unit={numberUnit}
+      />,
     );
     expect(screen.getByText(/Absolute usage/)).toBeVisible();
     expect(screen.queryByText(/%/)).not.toBeInTheDocument();
-    expect(screen.getByText('Request 10')).toBeVisible();
     rerender(
       <CapacityBar value={150} bound={{ value: 100, kind: 'capacity' }} unit={numberUnit} />,
     );

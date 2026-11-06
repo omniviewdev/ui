@@ -137,7 +137,7 @@
   min-block-size: 1.5em;
   inline-size: 100%;
   container-type: inline-size;
-  overflow: hidden;
+  overflow: visible;
 }
 .Capacity[data-variant='cell'] .Track {
   flex: 1 1 0;
@@ -154,6 +154,7 @@
   margin-inline-start: auto;
   min-inline-size: 0;
   max-inline-size: 100%;
+  overflow: hidden;
   font-size: var(--ov-font-size-caption);
   line-height: 1.3;
   font-weight: var(--ov-font-weight-body);
@@ -200,8 +201,7 @@
   inline-size: 100%;
   block-size: var(--_ov-metric-fill-size, 0%);
 }
-.Capacity[data-variant='cell'][data-orientation='vertical'] .Marker,
-.Capacity[data-variant='cell'][data-orientation='vertical'] .Request {
+.Capacity[data-variant='cell'][data-orientation='vertical'] .Marker {
   inset-inline-start: calc(var(--ov-space-stack-sm) / -4);
   inset-block-start: auto;
   inset-block-end: var(--_ov-metric-marker-position);
@@ -273,15 +273,6 @@
   background: var(--_ov-metric-color);
   transform: translateX(-1px);
 }
-.Request {
-  position: absolute;
-  top: -5px;
-  bottom: -5px;
-  width: 2px;
-  inset-inline-start: var(--_ov-metric-marker-position);
-  background: var(--ov-color-fg-default);
-  transform: translateX(-1px);
-}
 .Axis {
   display: flex;
   justify-content: space-between;
@@ -298,10 +289,12 @@
   font-size: var(--ov-font-size-sm);
 }
 .Gauge {
-  position: relative;
   max-inline-size: 256px;
   margin-inline: auto;
   text-align: center;
+}
+.GaugeFrame {
+  position: relative;
 }
 .GaugeSvg {
   display: block;
@@ -316,7 +309,8 @@
 .GaugeCenter {
   position: absolute;
   inset-inline: 0;
-  top: 47%;
+  /* Keep value and label above the baseline at every SVG width (20 / 150 viewBox units). */
+  inset-block-end: calc(100% * 20 / 150);
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -22,7 +22,7 @@ export const Default: Story = {
     value: 376 * 1024 ** 2,
     unit: f.bytesUnit,
     bound: { kind: 'limit', value: 512 * 1024 ** 2 },
-    request: 256 * 1024 ** 2,
+    references: [{ id: 'request', kind: 'line', label: 'Request', value: 256 * 1024 ** 2 }],
     color: 'series-4',
     thresholds: [
       { value: 409.6 * 1024 ** 2, tone: 'warning' },
@@ -44,4 +44,25 @@ export const Compact: Story = {
       <CapacityBar {...args} value={null} label="Unknown CPU" />
     </div>
   ),
+};
+export const ReferenceEdgeCases: Story = {
+  args: {
+    value: 26,
+    unit: f.cpuUnit,
+    bound: { kind: 'limit', value: 24 },
+    references: f.references,
+  },
+};
+export const UnknownBoundReferences: Story = {
+  args: { ...ReferenceEdgeCases.args, bound: undefined },
+};
+export const WideReferences: Story = {
+  ...ReferenceEdgeCases,
+  decorators: [
+    (Story) => (
+      <div className={styles.Wide}>
+        <Story />
+      </div>
+    ),
+  ],
 };

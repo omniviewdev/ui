@@ -2,6 +2,7 @@ import type {
   DistributionBucket,
   MetricDetail,
   MetricDisplayOption,
+  MetricReference,
   MetricSampleDetail,
   NumericSeries,
   StateLane,
@@ -11,6 +12,30 @@ import type {
 export const cpuUnit = { kind: 'cpu', base: 'millicores' } as const;
 export const bytesUnit = { kind: 'bytes', display: 'binary' } as const;
 export const latencyUnit = { kind: 'duration', base: 'milliseconds' } as const;
+/** Includes valid zero, coincident geometry, missing, partial, and invalid inputs. */
+export const references: readonly MetricReference[] = [
+  {
+    id: 'request',
+    kind: 'line',
+    label: 'Requested allocation',
+    value: 20,
+    source: 'Current configuration',
+  },
+  {
+    id: 'target',
+    kind: 'line',
+    label: 'Service target with a long descriptive name',
+    value: 20,
+    lineStyle: 'dotted',
+  },
+  { id: 'limit', kind: 'line', label: 'Configured limit', value: 25, lineStyle: 'solid' },
+  { id: 'range', kind: 'band', label: 'Preferred operating band', from: 18, to: 23 },
+  { id: 'zero', kind: 'line', label: 'Zero baseline', value: 0 },
+  { id: 'missing', kind: 'line', label: 'Missing setting', value: null },
+  { id: 'partial', kind: 'band', label: 'Partial band', from: 10 },
+  { id: 'invalid', kind: 'band', label: 'Reversed band', from: 30, to: 10 },
+  { id: 'nonfinite', kind: 'line', label: 'Invalid setting', value: Infinity },
+];
 export const endMs = Date.UTC(2026, 10, 5, 14, 30);
 export const domain = { startMs: endMs - 3 * 60 * 60_000, endMs };
 export const cpuSeries: NumericSeries = {

@@ -59,12 +59,17 @@ export interface MetricThreshold {
   readonly tone: MetricTone;
   readonly label?: string;
 }
-export interface MetricAnnotation {
+/** Current supplied configuration, expressed in the component's base unit. */
+export type MetricReference = {
   readonly id: string;
-  readonly value: number;
   readonly label: string;
   readonly tone?: MetricTone;
-}
+  readonly source?: string;
+  readonly lineStyle?: 'solid' | 'dashed' | 'dotted';
+} & (
+  | { readonly kind: 'line'; readonly value?: number | null }
+  | { readonly kind: 'band'; readonly from?: number | null; readonly to?: number | null }
+);
 export interface MetricNotice {
   readonly tone: 'info' | 'warning' | 'danger';
   readonly label: string;
@@ -83,7 +88,11 @@ export type MetricPanelState =
 export interface MetricPanelProps {
   title: ReactNode;
   state?: MetricPanelState;
+  /** Reserve chart geometry while history loads before its domain is available. */
+  loadingChart?: boolean;
   actions?: ReactNode;
+  /** Current scalar value, separated from plot content by shared panel spacing. */
+  value?: ReactNode;
   footer?: ReactNode;
   /** Shared disclosure footer. Supply prepared metadata, not another disclosure wrapper. */
   details?: {
@@ -103,8 +112,10 @@ export interface MetricValueProps {
   unit: MetricUnit;
   color?: SeriesColor;
   tone?: MetricTone;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   format?: MetricFormatOptions;
+  /** Current configuration summary; references do not invent a numeric scale for a stat. */
+  references?: readonly MetricReference[];
   className?: string;
   'aria-label'?: string;
 }
@@ -112,17 +123,34 @@ export interface CapacityBound {
   readonly value: number;
   readonly kind: 'limit' | 'capacity' | 'allocatable' | 'request' | 'target';
 }
+/** Loading may precede unit discovery; one skeleton preserves the cell's row height. */
+export type MetricCellProps = {
+  bound?: CapacityBound;
+  references?: readonly MetricReference[];
+  label?: string;
+  thresholds?: readonly MetricThreshold[];
+  orientation?: 'horizontal' | 'vertical';
+  color?: SeriesColor;
+  className?: string;
+} & (
+  | { loading: true; value?: number | null; unit?: MetricUnit }
+  | { loading?: false; value: number | null; unit: MetricUnit }
+);
 export interface CapacityBarProps {
   value: number | null;
   unit: MetricUnit;
+  /** Cell loading uses one skeleton and preserves row geometry without implying zero. */
+  loading?: boolean;
   bound?: CapacityBound;
-  request?: number | null;
+  references?: readonly MetricReference[];
   thresholds?: readonly MetricThreshold[];
   color?: SeriesColor;
   label?: string;
   showValue?: boolean;
   /** Compact mode keeps the value and track inline; labels remain available to assistive technology. */
-  variant?: 'full' | 'compact';
+  variant?: 'full' | 'compact' | 'cell';
+  /** Track direction for the fixed-density cell variant. Other variants remain horizontal. */
+  orientation?: 'horizontal' | 'vertical';
   className?: string;
 }
 export interface GaugeProps {
@@ -131,6 +159,7 @@ export interface GaugeProps {
   min?: number;
   max: number;
   thresholds?: readonly MetricThreshold[];
+  references?: readonly MetricReference[];
   color?: SeriesColor;
   label: string;
   className?: string;
@@ -145,6 +174,7 @@ export interface RankedBarsProps {
   items: readonly RankedItem[];
   unit: MetricUnit;
   limit?: number;
+  references?: readonly MetricReference[];
   selectedId?: string;
   onSelect?: (id: string) => void;
   className?: string;
@@ -164,13 +194,17 @@ export interface SloSummaryProps {
 }
 export interface TimeSeriesChartProps {
   series: readonly NumericSeries[];
+  /** Show an initial Skeleton without samples; preserve supplied samples while refreshing. */
+  loading?: boolean;
   unit: MetricUnit;
   domain: TimeDomain;
   mode?: 'line' | 'area' | 'sample-bars';
+  /** Plot, 18px time axis, and reference legend budget; series legend is additional.
+   * Wrapped references may exceed the budget to preserve a 32px plot without clipping labels. */
   height?: number;
   maxGapMs?: number;
   yDomain?: readonly [number, number];
-  annotations?: readonly MetricAnnotation[];
+  references?: readonly MetricReference[];
   cursorTimeMs?: number | null;
   onCursorTimeChange?: (timeMs: number | null) => void;
   selectedRange?: TimeDomain | null;
@@ -334,6 +368,8 @@ export interface MetricSampleDetail {
 export interface MetricDetailsProps {
   items: readonly MetricDetail[];
   source?: ReactNode;
+  /** Provider icon displayed within the shared source-row icon frame. */
+  sourceIcon?: ReactNode;
   samples?: readonly MetricSampleDetail[];
   labels?: Readonly<Record<string, string>>;
   label?: string;

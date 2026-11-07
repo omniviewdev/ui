@@ -2,6 +2,7 @@ import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../system/classnames';
 import { useDataTableContext } from './context/DataTableContext';
 import styles from './DataTable.module.css';
+import { getSizeVariable } from './utils/getCellSizeStyles';
 
 export interface DataTableLoadingProps extends HTMLAttributes<HTMLTableSectionElement> {
   rows?: number;
@@ -22,7 +23,7 @@ export const DataTableLoading = forwardRef<HTMLTableSectionElement, DataTableLoa
                 className={styles.SkeletonCell}
                 style={
                   {
-                    '--_dt-cell-size': `var(--col-${col.id}-size)`,
+                    '--_dt-cell-size': `var(${getSizeVariable(col.id)})`,
                   } as CSSProperties
                 }
               >

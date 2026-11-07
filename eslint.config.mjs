@@ -80,5 +80,19 @@ export default [
       'omniview-audit/no-inline-styles': 'error',
     },
   },
+  {
+    files: ['packages/base-ui/src/metrics/**/*.tsx'],
+    ignores: ['**/*.stories.*', '**/*.test.*'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'JSXAttribute[name.name="type"][value.value=/^(datetime-local|date|time)$/]',
+          message:
+            'Compose shared date/time primitives instead of browser-native temporal controls.',
+        },
+      ],
+    },
+  },
   prettierConfig,
 ];

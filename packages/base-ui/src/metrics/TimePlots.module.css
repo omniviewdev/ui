@@ -5,6 +5,8 @@
   font-size: var(--ov-font-size-xs);
 }
 .Plot {
+  grid-column: 2;
+  grid-row: 1;
   display: block;
   width: 100%;
   overflow: hidden;
@@ -30,6 +32,7 @@
   pointer-events: none;
 }
 .PlotFrame {
+  position: relative;
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
   gap: var(--ov-space-1);
@@ -42,6 +45,7 @@
   color: var(--ov-color-chart-axis);
   font-size: var(--ov-font-size-xs);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .Axis {
   display: flex;
@@ -54,9 +58,34 @@
   font-variant-numeric: tabular-nums;
 }
 .Empty {
-  padding: var(--ov-space-stack-lg, 16px);
+  padding: var(--ov-space-stack-lg);
   text-align: center;
   color: var(--ov-color-fg-muted);
+}
+.PlotFrame > .Empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.LoadingPlot {
+  grid-column: 2;
+  grid-row: 1;
+  inline-size: 100%;
+}
+.Chart[data-loading] .ValueAxis,
+.Chart[data-loading] .Axis,
+.Chart[data-loading] .Plot {
+  visibility: hidden;
+}
+.LoadingStatus {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .Inspection {
   position: absolute;
@@ -72,6 +101,8 @@
   border-radius: var(--ov-radius-control);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
+  max-inline-size: calc(100% - 2 * var(--ov-space-2));
+  box-sizing: border-box;
 }
 .Inspection[hidden] {
   display: none;

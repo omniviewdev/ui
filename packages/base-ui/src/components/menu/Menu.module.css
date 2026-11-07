@@ -77,7 +77,6 @@
   --_ov-item-font-size: var(--ov-size-menu-font-size-xl);
 }
 
-
 .Popup[data-ov-color='brand'] {
   --_ov-selected-bg: var(--ov-color-accent-soft);
 }
@@ -147,7 +146,6 @@
 .LinkItem {
   text-decoration: none;
 }
-
 
 :is(.Item, .CheckboxItem, .RadioItem, .SubmenuTrigger, .LinkItem):where(
   :hover,
@@ -313,4 +311,39 @@
   outline: none;
   border-color: var(--ov-color-border-focus);
   box-shadow: 0 0 0 1px var(--ov-color-state-focus-ring);
+}
+
+.Trigger {
+  --_ov-content-gap: var(--ov-space-stack-sm);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-md);
+  gap: var(--_ov-content-gap);
+  font-size: var(--ov-size-button-font-size-md);
+}
+.Trigger > svg {
+  inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+  flex-shrink: 0;
+}
+.Trigger[data-ov-size='xs'] {
+  --_ov-height: var(--ov-size-button-height-xs);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xs);
+  --_ov-content-gap: var(--ov-space-stack-xs);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xs);
+  font-size: var(--ov-size-button-font-size-xs);
+}
+.Trigger[data-ov-size='sm'] {
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-sm);
+  font-size: var(--ov-size-button-font-size-sm);
+}
+.Trigger[data-ov-size='lg'] {
+  --_ov-content-gap: var(--ov-space-inline-control);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-lg);
+  font-size: var(--ov-size-button-font-size-lg);
+}
+.Trigger[data-ov-size='xl'] {
+  --_ov-height: var(--ov-size-button-height-xl);
+  --_ov-padding-inline: var(--ov-size-button-padding-inline-xl);
+  --_ov-content-gap: var(--ov-space-inline-control);
+  --_ov-decorator-size: var(--ov-size-icon-button-icon-xl);
+  font-size: var(--ov-size-button-font-size-xl);
 }

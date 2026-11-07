@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import styles from './DateField.module.css';
 import { useDateField, type UseDateFieldOptions } from './useDateField';
 import type { Section } from './sections';
@@ -6,6 +6,8 @@ import type { Section } from './sections';
 export interface DateFieldProps {
   value?: Date | null;
   onChange?: (value: Date | null) => void;
+  /** Reports whether the displayed sections form a complete, valid value. */
+  onValidityChange?: (valid: boolean) => void;
   mode?: 'date' | 'time' | 'datetime';
   locale?: string;
   hourCycle?: 12 | 24;
@@ -35,6 +37,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
   const {
     value,
     onChange,
+    onValidityChange,
     mode = 'date',
     locale,
     hourCycle,
@@ -61,7 +64,12 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
     readOnly,
   };
 
-  const { sections, rootProps, getSectionProps, registerSectionRef } = useDateField(options);
+  const { sections, isValid, rootProps, getSectionProps, registerSectionRef } =
+    useDateField(options);
+  const hasInput = sections.some((section) => section.type !== 'literal' && section.value !== '');
+  useEffect(() => {
+    onValidityChange?.(isValid);
+  }, [isValid, onValidityChange]);
 
   return (
     <div
@@ -71,6 +79,7 @@ export const DateField = forwardRef<HTMLDivElement, DateFieldProps>(function Dat
       data-readonly={readOnly ? '' : undefined}
       data-bare={bare ? '' : undefined}
       aria-label={ariaLabel ?? defaultAriaLabel(mode)}
+      aria-invalid={(hasInput && !isValid) || undefined}
       {...rootProps}
     >
       {sections.map((section, idx) =>

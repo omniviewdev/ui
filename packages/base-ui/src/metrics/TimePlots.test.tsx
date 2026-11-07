@@ -5,6 +5,7 @@ import { StackedTimeSeriesChart } from './StackedTimeSeriesChart';
 import { SmallMultiples } from './SmallMultiples';
 import { MetricLegend } from './MetricLegend';
 import type { NumericSeries } from './types';
+import { MetricPanel } from './MetricPanel';
 
 const domain = { startMs: 0, endMs: 100 };
 const series: readonly [NumericSeries] = [
@@ -20,6 +21,49 @@ const series: readonly [NumericSeries] = [
 ];
 const unit = { kind: 'number' } as const;
 describe('time plots', () => {
+  it('shows an initial Skeleton without replacing the SVG when samples arrive', () => {
+    const { container, rerender } = render(
+      <TimeSeriesChart label="Load" series={[]} unit={unit} domain={domain} loading />,
+    );
+    const svg = container.querySelector('svg');
+    expect(container.querySelector('[data-ov-component="skeleton"]')).toBeTruthy();
+    expect(screen.queryByText('No drawable samples')).toBeNull();
+    expect(screen.getByRole('status').textContent).toBe('Loading samples…');
+    rerender(<TimeSeriesChart label="Load" series={series} unit={unit} domain={domain} />);
+    expect(container.querySelector('svg')).toBe(svg);
+    expect(container.querySelector('[data-ov-component="skeleton"]')).toBeNull();
+  });
+  it('keeps supplied samples mounted during refresh and announces only at panel level', () => {
+    const { container, rerender } = render(
+      <MetricPanel title="Load" state={{ kind: 'data' }} value="3">
+        <TimeSeriesChart label="Load history" series={series} unit={unit} domain={domain} />
+      </MetricPanel>,
+    );
+    const svg = container.querySelector('svg');
+    const path = container.querySelector('[data-metric-path="a"]');
+    rerender(
+      <MetricPanel title="Load" state={{ kind: 'data', updating: true }} value="3">
+        <TimeSeriesChart label="Load history" series={series} unit={unit} domain={domain} />
+      </MetricPanel>,
+    );
+    expect(container.querySelector('svg')).toBe(svg);
+    expect(container.querySelector('[data-metric-path="a"]')).toBe(path);
+    expect(container.querySelector('[data-ov-component="skeleton"]')).toBeNull();
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+    expect(screen.getByRole('status').textContent).toBe('Updating…');
+  });
+  it('reserves initial chart geometry only when requested and keeps errors distinct', () => {
+    const { container, rerender } = render(
+      <MetricPanel title="Load" state={{ kind: 'initial' }} value="—" loadingChart />,
+    );
+    expect(container.querySelectorAll('[data-ov-component="skeleton"]')).toHaveLength(2);
+    expect(screen.getByRole('status').textContent).toBe('Loading samples…');
+    rerender(<MetricPanel title="Load" state={{ kind: 'initial' }} value="—" />);
+    expect(container.querySelectorAll('[data-ov-component="skeleton"]')).toHaveLength(1);
+    rerender(<MetricPanel title="Load" state={{ kind: 'error', message: 'Source unavailable' }} />);
+    expect(screen.getByRole('alert').textContent).toBe('Source unavailable');
+    expect(container.querySelector('[data-ov-component="skeleton"]')).toBeNull();
+  });
   it('keeps SVG and keyed path identity through refresh and range changes', () => {
     const { container, rerender } = render(
       <TimeSeriesChart label="Load" series={series} unit={unit} domain={domain} />,

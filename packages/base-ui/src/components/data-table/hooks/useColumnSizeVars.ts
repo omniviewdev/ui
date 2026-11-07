@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import type { DataTableInstance } from '../types';
 import type { RowData, TableState } from '@tanstack/react-table';
 import type { DataTableFeatures } from '../types';
+import { getSizeVariable } from '../utils/getCellSizeStyles';
 
 /**
  * Computes CSS custom properties for all column widths.
  * Applied at the root table element so cells reference them via
- * `width: calc(var(--header-{id}-size) * 1px)` without per-cell inline styles.
+ * `width: calc(var(--header-{encoded-id}-size) * 1px)` without per-cell inline styles.
  *
- * Only recomputes when columnSizing or columnResizing changes.
+ * Recomputes when column definitions, visibility, or sizing change.
  */
 export function useColumnSizeVars<TData extends RowData>(
   table: DataTableInstance<TData>,
@@ -23,10 +24,10 @@ export function useColumnSizeVars<TData extends RowData>(
 
   return useMemo(() => {
     const headers = table.getFlatHeaders();
-    const vars: Record<string, number> = {};
+    const vars: Record<string, number> = { '--_dt-table-size': table.getTotalSize() };
     for (const header of headers) {
-      vars[`--header-${header.id}-size`] = header.getSize();
-      vars[`--col-${header.column.id}-size`] = header.column.getSize();
+      vars[getSizeVariable(header.id, 'header')] = header.getSize();
+      vars[getSizeVariable(header.column.id)] = header.column.getSize();
     }
     return vars;
     // eslint-disable-next-line react-hooks/exhaustive-deps

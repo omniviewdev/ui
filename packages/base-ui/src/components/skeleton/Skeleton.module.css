@@ -125,11 +125,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .Root {
+  .Root[data-ov-animation] {
     animation: none;
   }
 
-  .Root::after {
+  .Root[data-ov-animation]::after {
     content: none;
+    animation: none;
   }
 }

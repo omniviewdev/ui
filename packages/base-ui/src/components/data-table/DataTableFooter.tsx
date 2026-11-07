@@ -3,6 +3,7 @@ import { flexRender, type RowData } from '@tanstack/react-table';
 import { cn } from '../../system/classnames';
 import { useDataTableContext, type DataTableContextValue } from './context/DataTableContext';
 import styles from './DataTable.module.css';
+import { getSizeVariable } from './utils/getCellSizeStyles';
 
 export type DataTableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
 
@@ -49,7 +50,7 @@ const DataTableFooterRender = memo(
                 className={styles.FooterCell}
                 style={
                   {
-                    '--_dt-cell-size': `var(--col-${header.column.id}-size)`,
+                    '--_dt-cell-size': `var(${getSizeVariable(header.column.id)})`,
                   } as CSSProperties
                 }
               >

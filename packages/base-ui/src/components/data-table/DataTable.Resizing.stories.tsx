@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '../button';
+import { MetricCell } from '../../metrics/MetricCell';
 import type { DataTableColumnDef as ColumnDef } from './types';
 import { DataTable } from './DataTable';
 import { useDataTable } from './hooks/useDataTable';
@@ -64,4 +67,173 @@ function ColumnResizingStory() {
 
 export const ColumnResizing: Story = {
   render: () => <ColumnResizingStory />,
+};
+
+const metricColumns: ColumnDef<Container, unknown>[] = [
+  {
+    id: 'metric:kubernetes.pod.cpu_total_usage',
+    header: 'CPU usage',
+    size: 180,
+    cell: () => (
+      <MetricCell
+        label="CPU usage"
+        value={125}
+        unit={{ kind: 'cpu', base: 'millicores' }}
+        bound={{ kind: 'limit', value: 500 }}
+      />
+    ),
+  },
+  {
+    id: 'metric:kubernetes.pod.memory_total_usage',
+    header: 'Memory usage',
+    size: 220,
+    cell: () => (
+      <MetricCell
+        label="Memory usage"
+        value={128 * 1024 ** 2}
+        unit={{ kind: 'bytes', display: 'binary' }}
+        bound={{ kind: 'limit', value: 1024 ** 3 }}
+      />
+    ),
+  },
+  {
+    // Would collide with the punctuation-bearing CPU ID if punctuation became underscores.
+    id: 'metric_kubernetes_pod_cpu_total_usage',
+    header: 'Collision control',
+    size: 140,
+    cell: () => 'Independent width',
+  },
+];
+
+function DynamicColumnsStory() {
+  const [metrics, setMetrics] = useState(false);
+  const [virtual, setVirtual] = useState(false);
+  const table = useDataTable({
+    data: containerData,
+    columns: metrics
+      ? [...containerColumns.slice(0, 2), ...metricColumns]
+      : containerColumns.slice(0, 2),
+    features: { columnResizing: true, columnVisibility: true },
+    getRowId: (row) => row.id,
+  });
+  return (
+    <div style={{ width: 520, maxWidth: '100%', display: 'grid', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Button size="sm" onClick={() => setMetrics((value) => !value)}>
+          Toggle metric columns
+        </Button>
+        <Button
+          size="sm"
+          disabled={!metrics}
+          onClick={() =>
+            table.getColumn('metric:kubernetes.pod.cpu_total_usage')?.toggleVisibility()
+          }
+        >
+          Toggle CPU visibility
+        </Button>
+        <Button
+          size="sm"
+          disabled={!metrics}
+          onClick={() => table.setColumnSizing({ 'metric:kubernetes.pod.memory_total_usage': 300 })}
+        >
+          Resize memory to 300px
+        </Button>
+        <Button size="sm" onClick={() => setVirtual((value) => !value)}>
+          Toggle virtual body
+        </Button>
+      </div>
+      <DataTable.Root table={table} features={{ columnResizing: true }} size="sm">
+        <DataTable.Container height={280} aria-label="Dynamic column sizing repro">
+          <DataTable.Header />
+          {virtual ? <DataTable.VirtualBody fixedRowHeight /> : <DataTable.Body />}
+        </DataTable.Container>
+      </DataTable.Root>
+    </div>
+  );
+}
+
+export const DynamicColumns: Story = {
+  render: () => <DynamicColumnsStory />,
+  play: async ({ canvasElement }) => {
+    const viewport = canvasElement.querySelector<HTMLElement>('[data-ov-table-container]')!;
+    const frame = () => {
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => resolve());
+      return promise;
+    };
+    const click = async (label: string) => {
+      const button = Array.from(canvasElement.querySelectorAll('button')).find(
+        (element) => element.textContent === label,
+      );
+      if (!button) throw new Error(`Missing control: ${label}`);
+      button.click();
+      await frame();
+      await frame();
+    };
+    const check = (minimum: number, columnWidths?: readonly number[]) => {
+      const table = viewport.querySelector('table')!;
+      const width = table.getBoundingClientRect().width;
+      const expected = Math.max(viewport.clientWidth, minimum);
+      if (Math.abs(width - expected) > 1) {
+        throw new Error(`Table width: expected ${expected}, received ${width}`);
+      }
+      const headers = Array.from(table.querySelectorAll('thead th'));
+      const cells = Array.from(table.querySelectorAll('tbody tr:first-child td'));
+      if (!cells.length || cells.length !== headers.length) {
+        throw new Error('Header/body visible columns differ');
+      }
+      headers.forEach((header, index) => {
+        const head = header.getBoundingClientRect();
+        const cell = cells[index]!.getBoundingClientRect();
+        if (Math.abs(head.width - cell.width) > 1 || Math.abs(head.left - cell.left) > 1) {
+          throw new Error(`Header/body alignment differs at column ${index}`);
+        }
+        if (columnWidths && Math.abs(cell.width - columnWidths[index]!) > 1) {
+          throw new Error(
+            `Column ${index}: expected ${columnWidths[index]}px, received ${cell.width}`,
+          );
+        }
+      });
+      table
+        .querySelectorAll<HTMLElement>('[role="group"][aria-label$="usage"]')
+        .forEach((metric) => {
+          const cell = metric.closest('td')!;
+          const style = getComputedStyle(cell);
+          const available =
+            cell.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+          if (Math.abs(metric.getBoundingClientRect().width - available) > 1) {
+            throw new Error('Responsive cell content does not fill the available column width');
+          }
+        });
+      if (minimum > viewport.clientWidth && viewport.scrollWidth < minimum - 1) {
+        throw new Error('Horizontal viewport does not expose the full table width');
+      }
+    };
+    check(260);
+    await click('Toggle metric columns');
+    check(800, [120, 140, 180, 220, 140]);
+    await click('Resize memory to 300px');
+    check(880, [120, 140, 180, 300, 140]);
+    await click('Toggle CPU visibility');
+    check(700, [120, 140, 300, 140]);
+    await click('Toggle CPU visibility');
+    await click('Toggle virtual body');
+    for (let attempt = 0; attempt < 60 && !viewport.querySelector('tbody tr'); attempt += 1) {
+      await frame();
+    }
+    check(880, [120, 140, 180, 300, 140]);
+    viewport.scrollLeft = 200;
+    await frame();
+    check(880, [120, 140, 180, 300, 140]);
+    await click('Toggle metric columns');
+    check(260);
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A 520px viewport starts with 260px of declared columns. Adding metrics and an underscore-lookalike collision control raises the minimum table width to 800px; resizing memory raises it to 880px. Hide CPU to remove 180px. Metric IDs include colons, dots, and underscores. Headers and ordinary/virtual rows share the same widths; excess width scrolls instead of squeezing cells. Drag header dividers to test continuous resizing.',
+      },
+    },
+  },
 };

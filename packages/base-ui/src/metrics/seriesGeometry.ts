@@ -121,11 +121,11 @@ export function yPosition(
   bounds: readonly [number, number],
   height: number,
 ): number {
-  return (
-    height -
-    ((Math.max(bounds[0], Math.min(bounds[1], value)) - bounds[0]) / (bounds[1] - bounds[0])) *
-      height
-  );
+  const magnitude = Math.max(Math.abs(bounds[0]), Math.abs(bounds[1]), 1);
+  const lower = bounds[0] / magnitude;
+  const span = bounds[1] / magnitude - lower;
+  const sample = Math.max(bounds[0], Math.min(bounds[1], value)) / magnitude;
+  return height * (1 - (sample - lower) / span);
 }
 export function linePath(
   points: readonly NumericPoint[],

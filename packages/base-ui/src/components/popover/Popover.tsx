@@ -175,11 +175,16 @@ const PopoverDescription = forwardRef<
 
 const PopoverClose = forwardRef<ElementRef<typeof BasePopover.Close>, PopoverCloseProps>(
   function PopoverClose({ className, variant, color, size, ...props }, ref) {
-    const resolved = useResolvedStyleProps({ variant, color, size });
+    const rendered = renderedStyleProps(props.render);
+    const resolved = useResolvedStyleProps({
+      variant: variant ?? rendered?.variant,
+      color: color ?? rendered?.color,
+      size: size ?? rendered?.size,
+    });
     return (
       <BasePopover.Close
         ref={ref}
-        className={withBaseClassName(styles.Close, className)}
+        className={rendered ? className : withBaseClassName(styles.Close, className)}
         {...styleDataAttributes(resolved)}
         {...props}
       />

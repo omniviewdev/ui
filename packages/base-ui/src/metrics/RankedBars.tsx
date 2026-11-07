@@ -1,3 +1,9 @@
+import {
+  normalizeReferences,
+  referenceDomain,
+  ReferenceLegend,
+  ReferenceTrack,
+} from './references';
 import type { CSSProperties } from 'react';
 import { Button } from '../components/button';
 import { cn } from '../system/classnames';
@@ -16,6 +22,7 @@ export function RankedBars({
   items,
   unit,
   limit = 5,
+  references,
   selectedId,
   onSelect,
   className,
@@ -43,6 +50,7 @@ export function RankedBars({
       if (rows.length > count) rows.pop();
     }
   }
+  const normalizedReferences = normalizeReferences(references);
   let low = 0;
   let high = 0;
   for (const row of rows)
@@ -50,6 +58,8 @@ export function RankedBars({
       low = Math.min(low, row.value);
       high = Math.max(high, row.value);
     }
+  [low, high] = referenceDomain([low, high], normalizedReferences);
+  if (low === high) high = 1;
   // Normalize before subtraction to preserve finite geometry at extreme magnitudes.
   const magnitude = Math.max(Math.abs(low), Math.abs(high), 1);
   const lower = low / magnitude;
@@ -77,6 +87,11 @@ export function RankedBars({
                 <span className={styles.RankTrack} style={trackStyle} aria-hidden="true">
                   <span className={styles.Zero} />
                   {known && <span className={styles.Fill} />}
+                  <ReferenceTrack
+                    references={normalizedReferences}
+                    unit={unit}
+                    domain={[low, high]}
+                  />
                 </span>
               </div>
               <span className={styles.RankValue}>
@@ -105,6 +120,7 @@ export function RankedBars({
           );
         })
       )}
+      <ReferenceLegend references={normalizedReferences} unit={unit} domain={[low, high]} />
     </div>
   );
 }

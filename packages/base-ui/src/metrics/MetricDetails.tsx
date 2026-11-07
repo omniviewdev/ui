@@ -23,6 +23,7 @@ function sampleTime(value?: number) {
 export function MetricDetails({
   items,
   source,
+  sourceIcon,
   samples,
   labels,
   label = 'Metric details',
@@ -45,7 +46,9 @@ export function MetricDetails({
     <section aria-label={label} className={cn(styles.detailsRoot, className)}>
       {source != null && (
         <div className={styles.source}>
-          <LuDatabase aria-hidden="true" />
+          <span className={styles.sourceIcon} aria-hidden="true">
+            {sourceIcon ?? <LuDatabase />}
+          </span>
           <span>{source}</span>
         </div>
       )}

@@ -9,6 +9,22 @@
   display: grid;
   gap: var(--ov-space-3);
 }
+.rangePopup {
+  inline-size: min(400px, calc(100vw - (var(--ov-space-stack-lg) * 2)));
+  max-block-size: calc(100dvh - (var(--ov-space-stack-lg) * 2));
+  overflow-y: auto;
+}
+.rangeField {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--ov-space-2);
+  font-size: var(--ov-font-size-caption);
+}
+.rangeActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ov-space-2);
+}
 .option {
   display: grid;
   gap: var(--ov-space-1);
@@ -89,12 +105,20 @@
   color: var(--ov-color-fg-default);
   font-size: 11px;
 }
-.source > svg {
-  inline-size: 13px;
-  block-size: 13px;
-  flex-shrink: 0;
+.sourceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ov-font-size-caption);
+  block-size: var(--ov-font-size-caption);
+  flex: 0 0 var(--ov-font-size-caption);
 }
-.source > span {
+.sourceIcon > * {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+.source > span:not(.sourceIcon) {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;

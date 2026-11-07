@@ -17,10 +17,6 @@
   color: var(--ov-color-fg-muted);
   font-size: 11px;
 }
-.PanelValue {
-  min-height: 66px;
-  padding-bottom: 12px;
-}
 .Control {
   font: inherit;
   color: var(--ov-color-fg-default);

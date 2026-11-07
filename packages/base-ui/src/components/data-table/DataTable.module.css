@@ -190,6 +190,7 @@
 .Table {
   display: grid;
   inline-size: 100%;
+  min-inline-size: calc(var(--_dt-table-size) * 1px);
 }
 
 /* --- Header --- */
@@ -220,7 +221,7 @@
 
 .FooterCell,
 .SkeletonCell {
-  flex: var(--_dt-cell-size) 0 0px;
+  flex: var(--_dt-cell-size) 0 calc(var(--_dt-cell-size) * 1px);
 }
 
 .HeaderCell[data-ov-pinned],
@@ -408,6 +409,8 @@
 }
 
 .CellContent {
+  flex: 1;
+  min-inline-size: 0;
   overflow: hidden;
 }
 
@@ -418,8 +421,12 @@
 
 .Cell[data-ov-align='center'] > .CellContent {
   overflow: visible;
+  text-align: center;
 }
 
+.Cell[data-ov-align='right'] > .CellContent {
+  text-align: right;
+}
 /* --- Expand toggle --- */
 
 .ExpandToggle {

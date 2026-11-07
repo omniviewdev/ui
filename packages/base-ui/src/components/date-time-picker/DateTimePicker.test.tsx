@@ -4,6 +4,71 @@ import userEvent from '@testing-library/user-event';
 import { DateTimePicker } from './DateTimePicker';
 
 describe('DateTimePicker', () => {
+  it('reports exact timestamp and disabled-date validity as controlled constraints change', async () => {
+    const user = userEvent.setup();
+    const validity = vi.fn();
+    const value = new Date(2026, 3, 12, 10);
+    const { rerender } = render(
+      <DateTimePicker value={value} min={new Date(2026, 3, 12, 12)} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(false);
+    rerender(
+      <DateTimePicker value={value} min={new Date(2026, 3, 12, 9)} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(true);
+    rerender(
+      <DateTimePicker value={value} max={new Date(2026, 3, 12, 9)} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(false);
+    rerender(
+      <DateTimePicker value={value} isDateDisabled={() => true} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(false);
+    rerender(
+      <DateTimePicker value={value} isDateDisabled={() => false} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(true);
+    await user.click(screen.getByRole('spinbutton', { name: 'Hour' }));
+    await user.keyboard('{Backspace}');
+    expect(validity).toHaveBeenLastCalledWith(false);
+    rerender(
+      <DateTimePicker value={value} min={new Date(2026, 3, 12, 8)} onValidityChange={validity} />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(false);
+    rerender(
+      <DateTimePicker
+        value={new Date(2026, 3, 12, 11)}
+        min={new Date(2026, 3, 12, 12)}
+        onValidityChange={validity}
+      />,
+    );
+    expect(validity).toHaveBeenLastCalledWith(false);
+  });
+
+  it('names independent date-time fields and calendar openers distinctly', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <DateTimePicker
+          aria-label="Start local date and time"
+          defaultValue={new Date(2026, 3, 12, 9, 30)}
+        />
+        <DateTimePicker
+          aria-label="End local date and time"
+          defaultValue={new Date(2026, 3, 12, 10, 30)}
+        />
+      </>,
+    );
+    expect(screen.getByRole('group', { name: 'Start local date and time' })).toBeVisible();
+    expect(screen.getByRole('group', { name: 'End local date and time' })).toBeVisible();
+    await user.click(
+      screen.getByRole('button', { name: 'Open calendar for End local date and time' }),
+    );
+    expect(screen.getByRole('grid')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+  });
+
   it('opens popover and renders both Calendar and time columns', async () => {
     const user = userEvent.setup();
     render(<DateTimePicker value={new Date(2026, 3, 12, 9, 30)} onChange={() => {}} />);

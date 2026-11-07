@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { LuCalendarClock, LuRefreshCw } from 'react-icons/lu';
 import { Button } from '../components/button';
-import { Input } from '../components/input';
+import { DateTimePicker } from '../components/date-time-picker';
 import { Popover } from '../components/popover';
 import type { TimeRangeControlProps } from './types';
 import styles from './Controls.module.css';
@@ -11,12 +11,6 @@ const defaultPresets = [
   { label: '1 hour', durationMs: 3600000 },
   { label: '6 hours', durationMs: 21600000 },
 ];
-function dateInput(ms: number) {
-  const date = new Date(ms);
-  return Number.isFinite(date.getTime())
-    ? new Date(ms - date.getTimezoneOffset() * 60000).toISOString().slice(0, 19)
-    : '';
-}
 export function TimeRangeControl({
   value,
   onChange,
@@ -27,9 +21,11 @@ export function TimeRangeControl({
   className,
 }: TimeRangeControlProps) {
   const [open, setOpen] = useState(false);
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [start, setStart] = useState<Date | null>(null);
+  const [end, setEnd] = useState<Date | null>(null);
   const [error, setError] = useState('');
+  const [startValid, setStartValid] = useState(false);
+  const [endValid, setEndValid] = useState(false);
   const label =
     value.mode === 'relative'
       ? `Last ${presets.find((preset) => preset.durationMs === value.durationMs)?.label ?? `${value.durationMs / 60000} minutes`}`
@@ -44,9 +40,9 @@ export function TimeRangeControl({
           if (next) {
             const now = referenceTimeMs ?? Date.now();
             setStart(
-              dateInput(value.mode === 'absolute' ? value.domain.startMs : now - value.durationMs),
+              new Date(value.mode === 'absolute' ? value.domain.startMs : now - value.durationMs),
             );
-            setEnd(dateInput(value.mode === 'absolute' ? value.domain.endMs : now));
+            setEnd(new Date(value.mode === 'absolute' ? value.domain.endMs : now));
             setError('');
           }
         }}
@@ -57,7 +53,7 @@ export function TimeRangeControl({
         </Popover.Trigger>
         <Popover.Portal>
           <Popover.Positioner align="end" sideOffset={6}>
-            <Popover.Popup>
+            <Popover.Popup className={styles.rangePopup}>
               <Popover.Title>Time range</Popover.Title>
               <div className={styles.presets}>
                 {presets
@@ -80,8 +76,12 @@ export function TimeRangeControl({
                 className={styles.form}
                 onSubmit={(event) => {
                   event.preventDefault();
-                  const startMs = new Date(start).getTime();
-                  const endMs = new Date(end).getTime();
+                  if (!startValid || !endValid) {
+                    setError('Complete a valid local date and time for both Start and End.');
+                    return;
+                  }
+                  const startMs = start?.getTime() ?? NaN;
+                  const endMs = end?.getTime() ?? NaN;
                   if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || startMs >= endMs) {
                     setError('Enter a valid start before the end.');
                     return;
@@ -90,28 +90,37 @@ export function TimeRangeControl({
                   setOpen(false);
                 }}
               >
-                <Input.Root>
-                  <Input.Label>Start (local time)</Input.Label>
-                  <Input.Control
-                    type="datetime-local"
-                    step="1"
+                <div className={styles.rangeField}>
+                  <span>Start (local date and time)</span>
+                  <DateTimePicker
+                    aria-label="Start (local date and time)"
                     value={start}
-                    onChange={(event) => setStart(event.target.value)}
+                    onChange={setStart}
+                    onValidityChange={setStartValid}
+                    showSeconds
+                    hourCycle={24}
                   />
-                </Input.Root>
-                <Input.Root>
-                  <Input.Label>End (local time)</Input.Label>
-                  <Input.Control
-                    type="datetime-local"
-                    step="1"
+                </div>
+                <div className={styles.rangeField}>
+                  <span>End (local date and time)</span>
+                  <DateTimePicker
+                    aria-label="End (local date and time)"
                     value={end}
-                    onChange={(event) => setEnd(event.target.value)}
+                    onChange={setEnd}
+                    onValidityChange={setEndValid}
+                    showSeconds
+                    hourCycle={24}
                   />
-                </Input.Root>
+                </div>
                 {error && <span role="alert">{error}</span>}
-                <Button type="submit" size="sm">
-                  Apply range
-                </Button>
+                <div className={styles.rangeActions}>
+                  <Button type="button" size="sm" variant="ghost" onClick={() => setOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" size="sm">
+                    Apply range
+                  </Button>
+                </div>
               </form>
             </Popover.Popup>
           </Popover.Positioner>

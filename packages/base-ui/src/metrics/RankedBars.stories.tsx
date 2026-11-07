@@ -19,7 +19,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {
-  args: { items: f.rankedItems, unit: f.cpuUnit, label: 'CPU by workload' },
+  args: {
+    items: f.rankedItems,
+    unit: f.cpuUnit,
+    label: 'CPU by workload',
+    references: f.references,
+  },
   render: function Controlled(args) {
     const [selectedId, setSelectedId] = useState<string>();
     return <RankedBars {...args} selectedId={selectedId} onSelect={setSelectedId} />;
@@ -43,6 +48,17 @@ export const Negative: Story = {
     items: [
       { id: 'loss', label: 'Net decrease', value: -20 },
       { id: 'gain', label: 'Net increase', value: 40 },
+    ],
+  },
+};
+export const CoincidentZeroReferences: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    items: [{ id: 'idle', label: 'Idle workload', value: 0 }],
+    references: [
+      { id: 'zero', kind: 'line', label: 'Zero target', value: 0 },
+      { id: 'zero-band', kind: 'band', label: 'Zero range', from: 0, to: 0 },
     ],
   },
 };

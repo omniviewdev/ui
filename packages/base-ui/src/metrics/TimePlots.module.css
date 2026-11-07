@@ -58,13 +58,16 @@
   font-variant-numeric: tabular-nums;
 }
 .Empty {
+  padding: var(--ov-space-stack-lg);
+  text-align: center;
+  color: var(--ov-color-fg-muted);
+}
+.PlotFrame > .Empty {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  padding: var(--ov-space-stack-lg);
-  text-align: center;
-  color: var(--ov-color-fg-muted);
+  pointer-events: none;
 }
 .LoadingPlot {
   grid-column: 2;

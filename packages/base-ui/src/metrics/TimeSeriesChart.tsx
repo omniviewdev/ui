@@ -76,13 +76,17 @@ export function TimePlot({
   useLayoutEffect(() => {
     const element = referenceLegend.current;
     if (!element) return;
+    setReferenceHeight(Math.ceil(element.getBoundingClientRect().height));
+  }, [references, unit]);
+  useLayoutEffect(() => {
+    const element = referenceLegend.current;
+    if (!element) return;
     const measure = () => setReferenceHeight(Math.ceil(element.getBoundingClientRect().height));
-    measure();
     if (typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(measure);
     observer.observe(element);
     return () => observer.disconnect();
-  }, [references]);
+  }, []);
   const plotHeight = Math.max(
     32,
     (Number.isFinite(height) ? Math.max(50, Math.min(1200, height)) : 180) - 18 - referenceHeight,

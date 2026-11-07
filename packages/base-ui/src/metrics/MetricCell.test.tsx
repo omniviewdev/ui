@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../test/render';
 import { MetricCell } from './MetricCell';
@@ -68,6 +69,20 @@ describe('MetricCell', () => {
     );
     expect(screen.getByText('—')).toBeVisible();
     expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
+  });
+
+  it('opens full-value inspection from the keyboard without references', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(
+      <MetricCell
+        value={537 * 1024 ** 2}
+        unit={{ kind: 'bytes', display: 'binary' }}
+        label="Memory"
+      />,
+    );
+    await user.tab();
+    expect(screen.getByLabelText('537 MiB')).toHaveFocus();
+    expect(await screen.findByText('537 MiB')).toBeVisible();
   });
 });
 

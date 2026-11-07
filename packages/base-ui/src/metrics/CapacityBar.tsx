@@ -151,7 +151,7 @@ export function CapacityBar({
           <Tooltip.Trigger
             render={<div />}
             className={styles.CellValue}
-            tabIndex={normalizedReferences.length ? 0 : undefined}
+            tabIndex={0}
             aria-label={`${formatMetricText(sample, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
           >
             <span className={styles.CellNumber}>{formatted.value}</span>

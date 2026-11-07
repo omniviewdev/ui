@@ -46,3 +46,14 @@ export const Missing: Story = {
     ),
   },
 };
+
+export const Empty: Story = {
+  ...Default,
+  args: { ...Default.args, items: [] },
+  render: (args) => (
+    <div className={styles.Stack}>
+      <SmallMultiples {...args} />
+      <p>Following section</p>
+    </div>
+  ),
+};

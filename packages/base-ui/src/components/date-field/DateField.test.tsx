@@ -129,6 +129,42 @@ describe('DateField — keyboard navigation', () => {
     expect(getSection(container, 'day')).toHaveFocus();
   });
 
+  it('lets keyboard focus leave both date boundaries', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <button>Before date</button>
+        <DateField value={null} locale="en-US" mode="date" />
+        <button>After date</button>
+      </>,
+    );
+    await user.click(getSection(container, 'month'));
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Before date' })).toHaveFocus();
+    await user.click(getSection(container, 'year'));
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'After date' })).toHaveFocus();
+  });
+
+  it('restores keyboard entry after leaving a non-first section', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <button>Before date</button>
+        <DateField value={null} locale="en-US" mode="date" />
+        <button>After date</button>
+      </>,
+    );
+    await user.click(getSection(container, 'day'));
+    await user.click(screen.getByRole('button', { name: 'Before date' }));
+    await user.tab();
+    expect(getSection(container, 'month')).toHaveFocus();
+    await user.click(getSection(container, 'year'));
+    await user.tab();
+    await user.tab({ shift: true });
+    expect(getSection(container, 'month')).toHaveFocus();
+  });
+
   it('skips disabled fields but allows read-only field inspection without edits', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

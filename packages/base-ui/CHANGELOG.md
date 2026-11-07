@@ -10,6 +10,30 @@
 - Use the same option geometry in selection popups instead of unrelated general-list sizing. Keep small options readable at 13px, retain explicit size tiers and density, and apply row gaps inside menu groups.
 - Let editor tab strips shrink horizontally while preserving header height in column layouts, and propagate explicit Select popup styles to its options.
 
+## 0.16.0
+
+### Minor Changes
+
+- [#114](https://github.com/omniviewdev/ui/pull/114) [`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c) Thanks [@joshuapare](https://github.com/joshuapare)! - Replace metric annotations and request-marker props with the generic `MetricReference` line/band union on time-series charts, stacked charts, capacity bars, metric cells, gauges, and ranked bars. Normalize missing/invalid configuration consistently, include references in automatic domains, retain pinned off-scale inspection, and group coincident geometry without losing names. Keep neutral defaults, base-unit values, fixed-height responsive table cells, and real-bound-only utilization.
+
+  Keep gauge values anchored to the arc independently of wrapped legends, normalize extreme finite chart projections, and retain zero-reference geometry on all-zero ranked axes. Paint reference bands behind data to preserve series colors.
+
+  Accept the same references on `MetricValue` so stat/current-only views retain inspectable configuration below the scalar, without a numeric scale or extra DOM when references are absent.
+
+### Patch Changes
+
+- [#114](https://github.com/omniviewdev/ui/pull/114) [`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c) Thanks [@joshuapare](https://github.com/joshuapare)! - Restore consistent metric presentation with compact `MetricCell` bars, a shared `MetricPanel.value` slot, and provider icons in `MetricDetails`. Keep unknown bounds distinct from utilization.
+
+  Use shared calendar/time fields in `TimeRangeControl`. Preserve unchanged timestamps, reject incomplete drafts, and support keyboard entry. Normalize Menu and Popover trigger icon spacing across sizes.
+
+  Make metric cells fill resized columns while reserving one compact value/unit slot. Use a single pulse per pending cell and stable card skeletons; retain supplied data during background refresh. Correct shared Skeleton CSS specificity so the operating system's reduced-motion preference disables animation.
+
+- [#114](https://github.com/omniviewdev/ui/pull/114) [`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c) Thanks [@joshuapare](https://github.com/joshuapare)! - Preserve declared column widths when columns are added, hidden, or resized. Tables scroll horizontally instead of squeezing cells below their declared widths, and regular and virtualized rows stay aligned with headers.
+
+  Let responsive components fill the cell content slot instead of collapsing inside its intrinsic-width wrapper. Preserve centered and right-aligned text.
+
+  Support punctuation-bearing column IDs through collision-free internal CSS variable keys. Callers keep their original IDs.
+
 ## 0.15.0
 
 ### Minor Changes

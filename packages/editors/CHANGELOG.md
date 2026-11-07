@@ -1,5 +1,12 @@
 # @omniviewdev/editors
 
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c), [`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c), [`dd57469`](https://github.com/omniviewdev/ui/commit/dd574694a3ef2505988bf8e08afce2686d4b8f0c)]:
+  - @omniviewdev/base-ui@0.16.0
+
 ## 6.2.0
 
 ### Minor Changes

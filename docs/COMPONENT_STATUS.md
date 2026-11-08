@@ -62,6 +62,7 @@ These are the only components currently in scope and exported:
 - `Select`
 - `Separator`
 - `Sheet`
+- `Sidebar` — collapsible sidebar with expanded and 48px rail modes, opt-in hover peek, Cmd/Ctrl+B, edge handle, footer toggle, consumer-owned triggers, and a generic `Sidebar.Navigation` rail projection with tooltips and Menu flyouts; see [`packages/base-ui/docs/SIDEBAR.md`](../packages/base-ui/docs/SIDEBAR.md)
 - `Skeleton`
 - `Slider`
 - `Spinner`
@@ -86,6 +87,7 @@ These are the only components currently in scope and exported:
 - `statusToColor` — Maps semantic status strings to component colors (`system/status.ts`)
 - `useDebouncedCallback` — Debounced callback hook with cancel/flush (`hooks/useDebouncedCallback.ts`)
 - `useDebouncedValue` — Debounced value hook (`hooks/useDebouncedValue.ts`)
+- `useSidebar`, `useSidebarTrigger` and `useSidebarController` — Sidebar state and trigger bindings for consumer-owned controls (`components/sidebar/context.ts`)
 
 ## Theming
 

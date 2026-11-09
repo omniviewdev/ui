@@ -466,6 +466,15 @@ type Story = StoryObj<typeof meta>;
 /** Expanded with the built-in edge handle (hover the right border) and footer toggle. */
 export const Expanded: Story = {};
 
+/** Widths accept native CSS lengths and can be adjusted independently of the navigation data. */
+export const RelativeWidth: Story = {
+  args: { expandedWidth: '32vmin', railWidth: '3rem' },
+  argTypes: {
+    expandedWidth: { control: 'text' },
+    railWidth: { control: 'text' },
+  },
+};
+
 /** Rail mode: hover or focus rows for labels; groups open flyouts, including nested ones. */
 export const Rail: Story = { args: { defaultMode: 'rail' } };
 
@@ -513,7 +522,7 @@ function ToolbarToggle({ controller }: { controller: SidebarController }) {
 
 function CustomHandleDemo(props: SidebarRootProps) {
   const controller = useSidebarController();
-  const items = useMemo(getDefaultCatalog, []);
+  const items = getDefaultCatalog();
   const [selected, setSelected] = useState('pods');
   return (
     <div style={frameStyle(560)}>

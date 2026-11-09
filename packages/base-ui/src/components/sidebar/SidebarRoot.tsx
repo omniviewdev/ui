@@ -24,8 +24,9 @@ const DEFAULT_RAIL_WIDTH = '48px';
 const PEEK_OPEN_DELAY = 280;
 const PEEK_CLOSE_DELAY = 220;
 
+// Absolute, font-relative, viewport and container lengths; zero needs no unit.
 const CSS_LENGTH =
-  /^-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|%|vh|vw|dvh|dvw|svh|svw|lvh|lvw|ch|ex|cqw|cqi)$/;
+  /^[+-]?(?:(?:0+\.?0*|\.0+)(?:e[+-]?\d+)?|(?:\d*\.?\d+)(?:e[+-]?\d+)?(?:px|pt|pc|cm|mm|q|in|r?(?:em|ex|cap|ch|ic|lh)|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|%))$/i;
 const CSS_FUNCTION = /^(?:var|calc|clamp|min|max|env)\(.+\)$/;
 
 function hasBalancedParentheses(value: string): boolean {
@@ -133,8 +134,11 @@ export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function Si
     window.clearTimeout(closeTimer.current);
     closeTimer.current = undefined;
     if (mode !== 'rail' || peeking || openTimer.current !== undefined) return;
+    // Peeking makes the rail inert, so it must not displace a focused rail control.
+    if (focusedWithin(rootElement.current)) return;
     openTimer.current = window.setTimeout(() => {
       openTimer.current = undefined;
+      if (focusedWithin(rootElement.current)) return;
       setPeekRequested(true);
     }, PEEK_OPEN_DELAY);
   };

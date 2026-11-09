@@ -286,6 +286,29 @@ describe('Sidebar hover peek', () => {
       expect(getRoot()).toHaveAttribute('data-ov-sidebar-peeking', 'false');
     },
   );
+
+  it.each(['before entry', 'during intent'] as const)(
+    'keeps the rail visible and focused when focus enters %s',
+    (timing) => {
+      vi.useFakeTimers();
+      const onModeChange = vi.fn();
+      renderWithTheme(<Shell defaultMode="rail" hoverPeek onModeChange={onModeChange} />);
+      const root = getRoot();
+      const action = screen.getByRole('button', { name: 'Rail action' });
+      if (timing === 'before entry') act(() => action.focus());
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      if (timing === 'during intent') {
+        act(() => vi.advanceTimersByTime(100));
+        act(() => action.focus());
+      }
+      act(() => vi.advanceTimersByTime(500));
+      expect(root).toHaveAttribute('data-ov-sidebar-peeking', 'false');
+      expect(root).toHaveAttribute('data-ov-sidebar-collapsed', 'true');
+      expect(action).toHaveFocus();
+      expect(onModeChange).not.toHaveBeenCalled();
+    },
+  );
+
   it('overlays after hover intent, labels the toggle as pin, and closes after leave', () => {
     vi.useFakeTimers();
     const onModeChange = vi.fn();

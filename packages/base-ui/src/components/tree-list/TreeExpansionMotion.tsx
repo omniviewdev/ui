@@ -13,6 +13,7 @@ interface Snapshot {
   positions: Map<string, number>;
   previousKeys: ReadonlySet<string>;
   visibleKeys: Set<string>;
+  scrollTop: number;
 }
 
 function sameKeys(a: ReadonlySet<Key>, b: ReadonlySet<Key>): boolean {
@@ -103,6 +104,7 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
       positions: new Map(),
       previousKeys: new Set(previous.nodes.map((node) => String(node.key))),
       visibleKeys: new Set(),
+      scrollTop: element.scrollTop,
     };
     for (const row of element.querySelectorAll<HTMLElement>('[role="treeitem"]')) {
       const rect = row.getBoundingClientRect();
@@ -143,6 +145,7 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
     const easing =
       getComputedStyle(element).getPropertyValue('--ov-ease-standard').trim() || 'ease';
     const viewportTop = element.getBoundingClientRect().top;
+    const scrollShift = element.scrollTop - snapshot.scrollTop;
     const ranges = new Map<string, { first: number; end: number; index: number }>();
     for (let first = 0; first < nodes.length;) {
       if (snapshot.previousKeys.has(String(nodes[first]!.key))) {
@@ -176,7 +179,7 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
       const before = snapshot.positions.get(key);
       const range = ranges.get(key);
       if (before === undefined && !range) continue;
-      const delta = before === undefined ? 0 : before - top;
+      const delta = before === undefined ? 0 : before - top + scrollShift;
       if (!range && Math.abs(delta) < 0.5) continue;
       const style = getComputedStyle(row);
       const base = style.transform === 'none' ? '' : style.transform;
@@ -189,10 +192,9 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
         const first = geometry.get(String(nodes[range.first]!.key));
         const start = first?.top ?? top - (range.index - range.first) * rect.height;
         const end = following?.top ?? start + (range.end - range.first) * rect.height;
-        const boundary =
-          followingKey === undefined
-            ? start
-            : (snapshot.positions.get(String(followingKey)) ?? start);
+        const previousFollowing =
+          followingKey === undefined ? undefined : snapshot.positions.get(String(followingKey));
+        const boundary = previousFollowing === undefined ? start : previousFollowing + scrollShift;
         // Reveal children only in the space opened by the moving following row.
         // A simple fade at their final positions would overlap that row.
         from = {

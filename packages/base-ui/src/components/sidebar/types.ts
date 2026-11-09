@@ -40,7 +40,7 @@ export interface SidebarRootProps extends Omit<HTMLAttributes<HTMLElement>, 'col
   /** Number = px. Strings may be any CSS length or var()/calc()/clamp()/min()/max() expression. */
   expandedWidth?: number | string;
   railWidth?: number | string;
-  /** Opt in to overlaying the expanded panel after a short hover intent over the rail. */
+  /** Opt in to a hover-intent overlay. Suppressed while focus remains inside the sidebar. */
   hoverPeek?: boolean;
   /** Register Cmd/Ctrl+B. Ignored inside editors, inputs and hidden or inert sidebars. */
   shortcut?: boolean;

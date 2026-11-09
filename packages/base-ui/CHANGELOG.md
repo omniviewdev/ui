@@ -30,6 +30,14 @@
 - Use the same option geometry in selection popups instead of unrelated general-list sizing. Keep small options readable at 13px, retain explicit size tiers and density, and apply row gaps inside menu groups.
 - Let editor tab strips shrink horizontally while preserving header height in column layouts, and propagate explicit Select popup styles to its options.
 
+## 0.17.1
+
+### Patch Changes
+
+- [#121](https://github.com/omniviewdev/ui/pull/121) [`b918c3e`](https://github.com/omniviewdev/ui/commit/b918c3e0c195cb248c3c8069c37388b6784fef4a) Thanks [@joshuapare](https://github.com/joshuapare)! - Render the default, always-mounted checkbox mark as a CSS-only decorative span. Root state still controls checked and indeterminate marks, keyboard input, focus, and accessibility. Avoid registering animation-completion probes for each unchecked checkbox mounted by a virtualized table. Custom indicators and indicators that unmount retain the existing animated primitive.
+
+  Keep fixed-height table ranges stable while the viewport moves inside their overscan buffer. Reuse the same range until a four-row boundary changes, rather than scheduling React work for every crossed row. Variable-height and expanded-detail tables retain their existing range behavior.
+
 ## 0.17.0
 
 ### Minor Changes

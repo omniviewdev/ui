@@ -96,6 +96,12 @@
   flex-shrink: 0;
 }
 
+.Root[data-ov-variant='outline'] .Dot {
+  box-sizing: border-box;
+  border: 1px solid var(--_ov-dot-color);
+  background-color: transparent;
+}
+
 /* ---- Pulse ---- */
 
 .Root[data-ov-pulse='true'] .Dot {

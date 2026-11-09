@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { withBaseClassName } from '../../system/classnames';
+import { OverlayPortalContainerContext } from '../../system/overlayPortalContainer';
 import { styleDataAttributes } from '../../system/styleProps';
 import {
   DEFAULT_COLOR,
@@ -171,6 +172,20 @@ const SelectIcon = forwardRef<ElementRef<typeof BaseSelect.Icon>, SelectIconProp
     );
   },
 );
+
+const SelectPortal = forwardRef<
+  ElementRef<typeof BaseSelect.Portal>,
+  ComponentPropsWithoutRef<typeof BaseSelect.Portal>
+>(function SelectPortal({ container, ...props }, ref) {
+  const owningOverlay = useContext(OverlayPortalContainerContext);
+  return (
+    <BaseSelect.Portal
+      ref={ref}
+      container={container === undefined ? owningOverlay : container}
+      {...props}
+    />
+  );
+});
 
 const SelectBackdrop = forwardRef<
   ElementRef<typeof BaseSelect.Backdrop>,
@@ -401,7 +416,7 @@ type SelectCompound = typeof SelectRoot & {
   Trigger: typeof SelectTrigger;
   Value: typeof SelectValue;
   Icon: typeof SelectIcon;
-  Portal: typeof BaseSelect.Portal;
+  Portal: typeof SelectPortal;
   Backdrop: typeof SelectBackdrop;
   Positioner: typeof SelectPositioner;
   Popup: typeof SelectPopup;
@@ -422,7 +437,7 @@ export const Select = Object.assign(SelectRoot, {
   Trigger: SelectTrigger,
   Value: SelectValue,
   Icon: SelectIcon,
-  Portal: BaseSelect.Portal,
+  Portal: SelectPortal,
   Backdrop: SelectBackdrop,
   Positioner: SelectPositioner,
   Popup: SelectPopup,

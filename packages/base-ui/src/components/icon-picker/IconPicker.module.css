@@ -66,7 +66,7 @@
   --_ov-picker-padding: var(--ov-panel-padding);
   box-sizing: border-box;
   inline-size: calc(
-    var(--_ov-picker-cell) * 6 + var(--_ov-picker-gap) * 5 + var(--_ov-picker-padding) * 2
+    var(--_ov-picker-cell) * 6 + var(--_ov-picker-gap) * 5 + var(--_ov-picker-padding) * 2 + 2px
   );
   min-inline-size: 0;
   max-inline-size: calc(100vw - var(--ov-space-stack-lg) * 2);
@@ -89,7 +89,8 @@
   justify-content: center;
   box-sizing: border-box;
   min-inline-size: 0;
-  block-size: var(--_ov-picker-cell);
+  aspect-ratio: 1;
+  block-size: auto;
   padding: 0;
   border: 1px solid var(--ov-color-border-chrome);
   border-radius: var(--ov-radius-control);

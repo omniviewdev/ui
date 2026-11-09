@@ -12,6 +12,7 @@ import {
 import { createPortal } from 'react-dom';
 import { LuX } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
+import { OverlayPortalContainerContext } from '../../system/overlayPortalContainer';
 import styles from './Dialog.module.css';
 
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -46,6 +47,7 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
   const internalRef = useRef<HTMLDivElement>(null);
   const dialogRef = (ref as React.RefObject<HTMLDivElement>) ?? internalRef;
   const titleId = `ov-dialog-title-${useId()}`;
+  const portalContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -92,7 +94,10 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
           data-ov-size={size}
           {...props}
         >
-          {children}
+          <div ref={portalContainer} data-ov-slot="portal-container" />
+          <OverlayPortalContainerContext.Provider value={portalContainer}>
+            {children}
+          </OverlayPortalContainerContext.Provider>
         </div>
       </div>
     </DialogContext.Provider>,

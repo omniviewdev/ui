@@ -320,7 +320,11 @@ const MenuSubmenuTrigger = forwardRef<
       {startDecorator ? <span className={styles.StartDecorator}>{startDecorator}</span> : null}
       {children}
       {endDecorator ? <span className={styles.EndDecorator}>{endDecorator}</span> : null}
-      {showCaret ? <span className={styles.SubmenuCaret}>›</span> : null}
+      {showCaret ? (
+        <span className={styles.SubmenuCaret} aria-hidden="true">
+          ›
+        </span>
+      ) : null}
     </BaseMenu.SubmenuTrigger>
   );
 });

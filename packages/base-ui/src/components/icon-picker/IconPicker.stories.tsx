@@ -105,19 +105,21 @@ function UploadLibrary() {
         Upload a real raster file. This story validates, decodes and converts it locally. No file
         leaves your browser.
       </p>
-      <Input.Root>
-        <Input.Label>New icon name</Input.Label>
-        <Input.Control
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          disabled={pending}
-        />
-      </Input.Root>
       <IconPicker
         items={items}
         value={value}
         onValueChange={setValue}
         defaultOpen
+        uploadFields={
+          <Input.Root>
+            <Input.Label>New icon name</Input.Label>
+            <Input.Control
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              disabled={pending}
+            />
+          </Input.Root>
+        }
         onUpload={(file) => {
           void upload(file);
         }}

@@ -1,0 +1,2186 @@
+[
+  {
+    "viewport": 360,
+    "documentWidth": 360,
+    "triggers": [
+      {
+        "label": "Void compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Void compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Void compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Void compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      }
+    ]
+  },
+  {
+    "viewport": 768,
+    "documentWidth": 768,
+    "triggers": [
+      {
+        "label": "Void compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Void compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Void compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Void compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      }
+    ]
+  },
+  {
+    "viewport": 1063,
+    "documentWidth": 1063,
+    "triggers": [
+      {
+        "label": "Void compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Void compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Void compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Void compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      }
+    ]
+  },
+  {
+    "viewport": 1568,
+    "documentWidth": 1568,
+    "triggers": [
+      {
+        "label": "Void compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Void compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Void compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Void compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Void comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Obsidian compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Obsidian comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Carbon compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Carbon comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "Solarized Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Dark comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact sm icon: Folder",
+        "width": 24,
+        "height": 24,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact md icon: Folder",
+        "width": 30,
+        "height": 30,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact lg icon: Folder",
+        "width": 38,
+        "height": 38,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light compact xl icon: Folder",
+        "width": 40,
+        "height": 40,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xs icon: Folder",
+        "width": 18,
+        "height": 18,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable sm icon: Folder",
+        "width": 28,
+        "height": 28,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable md icon: Folder",
+        "width": 36,
+        "height": 36,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable lg icon: Folder",
+        "width": 44,
+        "height": 44,
+        "inside": true
+      },
+      {
+        "label": "High Contrast Light comfortable xl icon: Folder",
+        "width": 48,
+        "height": 48,
+        "inside": true
+      }
+    ]
+  }
+]

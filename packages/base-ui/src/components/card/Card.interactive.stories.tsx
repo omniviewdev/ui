@@ -3,6 +3,7 @@ import { useRef, useState, type KeyboardEvent } from 'react';
 import { BUILT_IN_THEMES } from '../../theme/registry/catalog';
 import { Menu } from '../menu';
 import { Card } from './Card';
+import { Button } from '../button';
 import styles from './Card.interactive.stories.module.css';
 
 const meta = {
@@ -13,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Opt in with interactive. selected is visual state, not an ARIA role. Put a native ActionArea inside Card.Title and use stretched for whole-card navigation. Keep independent Menu triggers in sibling Card.Action slots. Root disabled disables primary ActionAreas; sibling actions own their disabled state.',
+          'Opt in with interactive. selected is visual state, not an ARIA role. Put a native ActionArea inside Card.Title and use stretched for whole-card navigation. Keep independent Menu triggers in sibling Card.Action slots. Use placement="inline" when the action slot must reserve space in a flex or grid header; corner placement remains the default. Root disabled disables primary ActionAreas; sibling actions own their disabled state.',
       },
     },
   },
@@ -171,6 +172,63 @@ export const States: Story = {
       ))}
     </div>
   ),
+};
+
+export const InlineActions: Story = {
+  render: function Render() {
+    const [pinned, setPinned] = useState<string[]>([]);
+    const [selected, setSelected] = useState('sm');
+    return (
+      <div className={`${styles.Gallery} ${styles.InlineGallery}`}>
+        {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+          <Card key={size} size={size} interactive selected={selected === size}>
+            <Card.Header>
+              <Card.Row align="center">
+                <Card.Description style={{ flex: 1, minInlineSize: 0 }}>
+                  <span className={styles.Name}>{size} · Workspace</span>
+                </Card.Description>
+                <Card.Action placement="inline">
+                  <Button
+                    variant="ghost"
+                    aria-pressed={pinned.includes(size)}
+                    onClick={() =>
+                      setPinned((current) =>
+                        current.includes(size)
+                          ? current.filter((item) => item !== size)
+                          : [...current, size],
+                      )
+                    }
+                  >
+                    {pinned.includes(size) ? 'Unpin' : 'Pin'}
+                  </Button>
+                  <Menu.Root>
+                    <Menu.Trigger aria-label={`Actions for ${size} workspace`}>⋯</Menu.Trigger>
+                    <Menu.Portal>
+                      <Menu.Positioner>
+                        <Menu.Popup>
+                          <Menu.LinkItem href={`#settings-${size}`}>Settings</Menu.LinkItem>
+                        </Menu.Popup>
+                      </Menu.Positioner>
+                    </Menu.Portal>
+                  </Menu.Root>
+                </Card.Action>
+              </Card.Row>
+              <Card.Title>
+                <Card.ActionArea
+                  as="a"
+                  href={`#workspace-${size}`}
+                  stretched
+                  onClick={() => setSelected(size)}
+                >
+                  <span className={styles.Name}>Workspace with a long descriptive name</span>
+                </Card.ActionArea>
+              </Card.Title>
+            </Card.Header>
+          </Card>
+        ))}
+      </div>
+    );
+  },
 };
 
 export const AllSizes: Story = {

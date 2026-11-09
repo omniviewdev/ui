@@ -14,6 +14,7 @@ import {
   type RefAttributes,
 } from 'react';
 import { flexRender, type Cell, type TableState, type RowData } from '@tanstack/react-table';
+import type { Range } from '@tanstack/react-virtual';
 import type { DataTableFeatures, DataTableInstance, DataTableRow } from './types';
 import { useVirtualizerSnapshot } from '../../system/useVirtualizerSnapshot';
 import { cn } from '../../system/classnames';
@@ -286,12 +287,33 @@ function VirtualBodyInner<TData extends RowData>(
     (index: number) => (slots[index]?.detail ? estimateExpandedRowSize : estimateRowSize),
     [slots, estimateExpandedRowSize, estimateRowSize],
   );
+  const rangeExtractor = useMemo(() => {
+    if (!fixedRowHeight || hasDetails || overscan < 2) return undefined;
+    // Keep a small, stable window while the viewport moves inside overscan.
+    // Rebuilding the React range for each crossed row adds commit/layout work
+    // even though the already-mounted rows cover the next several frames.
+    const step = Math.min(4, Math.floor(overscan / 2));
+    let start = -1;
+    let end = -1;
+    let indices: number[] = [];
+    return (range: Range) => {
+      const nextStart = Math.max(0, Math.floor((range.startIndex - range.overscan) / step) * step);
+      const nextEnd = Math.min(range.count - 1, Math.ceil((range.endIndex + range.overscan + 1) / step) * step - 1);
+      if (start !== nextStart || end !== nextEnd) {
+        start = nextStart;
+        end = nextEnd;
+        indices = Array.from({ length: end - start + 1 }, (_, index) => start + index);
+      }
+      return indices;
+    };
+  }, [fixedRowHeight, hasDetails, overscan]);
   const virtualizer = useVirtualizerSnapshot<HTMLDivElement, HTMLTableRowElement>({
     count: slots.length,
     getItemKey,
     getScrollElement: () => scrollElement,
     estimateSize,
     overscan,
+    rangeExtractor,
   });
   // Preserve data-only memoization across immutable patches. Geometry and arbitrary
   // cell renderers still observe all table-state slices, including custom controls.

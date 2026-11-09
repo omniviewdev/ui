@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Minor Changes
+
+- Add the collapsible `Sidebar` (`Sidebar.Root`, `Header`, `Content`, `Footer`, `Expanded`, `Rail`, `Navigation`, `Trigger`, `Handle`, `Toggle`) with `useSidebar`, `useSidebarTrigger` and `useSidebarController`.
+
+  `Sidebar.Root` reserves only the sidebar width. Mode is `expanded` or a 48px icon `rail`, controlled or uncontrolled; `onModeChange` fires only for explicit changes, never for a hover peek. Opt-in `hoverPeek` overlays the expanded panel after 280ms of intent without reflowing the page, and pinning it open is an explicit expansion. `shortcut` registers Cmd/Ctrl+B, ignored inside inputs, editors and every descendant of an editing surface, with exactly one visible sidebar answering each keypress. A `controller` lets triggers and `useSidebar` outside the sidebar subtree observe and control it.
+
+  `Sidebar.Navigation` keeps the consumer's expanded presentation (for example a virtualized `TreeList`) mounted, with scroll, expansion and edit state intact, and projects the same data into a rail: label tooltips on keyboard focus and hover, a single tab stop, Menu flyouts with arbitrary-depth in-place expansion and bounded scrolling, descendant selection cues, status badges, and an explicit "Open" row for groups that are also destinations. Closed flyouts render no nested nodes. Hidden presentations are inert and move focus to the equivalent row when they hide.
+
+  Rail groups share one Base UI `Menu` and popup across click, keyboard and hover, so switching groups changes its anchor and content instead of stacking independent overlays or leaving stale exit layers. Optional `getSectionLabel` preserves section boundaries as named dividers without adding keyboard stops. Header, identity and application actions remain optional caller-owned content; library stories separate navigation-only and custom-header examples from application-specific reorderable compositions. Sidebar colors use the existing semantic theme tokens directly.
+
+  Escape dismisses hover peek even when pointer activation leaves focus in page content. The owning document listener exists only while peeking, preserves outside focus and the saved mode, and respects handled Escape and IME composition.
+
+  All motion is native CSS on the shared panel and interactive duration and easing tokens (width reservation, panel width, grid-row slot collapse, cross-fade), so it reverses from its current value when interrupted and follows reduced motion through the existing token contract. No animation dependency.
+
+  Add opt-in `TreeList` `animateExpansion`: native Web Animations for visible row entry and repositioning when branches expand or collapse, in flat and virtualized trees. It reverses from the exact current pose when interrupted, is disabled while reordering, and honors the shared duration and easing tokens and reduced motion (system and `data-ov-motion`).
+
+  Accept native CSS width units, normalize unitless zero to a length for valid CSS calculations, and reject negative literal widths consistently with numeric widths. Preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
+
+  Focus ownership includes React portals, so hovering a keyboard-opened flyout never starts a peek or displaces its focus. Interrupted tree reveals retain their current opacity and clipping while sibling rows keep moving.
+
 ### Patch Changes
 
 - Fix `EditorTabs` pill geometry with viewport insets and stretched tabs instead of percentage heights inside auto-sized segments. Keep rounded corners fully visible and use the surface header color rather than a contrasting base-color backing. Reset native button rounding for non-pill tabs and honor the active-background token across variants.

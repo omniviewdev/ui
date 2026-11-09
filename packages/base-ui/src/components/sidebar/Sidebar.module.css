@@ -1,0 +1,366 @@
+/* ---------------------------------------------------------------------------
+ * Sidebar shell
+ *
+ * Root is the slot that reserves width in the consumer's layout. The Panel inside it is
+ * absolutely positioned so a hover peek can widen it over the content without reflow. All
+ * motion is native CSS transitions on the shared duration/easing tokens, so reduced motion
+ * follows the global token contract and every change reverses from its current value.
+ *
+ * Layout defaults live in :where() (specificity 0) so a consumer class, for example a media
+ * query that hides the sidebar on narrow windows, always wins.
+ * --------------------------------------------------------------------------- */
+
+:where(.Root) {
+  position: relative;
+  z-index: var(--ov-z-sticky, 20);
+  display: block;
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  block-size: 100%;
+}
+
+.Root {
+  --_ov-sidebar-bg: var(--ov-color-bg-surface);
+  --_ov-sidebar-fg: var(--ov-color-fg-default);
+  --_ov-sidebar-border: var(--ov-color-border-muted);
+  --_ov-sidebar-border-strong: var(--ov-color-border-default);
+  --_ov-sidebar-hover: var(--ov-color-state-hover);
+  --_ov-sidebar-muted: var(--ov-color-fg-muted);
+  --_ov-sidebar-focus-ring: var(--ov-color-state-focus-ring);
+
+  --_ov-sidebar-padding: 4px;
+  --_ov-sidebar-gap: 4px;
+  --_ov-sidebar-row-height: 24px;
+  --_ov-sidebar-row-gap: 6px;
+  /* Approved compact rail density: independent of the control-height density tokens. */
+  --_ov-sidebar-rail-row-height: 32px;
+  --_ov-sidebar-icon-size: var(--ov-size-icon-button-icon-md);
+  --_ov-sidebar-fade-delay: calc(var(--ov-duration-interactive) * 0.55);
+  --_ov-sidebar-rail-inner: calc(var(--_ov-sidebar-rail-width) - 2 * var(--_ov-sidebar-padding));
+  --_ov-sidebar-rail-icon-inset: calc(
+    (var(--_ov-sidebar-rail-inner) - var(--_ov-sidebar-icon-size)) / 2
+  );
+
+  --_ov-sidebar-slot-width: var(--_ov-sidebar-expanded-width);
+  --_ov-sidebar-panel-width: var(--_ov-sidebar-expanded-width);
+
+  inline-size: var(--_ov-sidebar-slot-width);
+  transition: inline-size var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+/* Rail rows are taller targets than expanded tree rows. */
+.Root[data-ov-sidebar-collapsed='true'] {
+  --_ov-sidebar-row-height: var(--_ov-sidebar-rail-row-height);
+}
+
+.Root[data-ov-sidebar-mode='rail'] {
+  --_ov-sidebar-slot-width: var(--_ov-sidebar-rail-width);
+  --_ov-sidebar-panel-width: var(--_ov-sidebar-rail-width);
+}
+
+/* Peek overlays: the slot stays a rail while the panel widens above the content. */
+.Root[data-ov-sidebar-peeking='true'] {
+  --_ov-sidebar-panel-width: var(--_ov-sidebar-expanded-width);
+}
+
+.Panel {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--_ov-sidebar-panel-width);
+  background: var(--_ov-sidebar-bg);
+  color: var(--_ov-sidebar-fg);
+  transition:
+    inline-size var(--ov-duration-panel) var(--ov-ease-standard),
+    box-shadow var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+/* The divider is painted, not a border, so it never changes the inner layout width. */
+.Panel::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  background: var(--_ov-sidebar-border);
+  pointer-events: none;
+  z-index: var(--ov-z-base, 1);
+  transition: background-color var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-sidebar-peeking='true'] .Panel {
+  box-shadow: var(--ov-shadow-surface-lg);
+}
+
+.Root[data-ov-sidebar-peeking='true'] .Panel::before {
+  background: var(--_ov-sidebar-border-strong);
+}
+
+.Viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Laid out at the full expanded width at all times: the viewport clips it, so nothing inside
+ * reflows or re-wraps while the panel animates. */
+.Inner {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--_ov-sidebar-gap);
+  inline-size: var(--_ov-sidebar-expanded-width);
+  block-size: 100%;
+  min-inline-size: 0;
+  padding: var(--_ov-sidebar-padding);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-font-size-body);
+}
+
+/* ---------------------------------------------------------------------------
+ * Header, content, footer
+ * --------------------------------------------------------------------------- */
+
+.Header {
+  /* The lead (avatar) keeps its x and lands centered on the rail. Override the lead size with
+   * --ov-sidebar-lead-size on the header or any ancestor. */
+  --_ov-sidebar-lead-size: var(--ov-sidebar-lead-size, 24px);
+  --_ov-sidebar-lead-inset: calc(
+    var(--_ov-sidebar-rail-width) / 2 - var(--_ov-sidebar-padding) - 1px -
+      var(--_ov-sidebar-lead-size) / 2
+  );
+  --_ov-sidebar-header-padding-block: 6px;
+  --_ov-sidebar-header-padding-end: 7px;
+
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  min-block-size: 42px;
+  padding: var(--_ov-sidebar-header-padding-block) var(--_ov-sidebar-header-padding-end)
+    var(--_ov-sidebar-header-padding-block) calc(var(--_ov-sidebar-lead-inset) + 1px);
+  border: 1px solid var(--_ov-sidebar-border-strong);
+  border-radius: var(--ov-radius-sm);
+  transition:
+    border-color var(--ov-duration-panel) var(--ov-ease-standard),
+    padding var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-sidebar-collapsed='true'] .Header {
+  border-color: transparent;
+  padding-inline-start: var(--_ov-sidebar-lead-inset);
+}
+
+.Content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.Footer {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  padding-block-start: var(--_ov-sidebar-gap);
+  border-block-start: 1px solid var(--_ov-sidebar-border);
+}
+
+/* ---------------------------------------------------------------------------
+ * Expanded / Rail slots
+ * Collapse with grid rows, fade with opacity; the hidden side is also inert.
+ * --------------------------------------------------------------------------- */
+
+.Slot {
+  display: grid;
+  grid-template-rows: 1fr;
+  flex: none;
+  min-inline-size: 0;
+  opacity: 1;
+  transition:
+    grid-template-rows var(--ov-duration-panel) var(--ov-ease-standard),
+    opacity var(--ov-duration-interactive) var(--ov-ease-standard) var(--_ov-sidebar-fade-delay);
+}
+
+.Slot[data-ov-hidden='true'] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0ms;
+}
+
+.SlotInner {
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+/* An Expanded slot inside the header sits inline beside the lead. */
+.Header > .Slot {
+  flex: 1 1 auto;
+}
+
+/* The inner stays laid out at the expanded width, so rail content is constrained to the rail
+ * column: centering inside the full width would land it under the viewport clip. */
+.RailSlot > .SlotInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  inline-size: var(--_ov-sidebar-rail-inner);
+  gap: var(--ov-space-stack-xs);
+  padding-block: var(--ov-space-stack-xs);
+}
+
+/* ---------------------------------------------------------------------------
+ * Edge handle (portaled into the panel so the viewport clip cannot hide it)
+ * --------------------------------------------------------------------------- */
+
+.Handle {
+  position: absolute;
+  inset-block-start: calc(50% - 22px);
+  inset-inline-end: -9px;
+  z-index: calc(var(--ov-z-base, 1) + 1);
+  display: grid;
+  place-items: center;
+  inline-size: 18px;
+  block-size: 44px;
+  padding: 0;
+  border: 1px solid var(--ov-color-border-strong);
+  border-radius: var(--ov-radius-full);
+  background: var(--ov-color-bg-elevated);
+  color: var(--_ov-sidebar-muted);
+  box-shadow: var(--ov-shadow-surface-sm);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-4px);
+  pointer-events: none;
+  transition:
+    opacity var(--ov-duration-interactive) var(--ov-ease-standard),
+    transform var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.Panel:hover .Handle,
+.Handle:focus-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.Handle:hover {
+  color: var(--_ov-sidebar-fg);
+}
+
+.Handle:focus-visible {
+  outline: 2px solid var(--_ov-sidebar-focus-ring);
+  outline-offset: -2px;
+}
+
+.HandleIcon {
+  inline-size: 12px;
+  block-size: 12px;
+  transform: rotate(180deg);
+  transition: transform var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-sidebar-collapsed='true'] .HandleIcon {
+  transform: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Footer toggle
+ * --------------------------------------------------------------------------- */
+
+.Toggle {
+  --_ov-sidebar-toggle-padding: 8px;
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--_ov-sidebar-row-gap);
+  inline-size: 100%;
+  overflow: hidden;
+  block-size: var(--_ov-sidebar-row-height);
+  margin: 0;
+  padding: 0 var(--_ov-sidebar-toggle-padding);
+  border: 0;
+  border-radius: var(--ov-radius-control);
+  background: transparent;
+  color: var(--_ov-sidebar-muted);
+  font: inherit;
+  font-size: var(--ov-font-size-md, var(--ov-font-size-body));
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--ov-duration-interactive) var(--ov-ease-standard),
+    color var(--ov-duration-interactive) var(--ov-ease-standard),
+    block-size var(--ov-duration-panel) var(--ov-ease-standard),
+    padding var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.Root[data-ov-sidebar-collapsed='true'] .Toggle {
+  inline-size: var(--_ov-sidebar-rail-inner);
+  padding-inline-start: var(--_ov-sidebar-rail-icon-inset);
+}
+
+.Toggle:hover {
+  background: var(--_ov-sidebar-hover);
+  color: var(--_ov-sidebar-fg);
+}
+
+.Toggle:focus-visible {
+  outline: 2px solid var(--_ov-sidebar-focus-ring);
+  outline-offset: -2px;
+}
+
+.ToggleIcon {
+  display: inline-flex;
+  flex: none;
+}
+
+.ToggleIcon :where(svg) {
+  inline-size: var(--_ov-sidebar-icon-size);
+  block-size: var(--_ov-sidebar-icon-size);
+}
+
+.ToggleLabel {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ToggleLabel,
+.Toggle .ShortcutHint {
+  opacity: 1;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard)
+    var(--_ov-sidebar-fade-delay);
+}
+
+.Root[data-ov-sidebar-collapsed='true'] .Toggle :is(.ToggleLabel, .ShortcutHint) {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.ShortcutHint {
+  --_ov-sidebar-hint-padding: 4px;
+
+  flex: none;
+  padding: 0 var(--_ov-sidebar-hint-padding);
+  border: 1px solid var(--ov-color-border-default);
+  border-radius: var(--ov-radius-sm);
+  color: var(--ov-color-fg-subtle);
+  font-family: var(--ov-font-sans);
+  font-size: var(--ov-size-menu-label-font-size, var(--ov-font-size-caption));
+  line-height: 16px;
+}
+
+.TooltipContent {
+  display: flex;
+  align-items: center;
+  gap: var(--ov-space-stack-sm);
+  white-space: nowrap;
+}

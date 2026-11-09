@@ -229,6 +229,9 @@ export interface TreeListRootProps<TItem = unknown>
   overscan?: number;
   /** Initial row estimate in pixels; defaults to the rendered size/density token. */
   estimatedItemSize?: number;
+  /** Animate visible row entry and repositioning when branches expand or collapse.
+   * Ignored while `reorderable` is true or reduced motion is active. */
+  animateExpansion?: boolean;
 
   // Filtering
   filterText?: string;

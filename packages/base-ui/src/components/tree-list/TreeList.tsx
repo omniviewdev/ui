@@ -40,6 +40,7 @@ import { useTreeOrder } from './hooks/useTreeOrder';
 import { useTreeFlattener } from './hooks/useTreeFlattener';
 import { useTreeItem as useTreeItemHook } from './hooks/useTreeItem';
 import { useTreeFocus } from './hooks/useTreeFocus';
+import { TreeExpansionMotion } from './TreeExpansionMotion';
 import { useListVirtualizer } from '../list/hooks/useListVirtualizer';
 import { useTypeahead } from '../list/hooks/useTypeahead';
 import {
@@ -64,6 +65,11 @@ type RenderNodeFn = (key: Key, node: TreeNodeMeta) => ReactNode;
 
 const RenderNodeContext = createContext<RenderNodeFn | null>(null);
 const RevealActiveContext = createContext<RefObject<(() => void) | null> | null>(null);
+const TreeExpansionMotionContext = createContext(false);
+const TreeMotionViewportContext = createContext<RefObject<HTMLDivElement | null> | null>(null);
+const TreeMotionControllerContext = createContext<RefObject<TreeExpansionMotion | null> | null>(
+  null,
+);
 
 function useRenderNode(): RenderNodeFn {
   const ctx = useContext(RenderNodeContext);
@@ -122,6 +128,7 @@ function TreeListRootContent<TItem>({
   virtualized,
   overscan,
   estimatedItemSize,
+  animateExpansion,
   indentation,
   indentGuide,
   filterText: filterTextProp,
@@ -166,6 +173,7 @@ function TreeListRootContent<TItem>({
   void virtualized;
   void overscan;
   void estimatedItemSize;
+  void animateExpansion;
   void indentation;
   void indentGuide;
   void filterTextProp;
@@ -180,6 +188,7 @@ function TreeListRootContent<TItem>({
   const listId = useId();
   const fullConfig = useMemo(() => ({ ...config, listId }), [config, listId]);
   const revealActiveRef = useRef<(() => void) | null>(null);
+  const motionViewportRef = useRef<HTMLDivElement>(null);
 
   const { handleKeyDown } = useTreeFocus({ config: fullConfig, actions, store });
 
@@ -283,9 +292,11 @@ function TreeListRootContent<TItem>({
             {...styleDataAttributes({ variant, color, size })}
             {...domProps}
           >
-            <RevealActiveContext.Provider value={revealActiveRef}>
-              {children}
-            </RevealActiveContext.Provider>
+            <TreeMotionViewportContext.Provider value={motionViewportRef}>
+              <RevealActiveContext.Provider value={revealActiveRef}>
+                {children}
+              </RevealActiveContext.Provider>
+            </TreeMotionViewportContext.Provider>
           </div>
         </TreeActionsContext.Provider>
       </TreeStoreContext.Provider>
@@ -313,8 +324,12 @@ function TreeListNodes<TItem>({
   currentOrder,
   proposeMove,
   getSiblingKeys,
+  reorderable,
 }: TreeListNodesProps<TItem>) {
   const { store, actions, activeKey, isBranch, expandedKeys, filterText, filterFn } = treeState;
+  const motionViewport = useContext(TreeMotionViewportContext)!;
+  const animateExpansion = useContext(TreeExpansionMotionContext) && !reorderable;
+  const motionController = useRef<TreeExpansionMotion>(null);
   const disabledKeys = useSyncExternalStore(
     store.subscribe,
     () => store.getSnapshot().disabledKeys,
@@ -398,7 +413,17 @@ function TreeListNodes<TItem>({
   if (error) return <div className={styles.Empty}>{error}</div>;
 
   const content = (
-    <RenderNodeContext.Provider value={renderNode}>{children}</RenderNodeContext.Provider>
+    <TreeExpansionMotion
+      ref={motionController}
+      viewport={motionViewport}
+      nodes={flatNodes}
+      expandedKeys={expandedKeys}
+      enabled={animateExpansion}
+    >
+      <TreeMotionControllerContext.Provider value={motionController}>
+        <RenderNodeContext.Provider value={renderNode}>{children}</RenderNodeContext.Provider>
+      </TreeMotionControllerContext.Provider>
+    </TreeExpansionMotion>
   );
   return proposeMove && getSiblingKeys ? (
     <TreeListReorder
@@ -453,13 +478,15 @@ function TreeListRootImpl<TItem>(
   if (isOrdered && !hasEnabledOrdering) setHasEnabledOrdering(true);
 
   return (
-    <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref}>
-      {hasEnabledOrdering || isOrdered ? (
-        <OrderedTreeListNodes {...props} treeState={treeState} />
-      ) : (
-        <TreeListNodes {...props} treeState={treeState} />
-      )}
-    </TreeListRootContent>
+    <TreeExpansionMotionContext.Provider value={props.animateExpansion === true}>
+      <TreeListRootContent {...props} treeState={treeState} forwardedRef={ref}>
+        {hasEnabledOrdering || isOrdered ? (
+          <OrderedTreeListNodes {...props} treeState={treeState} />
+        ) : (
+          <TreeListNodes {...props} treeState={treeState} />
+        )}
+      </TreeListRootContent>
+    </TreeExpansionMotionContext.Provider>
   );
 }
 
@@ -507,7 +534,8 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
     useLayoutEffect(() => {
       storeRef.current = store;
     }, [store]);
-    const scrollRef = useRef<HTMLDivElement>(null);
+    const scrollRef = useContext(TreeMotionViewportContext)!;
+    const motionController = useContext(TreeMotionControllerContext);
     const sizeProbeRef = useRef<HTMLDivElement>(null);
     const [renderedItemSize, setRenderedItemSize] = useState<number>();
 
@@ -531,6 +559,9 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
       () => store.getSnapshot().flatNodes,
       () => store.getSnapshot().flatNodes,
     );
+    useLayoutEffect(() => {
+      motionController?.current?.flush(flatNodes);
+    });
     const activeKey = useSyncExternalStore(
       store.subscribe,
       () => store.getSnapshot().activeKey,
@@ -585,7 +616,7 @@ const TreeListViewport = forwardRef<HTMLDivElement, TreeListViewportProps>(
           }
         });
       },
-      [config.virtualized, config.listId, scrollToIndex],
+      [config.virtualized, config.listId, scrollToIndex, scrollRef],
     );
     // Measurements alone must not reveal an active row after manual scrolling.
     useLayoutEffect(() => {
@@ -792,6 +823,7 @@ const TreeListItemImplementation = forwardRef<HTMLDivElement, TreeListItemImplem
         data-ov-expanded={itemState.isBranch ? itemState.isExpanded : undefined}
         data-ov-branch={itemState.isBranch || undefined}
         data-ov-depth={nodeMeta?.depth}
+        data-ov-item-key={itemKey}
         data-ov-reorderable={reorderable || undefined}
         data-ov-dragging={isDragging || undefined}
         onClick={handleClick}

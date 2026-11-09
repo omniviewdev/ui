@@ -1,0 +1,284 @@
+/* ---------------------------------------------------------------------------
+ * Navigation layers
+ *
+ * The expanded presentation and the icon rail share one grid cell and cross-fade. The
+ * expanded layer is never display:none or visibility:hidden, so a virtualized tree keeps its
+ * measurements and scroll position, and a hidden layer can still receive focus the moment it
+ * becomes visible again. Hiding is opacity plus the inert attribute set by the component.
+ * --------------------------------------------------------------------------- */
+
+.Navigation {
+  position: relative;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.ExpandedLayer,
+.RailLayer {
+  grid-area: 1 / 1;
+  min-block-size: 0;
+  min-inline-size: 0;
+  transition: opacity var(--ov-duration-interactive) var(--ov-ease-standard)
+    var(--_ov-sidebar-fade-delay, 0ms);
+}
+
+/* A bounded flex column: a virtualized TreeList scrolls its own viewport inside it. */
+.ExpandedLayer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.RailLayer {
+  justify-self: start;
+  inline-size: var(--_ov-sidebar-rail-inner);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0ms;
+}
+
+.RailLayer::-webkit-scrollbar {
+  display: none;
+}
+
+.Navigation[data-ov-collapsed='true'] .ExpandedLayer {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0ms;
+}
+
+.Navigation[data-ov-collapsed='true'] .RailLayer {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: var(--_ov-sidebar-fade-delay, 0ms);
+}
+
+/* ---------------------------------------------------------------------------
+ * Rail
+ * --------------------------------------------------------------------------- */
+
+.RailList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--ov-space-stack-xs) 0 0;
+  list-style: none;
+}
+
+.RailListItem {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.RailSection {
+  margin: var(--ov-space-stack-xs) var(--ov-space-stack-sm);
+  border-block-start: 1px solid var(--ov-color-border-muted);
+}
+
+.RailButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: var(--_ov-sidebar-rail-row-height, 32px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ov-radius-control);
+  background: transparent;
+  color: var(--ov-color-fg-default);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color var(--ov-duration-interactive) var(--ov-ease-standard);
+}
+
+.RailButton:hover:not(:disabled),
+.RailButton[data-popup-open] {
+  background: var(--ov-color-state-hover);
+}
+
+.RailButton[data-ov-selected='true'] {
+  background: var(--ov-color-state-selected);
+}
+
+.RailButton:focus-visible {
+  outline: 2px solid var(--ov-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.RailButton:disabled {
+  opacity: var(--ov-opacity-disabled, 0.45);
+  cursor: default;
+}
+
+.RailIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--_ov-sidebar-icon-size);
+  block-size: var(--_ov-sidebar-icon-size);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-sidebar-icon-size);
+}
+
+/* The accent cue marks the row that is, or contains, the current destination. */
+.RailButton[data-ov-selected='true'] .RailIcon,
+.RailButton[data-ov-has-selected='true'] .RailIcon {
+  color: var(--ov-color-accent-strong);
+}
+
+.FallbackGlyph {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--ov-radius-sm);
+  background: var(--ov-color-state-hover);
+  font-size: calc(var(--_ov-sidebar-icon-size) * 0.65);
+  font-weight: var(--ov-font-weight-medium);
+  line-height: 1;
+}
+
+/* Corner status. Absolutely positioned so it never takes layout space; a node that renders
+ * nothing leaves the container empty and it disappears. */
+.RailBadge {
+  position: absolute;
+  inset-block-start: 4px;
+  inset-inline-end: 7px;
+  display: grid;
+  place-items: center;
+  inline-size: 8px;
+  block-size: 8px;
+  pointer-events: none;
+}
+
+.RailBadge:empty {
+  display: none;
+}
+
+.RailBadge > * {
+  border-radius: var(--ov-radius-full);
+  outline: 2px solid var(--_ov-sidebar-bg, var(--ov-color-bg-surface));
+}
+
+/* ---------------------------------------------------------------------------
+ * Flyout
+ * Portaled out of the sidebar, so it reads global tokens only.
+ * --------------------------------------------------------------------------- */
+
+.FlyoutPopup[data-ov-sidebar-flyout] {
+  --_ov-flyout-min-width: 220px;
+  --_ov-flyout-max-width: 320px;
+  --_ov-flyout-indent: 16px;
+  --_ov-flyout-gutter: 8px;
+  --_ov-flyout-heading-padding: 4px 8px 6px;
+
+  box-sizing: border-box;
+  min-inline-size: var(--_ov-flyout-min-width);
+  max-inline-size: min(var(--_ov-flyout-max-width), calc(100vw - 2 * var(--_ov-flyout-gutter)));
+  /* Bounded to the space below the anchor after collision handling; long lists scroll. */
+  max-block-size: var(--available-height, 100vh);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ov-color-scrollarea-thumb) var(--ov-color-scrollarea-track);
+  transform-origin: var(--transform-origin);
+  opacity: 1;
+  transition:
+    opacity var(--ov-duration-panel) var(--ov-ease-standard),
+    transform var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout][data-starting-style],
+.FlyoutPopup[data-ov-sidebar-flyout][data-ending-style] {
+  opacity: 0;
+  transform: translateX(-6px);
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout][data-instant] {
+  transition: none;
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout] .FlyoutHeading {
+  margin-block: 0;
+  padding: var(--_ov-flyout-heading-padding);
+  color: var(--ov-color-fg-subtle);
+  font-size: calc(var(--ov-size-menu-label-font-size) - 1px);
+  font-weight: var(--ov-font-weight-title);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout] .FlyoutRow {
+  padding-inline-start: calc(
+    var(--_ov-item-padding-inline) + var(--_ov-sidebar-depth, 0) * var(--_ov-flyout-indent)
+  );
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout] .FlyoutRow[data-ov-selected='true'] {
+  background: var(--ov-color-state-selected);
+}
+
+.FlyoutPopup[data-ov-sidebar-flyout] .FlyoutRow[data-ov-selected='true'] .FlyoutIcon {
+  color: var(--ov-color-accent-strong);
+}
+
+.FlyoutLabel {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.FlyoutIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--_ov-decorator-size);
+  block-size: var(--_ov-decorator-size);
+  color: var(--ov-color-fg-muted);
+  font-size: var(--_ov-decorator-size);
+}
+
+.FlyoutChevron {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 16px;
+  block-size: 16px;
+  margin-inline-end: calc(-1 * var(--ov-space-stack-xs));
+  color: var(--ov-color-fg-muted);
+}
+
+.FlyoutChevron :where(svg) {
+  inline-size: 12px;
+  block-size: 12px;
+  transition: transform var(--ov-duration-panel) var(--ov-ease-standard);
+}
+
+.FlyoutRow[aria-expanded='true'] .FlyoutChevron :where(svg) {
+  transform: rotate(90deg);
+}
+
+.FlyoutBadge {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  margin-inline-start: auto;
+}
+
+.FlyoutBadge:empty {
+  display: none;
+}

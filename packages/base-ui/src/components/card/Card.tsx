@@ -34,7 +34,10 @@ export type CardTitleProps = HTMLAttributes<HTMLHeadingElement>;
 export type CardDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
 export type CardBodyProps = HTMLAttributes<HTMLDivElement>;
 export type CardFooterProps = HTMLAttributes<HTMLDivElement>;
-export type CardActionProps = HTMLAttributes<HTMLDivElement>;
+export interface CardActionProps extends HTMLAttributes<HTMLDivElement> {
+  /** Inline actions participate in the owning header's flex or grid layout. */
+  placement?: 'corner' | 'inline';
+}
 export type CardSeparatorProps = HTMLAttributes<HTMLDivElement>;
 export interface CardToolbarProps extends HTMLAttributes<HTMLDivElement> {
   /** Accessible name for the toolbar; provide via aria-label or aria-labelledby */
@@ -161,10 +164,17 @@ const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function CardFoot
 });
 
 const CardAction = forwardRef<HTMLDivElement, CardActionProps>(function CardAction(
-  { className, ...props },
+  { className, placement = 'corner', ...props },
   ref,
 ) {
-  return <div ref={ref} className={cn(styles.Action, className)} {...props} />;
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.Action, className)}
+      data-ov-placement={placement}
+      {...props}
+    />
+  );
 });
 
 const CardEyebrow = forwardRef<HTMLSpanElement, CardEyebrowProps>(function CardEyebrow(

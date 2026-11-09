@@ -407,6 +407,11 @@
   --ov-size-button-font-size-md: var(--_ov-action-font-size);
 }
 
+.Action[data-ov-placement='inline'] {
+  position: relative;
+  inset: auto;
+}
+
 /* ─── Eyebrow ─── */
 
 .Eyebrow {

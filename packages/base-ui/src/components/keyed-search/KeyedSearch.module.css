@@ -146,6 +146,7 @@
 
 .OptionDescription {
   color: var(--ov-color-fg-muted);
+  margin-inline-start: auto;
   font-size: var(--ov-font-size-caption);
   overflow-wrap: anywhere;
 }

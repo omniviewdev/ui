@@ -57,6 +57,8 @@ export interface IconPickerProps extends Omit<
   onUpload?: (file: File) => void;
   /** Allowed upload MIME hints; caller still validates content. Empty disables uploading. */
   accept?: readonly IconPickerRasterMimeType[];
+  /** Optional caller-owned upload metadata fields, shown inside the picker when uploading is enabled. */
+  uploadFields?: ReactNode;
   uploadPending?: boolean;
   uploadError?: string;
   /** Caller owns confirmation, in-use policy, persistence and the resulting items/value. */
@@ -114,6 +116,7 @@ export function IconPicker({
   onOpenChange,
   onUpload,
   accept = ICON_PICKER_RASTER_TYPES,
+  uploadFields,
   uploadPending = false,
   uploadError,
   onRemove,
@@ -315,6 +318,7 @@ export function IconPicker({
                 <p id={`${id}-help`} className={styles.Hint}>
                   Arrow keys browse · Enter or Space selects · Escape closes
                 </p>
+                {onUpload && acceptedTypes.length > 0 ? uploadFields : null}
                 <div className={styles.Actions}>
                   <Button
                     size={size}

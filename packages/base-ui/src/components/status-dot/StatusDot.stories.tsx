@@ -18,6 +18,7 @@ const meta = {
       options: ['success', 'warning', 'danger', 'info', 'neutral', 'pending'],
     },
     size: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
+    variant: { control: 'inline-radio', options: ['solid', 'outline'] },
     pulse: { control: 'boolean' },
     pulseIntensity: { control: 'inline-radio', options: ['subtle', 'default', 'strong'] },
     label: { control: 'text' },
@@ -44,6 +45,26 @@ export const AllStatuses: Story = {
       <StatusDot status="info" label="Info" />
       <StatusDot status="neutral" label="Neutral" />
       <StatusDot status="pending" label="Pending" />
+    </div>
+  ),
+};
+
+export const Outline: Story = {
+  args: { variant: 'outline', status: 'neutral', label: 'Not connected' },
+};
+
+export const VariantSizes: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: 'var(--ov-space-stack-md)' }}>
+      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+        <div
+          key={size}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--ov-space-stack-lg)' }}
+        >
+          <StatusDot size={size} status="neutral" variant="outline" label={`${size} outline`} />
+          <StatusDot size={size} status="neutral" label={`${size} solid`} />
+        </div>
+      ))}
     </div>
   ),
 };

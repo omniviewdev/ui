@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   inline-size: 100%;
+  min-block-size: 0;
   border: 1px solid var(--_ov-dt-border);
   border-radius: var(--ov-size-table-radius);
   background: var(--_ov-dt-bg);
@@ -172,6 +173,7 @@
 /* --- Container (scroll area) --- */
 
 .Container {
+  flex: 1 1 auto;
   overflow: auto;
   overscroll-behavior: contain;
   min-height: 0;
@@ -386,6 +388,15 @@
   line-height: 1.3;
   min-height: var(--_ov-row-height);
   box-sizing: border-box;
+}
+
+/* Outer gutters use one shared inset instead of accumulating full cell padding. */
+:is(.HeaderCell, .Cell, .FooterCell, .SkeletonCell):first-child {
+  padding-inline-start: var(--ov-space-stack-xs);
+}
+
+:is(.HeaderCell, .Cell, .FooterCell, .SkeletonCell):last-child {
+  padding-inline-end: var(--ov-space-stack-xs);
 }
 
 /* Clip fixed-height content at cells, not rows: rows must not become scroll

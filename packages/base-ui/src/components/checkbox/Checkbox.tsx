@@ -111,7 +111,9 @@ const CheckboxItem = forwardRef<ElementRef<typeof BaseCheckbox.Root>, CheckboxIt
         {...props}
       >
         {useFlattened ? (
-          <BaseCheckbox.Indicator keepMounted className={styles.ControlIndicator} />
+          // Root state drives these CSS-only marks. An Indicator would register
+          // animation-completion work for every unchecked virtual row mount.
+          <span aria-hidden="true" className={styles.ControlIndicator} />
         ) : (
           <CheckboxControl>
             <CheckboxIndicator keepMounted={keepIndicatorMounted}>{indicator}</CheckboxIndicator>

@@ -6,6 +6,11 @@ Tracking board: https://github.com/orgs/omniviewdev/projects/14
 
 ## Current source implementation
 
+The column visibility popup uses `--ov-space-stack-sm` between checkbox rows.
+It must not reference table-root private variables: the popup renders in a portal
+and does not inherit variables declared on `DataTable.Root`.
+
+
 The existing-behavior sections preserve the pre-migration audit against Kubernetes base `99cfc61422003bf1738d40da18aa387466e5542a`. Historical defects describe that baseline. This table records current implementation source, not completed runtime acceptance.
 
 | Area                    | Implemented source and evidence                                                                                                                                                                                                                                                                                                                                                           |

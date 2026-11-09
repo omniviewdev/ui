@@ -531,7 +531,7 @@
 .ColumnVisibilityList {
   display: flex;
   flex-direction: column;
-  gap: var(--_dt-space-xs);
+  gap: var(--ov-space-stack-sm);
   padding-block: var(--ov-space-stack-xs, 4px);
 }
 

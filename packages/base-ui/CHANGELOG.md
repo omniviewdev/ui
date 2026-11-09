@@ -30,6 +30,36 @@
 - Use the same option geometry in selection popups instead of unrelated general-list sizing. Keep small options readable at 13px, retain explicit size tiers and density, and apply row gaps inside menu groups.
 - Let editor tab strips shrink horizontally while preserving header height in column layouts, and propagate explicit Select popup styles to its options.
 
+## 0.17.0
+
+### Minor Changes
+
+- [#116](https://github.com/omniviewdev/ui/pull/116) [`f5f9cac`](https://github.com/omniviewdev/ui/commit/f5f9cacc1147f946e27041c8c5ff0a1bdf55506e) Thanks [@joshuapare](https://github.com/joshuapare)! - Add the collapsible `Sidebar` (`Sidebar.Root`, `Header`, `Content`, `Footer`, `Expanded`, `Rail`, `Navigation`, `Trigger`, `Handle`, `Toggle`) with `useSidebar`, `useSidebarTrigger` and `useSidebarController`.
+
+  `Sidebar.Root` reserves only the sidebar width. Mode is `expanded` or a 48px icon `rail`, controlled or uncontrolled; `onModeChange` fires only for explicit changes, never for a hover peek. Opt-in `hoverPeek` overlays the expanded panel after 280ms of intent without reflowing the page, and pinning it open is an explicit expansion. `shortcut` registers Cmd/Ctrl+B, ignored inside inputs, editors and every descendant of an editing surface, with exactly one visible sidebar answering each keypress. A `controller` lets triggers and `useSidebar` outside the sidebar subtree observe and control it.
+
+  `Sidebar.Navigation` keeps the consumer's expanded presentation (for example a virtualized `TreeList`) mounted, with scroll, expansion and edit state intact, and projects the same data into a rail: label tooltips on keyboard focus and hover, a single tab stop, Menu flyouts with arbitrary-depth in-place expansion and bounded scrolling, descendant selection cues, status badges, and an explicit "Open" row for groups that are also destinations. Closed flyouts render no nested nodes. Hidden presentations are inert and move focus to the equivalent row when they hide.
+
+  All motion is native CSS on the shared panel and interactive duration and easing tokens (width reservation, panel width, grid-row slot collapse, cross-fade), so it reverses from its current value when interrupted and follows reduced motion through the existing token contract. No animation dependency.
+
+  Add opt-in `TreeList` `animateExpansion`: native Web Animations for visible row entry and repositioning when branches expand or collapse, in flat and virtualized trees. It reverses from the exact current pose when interrupted, is disabled while reordering, and honors the shared duration and easing tokens and reduced motion (system and `data-ov-motion`).
+
+  Accept native CSS width units, normalize unitless zero to a length for valid CSS calculations, and reject negative literal widths consistently with numeric widths. Preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
+
+  Include owned React portals in sidebar focus ownership, and preserve child opacity and clipping across interrupted tree reveals.
+
+### Patch Changes
+
+- [#119](https://github.com/omniviewdev/ui/pull/119) [`0613cdc`](https://github.com/omniviewdev/ui/commit/0613cdc418abef55f38967a1c3b6d947295b503a) Thanks [@joshuapare](https://github.com/joshuapare)! - Add `Card.Action placement="inline"` so independent actions participate in flex and grid headers without consumer positioning overrides. Preserve existing corner placement by default.
+
+  Add `StatusDot variant="outline"` for hollow state indicators that retain their outer size and theme-derived status color. Solid indicators remain the default. Both variants retain existing labels, sizing, pulse, and reduced-motion behavior.
+
+  Add an optional `IconPicker uploadFields` slot for caller-owned upload metadata inside the picker, keeping its external icon-only trigger compact. Keep palette cells square when the viewport constrains larger picker sizes.
+
+  Align keyed-search suggestion metadata at the trailing edge. Hide decorative submenu carets from accessible names so keyboard and assistive-tool navigation uses the actual item label.
+
+  Keep default `Select.Portal` content in its owning Dialog overlay, above the modal surface and footer. Preserve explicit portal containers and normal body portals outside dialogs.
+
 ## 0.16.0
 
 ### Minor Changes

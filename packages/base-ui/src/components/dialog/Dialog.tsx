@@ -6,7 +6,6 @@ import {
   useId,
   useMemo,
   useRef,
-  useState,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -48,7 +47,7 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
   const internalRef = useRef<HTMLDivElement>(null);
   const dialogRef = (ref as React.RefObject<HTMLDivElement>) ?? internalRef;
   const titleId = `ov-dialog-title-${useId()}`;
-  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
+  const portalContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -95,10 +94,10 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
           data-ov-size={size}
           {...props}
         >
+          <div ref={portalContainer} data-ov-slot="portal-container" />
           <OverlayPortalContainerContext.Provider value={portalContainer}>
             {children}
           </OverlayPortalContainerContext.Provider>
-          <div ref={setPortalContainer} data-ov-slot="portal-container" />
         </div>
       </div>
     </DialogContext.Provider>,

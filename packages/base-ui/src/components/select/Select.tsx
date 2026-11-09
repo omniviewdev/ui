@@ -178,7 +178,6 @@ const SelectPortal = forwardRef<
   ComponentPropsWithoutRef<typeof BaseSelect.Portal>
 >(function SelectPortal({ container, ...props }, ref) {
   const owningOverlay = useContext(OverlayPortalContainerContext);
-  if (container === undefined && owningOverlay === null) return null;
   return (
     <BaseSelect.Portal
       ref={ref}

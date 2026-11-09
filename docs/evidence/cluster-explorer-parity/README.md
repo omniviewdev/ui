@@ -9,7 +9,7 @@ These captures show the actual Base UI Storybook components, not a redrawn mock.
 - `IconPicker uploadFields` places caller-owned upload metadata inside the popup, not beside the icon-only trigger. File validation, naming and persistence remain caller-owned.
 - Palette cells retain a square aspect ratio when larger sizes meet a narrow viewport. Six-column keyboard navigation remains unchanged.
 - Keyed-search suggestion descriptions align at the trailing edge. Decorative submenu carets no longer enter accessible names.
-- `Select.Portal` defaults to the nearest owning Dialog layer, so options paint above its surface and footer without global z-index overrides. Its portal target remains inside the accessible modal subtree. An explicit caller container still wins.
+- `Select.Portal` defaults to the nearest owning Dialog layer, so options paint above its surface and footer without global z-index overrides. Its stable ref target mounts before nested content and remains inside the accessible modal subtree. Mounting the target does not trigger another Dialog render. An explicit caller container still wins.
 
 ## Visual verification
 
@@ -27,7 +27,7 @@ Viewport widths: 360, 768, 1063 and 1568 CSS pixels. Card screenshots use 1440 Ã
 
 Normal Card transitions measured 160ms; explicit reduced motion suppressed both card and rail transitions. Nested Light inside Dark and custom success-derived card aliases were also exercised. A real raster image was decoded, uploaded into the story's local library, searched and selected. The selected trigger remained an icon-only square.
 
-Nested Select dismissal was also exercised: Escape closes the options first, the next Escape closes the dialog, and reopening preserves working portal ownership. Layering uses actual pointer hit testing rather than DOM-placement-only assertions.
+Nested Select dismissal was also exercised: Escape closes the options first, the next Escape closes the dialog, and reopening preserves working portal ownership. The final stable-ref implementation passed all 288 pointer cases, including modal accessibility scope. Layering uses actual pointer hit testing rather than DOM-placement-only assertions.
 
 ## Captures
 
@@ -51,6 +51,6 @@ Additional `inline-actions-*.png` captures cover every native theme. `nested-cus
 
 ## Checks and limits
 
-The affected shared component suites passed 129 tests. The production Base UI bundle and portable declarations built successfully. Native TypeScript and scoped ESLint checks passed.
+The affected shared component suites passed 129 tests. The final stable-ref refinement passed the 23 Dialog/Select tests again. The production Base UI bundle and portable declarations built successfully. Native TypeScript and scoped ESLint checks passed.
 
 Story libraries are local examples, not backend persistence tests. Browser captures do not prove native OS window or file/color-dialog rendering. The Kubernetes PR supplies the separate real-app organization and persistence evidence.

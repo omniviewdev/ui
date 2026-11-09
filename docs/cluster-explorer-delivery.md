@@ -10,6 +10,11 @@ The column visibility popup uses `--ov-space-stack-sm` between checkbox rows.
 It must not reference table-root private variables: the popup renders in a portal
 and does not inherit variables declared on `DataTable.Root`.
 
+Extra-small text uses `--ov-font-size-xs` instead of falling back to body size.
+Small tooltips use that same scale rather than a fixed rem value. Status dots
+and labels share a font size and line height. Consumers should let `Card.Title`
+and `Card.Description` supply typography instead of nesting a body-sized `Text`.
+
 
 The existing-behavior sections preserve the pre-migration audit against Kubernetes base `99cfc61422003bf1738d40da18aa387466e5542a`. Historical defects describe that baseline. This table records current implementation source, not completed runtime acceptance.
 

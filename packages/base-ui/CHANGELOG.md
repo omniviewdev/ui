@@ -18,7 +18,7 @@
 
   Add opt-in `TreeList` `animateExpansion`: native Web Animations for visible row entry and repositioning when branches expand or collapse, in flat and virtualized trees. It reverses from the exact current pose when interrupted, is disabled while reordering, and honors the shared duration and easing tokens and reduced motion (system and `data-ov-motion`).
 
-  Accept native CSS width units and unitless zero, preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
+  Accept native CSS width units, normalize unitless zero to a length for valid CSS calculations, and reject negative literal widths consistently with numeric widths. Preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
 
   Focus ownership includes React portals, so hovering a keyboard-opened flyout never starts a peek or displaces its focus. Interrupted tree reveals retain their current opacity and clipping while sibling rows keep moving.
 

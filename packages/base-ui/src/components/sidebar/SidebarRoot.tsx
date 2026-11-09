@@ -24,9 +24,10 @@ const DEFAULT_RAIL_WIDTH = '48px';
 const PEEK_OPEN_DELAY = 280;
 const PEEK_CLOSE_DELAY = 220;
 
-// Absolute, font-relative, viewport and container lengths; zero needs no unit.
+// Normalize unitless zero before using the width in CSS length calculations.
+const ZERO_LENGTH = /^[+-]?(?:0+(?:\.0+)?|\.0+)(?:e[+-]?\d+)?$/i;
 const CSS_LENGTH =
-  /^[+-]?(?:(?:0+(?:\.0+)?|\.0+)(?:e[+-]?\d+)?|(?:\d*\.?\d+)(?:e[+-]?\d+)?(?:px|pt|pc|cm|mm|q|in|r?(?:em|ex|cap|ch|ic|lh)|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|%))$/i;
+  /^[+-]?(?:\d*\.?\d+)(?:e[+-]?\d+)?(?:px|pt|pc|cm|mm|q|in|r?(?:em|ex|cap|ch|ic|lh)|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|%)$/i;
 const CSS_FUNCTION = /^(?:var|calc|clamp|min|max|env)\(.+\)$/;
 
 function hasBalancedParentheses(value: string): boolean {
@@ -45,7 +46,8 @@ function resolveWidth(value: number | string, fallback: string): string {
     return Number.isFinite(value) && value >= 0 ? `${value}px` : fallback;
   }
   const text = value.trim();
-  if (CSS_LENGTH.test(text)) return text;
+  if (ZERO_LENGTH.test(text)) return '0px';
+  if (CSS_LENGTH.test(text)) return Number.parseFloat(text) >= 0 ? text : fallback;
   const isSafeFunction = CSS_FUNCTION.test(text) && hasBalancedParentheses(text);
   return isSafeFunction && !/[;{}]/.test(text) ? text : fallback;
 }

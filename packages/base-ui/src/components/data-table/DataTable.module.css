@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   inline-size: 100%;
+  min-block-size: 0;
   border: 1px solid var(--_ov-dt-border);
   border-radius: var(--ov-size-table-radius);
   background: var(--_ov-dt-bg);
@@ -172,6 +173,7 @@
 /* --- Container (scroll area) --- */
 
 .Container {
+  flex: 1 1 auto;
   overflow: auto;
   overscroll-behavior: contain;
   min-height: 0;
@@ -388,6 +390,15 @@
   box-sizing: border-box;
 }
 
+/* Leading content matches row block padding; header labels keep their normal inset. */
+:is(.Cell, .FooterCell, .SkeletonCell):first-child {
+  padding-inline-start: var(--_ov-cell-padding-block);
+}
+
+:is(.Cell, .FooterCell, .SkeletonCell):last-child {
+  padding-inline-end: var(--ov-space-stack-xs);
+}
+
 /* Clip fixed-height content at cells, not rows: rows must not become scroll
  * containers between pinned cells and the table's horizontal viewport. */
 .FixedRow > .Cell {
@@ -531,7 +542,7 @@
 .ColumnVisibilityList {
   display: flex;
   flex-direction: column;
-  gap: var(--_dt-space-xs);
+  gap: var(--ov-space-stack-sm);
   padding-block: var(--ov-space-stack-xs, 4px);
 }
 

@@ -23,6 +23,10 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--ov-font-sans);
+  font-size: var(--_ov-label-font-size);
+  line-height: 1.35;
+  vertical-align: middle;
 }
 
 /* ---- Size ---- */
@@ -132,9 +136,8 @@
 
 .Label {
   color: var(--ov-color-fg-default);
-  font-family: var(--ov-font-sans);
-  font-size: var(--_ov-label-font-size);
-  line-height: 1;
+  font-size: inherit;
+  line-height: inherit;
   white-space: nowrap;
 }
 

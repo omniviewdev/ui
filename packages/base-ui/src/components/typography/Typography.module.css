@@ -25,6 +25,15 @@
   line-height: 1.45;
 }
 
+.Text[data-ov-size='xs'],
+.Em[data-ov-size='xs'],
+.Quote[data-ov-size='xs'],
+.Strong[data-ov-size='xs'],
+.Underline[data-ov-size='xs'],
+.Link[data-ov-size='xs'] {
+  font-size: var(--ov-font-size-xs);
+}
+
 .Text[data-ov-size='sm'],
 .Em[data-ov-size='sm'],
 .Quote[data-ov-size='sm'],

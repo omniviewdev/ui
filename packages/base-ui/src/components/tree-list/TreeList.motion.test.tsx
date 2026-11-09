@@ -15,9 +15,21 @@ const items: Entry[] = [
 const itemKey = (item: Entry) => item.id;
 const getChildren = (item: Entry) => item.children;
 const getTextValue = (item: Entry) => item.id;
-const renderItem = (item: Entry) => <TreeList.Item itemKey={item.id}>{item.id}</TreeList.Item>;
+const renderItem = (item: Entry) => (
+  <TreeList.Item itemKey={item.id} style={{ opacity: 1 }}>
+    {item.id}
+  </TreeList.Item>
+);
 
-function Example({ expanded, entries = items }: { expanded: boolean; entries?: Entry[] }) {
+function Example({
+  expanded,
+  entries = items,
+  extraExpanded = false,
+}: {
+  expanded: boolean;
+  entries?: Entry[];
+  extraExpanded?: boolean;
+}) {
   return (
     <TreeList.Root
       items={entries}
@@ -25,7 +37,7 @@ function Example({ expanded, entries = items }: { expanded: boolean; entries?: E
       getChildren={getChildren}
       getTextValue={getTextValue}
       renderItem={renderItem}
-      expandedKeys={new Set(expanded ? ['parent'] : [])}
+      expandedKeys={new Set([...(expanded ? ['parent'] : []), ...(extraExpanded ? ['other'] : [])])}
       defaultActiveKey="last"
       animateExpansion
     >
@@ -41,6 +53,21 @@ function row(id: string) {
 /** Model native scroll clamping/anchoring, which jsdom does not perform. */
 function installGeometry(viewport: HTMLElement, scrollTop: () => number) {
   const frames = new Map<HTMLElement, Keyframe[]>();
+  const poses = new Map<HTMLElement, { delta?: number; opacity?: string; clipPath?: string }>();
+  const nativeComputedStyle = getComputedStyle;
+  const styles = vi.spyOn(globalThis, 'getComputedStyle').mockImplementation((element, pseudo) => {
+    const style = nativeComputedStyle(element, pseudo);
+    const pose = poses.get(element as HTMLElement);
+    if (!pose) return style;
+    return new Proxy(style, {
+      get(target, property) {
+        if (property === 'opacity' && pose.opacity !== undefined) return pose.opacity;
+        if (property === 'clipPath' && pose.clipPath !== undefined) return pose.clipPath;
+        const value = Reflect.get(target, property, target);
+        return typeof value === 'function' ? value.bind(target) : value;
+      },
+    });
+  });
   const previousAnimate = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'animate');
   Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 60 });
   Object.defineProperty(viewport, 'scrollTop', { configurable: true, get: scrollTop });
@@ -51,19 +78,28 @@ function installGeometry(viewport: HTMLElement, scrollTop: () => number) {
     .mockImplementation(function (this: HTMLElement) {
       if (this === viewport) return DOMRect.fromRect({ y: 100, width: 240, height: 60 });
       const index = Array.from(viewport.querySelectorAll('[role="treeitem"]')).indexOf(this);
-      return DOMRect.fromRect({ y: 100 + index * 20 - viewport.scrollTop, width: 240, height: 20 });
+      return DOMRect.fromRect({
+        y: 100 + index * 20 - viewport.scrollTop + (poses.get(this)?.delta ?? 0),
+        width: 240,
+        height: 20,
+      });
     });
   Object.defineProperty(HTMLElement.prototype, 'animate', {
     configurable: true,
     value(this: HTMLElement, keyframes: Keyframe[]) {
       frames.set(this, keyframes);
-      return { cancel: vi.fn(), finished: Promise.withResolvers<void>().promise };
+      return {
+        cancel: vi.fn(() => poses.delete(this)),
+        finished: Promise.withResolvers<void>().promise,
+      };
     },
   });
   return {
     frames,
+    poses,
     restore() {
       rects.mockRestore();
+      styles.mockRestore();
       if (previousAnimate) Object.defineProperty(HTMLElement.prototype, 'animate', previousAnimate);
       else Reflect.deleteProperty(HTMLElement.prototype, 'animate');
     },
@@ -117,6 +153,39 @@ describe('TreeList expansion motion across native scrolling', () => {
       const clip = String(geometry.frames.get(entering)?.[0]?.clipPath);
       const bottomInset = Number(clip.match(/inset\(0px 0px ([-.\d]+)px/)?.[1]);
       expect(entering.getBoundingClientRect().bottom - bottomInset).toBe(before);
+    } finally {
+      geometry.restore();
+    }
+  });
+
+  it('preserves a clipped child reveal when another branch expands mid-animation', () => {
+    const entries = [
+      items[0]!,
+      { id: 'other', children: [{ id: 'third' }, { id: 'fourth' }] },
+      items[1]!,
+    ];
+    const { rerender } = renderWithTheme(<Example expanded={false} entries={entries} />);
+    const geometry = installGeometry(screen.getByTestId('motion-viewport'), () => 0);
+    try {
+      rerender(<Example expanded entries={entries} />);
+      const first = row('first');
+      const second = row('second');
+      const following = row('other');
+      geometry.poses.set(first, { opacity: '0.75', clipPath: 'inset(0px 0px -10px 0px)' });
+      geometry.poses.set(second, { opacity: '0.75', clipPath: 'inset(0px 0px 10px 0px)' });
+      geometry.poses.set(following, { delta: -10 });
+      geometry.frames.clear();
+      rerender(<Example expanded entries={entries} extraExpanded />);
+      const childFrame = geometry.frames.get(second)?.[0];
+      const opacity = Number(childFrame?.opacity ?? getComputedStyle(second).opacity);
+      expect(opacity).toBe(0.75);
+      const clip = String(childFrame?.clipPath ?? getComputedStyle(second).clipPath);
+      const bottomInset = Number(clip.match(/inset\(0px 0px ([-.\d]+)px/)?.[1] ?? 0);
+      const followingStart =
+        following.getBoundingClientRect().top + startingOffset(geometry.frames.get(following));
+      expect(second.getBoundingClientRect().bottom - bottomInset).toBeLessThanOrEqual(
+        followingStart,
+      );
     } finally {
       geometry.restore();
     }

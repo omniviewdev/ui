@@ -26,7 +26,7 @@ const PEEK_CLOSE_DELAY = 220;
 
 // Absolute, font-relative, viewport and container lengths; zero needs no unit.
 const CSS_LENGTH =
-  /^[+-]?(?:(?:0+\.?0*|\.0+)(?:e[+-]?\d+)?|(?:\d*\.?\d+)(?:e[+-]?\d+)?(?:px|pt|pc|cm|mm|q|in|r?(?:em|ex|cap|ch|ic|lh)|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|%))$/i;
+  /^[+-]?(?:(?:0+(?:\.0+)?|\.0+)(?:e[+-]?\d+)?|(?:\d*\.?\d+)(?:e[+-]?\d+)?(?:px|pt|pc|cm|mm|q|in|r?(?:em|ex|cap|ch|ic|lh)|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|%))$/i;
 const CSS_FUNCTION = /^(?:var|calc|clamp|min|max|env)\(.+\)$/;
 
 function hasBalancedParentheses(value: string): boolean {
@@ -55,6 +55,14 @@ function assignRef<T>(ref: ForwardedRef<T>, node: T | null) {
   else if (ref) ref.current = node;
 }
 
+/** React focus capture includes owned portals that DOM containment cannot see. */
+function hasSidebarFocus(root: HTMLElement | null, ownedFocus: HTMLElement | null): boolean {
+  return Boolean(
+    focusedWithin(root) ||
+    (ownedFocus?.isConnected && ownedFocus.ownerDocument.activeElement === ownedFocus),
+  );
+}
+
 export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function SidebarRoot(
   {
     mode: modeProp,
@@ -72,6 +80,7 @@ export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function Si
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     onPointerEnter,
+    onFocusCapture,
     onPointerLeave,
     onKeyDown,
     onPointerDownCapture,
@@ -135,10 +144,10 @@ export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function Si
     closeTimer.current = undefined;
     if (mode !== 'rail' || peeking || openTimer.current !== undefined) return;
     // Peeking makes the rail inert, so it must not displace a focused rail control.
-    if (focusedWithin(rootElement.current)) return;
+    if (hasSidebarFocus(rootElement.current, ownedFocus.current)) return;
     openTimer.current = window.setTimeout(() => {
       openTimer.current = undefined;
-      if (focusedWithin(rootElement.current)) return;
+      if (hasSidebarFocus(rootElement.current, ownedFocus.current)) return;
       setPeekRequested(true);
     }, PEEK_OPEN_DELAY);
   };
@@ -156,6 +165,7 @@ export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function Si
   };
 
   const rootElement = useRef<HTMLElement | null>(null);
+  const ownedFocus = useRef<HTMLElement | null>(null);
   const [panelElement, setPanelElement] = useState<HTMLElement | null>(null);
   const setRootElement = useCallback(
     (node: HTMLElement | null) => {
@@ -239,6 +249,10 @@ export const SidebarRoot = forwardRef<HTMLElement, SidebarRootProps>(function Si
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         onKeyDown={onKeyDown}
+        onFocusCapture={(event) => {
+          ownedFocus.current = event.target;
+          onFocusCapture?.(event);
+        }}
         onPointerDownCapture={(event) => {
           onPointerDownCapture?.(event);
           clearTimeout(openTimer.current);

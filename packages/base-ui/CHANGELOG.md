@@ -20,6 +20,8 @@
 
   Accept native CSS width units and unitless zero, preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
 
+  Focus ownership includes React portals, so hovering a keyboard-opened flyout never starts a peek or displaces its focus. Interrupted tree reveals retain their current opacity and clipping while sibling rows keep moving.
+
 ### Patch Changes
 
 - Fix `EditorTabs` pill geometry with viewport insets and stretched tabs instead of percentage heights inside auto-sized segments. Keep rounded corners fully visible and use the surface header color rather than a contrasting base-color backing. Reset native button rounding for non-pill tabs and honor the active-background token across variants.

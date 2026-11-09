@@ -13,3 +13,5 @@ All motion is native CSS on the shared panel and interactive duration and easing
 Add opt-in `TreeList` `animateExpansion`: native Web Animations for visible row entry and repositioning when branches expand or collapse, in flat and virtualized trees. It reverses from the exact current pose when interrupted, is disabled while reordering, and honors the shared duration and easing tokens and reduced motion (system and `data-ov-motion`).
 
 Accept native CSS width units and unitless zero, preserve focused rail controls by suppressing hover peek while the sidebar owns focus, and compensate tree animation snapshots for native scroll clamping and anchoring.
+
+Include owned React portals in sidebar focus ownership, and preserve child opacity and clipping across interrupted tree reveals.

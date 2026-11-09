@@ -1,4 +1,5 @@
 import { act, fireEvent, screen } from '@testing-library/react';
+import { createPortal } from 'react-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../../test/render';
 import { IconButton } from '../icon-button';
@@ -35,6 +36,24 @@ function Shell(props: SidebarRootProps) {
       </Sidebar.Footer>
       <Sidebar.Handle />
     </Sidebar.Root>
+  );
+}
+function PortalShell({ open = true }: { open?: boolean }) {
+  return (
+    <>
+      <Sidebar.Root aria-label="Cluster" defaultMode="rail" hoverPeek>
+        <Sidebar.Rail>
+          <button type="button">Rail action</button>
+        </Sidebar.Rail>
+        <Sidebar.Expanded>
+          <button type="button">Expanded action</button>
+        </Sidebar.Expanded>
+        {open
+          ? createPortal(<button type="button">Owned popup action</button>, document.body)
+          : null}
+      </Sidebar.Root>
+      <button type="button">Outside content</button>
+    </>
   );
 }
 
@@ -308,6 +327,30 @@ describe('Sidebar hover peek', () => {
       expect(onModeChange).not.toHaveBeenCalled();
     },
   );
+
+  it('does not hide the rail while an owned popup holds focus', () => {
+    vi.useFakeTimers();
+    renderWithTheme(<PortalShell />);
+    const action = screen.getByRole('button', { name: 'Owned popup action' });
+    act(() => action.focus());
+    fireEvent.pointerEnter(getRoot(), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(500));
+    expect(getRoot()).toHaveAttribute('data-ov-sidebar-peeking', 'false');
+    expect(action).toHaveFocus();
+  });
+
+  it('allows hover peek after a focused owned popup unmounts', () => {
+    vi.useFakeTimers();
+    const { rerender } = renderWithTheme(<PortalShell />);
+    act(() => screen.getByRole('button', { name: 'Owned popup action' }).focus());
+    rerender(<PortalShell open={false} />);
+    const outside = screen.getByRole('button', { name: 'Outside content' });
+    act(() => outside.focus());
+    fireEvent.pointerEnter(getRoot(), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(500));
+    expect(getRoot()).toHaveAttribute('data-ov-sidebar-peeking', 'true');
+    expect(outside).toHaveFocus();
+  });
 
   it('overlays after hover intent, labels the toggle as pin, and closes after leave', () => {
     vi.useFakeTimers();

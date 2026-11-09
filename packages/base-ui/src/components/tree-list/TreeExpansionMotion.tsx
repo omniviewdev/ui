@@ -14,6 +14,12 @@ interface Snapshot {
   previousKeys: ReadonlySet<string>;
   visibleKeys: Set<string>;
   scrollTop: number;
+  reveals?: Map<string, { opacity: string; clipPath: string }>;
+}
+
+interface RowAnimation {
+  animation: Animation;
+  revealing: boolean;
 }
 
 function sameKeys(a: ReadonlySet<Key>, b: ReadonlySet<Key>): boolean {
@@ -49,12 +55,12 @@ function panelDuration(element: HTMLElement): number {
 export class TreeExpansionMotion extends Component<Props, Record<string, never>, Snapshot | null> {
   private expanded = this.props.expandedKeys;
   private pendingExpansion = false;
-  private animations = new Map<HTMLElement, Animation>();
+  private animations = new Map<HTMLElement, RowAnimation>();
   private stopListening: (() => void) | undefined;
   private snapshot: { nodes: readonly FlatNode[]; positions: Snapshot } | undefined;
 
   private cancel = () => {
-    for (const animation of this.animations.values()) animation.cancel();
+    for (const { animation } of this.animations.values()) animation.cancel();
     this.animations.clear();
     this.snapshot = undefined;
   };
@@ -111,6 +117,13 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
       const key = row.dataset.ovItemKey!;
       snapshot.positions.set(key, rect.top - top + element.scrollTop);
       if (rect.bottom > top && rect.top < top + element.clientHeight) snapshot.visibleKeys.add(key);
+      if (this.animations.get(row)?.revealing) {
+        const style = getComputedStyle(row);
+        (snapshot.reveals ??= new Map()).set(key, {
+          opacity: style.opacity,
+          clipPath: style.clipPath,
+        });
+      }
     }
     this.snapshot = { nodes: this.props.nodes, positions: snapshot };
     return snapshot;
@@ -160,7 +173,7 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
     }
     const geometry = new Map<string, { row: HTMLElement; rect: DOMRect; top: number }>();
     for (const row of element.querySelectorAll<HTMLElement>('[role="treeitem"]')) {
-      this.animations.get(row)?.cancel();
+      this.animations.get(row)?.animation.cancel();
       this.animations.delete(row);
       const rect = row.getBoundingClientRect();
       geometry.set(row.dataset.ovItemKey!, {
@@ -178,9 +191,10 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
         continue;
       const before = snapshot.positions.get(key);
       const range = ranges.get(key);
+      const reveal = snapshot.reveals?.get(key);
       if (before === undefined && !range) continue;
       const delta = before === undefined ? 0 : before - top + scrollShift;
-      if (!range && Math.abs(delta) < 0.5) continue;
+      if (!range && !reveal && Math.abs(delta) < 0.5) continue;
       const style = getComputedStyle(row);
       const base = style.transform === 'none' ? '' : style.transform;
       let from: Keyframe = { transform: `translateY(${delta}px) ${base}`, opacity: style.opacity };
@@ -207,17 +221,25 @@ export class TreeExpansionMotion extends Component<Props, Record<string, never>,
           opacity: style.opacity,
           clipPath: `inset(0px 0px ${top + rect.height - end}px 0px)`,
         };
+      } else if (reveal) {
+        // Keep partially revealed children clipped while their following row is still moving.
+        from.opacity = reveal.opacity;
+        from.clipPath = reveal.clipPath;
+        to.clipPath = style.clipPath && style.clipPath !== 'none' ? style.clipPath : 'inset(0px)';
       }
       const animation = row.animate([from, to], { duration, easing });
-      this.animations.set(row, animation);
+      this.animations.set(row, {
+        animation,
+        revealing: range !== undefined || reveal !== undefined,
+      });
       void animation.finished.then(
         () => {
-          if (this.animations.get(row) === animation) this.animations.delete(row);
+          if (this.animations.get(row)?.animation === animation) this.animations.delete(row);
         },
         () => {},
       );
     }
-    for (const [row, animation] of this.animations) {
+    for (const [row, { animation }] of this.animations) {
       if (!row.isConnected) {
         animation.cancel();
         this.animations.delete(row);

@@ -76,7 +76,7 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
 
   return createPortal(
     <DialogContext.Provider value={contextValue}>
-      <div ref={setPortalContainer} className={styles.Overlay} data-ov-component="dialog">
+      <div className={styles.Overlay} data-ov-component="dialog">
         <div
           className={styles.Backdrop}
           data-ov-slot="backdrop"
@@ -98,6 +98,7 @@ const DialogRoot = forwardRef<HTMLDivElement, DialogProps>(function DialogRoot(
           <OverlayPortalContainerContext.Provider value={portalContainer}>
             {children}
           </OverlayPortalContainerContext.Provider>
+          <div ref={setPortalContainer} data-ov-slot="portal-container" />
         </div>
       </div>
     </DialogContext.Provider>,

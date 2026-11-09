@@ -9,7 +9,7 @@ These captures show the actual Base UI Storybook components, not a redrawn mock.
 - `IconPicker uploadFields` places caller-owned upload metadata inside the popup, not beside the icon-only trigger. File validation, naming and persistence remain caller-owned.
 - Palette cells retain a square aspect ratio when larger sizes meet a narrow viewport. Six-column keyboard navigation remains unchanged.
 - Keyed-search suggestion descriptions align at the trailing edge. Decorative submenu carets no longer enter accessible names.
-- `Select.Portal` defaults to the nearest owning Dialog layer, so options paint above its surface and footer without global z-index overrides. An explicit caller container still wins.
+- `Select.Portal` defaults to the nearest owning Dialog layer, so options paint above its surface and footer without global z-index overrides. Its portal target remains inside the accessible modal subtree. An explicit caller container still wins.
 
 ## Visual verification
 

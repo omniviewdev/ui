@@ -16,9 +16,9 @@ and labels share a font size and line height. Consumers should let `Card.Title`
 and `Card.Description` supply typography instead of nesting a body-sized `Text`.
 
 `DataTable.Root` can shrink inside a bounded flex layout, and `DataTable.Container`
-fills its remaining height while keeping overflow inside the viewport. Outer
-header, body, footer, and skeleton cells use the shared extra-small edge inset;
-interior cells retain their density-specific padding.
+fills its remaining height while keeping overflow inside the viewport. Leading
+body, footer, and skeleton cells match their block-padding inset; trailing cells
+use the extra-small inset. Headers and interior cells retain normal density padding.
 
 
 The existing-behavior sections preserve the pre-migration audit against Kubernetes base `99cfc61422003bf1738d40da18aa387466e5542a`. Historical defects describe that baseline. This table records current implementation source, not completed runtime acceptance.

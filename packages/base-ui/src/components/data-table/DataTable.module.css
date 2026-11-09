@@ -390,12 +390,12 @@
   box-sizing: border-box;
 }
 
-/* Outer gutters use one shared inset instead of accumulating full cell padding. */
-:is(.HeaderCell, .Cell, .FooterCell, .SkeletonCell):first-child {
-  padding-inline-start: var(--ov-space-stack-xs);
+/* Leading content matches row block padding; header labels keep their normal inset. */
+:is(.Cell, .FooterCell, .SkeletonCell):first-child {
+  padding-inline-start: var(--_ov-cell-padding-block);
 }
 
-:is(.HeaderCell, .Cell, .FooterCell, .SkeletonCell):last-child {
+:is(.Cell, .FooterCell, .SkeletonCell):last-child {
   padding-inline-end: var(--ov-space-stack-xs);
 }
 

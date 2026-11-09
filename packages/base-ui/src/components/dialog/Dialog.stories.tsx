@@ -3,6 +3,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LuTriangleAlert, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { Dialog, type DialogSize } from './Dialog';
 import { Button } from '../button/Button';
+import { Select } from '../select';
+
+const operators = [
+  { value: 'equals', label: 'equals' },
+  { value: 'not_equals', label: 'not equals' },
+  { value: 'contains', label: 'contains' },
+  { value: 'not_contains', label: 'not contains' },
+];
 
 function PlaygroundDemo({ size }: { size?: DialogSize }) {
   const [open, setOpen] = useState(false);
@@ -230,4 +238,51 @@ export const ScrollableBody: Story = {
 export const WithIconInTitle: Story = {
   args: { open: false, onClose: () => {} },
   render: () => <WithIconInTitleDemo />,
+};
+
+export const NestedSelect: Story = {
+  args: { open: true, onClose: () => {}, size: 'md' },
+  render: function Render(args) {
+    const [open, setOpen] = useState(true);
+    const [operator, setOperator] = useState('equals');
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Edit filter</Button>
+        <Dialog open={open} onClose={() => setOpen(false)} size={args.size}>
+          <Dialog.Title>Filter collection</Dialog.Title>
+          <Dialog.Body>
+            <Select.Root
+              value={operator}
+              items={operators}
+              defaultOpen
+              onValueChange={(value) => {
+                if (value !== null) setOperator(value);
+              }}
+            >
+              <Select.Trigger aria-label="Operator" style={{ width: '100%' }}>
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Positioner sideOffset={4}>
+                  <Select.Popup>
+                    <Select.List>
+                      {operators.map((item) => (
+                        <Select.Item key={item.value} value={item.value}>
+                          <Select.ItemText>{item.label}</Select.ItemText>
+                        </Select.Item>
+                      ))}
+                    </Select.List>
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
+            <p role="status">Selected operator: {operator}</p>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button onClick={() => setOpen(false)}>Done</Button>
+          </Dialog.Footer>
+        </Dialog>
+      </>
+    );
+  },
 };

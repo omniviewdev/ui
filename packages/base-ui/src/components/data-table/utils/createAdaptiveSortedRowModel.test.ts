@@ -55,6 +55,18 @@ describe('adaptive sorted input', () => {
     expect(ids(table)).toEqual(['a', 'b-new', 'd']);
   });
 
+  it('retains every current row when IDs collide after an earlier sort', () => {
+    const table = make();
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    const next = [
+      { id: 'a', name: 'pod-30', score: 4 },
+      { id: 'a', name: 'pod-0', score: 5 },
+      { id: 'b', name: 'pod-20', score: 6 },
+    ];
+    table.setData(next);
+    expect(table.model().rows.map((row) => row.original)).toEqual([next[1], next[2], next[0]]);
+  });
+
   it('restores source order when sorting is cleared or no selected column can sort', () => {
     const table = make();
     expect(ids(table)).toEqual(['c', 'b', 'a']);

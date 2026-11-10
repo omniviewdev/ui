@@ -38,6 +38,8 @@ export function createAdaptiveSortedRowModel<TFeatures extends TableFeatures, TD
 
           const remaining = new Map<string, Row<TFeatures, TData>>();
           for (const row of next.rows) remaining.set(row.id, row);
+          // A seed must be a complete permutation, even when a caller supplies colliding IDs.
+          if (remaining.size !== next.rows.length) return (prepared = next);
           const rows = new Array<Row<TFeatures, TData>>(next.rows.length);
           let index = 0;
           let changed = false;

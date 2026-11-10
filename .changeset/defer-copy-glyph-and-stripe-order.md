@@ -13,3 +13,5 @@ Reset cached row measurements when a virtualized table switches between measured
 Seed repeated sorts from the previous result's row order, resolving every ID against the current input. Native adaptive sorting can reuse that order during sparse immutable updates instead of starting from shuffled source order again. TanStack still owns comparison, multi-sort, source-index tie ordering and nested sorting; clearing or disabling sorting restores the original source model.
 
 Keep all rows when caller-provided IDs collide: skip the ordering hint unless it forms a complete permutation of the current input.
+
+Keep fixed-height virtualization geometry independent of record updates. Uniform slot keys depend only on row size and index; React views still use record IDs, so reordering preserves editor state and focus. Changing the fixed height invalidates geometry immediately. Cell memoization also observes row identity and index so index-based content follows reordered records.

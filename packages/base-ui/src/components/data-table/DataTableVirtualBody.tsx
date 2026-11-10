@@ -108,6 +108,8 @@ const DataCell = memo(DataCellInner, (previous, next) => {
   const meta = next.cell.column.columnDef.meta as
     { dataTableCellDependencies?: 'data' } | undefined;
   return (
+    previous.cell.row.id === next.cell.row.id &&
+    previous.cell.row.index === next.cell.row.index &&
     previous.original === next.original &&
     previous.layout === next.layout &&
     previous.cell.column.columnDef.cell === next.cell.column.columnDef.cell &&
@@ -253,6 +255,7 @@ const VirtualRow = memo(VirtualRowInner) as typeof VirtualRowInner;
 const rowKey = (id: string) => `r:${id}`;
 const detailKey = (id: string) => `d:${id}`;
 
+
 type Slot<TData extends RowData> = {
   key: string;
   row: DataTableRow<TData>;
@@ -304,6 +307,11 @@ function VirtualBodyInner<TData extends RowData>(
     (index: number) => (detailSlots ? detailSlots[index]!.key : rowKey(rows[index]!.id)),
     [detailSlots, rows],
   );
+  // Uniform slot keys depend only on their size and index, not on resource patches.
+  const getFixedItemKey = useCallback(
+    (index: number) => `${estimateRowSize}:${index}`,
+    [estimateRowSize],
+  );
   const estimateSize = useCallback(
     (index: number) => (detailSlots?.[index]?.detail ? estimateExpandedRowSize : estimateRowSize),
     [detailSlots, estimateExpandedRowSize, estimateRowSize],
@@ -330,7 +338,7 @@ function VirtualBodyInner<TData extends RowData>(
   }, [fixedRowHeight, hasDetails, overscan]);
   const virtualizer = useVirtualizerSnapshot<HTMLDivElement, HTMLTableRowElement>({
     count,
-    getItemKey,
+    getItemKey: fixedRowHeight && !hasDetails ? getFixedItemKey : getItemKey,
     getScrollElement: () => scrollElement,
     estimateSize,
     overscan,
@@ -459,7 +467,7 @@ function VirtualBodyInner<TData extends RowData>(
           );
         return (
           <VirtualRow
-            key={item.key}
+            key={rowKey(row.id)}
             row={row}
             table={table}
             start={item.start}

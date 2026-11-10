@@ -51,11 +51,11 @@ const DataTableBodyRender = memo(
     { className, renderExpandedRow, context, ...props },
     ref,
   ) {
-    const { features, state } = context;
+    const { features, state, striped } = context;
     const { rows, columnLayouts } = readBodySnapshot(context);
     const isResizing = state.columnResizing.isResizingColumn;
 
-    const rowElements = rows.map((row) => {
+    const rowElements = rows.map((row, index) => {
       const isSelected = row.getIsSelected();
       const isExpanded = row.getIsExpanded();
 
@@ -66,6 +66,7 @@ const DataTableBodyRender = memo(
             data-ov-row-id={row.id}
             data-ov-selected={isSelected ? 'true' : 'false'}
             data-ov-expanded={isExpanded ? 'true' : 'false'}
+            data-ov-stripe={striped && index % 2 === 1 ? 'true' : undefined}
           >
             {row.getVisibleCells().map((cell) => {
               // Visible cells and layout entries use the same current column objects.

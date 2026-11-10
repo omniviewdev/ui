@@ -372,7 +372,9 @@
   background: var(--_ov-dt-row-expanded);
 }
 
-.Root[data-ov-striped='true'] .Row:nth-child(even) > .Cell {
+/* Stripes follow row order through data-ov-stripe. A positional :nth-child() selector
+ * would invalidate every mounted cell whenever a virtual row is added or removed. */
+.Root[data-ov-striped='true'] .Row[data-ov-stripe='true'] > .Cell {
   background: color-mix(in srgb, var(--ov-color-bg-surface-overlay) 74%, transparent 26%);
 }
 

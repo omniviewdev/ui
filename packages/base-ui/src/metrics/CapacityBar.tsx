@@ -1,6 +1,6 @@
-import { Tooltip } from '../components/tooltip';
+import { Tooltip, useSharedTooltipHandle } from '../components/tooltip/Tooltip';
 import { normalizeReferences, referenceText, ReferenceLegend, ReferenceTrack } from './references';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Skeleton } from '../components/skeleton/Skeleton';
 import { cn } from '../system/classnames';
 import { formatMetric, formatMetricText, seriesColor, toneColor } from './format';
@@ -13,6 +13,53 @@ type CapacityStyle = CSSProperties & {
   '--_ov-metric-fill-size'?: string;
   '--_ov-metric-marker-position'?: string;
 };
+
+/**
+ * A scrolling table mounts hundreds of loading cells and most are answered within a few frames.
+ * A running pulse costs a compositor layer, a style update and an `animationstart` event the
+ * moment it starts, for motion nobody lives long enough to see. The placeholder shows at once and
+ * begins pulsing only when the wait is long enough to notice. Reduced motion never pulses.
+ */
+const CELL_PULSE_DELAY_MS = 500;
+
+/**
+ * Starts the pulse by writing the attribute directly. A state update would give every placeholder
+ * an extra component, hook and render at mount, for the many that are gone before it could fire.
+ * The timer is cancelled with the element, so an answered cell never pulses.
+ */
+function pulseWhenSlow(node: HTMLElement | null) {
+  if (node === null) return undefined;
+  const timer = setTimeout(
+    () => node.setAttribute('data-ov-animation', 'pulse'),
+    CELL_PULSE_DELAY_MS,
+  );
+  return () => clearTimeout(timer);
+}
+
+function CellInspection({ label, content, children }: {
+  label: string;
+  content: ReactNode;
+  children: ReactNode;
+}) {
+  const handle = useSharedTooltipHandle();
+  const trigger = <Tooltip.Trigger
+    handle={handle}
+    payload={handle ? content : undefined}
+    render={<div />}
+    className={styles.CellValue}
+    tabIndex={0}
+    aria-label={label}
+  >{children}</Tooltip.Trigger>;
+  if (handle) return trigger;
+  return <Tooltip.Root>
+    {trigger}
+    <Tooltip.Portal>
+      <Tooltip.Positioner sideOffset={4}>
+        <Tooltip.Popup>{content}</Tooltip.Popup>
+      </Tooltip.Positioner>
+    </Tooltip.Portal>
+  </Tooltip.Root>;
+}
 
 export function CapacityBar({
   value,
@@ -28,8 +75,30 @@ export function CapacityBar({
   orientation = 'horizontal',
   loading = false,
 }: CapacityBarProps) {
+  if (loading && variant === 'cell') {
+    return (
+      <div
+        className={cn(styles.Capacity, className)}
+        data-variant="cell"
+        data-orientation={orientation}
+        aria-busy="true"
+        role="group"
+        aria-label={`${label}: Loading`}
+      >
+        <Skeleton
+          ref={pulseWhenSlow}
+          width="100%"
+          height="0.75em"
+          variant="rounded"
+          animation="none"
+          aria-hidden="true"
+        />
+      </div>
+    );
+  }
   const sample = !loading && value !== null && Number.isFinite(value) ? value : null;
   const formatted = formatMetric(sample, unit, { maximumFractionDigits: 2 });
+  const sampleText = formatMetricText(sample, unit);
   const maximum = bound && Number.isFinite(bound.value) && bound.value > 0 ? bound.value : null;
   const markers = thresholds.filter((t) => Number.isFinite(t.value));
   let active: (typeof markers)[number] | undefined;
@@ -51,20 +120,6 @@ export function CapacityBar({
         : '0%',
     '--_ov-metric-color': fill,
   };
-  if (loading && variant === 'cell') {
-    return (
-      <div
-        className={cn(styles.Capacity, className)}
-        data-variant="cell"
-        data-orientation={orientation}
-        aria-busy="true"
-        role="group"
-        aria-label={`${label}: Loading`}
-      >
-        <Skeleton width="100%" height="0.75em" variant="rounded" aria-hidden="true" />
-      </div>
-    );
-  }
   return (
     <div
       className={cn(styles.Capacity, className)}
@@ -96,7 +151,7 @@ export function CapacityBar({
             className={styles.Track}
             data-missing={sample === null || undefined}
             role="img"
-            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+            aria-label={`${label}: ${sampleText}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
             title={referenceSummary || undefined}
           >
             {sample !== null && <span className={styles.Fill} style={fillStyle} />}
@@ -138,7 +193,7 @@ export function CapacityBar({
           className={styles.Track}
           data-missing="true"
           role="img"
-          aria-label={`${label}: ${formatMetricText(sample, unit)}; bound unknown; absolute usage; ${referenceSummary}`}
+          aria-label={`${label}: ${sampleText}; bound unknown; absolute usage; ${referenceSummary}`}
           title={referenceSummary || undefined}
         />
       ) : (
@@ -147,30 +202,21 @@ export function CapacityBar({
         </p>
       )}
       {variant === 'cell' && showValue && (
-        <Tooltip.Root>
-          <Tooltip.Trigger
-            render={<div />}
-            className={styles.CellValue}
-            tabIndex={0}
-            aria-label={`${formatMetricText(sample, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
-          >
-            <span className={styles.CellNumber}>{formatted.value}</span>
-            <span className={styles.CellUnit}>{formatted.unit}</span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner sideOffset={4}>
-              <Tooltip.Popup>
-                <div>{formatMetricText(sample, unit)}</div>
-                <ReferenceLegend
-                  references={normalizedReferences}
-                  unit={unit}
-                  domain={maximum === null ? undefined : [0, maximum]}
-                  inspection
-                />
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
-        </Tooltip.Root>
+        <CellInspection
+          label={`${sampleText}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+          content={<>
+            <div>{sampleText}</div>
+            <ReferenceLegend
+              references={normalizedReferences}
+              unit={unit}
+              domain={maximum === null ? undefined : [0, maximum]}
+              inspection
+            />
+          </>}
+        >
+          <span className={styles.CellNumber}>{formatted.value}</span>
+          <span className={styles.CellUnit}>{formatted.unit}</span>
+        </CellInspection>
       )}
       {variant === 'full' && (
         <div className={styles.Details}>

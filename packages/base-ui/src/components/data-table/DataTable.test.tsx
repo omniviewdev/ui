@@ -378,3 +378,34 @@ describe('automatic value behavior', () => {
     expect(automaticNames()).toEqual(expected);
   });
 });
+
+describe('striped rows', () => {
+  function StripedTable() {
+    const table = useDataTable({
+      data: sampleData,
+      columns,
+      getRowId: (row) => row.id,
+      features: { rowExpansion: true },
+      getRowCanExpand: () => true,
+      initialState: { expanded: { '1': true } },
+    });
+    return (
+      <DataTable.Root table={table} features={{ rowExpansion: true }} striped>
+        <DataTable.Container>
+          <DataTable.Body renderExpandedRow={() => <span>Expanded details</span>} />
+        </DataTable.Container>
+      </DataTable.Root>
+    );
+  }
+
+  it('follows row order while an expanded detail row sits between rows', () => {
+    renderWithTheme(<StripedTable />);
+    expect(screen.getByText('Expanded details')).toBeInTheDocument();
+
+    const striped = ['Alice', 'Bob', 'Charlie'].map((name) =>
+      screen.getByText(name).closest('tr')!.hasAttribute('data-ov-stripe'),
+    );
+
+    expect(striped).toEqual([false, true, false]);
+  });
+});

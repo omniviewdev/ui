@@ -1,14 +1,22 @@
 import { useEffect } from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../test/render';
 import { MetricCell } from './MetricCell';
 import { MetricPanel } from './MetricPanel';
+import { DataTable } from '../components/data-table/DataTable';
+import { useDataTable } from '../components/data-table/hooks/useDataTable';
+import type { DataTableColumnDef } from '../components/data-table/types';
+
 
 const unit = { kind: 'number' } as const;
 
 describe('MetricCell', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('preserves absolute values when bounds disappear or become invalid', () => {
     const { rerender } = renderWithTheme(
       <MetricCell value={150} unit={unit} bound={{ kind: 'limit', value: 100 }} />,
@@ -71,6 +79,21 @@ describe('MetricCell', () => {
     expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
   });
 
+  it('starts the loading pulse only once the cell has waited long enough to notice', () => {
+    vi.useFakeTimers();
+    renderWithTheme(<MetricCell loading label="Memory" />);
+    const placeholder = () =>
+      screen
+        .getByRole('group', { name: 'Memory: Loading' })
+        .querySelector('[data-ov-component="skeleton"]');
+    expect(placeholder()).toHaveAttribute('data-ov-animation', 'none');
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
+    expect(placeholder()).toHaveAttribute('data-ov-animation', 'pulse');
+  });
+
+
   it('opens full-value inspection from the keyboard without references', async () => {
     const user = userEvent.setup();
     renderWithTheme(
@@ -83,6 +106,43 @@ describe('MetricCell', () => {
     await user.tab();
     expect(screen.getByLabelText('537 MiB')).toHaveFocus();
     expect(await screen.findByText('537 MiB')).toBeVisible();
+  });
+
+  it('keeps table inspection current across keyboard targets, sample updates and row removal', async () => {
+    const user = userEvent.setup();
+    const bytes = { kind: 'bytes', display: 'binary' } as const;
+    type Sample = { uid: string; value: number };
+    const columns: DataTableColumnDef<Sample>[] = [{
+      accessorKey: 'value',
+      cell: ({ row }) => <MetricCell label={row.original.uid} value={row.original.value} unit={bytes} />,
+    }];
+    function MetricTable({ data }: { data: Sample[] }) {
+      const table = useDataTable({
+        data,
+        getRowId: (row) => row.uid,
+        columns,
+      });
+      return <DataTable.Root table={table}>
+        <DataTable.Container><DataTable.Body /></DataTable.Container>
+      </DataTable.Root>;
+    }
+    const first = { uid: 'first', value: 537 * 1024 ** 2 };
+    const second = { uid: 'second', value: 1024 ** 3 };
+    const view = renderWithTheme(<MetricTable data={[first, second]} />);
+    act(() => screen.getByLabelText('537 MiB').focus());
+    await waitFor(() => expect(screen.getByText('537 MiB')).toBeVisible());
+
+    const changed = { ...first, value: 786 * 1024 ** 2 };
+    view.rerender(<MetricTable data={[changed, second]} />);
+    await waitFor(() => expect(screen.getByText('786 MiB')).toBeVisible());
+    expect(screen.queryByText('537 MiB')).not.toBeInTheDocument();
+    await user.tab();
+    expect(screen.getByLabelText('1 GiB')).toHaveFocus();
+    await waitFor(() => expect(screen.getByText('1 GiB')).toBeVisible());
+    expect(screen.queryByText('786 MiB')).not.toBeInTheDocument();
+
+    view.rerender(<MetricTable data={[changed]} />);
+    await waitFor(() => expect(screen.queryByText('1 GiB')).not.toBeInTheDocument());
   });
 });
 

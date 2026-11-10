@@ -6,6 +6,7 @@ import type { RowData } from '@tanstack/react-table';
 import type { DataTableInstance, DataTableFeatureFlags } from './types';
 import { DEFAULT_FEATURES } from './constants';
 import { DataTableProvider } from './context/DataTableContext';
+import { TooltipScope } from '../tooltip/Tooltip';
 import styles from './DataTable.module.css';
 
 import { DataTableContainer } from './DataTableContainer';
@@ -67,7 +68,7 @@ function DataTableRoot<TData extends RowData>({
         {...styleDataAttributes({ variant, color, size })}
         {...props}
       >
-        {children}
+        <TooltipScope>{children}</TooltipScope>
       </div>
     </DataTableProvider>
   );

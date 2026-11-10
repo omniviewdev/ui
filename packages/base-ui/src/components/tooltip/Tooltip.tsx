@@ -10,6 +10,8 @@ import {
   useState,
   type ComponentPropsWithoutRef,
   type ElementRef,
+  type PropsWithChildren,
+  type ReactNode,
 } from 'react';
 import { withBaseClassName } from '../../system/classnames';
 import { styleDataAttributes } from '../../system/styleProps';
@@ -35,6 +37,30 @@ const TooltipStyleContext = createContext<TooltipContextValue>({
   lazy: false,
   hasOpened: false,
 });
+
+const ScopedTooltipHandleContext = createContext<
+  ComponentPropsWithoutRef<typeof BaseTooltip.Trigger>['handle']
+>(undefined);
+
+/** Internal table composition: triggers share a popup, not per-cell floating roots. */
+export function TooltipScope({ children }: PropsWithChildren) {
+  const [handle] = useState(() => BaseTooltip.createHandle<unknown>());
+  return <ScopedTooltipHandleContext.Provider value={handle}>
+    {children}
+    <TooltipRoot handle={handle} lazy>
+      {({ payload }) => payload ? <TooltipPortal>
+        <TooltipPositioner sideOffset={4}>
+          <TooltipPopup>{payload as ReactNode}</TooltipPopup>
+        </TooltipPositioner>
+      </TooltipPortal> : null}
+    </TooltipRoot>
+  </ScopedTooltipHandleContext.Provider>;
+}
+
+/** Internal counterpart for inspection controls that can also render outside tables. */
+export function useSharedTooltipHandle() {
+  return useContext(ScopedTooltipHandleContext);
+}
 
 function useResolvedStyleProps(overrides?: StyledComponentProps): ResolvedStyleProps {
   const inherited = useContext(TooltipStyleContext);

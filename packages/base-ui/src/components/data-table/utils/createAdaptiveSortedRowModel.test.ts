@@ -10,7 +10,7 @@ import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { createAdaptiveSortedRowModel } from './createAdaptiveSortedRowModel';
 
-interface Item { id: string; name: string; score: number }
+interface Item { id: string; name: string; score: number; children?: Item[] }
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createAdaptiveSortedRowModel(),
@@ -24,10 +24,13 @@ const source: Item[] = [
   { id: 'b', name: 'pod-2', score: 1 },
   { id: 'c', name: 'pod-1', score: 2 },
 ];
-function make(data = source, sorting: SortingState = [{ id: 'name', desc: false }]) {
+const IMMUTABLE_META = { dataTableImmutableRows: true };
+function make(data = source, sorting: SortingState = [{ id: 'name', desc: false }],
+  immutable = false, definitions = columns) {
   const { result, rerender } = renderHook(
     ({ data, enabled }) => useTable({
-      features, columns, data, getRowId: (row) => row.id,
+      features, columns: definitions, data, getRowId: (row) => row.id,
+      meta: immutable ? IMMUTABLE_META : undefined,
       enableSorting: enabled, initialState: { sorting },
     }),
     { initialProps: { data, enabled: true } },
@@ -40,9 +43,11 @@ function make(data = source, sorting: SortingState = [{ id: 'name', desc: false 
 }
 const ids = (table: ReturnType<typeof make>) => table.model().rows.map((row) => row.id);
 
-describe('adaptive sorted input', () => {
+describe.each([false, true])('adaptive sorted input (immutable=%s)', (immutable) => {
   it('uses current rows after updates, removals and recreated identities', () => {
-    const table = make();
+    const table = make([], undefined, immutable);
+    expect(ids(table)).toEqual([]);
+    table.setData(source);
     expect(ids(table)).toEqual(['c', 'b', 'a']);
     const updated = { ...source[0]!, score: 9 };
     const next = [updated, { id: 'b-new', name: 'pod-2', score: 3 }, { id: 'd', name: 'pod-3', score: 4 }];
@@ -56,7 +61,7 @@ describe('adaptive sorted input', () => {
   });
 
   it('retains every current row when IDs collide after an earlier sort', () => {
-    const table = make();
+    const table = make(undefined, undefined, immutable);
     expect(ids(table)).toEqual(['c', 'b', 'a']);
     const next = [
       { id: 'a', name: 'pod-30', score: 4 },
@@ -68,7 +73,7 @@ describe('adaptive sorted input', () => {
   });
 
   it('restores source order when sorting is cleared or no selected column can sort', () => {
-    const table = make();
+    const table = make(undefined, undefined, immutable);
     expect(ids(table)).toEqual(['c', 'b', 'a']);
     table.setSorting([]);
     expect(ids(table)).toEqual(['a', 'b', 'c']);
@@ -79,7 +84,7 @@ describe('adaptive sorted input', () => {
   });
 
   it('preserves multi-sort, custom comparators and source-index tie ordering', () => {
-    const table = make(source, [{ id: 'score', desc: false }, { id: 'name', desc: false }]);
+    const table = make(source, [{ id: 'score', desc: false }, { id: 'name', desc: false }], immutable);
     expect(ids(table)).toEqual(['b', 'a', 'c']);
     table.setData([source[2]!, source[0]!, source[1]!]);
     table.setSorting([{ id: 'score', desc: false }]);
@@ -89,9 +94,9 @@ describe('adaptive sorted input', () => {
   });
 
   it('does not carry rows between table instances or disjoint replacements', () => {
-    const first = make();
+    const first = make(undefined, undefined, immutable);
     const other = [{ id: 'a', name: 'pod-0', score: 7 }, { id: 'b', name: 'pod-20', score: 8 }];
-    const second = make(other);
+    const second = make(other, undefined, immutable);
     expect(ids(first)).toEqual(['c', 'b', 'a']);
     expect(ids(second)).toEqual(['a', 'b']);
     expect(second.model().rows[0]!.original).toBe(other[0]);
@@ -100,5 +105,85 @@ describe('adaptive sorted input', () => {
     expect(ids(first)).toEqual(['z']);
     expect(first.model().rows[0]!.original).toBe(replacement[0]);
     expect(ids(second)).toEqual(['a', 'b']);
+  });
+});
+
+describe('immutable sort-key reuse', () => {
+  it('returns current rows and flat rows through repeated non-sort patches and a changed sort key', () => {
+    const table = make(undefined, undefined, true);
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    const first = [{ ...source[0]!, score: 9 }, source[1]!, source[2]!];
+    table.setData(first);
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    const second = [first[0]!, { ...source[1]!, score: 11 }, source[2]!];
+    table.setData(second);
+    const model = table.model();
+    expect(model.rows.map((row) => row.original)).toEqual([second[2], second[1], second[0]]);
+    expect(model.flatRows.map((row) => row.original)).toEqual([second[2], second[1], second[0]]);
+    expect(model.rowsById.b!.getValue('score')).toBe(11);
+
+    table.setData([{ ...second[0]!, name: 'pod-0' }, second[1]!, second[2]!]);
+    expect(ids(table)).toEqual(['a', 'c', 'b']);
+  });
+
+  it('respects new source-index ties and sorting changes after reusing an order', () => {
+    const tied = source.map((item, index) => ({ ...item, name: index < 2 ? 'pod-2' : 'pod-1' }));
+    const table = make(tied, undefined, true);
+    expect(ids(table)).toEqual(['c', 'a', 'b']);
+    const first = tied.map((item) => ({ ...item, score: item.score + 1 }));
+    table.setData(first);
+    expect(ids(table)).toEqual(['c', 'a', 'b']);
+    const second = first.map((item) => ({ ...item, score: item.score + 1 }));
+    table.setData(second);
+    expect(ids(table)).toEqual(['c', 'a', 'b']);
+    table.setData([second[1]!, second[0]!, second[2]!]);
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    table.setSorting([{ id: 'name', desc: true }]);
+    expect(ids(table)).toEqual(['b', 'a', 'c']);
+    table.setSorting([{ id: 'name', desc: false }]);
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    table.setSorting([]);
+    expect(ids(table)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('does not infer custom comparator dependencies from the named accessor', () => {
+    const definitions: typeof columns = [{
+      accessorKey: 'name', sortFn: (a, b) => b.original.score - a.original.score,
+    }];
+    const table = make(source, undefined, true, definitions);
+    expect(ids(table)).toEqual(['c', 'a', 'b']);
+    table.setData([{ ...source[0]!, score: 5 }, source[1]!, source[2]!]);
+    expect(ids(table)).toEqual(['a', 'c', 'b']);
+    table.setData([source[0]!, { ...source[1]!, score: 10 }, source[2]!]);
+    expect(ids(table)).toEqual(['b', 'c', 'a']);
+  });
+
+  it('still sorts changed children in hierarchical models', () => {
+    const parent: Item = { id: 'parent', name: 'pod-10', score: 0, children: [source[1]!, source[2]!] };
+    const initial = [parent, source[0]!];
+    const { result, rerender } = renderHook(({ data }) => useTable({
+      features, columns, data, meta: IMMUTABLE_META, getRowId: (row) => row.id,
+      getSubRows: (row) => row.children,
+      initialState: { sorting: [{ id: 'name', desc: false }] },
+    }), { initialProps: { data: initial } });
+    expect(result.current.getSortedRowModel().rows.find((row) => row.id === 'parent')!.subRows.map((row) => row.id))
+      .toEqual(['c', 'b']);
+    rerender({ data: [{ ...parent, score: 1 }, source[0]!] });
+    expect(result.current.getSortedRowModel().rows.find((row) => row.id === 'parent')!.subRows.map((row) => row.id))
+      .toEqual(['c', 'b']);
+    rerender({ data: [{ ...parent, children: [source[1]!, { ...source[2]!, name: 'pod-30' }] }, source[0]!] });
+    const model = result.current.getSortedRowModel();
+    expect(model.rows.find((row) => row.id === 'parent')!.subRows.map((row) => row.id))
+      .toEqual(['b', 'c']);
+    expect(model.flatRows.find((row) => row.id === 'c')!.original.name).toBe('pod-30');
+  });
+
+  it('does not assume immutability for tables that did not opt in', () => {
+    const mutable = source.map((item) => ({ ...item }));
+    const table = make(mutable);
+    expect(ids(table)).toEqual(['c', 'b', 'a']);
+    mutable[0]!.name = 'pod-0';
+    table.setData([...mutable]);
+    expect(ids(table)).toEqual(['a', 'c', 'b']);
   });
 });

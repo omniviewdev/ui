@@ -15,3 +15,7 @@ Seed repeated sorts from the previous result's row order, resolving every ID aga
 Keep all rows when caller-provided IDs collide: skip the ordering hint unless it forms a complete permutation of the current input.
 
 Keep fixed-height virtualization geometry independent of record updates. Uniform slot keys depend only on row size and index; React views still use record IDs, so reordering preserves editor state and focus. Changing the fixed height invalidates geometry immediately. Cell memoization also observes row identity and index so index-based content follows reordered records.
+
+Allow immutable resource tables to skip repeated built-in text comparisons when the active sort values, IDs, and source positions remain unchanged. Callers opt in with `meta.dataTableImmutableRows` and must keep row originals immutable and accessors pure. Returned rows always come from the current model. A detected sort-value change stops this extra reuse path for that table instance; custom, multiple-column, and hierarchical sorts keep the existing sorting path.
+
+Share one metric inspection tooltip root within each table instead of creating a floating root per cell. Keyboard focus targets, live values, reference details, and removed-row cleanup stay intact. Standalone metric cells retain their own tooltip roots.

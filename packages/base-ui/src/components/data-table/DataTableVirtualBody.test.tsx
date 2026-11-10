@@ -162,6 +162,43 @@ describe('DataTable.VirtualBody', () => {
     });
   });
 
+  it('keeps the viewport and requested buffer covered through forward and reverse scroll boundaries', async () => {
+    renderWithTheme(<PodTable overscan={32} />);
+    const count = 300;
+    await act(async () => setPods(Array.from({ length: count }, (_, index) => ({
+      uid: `p${index}`, name: `pod-${index}`, phase: 'Running',
+    }))));
+    const viewport = screen.getByRole('table').parentElement!;
+    for (const offset of [0, 32 * 40 + 17, 32 * 47 + 31, 32 * 48 + 1,
+      32 * 85 + 17, 32 * 41 + 9, 0, count * 32 - 400]) {
+      fireEvent.scroll(viewport, { target: { scrollTop: offset } });
+      await waitFor(() => {
+        const names = new Set(screen.queryAllByText(/^pod-\d+$/).map((element) => element.textContent));
+        const first = Math.max(0, Math.floor(offset / 32) - 32);
+        const last = Math.min(count - 1, Math.ceil((offset + 400) / 32) - 1 + 32);
+        for (let index = first; index <= last; index++) expect(names).toContain(`pod-${index}`);
+      });
+    }
+  });
+
+  it('drops removed rows without losing the current viewport when a buffered collection shrinks', async () => {
+    renderWithTheme(<PodTable overscan={32} />);
+    const pods = Array.from({ length: 200 }, (_, index) => ({
+      uid: `p${index}`, name: `pod-${index}`, phase: 'Running',
+    }));
+    await act(async () => setPods(pods));
+    fireEvent.scroll(screen.getByRole('table').parentElement!, { target: { scrollTop: 32 * 40 } });
+    await waitFor(() => expect(screen.getByText('pod-40')).toBeInTheDocument());
+
+    await act(async () => setPods(pods.slice(0, 80)));
+
+    await waitFor(() => {
+      for (const index of [40, 52, 79]) expect(screen.getByText(`pod-${index}`)).toBeInTheDocument();
+      expect(screen.queryByText('pod-80')).not.toBeInTheDocument();
+      expect(screen.queryByText('pod-100')).not.toBeInTheDocument();
+    });
+  });
+
   it('re-renders cells when the cell renderer changes', () => {
     function Table({ suffix }: { suffix: string }) {
       const table = useDataTable({

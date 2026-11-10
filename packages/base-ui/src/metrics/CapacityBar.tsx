@@ -1,6 +1,6 @@
-import { Tooltip } from '../components/tooltip';
+import { Tooltip, useSharedTooltipHandle } from '../components/tooltip/Tooltip';
 import { normalizeReferences, referenceText, ReferenceLegend, ReferenceTrack } from './references';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Skeleton } from '../components/skeleton/Skeleton';
 import { cn } from '../system/classnames';
 import { formatMetric, formatMetricText, seriesColor, toneColor } from './format';
@@ -34,6 +34,31 @@ function pulseWhenSlow(node: HTMLElement | null) {
     CELL_PULSE_DELAY_MS,
   );
   return () => clearTimeout(timer);
+}
+
+function CellInspection({ label, content, children }: {
+  label: string;
+  content: ReactNode;
+  children: ReactNode;
+}) {
+  const handle = useSharedTooltipHandle();
+  const trigger = <Tooltip.Trigger
+    handle={handle}
+    payload={handle ? content : undefined}
+    render={<div />}
+    className={styles.CellValue}
+    tabIndex={0}
+    aria-label={label}
+  >{children}</Tooltip.Trigger>;
+  if (handle) return trigger;
+  return <Tooltip.Root>
+    {trigger}
+    <Tooltip.Portal>
+      <Tooltip.Positioner sideOffset={4}>
+        <Tooltip.Popup>{content}</Tooltip.Popup>
+      </Tooltip.Positioner>
+    </Tooltip.Portal>
+  </Tooltip.Root>;
 }
 
 export function CapacityBar({
@@ -177,30 +202,21 @@ export function CapacityBar({
         </p>
       )}
       {variant === 'cell' && showValue && (
-        <Tooltip.Root>
-          <Tooltip.Trigger
-            render={<div />}
-            className={styles.CellValue}
-            tabIndex={0}
-            aria-label={`${sampleText}${referenceSummary ? `; ${referenceSummary}` : ''}`}
-          >
-            <span className={styles.CellNumber}>{formatted.value}</span>
-            <span className={styles.CellUnit}>{formatted.unit}</span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner sideOffset={4}>
-              <Tooltip.Popup>
-                <div>{sampleText}</div>
-                <ReferenceLegend
-                  references={normalizedReferences}
-                  unit={unit}
-                  domain={maximum === null ? undefined : [0, maximum]}
-                  inspection
-                />
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
-        </Tooltip.Root>
+        <CellInspection
+          label={`${sampleText}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+          content={<>
+            <div>{sampleText}</div>
+            <ReferenceLegend
+              references={normalizedReferences}
+              unit={unit}
+              domain={maximum === null ? undefined : [0, maximum]}
+              inspection
+            />
+          </>}
+        >
+          <span className={styles.CellNumber}>{formatted.value}</span>
+          <span className={styles.CellUnit}>{formatted.unit}</span>
+        </CellInspection>
       )}
       {variant === 'full' && (
         <div className={styles.Details}>

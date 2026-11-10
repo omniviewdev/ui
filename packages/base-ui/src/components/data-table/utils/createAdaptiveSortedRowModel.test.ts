@@ -1,4 +1,7 @@
 import {
+  createPaginatedRowModel,
+  createSortedRowModel,
+  rowPaginationFeature,
   rowSortingFeature,
   sortFn_alphanumeric,
   tableFeatures,
@@ -185,5 +188,121 @@ describe('immutable sort-key reuse', () => {
     mutable[0]!.name = 'pod-0';
     table.setData([...mutable]);
     expect(ids(table)).toEqual(['a', 'c', 'b']);
+  });
+});
+
+// Tables that page the sorted rows. 'native' uses TanStack's own sorter, the reference that the
+// adaptive sorter must match with ('immutable') and without ('adaptive') the immutable-rows opt-in.
+const sorters = ['native', 'adaptive', 'immutable'] as const;
+type Sorter = (typeof sorters)[number];
+const pagedFeatures = tableFeatures({
+  rowSortingFeature,
+  rowPaginationFeature,
+  sortedRowModel: createAdaptiveSortedRowModel(),
+  paginatedRowModel: createPaginatedRowModel(),
+});
+const nativePagedFeatures: typeof pagedFeatures = {
+  ...pagedFeatures,
+  sortedRowModel: createSortedRowModel(),
+};
+const pagedColumns: ColumnDef<typeof pagedFeatures, Item>[] = [
+  { accessorKey: 'name', sortFn: sortFn_alphanumeric },
+  { accessorKey: 'score' },
+];
+// Sorted by name: c, e, b, d, a. Two rows per page: [c, e], [b, d], [a].
+const pagedSource: Item[] = [
+  { id: 'a', name: 'pod-5', score: 1 },
+  { id: 'b', name: 'pod-3', score: 1 },
+  { id: 'c', name: 'pod-1', score: 2 },
+  { id: 'd', name: 'pod-4', score: 2 },
+  { id: 'e', name: 'pod-2', score: 3 },
+];
+const pick = (data: Item[], ...ids: string[]) =>
+  ids.map((id) => data.find((item) => item.id === id)!);
+// An immutable host patch replaces one row object; every other row keeps its identity.
+const rescored = (data: Item[], id: string): Item[] =>
+  data.map((item) => (item.id === id ? { ...item, score: item.score + 10 } : item));
+const renamed = (data: Item[], id: string, name: string): Item[] =>
+  data.map((item) => (item.id === id ? { ...item, name } : item));
+
+async function makePaged(sorter: Sorter, autoResetPageIndex: boolean) {
+  const { result, rerender } = renderHook(
+    ({ data }) => {
+      const table = useTable({
+        features: sorter === 'native' ? nativePagedFeatures : pagedFeatures,
+        columns: pagedColumns,
+        data,
+        getRowId: (row) => row.id,
+        meta: sorter === 'immutable' ? IMMUTABLE_META : undefined,
+        autoResetPageIndex,
+        initialState: {
+          sorting: [{ id: 'name', desc: false }],
+          pagination: { pageIndex: 0, pageSize: 2 },
+        },
+      });
+      // Like a table consumer, read the page while rendering.
+      return { table, rows: table.getRowModel().rows };
+    },
+    { initialProps: { data: pagedSource } },
+  );
+  // The mount render primes the row models and queues their first-run auto-reset callbacks as
+  // microtasks. Settle them before the page moves, so only later data changes can reset it.
+  await act(async () => {});
+  return {
+    // The page as last rendered.
+    page: () => ({
+      index: result.current.table.state.pagination.pageIndex,
+      items: result.current.rows.map((row) => row.original),
+    }),
+    goToPage: (index: number) => act(() => result.current.table.setPageIndex(index)),
+    // Page resets are queued as microtasks; act settles them and the render they cause.
+    setData: async (data: Item[]) => {
+      await act(async () => {
+        rerender({ data });
+      });
+    },
+  };
+}
+
+describe.each(sorters)('paginated sorted rows (%s)', (sorter) => {
+  it('returns to the first page with current rows after each nonsort patch', async () => {
+    const table = await makePaged(sorter, true);
+    let data = pagedSource;
+    expect(table.page()).toEqual({ index: 0, items: pick(data, 'c', 'e') });
+
+    // Repeat the patch so any order retained from an earlier one is reused.
+    for (const id of ['b', 'c', 'e']) {
+      table.goToPage(1);
+      expect(table.page()).toEqual({ index: 1, items: pick(data, 'b', 'd') });
+      data = rescored(data, id);
+      await table.setData(data);
+      expect(table.page()).toEqual({ index: 0, items: pick(data, 'c', 'e') });
+    }
+
+    // A changed sort value also returns to the first page, in the new order.
+    table.goToPage(1);
+    data = renamed(data, 'a', 'pod-0');
+    await table.setData(data);
+    expect(table.page()).toEqual({ index: 0, items: pick(data, 'a', 'c') });
+    table.goToPage(1);
+    expect(table.page()).toEqual({ index: 1, items: pick(data, 'e', 'b') });
+  });
+
+  it('keeps the chosen page with current rows after each nonsort patch when reset is off', async () => {
+    const table = await makePaged(sorter, false);
+    let data = pagedSource;
+    table.goToPage(1);
+    expect(table.page()).toEqual({ index: 1, items: pick(data, 'b', 'd') });
+
+    // Two patches touch the visible page; the last one is off the page.
+    for (const id of ['b', 'd', 'a']) {
+      data = rescored(data, id);
+      await table.setData(data);
+      expect(table.page()).toEqual({ index: 1, items: pick(data, 'b', 'd') });
+    }
+
+    data = renamed(data, 'a', 'pod-0');
+    await table.setData(data);
+    expect(table.page()).toEqual({ index: 1, items: pick(data, 'e', 'b') });
   });
 });

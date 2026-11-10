@@ -14,6 +14,28 @@ type CapacityStyle = CSSProperties & {
   '--_ov-metric-marker-position'?: string;
 };
 
+/**
+ * A scrolling table mounts hundreds of loading cells and most are answered within a few frames.
+ * A running pulse costs a compositor layer, a style update and an `animationstart` event the
+ * moment it starts, for motion nobody lives long enough to see. The placeholder shows at once and
+ * begins pulsing only when the wait is long enough to notice. Reduced motion never pulses.
+ */
+const CELL_PULSE_DELAY_MS = 500;
+
+/**
+ * Starts the pulse by writing the attribute directly. A state update would give every placeholder
+ * an extra component, hook and render at mount, for the many that are gone before it could fire.
+ * The timer is cancelled with the element, so an answered cell never pulses.
+ */
+function pulseWhenSlow(node: HTMLElement | null) {
+  if (node === null) return undefined;
+  const timer = setTimeout(
+    () => node.setAttribute('data-ov-animation', 'pulse'),
+    CELL_PULSE_DELAY_MS,
+  );
+  return () => clearTimeout(timer);
+}
+
 export function CapacityBar({
   value,
   unit,
@@ -28,8 +50,30 @@ export function CapacityBar({
   orientation = 'horizontal',
   loading = false,
 }: CapacityBarProps) {
+  if (loading && variant === 'cell') {
+    return (
+      <div
+        className={cn(styles.Capacity, className)}
+        data-variant="cell"
+        data-orientation={orientation}
+        aria-busy="true"
+        role="group"
+        aria-label={`${label}: Loading`}
+      >
+        <Skeleton
+          ref={pulseWhenSlow}
+          width="100%"
+          height="0.75em"
+          variant="rounded"
+          animation="none"
+          aria-hidden="true"
+        />
+      </div>
+    );
+  }
   const sample = !loading && value !== null && Number.isFinite(value) ? value : null;
   const formatted = formatMetric(sample, unit, { maximumFractionDigits: 2 });
+  const sampleText = formatMetricText(sample, unit);
   const maximum = bound && Number.isFinite(bound.value) && bound.value > 0 ? bound.value : null;
   const markers = thresholds.filter((t) => Number.isFinite(t.value));
   let active: (typeof markers)[number] | undefined;
@@ -51,20 +95,6 @@ export function CapacityBar({
         : '0%',
     '--_ov-metric-color': fill,
   };
-  if (loading && variant === 'cell') {
-    return (
-      <div
-        className={cn(styles.Capacity, className)}
-        data-variant="cell"
-        data-orientation={orientation}
-        aria-busy="true"
-        role="group"
-        aria-label={`${label}: Loading`}
-      >
-        <Skeleton width="100%" height="0.75em" variant="rounded" aria-hidden="true" />
-      </div>
-    );
-  }
   return (
     <div
       className={cn(styles.Capacity, className)}
@@ -96,7 +126,7 @@ export function CapacityBar({
             className={styles.Track}
             data-missing={sample === null || undefined}
             role="img"
-            aria-label={`${label}: ${formatMetricText(sample, unit)}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+            aria-label={`${label}: ${sampleText}; ${bound?.kind}: ${formatMetricText(maximum, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
             title={referenceSummary || undefined}
           >
             {sample !== null && <span className={styles.Fill} style={fillStyle} />}
@@ -138,7 +168,7 @@ export function CapacityBar({
           className={styles.Track}
           data-missing="true"
           role="img"
-          aria-label={`${label}: ${formatMetricText(sample, unit)}; bound unknown; absolute usage; ${referenceSummary}`}
+          aria-label={`${label}: ${sampleText}; bound unknown; absolute usage; ${referenceSummary}`}
           title={referenceSummary || undefined}
         />
       ) : (
@@ -152,7 +182,7 @@ export function CapacityBar({
             render={<div />}
             className={styles.CellValue}
             tabIndex={0}
-            aria-label={`${formatMetricText(sample, unit)}${referenceSummary ? `; ${referenceSummary}` : ''}`}
+            aria-label={`${sampleText}${referenceSummary ? `; ${referenceSummary}` : ''}`}
           >
             <span className={styles.CellNumber}>{formatted.value}</span>
             <span className={styles.CellUnit}>{formatted.unit}</span>
@@ -160,7 +190,7 @@ export function CapacityBar({
           <Tooltip.Portal>
             <Tooltip.Positioner sideOffset={4}>
               <Tooltip.Popup>
-                <div>{formatMetricText(sample, unit)}</div>
+                <div>{sampleText}</div>
                 <ReferenceLegend
                   references={normalizedReferences}
                   unit={unit}

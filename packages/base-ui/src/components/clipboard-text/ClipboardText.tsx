@@ -1,4 +1,14 @@
-import { forwardRef, useCallback, useEffect, useRef, useState, type HTMLAttributes } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FocusEvent,
+  type HTMLAttributes,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 import { LuCheck, LuCopy } from 'react-icons/lu';
 import { cn } from '../../system/classnames';
 import styles from './ClipboardText.module.css';
@@ -15,10 +25,24 @@ export interface ClipboardTextProps extends HTMLAttributes<HTMLElement> {
 }
 
 export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(function ClipboardText(
-  { value, mono = false, truncate = false, feedbackDuration = 1500, className, children, ...props },
+  {
+    value,
+    mono = false,
+    truncate = false,
+    feedbackDuration = 1500,
+    className,
+    children,
+    onPointerEnter,
+    onFocus,
+    ...props
+  },
   ref,
 ) {
   const [copied, setCopied] = useState(false);
+  // The glyph is invisible until the control is hovered or focused. Tables mount many
+  // values, so its SVG is built on first intent; the labelled button is always present
+  // for keyboard and assistive-technology users.
+  const [revealed, setRevealed] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -40,6 +64,26 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
     );
   }, [value, feedbackDuration]);
 
+  const handlePointerEnter = useCallback(
+    (event: PointerEvent<HTMLSpanElement>) => {
+      onPointerEnter?.(event);
+      setRevealed(true);
+    },
+    [onPointerEnter],
+  );
+
+  const handleFocus = useCallback(
+    (event: FocusEvent<HTMLSpanElement>) => {
+      onFocus?.(event);
+      setRevealed(true);
+    },
+    [onFocus],
+  );
+
+  let glyph: ReactNode = null;
+  if (copied) glyph = <LuCheck aria-hidden size={14} />;
+  else if (revealed) glyph = <LuCopy aria-hidden size={14} />;
+
   return (
     <span
       ref={ref}
@@ -47,6 +91,8 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
       data-ov-mono={mono ? 'true' : undefined}
       data-ov-truncate={truncate ? 'true' : undefined}
       data-ov-copied={copied ? 'true' : undefined}
+      onPointerEnter={handlePointerEnter}
+      onFocus={handleFocus}
       {...props}
     >
       <span className={styles.Text}>{children ?? value}</span>
@@ -56,7 +102,7 @@ export const ClipboardText = forwardRef<HTMLSpanElement, ClipboardTextProps>(fun
         onClick={handleCopy}
         aria-label={copied ? 'Copied' : 'Copy to clipboard'}
       >
-        {copied ? <LuCheck aria-hidden size={14} /> : <LuCopy aria-hidden size={14} />}
+        {glyph}
       </button>
     </span>
   );

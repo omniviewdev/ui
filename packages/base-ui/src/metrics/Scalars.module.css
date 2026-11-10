@@ -136,8 +136,13 @@
   min-inline-size: 0;
   min-block-size: 1.5em;
   inline-size: 100%;
-  container-type: inline-size;
   overflow: visible;
+}
+/* A size container makes the browser style its subtree in a separate pass after the container's own
+ * layout. Only a cell that shows a value has a track or value slot to adapt, so a placeholder is no
+ * container. A scrolling table mounts hundreds of placeholders, each of which would pay for a pass. */
+.Capacity[data-variant='cell']:not([aria-busy='true']) {
+  container-type: inline-size;
 }
 .Capacity[data-variant='cell'] .Track {
   flex: 1 1 0;

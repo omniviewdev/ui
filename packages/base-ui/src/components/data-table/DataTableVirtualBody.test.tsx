@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { useState } from 'react';
 import type { DataTableColumnDef as ColumnDef } from './types';
@@ -141,5 +141,134 @@ describe('DataTable.VirtualBody', () => {
     fireEvent.click(row);
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(onRowClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the scrolled viewport covered when measured rows become fixed-height rows', async () => {
+    const { rerender } = renderWithTheme(<PodTable fixedRowHeight={false} overscan={2} />);
+    await act(async () => {
+      setPods(
+        Array.from({ length: 100 }, (_, index) => ({
+          uid: `p${index}`,
+          name: `pod-${index}`,
+          phase: 'Running',
+        })),
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByText('pod-0')).toBeInTheDocument();
+      expect(screen.queryByText('pod-10')).not.toBeInTheDocument();
+    });
+
+    rerender(<PodTable fixedRowHeight overscan={2} />);
+    fireEvent.scroll(screen.getByRole('table').parentElement!, {
+      target: { scrollTop: 32 * 50 },
+    });
+
+    await waitFor(() => expect(screen.getByText('pod-50')).toBeInTheDocument());
+  });
+
+  describe('slot keys and stripes', () => {
+    function ExpandableTable({
+      items = initialPods,
+      expandAll = false,
+      withDetails = true,
+      striped = false,
+      overscan,
+    }: {
+      items?: Pod[];
+      expandAll?: boolean;
+      withDetails?: boolean;
+      striped?: boolean;
+      overscan?: number;
+    }) {
+      const table = useDataTable({
+        data: items,
+        columns,
+        getRowId: (row) => row.uid,
+        features: { rowExpansion: true },
+        getRowCanExpand: () => true,
+        initialState: expandAll ? { expanded: true } : undefined,
+      });
+      return (
+        <DataTable.Root table={table} features={{ rowExpansion: true }} striped={striped}>
+          <DataTable.Container>
+            <DataTable.VirtualBody<Pod>
+              fixedRowHeight
+              estimateRowSize={32}
+              overscan={overscan}
+              renderExpandedRow={
+                withDetails ? (pod) => <span>detail of {pod.name}</span> : undefined
+              }
+            />
+          </DataTable.Container>
+        </DataTable.Root>
+      );
+    }
+
+    it('keeps rows and details distinct for ids that resemble internal item keys', () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const items = ['x', 'r:x', 'd:x'].map((uid) => ({
+        uid,
+        name: `pod ${uid}`,
+        phase: 'Running',
+      }));
+
+      try {
+        const { container } = renderWithTheme(<ExpandableTable items={items} expandAll />);
+
+        expect(container.querySelectorAll('tr[data-ov-row-id]')).toHaveLength(3);
+        expect(
+          [...container.querySelectorAll('[data-ov-detail-for]')].map((row) =>
+            row.getAttribute('data-ov-detail-for'),
+          ),
+        ).toEqual(['x', 'r:x', 'd:x']);
+        expect(error.mock.calls.some(([message]) => String(message).includes('same key'))).toBe(
+          false,
+        );
+      } finally {
+        error.mockRestore();
+      }
+    });
+
+    it('keeps mounted rows when expandable details are enabled', () => {
+      const { rerender } = renderWithTheme(<ExpandableTable withDetails={false} />);
+      const row = screen.getByText('api-0').closest('tr');
+
+      rerender(<ExpandableTable withDetails />);
+
+      expect(screen.getByText('api-0').closest('tr')).toBe(row);
+    });
+
+    it('stripes rows by their order, not their position in the mounted window', async () => {
+      const many = Array.from({ length: 200 }, (_, index) => ({
+        uid: `p${index}`,
+        name: `pod-${index}`,
+        phase: 'Running',
+      }));
+      const { container } = renderWithTheme(
+        <ExpandableTable items={many} withDetails={false} striped overscan={3} />,
+      );
+
+      fireEvent.scroll(screen.getByRole('table').parentElement!, {
+        target: { scrollTop: 32 * 50 },
+      });
+
+      await waitFor(() => expect(container.querySelector('tr[data-index="47"]')).not.toBeNull());
+      const rows = [...container.querySelectorAll<HTMLElement>('tbody tr[data-index]')];
+      expect(rows.length).toBeGreaterThan(2);
+      for (const row of rows) {
+        expect(row.hasAttribute('data-ov-stripe')).toBe(Number(row.dataset.index) % 2 === 1);
+      }
+    });
+
+    it('keeps stripe order while expanded details sit between rows', () => {
+      const { container } = renderWithTheme(<ExpandableTable striped expandAll />);
+
+      expect(
+        [...container.querySelectorAll('tr[data-ov-row-id]')].map((row) =>
+          row.hasAttribute('data-ov-stripe'),
+        ),
+      ).toEqual([false, true]);
+    });
   });
 });

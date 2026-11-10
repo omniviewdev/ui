@@ -12,7 +12,6 @@ import {
   rowSelectionFeature,
   rowExpandingFeature,
   rowPaginationFeature,
-  createSortedRowModel,
   createFilteredRowModel,
   createGroupedRowModel,
   createExpandedRowModel,
@@ -29,6 +28,7 @@ import {
   filterFn_weakEquals,
 } from '@tanstack/react-table';
 import type { DataTableFeatureFlags } from './types';
+import { createAdaptiveSortedRowModel } from './utils/createAdaptiveSortedRowModel';
 
 export const dataTableFeatures = tableFeatures({
   rowSortingFeature,
@@ -43,7 +43,7 @@ export const dataTableFeatures = tableFeatures({
   rowSelectionFeature,
   rowExpandingFeature,
   rowPaginationFeature,
-  sortedRowModel: createSortedRowModel(),
+  sortedRowModel: createAdaptiveSortedRowModel(),
   filteredRowModel: createFilteredRowModel(),
   groupedRowModel: createGroupedRowModel(),
   expandedRowModel: createExpandedRowModel(),

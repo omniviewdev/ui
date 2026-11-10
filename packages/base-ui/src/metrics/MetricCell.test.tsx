@@ -1,14 +1,19 @@
 import { useEffect } from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../test/render';
 import { MetricCell } from './MetricCell';
 import { MetricPanel } from './MetricPanel';
 
+
 const unit = { kind: 'number' } as const;
 
 describe('MetricCell', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('preserves absolute values when bounds disappear or become invalid', () => {
     const { rerender } = renderWithTheme(
       <MetricCell value={150} unit={unit} bound={{ kind: 'limit', value: 100 }} />,
@@ -70,6 +75,21 @@ describe('MetricCell', () => {
     expect(screen.getByText('—')).toBeVisible();
     expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
   });
+
+  it('starts the loading pulse only once the cell has waited long enough to notice', () => {
+    vi.useFakeTimers();
+    renderWithTheme(<MetricCell loading label="Memory" />);
+    const placeholder = () =>
+      screen
+        .getByRole('group', { name: 'Memory: Loading' })
+        .querySelector('[data-ov-component="skeleton"]');
+    expect(placeholder()).toHaveAttribute('data-ov-animation', 'none');
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
+    expect(placeholder()).toHaveAttribute('data-ov-animation', 'pulse');
+  });
+
 
   it('opens full-value inspection from the keyboard without references', async () => {
     const user = userEvent.setup();

@@ -149,6 +149,7 @@ interface VirtualRowProps<TData extends RowData> {
   height?: number;
   selected: boolean;
   expanded: boolean;
+  stripe: boolean;
   state: TableState<DataTableFeatures>;
   layout: ColumnLayouts;
   measureRef?: (node: HTMLTableRowElement | null) => void;
@@ -164,6 +165,7 @@ function VirtualRowInner<TData extends RowData>({
   height,
   selected,
   expanded,
+  stripe,
   state,
   layout,
   measureRef,
@@ -195,6 +197,7 @@ function VirtualRowInner<TData extends RowData>({
       className={cn(styles.Row, styles.VirtualRow, height != null && styles.FixedRow, className)}
       data-ov-selected={selected ? 'true' : 'false'}
       data-ov-expanded={expanded ? 'true' : 'false'}
+      data-ov-stripe={stripe ? 'true' : undefined}
       data-ov-fixed-height={height == null ? undefined : 'true'}
       onClick={
         onClick || onRowClick
@@ -245,7 +248,18 @@ function VirtualRowInner<TData extends RowData>({
 }
 const VirtualRow = memo(VirtualRowInner) as typeof VirtualRowInner;
 
-type Slot<TData extends RowData> = { key: string; row: DataTableRow<TData>; detail: boolean };
+// Item keys identify rows across reorders and keep detail slots in their own namespace.
+// Distinct one-character prefixes cannot collide, whatever the row ids contain.
+const rowKey = (id: string) => `r:${id}`;
+const detailKey = (id: string) => `d:${id}`;
+
+type Slot<TData extends RowData> = {
+  key: string;
+  row: DataTableRow<TData>;
+  detail: boolean;
+  /** Position among rows, excluding detail slots. */
+  ordinal: number;
+};
 
 function VirtualBodyInner<TData extends RowData>(
   {
@@ -263,29 +277,36 @@ function VirtualBodyInner<TData extends RowData>(
   ref: ForwardedRef<HTMLTableSectionElement>,
 ) {
   const context = useDataTableContext<TData>();
-  const { table } = context;
+  const { table, striped } = context;
   const scrollElement = useScrollElement();
   const { rows, columns } = readTableSnapshot(context);
   const { state, options } = context;
   const getIsRowExpanded = options.getIsRowExpanded;
   const hasDetails = context.features.rowExpansion && renderExpandedRow != null;
-  const slots = useMemo(() => {
+  // Detail slots interleave with rows only for expandable tables. Everywhere else the
+  // slot index is the row index, so no slot object or key string is built per row.
+  const detailSlots = useMemo(() => {
+    if (!hasDetails) return undefined;
     const result: Slot<TData>[] = [];
-    for (const row of rows) {
-      result.push({ key: JSON.stringify(['row', row.id]), row, detail: false });
+    for (let ordinal = 0; ordinal < rows.length; ordinal++) {
+      const row = rows[ordinal]!;
+      result.push({ key: rowKey(row.id), row, detail: false, ordinal });
       const expanded =
         getIsRowExpanded?.(row) ??
         (state.expanded === true ||
           (Object.hasOwn(state.expanded, row.id) && !!state.expanded[row.id]));
-      if (hasDetails && expanded)
-        result.push({ key: JSON.stringify(['detail', row.id]), row, detail: true });
+      if (expanded) result.push({ key: detailKey(row.id), row, detail: true, ordinal });
     }
     return result;
   }, [rows, state.expanded, hasDetails, getIsRowExpanded]);
-  const getItemKey = useCallback((index: number) => slots[index]!.key, [slots]);
+  const count = detailSlots ? detailSlots.length : rows.length;
+  const getItemKey = useCallback(
+    (index: number) => (detailSlots ? detailSlots[index]!.key : rowKey(rows[index]!.id)),
+    [detailSlots, rows],
+  );
   const estimateSize = useCallback(
-    (index: number) => (slots[index]?.detail ? estimateExpandedRowSize : estimateRowSize),
-    [slots, estimateExpandedRowSize, estimateRowSize],
+    (index: number) => (detailSlots?.[index]?.detail ? estimateExpandedRowSize : estimateRowSize),
+    [detailSlots, estimateExpandedRowSize, estimateRowSize],
   );
   const rangeExtractor = useMemo(() => {
     if (!fixedRowHeight || hasDetails || overscan < 2) return undefined;
@@ -308,13 +329,21 @@ function VirtualBodyInner<TData extends RowData>(
     };
   }, [fixedRowHeight, hasDetails, overscan]);
   const virtualizer = useVirtualizerSnapshot<HTMLDivElement, HTMLTableRowElement>({
-    count: slots.length,
+    count,
     getItemKey,
     getScrollElement: () => scrollElement,
     estimateSize,
     overscan,
     rangeExtractor,
   });
+  const { measure } = virtualizer;
+  const previousFixedRowHeight = useRef(fixedRowHeight);
+  useLayoutEffect(() => {
+    if (previousFixedRowHeight.current === fixedRowHeight) return;
+    previousFixedRowHeight.current = fixedRowHeight;
+    // Fixed rows cannot reuse heights measured from wrapping or custom cell content.
+    measure();
+  }, [fixedRowHeight, measure]);
   // Preserve data-only memoization across immutable patches. Geometry and arbitrary
   // cell renderers still observe all table-state slices, including custom controls.
   const cellState = useMemo(
@@ -407,10 +436,10 @@ function VirtualBodyInner<TData extends RowData>(
       style={bodyStyle}
     >
       {virtualizer.virtualItems.map((item) => {
-        const slot = slots[item.index];
-        if (!slot) return null;
-        const { row } = slot;
-        if (slot.detail)
+        const slot = detailSlots?.[item.index];
+        const row = slot ? slot.row : rows[item.index];
+        if (!row) return null;
+        if (slot?.detail)
           return (
             <tr
               key={item.key}
@@ -438,6 +467,7 @@ function VirtualBodyInner<TData extends RowData>(
             height={fixedRowHeight ? estimateRowSize : undefined}
             selected={row.getIsSelected()}
             expanded={row.getIsExpanded()}
+            stripe={striped && (slot ? slot.ordinal : item.index) % 2 === 1}
             state={cellState}
             layout={layout}
             getRowProps={getRowProps}

@@ -7,7 +7,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const dryRun = args[0] === '--dry-run';
 const channel = args[dryRun ? 1 : 0];
-if (args.length !== (dryRun ? 2 : 1) || !/^feature-[a-z][a-z0-9-]{0,30}[a-z0-9]$/.test(channel ?? '')) {
+if (
+  args.length !== (dryRun ? 2 : 1) ||
+  !/^feature-[a-z][a-z0-9-]{0,30}[a-z0-9]$/.test(channel ?? '')
+) {
   throw new Error('usage: feature-prerelease.mjs [--dry-run] feature-<slug>');
 }
 const runNumber = process.env.GITHUB_RUN_NUMBER ?? (dryRun ? '1' : '');
@@ -31,7 +34,9 @@ for (const entry of await readdir(path.join(root, 'packages'), { withFileTypes: 
 
 const destination = path.join(root, '.feature-packs');
 for (const pkg of packages) {
-  console.log(`${pkg.manifest.name}@${pkg.version}: pnpm pack --pack-destination ${destination}`);
+  process.stdout.write(
+    `${pkg.manifest.name}@${pkg.version}: pnpm pack --pack-destination ${destination}\n`,
+  );
 }
 if (!dryRun) {
   await mkdir(destination, { recursive: true });
@@ -40,18 +45,28 @@ if (!dryRun) {
     await writeFile(pkg.manifestPath, `${JSON.stringify(pkg.manifest, null, 2)}\n`);
   }
   for (const pkg of packages) {
-    const published = spawnSync('npm', ['view', `${pkg.manifest.name}@${pkg.version}`, 'version'], { encoding: 'utf8' });
+    const published = spawnSync('npm', ['view', `${pkg.manifest.name}@${pkg.version}`, 'version'], {
+      encoding: 'utf8',
+    });
     if (published.status === 0) {
-      console.log(`Skipping already published ${pkg.manifest.name}@${pkg.version}`);
+      process.stdout.write(`Skipping already published ${pkg.manifest.name}@${pkg.version}\n`);
       continue;
     }
     if (!published.stderr.includes('E404')) {
       throw new Error(`npm view failed for ${pkg.manifest.name}: ${published.stderr}`);
     }
-    const packed = spawnSync('pnpm', ['pack', '--pack-destination', destination], { cwd: pkg.directory, encoding: 'utf8' });
-    if (packed.status !== 0) throw new Error(`pnpm pack failed for ${pkg.manifest.name}: ${packed.stderr}`);
+    const packed = spawnSync('pnpm', ['pack', '--pack-destination', destination], {
+      cwd: pkg.directory,
+      encoding: 'utf8',
+    });
+    if (packed.status !== 0)
+      throw new Error(`pnpm pack failed for ${pkg.manifest.name}: ${packed.stderr}`);
     const filename = `${pkg.manifest.name.replace(/^@/, '').replace('/', '-')}-${pkg.version}.tgz`;
-    const publish = spawnSync('npm', ['publish', path.join(destination, filename), '--tag', channel, '--access', 'public'], { stdio: 'inherit' });
+    const publish = spawnSync(
+      'npm',
+      ['publish', path.join(destination, filename), '--tag', channel, '--access', 'public'],
+      { stdio: 'inherit' },
+    );
     if (publish.status !== 0) throw new Error(`npm publish failed for ${pkg.manifest.name}`);
   }
 }

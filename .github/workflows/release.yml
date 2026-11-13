@@ -2,7 +2,8 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/**']
+  workflow_dispatch:
 
 concurrency:
   group: release-${{ github.ref }}
@@ -10,6 +11,7 @@ concurrency:
 
 jobs:
   release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,3 +48,38 @@ jobs:
         env:
           # The GitHub changelog formatter reads this in the version script.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  feature-prerelease:
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
+        with:
+          version: 12.14.0
+          install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26.13.0'
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - id: channel
+        uses: omniviewdev/publish-plugin-action/resolve-channel@v1.2.0
+        with:
+          kind: host
+          channels-url: https://updates.omniview.dev/channels/index.json
+          compute-version: 'false'
+      - if: steps.channel.outputs.enabled == 'true'
+        env:
+          CHANNEL: ${{ steps.channel.outputs.channel }}
+        run: node scripts/feature-prerelease.mjs "$CHANNEL"

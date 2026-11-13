@@ -20,6 +20,13 @@ pnpm validate
 pnpm storybook
 ```
 
+## Feature prereleases
+
+Promote `feature/<slug>` in the update portal to enable feature package publishing.
+The release workflow publishes each public package with the `feature-<slug>` npm tag.
+Each version increments the package patch and includes the workflow run and attempt.
+Inspect the plan without publishing with `node scripts/feature-prerelease.mjs --dry-run feature-abc`.
+
 ## Frontend compatibility checks
 
 Use Node.js 26.13.0 LTS and pnpm 12.14.0. Library and showcase builds enable the

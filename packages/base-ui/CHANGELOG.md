@@ -30,6 +30,14 @@
 - Use the same option geometry in selection popups instead of unrelated general-list sizing. Keep small options readable at 13px, retain explicit size tiers and density, and apply row gaps inside menu groups.
 - Let editor tab strips shrink horizontally while preserving header height in column layouts, and propagate explicit Select popup styles to its options.
 
+## 0.17.3
+
+### Patch Changes
+
+- [#126](https://github.com/omniviewdev/ui/pull/126) [`fc9fd2d`](https://github.com/omniviewdev/ui/commit/fc9fd2ddd1458820fc19d7c2704079a2c1813c2d) Thanks [@joshuapare](https://github.com/joshuapare)! - Start the delayed pulse of loading metric cells from one shared timer instead of one timer per cell, so a scrolling table no longer sets and clears a native timer for every row it mounts and unmounts.
+
+  Paint row divider lines behind the unrendered part of a fixed-row-height `DataTable.VirtualBody`, so a region the virtualizer has not rendered yet reads as empty rows instead of a void.
+
 ## 0.17.2
 
 ### Patch Changes

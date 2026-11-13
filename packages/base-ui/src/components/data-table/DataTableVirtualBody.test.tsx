@@ -255,6 +255,54 @@ describe('DataTable.VirtualBody', () => {
     expect(onRowClick).toHaveBeenCalledTimes(1);
   });
 
+  describe('row placeholder', () => {
+    it('paints row placeholder lines for fixed-height bodies', () => {
+      const { container } = renderWithTheme(<PodTable fixedRowHeight estimateRowSize={30} />);
+      const body = container.querySelector('tbody')!;
+
+      expect(body).toHaveAttribute('data-ov-row-placeholder');
+      expect(body.style.getPropertyValue('--_dt-placeholder-row-height')).toBe('30px');
+    });
+
+    it('omits the placeholder when rows are measured', () => {
+      const { container } = renderWithTheme(
+        <PodTable fixedRowHeight={false} estimateRowSize={30} />,
+      );
+      const body = container.querySelector('tbody')!;
+
+      expect(body).not.toHaveAttribute('data-ov-row-placeholder');
+      expect(body.style.getPropertyValue('--_dt-placeholder-row-height')).toBe('');
+    });
+
+    it('omits the placeholder when expandable details make row offsets non-uniform', () => {
+      function DetailTable() {
+        const table = useDataTable({
+          data: initialPods,
+          columns,
+          getRowId: (row) => row.uid,
+          features: { rowExpansion: true },
+          getRowCanExpand: () => true,
+        });
+        return (
+          <DataTable.Root table={table} features={{ rowExpansion: true }}>
+            <DataTable.Container>
+              <DataTable.VirtualBody<Pod>
+                fixedRowHeight
+                estimateRowSize={30}
+                renderExpandedRow={(pod) => <span>detail of {pod.name}</span>}
+              />
+            </DataTable.Container>
+          </DataTable.Root>
+        );
+      }
+      const { container } = renderWithTheme(<DetailTable />);
+      const body = container.querySelector('tbody')!;
+
+      expect(body).not.toHaveAttribute('data-ov-row-placeholder');
+      expect(body.style.getPropertyValue('--_dt-placeholder-row-height')).toBe('');
+    });
+  });
+
   it('keeps the scrolled viewport covered when measured rows become fixed-height rows', async () => {
     const { rerender } = renderWithTheme(<PodTable fixedRowHeight={false} overscan={2} />);
     await act(async () => {

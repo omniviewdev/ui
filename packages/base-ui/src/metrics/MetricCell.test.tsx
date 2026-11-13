@@ -79,7 +79,10 @@ describe('MetricCell', () => {
     expect(screen.getByRole('group', { name: 'Memory' })).not.toHaveAttribute('aria-busy');
   });
 
-  it('starts the loading pulse only once the cell has waited long enough to notice', () => {
+  it('starts the loading pulse only once the cell has waited long enough to notice', async () => {
+    // Placeholders share one module-level timer. Earlier tests may have left a real one pending,
+    // which fake timers would never fire, so let it expire before faking.
+    await new Promise((resolve) => setTimeout(resolve, 500));
     vi.useFakeTimers();
     renderWithTheme(<MetricCell loading label="Memory" />);
     const placeholder = () =>

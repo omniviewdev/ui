@@ -22,18 +22,48 @@ type CapacityStyle = CSSProperties & {
  */
 const CELL_PULSE_DELAY_MS = 500;
 
+/** Placeholder nodes waiting to start pulsing, mapped to the time (ms) they become due. */
+const pendingPulses = new Map<HTMLElement, number>();
+let pulseTimerArmed = false;
+
+/**
+ * Starts the pulse on every due node, then re-arms one timer for the earliest node left. The delay
+ * is constant, so insertion order is due order and the first entry is always the earliest.
+ */
+function flushPulses() {
+  pulseTimerArmed = false;
+  const now = performance.now();
+  for (const [node, due] of pendingPulses) {
+    if (due > now) {
+      pulseTimerArmed = true;
+      setTimeout(flushPulses, Math.max(0, due - now));
+      return;
+    }
+    pendingPulses.delete(node);
+    node.setAttribute('data-ov-animation', 'pulse');
+  }
+}
+
 /**
  * Starts the pulse by writing the attribute directly. A state update would give every placeholder
  * an extra component, hook and render at mount, for the many that are gone before it could fire.
- * The timer is cancelled with the element, so an answered cell never pulses.
+ *
+ * Native `setTimeout`/`clearTimeout` cost about half a millisecond each in WKWebView, and a
+ * scrolling table mounts and unmounts a placeholder per row. So all placeholders share one timer:
+ * registering only records a due time and unmounting only forgets it, so an answered cell never
+ * pulses. At most one timer is outstanding; it is never cancelled, and a stale one that fires on
+ * an empty map does nothing and is not re-armed.
  */
 function pulseWhenSlow(node: HTMLElement | null) {
   if (node === null) return undefined;
-  const timer = setTimeout(
-    () => node.setAttribute('data-ov-animation', 'pulse'),
-    CELL_PULSE_DELAY_MS,
-  );
-  return () => clearTimeout(timer);
+  pendingPulses.set(node, performance.now() + CELL_PULSE_DELAY_MS);
+  if (!pulseTimerArmed) {
+    pulseTimerArmed = true;
+    setTimeout(flushPulses, CELL_PULSE_DELAY_MS);
+  }
+  return () => {
+    pendingPulses.delete(node);
+  };
 }
 
 function CellInspection({ label, content, children }: {

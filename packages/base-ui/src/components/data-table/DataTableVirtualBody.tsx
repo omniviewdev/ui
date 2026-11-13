@@ -429,9 +429,12 @@ function VirtualBodyInner<TData extends RowData>(
   );
 
   if (rows.length === 0) return null;
+  // Only uniform row heights let CSS repeat the row divider across the unrendered body.
+  const hasRowPlaceholder = fixedRowHeight && !hasDetails;
   const bodyStyle = {
     ...style,
     '--_dt-body-height': `${virtualizer.totalSize}px`,
+    ...(hasRowPlaceholder && { '--_dt-placeholder-row-height': `${estimateRowSize}px` }),
   } as CSSProperties;
   delete bodyStyle.display;
   delete bodyStyle.position;
@@ -441,6 +444,7 @@ function VirtualBodyInner<TData extends RowData>(
       {...props}
       ref={ref}
       className={cn(styles.Body, styles.VirtualBody, className)}
+      data-ov-row-placeholder={hasRowPlaceholder ? '' : undefined}
       style={bodyStyle}
     >
       {virtualizer.virtualItems.map((item) => {
